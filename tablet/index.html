@@ -4122,6 +4122,13 @@ function clearHelp() {
   resetPartialShortcutNudgeTimers();
 }
 
+function showAutoHintToast() {
+    kbToastEl.innerHTML = buildHintHTML(currentAnswer, '#f97316');
+    kbToastEl.classList.add('show');
+    clearTimeout(toastTimer);
+}
+
+
 /* ══════════════════════════════════════
    PAUSE / EASTER EGG
 ══════════════════════════════════════ */
@@ -7472,6 +7479,7 @@ function onQuestionTimerExpired() {
   if (gameState !== 'playing' || transitioning) return;
   transitioning = true;
   clearHelp();
+  showAutoHintToast();
 
   // Apply the 10% accuracy penalty
   hintPenaltyPct += 10;
@@ -7825,6 +7833,7 @@ function skipShortcut() {
   _wasPlaying = true;
   transitioning = true;
   clearHelp();
+  showAutoHintToast();
   hideQuestionTimerArc();
   // Remove any active pop animation so the strike/fade transition can take over opacity
   titleEl.classList.remove('question-pop');
@@ -7896,6 +7905,7 @@ function advanceQuestion() {
   }
   if (gameState === 'playing') mainBtn.textContent = 'Skip';
   clearHelp();
+  kbToastEl.classList.remove('show');
   transitioning = false;
   clearAllLit();
   heldKeys.clear();

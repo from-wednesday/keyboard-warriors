@@ -11,7 +11,7 @@
 <title>tablet</title>
 <script>
   const DefaultTitle = 'Keyboard Warriors';
-  const VersionLabel   = '0001';
+  const VersionLabel   = '0002';
   const TitlePrefix  = document.title !== DefaultTitle ? document.title.trim() + '_' : '';
   const DBG_DEVICE   = TitlePrefix + VersionLabel;
 </script>
@@ -4192,23 +4192,38 @@ function _stopPauseInactivityTimer() {
   _stopReadyPromptTimer();
 }
 
+var _readyPromptInTitle      = false;
+var _readyPromptSavedText    = '';
+var _readyPromptSavedBlurred = false;
+
+function _clearReadyPromptFromTitle() {
+  if (!_readyPromptInTitle) return;
+  _readyPromptInTitle = false;
+  if (titleEl.textContent === 'Ready?') {
+    titleEl.textContent = _readyPromptSavedText;
+    if (_readyPromptSavedBlurred) titleEl.classList.add('blurred');
+  }
+}
+
 function _startReadyPromptTimer() {
   clearTimeout(readyPromptTimer);
   readyPromptTimer = setTimeout(function() {
     var awaitingAction = (gameState === 'idle' || gameState === 'paused' ||
                           gameState === 'finished' || gameState === 'readyToUnpause');
     if (!awaitingAction) { readyPromptTimer = null; return; }
-    // In idle/finished state, ensure title is not blurred before overlay
-    if (gameState === 'idle' || gameState === 'finished') {
-      titleEl.classList.remove('blurred');
-    }
-    showConfirmHeading('Ready?', false);
-  }, 10000);
+    _readyPromptSavedText    = titleEl.textContent;
+    _readyPromptSavedBlurred = titleEl.classList.contains('blurred');
+    titleEl.classList.remove('blurred');
+    titleEl.textContent = 'Ready?';
+    _readyPromptInTitle = true;
+    readyPromptTimer = null;
+  }, 20000);
 }
 
 function _stopReadyPromptTimer() {
   clearTimeout(readyPromptTimer);
   readyPromptTimer = null;
+  _clearReadyPromptFromTitle();
 }
 
 function enterPause(instantBlur) {
@@ -8259,11 +8274,7 @@ function _onUserActivity() {
   var awaitingAction = (gameState === 'idle' || gameState === 'paused' ||
                         gameState === 'finished' || gameState === 'readyToUnpause');
   if (!awaitingAction) return;
-  var headingEl = document.getElementById('confirmHeading');
-  if (headingEl && headingEl.textContent === 'Ready?') {
-    headingEl.style.display = 'none';
-    headingEl.textContent = '';
-  }
+  _clearReadyPromptFromTitle();
   _startReadyPromptTimer();
 }
 document.addEventListener('keydown',   _onUserActivity, { passive: true });
@@ -8378,11 +8389,10 @@ document.getElementById('keyboardWrap').addEventListener('click', function(e) {
 
 function showTip(index) {
   tipIndex = ((index % IMPROVEMENT_TIPS.length) + IMPROVEMENT_TIPS.length) % IMPROVEMENT_TIPS.length;
-  // Dismiss "Ready?" if it is showing, and ensure the title is readable
+  _readyPromptInTitle = false;
   hideConfirmHeading();
   titleEl.classList.remove('blurred');
   titleEl.textContent = IMPROVEMENT_TIPS[tipIndex];
-  // Restart the Ready prompt so it reappears after another period of inactivity
   _startReadyPromptTimer();
 }
 

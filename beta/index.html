@@ -2023,6 +2023,9 @@ li.conflict-dismissed .conflict-desc {
     </div>
 <!-- ── Report Card ────────────────────────────────── -->
 <div id="panelReport" class="sp-page sp-page-report">
+  <div class="sp-report-header">
+    <p class="sp-report-card-title">Report Card</p>
+  </div>
   <div class="sp-col sp-col-left">
     <p class="sp-report-section-title">Strengths</p>
     <ul id="reportStrengths" class="sp-report-list sp-report-strength"></ul>
@@ -2032,7 +2035,6 @@ li.conflict-dismissed .conflict-desc {
     <ul id="reportWeaknesses" class="sp-report-list sp-report-weakness"></ul>
   </div>
   <div class="sp-report-bottom">
-    <p class="sp-title" style="margin-bottom:8px;">Report Card:</p>
     <div id="reportTrainerAdvice"></div>
   </div>
 </div>
@@ -5349,6 +5351,7 @@ function openSettings(page) {
   if (page === 'panelKeyboard')   { updateModalToggles(); updateKbSizeToggle(); }
   if (page === 'panelDifficulty') _refreshDifficultyPanel();
   if (page === 'panelPause')      _refreshPausePanel();
+  if (page === 'panelReport')     _refreshReportPanel();
 
   // Align panel width to keyboard
   _spAlignPanel();
@@ -8169,6 +8172,7 @@ function finalizeRunData(completedRun, currentPool) {
     return {
       displayText,
       shortcut,
+      shortcutToken: question ? question.shortcut : '',
       outcome: entry.endType === 'success'
         ? (entry.timeToAnswerMs !== null ? Math.round(entry.timeToAnswerMs) + 'ms' : 'Correct')
         : (entry.endType === 'timeout' ? 'Timed out' : 'Skipped'),
@@ -8203,7 +8207,7 @@ function finalizeRunData(completedRun, currentPool) {
     } else if (accuracyPercent === 100) {
       trainerAdvice.push('Excellent accuracy. Keep building on that consistency.');
     } else {
-      trainerAdvice.push('Try replaying this level to build confidence before moving on.');
+      trainerAdvice.push('Current difficulty settings are well balanced for your progress. Keep training.');
     }
   } else {
     // After trophy: all levers available
@@ -8272,6 +8276,21 @@ function finalizeRunData(completedRun, currentPool) {
 }
 
 
+function HighlightReportListItems(ShortcutToken) {
+  var AllListItems = document.querySelectorAll('#reportStrengths li, #reportWeaknesses li');
+  AllListItems.forEach(function(ListItem) {
+    if ((ListItem.dataset.shortcutToken || '').toUpperCase() !== ShortcutToken.toUpperCase()) return;
+    var AllChips = ListItem.querySelectorAll('span[style]');
+    // Target the chip wrapper span (direct child, last child of li)
+    var ChipWrapper = ListItem.lastElementChild;
+    if (!ChipWrapper) return;
+    ChipWrapper.classList.add('sp-report-chips-lit');
+    setTimeout(function() {
+      ChipWrapper.classList.remove('sp-report-chips-lit');
+    }, 1400);
+  });
+}
+
 function BuildShortcutKeyChips(DisplayString, IsWeakness) {
   var Wrapper = document.createElement('span');
   Wrapper.style.cssText = 'flex-shrink:0;margin-left:6px;display:inline-flex;align-items:center;flex-wrap:nowrap;';
@@ -8335,6 +8354,7 @@ function _refreshReportPanel() {
     } else {
       strengthItems.forEach(function(s) {
         var li      = document.createElement('li');
+        li.dataset.shortcutToken = s.shortcutToken || '';
         var dot     = document.createElement('span');
         dot.className = 'sp-report-dot';
         var label   = document.createElement('span');
@@ -8383,6 +8403,7 @@ function _refreshReportPanel() {
 
         var li      = document.createElement('li');
         li.style.alignItems = 'flex-start';
+        li.dataset.shortcutToken = s.shortcutToken || '';
         var dot     = document.createElement('span');
         dot.className = 'sp-report-dot';
         dot.style.marginTop = '5px';
@@ -8740,6 +8761,14 @@ function handleKeydown(e) {
     if (e.key === 'ArrowRight') { showTip(tipIndex + 1); e.preventDefault(); return; }
     if (e.key === 'ArrowLeft')  { showTip(tipIndex - 1); e.preventDefault(); return; }
     if (e.key === 'Enter') { e.preventDefault(); _closeAllModals(); beginCountdown(); return; }
+    // Light up matching shortcut chips in the report card while browsing it
+    if (activeSettings === 'panelReport' && lastCompletedReport) {
+      lastCompletedReport.questionSummaries.forEach(function(Summary) {
+        if (Summary.shortcutToken && matchesShortcut(e, Summary.shortcutToken)) {
+          HighlightReportListItems(Summary.shortcutToken);
+        }
+      });
+    }
   }
   if (gameState === 'idle') {
     if (e.key === 'Enter') { e.preventDefault(); _closeAllModals(); beginCountdown(); return; }
@@ -9801,11 +9830,27 @@ body.returning-screen #diffIconWrap .icon-tip { display: none; }
 #panelReport.sp-page-report.sp-active {
   display: grid;
   grid-template-columns: 1fr 1fr;
-  grid-template-rows: auto auto;
+  grid-template-rows: auto auto auto;
   grid-template-areas:
+    "header header"
     "left right"
     "bottom bottom";
   position: relative;
+}
+
+/* Report Card header: full-width, top of grid */
+.sp-report-header {
+  grid-area: header;
+  margin-bottom: 2px;
+}
+.sp-report-card-title {
+  font-size: 10px;
+  font-variant: small-caps;
+  letter-spacing: 0.06em;
+  color: #9ca3af;
+  font-weight: 600;
+  margin: 0;
+  line-height: 1;
 }
 
 /* Suppress the standard centred gutter line — we draw it manually */
@@ -9834,21 +9879,23 @@ body.returning-screen #diffIconWrap .icon-tip { display: none; }
   padding-left: 20px;
 }
 
-/* Bottom section: full-width, separated by a horizontal line */
+/* Bottom section: full-width advice area */
 .sp-report-bottom {
   grid-area: bottom;
   border-top: 1px solid #e5e7eb;
-  padding-top: 10px;
-  margin-top: 4px;
-  /* Extend visually to bleed over the column padding so the line is full width */
+  padding-top: 8px;
+  margin-top: 6px;
 }
 
-/* Section titles already use .sp-report-section-title */
+/* Section titles: right-aligned so they sit above the chip column */
 .sp-report-section-title {
-  font-size: 12px;
+  font-size: 11px;
   font-weight: 700;
-  color: #374151;
-  margin: 4px 0 6px 0;
+  color: #9ca3af;
+  margin: 4px 0 5px 0;
+  text-align: right;
+  font-variant: small-caps;
+  letter-spacing: 0.05em;
 }
 
 /* Shortcut list rows — mirror the browser conflict list style */
@@ -9948,18 +9995,28 @@ body.returning-screen #diffIconWrap .icon-tip { display: none; }
   margin: 0 0 6px 0;
 }
 .sp-report-advice a {
-  color: #374151;
-  text-decoration: underline;
+  color: #9ca3af;
+  font-style: italic;
+  text-decoration: none;
   cursor: pointer;
 }
 .sp-report-advice a:hover {
-  color: #1f2937;
+  color: #6b7280;
 }
 .sp-report-no-advice {
   font-size: 11px;
   font-style: italic;
   color: #9ca3af;
   margin: 0;
+}
+
+/* Chip wrapper lit state — triggered when player presses the shortcut on screen */
+.sp-report-chips-lit span {
+  background: #10b981 !important;
+  color: white !important;
+  border-color: #059669 !important;
+  box-shadow: 0 0 6px rgba(16,185,129,0.45) !important;
+  transition: background 0.15s ease, color 0.15s ease, box-shadow 0.15s ease;
 }
 /* ── Ghost Mode ───────────────────────────────────────────────────────────────
    Keyboard panel becomes invisible. Only green/orange lit states show.       */

@@ -8132,11 +8132,27 @@ _refreshReportPanel()
    ADAPTIVE TRAINING SYSTEM
 ══════════════════════════════════════ */
 
+// ── Coach memory ──────────────────────────────────────────────────────────────
+// Persists the last advice message key and any setting suggestion across sessions.
+// Shape: { messageKey: string, settingSuggested: { type, fromValue, toValue } | null }
+function LoadCoachMemory() {
+  try {
+    var raw = localStorage.getItem('kw_coach_memory');
+    if (raw) return JSON.parse(raw);
+  } catch(e) {}
+  return { messageKey: null, settingSuggested: null };
+}
+function SaveCoachMemory(messageKey, settingSuggested) {
+  try {
+    localStorage.setItem('kw_coach_memory', JSON.stringify({
+      messageKey: messageKey,
+      settingSuggested: settingSuggested || null,
+    }));
+  } catch(e) {}
+}
+
 function finalizeRunData(completedRun, currentPool) {
   // ── Thresholds ────────────────────────────────────────────────────────────
-  // "Slow" is defined relative to the player's own run.
-  // We take the median time of successful answers and treat anything above
-  // 1.5× that as slow.
   const successTimes = completedRun
     .filter(function(entry) { return entry.endType === 'success' && entry.timeToAnswerMs !== null; })
     .map(function(entry) { return entry.timeToAnswerMs; })
@@ -8150,7 +8166,7 @@ function finalizeRunData(completedRun, currentPool) {
 
   // ── Per-question summaries ────────────────────────────────────────────────
   const questionSummaries = completedRun.map(function(entry) {
-    const question = currentPool[entry.questionIndex];
+    const question    = currentPool[entry.questionIndex];
     const displayText = question ? question.display : 'Unknown question';
     const shortcut    = question
       ? (currentOs === 'pc' ? question.pc_sc : question.mac_sc)
@@ -8186,7 +8202,6 @@ function finalizeRunData(completedRun, currentPool) {
   });
 
   // ── Aggregate stats ───────────────────────────────────────────────────────
-  const totalQuestions  = completedRun.length;
   const successCount    = completedRun.filter(function(e) { return e.endType === 'success'; }).length;
   const skipCount       = completedRun.filter(function(e) { return e.endType === 'skip'; }).length;
   const timeoutCount    = completedRun.filter(function(e) { return e.endType === 'timeout'; }).length;
@@ -8195,84 +8210,305 @@ function finalizeRunData(completedRun, currentPool) {
   const accuracyPercent = calcAccuracy() ?? 0;
   const allFast         = successTimes.length > 0 && medianTime !== null && medianTime < 2500;
 
-  // ── Trainer advice ────────────────────────────────────────────────────────
-  const trainerAdvice = [];
+  // Hints are only viable when the timer is infinite or 10 seconds
+  const hintsWereViable = (questionTimer === null || questionTimer === 10);
 
-  if (!hasTrophy) {
-    // Before trophy: accuracy-only advice
-    if (accuracyPercent < 70) {
-      trainerAdvice.push('You may benefit from slowing down slightly to improve your accuracy.');
-    } else if (hintCount > 0) {
-      trainerAdvice.push('Your personal trainer suggests aiming for a clean run with no hints.');
-    } else if (accuracyPercent === 100) {
-      trainerAdvice.push('Excellent accuracy. Keep building on that consistency.');
-    } else {
-      trainerAdvice.push('Current difficulty settings are well balanced for your progress. Keep training.');
-    }
-  } else {
-    // After trophy: all levers available
+  // ── Coach memory ──────────────────────────────────────────────────────────
+  const PreviousMemory         = LoadCoachMemory();
+  const PreviousSuggestion     = PreviousMemory.settingSuggested;
+  const PreviousMessageKey     = PreviousMemory.messageKey;
 
-    // Difficulty suggestion
-    const difficultyRank = { fundamentals: 0, normal: 1, hardcore: 2 };
-    const currentRank    = difficultyRank[currentDifficulty] || 0;
+  // Did the player act on a setting suggestion from last round?
+  function PlayerActedOnSuggestion() {
+    if (!PreviousSuggestion) return false;
+    if (PreviousSuggestion.type === 'timer')      return questionTimer     === PreviousSuggestion.toValue;
+    if (PreviousSuggestion.type === 'lives')      return playerLives       === PreviousSuggestion.toValue;
+    if (PreviousSuggestion.type === 'difficulty') return currentDifficulty === PreviousSuggestion.toValue;
+    return false;
+  }
+  function PlayerIgnoredSuggestion() {
+    if (!PreviousSuggestion) return false;
+    if (PreviousSuggestion.type === 'timer')      return questionTimer     === PreviousSuggestion.fromValue;
+    if (PreviousSuggestion.type === 'lives')      return playerLives       === PreviousSuggestion.fromValue;
+    if (PreviousSuggestion.type === 'difficulty') return currentDifficulty === PreviousSuggestion.fromValue;
+    return false;
+  }
 
-    if (accuracyPercent >= 95 && allFast && hintCount === 0 && wrongKeyTotal === 0) {
-      if (currentRank < 2) {
-        const nextMode = currentRank === 0 ? 'Normal' : 'Hardcore';
-        trainerAdvice.push('You are performing very well. Consider raising the difficulty to ' + nextMode + '.');
+  // ── Message pool builder ──────────────────────────────────────────────────
+  // Each entry: { key, text, settingSuggested (optional) }
+  // Priority order: memory-aware → Cat 3 specific → Cat 3b literacy → Cat 4 settings → Cat 1/2 general
+
+  var MemoryAwareMessages   = [];
+  var SpecificMessages      = []; // Cat 3
+  var LiteracyMessages      = []; // Cat 3b
+  var SettingsMessages      = []; // Cat 4
+  var GeneralMessages       = []; // Cat 1 + 2
+
+  // Helper: push only if not the same key as last round
+  function AddMessage(pool, key, text, settingSuggested) {
+    if (key === PreviousMessageKey) return;
+    pool.push({ key: key, text: text, settingSuggested: settingSuggested || null });
+  }
+
+  // ── Memory-aware messages ─────────────────────────────────────────────────
+  if (hasTrophy && PreviousSuggestion) {
+    var acted   = PlayerActedOnSuggestion();
+    var ignored = PlayerIgnoredSuggestion();
+
+    if (PreviousSuggestion.type === 'timer' && PreviousSuggestion.toValue < PreviousSuggestion.fromValue) {
+      // Suggested a shorter timer last round
+      if (acted && timeoutCount < 2 && accuracyPercent >= 80) {
+        AddMessage(MemoryAwareMessages, 'mem_shorter_timer_held',
+          'You tried a shorter timer last round and came through well. That is worth keeping.');
+      } else if (acted && timeoutCount >= 3) {
+        AddMessage(MemoryAwareMessages, 'mem_shorter_timer_struggling',
+          'That shorter timer is still causing pressure. No harm in stepping back up while you build the muscle memory.');
       }
-    } else if (accuracyPercent < 70 || hintCount >= 3 || skipCount >= 2 || timeoutCount >= 2) {
-      if (currentRank > 0) {
-        const prevMode = currentRank === 2 ? 'Normal' : 'Fundamentals';
-        trainerAdvice.push('This round was challenging. Dropping to ' + prevMode + ' may help consolidate your learning.');
-      }
     }
-
-    // Timer suggestion (only if fewer than 2 pieces of advice already)
-    if (trainerAdvice.length < 2) {
-      const timerStops = [1, 3, 5, 10, null];
-      const currentTimerIndex = timerStops.indexOf(questionTimer);
-
-      if (timeoutCount >= 2 && currentTimerIndex > 0) {
-        const longerValue = timerStops[currentTimerIndex - 1] === null
-          ? 'unlimited'
-          : timerStops[currentTimerIndex - 1] + ' seconds';
-        // Only suggest null (unlimited) if trophy is held, which it is in this branch
-        trainerAdvice.push('You timed out on several questions. Try increasing the question timer to ' + longerValue + '.');
-      } else if (timeoutCount === 0 && allFast && accuracyPercent >= 90 && currentTimerIndex < timerStops.length - 1) {
-        const shorterValue = timerStops[currentTimerIndex + 1];
-        if (shorterValue !== null && shorterValue !== questionTimer) {
-          trainerAdvice.push('You answered quickly throughout. Challenge yourself with a ' + shorterValue + '-second timer.');
-        }
-      }
-    }
-
-    // Lives suggestion (only if fewer than 2 pieces of advice already)
-    if (trainerAdvice.length < 2) {
-      const livesStops = [1, 3, 5, 10, null];
-      const currentLivesIndex = livesStops.indexOf(playerLives);
-
-      if (livesRemaining !== null && livesRemaining < (playerLives || 0)) {
-        // Lives were lost this round
-        if (currentLivesIndex < livesStops.length - 1) {
-          const moreLives = livesStops[currentLivesIndex + 1];
-          if (moreLives !== playerLives) {
-            const moreLabel = moreLives === null ? 'unlimited' : String(moreLives);
-            trainerAdvice.push('You lost lives this round. Increasing to ' + moreLabel + ' lives may reduce pressure while you learn.');
-          }
-        }
-      } else if (playerLives !== null && livesRemaining === playerLives && accuracyPercent >= 90) {
-        if (currentLivesIndex > 0) {
-          const fewerLives = livesStops[currentLivesIndex - 1];
-          if (fewerLives !== null && fewerLives !== playerLives) {
-            trainerAdvice.push('You kept all your lives. Try reducing to ' + fewerLives + ' for a tighter challenge.');
-          }
+    if (PreviousSuggestion.type === 'difficulty' && PreviousSuggestion.toValue !== PreviousSuggestion.fromValue) {
+      var wentHarder = (PreviousSuggestion.toValue === 'hardcore' || PreviousSuggestion.toValue === 'normal');
+      if (acted && wentHarder && accuracyPercent >= 75) {
+        AddMessage(MemoryAwareMessages, 'mem_diff_up_held',
+          'You took the difficulty up and held your own. Good call.');
+      } else if (acted && wentHarder && accuracyPercent < 60) {
+        AddMessage(MemoryAwareMessages, 'mem_diff_up_struggling',
+          'That difficulty change was a step too far right now. No shame in stepping back.');
+      } else if (ignored) {
+        // Check if the conditions that triggered the suggestion still apply
+        var DifficultyRank      = { fundamentals: 0, normal: 1, hardcore: 2 };
+        var CurrentRank         = DifficultyRank[currentDifficulty] || 0;
+        var SuggestedRank       = DifficultyRank[PreviousSuggestion.toValue] || 0;
+        var StillWorthGoing     = SuggestedRank > CurrentRank
+          && accuracyPercent >= 95 && allFast && hintCount === 0 && wrongKeyTotal === 0 && skipCount === 0;
+        if (StillWorthGoing) {
+          AddMessage(MemoryAwareMessages, 'mem_diff_ignored',
+            'You ignored the suggestion to try a harder difficulty. That is your call, but the data still suggests you are ready.');
         }
       }
     }
   }
 
-  return { questionSummaries, trainerAdvice };
+  // ── Cat 3: Specific comments on what just happened ────────────────────────
+  if (hasTrophy && playerLives !== null && livesRemaining === 1) {
+    AddMessage(SpecificMessages, 'cat3_one_life',
+      'You made it through with just one life. That was a nail-biter!');
+  }
+  if (hasTrophy && playerLives !== null && livesRemaining === playerLives && playerLives > 1) {
+    AddMessage(SpecificMessages, 'cat3_all_lives',
+      'You kept every life. Composed from start to finish.');
+  }
+  if (accuracyPercent === 100 && hintCount === 0 && skipCount === 0 && hintsWereViable) {
+    AddMessage(SpecificMessages, 'cat3_perfect_no_hint',
+      'A perfect run with no hints. That is what consistent practice looks like.');
+  }
+  if (accuracyPercent === 100 && !hintsWereViable) {
+    AddMessage(SpecificMessages, 'cat3_perfect_fast_timer',
+      'Perfect accuracy. Clean.');
+  }
+  if (accuracyPercent >= 95 && hintCount === 0 && hintsWereViable && accuracyPercent < 100) {
+    AddMessage(SpecificMessages, 'cat3_clean_no_hint',
+      'Clean run, no hints. You clearly know this material.');
+  }
+  if (hintCount === 0 && accuracyPercent >= 90 && !hintsWereViable) {
+    AddMessage(SpecificMessages, 'cat3_no_hint_fast_timer',
+      'No hints needed. You have internalised these.');
+  }
+  if (allFast && accuracyPercent >= 85) {
+    AddMessage(SpecificMessages, 'cat3_fast',
+      'Fast answers throughout. Your hands are starting to know where to go.');
+  }
+  if (skipCount >= 3) {
+    AddMessage(SpecificMessages, 'cat3_skips',
+      'You skipped quite a few this round. That is fine, skipping what you do not know yet is honest.');
+  }
+  if (timeoutCount >= 3) {
+    AddMessage(SpecificMessages, 'cat3_timeouts',
+      'Several timeouts. The shortcuts are there; the speed just needs more reps.');
+  }
+  if (hintCount >= 1 && accuracyPercent >= 85 && hintsWereViable) {
+    AddMessage(SpecificMessages, 'cat3_hint_strong',
+      'You used a hint and still finished strongly. That is exactly what it is there for.');
+  }
+  if (accuracyPercent < 70 && skipCount < 3 && timeoutCount < 3) {
+    AddMessage(SpecificMessages, 'cat3_ragged',
+      'Accuracy was a little ragged this round, but you finished. That counts.');
+  }
+  if (accuracyPercent < 50) {
+    AddMessage(SpecificMessages, 'cat3_rough',
+      'That was a rough one. Rest if you need to, then come back.');
+  }
+
+  // ── Cat 3b: Literacy recovery (trophy required -- timer setting is not accessible without it) ──
+  if (hasTrophy && questionTimer !== null && accuracyPercent < 60 && timeoutCount >= 3 && hintCount >= 3) {
+    AddMessage(LiteracyMessages, 'cat3b_literacy_full',
+      'Your accuracy is low and the timer is working against you. Try switching the question timer to unlimited for a while and lean on the hints. Build the knowledge first, then bring the speed back.');
+  }
+  if (hasTrophy && questionTimer !== null && accuracyPercent < 50) {
+    AddMessage(LiteracyMessages, 'cat3b_literacy_slow',
+      'There is no shame in slowing right down. Switch the timer off, use the hints freely, and focus on learning where the keys are. Speed comes later.');
+  }
+
+  // ── Cat 4: Settings suggestions (strict thresholds) ──────────────────────
+  if (hasTrophy) {
+    var DifficultyRank = { fundamentals: 0, normal: 1, hardcore: 2 };
+    var CurrentRank    = DifficultyRank[currentDifficulty] || 0;
+
+    // Raise difficulty: all five conditions must be true
+    if (accuracyPercent >= 95 && allFast && hintCount === 0 && wrongKeyTotal === 0 && skipCount === 0) {
+      if (CurrentRank < 2) {
+        var NextMode = CurrentRank === 0 ? 'normal' : 'hardcore';
+        var NextLabel = CurrentRank === 0 ? 'Normal' : 'Hardcore';
+        AddMessage(SettingsMessages, 'cat4_diff_up',
+          'You are performing very well. Consider raising the difficulty to ' + NextLabel + '.',
+          { type: 'difficulty', fromValue: currentDifficulty, toValue: NextMode });
+      }
+    }
+
+    // Drop difficulty: genuinely struggling
+    if (accuracyPercent < 60 && (skipCount >= 4 || timeoutCount >= 4)) {
+      if (CurrentRank > 0) {
+        var PrevMode  = CurrentRank === 2 ? 'normal' : 'fundamentals';
+        var PrevLabel = CurrentRank === 2 ? 'Normal' : 'Fundamentals';
+        AddMessage(SettingsMessages, 'cat4_diff_down',
+          'This round was genuinely challenging. Dropping to ' + PrevLabel + ' may help consolidate your learning.',
+          { type: 'difficulty', fromValue: currentDifficulty, toValue: PrevMode });
+      }
+    }
+
+    // Longer timer: timed out on 4+ questions
+    var TimerStops        = [1, 3, 5, 10, null];
+    var CurrentTimerIndex = TimerStops.indexOf(questionTimer);
+    if (timeoutCount >= 4 && CurrentTimerIndex < TimerStops.length - 1) {
+      var LongerTimerValue = TimerStops[CurrentTimerIndex + 1];
+      var LongerTimerLabel = LongerTimerValue === null ? 'unlimited' : LongerTimerValue + ' seconds';
+      AddMessage(SettingsMessages, 'cat4_timer_up',
+        'You timed out on several questions. Try increasing the question timer to ' + LongerTimerLabel + '.',
+        { type: 'timer', fromValue: questionTimer, toValue: LongerTimerValue });
+    }
+
+    // Shorter timer: flawless fast run
+    if (timeoutCount === 0 && allFast && accuracyPercent === 100 && hintCount === 0 && CurrentTimerIndex > 0) {
+      var ShorterTimerValue = TimerStops[CurrentTimerIndex - 1];
+      if (ShorterTimerValue !== null) {
+        AddMessage(SettingsMessages, 'cat4_timer_down',
+          'You handled that comfortably. Try a shorter timer to raise the challenge.',
+          { type: 'timer', fromValue: questionTimer, toValue: ShorterTimerValue });
+      }
+    }
+
+    // More lives: losing lives under pressure with room to add more
+    var LivesStops        = [1, 3, 5, 10, null];
+    var CurrentLivesIndex = LivesStops.indexOf(playerLives);
+    if (playerLives !== null && livesRemaining !== null && livesRemaining <= 1
+        && accuracyPercent < 75 && CurrentLivesIndex < LivesStops.length - 1) {
+      var MoreLivesValue = LivesStops[CurrentLivesIndex + 1];
+      var MoreLivesLabel = MoreLivesValue === null ? 'unlimited' : String(MoreLivesValue);
+      AddMessage(SettingsMessages, 'cat4_lives_up',
+        'You are losing lives most rounds. Consider adding a few more to reduce the pressure while you build speed.',
+        { type: 'lives', fromValue: playerLives, toValue: MoreLivesValue });
+    }
+
+    // Fewer lives: keeping all lives comfortably
+    if (playerLives !== null && livesRemaining === playerLives && accuracyPercent >= 95 && allFast
+        && CurrentLivesIndex > 0) {
+      var FewerLivesValue = LivesStops[CurrentLivesIndex - 1];
+      if (FewerLivesValue !== null) {
+        AddMessage(SettingsMessages, 'cat4_lives_down',
+          'You are keeping all your lives easily. Try fewer to sharpen your focus.',
+          { type: 'lives', fromValue: playerLives, toValue: FewerLivesValue });
+      }
+    }
+  }
+
+  // ── Cat 1 + 2: General and contextual encouragement ───────────────────────
+  // Always available; drawn when no higher-priority message fires.
+  var AllGeneralMessages = [
+    { key: 'gen_nondominant',
+      text: 'The more shortcuts you can execute with your non-dominant hand, the more your dominant hand can stay on the mouse.',
+      condition: true },
+    { key: 'gen_sessions',
+      text: 'Short, regular sessions beat the occasional marathon. Even five minutes a day compounds.',
+      condition: true },
+    { key: 'gen_eyes',
+      text: 'Eyes on the work, not the keyboard. Trust the muscle memory you are building.',
+      condition: true },
+    { key: 'gen_goal',
+      text: 'The goal is to reach for a shortcut without thinking. You are not there yet, but you are getting closer.',
+      condition: true },
+    { key: 'gen_modifiers',
+      text: 'Modifier keys are the grammar of your keyboard. Once they feel natural, everything else follows.',
+      condition: true },
+    { key: 'gen_home_row',
+      text: 'Your keyboard hand position matters. Resting your fingers on the home row makes modifier reaches much shorter.',
+      condition: true },
+    { key: 'gen_priority',
+      text: 'The shortcuts worth mastering first are the ones you reach for most in real work. Everything else can wait.',
+      condition: true },
+    { key: 'gen_slow_down',
+      text: 'When a shortcut feels awkward, slow it right down and feel each key deliberately. Speed follows accuracy, not the other way around.',
+      condition: accuracyPercent < 85 },
+    { key: 'gen_think',
+      text: 'You are learning to think in shortcuts. That takes time, but the payoff is real.',
+      condition: true },
+    { key: 'gen_no_rush',
+      text: 'No rush. Accuracy now means speed later.',
+      condition: accuracyPercent < 75 },
+    { key: 'enc_slump',
+      text: 'Even when you feel you are in a slump, training regularly is steadily building your skills.',
+      condition: (skipCount >= 2 || timeoutCount >= 2) },
+    { key: 'enc_impossible',
+      text: 'The ones that feel impossible today will be automatic in a week. Keep going.',
+      condition: (hintCount >= 2 || skipCount >= 3) },
+    { key: 'enc_difficult',
+      text: 'A difficult round teaches you more than an easy one.',
+      condition: (skipCount >= 2 || timeoutCount >= 2) },
+    { key: 'enc_improving',
+      text: 'You are clearly improving. Keep showing up.',
+      condition: accuracyPercent >= 80 && hintCount === 0 },
+    { key: 'enc_consistency',
+      text: 'Consistency is the whole game. You are doing it.',
+      condition: accuracyPercent >= 90 },
+  ];
+
+  // Pre-trophy: only Cat 1/2 messages, filtered to relevant ones
+  if (!hasTrophy) {
+    AllGeneralMessages.forEach(function(m) {
+      if (m.condition && m.key !== PreviousMessageKey) {
+        GeneralMessages.push({ key: m.key, text: m.text, settingSuggested: null });
+      }
+    });
+  } else {
+    AllGeneralMessages.forEach(function(m) {
+      if (m.condition && m.key !== PreviousMessageKey) {
+        GeneralMessages.push({ key: m.key, text: m.text, settingSuggested: null });
+      }
+    });
+  }
+
+  // ── Pick the advice message ───────────────────────────────────────────────
+  // Priority: memory-aware → specific → literacy recovery → settings → general
+  function PickRandom(pool) {
+    if (pool.length === 0) return null;
+    return pool[Math.floor(Math.random() * pool.length)];
+  }
+
+  var ChosenMessage = PickRandom(MemoryAwareMessages)
+    || PickRandom(SpecificMessages)
+    || PickRandom(LiteracyMessages)
+    || PickRandom(SettingsMessages)
+    || PickRandom(GeneralMessages);
+
+  // Persist to memory for next round
+  if (ChosenMessage) {
+    SaveCoachMemory(ChosenMessage.key, ChosenMessage.settingSuggested || null);
+  }
+
+  // trainerAdvice is still an array for rendering compatibility
+  var trainerAdvice = ChosenMessage ? [ChosenMessage.text] : [];
+  // Attach the setting suggestion to the report for the link logic
+  var trainerSettingSuggested = ChosenMessage ? ChosenMessage.settingSuggested : null;
+
+  return { questionSummaries, trainerAdvice, trainerSettingSuggested };
 }
 
 
@@ -8432,14 +8668,13 @@ function _refreshReportPanel() {
       trainerAdvice.forEach(function(line, index) {
         var p = document.createElement('p');
         p.className = 'sp-report-advice';
-        // Last advice line: append the difficulty settings link if trophy is held
-        if (hasTrophy && index === trainerAdvice.length - 1) {
+        // Append the difficulty settings link only when this message contains a setting suggestion
+        var HasSettingsSuggestion = lastCompletedReport.trainerSettingSuggested !== null
+          && lastCompletedReport.trainerSettingSuggested !== undefined;
+        if (HasSettingsSuggestion && index === trainerAdvice.length - 1) {
           p.textContent = line + ' ';
           var link = document.createElement('a');
-          var LinkText = trainerAdvice.length === 1
-            ? 'You can adjust this in difficulty settings.'
-            : 'You can adjust these in difficulty settings.';
-          link.textContent = LinkText;
+          link.textContent = 'You can adjust this in difficulty settings.';
           link.href = '#';
           link.style.cssText = 'color:#9ca3af;font-style:italic;text-decoration:none;cursor:pointer;';
           link.addEventListener('click', function(e) {

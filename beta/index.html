@@ -7675,8 +7675,21 @@ function enterDefeat() {
   helpBtn.style.background = '';
   helpBtn.style.color = '';
 
+  // Increment consecutive defeat count and persist it immediately
+  var DefeatMemory       = LoadCoachMemory();
+  var NewDefeatCount     = (DefeatMemory.consecutiveDefeatCount || 0) + 1;
+  SaveCoachMemory(DefeatMemory.messageKey, DefeatMemory.settingSuggested, NewDefeatCount);
+
+  // After 2+ consecutive defeats without a report card, the coach intervenes in the title
   titleEl.className = '';
-  titleEl.textContent = defeatMessage(answersLeft);
+  if (NewDefeatCount >= 2) {
+    var CoachTitleMessage = !hasTrophy
+      ? 'Complete all 10 questions to see your full report card. Use the Help button when you are stuck on a shortcut.'
+      : 'To reach your report card, you need to complete the round. Try adding more lives in difficulty settings.';
+    titleEl.textContent = CoachTitleMessage;
+  } else {
+    titleEl.textContent = defeatMessage(answersLeft);
+  }
 
   // Lead medal on the scoreDisc
   scoreDisc.className = 'scoreDisc medal-lead';
@@ -7692,6 +7705,20 @@ function enterDefeat() {
   document.getElementById('livesRow').classList.remove('blurred', 'blur-instant');
   fillProgressDot(10 - answersLeft);
   setTimeout(hideProgressDots, 0);
+
+  // Show the report card if at least 3 questions were answered (answersLeft <= 7)
+  // This gives the coach enough data to say something useful
+  var QuestionsAnswered = 10 - answersLeft;
+  if (QuestionsAnswered >= 3) {
+    var DefeatRun = runData.slice();
+    runData.length = 0;
+    lastCompletedReport = finalizeRunData(DefeatRun, questionPool, NewDefeatCount);
+    openSettings('panelReport');
+    _refreshReportPanel();
+  } else {
+    runData.length = 0;
+    lastCompletedReport = null;
+  }
 
   startEndScreenInactivityTimer();
   _startReadyPromptTimer();
@@ -7913,7 +7940,7 @@ function endGame() {
   // Adaptive: finalise run
 const completedRun = runData.slice();
 runData.length = 0;
-lastCompletedReport = finalizeRunData(completedRun, questionPool);
+lastCompletedReport = finalizeRunData(completedRun, questionPool, 0);
   gameState = 'finished';
   setAppSelectorGameActive(false);
   clearInterval(timerInterval);
@@ -8144,18 +8171,19 @@ function LoadCoachMemory() {
     var raw = localStorage.getItem('kw_coach_memory');
     if (raw) return JSON.parse(raw);
   } catch(e) {}
-  return { messageKey: null, settingSuggested: null };
+  return { messageKey: null, settingSuggested: null, consecutiveDefeatCount: 0 };
 }
-function SaveCoachMemory(messageKey, settingSuggested) {
+function SaveCoachMemory(messageKey, settingSuggested, defeatCount) {
   try {
     localStorage.setItem('kw_coach_memory', JSON.stringify({
       messageKey: messageKey,
       settingSuggested: settingSuggested || null,
+      consecutiveDefeatCount: defeatCount || 0,
     }));
   } catch(e) {}
 }
 
-function finalizeRunData(completedRun, currentPool) {
+function finalizeRunData(completedRun, currentPool, DefeatCount) {
   // ── Thresholds ────────────────────────────────────────────────────────────
   const successTimes = completedRun
     .filter(function(entry) { return entry.endType === 'success' && entry.timeToAnswerMs !== null; })
@@ -8357,8 +8385,8 @@ function finalizeRunData(completedRun, currentPool) {
     var DifficultyRank = { fundamentals: 0, normal: 1, hardcore: 2 };
     var CurrentRank    = DifficultyRank[currentDifficulty] || 0;
 
-    // Raise difficulty: all five conditions must be true
-    if (accuracyPercent >= 95 && allFast && hintCount === 0 && wrongKeyTotal === 0 && skipCount === 0) {
+    // Raise difficulty: high accuracy, clean execution (speed not required)
+    if (accuracyPercent >= 95 && hintCount === 0 && wrongKeyTotal === 0 && skipCount === 0) {
       if (CurrentRank < 2) {
         var NextMode = CurrentRank === 0 ? 'normal' : 'hardcore';
         var NextLabel = CurrentRank === 0 ? 'Normal' : 'Hardcore';
@@ -8504,7 +8532,7 @@ function finalizeRunData(completedRun, currentPool) {
 
   // Persist to memory for next round
   if (ChosenMessage) {
-    SaveCoachMemory(ChosenMessage.key, ChosenMessage.settingSuggested || null);
+    SaveCoachMemory(ChosenMessage.key, ChosenMessage.settingSuggested || null, DefeatCount || 0);
   }
 
   // trainerAdvice is still an array for rendering compatibility

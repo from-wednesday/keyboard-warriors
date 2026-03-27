@@ -2026,13 +2026,13 @@ li.conflict-dismissed .conflict-desc {
   <div class="sp-col sp-col-left">
     <div class="sp-report-col-header">
       <p class="sp-report-card-title">Report Card</p>
-      <p class="sp-report-section-title">Strengths</p>
+      <p class="sp-report-section-title">Mastered</p>
     </div>
     <ul id="reportStrengths" class="sp-report-list sp-report-strength"></ul>
   </div>
   <div class="sp-col sp-col-right">
     <div class="sp-report-col-header sp-report-col-header-right">
-      <p class="sp-report-section-title">Needs Work</p>
+      <p class="sp-report-section-title">Practice</p>
     </div>
     <ul id="reportWeaknesses" class="sp-report-list sp-report-weakness"></ul>
   </div>
@@ -2958,7 +2958,13 @@ function updateMismatchPill() {
   if (mismatch) {
     const playing = currentOs === 'pc' ? 'PC' : 'Mac';
     const machine = detectedOs === 'mac' ? 'a Mac' : 'a PC';
-    osMismatchEl.textContent = `Playing ${playing} mode on ${machine}`;
+    const liveAccuracy = calcAccuracy();
+    const CrossPrefix = '<span style="font-variant:small-caps;font-size:0.85em;letter-spacing:0.04em;">Cross Training:</span> ';
+    if (liveAccuracy !== null && liveAccuracy < 66) {
+      osMismatchEl.innerHTML = CrossPrefix + 'Check your Keyboard Settings';
+    } else {
+      osMismatchEl.innerHTML = CrossPrefix + `Playing ${playing} mode on ${machine}`;
+    }
     osMismatchEl.classList.add('show');
   } else {
     osMismatchEl.classList.remove('show');
@@ -3627,6 +3633,8 @@ function updateAccuracyDisplay() {
   const pct = calcAccuracy();
   const display = (pct === null ? 100 : pct);
   accuracyEl.textContent = display + '%';
+  // Refresh mismatch pill text when cross-training so accuracy warning stays current
+  if (gameState === 'playing') updateMismatchPill();
 }
 
 const BULLSEYE_SVG_STR = '<svg style="width:12px;height:12px;vertical-align:middle;margin-right:3px;margin-bottom:1px;" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="7"/><line x1="12" y1="2" x2="12" y2="7"/><line x1="12" y1="17" x2="12" y2="22"/><line x1="2" y1="12" x2="7" y2="12"/><line x1="17" y1="12" x2="22" y2="12"/></svg>';
@@ -6038,11 +6046,11 @@ function _showWelcomeScreen() {
   titleEl.textContent = 'Welcome to Keyboard Warriors';
   var tagline = document.getElementById('welcomeTagline');
   if (tagline) tagline.style.display = 'block';
-  // Default to Normal on first visit
+  // Default to Fundamentals on first visit
   _diffFirst = true;
-  setDiffState(0);
-  _updateDiffBtnStyles('normal');
-  _updateDiffSubtitle('normal');
+  setDiffState(-1);
+  _updateDiffBtnStyles('fundamentals');
+  _updateDiffSubtitle('fundamentals');
   openSettings('panelWelcome');
 }
 
@@ -6992,7 +7000,7 @@ function _dismissWelcome() {
 function _startFromWelcome() {
   // Start pressed without choosing a difficulty -- default to Normal.
   if (!_welcomeIsReturning) {
-    currentDifficulty = 'normal';
+    currentDifficulty = 'fundamentals';
     try { localStorage.setItem('kw_difficulty', currentDifficulty); } catch(e) {}
   }
   var panelInner = document.getElementById('settingsPanelInner');
@@ -7105,7 +7113,7 @@ function requiresExtKey(shortcut) {
 
 // Current difficulty mode: 'fundamentals' | 'normal' | 'hardcore'
 // Default: load from localStorage, fall back to 'normal'
-var currentDifficulty = 'normal';
+var currentDifficulty = 'fundamentals';
 (function() {
   try {
     var saved = localStorage.getItem('kw_difficulty');
@@ -7915,7 +7923,7 @@ function endGameMessage(time, accuracy, record, wasFirst) {
     return "So close. You've shown you can do better.";
   if (accuracy > (record.accuracy ?? 0))
     return 'Accuracy improving — keep the pace up.';
-  if (time < record.time + 15)
+  if (!hasTrophy && time < record.time + 15)
     return "Try again — you're almost there.";
   return 'Keep practising. Every rep counts.';
 }
@@ -8518,14 +8526,21 @@ function finalizeRunData(completedRun, currentPool, DefeatCount) {
   }
 
   // ── Pick the advice message ───────────────────────────────────────────────
-  // Priority: memory-aware → specific → literacy recovery → settings → general
+  // Priority: memory-aware → specific/settings* → literacy recovery → settings → general
+  // *When the round had zero weaknesses, settings suggestions compete at the same level
+  //  as specific comments — so clean-sweep players get challenged at least half the time.
   function PickRandom(pool) {
     if (pool.length === 0) return null;
     return pool[Math.floor(Math.random() * pool.length)];
   }
 
+  var HasNoWeaknessesThisRound = questionSummaries.filter(function(s) { return s.isWeakness; }).length <= 1;
+  var SpecificOrSettings = HasNoWeaknessesThisRound
+    ? PickRandom(SpecificMessages.concat(SettingsMessages))
+    : PickRandom(SpecificMessages);
+
   var ChosenMessage = PickRandom(MemoryAwareMessages)
-    || PickRandom(SpecificMessages)
+    || SpecificOrSettings
     || PickRandom(LiteracyMessages)
     || PickRandom(SettingsMessages)
     || PickRandom(GeneralMessages);
@@ -8548,14 +8563,17 @@ function HighlightReportListItems(ShortcutToken) {
   var AllListItems = document.querySelectorAll('#reportStrengths li, #reportWeaknesses li');
   AllListItems.forEach(function(ListItem) {
     if ((ListItem.dataset.shortcutToken || '').toUpperCase() !== ShortcutToken.toUpperCase()) return;
-    var AllChips = ListItem.querySelectorAll('span[style]');
-    // Target the chip wrapper span (direct child, last child of li)
     var ChipWrapper = ListItem.lastElementChild;
     if (!ChipWrapper) return;
     ChipWrapper.classList.add('sp-report-chips-lit');
     setTimeout(function() {
       ChipWrapper.classList.remove('sp-report-chips-lit');
     }, 1400);
+    // Practice items: permanently turn the dot green when the shortcut is executed
+    var IsPracticeItem = ListItem.closest('#reportWeaknesses') !== null;
+    if (IsPracticeItem) {
+      ListItem.classList.add('practice-done');
+    }
   });
 }
 
@@ -8802,7 +8820,12 @@ function getAdaptiveNextRoundPool() {
 
   if (combined.length === 0) return null;
 
-  return shuffleArray(combined);
+  // Weak questions are placed first (shuffled among themselves) so they always
+  // fall within positions 0-9, which are the 10 questions the game actually plays.
+  // The remainder (secondary + filler) are shuffled separately and appended.
+  var WeakSet   = new Set(weakQuestions.map(function(q) { return q.display; }));
+  var Remainder = combined.filter(function(q) { return !WeakSet.has(q.display); });
+  return shuffleArray(weakQuestions).concat(shuffleArray(Remainder));
 }
 
 // ── Medal lighting: mouse-driven gradient rotation ──────────────────────────
@@ -9026,17 +9049,22 @@ function handleKeydown(e) {
     dbgRefreshCtx(); dbgRefreshAccuracy();
   }
   if (gameState === 'finished') {
-    if (e.key === 'ArrowRight') { showTip(tipIndex + 1); e.preventDefault(); return; }
-    if (e.key === 'ArrowLeft')  { showTip(tipIndex - 1); e.preventDefault(); return; }
-    if (e.key === 'Enter') { e.preventDefault(); _closeAllModals(); beginCountdown(); return; }
-    // Light up matching shortcut chips in the report card while browsing it
+    // When the report card is visible, check if this key matches any listed shortcut first.
+    // If it does, use it for Practice lighting and consume the event — do not pass to UI navigation.
     if (activeSettings === 'panelReport' && lastCompletedReport) {
+      var ReportShortcutMatched = false;
       lastCompletedReport.questionSummaries.forEach(function(Summary) {
         if (Summary.shortcutToken && matchesShortcut(e, Summary.shortcutToken)) {
           HighlightReportListItems(Summary.shortcutToken);
+          ReportShortcutMatched = true;
         }
       });
+      if (ReportShortcutMatched) { e.preventDefault(); return; }
     }
+    // UI navigation — only reached if no report card shortcut consumed the key
+    if (e.key === 'ArrowRight') { showTip(tipIndex + 1); e.preventDefault(); return; }
+    if (e.key === 'ArrowLeft')  { showTip(tipIndex - 1); e.preventDefault(); return; }
+    if (e.key === 'Enter') { e.preventDefault(); _closeAllModals(); beginCountdown(); return; }
   }
   if (gameState === 'idle') {
     if (e.key === 'Enter') { e.preventDefault(); _closeAllModals(); beginCountdown(); return; }
@@ -9123,9 +9151,14 @@ function releaseAllKeys() {
   greenHeld.clear();
 }
 
-window.addEventListener('blur', releaseAllKeys);
-document.addEventListener('visibilitychange', () => {
-  if (document.hidden) releaseAllKeys();
+window.addEventListener('blur', function() {
+  releaseAllKeys();
+  if (gameState === 'playing') enterPause();
+});
+document.addEventListener('visibilitychange', function() {
+  if (!document.hidden) return;
+  releaseAllKeys();
+  if (gameState === 'playing') enterPause();
 });
 
 function handleKeyup(e) {
@@ -10290,6 +10323,12 @@ body.returning-screen #diffIconWrap .icon-tip { display: none; }
   font-style: italic;
   color: #9ca3af;
   margin: 0;
+}
+
+/* Practice item completed: dot turns green permanently until report card is rebuilt */
+.sp-report-weakness li.practice-done .sp-report-dot {
+  background: #10b981;
+  transition: background 0.3s ease;
 }
 
 /* Chip wrapper lit state — only key chips, not the + separators between them */

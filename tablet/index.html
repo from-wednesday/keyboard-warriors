@@ -11,7 +11,7 @@
 <title>tablet</title>
 <script>
   const DefaultTitle = 'Keyboard Warriors';
-  const VersionLabel   = '0002';
+  const VersionLabel   = '0005';
   const TitlePrefix  = document.title !== DefaultTitle ? document.title.trim() + '_' : '';
   const DBG_DEVICE   = TitlePrefix + VersionLabel;
 </script>
@@ -70,13 +70,15 @@
 body {
   font-family: system-ui, -apple-system, sans-serif;
   background: #f0f4f8;
-  padding: 20px;
-  min-height: 100vh;
+  /* Fixed viewport: every zone is positioned explicitly; nothing reflows */
+  position: fixed;
+  inset: 0;
+  overflow: hidden;
   display: flex;
   flex-direction: column;
   align-items: center;
-  justify-content: center;
   gap: 0;
+  padding: 16px 16px 0;
 }
 
 /* ══════════════════════════════════════
@@ -89,7 +91,7 @@ body {
   width: 100%;
   background: #e0f2fe;
   border-radius: 16px;
-  padding: 6px 60px 6px;
+  padding: 6px 44px 6px;
   box-shadow: 0 10px 30px rgba(0,0,0,0.1);
   border: 1.5px solid white;
   overflow: visible;
@@ -494,7 +496,7 @@ body {
 #questionRow {
   width: 100%;
   height: 23px;
-  padding: 0 60px 2px;
+  padding: 0 0 2px;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -533,7 +535,7 @@ body {
 #livesRow {
   width: 100%;
   height: 23px;
-  padding: 2px 60px 0;
+  padding: 2px 0 0;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -555,7 +557,7 @@ body {
   justify-content: space-between;
   align-items: center;
   width: 100%;
-  padding: 8px 60px 4px;
+  padding: 8px 0 4px;
   position: relative;
   box-sizing: border-box;
   min-height: 37px;
@@ -576,22 +578,7 @@ body {
 }
 .stat-pulse { animation: statPulse 0.5s ease-in-out; }
 
-#credit {
-  font-family: 'Lato', system-ui, sans-serif;
-  font-size: 12px;
-  color: #9ca3af;
-  text-align: center;
-  width: 100%;
-  padding: 8px 60px 0;
-  box-sizing: border-box;
-  transform: translateY(0);
-  transition: transform 0.85s cubic-bezier(0.4, 0, 0.2, 1);
-}
-/* Nudge credit and difficulty icon up into the keyboard shadow when face-down */
-#keyboardWrap.kb-at-face ~ #credit,
-#keyboardWrap.kb-at-face ~ #diffIconWrap {
-  transform: translateY(-22px);
-}
+/* #credit and #diffIconWrap are positioned in the tablet-specific overrides section */
 
 /* Extended key ghost pill — appears in statsRow when a key not on the
    graphical keyboard is held. Styled to match the current keyboard mode. */
@@ -800,46 +787,7 @@ body.pc-mode #extKeyPill {
 .modal-radio-fill { opacity: 0; transition: opacity 0.15s ease; }
 .modal-radio.on .modal-radio-fill { opacity: 1; }
 
-/* ══════════════════════════════════════
-   SETTINGS PANEL
-   Absolutely positioned inside #keyboardWrap, top-aligned.
-   As the keyboard tilts down it reveals this content above it.
-   Width/left aligned to keyboardPanel by JS.
-══════════════════════════════════════ */
-
-#settingsPanel {
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  pointer-events: none;
-  z-index: 1; /* above bg, below keyboard 3D stage */
-  overflow: hidden;
-}
-
-#settingsPanelInner {
-  position: absolute;
-  top: 0;
-  /* left and width set by JS to match keyboardPanel */
-  padding: 0 0 8px;
-  font-family: 'Lato', system-ui, sans-serif;
-  font-size: 13px;
-  color: #374151;
-  line-height: 1.55;
-  opacity: 0;
-  transform: translateY(-8px);
-  transition:
-    opacity   0.3s ease 0.25s,
-    transform 0.3s ease 0.25s;
-  pointer-events: none;
-}
-
-#settingsPanel.sp-open #settingsPanelInner {
-  opacity: 1;
-  transform: translateY(0);
-  pointer-events: auto;
-}
+/* #settingsPanel and #settingsPanelInner are positioned in the tablet-specific overrides section */
 
 /* ── Two-column grid ──────────────────────────────── */
 .sp-page {
@@ -1054,19 +1002,7 @@ body.pc-mode #extKeyPill {
 }
 #kwToast.visible { opacity: 1; }
 
-/* ══════════════════════════════════════
-   KEYBOARD WRAPPER
-══════════════════════════════════════ */
-#keyboardWrap {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  width: 100%;
-  margin-top: 0;
-  position: relative;
-  min-height: 320px;
-  transition: min-height 0.75s cubic-bezier(0.4, 0, 0.2, 1);
-}
+/* #keyboardWrap is positioned in the tablet-specific overrides section */
 #kbIcon {
   display: block;
   cursor: pointer;
@@ -1544,7 +1480,7 @@ li.conflict-dismissed .conflict-desc {
   align-items: center;
   justify-content: center;
   width: 100%;
-  padding: 0 60px;
+  padding: 0;
   position: relative;
   box-sizing: border-box;
   height: 41px;
@@ -1839,7 +1775,7 @@ li.conflict-dismissed .conflict-desc {
   -webkit-touch-callout: none;
 }
 
-/* ── Landing state: game panel and osRow hidden until modals are dismissed ── */
+/* ── Landing state: top block hidden until modals are dismissed ── */
 body.landing-state #osRow,
 body.landing-state #gameContainer,
 body.landing-state #statsRow {
@@ -1847,38 +1783,191 @@ body.landing-state #statsRow {
   pointer-events: none;
   transition: opacity 0.55s ease;
 }
-body.landing-state #keyboardWrap {
-  /* Keyboard is visible and touch-responsive during landing,
-     but sits at the bottom of the viewport, face-up */
+
+/* ══════════════════════════════════════
+   FIXED LAYOUT — TABLET ZONES
+   Top block: osRow + gameContainer + statsRow
+   Sits in normal flow at top of body (position: fixed, inset: 0).
+   Middle zone: settings panel, fixed between top block and keyboard.
+   Bottom chrome: credit line + diffIconWrap, fixed to screen bottom.
+   Keyboard: fixed above bottom chrome, slides down when settings open.
+══════════════════════════════════════ */
+
+/* ── Top block stays in normal flow (flex column) at the top ── */
+#osRow,
+#gameContainer,
+#statsRow {
+  flex-shrink: 0;
+  width: 100%;
 }
 
-/* ── Keyboard wrapper scale ────────────────────────────────────────────────
-   We scale #kbFlipStage (the perspective container), not #keyboardWrap,
-   so the 3D child transforms and getBoundingClientRect() on the panel
-   remain in unscaled coordinates. transform-origin top-center keeps the
-   keyboard anchored at the top of the wrap during the flip animation.
-   The extra visual height the scale introduces is absorbed by padding on
-   #keyboardWrap itself. ── */
-#kbFlipStage { transform-origin: top center; }
+/* ── Settings panel: fixed, centred in the middle zone ─────────
+   Middle zone runs from statsRow bottom (~278px from top) to
+   keyboard top. We use top + bottom anchoring so it fills that
+   gap and centres its content vertically.                       */
+#settingsPanel {
+  position: fixed;
+  /* Top anchor: just below the top block (~294px with 16px body padding) */
+  top: 294px;
+  /* Bottom anchor: just above the keyboard face zone */
+  bottom: var(--keyboard-face-bottom, 110px);
+  left: 50%;
+  transform: translateX(-50%);
+  width: min(692px, calc(100vw - 32px));
+  pointer-events: none;
+  z-index: 5;
+  /* Centre content vertically within this zone */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: visible;
+}
 
-body:not(.landing-state) #keyboardWrap,
-body.landing-state #keyboardWrap {
-  padding-bottom: 64px;
+#settingsPanelInner {
+  position: relative;
+  width: 100%;
+  padding: 0 0 8px;
+  font-family: 'Lato', system-ui, sans-serif;
+  font-size: 13px;
+  color: #374151;
+  line-height: 1.55;
+  opacity: 0;
+  transform: translateY(-8px);
+  transition:
+    opacity   0.3s ease 0.25s,
+    transform 0.3s ease 0.25s;
+  pointer-events: none;
+  /* Allow scroll if content overflows (rare but safe) */
+  max-height: calc(100vh - 294px - var(--keyboard-face-bottom, 110px) - 8px);
+  overflow-y: auto;
 }
-#kbFlipStage { scale: 1.22; }
 
-@media (max-width: 1140px) {
-  /* iPad mini 6 landscape: ~1133px */
-  #kbFlipStage { scale: 1.12; }
-  body:not(.landing-state) #keyboardWrap,
-  body.landing-state #keyboardWrap { padding-bottom: 40px; }
+#settingsPanel.sp-open #settingsPanelInner {
+  opacity: 1;
+  transform: translateY(0);
+  pointer-events: auto;
 }
-@media (min-width: 1340px) {
-  /* iPad Pro 12.9" landscape: ~1366px */
-  #kbFlipStage { scale: 1.36; }
-  body:not(.landing-state) #keyboardWrap,
-  body.landing-state #keyboardWrap { padding-bottom: 104px; }
+
+/* ── Keyboard wrapper: fixed above bottom chrome ──────────────
+   --keyboard-face-bottom: distance from screen bottom to
+   keyboard bottom in face-up (playing) position.
+   During settings: keyboard is folded down close to the bottom. */
+#keyboardWrap {
+  position: fixed;
+  left: 50%;
+  transform: translateX(-50%);
+  bottom: var(--keyboard-face-bottom, 110px);
+  /* Size: enough to contain the scaled stage + flanking icon wraps */
+  width: min(900px, calc(100vw - 32px));
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+  transition: bottom 0.85s cubic-bezier(0.4, 0, 0.2, 1);
+  z-index: 4;
+  overflow: visible;
 }
+
+/* When settings are open the keyboard folds down near the screen bottom */
+#keyboardWrap.kb-settings-open {
+  bottom: var(--keyboard-folded-bottom, 8px);
+}
+
+/* ── Bottom chrome: fixed to screen bottom ────────────────────
+   diffIconWrap sits above credit line, both fixed.             */
+#credit {
+  position: fixed;
+  bottom: 16px;
+  left: 50%;
+  transform: translateX(-50%);
+  font-family: 'Lato', system-ui, sans-serif;
+  font-size: 12px;
+  color: #9ca3af;
+  text-align: center;
+  white-space: nowrap;
+  z-index: 3;
+  padding: 0;
+  width: auto;
+  /* Nudge credit and difficulty icon are now always in place — no JS transform */
+}
+
+#diffIconWrap {
+  position: fixed;
+  bottom: 40px;  /* above credit line (16px bottom + ~18px credit + 6px gap) */
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  z-index: 6;
+}
+
+/* ── Keyboard stage: scale only, no translateY hacks ─────────
+   transform-origin top-center keeps keyboard anchored at the
+   top of the wrap as it scales.                               */
+#kbFlipStage {
+  transform-origin: top center;
+  scale: var(--keyboard-scale, 1.12);
+}
+
+/* ── Per-device breakpoints — landscape iPads ─────────────────
+   All values assume landscape orientation and full-screen.
+   Breakpoints on viewport height (the shorter dimension in
+   landscape) covers all target devices unambiguously.         */
+
+/* iPad mini 6 landscape: 744px tall */
+@media (max-height: 780px) {
+  :root {
+    --keyboard-scale: 1.00;
+    --keyboard-face-bottom: 110px;
+    --keyboard-folded-bottom: 8px;
+  }
+  #settingsPanel { top: 290px; bottom: 110px; }
+}
+
+/* iPad Air / iPad 10th gen landscape: 820px tall */
+@media (min-height: 781px) and (max-height: 849px) {
+  :root {
+    --keyboard-scale: 1.12;
+    --keyboard-face-bottom: 118px;
+    --keyboard-folded-bottom: 8px;
+  }
+  #settingsPanel { top: 290px; bottom: 118px; }
+}
+
+/* iPad Pro 11" landscape: 834px tall */
+@media (min-height: 850px) and (max-height: 900px) {
+  :root {
+    --keyboard-scale: 1.16;
+    --keyboard-face-bottom: 122px;
+    --keyboard-folded-bottom: 8px;
+  }
+  #settingsPanel { top: 290px; bottom: 122px; }
+}
+
+/* iPad Pro 12.9" landscape: 1024px tall */
+@media (min-height: 901px) {
+  :root {
+    --keyboard-scale: 1.40;
+    --keyboard-face-bottom: 148px;
+    --keyboard-folded-bottom: 8px;
+  }
+  #settingsPanel { top: 290px; bottom: 148px; }
+}
+
+/* ── Icon wraps: flanking the keyboard, vertically centred ─── */
+#kbIconWrap, #brIconWrap {
+  transition: opacity 0.3s ease;
+  overflow: visible;
+  position: absolute;
+  top: 0;
+  width: 44px;
+  height: 44px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+#kbIconWrap { left: 0; }
+#brIconWrap { right: 0; }
 
 /* ── Shared modal shell ───────────────────────────────────────────────────
    Styled to match #gameContainer: blue fill, white border, same radius
@@ -2154,14 +2243,7 @@ body.landing-state #keyboardWrap {
   <span id="statRight"></span>
 </div>
 
-<div id="keyboardWrap">
-  <div id="kbIconWrap">
-  <svg id="kbIcon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 110 101.8" style="width:44px;height:auto;">
-    <path d="M98.6,32.4H11.4c-2.1,0-3.9,1.7-3.9,3.9v29.6c0,2.1,1.7,3.9,3.9,3.9h87.2c2.1,0,3.9-1.7,3.9-3.9v-29.6c0-2.1-1.7-3.9-3.9-3.9ZM99.9,65.9c0,.7-.6,1.3-1.3,1.3H11.4c-.7,0-1.3-.6-1.3-1.3v-29.6c0-.7.6-1.3,1.3-1.3h87.2c.7,0,1.3.6,1.3,1.3v29.6ZM15.2,42.1v-2.6c0-.5.4-.9.9-.9h5.9c.5,0,.9.4.9.9v2.6c0,.5-.4.9-.9.9h-5.9c-.5,0-.9-.4-.9-.9ZM15.2,48.9v-2.6c0-.5.4-.9.9-.9h7.4c.5,0,.9.4.9.9v2.6c0,.5-.4.9-.9.9h-7.4c-.5,0-.9-.4-.9-.9ZM95.9,46.4v2.6c0,.5-.4.9-.9.9h-7.4c-.5,0-.9-.4-.9-.9v-2.6c0-.5.4-.9.9-.9h7.4c.5,0,.9.4.9.9ZM15.2,55.7v-2.6c0-.5.4-.9.9-.9h10.8c.5,0,.9.4.9.9v2.6c0,.5-.4.9-.9.9h-10.8c-.5,0-.9-.4-.9-.9ZM65.8,59.9v2.6c0,.5-.4.9-.9.9h-26.9c-.5,0-.9-.4-.9-.9v-2.6c0-.5.4-.9.9-.9h26.9c.5,0,.9.4.9.9ZM95.9,53.2v2.6c0,.5-.4.9-.9.9h-10.8c-.5,0-.9-.4-.9-.9v-2.6c0-.5.4-.9.9-.9h10.8c.5,0,.9.4.9.9h0ZM24.8,42.2v-2.8c0-.4.3-.8.8-.8h4.4c.4,0,.8.3.8.8v2.8c0,.4-.3.8-.8.8h-4.4c-.4,0-.8-.3-.8-.8ZM33,42.2v-2.8c0-.4.3-.8.8-.8h4.4c.4,0,.8.3.8.8v2.8c0,.4-.3.8-.8.8h-4.4c-.4,0-.8-.3-.8-.8ZM41.1,42.2v-2.8c0-.4.3-.8.8-.8h4.4c.4,0,.8.3.8.8v2.8c0,.4-.3.8-.8.8h-4.4c-.4,0-.8-.3-.8-.8ZM49.3,42.2v-2.8c0-.4.3-.8.8-.8h4.4c.4,0,.8.3.8.8v2.8c0,.4-.3.8-.8.8h-4.4c-.4,0-.8-.3-.8-.8ZM57.4,42.2v-2.8c0-.4.3-.8.8-.8h4.4c.4,0,.8.3.8.8v2.8c0,.4-.3.8-.8.8h-4.4c-.4,0-.8-.3-.8-.8ZM65.5,42.2v-2.8c0-.4.3-.8.8-.8h4.4c.4,0,.8.3.8.8v2.8c0,.4-.3.8-.8.8h-4.4c-.4,0-.8-.3-.8-.8ZM73.7,42.2v-2.8c0-.4.3-.8.8-.8h4.4c.4,0,.8.3.8.8v2.8c0,.4-.3.8-.8.8h-4.4c-.4,0-.8-.3-.8-.8ZM27.8,45.5h4.4c.4,0,.8.3.8.8v2.8c0,.4-.3.8-.8.8h-4.4c-.4,0-.8-.3-.8-.8v-2.8c0-.4.3-.8.8-.8ZM40.7,49.8h-4.4c-.4,0-.8-.3-.8-.8v-2.8c0-.4.3-.8.8-.8h4.4c.4,0,.8.3.8.8v2.8c0,.4-.3.8-.8.8ZM44.8,45.5h4.4c.4,0,.8.3.8.8v2.8c0,.4-.3.8-.8.8h-4.4c-.4,0-.8-.3-.8-.8v-2.8c0-.4.3-.8.8-.8ZM57.7,49.8h-4.4c-.4,0-.8-.3-.8-.8v-2.8c0-.4.3-.8.8-.8h4.4c.4,0,.8.3.8.8v2.8c0,.4-.3.8-.8.8ZM66.2,49.8h-4.4c-.4,0-.8-.3-.8-.8v-2.8c0-.4.3-.8.8-.8h4.4c.4,0,.8.3.8.8v2.8c0,.4-.3.8-.8.8ZM74.7,45.5c.4,0,.8.3.8.8v2.8c0,.4-.3.8-.8.8h-4.4c-.4,0-.8-.3-.8-.8v-2.8c0-.4.3-.8.8-.8h4.4ZM83.2,45.5c.4,0,.8.3.8.8v2.8c0,.4-.3.8-.8.8h-4.4c-.4,0-.8-.3-.8-.8v-2.8c0-.4.3-.8.8-.8h4.4ZM36.3,53.1v2.8c0,.4-.3.8-.8.8h-4.4c-.4,0-.8-.3-.8-.8v-2.8c0-.4.3-.8.8-.8h4.4c.4,0,.8.3.8.8ZM44.3,52.3c.4,0,.8.3.8.8v2.8c0,.4-.3.8-.8.8h-4.4c-.4,0-.8-.3-.8-.8v-2.8c0-.4.3-.8.8-.8h4.4ZM53.1,52.3c.4,0,.8.3.8.8v2.8c0,.4-.3.8-.8.8h-4.4c-.4,0-.8-.3-.8-.8v-2.8c0-.4.3-.8.8-.8h4.4ZM56.7,55.9v-2.8c0-.4.3-.8.8-.8h4.4c.4,0,.8.3.8.8v2.8c0,.4-.3.8-.8.8h-4.4c-.4,0-.8-.3-.8-.8ZM70.7,56.6h-4.4c-.4,0-.8-.3-.8-.8v-2.8c0-.4.3-.8.8-.8h4.4c.4,0,.8.3.8.8v2.8c0,.4-.3.8-.8.8ZM79.5,56.6h-4.4c-.4,0-.8-.3-.8-.8v-2.8c0-.4.3-.8.8-.8h4.4c.4,0,.8.3.8.8v2.8c0,.4-.3.8-.8.8ZM81.8,42.2v-2.8c0-.4.3-.8.8-.8h4.4c.4,0,.8.3.8.8v2.8c0,.4-.3.8-.8.8h-4.4c-.4,0-.8-.3-.8-.8ZM95.9,39.5v2.8c0,.4-.3.8-.8.8h-4.4c-.4,0-.8-.3-.8-.8v-2.8c0-.4.3-.8.8-.8h4.4c.4,0,.8.3.8.8ZM35.4,59.8v2.8c0,.4-.3.8-.8.8h-4.4c-.4,0-.8-.3-.8-.8v-2.8c0-.4.3-.8.8-.8h4.4c.4,0,.8.3.8.8ZM28.3,59.8v2.8c0,.4-.3.8-.8.8h-4.4c-.4,0-.8-.3-.8-.8v-2.8c0-.4.3-.8.8-.8h4.4c.4,0,.8.3.8.8ZM21.2,59.8v2.8c0,.4-.3.8-.8.8h-4.4c-.4,0-.8-.3-.8-.8v-2.8c0-.4.3-.8.8-.8h4.4c.4,0,.8.3.8.8ZM73.5,59.8v2.8c0,.4-.3.8-.8.8h-4.3c-.4,0-.8-.3-.8-.8v-2.8c0-.4.3-.8.8-.8h4.3c.4,0,.8.3.8.8ZM81,59.8v2.8c0,.4-.3.8-.8.8h-4.3c-.4,0-.8-.3-.8-.8v-2.8c0-.4.3-.8.8-.8h4.3c.4,0,.8.3.8.8ZM88.5,59.8v2.8c0,.4-.3.8-.8.8h-4.3c-.4,0-.8-.3-.8-.8v-2.8c0-.4.3-.8.8-.8h4.3c.4,0,.8.3.8.8ZM95.9,59.8v2.8c0,.4-.3.8-.8.8h-4.3c-.4,0-.8-.3-.8-.8v-2.8c0-.4.3-.8.8-.8h4.3c.4,0,.8.3.8.8Z"/>
-  </svg>
-  <span class="icon-tip" onclick="event.stopPropagation();toggleKbModal()">keyboard<br>settings</span>
-  </div>
-  <div id="settingsPanel" aria-hidden="true">
+<div id="settingsPanel" aria-hidden="true">
     <div id="settingsPanelInner">
 
     <!-- ── Browser Settings ─────────────────────────────── -->
@@ -2456,7 +2538,15 @@ body.landing-state #keyboardWrap {
     </div><!-- /#panelKeyboard -->
 
   </div><!-- /#settingsPanelInner -->
-  </div><!-- /#settingsPanel -->
+</div><!-- /#settingsPanel -->
+
+<div id="keyboardWrap">
+  <div id="kbIconWrap">
+  <svg id="kbIcon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 110 101.8" style="width:44px;height:auto;">
+    <path d="M98.6,32.4H11.4c-2.1,0-3.9,1.7-3.9,3.9v29.6c0,2.1,1.7,3.9,3.9,3.9h87.2c2.1,0,3.9-1.7,3.9-3.9v-29.6c0-2.1-1.7-3.9-3.9-3.9ZM99.9,65.9c0,.7-.6,1.3-1.3,1.3H11.4c-.7,0-1.3-.6-1.3-1.3v-29.6c0-.7.6-1.3,1.3-1.3h87.2c.7,0,1.3.6,1.3,1.3v29.6ZM15.2,42.1v-2.6c0-.5.4-.9.9-.9h5.9c.5,0,.9.4.9.9v2.6c0,.5-.4.9-.9.9h-5.9c-.5,0-.9-.4-.9-.9ZM15.2,48.9v-2.6c0-.5.4-.9.9-.9h7.4c.5,0,.9.4.9.9v2.6c0,.5-.4.9-.9.9h-7.4c-.5,0-.9-.4-.9-.9ZM95.9,46.4v2.6c0,.5-.4.9-.9.9h-7.4c-.5,0-.9-.4-.9-.9v-2.6c0-.5.4-.9.9-.9h7.4c.5,0,.9.4.9.9ZM15.2,55.7v-2.6c0-.5.4-.9.9-.9h10.8c.5,0,.9.4.9.9v2.6c0,.5-.4.9-.9.9h-10.8c-.5,0-.9-.4-.9-.9ZM65.8,59.9v2.6c0,.5-.4.9-.9.9h-26.9c-.5,0-.9-.4-.9-.9v-2.6c0-.5.4-.9.9-.9h26.9c.5,0,.9.4.9.9ZM95.9,53.2v2.6c0,.5-.4.9-.9.9h-10.8c-.5,0-.9-.4-.9-.9v-2.6c0-.5.4-.9.9-.9h10.8c.5,0,.9.4.9.9h0ZM24.8,42.2v-2.8c0-.4.3-.8.8-.8h4.4c.4,0,.8.3.8.8v2.8c0,.4-.3.8-.8.8h-4.4c-.4,0-.8-.3-.8-.8ZM33,42.2v-2.8c0-.4.3-.8.8-.8h4.4c.4,0,.8.3.8.8v2.8c0,.4-.3.8-.8.8h-4.4c-.4,0-.8-.3-.8-.8ZM41.1,42.2v-2.8c0-.4.3-.8.8-.8h4.4c.4,0,.8.3.8.8v2.8c0,.4-.3.8-.8.8h-4.4c-.4,0-.8-.3-.8-.8ZM49.3,42.2v-2.8c0-.4.3-.8.8-.8h4.4c.4,0,.8.3.8.8v2.8c0,.4-.3.8-.8.8h-4.4c-.4,0-.8-.3-.8-.8ZM57.4,42.2v-2.8c0-.4.3-.8.8-.8h4.4c.4,0,.8.3.8.8v2.8c0,.4-.3.8-.8.8h-4.4c-.4,0-.8-.3-.8-.8ZM65.5,42.2v-2.8c0-.4.3-.8.8-.8h4.4c.4,0,.8.3.8.8v2.8c0,.4-.3.8-.8.8h-4.4c-.4,0-.8-.3-.8-.8ZM73.7,42.2v-2.8c0-.4.3-.8.8-.8h4.4c.4,0,.8.3.8.8v2.8c0,.4-.3.8-.8.8h-4.4c-.4,0-.8-.3-.8-.8ZM27.8,45.5h4.4c.4,0,.8.3.8.8v2.8c0,.4-.3.8-.8.8h-4.4c-.4,0-.8-.3-.8-.8v-2.8c0-.4.3-.8.8-.8ZM40.7,49.8h-4.4c-.4,0-.8-.3-.8-.8v-2.8c0-.4.3-.8.8-.8h4.4c.4,0,.8.3.8.8v2.8c0,.4-.3.8-.8.8ZM44.8,45.5h4.4c.4,0,.8.3.8.8v2.8c0,.4-.3.8-.8.8h-4.4c-.4,0-.8-.3-.8-.8v-2.8c0-.4.3-.8.8-.8ZM57.7,49.8h-4.4c-.4,0-.8-.3-.8-.8v-2.8c0-.4.3-.8.8-.8h4.4c.4,0,.8.3.8.8v2.8c0,.4-.3.8-.8.8ZM66.2,49.8h-4.4c-.4,0-.8-.3-.8-.8v-2.8c0-.4.3-.8.8-.8h4.4c.4,0,.8.3.8.8v2.8c0,.4-.3.8-.8.8ZM74.7,45.5c.4,0,.8.3.8.8v2.8c0,.4-.3.8-.8.8h-4.4c-.4,0-.8-.3-.8-.8v-2.8c0-.4.3-.8.8-.8h4.4ZM83.2,45.5c.4,0,.8.3.8.8v2.8c0,.4-.3.8-.8.8h-4.4c-.4,0-.8-.3-.8-.8v-2.8c0-.4.3-.8.8-.8h4.4ZM36.3,53.1v2.8c0,.4-.3.8-.8.8h-4.4c-.4,0-.8-.3-.8-.8v-2.8c0-.4.3-.8.8-.8h4.4c.4,0,.8.3.8.8ZM44.3,52.3c.4,0,.8.3.8.8v2.8c0,.4-.3.8-.8.8h-4.4c-.4,0-.8-.3-.8-.8v-2.8c0-.4.3-.8.8-.8h4.4ZM53.1,52.3c.4,0,.8.3.8.8v2.8c0,.4-.3.8-.8.8h-4.4c-.4,0-.8-.3-.8-.8v-2.8c0-.4.3-.8.8-.8h4.4ZM56.7,55.9v-2.8c0-.4.3-.8.8-.8h4.4c.4,0,.8.3.8.8v2.8c0,.4-.3.8-.8.8h-4.4c-.4,0-.8-.3-.8-.8ZM70.7,56.6h-4.4c-.4,0-.8-.3-.8-.8v-2.8c0-.4.3-.8.8-.8h4.4c.4,0,.8.3.8.8v2.8c0,.4-.3.8-.8.8ZM79.5,56.6h-4.4c-.4,0-.8-.3-.8-.8v-2.8c0-.4.3-.8.8-.8h4.4c.4,0,.8.3.8.8v2.8c0,.4-.3.8-.8.8ZM81.8,42.2v-2.8c0-.4.3-.8.8-.8h4.4c.4,0,.8.3.8.8v2.8c0,.4-.3.8-.8.8h-4.4c-.4,0-.8-.3-.8-.8ZM95.9,39.5v2.8c0,.4-.3.8-.8.8h-4.4c-.4,0-.8-.3-.8-.8v-2.8c0-.4.3-.8.8-.8h4.4c.4,0,.8.3.8.8ZM35.4,59.8v2.8c0,.4-.3.8-.8.8h-4.4c-.4,0-.8-.3-.8-.8v-2.8c0-.4.3-.8.8-.8h4.4c.4,0,.8.3.8.8ZM28.3,59.8v2.8c0,.4-.3.8-.8.8h-4.4c-.4,0-.8-.3-.8-.8v-2.8c0-.4.3-.8.8-.8h4.4c.4,0,.8.3.8.8ZM21.2,59.8v2.8c0,.4-.3.8-.8.8h-4.4c-.4,0-.8-.3-.8-.8v-2.8c0-.4.3-.8.8-.8h4.4c.4,0,.8.3.8.8ZM73.5,59.8v2.8c0,.4-.3.8-.8.8h-4.3c-.4,0-.8-.3-.8-.8v-2.8c0-.4.3-.8.8-.8h4.3c.4,0,.8.3.8.8ZM81,59.8v2.8c0,.4-.3.8-.8.8h-4.3c-.4,0-.8-.3-.8-.8v-2.8c0-.4.3-.8.8-.8h4.3c.4,0,.8.3.8.8ZM88.5,59.8v2.8c0,.4-.3.8-.8.8h-4.3c-.4,0-.8-.3-.8-.8v-2.8c0-.4.3-.8.8-.8h4.3c.4,0,.8.3.8.8ZM95.9,59.8v2.8c0,.4-.3.8-.8.8h-4.3c-.4,0-.8-.3-.8-.8v-2.8c0-.4.3-.8.8-.8h4.3c.4,0,.8.3.8.8Z"/>
+  </svg>
+  <span class="icon-tip" onclick="event.stopPropagation();toggleKbModal()">keyboard<br>settings</span>
+  </div>
   <div id="kbFlipStage">
   <div id="keyboardPanel">
     <div id="kb-slab-back"></div>
@@ -2913,36 +3003,9 @@ function showToast(msg, duration) {
   duration = duration || readingDuration;
   var el = document.getElementById('kwToast');
   if (!el) return;
-  // Toast centred over the settings panel content when keyboard is folded,
-  // or over the keyboard wrap (not the scaled stage) when face-up.
-  // We deliberately use #keyboardWrap rather than #keyboardPanel so we
-  // get unscaled CSS-pixel coordinates unaffected by the kbFlipStage scale.
-  var left, top;
-  if (_kbPos !== 'face') {
-    var inner = document.getElementById('settingsPanelInner');
-    if (inner) {
-      var r = inner.getBoundingClientRect();
-      left = Math.round(r.left + window.scrollX + r.width / 2);
-      top  = Math.round(r.top  + window.scrollY + r.height / 2);
-    }
-  }
-  if (!left) {
-    var wrap = document.getElementById('keyboardWrap');
-    if (wrap) {
-      var r = wrap.getBoundingClientRect();
-      left = Math.round(r.left + window.scrollX + r.width / 2);
-      top  = Math.round(r.top  + window.scrollY + r.height / 2);
-    } else {
-      left = null;
-    }
-  }
-  if (left) {
-    el.style.left = left + 'px';
-    el.style.top  = top  + 'px';
-  } else {
-    el.style.left = '50%';
-    el.style.top  = '50%';
-  }
+  // Toast floats in the middle of the screen, centred horizontally.
+  el.style.left = '50%';
+  el.style.top  = '50%';
   clearTimeout(_kwToastTimer);
   el.textContent = msg;
   el.classList.add('visible');
@@ -3159,7 +3222,7 @@ function applyOsMode(os) {
     }
     wrap.classList.add('kb-flipping');
     panel.style.transform = KB_POS[savedPos].panel;
-    stage.style.transform = KB_POS[savedPos].stage;
+    // Stage position is CSS-driven; no inline transform needed.
     // Force a reflow so the browser commits the transform at this position,
     // then re-enable transitions synchronously — no async gap for clicks to fall into.
     void panel.offsetWidth;
@@ -3217,30 +3280,23 @@ updateToggleVisual(currentOs);
 
 /* ══════════════════════════════════════
    RESPONSIVE MODE
+   Tablet branch: always full keyboard.
+   All target devices in landscape are
+   wide enough for the full layout.
 ══════════════════════════════════════ */
 const keyboardWrap = document.getElementById('keyboardWrap');
 let currentKbMode = null;
 
 function updateKeyboardMode() {
-  const w = window.innerWidth;
-  const mode = w < 600 ? 'none' : w < 820 ? 'mini' : 'full';
-  if (mode === currentKbMode) return;
-  currentKbMode = mode;
-  if (mode === 'none') {
-    keyboardWrap.style.display = 'none';
-  } else {
-    keyboardWrap.style.display = 'flex';
-    buildKeyboard(mode === 'mini');
-  }
+  // Always full keyboard on tablet — no mini mode, no hide mode.
+  if (currentKbMode === 'full') return;
+  currentKbMode = 'full';
+  keyboardWrap.style.display = 'flex';
+  buildKeyboard(false);
 }
 
-window.addEventListener('resize', function() {
-  updateKeyboardMode();
-  positionIcons();
-  if (activeSettings !== null) _spAlignPanel();
-});
+// No resize listener needed — layout is driven by CSS fixed positioning.
 updateKeyboardMode();
-setTimeout(positionIcons, 50);
 // Show mismatch pill after initial keyboard build
 updateMismatchPill();
 // Apply rounded style if starting in PC mode
@@ -4192,38 +4248,23 @@ function _stopPauseInactivityTimer() {
   _stopReadyPromptTimer();
 }
 
-var _readyPromptInTitle      = false;
-var _readyPromptSavedText    = '';
-var _readyPromptSavedBlurred = false;
-
-function _clearReadyPromptFromTitle() {
-  if (!_readyPromptInTitle) return;
-  _readyPromptInTitle = false;
-  if (titleEl.textContent === 'Ready?') {
-    titleEl.textContent = _readyPromptSavedText;
-    if (_readyPromptSavedBlurred) titleEl.classList.add('blurred');
-  }
-}
-
 function _startReadyPromptTimer() {
   clearTimeout(readyPromptTimer);
   readyPromptTimer = setTimeout(function() {
     var awaitingAction = (gameState === 'idle' || gameState === 'paused' ||
                           gameState === 'finished' || gameState === 'readyToUnpause');
     if (!awaitingAction) { readyPromptTimer = null; return; }
-    _readyPromptSavedText    = titleEl.textContent;
-    _readyPromptSavedBlurred = titleEl.classList.contains('blurred');
-    titleEl.classList.remove('blurred');
-    titleEl.textContent = 'Ready?';
-    _readyPromptInTitle = true;
-    readyPromptTimer = null;
-  }, 20000);
+    // In idle/finished state, ensure title is not blurred before overlay
+    if (gameState === 'idle' || gameState === 'finished') {
+      titleEl.classList.remove('blurred');
+    }
+    showConfirmHeading('Ready?', false);
+  }, 10000);
 }
 
 function _stopReadyPromptTimer() {
   clearTimeout(readyPromptTimer);
   readyPromptTimer = null;
-  _clearReadyPromptFromTitle();
 }
 
 function enterPause(instantBlur) {
@@ -5488,61 +5529,9 @@ function _spPageEl(page) {
 }
 
 function _spAlignPanel() {
-  var panel = document.getElementById('keyboardPanel');
-  var stage = document.getElementById('kbFlipStage');
-  var inner = document.getElementById('settingsPanelInner');
-  var wrap  = document.getElementById('keyboardWrap');
-  if (!panel || !stage || !inner || !wrap) return;
-
-  // Set horizontal alignment immediately (no layout dependency).
-  var left  = stage.offsetLeft + panel.offsetLeft;
-  var width = panel.offsetWidth;
-  inner.style.left  = left + 'px';
-  inner.style.width = width + 'px';
-
-  // Everything below depends on settled content height — use double rAF.
-  requestAnimationFrame(function() {
-    requestAnimationFrame(function() {
-      var contentH = inner.scrollHeight;
-
-      // ── Tablet: push keyboard to bottom of viewport, then centre content ──
-      // 1. Compute how far the stage needs to translate so its bottom sits
-      //    just above the credit line.
-      var creditEl       = document.getElementById('credit');
-      var wrapRect       = wrap.getBoundingClientRect();
-      var creditTop      = creditEl
-        ? creditEl.getBoundingClientRect().top
-        : window.innerHeight - 32;
-
-      var scaleValue     = parseFloat(getComputedStyle(stage).scale) || 1;
-      var scaledStageH   = stage.offsetHeight * scaleValue;
-      var targetStageTop = creditTop - 8 - scaledStageH;
-      var neededTranslate = targetStageTop - wrapRect.top;
-
-      if (neededTranslate > 0 && _kbPos !== 'face') {
-        stage.style.transform = 'translateY(' + Math.round(neededTranslate) + 'px)';
-      }
-
-      // 2. Vertically centre the settings content in the gap between
-      //    #statsRow and the top of the now-positioned keyboard stage.
-      var statsRow    = document.getElementById('statsRow');
-      var statsBottom = statsRow
-        ? (statsRow.getBoundingClientRect().bottom + window.scrollY)
-        : wrapRect.top + window.scrollY;
-      var stageTop    = targetStageTop + window.scrollY;
-      var availableGap     = stageTop - statsBottom;
-      var wrapRelativeTop  = statsBottom - (wrapRect.top + window.scrollY);
-      var centredTop = wrapRelativeTop + Math.max(8, (availableGap - contentH) / 2);
-      inner.style.top = Math.round(centredTop) + 'px';
-
-      // 3. Grow the wrap to accommodate both content and keyboard.
-      var needed = Math.max(
-        wrapRelativeTop + contentH + scaledStageH + 32,
-        320
-      );
-      wrap.style.minHeight = needed + 'px';
-    });
-  });
+  // Layout is now driven entirely by CSS fixed positioning.
+  // The settings panel and keyboard wrap respond to the kb-settings-open class.
+  // This function is a no-op kept so all call sites continue to compile.
 }
 
 var _iconWrapIds = { panelKeyboard: 'kbIconWrap', panelBrowser: 'brIconWrap', panelDifficulty: 'diffIconWrap' };
@@ -5659,14 +5648,8 @@ function closeSettings() {
 
   _unpinTooltip();
   // Only restore stage pointer-events if the keyboard is returning to face position.
-  // If another openSettings call follows immediately (e.g. returnToPause, readyToUnpause),
-  // that call will re-set pointerEvents = 'none' correctly.
-  // Restoring here while the keyboard is still tilted was causing the icons to fire through the stage.
   var stage = document.getElementById('kbFlipStage');
   if (stage && _kbPos === 'face') stage.style.pointerEvents = '';
-  // Reset wrap height
-  var wrap = document.getElementById('keyboardWrap');
-  if (wrap) wrap.style.minHeight = '';
   // If paused mid-game and the user closes a settings panel, enter readyToUnpause
   // rather than immediately showing the pause screen — the keyboard comes back up
   // and the unpause button pulses as the CTA.
@@ -5710,10 +5693,7 @@ function _closeAllModalsInstant() {
   });
   _unpinTooltip();
   // Note: stage pointer-events are intentionally NOT restored here.
-  // They are restored by setKbPosition when the keyboard returns to face,
-  // so confirm states that follow immediately don't expose the icons.
-  var wrap2 = document.getElementById('keyboardWrap');
-  if (wrap2) wrap2.style.minHeight = '';
+  // They are restored by setKbPosition when the keyboard returns to face.
 }
 
 // Legacy aliases — kept so remaining call sites compile
@@ -5882,23 +5862,8 @@ document.addEventListener('click', function(e) {
 });
 
 function positionIcons() {
-  var panel = document.getElementById('keyboardPanel');
-  var wrap  = document.getElementById('keyboardWrap');
-  var kbWrap = document.getElementById('kbIconWrap');
-  var brWrap = document.getElementById('brIconWrap');
-  var kb = document.getElementById('kbIcon');
-  var br = document.getElementById('browserIcon');
-  if (!panel || !wrap) return;
-  var pRect = panel.getBoundingClientRect();
-  var wRect = wrap.getBoundingClientRect();
-  var KB_GAP = 36;
-  var BR_GAP = 36;
-  var kbLeft = Math.round(pRect.left - wRect.left - (kbWrap ? kbWrap.offsetWidth : 44) - KB_GAP);
-  var brLeft = Math.round(pRect.right - wRect.left + BR_GAP);
-  if (kbWrap) { kbWrap.style.left = kbLeft + 'px'; kbWrap.style.right = 'auto'; }
-  else if (kb) kb.style.left = kbLeft + 'px';
-  if (brWrap) { brWrap.style.left = brLeft + 'px'; brWrap.style.right = 'auto'; }
-  else if (br) br.style.left = brLeft + 'px';
+  // Icon wraps are now positioned by CSS (absolute left/right within #keyboardWrap).
+  // This function is kept so call sites continue to compile.
 }
 
 window.addEventListener('resize', function() {
@@ -8274,7 +8239,11 @@ function _onUserActivity() {
   var awaitingAction = (gameState === 'idle' || gameState === 'paused' ||
                         gameState === 'finished' || gameState === 'readyToUnpause');
   if (!awaitingAction) return;
-  _clearReadyPromptFromTitle();
+  var headingEl = document.getElementById('confirmHeading');
+  if (headingEl && headingEl.textContent === 'Ready?') {
+    headingEl.style.display = 'none';
+    headingEl.textContent = '';
+  }
   _startReadyPromptTimer();
 }
 document.addEventListener('keydown',   _onUserActivity, { passive: true });
@@ -8389,10 +8358,11 @@ document.getElementById('keyboardWrap').addEventListener('click', function(e) {
 
 function showTip(index) {
   tipIndex = ((index % IMPROVEMENT_TIPS.length) + IMPROVEMENT_TIPS.length) % IMPROVEMENT_TIPS.length;
-  _readyPromptInTitle = false;
+  // Dismiss "Ready?" if it is showing, and ensure the title is readable
   hideConfirmHeading();
   titleEl.classList.remove('blurred');
   titleEl.textContent = IMPROVEMENT_TIPS[tipIndex];
+  // Restart the Ready prompt so it reappears after another period of inactivity
   _startReadyPromptTimer();
 }
 
@@ -8540,11 +8510,11 @@ var _flipBusy  = false;  // kept for applyOsMode compatibility — unused by set
 var _kbFlipped = false;  // kept for applyOsMode compatibility — true when pos is 'edge'
 var _flipSeq   = 0;      // still used by the show/hide icon timing
 
-// KB position targets
+// KB position targets — stage translation now handled by CSS (kb-settings-open class)
 var KB_POS = {
-  face:    { stage: 'translateY(0px)',   panel: 'rotateX(0deg)'  },
-  partial: { stage: 'translateY(89px)',  panel: 'rotateX(62deg)' },
-  edge:    { stage: 'translateY(118px)', panel: 'rotateX(82deg)' },
+  face:    { panel: 'rotateX(0deg)'  },
+  partial: { panel: 'rotateX(62deg)' },
+  edge:    { panel: 'rotateX(82deg)' },
 };
 
 function setKbPosition(pos) {
@@ -8559,6 +8529,11 @@ function setKbPosition(pos) {
   var stage = document.getElementById('kbFlipStage');
   var wrap  = document.getElementById('keyboardWrap');
 
+  // Toggle the keyboard wrapper position: face-up sits at --keyboard-face-bottom,
+  // anything else (partial or edge) slides down to --keyboard-folded-bottom.
+  var isSettingsOpen = (pos !== 'face');
+  wrap.classList.toggle('kb-settings-open', isSettingsOpen);
+
   // Going away from face — hide icons, show 3D edges
   if (prev === 'face') {
     wrap.classList.add('kb-flipping');
@@ -8568,22 +8543,20 @@ function setKbPosition(pos) {
     }, 200);
   }
 
-  // Going to face — remove 3D edges, reveal icons after transition
+  // Going to face — remove 3D edges, restore pointer-events on stage
   if (pos === 'face') {
     stage.classList.remove('kb-show-base');
-    // Snap keys back to their normal colours instantly (no slow fade from grey)
     panel.classList.add('no-key-transition');
     panel.classList.remove('kb-edges-visible', 'kb-edged');
     requestAnimationFrame(function() { panel.classList.remove('no-key-transition'); });
     setTimeout(function() {
       if (_flipSeq !== seq) return;
       wrap.classList.remove('kb-flipping');
-      // Restore keyboard stage pointer-events now that it is flat and not obscuring icons
       stage.style.pointerEvents = '';
     }, 900);
   }
 
-  // Arriving at edge — show edge details
+  // Arriving at edge — show edge details, clear stuck keys
   if (pos === 'edge') {
     setTimeout(function() {
       if (_flipSeq !== seq) return;
@@ -8593,7 +8566,6 @@ function setKbPosition(pos) {
       if (_flipSeq !== seq) return;
       stage.classList.add('kb-show-base');
     }, 650);
-    // Clear sticky keys once the keyboard has fully settled at the edge
     setTimeout(function() {
       if (_flipSeq !== seq) return;
       clearAllLit();
@@ -8605,15 +8577,11 @@ function setKbPosition(pos) {
     stage.classList.remove('kb-show-base');
   }
 
-  // Apply the CSS transform — transition handles smooth interpolation from any position.
-  // Tablet: final stage translateY is computed by _spAlignPanel after content is measured,
-  // so we only set the panel (rotateX) here. The stage gets its initial small translateY
-  // from KB_POS so the animation starts moving immediately, then _spAlignPanel corrects it.
-  stage.style.transform = KB_POS[pos].stage;
+  // Apply the CSS rotateX transform on the panel.
+  // The stage position is now handled entirely by CSS (kb-settings-open class).
+  stage.style.transform = '';  // no translateY — CSS handles it
   panel.style.transform = KB_POS[pos].panel;
   panel.classList.toggle('kb-partial', pos === 'partial');
-  // Drive credit/diffIcon nudge — class applied immediately so CSS transition runs in sync
-  wrap.classList.toggle('kb-at-face', pos === 'face');
 }
 
 function _resetFlipState() {
@@ -8627,7 +8595,7 @@ function _resetFlipState() {
   var wrap  = document.getElementById('keyboardWrap');
   if (panel) { panel.classList.remove('kb-edged', 'kb-edges-visible', 'kb-partial'); panel.style.transform = ''; }
   if (stage) { stage.classList.remove('kb-show-base'); stage.style.transform = ''; }
-  if (wrap)  { wrap.classList.remove('kb-flipping'); wrap.classList.add('kb-at-face'); }
+  if (wrap)  { wrap.classList.remove('kb-flipping', 'kb-settings-open'); }
 }
 
 /* ── Difficulty toast helper ───────────────────────── */
@@ -9365,10 +9333,9 @@ function revealGameAfterLanding() {
   perspective:        900px;
   perspective-origin: 50% 50%;
   transform-style:    preserve-3d;
-  transition:         transform 0.85s cubic-bezier(0.4, 0, 0.2, 1);
   overflow:           visible;
   position:           relative;
-  z-index:            2; /* above settingsPanel (z:1) */
+  z-index:            2;
 }
 
 /* ─── PANEL ──────────────────────────────────────────*/
@@ -9554,30 +9521,11 @@ function revealGameAfterLanding() {
 /* ─── ROW STRIPS — suppressed ────────────────────────*/
 .kb-row::after { display: none; }
 
-/* ─── ICONS ──────────────────────────────────────────*/
-#kbIconWrap, #brIconWrap {
-  transition: opacity 0.3s ease;
-  overflow: visible;
-  position: absolute;
-  top: 50%;
-  transform: translateY(-50%);
-  width: 44px;
-  height: 44px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-#kbIconWrap { left: 0; }
-#brIconWrap { right: 0; }
+/* ─── ICONS ──────────────────────────────────────────
+   Positioned by CSS in tablet-specific overrides.    */
 
-/* ─── DIFF GAUGE ─────────────────────────────────────*/
-#diffIconWrap {
-  display: flex;
-  justify-content: center;
-  margin-top: 4px;
-  transform: translateY(0);
-  transition: transform 0.85s cubic-bezier(0.4, 0, 0.2, 1);
-}
+/* ─── DIFF GAUGE ─────────────────────────────────────
+   Positioned by CSS in tablet-specific overrides.    */
 #diffIcon {
   display: block; fill: #9ca3af; pointer-events: auto;
   cursor: pointer; width: 44px; transition: transform 0.18s ease;

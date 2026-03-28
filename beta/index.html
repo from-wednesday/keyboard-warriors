@@ -2044,8 +2044,8 @@ li.conflict-dismissed .conflict-desc {
     <div id="panelPadlock" class="sp-page">
       <div class="sp-col sp-col-left">
         <div class="sp-report-col-header">
-          <p class="sp-small-card-title"> </p>
-          <p class="sp-report-section-title">Cheat Sheet</p>
+          <p class="sp-small-card-title" id="cheatSheetContextLabel"></p>
+          <p class="sp-report-section-title" id="cheatSheetHeading">Cheat Sheet</p>
         </div>
         <ul id="cheatSheetList" class="sp-report-list sp-report-weakness"></ul>
       </div>
@@ -2864,8 +2864,18 @@ function buildOsLabels() {
   leftLabel.style.cursor  = 'pointer';
   rightLabel.style.cursor = 'pointer';
 
-  leftLabel.addEventListener('click',  function() { applyOsMode(leftOperatingSystem);  if (activeSettings === 'panelKeyboard') updateModalToggles(); });
-  rightLabel.addEventListener('click', function() { applyOsMode(rightOperatingSystem); if (activeSettings === 'panelKeyboard') updateModalToggles(); });
+  leftLabel.addEventListener('click',  function() {
+    applyOsMode(leftOperatingSystem);
+    if (activeSettings === 'panelKeyboard') updateModalToggles();
+    if (activeSettings === 'panelReport')   _refreshReportPanel();
+    if (activeSettings === 'panelPadlock')  _refreshCheatSheet();
+  });
+  rightLabel.addEventListener('click', function() {
+    applyOsMode(rightOperatingSystem);
+    if (activeSettings === 'panelKeyboard') updateModalToggles();
+    if (activeSettings === 'panelReport')   _refreshReportPanel();
+    if (activeSettings === 'panelPadlock')  _refreshCheatSheet();
+  });
 }
 
 function updateToggleVisual(os) {
@@ -2978,8 +2988,10 @@ function onOsToggle() {
   applyOsMode(osToggleEl.checked
     ? (nativeMac ? 'pc'  : 'mac')
     : (nativeMac ? 'mac' : 'pc'));
-  if (activeSettings === 'panelKeyboard') updateModalToggles();
-  if (activeSettings === 'panelBrowser')  _refreshBrowserContent();
+  if (activeSettings === 'panelKeyboard')   updateModalToggles();
+  if (activeSettings === 'panelBrowser')    _refreshBrowserContent();
+  if (activeSettings === 'panelReport')     _refreshReportPanel();
+  if (activeSettings === 'panelPadlock')    _refreshCheatSheet();
   runData.length = 0; lastCompletedReport = null;
 }
 
@@ -3454,7 +3466,14 @@ function updateKeyboardLighting(e, isDown) {
   } else {
     heldKeys.delete(code);
     greenHeld.delete(code);
-    resetPartialShortcutNudgeTimers();
+    // Only reset the nudge timers if we are no longer in a partial correct state.
+    // If the player released a correct key but other correct keys are still lit
+    // (sticky mode), or the question still has required keys unmet, keep the nudge armed.
+    if (!isPartialCorrectState()) {
+      resetPartialShortcutNudgeTimers();
+    } else {
+      checkAndArmPartialShortcutNudge();
+    }
     if (isExtKey) {
       hideExtKeyPill();
     } else {
@@ -5307,11 +5326,15 @@ function _spAlignPanel() {
     requestAnimationFrame(function() {
       var contentH = inner.scrollHeight;
       var stageH   = stage.offsetHeight;
-      // On larger screens contentH is comfortably less than stageH -- just add a small buffer.
-      // On small screens contentH exceeds stageH, so we need room for both stacked.
-      var needed = contentH > stageH
-        ? contentH + stageH + 24
-        : contentH + 16;
+      // Edge-position panels (report, cheat sheet, pause, browser, difficulty) sit
+      // above a fully folded keyboard. Only the content height matters; the stage
+      // height is already accounted for by the fold. Add a small buffer only.
+      var IsEdgePanel = (activeSettings === 'panelReport' || activeSettings === 'panelPadlock' ||
+                         activeSettings === 'panelPause'  || activeSettings === 'panelBrowser' ||
+                         activeSettings === 'panelDifficulty');
+      var needed = IsEdgePanel
+        ? contentH + 8
+        : (contentH > stageH ? contentH + stageH + 24 : contentH + 16);
       wrap.style.minHeight = Math.max(needed, 320) + 'px';
     });
   });
@@ -8691,9 +8714,19 @@ function finalizeRunData(completedRun, currentPool, DefeatCount) {
 
 
 function _refreshCheatSheet() {
-  var List = document.getElementById('cheatSheetList');
+  var List           = document.getElementById('cheatSheetList');
+  var ContextLabel   = document.getElementById('cheatSheetContextLabel');
+  var HeadingEl      = document.getElementById('cheatSheetHeading');
   if (!List) return;
   List.innerHTML = '';
+
+  // Populate context label: current app name + OS
+  if (ContextLabel) {
+    var AppEntry  = APPS.find(function(a) { return a.key === currentApp; });
+    var AppName   = AppEntry ? AppEntry.label : currentApp;
+    var OsName    = currentOs === 'pc' ? 'PC' : 'Mac';
+    ContextLabel.textContent = AppName + ' on ' + OsName;
+  }
 
   // Use the adaptive pool for the next round if available, otherwise the current pool
   var Pool = questionPool;
@@ -8703,6 +8736,21 @@ function _refreshCheatSheet() {
   }
 
   var First10 = Pool.slice(0, 10);
+
+  // Empty state: hide the heading and show a message instead
+  if (First10.length === 0) {
+    if (HeadingEl) HeadingEl.style.visibility = 'hidden';
+    if (ContextLabel) ContextLabel.style.visibility = 'hidden';
+    var EmptyItem = document.createElement('li');
+    EmptyItem.style.cssText = 'font-size:11px;font-style:italic;color:#9ca3af;list-style:none;padding:4px 0;';
+    EmptyItem.textContent = 'Start a game to load your cheat sheet.';
+    List.appendChild(EmptyItem);
+    return;
+  }
+
+  if (HeadingEl) HeadingEl.style.visibility = '';
+  if (ContextLabel) ContextLabel.style.visibility = '';
+
   First10.forEach(function(Question) {
     var ShortcutDisplay = currentOs === 'pc' ? Question.pc_sc : Question.mac_sc;
     var Token           = Question.shortcut;
@@ -9191,11 +9239,29 @@ document.addEventListener('keydown', handleKeydown);
 document.addEventListener('keyup',   handleKeyup);
 
 document.getElementById('keyboardWrap').addEventListener('click', function(e) {
-  if (gameState !== 'readyToUnpause') return;
-  // Any click in the keyboard area folds it away to the pause screen
-  _enterReadyToUnpauseCleanup();
-  gameState = 'paused'; // set before enterPause so it doesn't double-trigger
-  enterPause();
+  // Ignore clicks on the settings panel content or icons — they have their own handlers
+  if (e.target.closest('#settingsPanel, #kbIconWrap, #brIconWrap, #diffIconWrap')) return;
+
+  if (gameState === 'readyToUnpause') {
+    // Keyboard is at face — fold back to the pause screen
+    _enterReadyToUnpauseCleanup();
+    gameState = 'paused';
+    enterPause();
+    return;
+  }
+
+  // When the keyboard is folded and touch is not enabled, clicking it raises it back up.
+  // In paused/finished states this enters the readyToUnpause / face position.
+  if (_kbPos !== 'face' && !touchEnabled) {
+    if (gameState === 'paused') {
+      _enterReadyToUnpause();
+      return;
+    }
+    if (gameState === 'finished' || gameState === 'idle') {
+      closeSettings();
+      return;
+    }
+  }
 });
 
 function showTip(index) {
@@ -9258,6 +9324,19 @@ function handleKeydown(e) {
   }
   if (gameState === 'idle') {
     if (e.key === 'Enter') { e.preventDefault(); _closeAllModals(); beginCountdown(); return; }
+  }
+  // Cheat sheet lighting when paused
+  if (activeSettings === 'panelPadlock' && questionPool.length > 0) {
+    questionPool.slice(0, 10).forEach(function(Question) {
+      if (Question.shortcut && matchesShortcut(e, Question.shortcut)) {
+        HighlightCheatSheetItems(Question.shortcut);
+      }
+    });
+  }
+  // Enter unpauses when the cheat sheet is open (mirrors the unpause button)
+  if (activeSettings === 'panelPadlock' && e.key === 'Enter') {
+    if (gameState === 'paused') { e.preventDefault(); _closeAllModals(); beginResumeCountdown(); return; }
+    if (gameState === 'readyToUnpause') { e.preventDefault(); _enterReadyToUnpauseCleanup(); beginResumeCountdown(); return; }
   }
   if (gameState === 'paused' || gameState === 'readyToUnpause' || gameState === 'confirm-reset' || gameState === 'confirm-quit') { e.preventDefault(); return; }
   if (gameState !== 'playing' || transitioning) { e.preventDefault(); return; }

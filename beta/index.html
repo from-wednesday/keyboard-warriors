@@ -7938,18 +7938,6 @@ function endGameMessage(time, accuracy, record, wasFirst) {
   const newBestTime = time <= record.time;
   const newBestAcc  = accuracy > record.accuracy;
   const perfectAcc  = record.accuracy >= 100;
-  if (newBestTime && newBestAcc) return 'Wow.\nNew records on both fronts!';
-  if (newBestTime) return perfectAcc ? 'New time record!' : 'New time record! Can you raise the accuracy too?';
-  if (newBestAcc)  return 'Best accuracy yet!\nNow push that time down.';
-  if (accuracy >= 100) return 'Excellent accuracy.';  // matched perfect, no new record
-  if (time < record.time + 10 && accuracy > (record.accuracy ?? 0) - 5)
-    return "So close. You've shown you can do better.";
-  if (accuracy > (record.accuracy ?? 0))
-    return 'Accuracy improving — keep the pace up.';
-  if (!hasTrophy && time < record.time + 15)
-    return "Try again — you're almost there.";
-  return 'Keep practising. Every rep counts.';
-  }
   if (newBestTime) {
     return perfectAcc
       ? _pickEndGameFallback(['New time record!', 'Fastest yet. Keep that up.', 'A new personal best for speed.'])

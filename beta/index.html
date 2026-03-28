@@ -2040,13 +2040,17 @@ li.conflict-dismissed .conflict-desc {
     <div class="sp-report-advice-box" id="reportTrainerAdvice"></div>
   </div>
 </div>
-    <!-- ── Padlock Panel ────────────────────────────────── -->
+    <!-- ── Cheat Sheet Panel ─────────────────────────────── -->
     <div id="panelPadlock" class="sp-page">
       <div class="sp-col sp-col-left">
-        <p class="sp-title"><strong>Easter Eggs.</strong></p>
+        <div class="sp-report-col-header">
+          <p class="sp-report-card-title">Up Next</p>
+          <p class="sp-report-section-title">Cheat Sheet</p>
+        </div>
+        <ul id="cheatSheetList" class="sp-report-list sp-report-weakness"></ul>
       </div>
       <div class="sp-col sp-col-right">
-        <p class="sp-body sp-hint">If you encounter an error, hold down
+        <p class="sp-body sp-hint" style="margin-top:4px;">If you encounter an error, hold down
           <span class="sp-key-chip">Esc</span>
           to open the debug window and send a report.</p>
       </div>
@@ -3883,6 +3887,11 @@ function toggleHelp() {
     _stopReadyPromptTimer();
     // If "Ready?" is already showing, clear it so it doesn't overlap the hint
     hideConfirmHeading();
+    // Rewind the question timer by 1 second to give the player time to read and act
+    if (questionTimer !== null && questionTimerSecondsRemaining > 0) {
+      questionTimerSecondsRemaining = Math.min(questionTimer, questionTimerSecondsRemaining + 1);
+      updateQuestionTimerArcVisual();
+    }
     // Apply -10% hint penalty (deducted from displayed %, raw counts unchanged)
     hintPenaltyPct += 10;
     updateAccuracyDisplay();
@@ -5362,6 +5371,7 @@ function openSettings(page) {
   if (page === 'panelDifficulty') _refreshDifficultyPanel();
   if (page === 'panelPause')      _refreshPausePanel();
   if (page === 'panelReport')     _refreshReportPanel();
+  if (page === 'panelPadlock')    _refreshCheatSheet();
 
   // Align panel width to keyboard
   _spAlignPanel();
@@ -6824,7 +6834,7 @@ function _pauseStartOverClick() {
 
   // Wire main/help buttons
   gameState = 'confirm-start-over';
-  showConfirmHeading('Are you sure you want to reset & restart?', true, true);
+  showConfirmHeading('Are you sure you want to reset & restart?\nAll memory will be cleared to start over fresh.', true, true);
   mainBtn.textContent = 'Wipe';
   mainBtn.style.background = '#10b981';
   helpBtn.textContent = 'Keep';
@@ -6874,20 +6884,21 @@ function confirmStartOverYes() {
     if (panelInner) { panelInner.style.transition = 'opacity 0.3s ease'; panelInner.style.opacity = '0'; }
     setTimeout(function() {
       // Wipe all local data
-      try { localStorage.removeItem('kw_best'); }       catch(e) {}
-      try { localStorage.removeItem('kw_app'); }        catch(e) {}
-      try { localStorage.removeItem('kw_difficulty'); } catch(e) {}
-      try { localStorage.removeItem('kw_perfect'); }    catch(e) {}
-      try { localStorage.removeItem('kw_timer'); }      catch(e) {}
-      try { localStorage.removeItem('kw_lives'); }      catch(e) {}
-      try { sessionStorage.removeItem('kw_welcomed'); } catch(e) {}
+      try { localStorage.removeItem('kw_best'); }         catch(e) {}
+      try { localStorage.removeItem('kw_app'); }          catch(e) {}
+      try { localStorage.removeItem('kw_difficulty'); }   catch(e) {}
+      try { localStorage.removeItem('kw_perfect'); }      catch(e) {}
+      try { localStorage.removeItem('kw_timer'); }        catch(e) {}
+      try { localStorage.removeItem('kw_lives'); }        catch(e) {}
+      try { localStorage.removeItem('kw_coach_memory'); } catch(e) {}
+      try { sessionStorage.removeItem('kw_welcomed'); }   catch(e) {}
       bestRecord = { time: null, accuracy: null };
       hasTrophy = false;
       questionTimer = null;
       playerLives   = null;
-      currentDifficulty = 'normal';
+      currentDifficulty = 'fundamentals';
       _diffFirst = true;
-      setDiffState(0);
+      setDiffState(-1);
       updateBestDisplay();
       _syncSliderToValue('timer', null);
       _syncSliderToValue('lives', null);
@@ -6953,20 +6964,21 @@ function _returningStartOver() {
     setTimeout(function() {
       // Reset storage and state, then show the welcome screen
       document.body.classList.remove('returning-screen');
-      try { localStorage.removeItem('kw_best'); } catch(e) {}
-      try { localStorage.removeItem('kw_app'); } catch(e) {}
-      try { localStorage.removeItem('kw_difficulty'); } catch(e) {}
-      try { localStorage.removeItem('kw_perfect'); } catch(e) {}
-      try { localStorage.removeItem('kw_timer'); } catch(e) {}
-      try { localStorage.removeItem('kw_lives'); } catch(e) {}
-      try { sessionStorage.removeItem('kw_welcomed'); } catch(e) {}
+      try { localStorage.removeItem('kw_best'); }         catch(e) {}
+      try { localStorage.removeItem('kw_app'); }          catch(e) {}
+      try { localStorage.removeItem('kw_difficulty'); }   catch(e) {}
+      try { localStorage.removeItem('kw_perfect'); }      catch(e) {}
+      try { localStorage.removeItem('kw_timer'); }        catch(e) {}
+      try { localStorage.removeItem('kw_lives'); }        catch(e) {}
+      try { localStorage.removeItem('kw_coach_memory'); } catch(e) {}
+      try { sessionStorage.removeItem('kw_welcomed'); }   catch(e) {}
       bestRecord = { time: null, accuracy: null };
       hasTrophy = false;
       questionTimer = null;
       playerLives   = null;
-      currentDifficulty = 'normal';
+      currentDifficulty = 'fundamentals';
       _diffFirst = true;
-      setDiffState(0);
+      setDiffState(-1);
       updateBestDisplay();
       _syncSliderToValue('timer', null);
       _syncSliderToValue('lives', null);
@@ -8289,6 +8301,10 @@ function finalizeRunData(completedRun, currentPool, DefeatCount) {
     if (key === PreviousMessageKey) return;
     pool.push({ key: key, text: text, settingSuggested: settingSuggested || null });
   }
+  // Settings messages bypass the "shown last round" dedup so they always compete
+  function ForceAddMessage(pool, key, text, settingSuggested) {
+    pool.push({ key: key, text: text, settingSuggested: settingSuggested || null });
+  }
 
   // ── Memory-aware messages ─────────────────────────────────────────────────
   if (hasTrophy && PreviousSuggestion) {
@@ -8393,12 +8409,14 @@ function finalizeRunData(completedRun, currentPool, DefeatCount) {
     var DifficultyRank = { fundamentals: 0, normal: 1, hardcore: 2 };
     var CurrentRank    = DifficultyRank[currentDifficulty] || 0;
 
-    // Raise difficulty: high accuracy, clean execution (speed not required)
-    if (accuracyPercent >= 95 && hintCount === 0 && wrongKeyTotal === 0 && skipCount === 0) {
+    // Raise difficulty: high accuracy, clean execution
+    // wrongKeyTotal deliberately excluded -- a single mispress should not block this for the whole round
+    if (accuracyPercent >= 95 && hintCount === 0 && skipCount === 0) {
       if (CurrentRank < 2) {
         var NextMode = CurrentRank === 0 ? 'normal' : 'hardcore';
         var NextLabel = CurrentRank === 0 ? 'Normal' : 'Hardcore';
-        AddMessage(SettingsMessages, 'cat4_diff_up',
+        // Settings messages use ForceAddMessage so they are not suppressed by the "shown last round" guard
+        ForceAddMessage(SettingsMessages, 'cat4_diff_up',
           'You are performing very well. Consider raising the difficulty to ' + NextLabel + '.',
           { type: 'difficulty', fromValue: currentDifficulty, toValue: NextMode });
       }
@@ -8409,7 +8427,7 @@ function finalizeRunData(completedRun, currentPool, DefeatCount) {
       if (CurrentRank > 0) {
         var PrevMode  = CurrentRank === 2 ? 'normal' : 'fundamentals';
         var PrevLabel = CurrentRank === 2 ? 'Normal' : 'Fundamentals';
-        AddMessage(SettingsMessages, 'cat4_diff_down',
+        ForceAddMessage(SettingsMessages, 'cat4_diff_down',
           'This round was genuinely challenging. Dropping to ' + PrevLabel + ' may help consolidate your learning.',
           { type: 'difficulty', fromValue: currentDifficulty, toValue: PrevMode });
       }
@@ -8421,7 +8439,7 @@ function finalizeRunData(completedRun, currentPool, DefeatCount) {
     if (timeoutCount >= 4 && CurrentTimerIndex < TimerStops.length - 1) {
       var LongerTimerValue = TimerStops[CurrentTimerIndex + 1];
       var LongerTimerLabel = LongerTimerValue === null ? 'unlimited' : LongerTimerValue + ' seconds';
-      AddMessage(SettingsMessages, 'cat4_timer_up',
+      ForceAddMessage(SettingsMessages, 'cat4_timer_up',
         'You timed out on several questions. Try increasing the question timer to ' + LongerTimerLabel + '.',
         { type: 'timer', fromValue: questionTimer, toValue: LongerTimerValue });
     }
@@ -8430,7 +8448,7 @@ function finalizeRunData(completedRun, currentPool, DefeatCount) {
     if (timeoutCount === 0 && allFast && accuracyPercent === 100 && hintCount === 0 && CurrentTimerIndex > 0) {
       var ShorterTimerValue = TimerStops[CurrentTimerIndex - 1];
       if (ShorterTimerValue !== null) {
-        AddMessage(SettingsMessages, 'cat4_timer_down',
+        ForceAddMessage(SettingsMessages, 'cat4_timer_down',
           'You handled that comfortably. Try a shorter timer to raise the challenge.',
           { type: 'timer', fromValue: questionTimer, toValue: ShorterTimerValue });
       }
@@ -8443,7 +8461,7 @@ function finalizeRunData(completedRun, currentPool, DefeatCount) {
         && accuracyPercent < 75 && CurrentLivesIndex < LivesStops.length - 1) {
       var MoreLivesValue = LivesStops[CurrentLivesIndex + 1];
       var MoreLivesLabel = MoreLivesValue === null ? 'unlimited' : String(MoreLivesValue);
-      AddMessage(SettingsMessages, 'cat4_lives_up',
+      ForceAddMessage(SettingsMessages, 'cat4_lives_up',
         'You are losing lives most rounds. Consider adding a few more to reduce the pressure while you build speed.',
         { type: 'lives', fromValue: playerLives, toValue: MoreLivesValue });
     }
@@ -8453,7 +8471,7 @@ function finalizeRunData(completedRun, currentPool, DefeatCount) {
         && CurrentLivesIndex > 0) {
       var FewerLivesValue = LivesStops[CurrentLivesIndex - 1];
       if (FewerLivesValue !== null) {
-        AddMessage(SettingsMessages, 'cat4_lives_down',
+        ForceAddMessage(SettingsMessages, 'cat4_lives_down',
           'You are keeping all your lives easily. Try fewer to sharpen your focus.',
           { type: 'lives', fromValue: playerLives, toValue: FewerLivesValue });
       }
@@ -8525,39 +8543,100 @@ function finalizeRunData(completedRun, currentPool, DefeatCount) {
     });
   }
 
-  // ── Pick the advice message ───────────────────────────────────────────────
-  // Priority: memory-aware → specific/settings* → literacy recovery → settings → general
-  // *When the round had zero weaknesses, settings suggestions compete at the same level
-  //  as specific comments — so clean-sweep players get challenged at least half the time.
+  // ── Pick the advice messages (up to two) ─────────────────────────────────
+  // Priority slot 1: memory-aware → specific/settings (merged when <= 1 weakness) → literacy → settings → general
+  // Priority slot 2: always a general message, different key from slot 1
   function PickRandom(pool) {
     if (pool.length === 0) return null;
     return pool[Math.floor(Math.random() * pool.length)];
   }
+  function PickRandomExcluding(pool, ExcludeKey) {
+    var Filtered = pool.filter(function(m) { return m.key !== ExcludeKey; });
+    if (Filtered.length === 0) return null;
+    return Filtered[Math.floor(Math.random() * Filtered.length)];
+  }
 
-  var HasNoWeaknessesThisRound = questionSummaries.filter(function(s) { return s.isWeakness; }).length <= 1;
-  var SpecificOrSettings = HasNoWeaknessesThisRound
+  var HasFewWeaknessesThisRound = questionSummaries.filter(function(s) { return s.isWeakness; }).length <= 1;
+  var SpecificOrSettings = HasFewWeaknessesThisRound
     ? PickRandom(SpecificMessages.concat(SettingsMessages))
     : PickRandom(SpecificMessages);
 
-  var ChosenMessage = PickRandom(MemoryAwareMessages)
+  var PrimaryMessage = PickRandom(MemoryAwareMessages)
     || SpecificOrSettings
     || PickRandom(LiteracyMessages)
     || PickRandom(SettingsMessages)
     || PickRandom(GeneralMessages);
 
-  // Persist to memory for next round
-  if (ChosenMessage) {
-    SaveCoachMemory(ChosenMessage.key, ChosenMessage.settingSuggested || null, DefeatCount || 0);
+  // Second message: always a general/encouragement line, different key from primary
+  var PrimaryKey     = PrimaryMessage ? PrimaryMessage.key : null;
+  var SecondaryMessage = PickRandomExcluding(GeneralMessages, PrimaryKey);
+
+  // Persist the primary message key to memory (secondary is supplementary, not memorised)
+  if (PrimaryMessage) {
+    SaveCoachMemory(PrimaryMessage.key, PrimaryMessage.settingSuggested || null, DefeatCount || 0);
   }
 
-  // trainerAdvice is still an array for rendering compatibility
-  var trainerAdvice = ChosenMessage ? [ChosenMessage.text] : [];
-  // Attach the setting suggestion to the report for the link logic
-  var trainerSettingSuggested = ChosenMessage ? ChosenMessage.settingSuggested : null;
+  var trainerAdvice = [];
+  if (PrimaryMessage)   trainerAdvice.push(PrimaryMessage.text);
+  if (SecondaryMessage) trainerAdvice.push(SecondaryMessage.text);
+
+  // The settings link attaches to whichever message carries a setting suggestion
+  var trainerSettingSuggested = PrimaryMessage && PrimaryMessage.settingSuggested
+    ? PrimaryMessage.settingSuggested
+    : null;
 
   return { questionSummaries, trainerAdvice, trainerSettingSuggested };
 }
 
+
+function _refreshCheatSheet() {
+  var List = document.getElementById('cheatSheetList');
+  if (!List) return;
+  List.innerHTML = '';
+
+  // Use the adaptive pool for the next round if available, otherwise the current pool
+  var Pool = questionPool;
+  if (lastCompletedReport) {
+    var AdaptivePool = getAdaptiveNextRoundPool();
+    if (AdaptivePool && AdaptivePool.length > 0) Pool = AdaptivePool;
+  }
+
+  var First10 = Pool.slice(0, 10);
+  First10.forEach(function(Question) {
+    var ShortcutDisplay = currentOs === 'pc' ? Question.pc_sc : Question.mac_sc;
+    var Token           = Question.shortcut;
+
+    var li  = document.createElement('li');
+    li.style.alignItems = 'flex-start';
+    li.dataset.shortcutToken = Token;
+
+    var dot = document.createElement('span');
+    dot.className = 'sp-report-dot';
+    dot.style.marginTop = '5px';
+
+    var label = document.createElement('span');
+    label.className = 'sp-report-question-label';
+    label.textContent = Question.display;
+
+    li.appendChild(dot);
+    li.appendChild(label);
+    li.appendChild(BuildShortcutKeyChips(ShortcutDisplay, true));
+    List.appendChild(li);
+  });
+}
+
+function HighlightCheatSheetItems(ShortcutToken) {
+  var AllItems = document.querySelectorAll('#cheatSheetList li');
+  AllItems.forEach(function(ListItem) {
+    if ((ListItem.dataset.shortcutToken || '').toUpperCase() !== ShortcutToken.toUpperCase()) return;
+    var ChipWrapper = ListItem.lastElementChild;
+    if (ChipWrapper) {
+      ChipWrapper.classList.add('sp-report-chips-lit');
+      setTimeout(function() { ChipWrapper.classList.remove('sp-report-chips-lit'); }, 1400);
+    }
+    ListItem.classList.add('practice-done');
+  });
+}
 
 function HighlightReportListItems(ShortcutToken) {
   var AllListItems = document.querySelectorAll('#reportStrengths li, #reportWeaknesses li');
@@ -8719,10 +8798,11 @@ function _refreshReportPanel() {
       trainerAdvice.forEach(function(line, index) {
         var p = document.createElement('p');
         p.className = 'sp-report-advice';
-        // Append the difficulty settings link only when this message contains a setting suggestion
-        var HasSettingsSuggestion = lastCompletedReport.trainerSettingSuggested !== null
+        // Append the settings link only on the primary message (index 0) when it carries a suggestion
+        var HasSettingsSuggestion = index === 0
+          && lastCompletedReport.trainerSettingSuggested !== null
           && lastCompletedReport.trainerSettingSuggested !== undefined;
-        if (HasSettingsSuggestion && index === trainerAdvice.length - 1) {
+        if (HasSettingsSuggestion) {
           p.textContent = line + ' ';
           var link = document.createElement('a');
           link.textContent = 'You can adjust this in difficulty settings.';
@@ -9060,6 +9140,14 @@ function handleKeydown(e) {
         }
       });
       if (ReportShortcutMatched) { e.preventDefault(); return; }
+    }
+    // Cheat sheet key lighting (runs alongside report card check)
+    if (activeSettings === 'panelPadlock' && questionPool.length > 0) {
+      questionPool.slice(0, 10).forEach(function(Question) {
+        if (Question.shortcut && matchesShortcut(e, Question.shortcut)) {
+          HighlightCheatSheetItems(Question.shortcut);
+        }
+      });
     }
     // UI navigation — only reached if no report card shortcut consumed the key
     if (e.key === 'ArrowRight') { showTip(tipIndex + 1); e.preventDefault(); return; }

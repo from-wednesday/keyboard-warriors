@@ -2,7 +2,7 @@
   {
     "shortcut": "CMD+1",
     "display": "View at 100% zoom",
-    "mac_sc": "⌘  1",
+    "mac_sc": "⌘ 1",
     "pc_sc": "—",
     "pc_safe": false,
     "difficulty": 1,
@@ -194,8 +194,8 @@
   {
     "shortcut": "SHIFT",
     "display": "Hold to toggle proportions constraint on scaling",
-    "mac_sc": "⇧  Shift",
-    "pc_sc": "⇧  Shift",
+    "mac_sc": "⇧ Shift",
+    "pc_sc": "⇧ Shift",
     "pc_safe": true,
     "difficulty": 1,
     "group": ""
@@ -203,8 +203,8 @@
   {
     "shortcut": "SHIFT",
     "display": "Hold to add to an active selection",
-    "mac_sc": "⇧  Shift",
-    "pc_sc": "⇧  Shift",
+    "mac_sc": "⇧ Shift",
+    "pc_sc": "⇧ Shift",
     "pc_safe": true,
     "difficulty": 1,
     "group": ""
@@ -212,7 +212,7 @@
   {
     "shortcut": "OPTION",
     "display": "Hold to transform from the centre outward",
-    "mac_sc": "⌥  Option",
+    "mac_sc": "⌥ Option",
     "pc_sc": "Alt",
     "pc_safe": true,
     "difficulty": 1,
@@ -221,7 +221,7 @@
   {
     "shortcut": "OPTION",
     "display": "Hold to subtract from an active selection",
-    "mac_sc": "⌥  Option",
+    "mac_sc": "⌥ Option",
     "pc_sc": "Alt",
     "pc_safe": true,
     "difficulty": 1,
@@ -239,7 +239,7 @@
   {
     "shortcut": "CMD+=",
     "display": "Zoom in",
-    "mac_sc": "⌘  =",
+    "mac_sc": "⌘ =",
     "pc_sc": "Ctrl =",
     "pc_safe": true,
     "difficulty": 1,
@@ -248,7 +248,7 @@
   {
     "shortcut": "CMD+-",
     "display": "Zoom out",
-    "mac_sc": "⌘  -",
+    "mac_sc": "⌘ -",
     "pc_sc": "Ctrl -",
     "pc_safe": true,
     "difficulty": 1,
@@ -257,7 +257,7 @@
   {
     "shortcut": "CMD+0",
     "display": "Fit the page to your screen",
-    "mac_sc": "⌘  0",
+    "mac_sc": "⌘ 0",
     "pc_sc": "Ctrl 0",
     "pc_safe": true,
     "difficulty": 1,
@@ -266,7 +266,7 @@
   {
     "shortcut": "CMD+;",
     "display": "Show or hide guides",
-    "mac_sc": "⌘  ;",
+    "mac_sc": "⌘ ;",
     "pc_sc": "Ctrl ;",
     "pc_safe": true,
     "difficulty": 1,
@@ -275,7 +275,7 @@
   {
     "shortcut": "CMD+OPTION+;",
     "display": "Lock or unlock all guides",
-    "mac_sc": "⌘  ⌥  ;",
+    "mac_sc": "⌘ ⌥ ;",
     "pc_sc": "Ctrl Alt ;",
     "pc_safe": true,
     "difficulty": 3,
@@ -284,7 +284,7 @@
   {
     "shortcut": "CMD+U",
     "display": "Show or hide smart guides",
-    "mac_sc": "⌘  U",
+    "mac_sc": "⌘ U",
     "pc_sc": "Ctrl U",
     "pc_safe": true,
     "difficulty": 3,
@@ -293,7 +293,7 @@
   {
     "shortcut": "CMD+U",
     "display": "Open the Hue / Saturation adjustment",
-    "mac_sc": "⌘  U",
+    "mac_sc": "⌘ U",
     "pc_sc": "Ctrl U",
     "pc_safe": true,
     "difficulty": 3,
@@ -302,8 +302,8 @@
   {
     "shortcut": "CMD+SHIFT+H",
     "display": "Hide or show Extras (non-printing items)",
-    "mac_sc": "⌘  ⇧  H",
-    "pc_sc": "Ctrl ⇧  H",
+    "mac_sc": "⌘ ⇧ H",
+    "pc_sc": "Ctrl ⇧ H",
     "pc_safe": true,
     "difficulty": 5,
     "group": ""
@@ -311,7 +311,7 @@
   {
     "shortcut": "CMD+OPTION+I",
     "display": "Open the Image Size dialog",
-    "mac_sc": "⌘  ⌥  I",
+    "mac_sc": "⌘ ⌥ I",
     "pc_sc": "Ctrl Alt I",
     "pc_safe": true,
     "difficulty": 3,
@@ -320,7 +320,7 @@
   {
     "shortcut": "CMD+G",
     "display": "Group selected objects",
-    "mac_sc": "⌘  G",
+    "mac_sc": "⌘ G",
     "pc_sc": "Ctrl G",
     "pc_safe": true,
     "difficulty": 1,
@@ -329,8 +329,8 @@
   {
     "shortcut": "CMD+SHIFT+G",
     "display": "Ungroup selected objects",
-    "mac_sc": "⌘  ⇧  G",
-    "pc_sc": "Ctrl ⇧  G",
+    "mac_sc": "⌘ ⇧ G",
+    "pc_sc": "Ctrl ⇧ G",
     "pc_safe": true,
     "difficulty": 3,
     "group": ""
@@ -338,7 +338,7 @@
   {
     "shortcut": "CMD+]",
     "display": "Raise object one level in the stack",
-    "mac_sc": "⌘  ]",
+    "mac_sc": "⌘ ]",
     "pc_sc": "Ctrl ]",
     "pc_safe": true,
     "difficulty": 1,
@@ -347,7 +347,7 @@
   {
     "shortcut": "CMD+[",
     "display": "Lower object one level in the stack",
-    "mac_sc": "⌘  [",
+    "mac_sc": "⌘ [",
     "pc_sc": "Ctrl [",
     "pc_safe": true,
     "difficulty": 1,
@@ -356,7 +356,7 @@
   {
     "shortcut": "CMD+D",
     "display": "Deselect all pixels",
-    "mac_sc": "⌘  D",
+    "mac_sc": "⌘ D",
     "pc_sc": "Ctrl D",
     "pc_safe": true,
     "difficulty": 1,
@@ -365,7 +365,7 @@
   {
     "shortcut": "CMD+J",
     "display": "Copy to new layer",
-    "mac_sc": "⌘  J",
+    "mac_sc": "⌘ J",
     "pc_sc": "Ctrl J",
     "pc_safe": true,
     "difficulty": 3,
@@ -374,7 +374,7 @@
   {
     "shortcut": "CMD+E",
     "display": "Merge layers",
-    "mac_sc": "⌘  E",
+    "mac_sc": "⌘ E",
     "pc_sc": "Ctrl E",
     "pc_safe": true,
     "difficulty": 3,
@@ -383,8 +383,8 @@
   {
     "shortcut": "CMD+SHIFT+I",
     "display": "Invert the selection",
-    "mac_sc": "⌘  ⇧  I",
-    "pc_sc": "Ctrl ⇧  I",
+    "mac_sc": "⌘ ⇧ I",
+    "pc_sc": "Ctrl ⇧ I",
     "pc_safe": true,
     "difficulty": 3,
     "group": ""
@@ -392,7 +392,7 @@
   {
     "shortcut": "CMD+I",
     "display": "Invert image",
-    "mac_sc": "⌘  I",
+    "mac_sc": "⌘ I",
     "pc_sc": "Ctrl I",
     "pc_safe": true,
     "difficulty": 3,
@@ -401,7 +401,7 @@
   {
     "shortcut": "CMD+OPTION+C",
     "display": "Open the Canvas Size dialog",
-    "mac_sc": "⌘  ⌥  C",
+    "mac_sc": "⌘ ⌥ C",
     "pc_sc": "Ctrl Alt C",
     "pc_safe": true,
     "difficulty": 3,
@@ -410,7 +410,7 @@
   {
     "shortcut": "CMD+B",
     "display": "Open the Colour Balance adjustment",
-    "mac_sc": "⌘  B",
+    "mac_sc": "⌘ B",
     "pc_sc": "Ctrl B",
     "pc_safe": true,
     "difficulty": 3,
@@ -419,8 +419,8 @@
   {
     "shortcut": "CMD+SHIFT+U",
     "display": "Desaturate (convert to greyscale tones)",
-    "mac_sc": "⌘  ⇧  U",
-    "pc_sc": "Ctrl ⇧  U",
+    "mac_sc": "⌘ ⇧ U",
+    "pc_sc": "Ctrl ⇧ U",
     "pc_safe": true,
     "difficulty": 3,
     "group": ""
@@ -428,8 +428,8 @@
   {
     "shortcut": "CMD+SHIFT+F",
     "display": "Fade the last filter or adjustment",
-    "mac_sc": "⌘  ⇧  F",
-    "pc_sc": "Ctrl ⇧  F",
+    "mac_sc": "⌘ ⇧ F",
+    "pc_sc": "Ctrl ⇧ F",
     "pc_safe": true,
     "difficulty": 5,
     "group": ""
@@ -437,8 +437,8 @@
   {
     "shortcut": "CMD+SHIFT+E",
     "display": "Merge all visible layers",
-    "mac_sc": "⌘  ⇧  E",
-    "pc_sc": "Ctrl ⇧  E",
+    "mac_sc": "⌘ ⇧ E",
+    "pc_sc": "Ctrl ⇧ E",
     "pc_safe": true,
     "difficulty": 3,
     "group": ""
@@ -446,7 +446,7 @@
   {
     "shortcut": "CMD+SHIFT+OPTION+E",
     "display": "Make a document snapshot layer",
-    "mac_sc": "⌘  ⌥  E",
+    "mac_sc": "⌘ ⌥ E",
     "pc_sc": "Ctrl Alt E",
     "pc_safe": true,
     "difficulty": 5,
@@ -455,8 +455,8 @@
   {
     "shortcut": "CMD+SHIFT+>",
     "display": "Increase font size",
-    "mac_sc": "⌘  ⇧  >",
-    "pc_sc": "Ctrl ⇧  >",
+    "mac_sc": "⌘ ⇧ >",
+    "pc_sc": "Ctrl ⇧ >",
     "pc_safe": true,
     "difficulty": 3,
     "group": ""
@@ -464,8 +464,8 @@
   {
     "shortcut": "CMD+SHIFT+<",
     "display": "Decrease font size",
-    "mac_sc": "⌘  ⇧  <",
-    "pc_sc": "Ctrl ⇧  <",
+    "mac_sc": "⌘ ⇧ <",
+    "pc_sc": "Ctrl ⇧ <",
     "pc_safe": true,
     "difficulty": 3,
     "group": ""
@@ -473,8 +473,8 @@
   {
     "shortcut": "CMD+SHIFT+L",
     "display": "Align text left",
-    "mac_sc": "⌘  ⇧  L",
-    "pc_sc": "Ctrl ⇧  L",
+    "mac_sc": "⌘ ⇧ L",
+    "pc_sc": "Ctrl ⇧ L",
     "pc_safe": true,
     "difficulty": 3,
     "group": ""
@@ -482,8 +482,8 @@
   {
     "shortcut": "CMD+SHIFT+C",
     "display": "Align text to centre",
-    "mac_sc": "⌘  ⇧  C",
-    "pc_sc": "Ctrl ⇧  C",
+    "mac_sc": "⌘ ⇧ C",
+    "pc_sc": "Ctrl ⇧ C",
     "pc_safe": true,
     "difficulty": 3,
     "group": ""
@@ -491,7 +491,7 @@
   {
     "shortcut": "OPTION+ARROWLEFT",
     "display": "Decrease kerning or tracking",
-    "mac_sc": "⌥  ← ",
+    "mac_sc": "⌥ ← ",
     "pc_sc": "Alt ← ",
     "pc_safe": false,
     "difficulty": 3,
@@ -500,7 +500,7 @@
   {
     "shortcut": "OPTION+ARROWRIGHT",
     "display": "Increase kerning or tracking",
-    "mac_sc": "⌥  → ",
+    "mac_sc": "⌥ → ",
     "pc_sc": "Alt → ",
     "pc_safe": false,
     "difficulty": 3,
@@ -509,7 +509,7 @@
   {
     "shortcut": "OPTION+ARROWUP",
     "display": "Decrease leading",
-    "mac_sc": "⌥  ↑ ",
+    "mac_sc": "⌥ ↑ ",
     "pc_sc": "Alt ↑ ",
     "pc_safe": true,
     "difficulty": 3,
@@ -518,7 +518,7 @@
   {
     "shortcut": "OPTION+ARROWDOWN",
     "display": "Increase leading",
-    "mac_sc": "⌥  ↓ ",
+    "mac_sc": "⌥ ↓ ",
     "pc_sc": "Alt ↓ ",
     "pc_safe": true,
     "difficulty": 3,
@@ -563,8 +563,8 @@
   {
     "shortcut": "SHIFT+ARROWLEFT",
     "display": "Nudge selection 10px to the left",
-    "mac_sc": "⇧  ← ",
-    "pc_sc": "⇧  ← ",
+    "mac_sc": "⇧ ← ",
+    "pc_sc": "⇧ ← ",
     "pc_safe": true,
     "difficulty": 1,
     "group": "nudge"
@@ -572,8 +572,8 @@
   {
     "shortcut": "SHIFT+ARROWRIGHT",
     "display": "Nudge selection 10px to the right",
-    "mac_sc": "⇧  → ",
-    "pc_sc": "⇧  → ",
+    "mac_sc": "⇧ → ",
+    "pc_sc": "⇧ → ",
     "pc_safe": true,
     "difficulty": 1,
     "group": "nudge"
@@ -581,8 +581,8 @@
   {
     "shortcut": "SHIFT+ARROWUP",
     "display": "Nudge selection 10px upward",
-    "mac_sc": "⇧  ↑ ",
-    "pc_sc": "⇧  ↑ ",
+    "mac_sc": "⇧ ↑ ",
+    "pc_sc": "⇧ ↑ ",
     "pc_safe": true,
     "difficulty": 1,
     "group": "nudge"
@@ -590,8 +590,8 @@
   {
     "shortcut": "SHIFT+ARROWDOWN",
     "display": "Nudge selection 10px downward",
-    "mac_sc": "⇧  ↓ ",
-    "pc_sc": "⇧  ↓ ",
+    "mac_sc": "⇧ ↓ ",
+    "pc_sc": "⇧ ↓ ",
     "pc_safe": true,
     "difficulty": 1,
     "group": "nudge"
@@ -617,8 +617,8 @@
   {
     "shortcut": "SHIFT+[",
     "display": "Decrease brush hardness",
-    "mac_sc": "⇧  [",
-    "pc_sc": "⇧  [",
+    "mac_sc": "⇧ [",
+    "pc_sc": "⇧ [",
     "pc_safe": true,
     "difficulty": 3,
     "group": ""
@@ -626,8 +626,8 @@
   {
     "shortcut": "SHIFT+]",
     "display": "Increase brush hardness",
-    "mac_sc": "⇧  ]",
-    "pc_sc": "⇧  ]",
+    "mac_sc": "⇧ ]",
+    "pc_sc": "⇧ ]",
     "pc_safe": true,
     "difficulty": 3,
     "group": ""
@@ -635,7 +635,7 @@
   {
     "shortcut": "CMD+OPTION+R",
     "display": "Open Select & Mask",
-    "mac_sc": "⌘  ⌥  R",
+    "mac_sc": "⌘ ⌥ R",
     "pc_sc": "Ctrl Alt R",
     "pc_safe": true,
     "difficulty": 5,
@@ -644,8 +644,8 @@
   {
     "shortcut": "CMD+SHIFT+N",
     "display": "Create and setup a new layer (opens dialogue box)",
-    "mac_sc": "⌘  ⇧  N",
-    "pc_sc": "Ctrl ⇧  N",
+    "mac_sc": "⌘ ⇧ N",
+    "pc_sc": "Ctrl ⇧ N",
     "pc_safe": true,
     "difficulty": 3,
     "group": ""
@@ -653,7 +653,7 @@
   {
     "shortcut": "CMD+OPTION+G",
     "display": "Create or release a clipping path",
-    "mac_sc": "⌘  ⌥  G",
+    "mac_sc": "⌘ ⌥ G",
     "pc_sc": "Ctrl Alt G",
     "pc_safe": true,
     "difficulty": 5,
@@ -662,7 +662,7 @@
   {
     "shortcut": "CMD+T",
     "display": "Transform the selection",
-    "mac_sc": "⌘  T",
+    "mac_sc": "⌘ T",
     "pc_sc": "Ctrl T",
     "pc_safe": true,
     "difficulty": 3,
@@ -671,8 +671,8 @@
   {
     "shortcut": "CMD+SHIFT+OPTION+K",
     "display": "Open the Keyboard Shortcuts visual editor",
-    "mac_sc": "⌘  ⇧  ⌥  K",
-    "pc_sc": "Ctrl ⇧  Alt K",
+    "mac_sc": "⌘ ⇧ ⌥ K",
+    "pc_sc": "Ctrl ⇧ Alt K",
     "pc_safe": true,
     "difficulty": 5,
     "group": ""
@@ -680,7 +680,7 @@
   {
     "shortcut": "CMD+OPTION+A",
     "display": "Select all the layers except the background",
-    "mac_sc": "⌘  ⌥  A",
+    "mac_sc": "⌘ ⌥ A",
     "pc_sc": "Ctrl Alt A",
     "pc_safe": true,
     "difficulty": 5,
@@ -689,7 +689,7 @@
   {
     "shortcut": "OPTION",
     "display": "Hold this and click layer eye to toggle other layers' visibility",
-    "mac_sc": "⌥  Option",
+    "mac_sc": "⌥ Option",
     "pc_sc": "Alt",
     "pc_safe": true,
     "difficulty": 3,
@@ -707,8 +707,8 @@
   {
     "shortcut": "CMD+SHIFT+OPTION+B",
     "display": "Open the black & white adjustment",
-    "mac_sc": "⌘  ⇧  ⌥  B",
-    "pc_sc": "Ctrl ⇧  Alt B",
+    "mac_sc": "⌘ ⇧ ⌥ B",
+    "pc_sc": "Ctrl ⇧ Alt B",
     "pc_safe": true,
     "difficulty": 5,
     "group": ""
@@ -725,7 +725,7 @@
   {
     "shortcut": "OPTION",
     "display": "Hold this while you drag to duplicate",
-    "mac_sc": "⌥  Option",
+    "mac_sc": "⌥ Option",
     "pc_sc": "Alt",
     "pc_safe": true,
     "difficulty": 3,
@@ -734,7 +734,7 @@
   {
     "shortcut": "CMD+SPACE",
     "display": "Hold these and drag left-right to quick zoom",
-    "mac_sc": "⌘  Space",
+    "mac_sc": "⌘ Space",
     "pc_sc": "Ctrl Space",
     "pc_safe": true,
     "difficulty": 5,
@@ -743,7 +743,7 @@
   {
     "shortcut": "CMD+OPTION+I",
     "display": "Specify Image size",
-    "mac_sc": "⌘  ⌥  I",
+    "mac_sc": "⌘ ⌥ I",
     "pc_sc": "Ctrl Alt I",
     "pc_safe": true,
     "difficulty": 3,
@@ -752,7 +752,7 @@
   {
     "shortcut": "CMD+OPTION+C",
     "display": "Specify Canvas size",
-    "mac_sc": "⌘  ⌥  C",
+    "mac_sc": "⌘ ⌥ C",
     "pc_sc": "Ctrl Alt C",
     "pc_safe": true,
     "difficulty": 3,
@@ -761,8 +761,8 @@
   {
     "shortcut": "CMD+SHIFT+X",
     "display": "Liquify",
-    "mac_sc": "⌘  ⇧  X",
-    "pc_sc": "Ctrl ⇧  X",
+    "mac_sc": "⌘ ⇧ X",
+    "pc_sc": "Ctrl ⇧ X",
     "pc_safe": true,
     "difficulty": 5,
     "group": ""
@@ -770,8 +770,8 @@
   {
     "shortcut": "CMD+SHIFT+R",
     "display": "Lens Correction",
-    "mac_sc": "⌘  ⇧  R",
-    "pc_sc": "Ctrl ⇧  R",
+    "mac_sc": "⌘ ⇧ R",
+    "pc_sc": "Ctrl ⇧ R",
     "pc_safe": true,
     "difficulty": 5,
     "group": ""
@@ -779,8 +779,8 @@
   {
     "shortcut": "CMD+SHIFT+Y",
     "display": "Gamut Warning",
-    "mac_sc": "⌘  ⇧  Y",
-    "pc_sc": "Ctrl ⇧  Y",
+    "mac_sc": "⌘ ⇧ Y",
+    "pc_sc": "Ctrl ⇧ Y",
     "pc_safe": true,
     "difficulty": 5,
     "group": ""
@@ -788,7 +788,7 @@
   {
     "shortcut": "CMD+Y",
     "display": "Proof Colours",
-    "mac_sc": "⌘  Y",
+    "mac_sc": "⌘ Y",
     "pc_sc": "Ctrl Y",
     "pc_safe": true,
     "difficulty": 5,
@@ -797,7 +797,7 @@
   {
     "shortcut": "CMD+R",
     "display": "Toggle Rulers",
-    "mac_sc": "⌘  R",
+    "mac_sc": "⌘ R",
     "pc_sc": "Ctrl R",
     "pc_safe": true,
     "difficulty": 1,
@@ -815,7 +815,7 @@
   {
     "shortcut": "OPTION+F9",
     "display": "Open Actions palette",
-    "mac_sc": "⌥  F9",
+    "mac_sc": "⌥ F9",
     "pc_sc": "Alt F9",
     "pc_safe": true,
     "difficulty": 5,
@@ -851,8 +851,8 @@
   {
     "shortcut": "CMD+SHIFT+;",
     "display": "Toggle Snap",
-    "mac_sc": "⌘  ⇧  ;",
-    "pc_sc": "Ctrl ⇧  ;",
+    "mac_sc": "⌘ ⇧ ;",
+    "pc_sc": "Ctrl ⇧ ;",
     "pc_safe": true,
     "difficulty": 5,
     "group": ""
@@ -860,8 +860,8 @@
   {
     "shortcut": "CMD+SHIFT+OPTION+I",
     "display": "View/Edit File Info metadata",
-    "mac_sc": "⌘  ⇧  ⌥  I",
-    "pc_sc": "Ctrl ⇧  Alt I",
+    "mac_sc": "⌘ ⇧ ⌥ I",
+    "pc_sc": "Ctrl ⇧ Alt I",
     "pc_safe": true,
     "difficulty": 5,
     "group": ""
@@ -869,7 +869,7 @@
   {
     "shortcut": "CMD+'",
     "display": "Toggle Grid visibility",
-    "mac_sc": "⌘  '",
+    "mac_sc": "⌘ '",
     "pc_sc": "Ctrl '",
     "pc_safe": true,
     "difficulty": 1,
@@ -887,8 +887,8 @@
   {
     "shortcut": "SHIFT++",
     "display": "Cycle through layer blending modes",
-    "mac_sc": "⇧  +",
-    "pc_sc": "⇧  +",
+    "mac_sc": "⇧ +",
+    "pc_sc": "⇧ +",
     "pc_safe": true,
     "difficulty": 5,
     "group": "",
@@ -899,7 +899,7 @@
   {
     "shortcut": "CMD+X",
     "display": "Cut the selection",
-    "mac_sc": "⌘  X",
+    "mac_sc": "⌘ X",
     "pc_sc": "Ctrl X",
     "pc_safe": true,
     "difficulty": 1,
@@ -908,7 +908,7 @@
   {
     "shortcut": "CMD+C",
     "display": "Copy the selection",
-    "mac_sc": "⌘  C",
+    "mac_sc": "⌘ C",
     "pc_sc": "Ctrl C",
     "pc_safe": true,
     "difficulty": 1,
@@ -917,8 +917,8 @@
   {
     "shortcut": "CMD+SHIFT+C",
     "display": "Copy Merged (copy all visible layers within the selection)",
-    "mac_sc": "⌘  ⇧  C",
-    "pc_sc": "Ctrl ⇧  C",
+    "mac_sc": "⌘ ⇧ C",
+    "pc_sc": "Ctrl ⇧ C",
     "pc_safe": true,
     "difficulty": 1,
     "group": ""
@@ -926,7 +926,7 @@
   {
     "shortcut": "CMD+V",
     "display": "Paste",
-    "mac_sc": "⌘  V",
+    "mac_sc": "⌘ V",
     "pc_sc": "Ctrl V",
     "pc_safe": true,
     "difficulty": 1,

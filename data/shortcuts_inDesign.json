@@ -2,7 +2,7 @@
   {
     "shortcut": "CMD+1",
     "display": "View at 100% zoom",
-    "mac_sc": "⌘  1",
+    "mac_sc": "⌘ 1",
     "pc_sc": "—",
     "pc_safe": false,
     "difficulty": 1,
@@ -11,7 +11,7 @@
   {
     "shortcut": "CMD+2",
     "display": "View at 200% zoom",
-    "mac_sc": "⌘  2",
+    "mac_sc": "⌘ 2",
     "pc_sc": "—",
     "pc_safe": false,
     "difficulty": 1,
@@ -20,7 +20,7 @@
   {
     "shortcut": "CMD+4",
     "display": "View at 400% zoom",
-    "mac_sc": "⌘  4",
+    "mac_sc": "⌘ 4",
     "pc_sc": "—",
     "pc_safe": false,
     "difficulty": 1,
@@ -185,8 +185,8 @@
   {
     "shortcut": "SHIFT",
     "display": "Hold to constrain proportions while transforming",
-    "mac_sc": "⇧  Shift",
-    "pc_sc": "⇧  Shift",
+    "mac_sc": "⇧ Shift",
+    "pc_sc": "⇧ Shift",
     "pc_safe": true,
     "difficulty": 1,
     "group": ""
@@ -194,8 +194,8 @@
   {
     "shortcut": "SHIFT",
     "display": "Hold to add to an active selection",
-    "mac_sc": "⇧  Shift",
-    "pc_sc": "⇧  Shift",
+    "mac_sc": "⇧ Shift",
+    "pc_sc": "⇧ Shift",
     "pc_safe": true,
     "difficulty": 1,
     "group": ""
@@ -203,7 +203,7 @@
   {
     "shortcut": "OPTION",
     "display": "Hold to transform from the centre outward",
-    "mac_sc": "⌥  Option",
+    "mac_sc": "⌥ Option",
     "pc_sc": "Alt",
     "pc_safe": true,
     "difficulty": 1,
@@ -221,7 +221,7 @@
   {
     "shortcut": "CMD+=",
     "display": "Zoom in",
-    "mac_sc": "⌘  =",
+    "mac_sc": "⌘ =",
     "pc_sc": "Ctrl =",
     "pc_safe": true,
     "difficulty": 1,
@@ -230,7 +230,7 @@
   {
     "shortcut": "CMD+-",
     "display": "Zoom out",
-    "mac_sc": "⌘  -",
+    "mac_sc": "⌘ -",
     "pc_sc": "Ctrl -",
     "pc_safe": true,
     "difficulty": 1,
@@ -239,7 +239,7 @@
   {
     "shortcut": "CMD+0",
     "display": "Fit the page to your screen",
-    "mac_sc": "⌘  0",
+    "mac_sc": "⌘ 0",
     "pc_sc": "Ctrl 0",
     "pc_safe": true,
     "difficulty": 1,
@@ -248,7 +248,7 @@
   {
     "shortcut": "CMD+;",
     "display": "Show or hide guides",
-    "mac_sc": "⌘  ;",
+    "mac_sc": "⌘ ;",
     "pc_sc": "Ctrl ;",
     "pc_safe": true,
     "difficulty": 1,
@@ -257,7 +257,7 @@
   {
     "shortcut": "CMD+OPTION+;",
     "display": "Lock or unlock all guides",
-    "mac_sc": "⌘  ⌥  ;",
+    "mac_sc": "⌘ ⌥ ;",
     "pc_sc": "Ctrl Alt ;",
     "pc_safe": true,
     "difficulty": 3,
@@ -266,7 +266,7 @@
   {
     "shortcut": "CMD+OPTION+I",
     "display": "Show or hide non-printing characters",
-    "mac_sc": "⌘  ⌥  I",
+    "mac_sc": "⌘ ⌥ I",
     "pc_sc": "Ctrl Alt I",
     "pc_safe": true,
     "difficulty": 3,
@@ -275,7 +275,7 @@
   {
     "shortcut": "CMD+G",
     "display": "Group selected objects",
-    "mac_sc": "⌘  G",
+    "mac_sc": "⌘ G",
     "pc_sc": "Ctrl G",
     "pc_safe": true,
     "difficulty": 1,
@@ -284,8 +284,8 @@
   {
     "shortcut": "CMD+SHIFT+G",
     "display": "Ungroup selected objects",
-    "mac_sc": "⌘  ⇧  G",
-    "pc_sc": "Ctrl ⇧  G",
+    "mac_sc": "⌘ ⇧ G",
+    "pc_sc": "Ctrl ⇧ G",
     "pc_safe": true,
     "difficulty": 3,
     "group": ""
@@ -293,7 +293,7 @@
   {
     "shortcut": "CMD+]",
     "display": "Raise object one level in the stack",
-    "mac_sc": "⌘  ]",
+    "mac_sc": "⌘ ]",
     "pc_sc": "Ctrl ]",
     "pc_safe": true,
     "difficulty": 1,
@@ -302,7 +302,7 @@
   {
     "shortcut": "CMD+[",
     "display": "Lower object one level in the stack",
-    "mac_sc": "⌘  [",
+    "mac_sc": "⌘ [",
     "pc_sc": "Ctrl [",
     "pc_safe": true,
     "difficulty": 1,
@@ -311,8 +311,8 @@
   {
     "shortcut": "CMD+SHIFT+A",
     "display": "Deselect all",
-    "mac_sc": "⌘  ⇧  A",
-    "pc_sc": "Ctrl ⇧  A",
+    "mac_sc": "⌘ ⇧ A",
+    "pc_sc": "Ctrl ⇧ A",
     "pc_safe": true,
     "difficulty": 3,
     "group": ""
@@ -320,7 +320,7 @@
   {
     "shortcut": "CMD+B",
     "display": "Paste in Back",
-    "mac_sc": "⌘  B",
+    "mac_sc": "⌘ B",
     "pc_sc": "Ctrl B",
     "pc_safe": true,
     "difficulty": 1,
@@ -329,8 +329,8 @@
   {
     "shortcut": "CMD+SHIFT+>",
     "display": "Increase font size",
-    "mac_sc": "⌘  ⇧  >",
-    "pc_sc": "Ctrl ⇧  >",
+    "mac_sc": "⌘ ⇧ >",
+    "pc_sc": "Ctrl ⇧ >",
     "pc_safe": true,
     "difficulty": 3,
     "group": ""
@@ -338,8 +338,8 @@
   {
     "shortcut": "CMD+SHIFT+<",
     "display": "Decrease font size",
-    "mac_sc": "⌘  ⇧  <",
-    "pc_sc": "Ctrl ⇧  <",
+    "mac_sc": "⌘ ⇧ <",
+    "pc_sc": "Ctrl ⇧ <",
     "pc_safe": true,
     "difficulty": 3,
     "group": ""
@@ -347,8 +347,8 @@
   {
     "shortcut": "CMD+SHIFT+L",
     "display": "Align text left",
-    "mac_sc": "⌘  ⇧  L",
-    "pc_sc": "Ctrl ⇧  L",
+    "mac_sc": "⌘ ⇧ L",
+    "pc_sc": "Ctrl ⇧ L",
     "pc_safe": true,
     "difficulty": 3,
     "group": ""
@@ -356,8 +356,8 @@
   {
     "shortcut": "CMD+SHIFT+C",
     "display": "Align text to centre",
-    "mac_sc": "⌘  ⇧  C",
-    "pc_sc": "Ctrl ⇧  C",
+    "mac_sc": "⌘ ⇧ C",
+    "pc_sc": "Ctrl ⇧ C",
     "pc_safe": true,
     "difficulty": 3,
     "group": ""
@@ -365,7 +365,7 @@
   {
     "shortcut": "OPTION+ARROWLEFT",
     "display": "Decrease kerning or tracking",
-    "mac_sc": "⌥  ← ",
+    "mac_sc": "⌥ ← ",
     "pc_sc": "Alt ← ",
     "pc_safe": false,
     "difficulty": 3,
@@ -374,7 +374,7 @@
   {
     "shortcut": "OPTION+ARROWRIGHT",
     "display": "Increase kerning or tracking",
-    "mac_sc": "⌥  → ",
+    "mac_sc": "⌥ → ",
     "pc_sc": "Alt → ",
     "pc_safe": false,
     "difficulty": 3,
@@ -383,7 +383,7 @@
   {
     "shortcut": "OPTION+ARROWUP",
     "display": "Decrease leading",
-    "mac_sc": "⌥  ↑ ",
+    "mac_sc": "⌥ ↑ ",
     "pc_sc": "Alt ↑ ",
     "pc_safe": true,
     "difficulty": 3,
@@ -392,7 +392,7 @@
   {
     "shortcut": "OPTION+ARROWDOWN",
     "display": "Increase leading",
-    "mac_sc": "⌥  ↓ ",
+    "mac_sc": "⌥ ↓ ",
     "pc_sc": "Alt ↓ ",
     "pc_safe": true,
     "difficulty": 3,
@@ -401,8 +401,8 @@
   {
     "shortcut": "CMD+SHIFT+P",
     "display": "Place a file",
-    "mac_sc": "⌘  ⇧  P",
-    "pc_sc": "Ctrl ⇧  P",
+    "mac_sc": "⌘ ⇧ P",
+    "pc_sc": "Ctrl ⇧ P",
     "pc_safe": true,
     "difficulty": 1,
     "group": ""
@@ -446,8 +446,8 @@
   {
     "shortcut": "SHIFT+ARROWLEFT",
     "display": "Nudge selection 10px to the left",
-    "mac_sc": "⇧  ← ",
-    "pc_sc": "⇧  ← ",
+    "mac_sc": "⇧ ← ",
+    "pc_sc": "⇧ ← ",
     "pc_safe": true,
     "difficulty": 1,
     "group": "nudge"
@@ -455,8 +455,8 @@
   {
     "shortcut": "SHIFT+ARROWRIGHT",
     "display": "Nudge selection 10px to the right",
-    "mac_sc": "⇧  → ",
-    "pc_sc": "⇧  → ",
+    "mac_sc": "⇧ → ",
+    "pc_sc": "⇧ → ",
     "pc_safe": true,
     "difficulty": 1,
     "group": "nudge"
@@ -464,8 +464,8 @@
   {
     "shortcut": "SHIFT+ARROWUP",
     "display": "Nudge selection 10px upward",
-    "mac_sc": "⇧  ↑ ",
-    "pc_sc": "⇧  ↑ ",
+    "mac_sc": "⇧ ↑ ",
+    "pc_sc": "⇧ ↑ ",
     "pc_safe": true,
     "difficulty": 1,
     "group": "nudge"
@@ -473,8 +473,8 @@
   {
     "shortcut": "SHIFT+ARROWDOWN",
     "display": "Nudge selection 10px downward",
-    "mac_sc": "⇧  ↓ ",
-    "pc_sc": "⇧  ↓ ",
+    "mac_sc": "⇧ ↓ ",
+    "pc_sc": "⇧ ↓ ",
     "pc_safe": true,
     "difficulty": 1,
     "group": "nudge"
@@ -491,7 +491,7 @@
   {
     "shortcut": "OPTION",
     "display": "Hold this while you drag to duplicate",
-    "mac_sc": "⌥  Option",
+    "mac_sc": "⌥ Option",
     "pc_sc": "Alt",
     "pc_safe": true,
     "difficulty": 3,
@@ -500,7 +500,7 @@
   {
     "shortcut": "CMD+R",
     "display": "Toggle Rulers",
-    "mac_sc": "⌘  R",
+    "mac_sc": "⌘ R",
     "pc_sc": "Ctrl R",
     "pc_safe": true,
     "difficulty": 1,
@@ -518,7 +518,7 @@
   {
     "shortcut": "CMD+I",
     "display": "Check Spelling",
-    "mac_sc": "⌘  I",
+    "mac_sc": "⌘ I",
     "pc_sc": "Ctrl I",
     "pc_safe": true,
     "difficulty": 3,
@@ -527,7 +527,7 @@
   {
     "shortcut": "CMD+OPTION+C",
     "display": "Fit Frame to Content",
-    "mac_sc": "⌘  ⌥  C",
+    "mac_sc": "⌘ ⌥ C",
     "pc_sc": "Ctrl Alt C",
     "pc_safe": true,
     "difficulty": 5,
@@ -536,7 +536,7 @@
   {
     "shortcut": "CMD+OPTION+E",
     "display": "Fit Content Proportionally",
-    "mac_sc": "⌘  ⌥  E",
+    "mac_sc": "⌘ ⌥ E",
     "pc_sc": "Ctrl Alt E",
     "pc_safe": true,
     "difficulty": 5,
@@ -545,7 +545,7 @@
   {
     "shortcut": "CMD+L",
     "display": "Lock the selected object",
-    "mac_sc": "⌘  L",
+    "mac_sc": "⌘ L",
     "pc_sc": "Ctrl L",
     "pc_safe": true,
     "difficulty": 1,
@@ -554,7 +554,7 @@
   {
     "shortcut": "CMD+OPTION+L",
     "display": "Unlock all on current spread",
-    "mac_sc": "⌘  ⌥  L",
+    "mac_sc": "⌘ ⌥ L",
     "pc_sc": "Ctrl Alt L",
     "pc_safe": true,
     "difficulty": 5,
@@ -563,8 +563,8 @@
   {
     "shortcut": "CMD+SHIFT+T",
     "display": "Open the Tabs panel",
-    "mac_sc": "⌘  ⇧  T",
-    "pc_sc": "Ctrl ⇧  T",
+    "mac_sc": "⌘ ⇧ T",
+    "pc_sc": "Ctrl ⇧ T",
     "pc_safe": true,
     "difficulty": 3,
     "group": ""
@@ -572,7 +572,7 @@
   {
     "shortcut": "CMD+OPTION+N",
     "display": "Create a new document with the options dialogue",
-    "mac_sc": "⌘  ⌥  N",
+    "mac_sc": "⌘ ⌥ N",
     "pc_sc": "Ctrl Alt N",
     "pc_safe": true,
     "difficulty": 5,
@@ -581,8 +581,8 @@
   {
     "shortcut": "CMD+SHIFT+OPTION+D",
     "display": "Duplicate and Step",
-    "mac_sc": "⌘  ⇧  ⌥  D",
-    "pc_sc": "Ctrl ⇧  Alt D",
+    "mac_sc": "⌘ ⇧ ⌥ D",
+    "pc_sc": "Ctrl ⇧ Alt D",
     "pc_safe": true,
     "difficulty": 5,
     "group": ""
@@ -590,7 +590,7 @@
   {
     "shortcut": "CMD+ENTER",
     "display": "Quick Apply a paragraph or character style",
-    "mac_sc": "⌘  ⏎ ",
+    "mac_sc": "⌘ ⏎ ",
     "pc_sc": "Ctrl Enter",
     "pc_safe": true,
     "difficulty": 5,
@@ -599,8 +599,8 @@
   {
     "shortcut": "SHIFT+F7",
     "display": "Open the Alignment panel",
-    "mac_sc": "⇧  F7",
-    "pc_sc": "⇧  F7",
+    "mac_sc": "⇧ F7",
+    "pc_sc": "⇧ F7",
     "pc_safe": true,
     "difficulty": 3,
     "group": ""
@@ -608,7 +608,7 @@
   {
     "shortcut": "CMD+OPTION+K",
     "display": "Keep Options",
-    "mac_sc": "⌘  ⌥  K",
+    "mac_sc": "⌘ ⌥ K",
     "pc_sc": "Ctrl Alt K",
     "pc_safe": true,
     "difficulty": 5,
@@ -617,7 +617,7 @@
   {
     "shortcut": "CMD+J",
     "display": "Go to a Specific Page",
-    "mac_sc": "⌘  J",
+    "mac_sc": "⌘ J",
     "pc_sc": "Ctrl J",
     "pc_safe": true,
     "difficulty": 5,
@@ -626,8 +626,8 @@
   {
     "shortcut": "CMD+SHIFT+OPTION+P",
     "display": "Package the document for print/hand-off",
-    "mac_sc": "⌘  ⇧  ⌥  P",
-    "pc_sc": "Ctrl ⇧  Alt P",
+    "mac_sc": "⌘ ⇧ ⌥ P",
+    "pc_sc": "Ctrl ⇧ Alt P",
     "pc_safe": true,
     "difficulty": 5,
     "group": ""
@@ -635,7 +635,7 @@
   {
     "shortcut": "CMD+SHIFT",
     "display": "Hold while dragging to scale frame & content together",
-    "mac_sc": "⌘  ⇧ ",
+    "mac_sc": "⌘ ⇧ ",
     "pc_sc": "Ctrl ⇧ ",
     "pc_safe": true,
     "difficulty": 5,
@@ -644,7 +644,7 @@
   {
     "shortcut": "CMD+D",
     "display": "Place image",
-    "mac_sc": "⌘  D",
+    "mac_sc": "⌘ D",
     "pc_sc": "Ctrl D",
     "pc_safe": true,
     "difficulty": 1,
@@ -653,7 +653,7 @@
   {
     "shortcut": "CMD+K",
     "display": "Open Preferences",
-    "mac_sc": "⌘  K",
+    "mac_sc": "⌘ K",
     "pc_sc": "Ctrl K",
     "pc_safe": true,
     "difficulty": 5,
@@ -662,8 +662,8 @@
   {
     "shortcut": "CMD+SHIFT+OPTION+I",
     "display": "Open File Info",
-    "mac_sc": "⌘  ⇧  ⌥  I",
-    "pc_sc": "Ctrl ⇧  Alt I",
+    "mac_sc": "⌘ ⇧ ⌥ I",
+    "pc_sc": "Ctrl ⇧ Alt I",
     "pc_safe": true,
     "difficulty": 5,
     "group": ""
@@ -671,8 +671,8 @@
   {
     "shortcut": "CMD+SHIFT+V",
     "display": "Paste without Formatting",
-    "mac_sc": "⌘  ⇧  V",
-    "pc_sc": "Ctrl ⇧  V",
+    "mac_sc": "⌘ ⇧ V",
+    "pc_sc": "Ctrl ⇧ V",
     "pc_safe": true,
     "difficulty": 1,
     "group": ""
@@ -680,7 +680,7 @@
   {
     "shortcut": "CMD+OPTION+U",
     "display": "Step & Repeat",
-    "mac_sc": "⌘  ⌥  U",
+    "mac_sc": "⌘ ⌥ U",
     "pc_sc": "Ctrl Alt U",
     "pc_safe": true,
     "difficulty": 5,
@@ -689,8 +689,8 @@
   {
     "shortcut": "CMD+SHIFT+PAGEUP",
     "display": "Go to First Page",
-    "mac_sc": "⌘  ⇧  Page↑ ",
-    "pc_sc": "Ctrl ⇧  Page Up",
+    "mac_sc": "⌘ ⇧ Page↑ ",
+    "pc_sc": "Ctrl ⇧ Page Up",
     "pc_safe": true,
     "difficulty": 3,
     "group": "pages"
@@ -698,8 +698,8 @@
   {
     "shortcut": "CMD+SHIFT+PAGEDOWN",
     "display": "Go to Last Page",
-    "mac_sc": "⌘  ⇧  Page↓ ",
-    "pc_sc": "Ctrl ⇧  Page Down",
+    "mac_sc": "⌘ ⇧ Page↓ ",
+    "pc_sc": "Ctrl ⇧ Page Down",
     "pc_safe": true,
     "difficulty": 3,
     "group": "pages"
@@ -707,7 +707,7 @@
   {
     "shortcut": "CMD+PAGEUP",
     "display": "Go Back",
-    "mac_sc": "⌘  Page↑ ",
+    "mac_sc": "⌘ Page↑ ",
     "pc_sc": "Ctrl Page Up",
     "pc_safe": true,
     "difficulty": 3,
@@ -716,7 +716,7 @@
   {
     "shortcut": "CMD+PAGEDOWN",
     "display": "Go Forward",
-    "mac_sc": "⌘  Page↓ ",
+    "mac_sc": "⌘ Page↓ ",
     "pc_sc": "Ctrl Page Down",
     "pc_safe": true,
     "difficulty": 3,
@@ -725,8 +725,8 @@
   {
     "shortcut": "SHIFT+PAGEUP",
     "display": "Got to Previous Page",
-    "mac_sc": "⇧  Page↑ ",
-    "pc_sc": "⇧  Page Up",
+    "mac_sc": "⇧ Page↑ ",
+    "pc_sc": "⇧ Page Up",
     "pc_safe": true,
     "difficulty": 3,
     "group": "pages"
@@ -734,8 +734,8 @@
   {
     "shortcut": "SHIFT+PAGEDOWN",
     "display": "Got to Next Page",
-    "mac_sc": "⇧  Page↓ ",
-    "pc_sc": "⇧  Page Down",
+    "mac_sc": "⇧ Page↓ ",
+    "pc_sc": "⇧ Page Down",
     "pc_safe": true,
     "difficulty": 3,
     "group": "pages"
@@ -743,8 +743,8 @@
   {
     "shortcut": "SHIFT+OPTION+P",
     "display": "Add Page",
-    "mac_sc": "⇧  ⌥  P",
-    "pc_sc": "⇧  Alt P",
+    "mac_sc": "⇧ ⌥ P",
+    "pc_sc": "⇧ Alt P",
     "pc_safe": true,
     "difficulty": 1,
     "group": ""
@@ -752,8 +752,8 @@
   {
     "shortcut": "CMD+SHIFT+O",
     "display": "Create Outlines",
-    "mac_sc": "⌘  ⇧  O",
-    "pc_sc": "Ctrl ⇧  O",
+    "mac_sc": "⌘ ⇧ O",
+    "pc_sc": "Ctrl ⇧ O",
     "pc_safe": true,
     "difficulty": 1,
     "group": ""
@@ -761,8 +761,8 @@
   {
     "shortcut": "CMD+SHIFT+OPTION+O",
     "display": "Create Outlines without deleting text",
-    "mac_sc": "⌘  ⇧  ⌥  O",
-    "pc_sc": "Ctrl ⇧  Alt O",
+    "mac_sc": "⌘ ⇧ ⌥ O",
+    "pc_sc": "Ctrl ⇧ Alt O",
     "pc_safe": true,
     "difficulty": 5,
     "group": ""
@@ -770,8 +770,8 @@
   {
     "shortcut": "SHIFT+ENTER",
     "display": "Insert forced Line-Break",
-    "mac_sc": "⇧  ⏎ ",
-    "pc_sc": "⇧  Enter",
+    "mac_sc": "⇧ ⏎ ",
+    "pc_sc": "⇧ Enter",
     "pc_safe": true,
     "difficulty": 3,
     "group": ""
@@ -779,7 +779,7 @@
   {
     "shortcut": "CMD+ENTER",
     "display": "Insert Page-Break",
-    "mac_sc": "⌘  ⏎ ",
+    "mac_sc": "⌘ ⏎ ",
     "pc_sc": "Ctrl Enter",
     "pc_safe": true,
     "difficulty": 3,
@@ -788,7 +788,7 @@
   {
     "shortcut": "CMD+OPTION+X",
     "display": "Insert Non-Breaking Space",
-    "mac_sc": "⌘  ⌥  X",
+    "mac_sc": "⌘ ⌥ X",
     "pc_sc": "Ctrl Alt X",
     "pc_safe": true,
     "difficulty": 5,
@@ -797,8 +797,8 @@
   {
     "shortcut": "CMD+SHIFT+OPTION+T",
     "display": "Create Table",
-    "mac_sc": "⌘  ⇧  ⌥  T",
-    "pc_sc": "Ctrl ⇧  Alt T",
+    "mac_sc": "⌘ ⇧ ⌥ T",
+    "pc_sc": "Ctrl ⇧ Alt T",
     "pc_safe": true,
     "difficulty": 3,
     "group": ""
@@ -806,7 +806,7 @@
   {
     "shortcut": "CMD+OPTION+Y",
     "display": "Show Text threads",
-    "mac_sc": "⌘  ⌥  Y",
+    "mac_sc": "⌘ ⌥ Y",
     "pc_sc": "Ctrl Alt Y",
     "pc_safe": true,
     "difficulty": 5,
@@ -815,8 +815,8 @@
   {
     "shortcut": "CMD+SHIFT+GRAVE",
     "display": "Snap to Grid",
-    "mac_sc": "⌘  ⇧  '",
-    "pc_sc": "Ctrl ⇧  '",
+    "mac_sc": "⌘ ⇧ '",
+    "pc_sc": "Ctrl ⇧ '",
     "pc_safe": true,
     "difficulty": 3,
     "group": ""
@@ -833,8 +833,8 @@
   {
     "shortcut": "SHIFT+F6",
     "display": "Seperations Preview",
-    "mac_sc": "⇧  F6",
-    "pc_sc": "⇧  F6",
+    "mac_sc": "⇧ F6",
+    "pc_sc": "⇧ F6",
     "pc_safe": true,
     "difficulty": 5,
     "group": ""
@@ -842,8 +842,8 @@
   {
     "shortcut": "SHIFT+OPTION+ARROWDOWN",
     "display": "Nudge Down 10px and Duplicate",
-    "mac_sc": "⇧  ⌥  ↓ ",
-    "pc_sc": "⇧  Alt ↓ ",
+    "mac_sc": "⇧ ⌥ ↓ ",
+    "pc_sc": "⇧ Alt ↓ ",
     "pc_safe": true,
     "difficulty": 1,
     "group": ""
@@ -851,8 +851,8 @@
   {
     "shortcut": "SHIFT+OPTION+V",
     "display": "Resize Vertical",
-    "mac_sc": "⇧  ⌥  V",
-    "pc_sc": "⇧  Alt V",
+    "mac_sc": "⇧ ⌥ V",
+    "pc_sc": "⇧ Alt V",
     "pc_safe": true,
     "difficulty": 5,
     "group": ""
@@ -860,7 +860,7 @@
   {
     "shortcut": "CMD+OPTION+ARROWUP",
     "display": "Pin Top Edge",
-    "mac_sc": "⌘  ⌥  ↑ ",
+    "mac_sc": "⌘ ⌥ ↑ ",
     "pc_sc": "Ctrl Alt ↑ ",
     "pc_safe": true,
     "difficulty": 5,
@@ -869,7 +869,7 @@
   {
     "shortcut": "CMD+OPTION+G",
     "display": "Select All Guides",
-    "mac_sc": "⌘  ⌥  G",
+    "mac_sc": "⌘ ⌥ G",
     "pc_sc": "Ctrl Alt G",
     "pc_safe": true,
     "difficulty": 5,
@@ -878,8 +878,8 @@
   {
     "shortcut": "CMD+SHIFT+OPTION+L",
     "display": "Override All Master Page",
-    "mac_sc": "⌘  ⇧  ⌥  L",
-    "pc_sc": "Ctrl ⇧  Alt L",
+    "mac_sc": "⌘ ⇧ ⌥ L",
+    "pc_sc": "Ctrl ⇧ Alt L",
     "pc_safe": true,
     "difficulty": 5,
     "group": ""
@@ -896,8 +896,8 @@
   {
     "shortcut": "SHIFT+T",
     "display": "Type on a Path Tool",
-    "mac_sc": "⇧  T",
-    "pc_sc": "⇧  T",
+    "mac_sc": "⇧ T",
+    "pc_sc": "⇧ T",
     "pc_safe": true,
     "difficulty": 3,
     "group": ""
@@ -905,7 +905,7 @@
   {
     "shortcut": "CMD+X",
     "display": "Cut the selection",
-    "mac_sc": "⌘  X",
+    "mac_sc": "⌘ X",
     "pc_sc": "Ctrl X",
     "pc_safe": true,
     "difficulty": 1,
@@ -914,7 +914,7 @@
   {
     "shortcut": "CMD+C",
     "display": "Copy the selection",
-    "mac_sc": "⌘  C",
+    "mac_sc": "⌘ C",
     "pc_sc": "Ctrl C",
     "pc_safe": true,
     "difficulty": 1,
@@ -923,7 +923,7 @@
   {
     "shortcut": "CMD+V",
     "display": "Paste",
-    "mac_sc": "⌘  V",
+    "mac_sc": "⌘ V",
     "pc_sc": "Ctrl V",
     "pc_safe": true,
     "difficulty": 1,

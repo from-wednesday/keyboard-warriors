@@ -7920,10 +7920,23 @@ function recordAnswer() {
   advanceQuestion();
 }
 
+// End-of-level header message pool.
+// Cycles through a list so the same fallback does not repeat every round.
+var _endGameMessageIndex = 0;
+(function() {
+  try { _endGameMessageIndex = parseInt(sessionStorage.getItem('kw_egm_idx') || '0', 10) || 0; } catch(e) {}
+})();
+function _pickEndGameFallback(pool) {
+  var idx = _endGameMessageIndex % pool.length;
+  _endGameMessageIndex++;
+  try { sessionStorage.setItem('kw_egm_idx', String(_endGameMessageIndex)); } catch(e) {}
+  return pool[idx];
+}
+
 function endGameMessage(time, accuracy, record, wasFirst) {
   if (wasFirst) return 'I will keep track of your best performances.';
   const newBestTime = time <= record.time;
-  const newBestAcc  = accuracy > record.accuracy;  // strictly greater, not equal
+  const newBestAcc  = accuracy > record.accuracy;
   const perfectAcc  = record.accuracy >= 100;
   if (newBestTime && newBestAcc) return 'Wow.\nNew records on both fronts!';
   if (newBestTime) return perfectAcc ? 'New time record!' : 'New time record! Can you raise the accuracy too?';
@@ -7936,6 +7949,62 @@ function endGameMessage(time, accuracy, record, wasFirst) {
   if (!hasTrophy && time < record.time + 15)
     return "Try again — you're almost there.";
   return 'Keep practising. Every rep counts.';
+  }
+  if (newBestTime) {
+    return perfectAcc
+      ? _pickEndGameFallback(['New time record!', 'Fastest yet. Keep that up.', 'A new personal best for speed.'])
+      : _pickEndGameFallback([
+          'New time record! Can you raise the accuracy too?',
+          'Your fastest yet. Now sharpen the accuracy.',
+          'Time is down. Accuracy is next.',
+        ]);
+  }
+  if (newBestAcc) {
+    return _pickEndGameFallback([
+      'Best accuracy yet!\nNow push that time down.',
+      'Highest accuracy so far. The speed will follow.',
+      'Accuracy record. Build on that.',
+    ]);
+  }
+  if (accuracy >= 100) {
+    return _pickEndGameFallback([
+      'Excellent accuracy.',
+      'Perfect round.',
+      'Flawless.',
+      'A clean sweep.',
+    ]);
+  }
+  if (time < record.time + 10 && accuracy > (record.accuracy ?? 0) - 5) {
+    return _pickEndGameFallback([
+      "So close. You've shown you can do better.",
+      'Right on the edge of a personal best.',
+      'Nearly there. Keep the pressure on.',
+      'That was competitive. One more push.',
+    ]);
+  }
+  if (accuracy > (record.accuracy ?? 0)) {
+    return _pickEndGameFallback([
+      'Accuracy improving. Keep the pace up.',
+      'More accurate than last time. Progress.',
+      'Your accuracy is trending up.',
+    ]);
+  }
+  if (!hasTrophy && time < record.time + 15) {
+    return _pickEndGameFallback([
+      "Try again. You're almost there.",
+      'Close to your best. Another run will get you there.',
+    ]);
+  }
+  return _pickEndGameFallback([
+    'Keep practising. Every rep counts.',
+    'Come back tomorrow. The gains are cumulative.',
+    'Progress is happening even when it does not feel like it.',
+    'Repetition is how shortcuts become reflexes.',
+    'Showing up is most of the battle. Well done.',
+    'Each round is training your hands, not just your memory.',
+    'The shortcut you hesitated on today will be automatic soon.',
+    'Consistent practice compounds. Keep going.',
+  ]);
 }
 
 function startEndScreenInactivityTimer() {
@@ -8344,8 +8413,15 @@ function finalizeRunData(completedRun, currentPool, DefeatCount) {
 
   // ── Cat 3: Specific comments on what just happened ────────────────────────
   if (hasTrophy && playerLives !== null && livesRemaining === 1) {
-    AddMessage(SpecificMessages, 'cat3_one_life',
-      'You made it through with just one life. That was a nail-biter!');
+    var OneLiveMessages = [
+      { key: 'cat3_one_life_a', text: 'You made it through with just one life. That was a nail-biter!' },
+      { key: 'cat3_one_life_b', text: 'Down to your last life and you held on. Good nerves.' },
+      { key: 'cat3_one_life_c', text: 'One life standing at the end. That took some composure.' },
+      { key: 'cat3_one_life_d', text: 'Squeezed through on a single life. Breathe.' },
+    ];
+    var EligibleOneLife = OneLiveMessages.filter(function(m) { return m.key !== PreviousMessageKey; });
+    var PickedOneLife   = EligibleOneLife[Math.floor(Math.random() * EligibleOneLife.length)];
+    if (PickedOneLife) AddMessage(SpecificMessages, PickedOneLife.key, PickedOneLife.text);
   }
   if (hasTrophy && playerLives !== null && livesRemaining === playerLives && playerLives > 1) {
     AddMessage(SpecificMessages, 'cat3_all_lives',
@@ -8524,6 +8600,45 @@ function finalizeRunData(completedRun, currentPool, DefeatCount) {
     { key: 'enc_consistency',
       text: 'Consistency is the whole game. You are doing it.',
       condition: accuracyPercent >= 90 },
+    { key: 'gen_workflow',
+      text: 'A shortcut you reach for without pausing is the difference between flow and friction.',
+      condition: true },
+    { key: 'gen_real_work',
+      text: 'Try using the shortcuts you practice here in real work today. That is when they stick.',
+      condition: true },
+    { key: 'gen_muscle',
+      text: 'Muscle memory is built through repetition, not through understanding. Keep repeating.',
+      condition: true },
+    { key: 'gen_chain',
+      text: 'The real payoff is chaining shortcuts. One flows into the next without interruption.',
+      condition: true },
+    { key: 'gen_mental_model',
+      text: 'Try picturing where your fingers are going before you press. The mental model speeds up the movement.',
+      condition: true },
+    { key: 'gen_hesitation',
+      text: 'Hesitation is normal. It means the shortcut is still being retrieved consciously. More reps change that.',
+      condition: true },
+    { key: 'enc_tired',
+      text: 'If you are feeling tired, a short break is more useful than a frustrated run.',
+      condition: (skipCount >= 3 || accuracyPercent < 65) },
+    { key: 'enc_plateau',
+      text: 'A plateau is not a ceiling. It is your brain consolidating before the next jump.',
+      condition: true },
+    { key: 'enc_clean_run',
+      text: 'A clean round with no hints is worth more than a fast one full of misfires.',
+      condition: accuracyPercent >= 85 },
+    { key: 'enc_pressure',
+      text: 'The shortcuts that feel natural under pressure are the ones truly learned. Keep building that base.',
+      condition: hasTrophy },
+    { key: 'enc_almost',
+      text: 'You are closer to automatic recall than it feels right now.',
+      condition: accuracyPercent >= 70 },
+    { key: 'enc_show_up',
+      text: 'Showing up is most of the battle. You showed up.',
+      condition: true },
+    { key: 'enc_tomorrow',
+      text: 'Come back tomorrow. The gains are cumulative even when you cannot see them.',
+      condition: true },
   ];
 
   // Pre-trophy: only Cat 1/2 messages, filtered to relevant ones

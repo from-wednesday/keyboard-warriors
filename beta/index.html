@@ -9,7 +9,7 @@
 <title>beta</title>
 <script>
   const DefaultTitle = 'Keyboard Warriors';
-  const VersionLabel   = '0004';
+  const VersionLabel   = '0005';
   const TitlePrefix  = document.title !== DefaultTitle ? document.title.trim() + '_' : '';
   const DBG_DEVICE   = TitlePrefix + VersionLabel;
 </script>
@@ -1945,13 +1945,13 @@ li.conflict-dismissed .conflict-desc {
       <div class="sp-col sp-col-left">
         <p class="sp-body" id="browserCompatHeading"></p>
         <p class="sp-body" id="browserCompatIntro"></p>
-        <p class="sp-body" id="browserCompatFooter"></p>
+        <p class="sp-body" id="browserCompatFooter"></p> <p class="sp-body sp-hint">If you encounter an error, hold down
+          <span class="sp-key-chip">Esc</span>
+          to open the debug window and send a report.</p>
       </div>
       <div class="sp-col sp-col-right">
         <ul id="browserCompatList" class="sp-conflict-list"></ul>
-        <p class="sp-body sp-hint">If you encounter an error, hold down
-          <span class="sp-key-chip">Esc</span>
-          to open the debug window and send a report.</p>
+       
       </div>
     </div>
 
@@ -2025,7 +2025,7 @@ li.conflict-dismissed .conflict-desc {
 <div id="panelReport" class="sp-page sp-page-report">
   <div class="sp-col sp-col-left">
     <div class="sp-report-col-header">
-      <p class="sp-report-card-title">Report Card</p>
+      <p class="sp-small-card-title">REPORT CARD</p>
       <p class="sp-report-section-title">Mastered</p>
     </div>
     <ul id="reportStrengths" class="sp-report-list sp-report-strength"></ul>
@@ -2044,15 +2044,13 @@ li.conflict-dismissed .conflict-desc {
     <div id="panelPadlock" class="sp-page">
       <div class="sp-col sp-col-left">
         <div class="sp-report-col-header">
-          <p class="sp-report-card-title">Up Next</p>
+          <p class="sp-small-card-title"> </p>
           <p class="sp-report-section-title">Cheat Sheet</p>
         </div>
         <ul id="cheatSheetList" class="sp-report-list sp-report-weakness"></ul>
       </div>
       <div class="sp-col sp-col-right">
-        <p class="sp-body sp-hint" style="margin-top:4px;">If you encounter an error, hold down
-          <span class="sp-key-chip">Esc</span>
-          to open the debug window and send a report.</p>
+        
       </div>
     </div>
 
@@ -2939,7 +2937,7 @@ function applyOsMode(os) {
       questionIndex = 0;
       currentAnswer = questionPool[0].shortcut;
       titleEl.className = '';
-      titleEl.textContent = questionPool[0].display;
+      titleEl.textContent = (questionPool[0].display || '').replace(/\\\\/g, '\\');
     } else {
       questionPool = newPool;
       questionIndex = 0;
@@ -3880,7 +3878,7 @@ function toggleHelp() {
   hintUsedAtMs = performance.now() - startTime;
 }
     // Show hint in the stats-row toast pill — below the game panel, always readable
-    kbToastEl.innerHTML = buildHintHTML(currentAnswer, '#10b981');
+    kbToastEl.innerHTML = buildHintHTML(currentAnswer.replace(/\\\\/g, '\\'), '#10b981');
     kbToastEl.classList.add('show');
     clearTimeout(toastTimer);
     // Suppress the "Ready?" prompt while the hint is on screen
@@ -3917,7 +3915,7 @@ function toggleHelp() {
   }
 }
 function showAutoHintToast() {
-    kbToastEl.innerHTML = buildHintHTML(currentAnswer, '#f97316');
+    kbToastEl.innerHTML = buildHintHTML(currentAnswer.replace(/\\\\/g, '\\'), '#f97316');
     kbToastEl.classList.add('show');
     clearTimeout(toastTimer);
 }
@@ -3952,7 +3950,7 @@ function _enterReadyToUnpause() {
   helpBtn.style.color = 'white';
   titleEl.classList.remove('blurred');
   titleEl.className = '';
-  titleEl.textContent = questionPool[questionIndex]?.display || '';
+  titleEl.textContent = (questionPool[questionIndex]?.display || '').replace(/\\\\/g, '\\');
   questionCountEl.classList.remove('blurred');
   document.getElementById('livesRow').classList.remove('blurred');
   // Pulse the unpause button once the keyboard has returned to face position,
@@ -4119,7 +4117,7 @@ function unpause() {
   // Restore question title — may have been blanked by the resume countdown
   if (questionPool.length > 0 && (!titleEl.textContent || titleEl.textContent === '')) {
     titleEl.className = '';
-    titleEl.textContent = questionPool[questionIndex]?.display || '';
+    titleEl.textContent = (questionPool[questionIndex]?.display || '').replace(/\\\\/g, '\\');
     currentAnswer = questionPool[questionIndex]?.shortcut || '';
   }
   titleEl.classList.remove('blurred');
@@ -4203,7 +4201,7 @@ function _returnToPauseScreen(message) {
   if (activeSettings !== 'panelPause') openSettings('panelPause');
 
   titleEl.className = '';
-  titleEl.textContent = questionPool[questionIndex]?.display || '';
+  titleEl.textContent = (questionPool[questionIndex]?.display || '').replace(/\\\\/g, '\\');
   titleEl.classList.add('blurred');
   questionCountEl.classList.add('blurred');
   document.getElementById('livesRow').classList.add('blurred');
@@ -5874,7 +5872,7 @@ function dbgPrevQuestion() {
   questionIndex = (questionIndex - 1 + questionPool.length) % questionPool.length;
   currentAnswer = questionPool[questionIndex].shortcut;
   titleEl.className = '';
-  titleEl.textContent = questionPool[questionIndex].display;
+  titleEl.textContent = (questionPool[questionIndex].display || '').replace(/\\\\/g, '\\');
   clearAllLit(); heldKeys.clear();
   clearHelp(); transitioning = false;
 }
@@ -5883,7 +5881,7 @@ function dbgNextQuestion() {
   questionIndex = (questionIndex + 1) % questionPool.length;
   currentAnswer = questionPool[questionIndex].shortcut;
   titleEl.className = '';
-  titleEl.textContent = questionPool[questionIndex].display;
+  titleEl.textContent = (questionPool[questionIndex].display || '').replace(/\\\\/g, '\\');
   clearAllLit(); heldKeys.clear();
   clearHelp(); transitioning = false;
 }
@@ -7767,7 +7765,7 @@ questionPool = adaptivePool || shuffleArray(buildPool());  if (currentApp === 'A
   helpBtn.style.background = '';
   helpBtn.style.color = '';
   titleEl.className = '';
-  titleEl.textContent = questionPool[0].display;
+  titleEl.textContent = (questionPool[0].display || '').replace(/\\\\/g, '\\');
   questionCountEl.classList.remove('blurred', 'blur-instant');
   document.getElementById('livesRow').classList.remove('blurred', 'blur-instant');
   buildProgressDots();
@@ -7885,7 +7883,7 @@ function advanceQuestion() {
   currentAnswer = questionPool[questionIndex].shortcut;
   titleEl.className = '';
   void titleEl.offsetWidth; // flush so animation restarts
-  titleEl.textContent = questionPool[questionIndex].display;
+  titleEl.textContent = (questionPool[questionIndex].display || '').replace(/\\\\/g, '\\');
   consecutiveExtraKeyCount = 0;
   if (gameState === 'paused') {
     titleEl.classList.add('blurred');
@@ -8616,7 +8614,7 @@ function _refreshCheatSheet() {
 
     var label = document.createElement('span');
     label.className = 'sp-report-question-label';
-    label.textContent = Question.display;
+    label.textContent = (Question.display || '').replace(/\\\\/g, '\\');
 
     li.appendChild(dot);
     li.appendChild(label);
@@ -8657,6 +8655,7 @@ function HighlightReportListItems(ShortcutToken) {
 }
 
 function BuildShortcutKeyChips(DisplayString, IsWeakness) {
+  DisplayString = (DisplayString || '').replace(/\\\\/g, '\\');
   var Wrapper = document.createElement('span');
   Wrapper.style.cssText = 'flex-shrink:0;margin-left:6px;display:inline-flex;align-items:center;flex-wrap:nowrap;';
   var Tokens = DisplayString.trim().split(/\s+/).filter(function(Token) { return Token.length > 0; });
@@ -8725,7 +8724,7 @@ function _refreshReportPanel() {
         dot.className = 'sp-report-dot';
         var label   = document.createElement('span');
         label.className = 'sp-report-question-label';
-        label.textContent = s.displayText;
+        label.textContent = (s.displayText || '').replace(/\\\\/g, '\\');
         li.appendChild(dot);
         li.appendChild(label);
         li.appendChild(BuildShortcutKeyChips(s.shortcut, false));
@@ -8775,7 +8774,7 @@ function _refreshReportPanel() {
         dot.style.marginTop = '5px';
         var label   = document.createElement('span');
         label.className = 'sp-report-question-label';
-        label.textContent = s.displayText;
+        label.textContent = (s.displayText || '').replace(/\\\\/g, '\\');
         if (detail.length > 0) {
           var detailSpan = document.createElement('span');
           detailSpan.className = 'sp-report-detail';
@@ -10226,13 +10225,13 @@ body.returning-screen #diffIconWrap .icon-tip { display: none; }
   position: relative;
 }
 
-/* "Report Card" label — small-caps grey, sits left of "Strengths" in same flex row */
-.sp-report-card-title {
+/* "Report Card" label — small grey, sits left of "Strengths" in same flex row */
+.sp-small-card-title {
   font-size: 10px;
-  font-variant: small-caps;
+  font-variant: small;
   letter-spacing: 0.06em;
   color: #9ca3af;
-  font-weight: 600;
+  font-weight: 400;
   margin: 0;
   line-height: 1;
   flex-shrink: 0;

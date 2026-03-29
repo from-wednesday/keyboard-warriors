@@ -9,7 +9,7 @@
 <title>beta</title>
 <script>
   const DefaultTitle = 'Keyboard Warriors';
-  const VersionLabel   = '0005';
+  const VersionLabel   = '0006';
   const TitlePrefix  = document.title !== DefaultTitle ? document.title.trim() + '_' : '';
   const DBG_DEVICE   = TitlePrefix + VersionLabel;
 </script>
@@ -4870,7 +4870,7 @@ function matchesShortcut(event, str) {
    reveals more of itself when opened.
    Non-selected rows fade out when closed.
 ══════════════════════════════════════ */
-// APPS and APP_JSON_FILE_PATH are populated at runtime from KeyboardWarrior_Apps.json.
+// APPS and APP_JSON_FILE_PATH are populated at runtime from KeyboardWarriors Apps json.
 // Until the fetch resolves these remain empty; init is deferred to _onAppsLoaded().
 var APPS = [];
 var APP_JSON_FILE_PATH = {};
@@ -7107,7 +7107,7 @@ function _startFromWelcome() {
    Filters by current OS, difficulty, keyboard, and browser.
 ══════════════════════════════════════ */
 
-// APP_JSON_FILE_PATH is built from KeyboardWarrior_Apps.json at startup (see below).
+// APP_JSON_FILE_PATH is built from Keyboard Warriors Apps json at startup (see below).
 
 // The app key whose shortcuts are currently held in memory (null = nothing loaded yet)
 let loadedAppName      = null;
@@ -7116,7 +7116,7 @@ let loadedAppShortcuts = [];
 // Increments each time a load is requested, used to ignore stale fetch responses
 let loadSequenceNumber = 0;
 
-// Called once KeyboardWarrior_Apps.json has been fetched and parsed.
+// Called once Keyboard Warriors Apps json has been fetched and parsed.
 function _onAppsLoaded(appsData) {
   // Populate the two structures the rest of the code uses
   APPS = appsData.map(function(a) {
@@ -7143,7 +7143,7 @@ function _onAppsLoaded(appsData) {
 // Fetch the apps manifest on startup. Falls back to a minimal built-in list if the
 // file cannot be reached (e.g. running the HTML file locally without a server).
 (function() {
-  fetch('/keyboard-warriors/data/keyboard-warrior-apps.json')
+  fetch('/keyboard-warriors/data/keyboard-warriors-apps.json')
     .then(function(r) {
       if (!r.ok) throw new Error('HTTP ' + r.status);
       return r.json();
@@ -7155,10 +7155,8 @@ function _onAppsLoaded(appsData) {
       console.warn('[Apps] Could not load keyboard-warriors-apps.json:', err, '— using built-in fallback.');
       _onAppsLoaded([
         { key: 'Ps', label: 'Photoshop (Ps)',    path: '/keyboard-warriors/data/shortcuts_photoshop.json'    },
-        { key: 'Ai', label: 'Illustrator (Ai)',  path: '/keyboard-warriors/data/shortcuts_illustrator.json'  },
-        { key: 'Id', label: 'InDesign (Id)',      path: '/keyboard-warriors/data/shortcuts_inDesign.json'     },
-        { key: 'Ae', label: 'After Effects (Ae)', path: '/keyboard-warriors/data/shortcuts_afterEffects.json' },
-        { key: 'Fi', label: 'Figma (Fi)',         path: '/keyboard-warriors/data/shortcuts_figma.json'        }
+
+
       ]);
     });
 })();
@@ -8672,12 +8670,18 @@ function finalizeRunData(completedRun, currentPool, DefeatCount) {
     { key: 'gen_hesitation',
       text: 'Hesitation is normal. It means the shortcut is still being retrieved consciously. More reps change that.',
       condition: true },
+      { key: 'enc_keyboard_settings',
+      text: 'Ensure the Keyboard Settings match your actual keyboard set-up.',
+      condition: timeoutCount > 3 },
     { key: 'enc_tired',
       text: 'If you are feeling tired, a short break is more useful than a frustrated run.',
-      condition: (skipCount >= 3 || accuracyPercent < 65) },
+      condition: (skipCount >= 3 || accuracyPercent < 50) },
     { key: 'enc_plateau',
       text: 'A plateau is not a ceiling. It is your brain consolidating before the next jump.',
       condition: true },
+       { key: 'enc_cheat_sheet',
+      text: 'During play, press the lock key on the graphical keyboard to reveal a \'Cheat Sheet\'. #Spoiler',
+      condition: accuracyPercent <= 85 },
     { key: 'enc_clean_run',
       text: 'A clean round with no hints is worth more than a fast one full of misfires.',
       condition: accuracyPercent >= 85 },
@@ -8688,11 +8692,11 @@ function finalizeRunData(completedRun, currentPool, DefeatCount) {
       text: 'You are closer to automatic recall than it feels right now.',
       condition: accuracyPercent >= 70 },
     { key: 'enc_show_up',
-      text: 'Showing up is most of the battle. You showed up.',
+      text: 'Showing up is most of the battle and you showed up.',
       condition: true },
-    { key: 'enc_tomorrow',
-      text: 'Come back tomorrow. The gains are cumulative even when you cannot see them.',
-      condition: true },
+   { key: 'enc_tomorrow',
+  text: 'Come back regularly. Gains are cumulative and happening even when you can\'t see them.',
+  condition: true },
   ];
 
   // Pre-trophy: only Cat 1/2 messages, filtered to relevant ones

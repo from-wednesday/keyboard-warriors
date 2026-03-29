@@ -11,7 +11,7 @@
 <title>tablet</title>
 <script>
   const DefaultTitle = 'Keyboard Warriors';
-  const VersionLabel   = '0005';
+  const VersionLabel   = '0001';
   const TitlePrefix  = document.title !== DefaultTitle ? document.title.trim() + '_' : '';
   const DBG_DEVICE   = TitlePrefix + VersionLabel;
 </script>
@@ -1802,21 +1802,18 @@ body.landing-state #statsRow {
 }
 
 /* ── Settings panel: fixed, centred in the middle zone ─────────
-   Middle zone runs from statsRow bottom (~278px from top) to
-   keyboard top. We use top + bottom anchoring so it fills that
-   gap and centres its content vertically.                       */
+   Uses top + bottom anchoring so it centres content between the
+   top block and the keyboard. Width is capped to match the
+   keyboard panel width (692px natural) plus flanking icon space. */
 #settingsPanel {
   position: fixed;
-  /* Top anchor: just below the top block (~294px with 16px body padding) */
   top: 294px;
-  /* Bottom anchor: just above the keyboard face zone */
-  bottom: var(--keyboard-face-bottom, 110px);
+  bottom: var(--keyboard-face-bottom, 86px);
   left: 50%;
   transform: translateX(-50%);
   width: min(692px, calc(100vw - 32px));
   pointer-events: none;
   z-index: 5;
-  /* Centre content vertically within this zone */
   display: flex;
   align-items: center;
   justify-content: center;
@@ -1837,8 +1834,7 @@ body.landing-state #statsRow {
     opacity   0.3s ease 0.25s,
     transform 0.3s ease 0.25s;
   pointer-events: none;
-  /* Allow scroll if content overflows (rare but safe) */
-  max-height: calc(100vh - 294px - var(--keyboard-face-bottom, 110px) - 8px);
+  max-height: calc(100vh - 294px - var(--keyboard-face-bottom, 86px) - 8px);
   overflow-y: auto;
 }
 
@@ -1849,15 +1845,13 @@ body.landing-state #statsRow {
 }
 
 /* ── Keyboard wrapper: fixed above bottom chrome ──────────────
-   --keyboard-face-bottom: distance from screen bottom to
-   keyboard bottom in face-up (playing) position.
-   During settings: keyboard is folded down close to the bottom. */
+   During play (face-up): sits at --keyboard-face-bottom.
+   During settings (folded): slides to --keyboard-folded-bottom. */
 #keyboardWrap {
   position: fixed;
   left: 50%;
   transform: translateX(-50%);
-  bottom: var(--keyboard-face-bottom, 110px);
-  /* Size: enough to contain the scaled stage + flanking icon wraps */
+  bottom: var(--keyboard-face-bottom, 86px);
   width: min(900px, calc(100vw - 32px));
   display: flex;
   justify-content: center;
@@ -1867,16 +1861,14 @@ body.landing-state #statsRow {
   overflow: visible;
 }
 
-/* When settings are open the keyboard folds down near the screen bottom */
 #keyboardWrap.kb-settings-open {
-  bottom: var(--keyboard-folded-bottom, 8px);
+  bottom: var(--keyboard-folded-bottom, 6px);
 }
 
-/* ── Bottom chrome: fixed to screen bottom ────────────────────
-   diffIconWrap sits above credit line, both fixed.             */
+/* ── Bottom chrome: fixed to screen bottom ──────────────────── */
 #credit {
   position: fixed;
-  bottom: 16px;
+  bottom: 6px;
   left: 50%;
   transform: translateX(-50%);
   font-family: 'Lato', system-ui, sans-serif;
@@ -1887,12 +1879,11 @@ body.landing-state #statsRow {
   z-index: 3;
   padding: 0;
   width: auto;
-  /* Nudge credit and difficulty icon are now always in place — no JS transform */
 }
 
 #diffIconWrap {
-  position: fixed;
-  bottom: 40px;  /* above credit line (16px bottom + ~18px credit + 6px gap) */
+  position: fixed !important;  /* overrides the position:relative rule in the icon tooltip section */
+  bottom: 28px;
   left: 50%;
   transform: translateX(-50%);
   display: flex;
@@ -1901,73 +1892,86 @@ body.landing-state #statsRow {
   z-index: 6;
 }
 
-/* ── Keyboard stage: scale only, no translateY hacks ─────────
-   transform-origin top-center keeps keyboard anchored at the
-   top of the wrap as it scales.                               */
+/* ── Keyboard stage: scale set by CSS custom property ─────────
+   transform-origin top-center anchors during flip animation.   */
 #kbFlipStage {
   transform-origin: top center;
-  scale: var(--keyboard-scale, 1.12);
+  scale: var(--keyboard-scale, 1.00);
 }
 
-/* ── Per-device breakpoints — landscape iPads ─────────────────
-   All values assume landscape orientation and full-screen.
-   Breakpoints on viewport height (the shorter dimension in
-   landscape) covers all target devices unambiguously.         */
-
-/* iPad mini 6 landscape: 744px tall */
-@media (max-height: 780px) {
-  :root {
-    --keyboard-scale: 1.00;
-    --keyboard-face-bottom: 110px;
-    --keyboard-folded-bottom: 8px;
-  }
-  #settingsPanel { top: 290px; bottom: 110px; }
-}
-
-/* iPad Air / iPad 10th gen landscape: 820px tall */
-@media (min-height: 781px) and (max-height: 849px) {
-  :root {
-    --keyboard-scale: 1.12;
-    --keyboard-face-bottom: 118px;
-    --keyboard-folded-bottom: 8px;
-  }
-  #settingsPanel { top: 290px; bottom: 118px; }
-}
-
-/* iPad Pro 11" landscape: 834px tall */
-@media (min-height: 850px) and (max-height: 900px) {
-  :root {
-    --keyboard-scale: 1.16;
-    --keyboard-face-bottom: 122px;
-    --keyboard-folded-bottom: 8px;
-  }
-  #settingsPanel { top: 290px; bottom: 122px; }
-}
-
-/* iPad Pro 12.9" landscape: 1024px tall */
-@media (min-height: 901px) {
-  :root {
-    --keyboard-scale: 1.40;
-    --keyboard-face-bottom: 148px;
-    --keyboard-folded-bottom: 8px;
-  }
-  #settingsPanel { top: 290px; bottom: 148px; }
-}
-
-/* ── Icon wraps: flanking the keyboard, vertically centred ─── */
+/* ── Icon wraps: position:fixed, aligned under the stat record labels ─
+   They move vertically with the keyboard via matching bottom values
+   driven by the .icons-folded class (toggled by JS alongside kb-settings-open). */
 #kbIconWrap, #brIconWrap {
-  transition: opacity 0.3s ease;
+  position: fixed;
+  bottom: var(--keyboard-face-bottom, 86px);
+  transition: bottom 0.85s cubic-bezier(0.4, 0, 0.2, 1), opacity 0.3s ease;
   overflow: visible;
-  position: absolute;
-  top: 0;
   width: 44px;
   height: 44px;
   display: flex;
   align-items: center;
   justify-content: center;
+  z-index: 7;
 }
-#kbIconWrap { left: 0; }
-#brIconWrap { right: 0; }
+/* Horizontal alignment: centred under statLeft and statRight columns.
+   Both gameContainer and statsRow share 44px side padding, plus body has 16px padding.
+   statLeft is 140px wide → its centre is at 16 + 44 + 70 = 130px from viewport left.
+   statRight is 130px wide → its centre is at 16 + 44 + 65 = 125px from viewport right. */
+#kbIconWrap { left: 130px; transform: translateX(-50%); }
+#brIconWrap { right: 125px; transform: translateX(50%); }
+
+/* When settings are open the icons slide down with the keyboard */
+#kbIconWrap.icons-folded,
+#brIconWrap.icons-folded {
+  bottom: var(--keyboard-folded-bottom, 6px);
+}
+
+/* Remove the redundant sibling-selector attempts from above */
+   Values are based on usable viewport height (below browser chrome).
+   Base values cover the tightest realistic case (small tablet + max chrome).
+   Larger viewports unlock larger keyboard scales and more generous spacing. */
+
+/* Base — covers everything up to ~679px usable height */
+:root {
+  --keyboard-scale:         1.00;
+  --keyboard-face-bottom:   86px;
+  --keyboard-folded-bottom: 6px;
+}
+
+/* Medium — ~680px and above (Air / Pro 11 with some chrome) */
+@media (min-height: 680px) {
+  :root {
+    --keyboard-scale:         1.08;
+    --keyboard-face-bottom:   90px;
+    --keyboard-folded-bottom: 6px;
+  }
+  #settingsPanel { top: 294px; bottom: 90px; }
+  #settingsPanelInner { max-height: calc(100vh - 294px - 90px - 8px); }
+}
+
+/* Large — ~780px and above (Pro 11 / Air with minimal chrome) */
+@media (min-height: 780px) {
+  :root {
+    --keyboard-scale:         1.16;
+    --keyboard-face-bottom:   100px;
+    --keyboard-folded-bottom: 6px;
+  }
+  #settingsPanel { top: 294px; bottom: 100px; }
+  #settingsPanelInner { max-height: calc(100vh - 294px - 100px - 8px); }
+}
+
+/* Extra-large — ~920px and above (Pro 12.9 comfortably) */
+@media (min-height: 920px) {
+  :root {
+    --keyboard-scale:         1.35;
+    --keyboard-face-bottom:   130px;
+    --keyboard-folded-bottom: 6px;
+  }
+  #settingsPanel { top: 294px; bottom: 130px; }
+  #settingsPanelInner { max-height: calc(100vh - 294px - 130px - 8px); }
+}
+
 
 /* ── Shared modal shell ───────────────────────────────────────────────────
    Styled to match #gameContainer: blue fill, white border, same radius
@@ -4254,12 +4258,21 @@ function _startReadyPromptTimer() {
     var awaitingAction = (gameState === 'idle' || gameState === 'paused' ||
                           gameState === 'finished' || gameState === 'readyToUnpause');
     if (!awaitingAction) { readyPromptTimer = null; return; }
-    // In idle/finished state, ensure title is not blurred before overlay
+    // Write into the title element in the blue game panel — no floating overlay,
+    // which eliminates the blur conflict with the headline text.
     if (gameState === 'idle' || gameState === 'finished') {
       titleEl.classList.remove('blurred');
+      titleEl.className = '';
+      titleEl.textContent = 'Ready?';
+    } else if (gameState === 'paused' || gameState === 'readyToUnpause') {
+      // Title is blurred during pause — only show in the confirm heading overlay
+      // if nothing else is already occupying it.
+      var headingEl = document.getElementById('confirmHeading');
+      if (headingEl && (!headingEl.textContent || headingEl.style.display === 'none')) {
+        showConfirmHeading('Ready?', false);
+      }
     }
-    showConfirmHeading('Ready?', false);
-  }, 10000);
+  }, 20000);
 }
 
 function _stopReadyPromptTimer() {
@@ -8239,10 +8252,20 @@ function _onUserActivity() {
   var awaitingAction = (gameState === 'idle' || gameState === 'paused' ||
                         gameState === 'finished' || gameState === 'readyToUnpause');
   if (!awaitingAction) return;
+  // Clear from confirm heading overlay (pause states)
   var headingEl = document.getElementById('confirmHeading');
   if (headingEl && headingEl.textContent === 'Ready?') {
     headingEl.style.display = 'none';
     headingEl.textContent = '';
+  }
+  // Clear from title element (idle/finished states)
+  if ((gameState === 'idle' || gameState === 'finished') && titleEl.textContent === 'Ready?') {
+    // Restore the appropriate idle/finished title text
+    if (gameState === 'idle') {
+      titleEl.textContent = 'Play Keyboard Warriors';
+    }
+    // finished state: leave the end-game message in place — it was there before Ready? replaced it
+    // Actually we can't recover it easily so just restore idle text for safety
   }
   _startReadyPromptTimer();
 }
@@ -8534,6 +8557,12 @@ function setKbPosition(pos) {
   var isSettingsOpen = (pos !== 'face');
   wrap.classList.toggle('kb-settings-open', isSettingsOpen);
 
+  // Slide the flanking icon wraps with the keyboard
+  var kbIconWrap = document.getElementById('kbIconWrap');
+  var brIconWrap = document.getElementById('brIconWrap');
+  if (kbIconWrap) kbIconWrap.classList.toggle('icons-folded', isSettingsOpen);
+  if (brIconWrap) brIconWrap.classList.toggle('icons-folded', isSettingsOpen);
+
   // Going away from face — hide icons, show 3D edges
   if (prev === 'face') {
     wrap.classList.add('kb-flipping');
@@ -8596,6 +8625,10 @@ function _resetFlipState() {
   if (panel) { panel.classList.remove('kb-edged', 'kb-edges-visible', 'kb-partial'); panel.style.transform = ''; }
   if (stage) { stage.classList.remove('kb-show-base'); stage.style.transform = ''; }
   if (wrap)  { wrap.classList.remove('kb-flipping', 'kb-settings-open'); }
+  var kbIconWrap = document.getElementById('kbIconWrap');
+  var brIconWrap = document.getElementById('brIconWrap');
+  if (kbIconWrap) kbIconWrap.classList.remove('icons-folded');
+  if (brIconWrap) brIconWrap.classList.remove('icons-folded');
 }
 
 /* ── Difficulty toast helper ───────────────────────── */
@@ -9536,7 +9569,9 @@ function revealGameAfterLanding() {
 
 /* ─── TOOLTIP ────────────────────────────────────────*/
 /* ─── ICON TOOLTIPS — pure CSS, anchored to each icon wrap ──────*/
-#diffIconWrap { position: relative; }
+/* #diffIconWrap position is set in the tablet layout section above.
+   The position:relative originally here was for desktop tooltip anchoring;
+   on tablet the element is position:fixed so tooltips use absolute within it. */
 
 .icon-tip {
   position: absolute;

@@ -6,16 +6,16 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Keyboard Warriors</title>
+<title>beta</title>
 <script>
   const DefaultTitle = 'Keyboard Warriors';
-  const VersionLabel   = '0002';
+  const VersionLabel   = '0005';
   const TitlePrefix  = document.title !== DefaultTitle ? document.title.trim() + '_' : '';
   const DBG_DEVICE   = TitlePrefix + VersionLabel;
 </script>
 <link rel="icon" type="image/png" href="/keyboard-warriors/keyboard-warriors-favicon.png">
 <script>
-  // Redirect iPad users to the optimised iPad build
+  // Redirect iOS, iPad OS and Android tablet users to the optimised tablet build
   (function() {
     var ua = navigator.userAgent || '';
     var isPhone = /iPhone|iPod/.test(ua) || (/Android/.test(ua) && /Mobile/.test(ua));
@@ -840,6 +840,14 @@ body.pc-mode #extKeyPill {
   opacity: 1;
   transform: translateY(0);
   pointer-events: auto;
+}
+
+/* Fade content out quickly as the keyboard rises to face position */
+#settingsPanel.sp-closing #settingsPanelInner {
+  opacity: 0;
+  transform: translateY(-6px);
+  transition: opacity 0.2s ease, transform 0.2s ease;
+  pointer-events: none;
 }
 
 /* ── Two-column grid ──────────────────────────────── */
@@ -1945,13 +1953,13 @@ li.conflict-dismissed .conflict-desc {
       <div class="sp-col sp-col-left">
         <p class="sp-body" id="browserCompatHeading"></p>
         <p class="sp-body" id="browserCompatIntro"></p>
-        <p class="sp-body" id="browserCompatFooter"></p>
+        <p class="sp-body" id="browserCompatFooter"></p> <p class="sp-body sp-hint">If you encounter an error, hold down
+          <span class="sp-key-chip">Esc</span>
+          to open the debug window and send a report.</p>
       </div>
       <div class="sp-col sp-col-right">
         <ul id="browserCompatList" class="sp-conflict-list"></ul>
-        <p class="sp-body sp-hint">If you encounter an error, hold down
-          <span class="sp-key-chip">Esc</span>
-          to open the debug window and send a report.</p>
+    
       </div>
     </div>
 
@@ -2021,16 +2029,40 @@ li.conflict-dismissed .conflict-desc {
         </div>
       </div>
     </div>
-
-    <!-- ── Padlock Panel ────────────────────────────────── -->
+<!-- ── Report Card ────────────────────────────────── -->
+<div id="panelReport" class="sp-page sp-page-report">
+  <div class="sp-col sp-col-left">
+    <div class="sp-report-col-header">
+      <p class="sp-small-card-title">REPORT CARD</p>
+      <p class="sp-report-section-title">Mastered</p>
+    </div>
+    <ul id="reportStrengths" class="sp-report-list sp-report-strength"></ul>
+  </div>
+  <div class="sp-col sp-col-right">
+    <div class="sp-report-col-header sp-report-col-header-right">
+      <p class="sp-report-section-title">Practice</p>
+    </div>
+    <ul id="reportWeaknesses" class="sp-report-list sp-report-weakness"></ul>
+  </div>
+  <div class="sp-report-bottom">
+    <div class="sp-report-advice-box" id="reportTrainerAdvice"></div>
+  </div>
+</div>
+    <!-- ── Cheat Sheet Panel ─────────────────────────────── -->
     <div id="panelPadlock" class="sp-page">
       <div class="sp-col sp-col-left">
-        <p class="sp-title"><strong>Easter Eggs.</strong></p>
+        <div class="sp-report-col-header">
+          <p class="sp-small-card-title" id="cheatSheetContextLabel"></p>
+          <p class="sp-report-section-title" id="cheatSheetHeading">Cheat Sheet</p>
+        </div>
+        <ul id="cheatSheetList" class="sp-report-list sp-report-weakness"></ul>
       </div>
       <div class="sp-col sp-col-right">
-        <p class="sp-body sp-hint">If you encounter an error, hold down
-          <span class="sp-key-chip">Esc</span>
-          to open the debug window and send a report.</p>
+        <div class="sp-report-col-header" aria-hidden="true" style="visibility:hidden;">
+          <p class="sp-small-card-title">&nbsp;</p>
+          <p class="sp-report-section-title">&nbsp;</p>
+        </div>
+        <ul id="cheatSheetListRight" class="sp-report-list sp-report-weakness"></ul>
       </div>
     </div>
 
@@ -2844,8 +2876,18 @@ function buildOsLabels() {
   leftLabel.style.cursor  = 'pointer';
   rightLabel.style.cursor = 'pointer';
 
-  leftLabel.addEventListener('click',  function() { applyOsMode(leftOperatingSystem);  if (activeSettings === 'panelKeyboard') updateModalToggles(); });
-  rightLabel.addEventListener('click', function() { applyOsMode(rightOperatingSystem); if (activeSettings === 'panelKeyboard') updateModalToggles(); });
+  leftLabel.addEventListener('click',  function() {
+    applyOsMode(leftOperatingSystem);
+    if (activeSettings === 'panelKeyboard') updateModalToggles();
+    if (activeSettings === 'panelReport')   _refreshReportPanel();
+    if (activeSettings === 'panelPadlock')  _refreshCheatSheet();
+  });
+  rightLabel.addEventListener('click', function() {
+    applyOsMode(rightOperatingSystem);
+    if (activeSettings === 'panelKeyboard') updateModalToggles();
+    if (activeSettings === 'panelReport')   _refreshReportPanel();
+    if (activeSettings === 'panelPadlock')  _refreshCheatSheet();
+  });
 }
 
 function updateToggleVisual(os) {
@@ -2917,7 +2959,7 @@ function applyOsMode(os) {
       questionIndex = 0;
       currentAnswer = questionPool[0].shortcut;
       titleEl.className = '';
-      titleEl.textContent = questionPool[0].display;
+      titleEl.textContent = (questionPool[0].display || '').replace(/\\\\/g, '\\');
     } else {
       questionPool = newPool;
       questionIndex = 0;
@@ -2940,7 +2982,13 @@ function updateMismatchPill() {
   if (mismatch) {
     const playing = currentOs === 'pc' ? 'PC' : 'Mac';
     const machine = detectedOs === 'mac' ? 'a Mac' : 'a PC';
-    osMismatchEl.textContent = `Playing ${playing} mode on ${machine}`;
+    const liveAccuracy = calcAccuracy();
+    const CrossPrefix = '<span style="font-variant:small-caps;font-size:0.85em;letter-spacing:0.04em;">Cross Training:</span> ';
+    if (liveAccuracy !== null && liveAccuracy < 66) {
+      osMismatchEl.innerHTML = CrossPrefix + 'Check your Keyboard Settings';
+    } else {
+      osMismatchEl.innerHTML = CrossPrefix + `Playing ${playing} mode on ${machine}`;
+    }
     osMismatchEl.classList.add('show');
   } else {
     osMismatchEl.classList.remove('show');
@@ -2954,6 +3002,9 @@ function onOsToggle() {
     : (nativeMac ? 'mac' : 'pc'));
   if (activeSettings === 'panelKeyboard') updateModalToggles();
   if (activeSettings === 'panelBrowser')  _refreshBrowserContent();
+  if (activeSettings === 'panelReport')     _refreshReportPanel();
+  if (activeSettings === 'panelPadlock')    _refreshCheatSheet();
+  runData.length = 0; lastCompletedReport = null;
 }
 
 // On mobile: auto-enable sticky + touch modes, show updated message
@@ -3102,8 +3153,8 @@ function shortcutToCodes(s) {
 
 function charToCode(ch) {
   const map = {
-    'RETURN':'Enter','ENTER':'Enter',
-    ';':'Semicolon','=':'Equal','-':'Minus',
+'RETURN':'Enter','ENTER':'Enter',
+';':'Semicolon','=':'Equal','-':'Minus',"'":"Quote",
     '[':'BracketLeft',']':'BracketRight',
     '/':'Slash','.':'Period',',':'Comma',
     '<':'Comma','>':'Period',
@@ -3178,6 +3229,7 @@ function checkAndArmPartialShortcutNudge() {
   partialShortcutNudgeArmed = true;
   partialShortcutNudgeTimer = setTimeout(function() {
     if (!isPartialCorrectState()) { resetPartialShortcutNudgeTimers(); return; }
+    partialNudgeFiredThisQuestion = true;
     var firstNudgeMessage = "The shortcut isn't complete yet";
     var firstNudgeReadingDuration = Math.min(6000, 1800 + firstNudgeMessage.length * 65);
     showToast(firstNudgeMessage);
@@ -3427,7 +3479,14 @@ function updateKeyboardLighting(e, isDown) {
   } else {
     heldKeys.delete(code);
     greenHeld.delete(code);
+    // Only reset the nudge timers if we are no longer in a partial correct state.
+    // If the player released a correct key but other correct keys are still lit
+    // (sticky mode), or the question still has required keys unmet, keep the nudge armed.
+    if (!isPartialCorrectState()) {
     resetPartialShortcutNudgeTimers();
+    } else {
+      checkAndArmPartialShortcutNudge();
+    }
     if (isExtKey) {
       hideExtKeyPill();
     } else {
@@ -3465,7 +3524,12 @@ let questionPool    = [];  // shuffled pool of all 42 shortcuts
 let answersLeft     = 10;  // counts down only on correct answer
 let currentAnswer = '';
 let helpActive    = false;
-
+// ── Adaptive training state ───────────────────────────────────────────────────
+let runData            = [];
+let startTime          = 0;
+let hintUsedAtMs       = null;
+let wrongKeyCount      = 0;
+let lastCompletedReport = null;  // retained so report card remains visible until next game
 // ── Lives state ───────────────────────────────────────────────────────────────
 let livesRemaining  = null;  // null when playerLives is infinite
 let heartEls        = [];    // SVG elements in the livesRow
@@ -3473,6 +3537,7 @@ let transitioning = false;
 let partialShortcutNudgeTimer    = null;
 let partialShortcutFollowUpTimer = null;
 let partialShortcutNudgeArmed    = false;
+let partialNudgeFiredThisQuestion = false;  // true once the nudge toast actually fires
 let consecutiveExtraKeyCount     = 0;  // increments when correct keys + a wrong key are all present
 let endScreenInactivityTimer      = null;
 let readyToUnpauseInactivityTimer = null;
@@ -3603,6 +3668,8 @@ function updateAccuracyDisplay() {
   const pct = calcAccuracy();
   const display = (pct === null ? 100 : pct);
   accuracyEl.textContent = display + '%';
+  // Refresh mismatch pill text when cross-training so accuracy warning stays current
+  if (gameState === 'playing') updateMismatchPill();
 }
 
 const BULLSEYE_SVG_STR = '<svg style="width:12px;height:12px;vertical-align:middle;margin-right:3px;margin-bottom:1px;" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="7"/><line x1="12" y1="2" x2="12" y2="7"/><line x1="12" y1="17" x2="12" y2="22"/><line x1="2" y1="12" x2="7" y2="12"/><line x1="17" y1="12" x2="22" y2="12"/></svg>';
@@ -3840,14 +3907,22 @@ function toggleHelp() {
   resetPartialShortcutNudgeTimers();
   if (!helpActive) {
     helpActive = true;
+    if (hintUsedAtMs === null) {
+  hintUsedAtMs = performance.now() - startTime;
+}
     // Show hint in the stats-row toast pill — below the game panel, always readable
-    kbToastEl.innerHTML = buildHintHTML(currentAnswer, '#10b981');
+    kbToastEl.innerHTML = buildHintHTML(currentAnswer.replace(/\\\\/g, '\\'), '#10b981');
     kbToastEl.classList.add('show');
     clearTimeout(toastTimer);
     // Suppress the "Ready?" prompt while the hint is on screen
     _stopReadyPromptTimer();
     // If "Ready?" is already showing, clear it so it doesn't overlap the hint
     hideConfirmHeading();
+    // Rewind the question timer by 1 second to give the player time to read and act
+    if (questionTimer !== null && questionTimerSecondsRemaining > 0) {
+      questionTimerSecondsRemaining = Math.min(questionTimer, questionTimerSecondsRemaining + 1);
+      updateQuestionTimerArcVisual();
+    }
     // Apply -10% hint penalty (deducted from displayed %, raw counts unchanged)
     hintPenaltyPct += 10;
     updateAccuracyDisplay();
@@ -3873,7 +3948,7 @@ function toggleHelp() {
   }
 }
 function showAutoHintToast() {
-    kbToastEl.innerHTML = buildHintHTML(currentAnswer, '#f97316');
+    kbToastEl.innerHTML = buildHintHTML(currentAnswer.replace(/\\\\/g, '\\'), '#f97316');
     kbToastEl.classList.add('show');
     clearTimeout(toastTimer);
 }
@@ -3908,7 +3983,7 @@ function _enterReadyToUnpause() {
   helpBtn.style.color = 'white';
   titleEl.classList.remove('blurred');
   titleEl.className = '';
-  titleEl.textContent = questionPool[questionIndex]?.display || '';
+  titleEl.textContent = (questionPool[questionIndex]?.display || '').replace(/\\\\/g, '\\');
   questionCountEl.classList.remove('blurred');
   document.getElementById('livesRow').classList.remove('blurred');
   // Pulse the unpause button once the keyboard has returned to face position,
@@ -4075,7 +4150,7 @@ function unpause() {
   // Restore question title — may have been blanked by the resume countdown
   if (questionPool.length > 0 && (!titleEl.textContent || titleEl.textContent === '')) {
     titleEl.className = '';
-    titleEl.textContent = questionPool[questionIndex]?.display || '';
+    titleEl.textContent = (questionPool[questionIndex]?.display || '').replace(/\\\\/g, '\\');
     currentAnswer = questionPool[questionIndex]?.shortcut || '';
   }
   titleEl.classList.remove('blurred');
@@ -4159,7 +4234,7 @@ function _returnToPauseScreen(message) {
   if (activeSettings !== 'panelPause') openSettings('panelPause');
 
   titleEl.className = '';
-  titleEl.textContent = questionPool[questionIndex]?.display || '';
+  titleEl.textContent = (questionPool[questionIndex]?.display || '').replace(/\\\\/g, '\\');
   titleEl.classList.add('blurred');
   questionCountEl.classList.add('blurred');
   document.getElementById('livesRow').classList.add('blurred');
@@ -4795,7 +4870,7 @@ function matchesShortcut(event, str) {
    reveals more of itself when opened.
    Non-selected rows fade out when closed.
 ══════════════════════════════════════ */
-// APPS and APP_JSON_FILE_PATH are populated at runtime from KeyboardWarrior_Apps.json.
+// APPS and APP_JSON_FILE_PATH are populated at runtime from KeyboardWarriors Apps json.
 // Until the fetch resolves these remain empty; init is deferred to _onAppsLoaded().
 var APPS = [];
 var APP_JSON_FILE_PATH = {};
@@ -4822,6 +4897,7 @@ function buildAppPill() {
       try { localStorage.setItem('kw_app', currentApp); } catch(e) {}
       buildAppPill();
       closeAppPill();
+      runData.length = 0; lastCompletedReport = null;
     });
     appPillEl.appendChild(row);
   });
@@ -5231,7 +5307,7 @@ var activeSettings = null;
 var kbModalOpen = false;
 var browserModalOpen = false;
 
-var SP_PAGE_ORDER = ['panelKeyboard', 'panelBrowser', 'panelDifficulty', 'panelPause', 'panelPadlock', 'panelReturning', 'panelWelcome'];
+var SP_PAGE_ORDER = ['panelKeyboard', 'panelBrowser', 'panelDifficulty', 'panelPause', 'panelReport', 'panelPadlock', 'panelReturning', 'panelWelcome'];
 
 function _spPageEl(page) {
   var ids = {
@@ -5242,6 +5318,7 @@ function _spPageEl(page) {
     panelPadlock:    'panelPadlock',
     panelReturning:  'panelReturning',
     panelWelcome:    'panelWelcome',
+    panelReport:     'panelReport',
   };
   return document.getElementById(ids[page]);
 }
@@ -5263,11 +5340,15 @@ function _spAlignPanel() {
     requestAnimationFrame(function() {
       var contentH = inner.scrollHeight;
       var stageH   = stage.offsetHeight;
-      // On larger screens contentH is comfortably less than stageH -- just add a small buffer.
-      // On small screens contentH exceeds stageH, so we need room for both stacked.
-      var needed = contentH > stageH
-        ? contentH + stageH + 24
-        : contentH + 16;
+      // Edge-position panels (report, cheat sheet, pause, browser, difficulty) sit
+      // above a fully folded keyboard. Only the content height matters; the stage
+      // height is already accounted for by the fold. Add a small buffer only.
+      var IsEdgePanel = (activeSettings === 'panelReport' || activeSettings === 'panelPadlock' ||
+                         activeSettings === 'panelPause'  || activeSettings === 'panelBrowser' ||
+                         activeSettings === 'panelDifficulty');
+      var needed = IsEdgePanel
+        ? contentH + 8
+        : (contentH > stageH ? contentH + stageH + 24 : contentH + 16);
       wrap.style.minHeight = Math.max(needed, 320) + 'px';
     });
   });
@@ -5309,7 +5390,7 @@ function openSettings(page) {
   activeSettings = page;
 
   // Update kbPos — partial for most panels; edge for browser and pause
-  var pos = (page === 'panelBrowser' || page === 'panelPause' || page === 'panelPadlock' || page === 'panelDifficulty') ? 'edge' : 'partial';
+  var pos = (page === 'panelBrowser' || page === 'panelPause' || page === 'panelPadlock' || page === 'panelDifficulty' || page === 'panelReport') ? 'edge' : 'partial';
   setKbPosition(pos);
 
   // Pause game if needed (not for pause panel or when on welcome screen)
@@ -5324,6 +5405,8 @@ function openSettings(page) {
   if (page === 'panelKeyboard')   { updateModalToggles(); updateKbSizeToggle(); }
   if (page === 'panelDifficulty') _refreshDifficultyPanel();
   if (page === 'panelPause')      _refreshPausePanel();
+  if (page === 'panelReport')     _refreshReportPanel();
+  if (page === 'panelPadlock')    _refreshCheatSheet();
 
   // Align panel width to keyboard
   _spAlignPanel();
@@ -5377,7 +5460,12 @@ function closeSettings() {
   _exitDiffConfirm();
 
   var sp = document.getElementById('settingsPanel');
-  if (sp) sp.classList.remove('sp-open');
+  if (sp) {
+    // Apply closing class first so content fades out before keyboard moves up
+    sp.classList.add('sp-closing');
+    setTimeout(function() { sp.classList.remove('sp-closing'); }, 250);
+    sp.classList.remove('sp-open');
+  }
 
   // Hide all pages
   SP_PAGE_ORDER.forEach(function(p) {
@@ -5398,10 +5486,27 @@ function closeSettings() {
   // If paused mid-game and the user closes a settings panel, enter readyToUnpause
   // rather than immediately showing the pause screen — the keyboard comes back up
   // and the unpause button pulses as the CTA.
+  if (gameState === 'finished') {
+  var welcomePage = 'panelReport';
+  if (closingPage !== welcomePage) {
+    openSettings(welcomePage);
+    return;
+  }
+  setKbPosition('face');
+  return;
+}
   if (gameState === 'paused') {
+    // The cheat sheet and other panels opened while paused should close
+    // quietly -- the keyboard stays at edge and the game stays paused.
+    // Only raise the keyboard (readyToUnpause) when the pause panel itself is closed.
+    if (closingPage === 'panelPadlock' || closingPage === 'panelKeyboard' || closingPage === 'panelBrowser' || closingPage === 'panelDifficulty') {
+      openSettings('panelPause');
+      return;
+    }
     _enterReadyToUnpause();
     return;
   }
+  
   // If on a landing screen and the user closed a *different* panel (e.g. keyboard/browser
   // settings opened on top of the welcome panel), restore the welcome panel.
   // If the welcome panel itself was closed, let it close normally.
@@ -5816,7 +5921,7 @@ function dbgPrevQuestion() {
   questionIndex = (questionIndex - 1 + questionPool.length) % questionPool.length;
   currentAnswer = questionPool[questionIndex].shortcut;
   titleEl.className = '';
-  titleEl.textContent = questionPool[questionIndex].display;
+  titleEl.textContent = (questionPool[questionIndex].display || '').replace(/\\\\/g, '\\');
   clearAllLit(); heldKeys.clear();
   clearHelp(); transitioning = false;
 }
@@ -5825,7 +5930,7 @@ function dbgNextQuestion() {
   questionIndex = (questionIndex + 1) % questionPool.length;
   currentAnswer = questionPool[questionIndex].shortcut;
   titleEl.className = '';
-  titleEl.textContent = questionPool[questionIndex].display;
+  titleEl.textContent = (questionPool[questionIndex].display || '').replace(/\\\\/g, '\\');
   clearAllLit(); heldKeys.clear();
   clearHelp(); transitioning = false;
 }
@@ -5998,11 +6103,11 @@ function _showWelcomeScreen() {
   titleEl.textContent = 'Welcome to Keyboard Warriors';
   var tagline = document.getElementById('welcomeTagline');
   if (tagline) tagline.style.display = 'block';
-  // Default to Normal on first visit
+  // Default to Fundamentals on first visit
   _diffFirst = true;
-  setDiffState(0);
-  _updateDiffBtnStyles('normal');
-  _updateDiffSubtitle('normal');
+  setDiffState(-1);
+  _updateDiffBtnStyles('fundamentals');
+  _updateDiffSubtitle('fundamentals');
   openSettings('panelWelcome');
 }
 
@@ -6042,7 +6147,7 @@ function diffBtnClick(mode) {
   var activeBtn = document.querySelector('#difficultyPill .diff-btn[data-mode="' + mode + '"], #welcomeDifficultyPill .diff-btn[data-mode="' + mode + '"]');
   _popDiffLabel(activeBtn);
   try { localStorage.setItem('kw_difficulty', currentDifficulty); } catch(e) {}
-
+runData.length = 0; lastCompletedReport = null;
   // Only apply timer/lives presets once the trophy has been earned.
   // Before that the sliders are locked at ∞ and should not change.
   if (hasTrophy) {
@@ -6127,6 +6232,7 @@ function questionTimerBtnClick(value) {
   questionTimer = value;
   try { localStorage.setItem('kw_timer', String(value)); } catch(e) {}
   _syncSliderToValue('timer', questionTimer);
+  runData.length = 0; lastCompletedReport = null;
 }
 
 function playerLivesBtnClick(value) {
@@ -6135,6 +6241,7 @@ function playerLivesBtnClick(value) {
   playerLives = value;
   try { localStorage.setItem('kw_lives', String(value)); } catch(e) {}
   _syncSliderToValue('lives', playerLives);
+  runData.length = 0; lastCompletedReport = null;
 }
 
 /* ── Fibonacci Slider ────────────────────────────────────────────────────────
@@ -6774,7 +6881,7 @@ function _pauseStartOverClick() {
 
   // Wire main/help buttons
   gameState = 'confirm-start-over';
-  showConfirmHeading('Are you sure you want to reset & restart?', true, true);
+  showConfirmHeading('Are you sure you want to reset & restart?\nAll memory will be cleared to start over fresh.', true, true);
   mainBtn.textContent = 'Wipe';
   mainBtn.style.background = '#10b981';
   helpBtn.textContent = 'Keep';
@@ -6824,20 +6931,21 @@ function confirmStartOverYes() {
     if (panelInner) { panelInner.style.transition = 'opacity 0.3s ease'; panelInner.style.opacity = '0'; }
     setTimeout(function() {
       // Wipe all local data
-      try { localStorage.removeItem('kw_best'); }       catch(e) {}
-      try { localStorage.removeItem('kw_app'); }        catch(e) {}
-      try { localStorage.removeItem('kw_difficulty'); } catch(e) {}
-      try { localStorage.removeItem('kw_perfect'); }    catch(e) {}
-      try { localStorage.removeItem('kw_timer'); }      catch(e) {}
-      try { localStorage.removeItem('kw_lives'); }      catch(e) {}
-      try { sessionStorage.removeItem('kw_welcomed'); } catch(e) {}
+      try { localStorage.removeItem('kw_best'); }         catch(e) {}
+      try { localStorage.removeItem('kw_app'); }          catch(e) {}
+      try { localStorage.removeItem('kw_difficulty'); }   catch(e) {}
+      try { localStorage.removeItem('kw_perfect'); }      catch(e) {}
+      try { localStorage.removeItem('kw_timer'); }        catch(e) {}
+      try { localStorage.removeItem('kw_lives'); }        catch(e) {}
+      try { localStorage.removeItem('kw_coach_memory'); } catch(e) {}
+      try { sessionStorage.removeItem('kw_welcomed'); }   catch(e) {}
       bestRecord = { time: null, accuracy: null };
       hasTrophy = false;
       questionTimer = null;
       playerLives   = null;
-      currentDifficulty = 'normal';
+      currentDifficulty = 'fundamentals';
       _diffFirst = true;
-      setDiffState(0);
+      setDiffState(-1);
       updateBestDisplay();
       _syncSliderToValue('timer', null);
       _syncSliderToValue('lives', null);
@@ -6903,20 +7011,21 @@ function _returningStartOver() {
     setTimeout(function() {
       // Reset storage and state, then show the welcome screen
       document.body.classList.remove('returning-screen');
-      try { localStorage.removeItem('kw_best'); } catch(e) {}
-      try { localStorage.removeItem('kw_app'); } catch(e) {}
-      try { localStorage.removeItem('kw_difficulty'); } catch(e) {}
-      try { localStorage.removeItem('kw_perfect'); } catch(e) {}
-      try { localStorage.removeItem('kw_timer'); } catch(e) {}
-      try { localStorage.removeItem('kw_lives'); } catch(e) {}
-      try { sessionStorage.removeItem('kw_welcomed'); } catch(e) {}
+      try { localStorage.removeItem('kw_best'); }         catch(e) {}
+      try { localStorage.removeItem('kw_app'); }          catch(e) {}
+      try { localStorage.removeItem('kw_difficulty'); }   catch(e) {}
+      try { localStorage.removeItem('kw_perfect'); }      catch(e) {}
+      try { localStorage.removeItem('kw_timer'); }        catch(e) {}
+      try { localStorage.removeItem('kw_lives'); }        catch(e) {}
+      try { localStorage.removeItem('kw_coach_memory'); } catch(e) {}
+      try { sessionStorage.removeItem('kw_welcomed'); }   catch(e) {}
       bestRecord = { time: null, accuracy: null };
       hasTrophy = false;
       questionTimer = null;
       playerLives   = null;
-      currentDifficulty = 'normal';
+      currentDifficulty = 'fundamentals';
       _diffFirst = true;
-      setDiffState(0);
+      setDiffState(-1);
       updateBestDisplay();
       _syncSliderToValue('timer', null);
       _syncSliderToValue('lives', null);
@@ -6950,7 +7059,7 @@ function _dismissWelcome() {
 function _startFromWelcome() {
   // Start pressed without choosing a difficulty -- default to Normal.
   if (!_welcomeIsReturning) {
-    currentDifficulty = 'normal';
+    currentDifficulty = 'fundamentals';
     try { localStorage.setItem('kw_difficulty', currentDifficulty); } catch(e) {}
   }
   var panelInner = document.getElementById('settingsPanelInner');
@@ -6998,7 +7107,7 @@ function _startFromWelcome() {
    Filters by current OS, difficulty, keyboard, and browser.
 ══════════════════════════════════════ */
 
-// APP_JSON_FILE_PATH is built from KeyboardWarrior_Apps.json at startup (see below).
+// APP_JSON_FILE_PATH is built from Keyboard Warriors Apps json at startup (see below).
 
 // The app key whose shortcuts are currently held in memory (null = nothing loaded yet)
 let loadedAppName      = null;
@@ -7007,7 +7116,7 @@ let loadedAppShortcuts = [];
 // Increments each time a load is requested, used to ignore stale fetch responses
 let loadSequenceNumber = 0;
 
-// Called once KeyboardWarrior_Apps.json has been fetched and parsed.
+// Called once Keyboard Warriors Apps json has been fetched and parsed.
 function _onAppsLoaded(appsData) {
   // Populate the two structures the rest of the code uses
   APPS = appsData.map(function(a) {
@@ -7034,7 +7143,7 @@ function _onAppsLoaded(appsData) {
 // Fetch the apps manifest on startup. Falls back to a minimal built-in list if the
 // file cannot be reached (e.g. running the HTML file locally without a server).
 (function() {
-  fetch('/keyboard-warriors/data/keyboard-warrior-apps.json')
+  fetch('/keyboard-warriors/data/keyboard-warriors-apps.json')
     .then(function(r) {
       if (!r.ok) throw new Error('HTTP ' + r.status);
       return r.json();
@@ -7048,8 +7157,7 @@ function _onAppsLoaded(appsData) {
         { key: 'Ps', label: 'Photoshop (Ps)',    path: '/keyboard-warriors/data/shortcuts_photoshop.json'    },
         { key: 'Ai', label: 'Illustrator (Ai)',  path: '/keyboard-warriors/data/shortcuts_illustrator.json'  },
         { key: 'Id', label: 'InDesign (Id)',      path: '/keyboard-warriors/data/shortcuts_inDesign.json'     },
-        { key: 'Ae', label: 'After Effects (Ae)', path: '/keyboard-warriors/data/shortcuts_afterEffects.json' },
-        { key: 'Fi', label: 'Figma (Fi)',         path: '/keyboard-warriors/data/shortcuts_figma.json'        }
+
       ]);
     });
 })();
@@ -7063,7 +7171,7 @@ function requiresExtKey(shortcut) {
 
 // Current difficulty mode: 'fundamentals' | 'normal' | 'hardcore'
 // Default: load from localStorage, fall back to 'normal'
-var currentDifficulty = 'normal';
+var currentDifficulty = 'fundamentals';
 (function() {
   try {
     var saved = localStorage.getItem('kw_difficulty');
@@ -7100,6 +7208,8 @@ function buildPool() {
   const allShortcuts  = UNIVERSAL_SHORTCUTS.concat(loadedAppShortcuts);
   return allShortcuts.filter(s => {
     if (!s.pc_safe && currentOs === 'pc') return false;
+    // Ctrl+Alt combinations on Windows trigger AltGr / system dialogs — exclude all CMD+OPTION shortcuts on PC
+    if (currentOs === 'pc' && s.shortcut.toUpperCase().includes('OPTION')) return false;
     if (s.difficulty > maxDiff) return false;
     if ((touchEnabled || !hasFullKeyboard) && requiresExtKey(s.shortcut)) return false;
     if (browserSkip.has(s.shortcut)) return false;
@@ -7375,6 +7485,14 @@ function onQuestionTimerExpired() {
         enterDefeat();
         return;
       }
+      runData.push({
+  questionIndex,
+  timeToAnswerMs: null,
+  hintUsedAtMs,
+  wrongKeyCount,
+  partialNudgeFired: partialNudgeFiredThisQuestion,
+  endType: 'timeout'
+});
       advanceQuestion();
       if (gameState === 'playing') {
         resetscoreDisc();
@@ -7388,6 +7506,14 @@ function onQuestionTimerExpired() {
   setTimeout(function() { titleEl.classList.add('fading'); }, 800);
 
   setTimeout(function() {
+  runData.push({
+  questionIndex,
+  timeToAnswerMs: null,
+  hintUsedAtMs,
+  wrongKeyCount,
+  partialNudgeFired: partialNudgeFiredThisQuestion,
+  endType: 'timeout'
+});
     advanceQuestion();
     if (gameState === 'playing') {
       resetscoreDisc();
@@ -7617,8 +7743,21 @@ function enterDefeat() {
   helpBtn.style.background = '';
   helpBtn.style.color = '';
 
+  // Increment consecutive defeat count and persist it immediately
+  var DefeatMemory       = LoadCoachMemory();
+  var NewDefeatCount     = (DefeatMemory.consecutiveDefeatCount || 0) + 1;
+  SaveCoachMemory(DefeatMemory.messageKey, DefeatMemory.settingSuggested, NewDefeatCount);
+
+  // After 2+ consecutive defeats without a report card, the coach intervenes in the title
   titleEl.className = '';
-  titleEl.textContent = defeatMessage(answersLeft);
+  if (NewDefeatCount >= 2) {
+    var CoachTitleMessage = !hasTrophy
+      ? 'Complete all 10 questions to see your full report card. Use the Help button when you are stuck on a shortcut.'
+      : 'To reach your report card, you need to complete the round. Try adding more lives in difficulty settings.';
+    titleEl.textContent = CoachTitleMessage;
+  } else {
+    titleEl.textContent = defeatMessage(answersLeft);
+  }
 
   // Lead medal on the scoreDisc
   scoreDisc.className = 'scoreDisc medal-lead';
@@ -7635,6 +7774,20 @@ function enterDefeat() {
   fillProgressDot(10 - answersLeft);
   setTimeout(hideProgressDots, 0);
 
+  // Show the report card if at least 3 questions were answered (answersLeft <= 7)
+  // This gives the coach enough data to say something useful
+  var QuestionsAnswered = 10 - answersLeft;
+  if (QuestionsAnswered >= 3) {
+    var DefeatRun = runData.slice();
+    runData.length = 0;
+    lastCompletedReport = finalizeRunData(DefeatRun, questionPool, NewDefeatCount);
+    openSettings('panelReport');
+    _refreshReportPanel();
+  } else {
+    runData.length = 0;
+    lastCompletedReport = null;
+  }
+
   startEndScreenInactivityTimer();
   _startReadyPromptTimer();
 }
@@ -7646,8 +7799,8 @@ function startGame() {
   endScreenInactivityTimer = null;
   totalTime = 0;
   transitioning = false;
-  questionPool = shuffleArray(buildPool());
-  if (currentApp === 'Ae' && !hasFullKeyboard) {
+  const adaptivePool = getAdaptiveNextRoundPool();
+questionPool = adaptivePool || shuffleArray(buildPool());  if (currentApp === 'Ae' && !hasFullKeyboard) {
     showToast('After Effects uses many extended keyboard shortcuts. Switch to Full Keyboard for the best experience.');
   }
   questionIndex = 0;
@@ -7662,7 +7815,7 @@ function startGame() {
   helpBtn.style.background = '';
   helpBtn.style.color = '';
   titleEl.className = '';
-  titleEl.textContent = questionPool[0].display;
+  titleEl.textContent = (questionPool[0].display || '').replace(/\\\\/g, '\\');
   questionCountEl.classList.remove('blurred', 'blur-instant');
   document.getElementById('livesRow').classList.remove('blurred', 'blur-instant');
   buildProgressDots();
@@ -7692,6 +7845,11 @@ function startGame() {
 
   // Start the question timer arc after the title pop animation grace period
   setTimeout(startQuestionTimerArc, 300);
+  // Adaptive: reset per-question tracking
+startTime    = performance.now();
+hintUsedAtMs = null;
+wrongKeyCount = 0;
+partialNudgeFiredThisQuestion = false;
 }
 
 function skipShortcut() {
@@ -7720,6 +7878,14 @@ function skipShortcut() {
         enterDefeat();
         return;
       }
+      runData.push({
+  questionIndex,
+  timeToAnswerMs: null,
+  hintUsedAtMs,
+  wrongKeyCount,
+  partialNudgeFired: partialNudgeFiredThisQuestion,
+  endType: 'skip'
+});
       advanceQuestion();
       if (gameState === 'playing') {
         resetscoreDisc();
@@ -7734,6 +7900,14 @@ function skipShortcut() {
     penaltyTimeout = setTimeout(() => {
       scoreDisc.classList.remove('penalty-time');
       totalTime += 5;
+      runData.push({
+  questionIndex,
+  timeToAnswerMs: null,
+  hintUsedAtMs,
+  wrongKeyCount,
+  partialNudgeFired: partialNudgeFiredThisQuestion,
+  endType: 'skip'
+});
       advanceQuestion();
       if (gameState === 'playing') {
         resetscoreDisc();
@@ -7762,7 +7936,7 @@ function advanceQuestion() {
   currentAnswer = questionPool[questionIndex].shortcut;
   titleEl.className = '';
   void titleEl.offsetWidth; // flush so animation restarts
-  titleEl.textContent = questionPool[questionIndex].display;
+  titleEl.textContent = (questionPool[questionIndex].display || '').replace(/\\\\/g, '\\');
   consecutiveExtraKeyCount = 0;
   if (gameState === 'paused') {
     titleEl.classList.add('blurred');
@@ -7775,6 +7949,11 @@ if (gameState === 'playing') mainBtn.textContent = 'Skip';
   transitioning = false;
   clearAllLit();
   heldKeys.clear();
+  // Adaptive: reset per-question tracking
+startTime    = performance.now();
+hintUsedAtMs = null;
+wrongKeyCount = 0;
+partialNudgeFiredThisQuestion = false;
 }
 
 function recordAnswer() {
@@ -7795,22 +7974,86 @@ function recordAnswer() {
   advanceQuestion();
 }
 
+// End-of-level header message pool.
+// Cycles through a list so the same fallback does not repeat every round.
+var _endGameMessageIndex = 0;
+(function() {
+  try { _endGameMessageIndex = parseInt(sessionStorage.getItem('kw_egm_idx') || '0', 10) || 0; } catch(e) {}
+})();
+function _pickEndGameFallback(pool) {
+  var idx = _endGameMessageIndex % pool.length;
+  _endGameMessageIndex++;
+  try { sessionStorage.setItem('kw_egm_idx', String(_endGameMessageIndex)); } catch(e) {}
+  return pool[idx];
+}
+
 function endGameMessage(time, accuracy, record, wasFirst) {
   if (wasFirst) return 'I will keep track of your best performances.';
   const newBestTime = time <= record.time;
-  const newBestAcc  = accuracy > record.accuracy;  // strictly greater, not equal
+  const newBestAcc  = accuracy > record.accuracy;
   const perfectAcc  = record.accuracy >= 100;
-  if (newBestTime && newBestAcc) return 'Wow.\nNew records on both fronts!';
-  if (newBestTime) return perfectAcc ? 'New time record!' : 'New time record! Can you raise the accuracy too?';
-  if (newBestAcc)  return 'Best accuracy yet!\nNow push that time down.';
-  if (accuracy >= 100) return 'Excellent accuracy.';  // matched perfect, no new record
-  if (time < record.time + 10 && accuracy > (record.accuracy ?? 0) - 5)
-    return "So close. You've shown you can do better.";
-  if (accuracy > (record.accuracy ?? 0))
-    return 'Accuracy improving — keep the pace up.';
-  if (time < record.time + 15)
-    return "Try again — you're almost there.";
-  return 'Keep practising. Every rep counts.';
+  if (newBestTime && newBestAcc) {
+    return _pickEndGameFallback([
+      'Wow.\nNew records on both fronts!',
+      'Both records broken in the same round. Excellent.',
+      'Fastest and most accurate. A genuine best.',
+    ]);
+  }
+  if (newBestTime) {
+    return perfectAcc
+      ? _pickEndGameFallback(['New time record!', 'Fastest yet. Keep that up.', 'A new personal best for speed.'])
+      : _pickEndGameFallback([
+          'New time record! Can you raise the accuracy too?',
+          'Your fastest yet. Now sharpen the accuracy.',
+          'Time is down. Accuracy is next.',
+        ]);
+  }
+  if (newBestAcc) {
+    return _pickEndGameFallback([
+      'Best accuracy yet!\nNow push that time down.',
+      'Highest accuracy so far. The speed will follow.',
+      'Accuracy record. Build on that.',
+    ]);
+  }
+  if (accuracy >= 100) {
+    return _pickEndGameFallback([
+      'Excellent accuracy.',
+      'Perfect round.',
+      'Flawless.',
+      'A clean sweep.',
+    ]);
+  }
+  if (time < record.time + 10 && accuracy > (record.accuracy ?? 0) - 5) {
+    return _pickEndGameFallback([
+      "So close. You've shown you can do better.",
+      'Right on the edge of a personal best.',
+      'Nearly there. Keep the pressure on.',
+      'That was competitive. One more push.',
+    ]);
+  }
+  if (accuracy > (record.accuracy ?? 0)) {
+    return _pickEndGameFallback([
+      'Accuracy improving. Keep the pace up.',
+      'More accurate than last time. Progress.',
+      'Your accuracy is trending up.',
+    ]);
+  }
+  if (!hasTrophy && time < record.time + 15) {
+    return _pickEndGameFallback([
+      "Try again. You're almost there.",
+      'Close to your best. Another run will get you there.',
+    ]);
+  }
+  return _pickEndGameFallback([
+    'Keep practising. Every rep counts.',
+    'Come back tomorrow. The gains are cumulative.',
+    'Progress is happening even when it does not feel like it.',
+    'Repetition is how shortcuts become reflexes.',
+    'Showing up is most of the battle. Well done.',
+    'Each round is training your hands, not just your memory.',
+    'The shortcut you hesitated on today will be automatic soon.',
+    'Consistent practice compounds. Keep going.',
+  ]);
 }
 
 function startEndScreenInactivityTimer() {
@@ -7830,6 +8073,10 @@ function resetEndScreenInactivityTimer() {
 }
 
 function endGame() {
+  // Adaptive: finalise run
+const completedRun = runData.slice();
+runData.length = 0;
+lastCompletedReport = finalizeRunData(completedRun, questionPool, 0);
   gameState = 'finished';
   setAppSelectorGameActive(false);
   clearInterval(timerInterval);
@@ -7896,6 +8143,8 @@ function endGame() {
       endScreenInactivityTimer = setTimeout(pulseAndReschedule, 5000);
     }, 14000);
   } else {
+  openSettings('panelReport');
+_refreshReportPanel()
     startEndScreenInactivityTimer();
   }
   fillProgressDot(9);
@@ -8044,6 +8293,848 @@ function endGame() {
       }
     }, livesDelay + 340 + 350);
   }
+}
+
+/* ══════════════════════════════════════
+   ADAPTIVE TRAINING SYSTEM
+══════════════════════════════════════ */
+
+// ── Coach memory ──────────────────────────────────────────────────────────────
+// Persists the last advice message key and any setting suggestion across sessions.
+// Shape: { messageKey: string, settingSuggested: { type, fromValue, toValue } | null }
+function LoadCoachMemory() {
+  try {
+    var raw = localStorage.getItem('kw_coach_memory');
+    if (raw) return JSON.parse(raw);
+  } catch(e) {}
+  return { messageKey: null, settingSuggested: null, consecutiveDefeatCount: 0 };
+}
+function SaveCoachMemory(messageKey, settingSuggested, defeatCount) {
+  try {
+    localStorage.setItem('kw_coach_memory', JSON.stringify({
+      messageKey: messageKey,
+      settingSuggested: settingSuggested || null,
+      consecutiveDefeatCount: defeatCount || 0,
+    }));
+  } catch(e) {}
+}
+
+function finalizeRunData(completedRun, currentPool, DefeatCount) {
+  // ── Thresholds ────────────────────────────────────────────────────────────
+  const successTimes = completedRun
+    .filter(function(entry) { return entry.endType === 'success' && entry.timeToAnswerMs !== null; })
+    .map(function(entry) { return entry.timeToAnswerMs; })
+    .sort(function(a, b) { return a - b; });
+
+  const medianTime = successTimes.length > 0
+    ? successTimes[Math.floor(successTimes.length / 2)]
+    : null;
+
+  const slowThreshold = medianTime !== null ? medianTime * 1.5 : null;
+
+  // ── Per-question summaries ────────────────────────────────────────────────
+  const questionSummaries = completedRun.map(function(entry) {
+    const question    = currentPool[entry.questionIndex];
+    const displayText = question ? question.display : 'Unknown question';
+    const shortcut    = question
+      ? (currentOs === 'pc' ? question.pc_sc : question.mac_sc)
+      : '';
+
+    const isSlow = entry.endType === 'success' && slowThreshold !== null
+      && entry.timeToAnswerMs > slowThreshold;
+
+    const isStrength = entry.endType === 'success'
+      && !isSlow
+      && entry.hintUsedAtMs === null
+      && entry.wrongKeyCount === 0;
+
+    const isWeakness = entry.endType !== 'success'
+      || isSlow
+      || entry.hintUsedAtMs !== null
+      || entry.wrongKeyCount > 0;
+
+    return {
+      displayText,
+      shortcut,
+      shortcutToken: question ? question.shortcut : '',
+      partialNudgeFired: entry.partialNudgeFired || false,
+      timeToAnswerMs: entry.timeToAnswerMs,
+      outcome: entry.endType === 'success'
+        ? (entry.timeToAnswerMs !== null ? Math.round(entry.timeToAnswerMs) + 'ms' : 'Correct')
+        : (entry.endType === 'timeout' ? 'Timed out' : 'Skipped'),
+      hintUsed:      entry.hintUsedAtMs !== null,
+      wrongKeyCount: entry.wrongKeyCount,
+      isSlow,
+      isStrength,
+      isWeakness,
+      endType: entry.endType,
+    };
+  });
+
+  // ── Aggregate stats ───────────────────────────────────────────────────────
+  const successCount    = completedRun.filter(function(e) { return e.endType === 'success'; }).length;
+  const skipCount       = completedRun.filter(function(e) { return e.endType === 'skip'; }).length;
+  const timeoutCount    = completedRun.filter(function(e) { return e.endType === 'timeout'; }).length;
+  const hintCount       = completedRun.filter(function(e) { return e.hintUsedAtMs !== null; }).length;
+  const wrongKeyTotal   = completedRun.reduce(function(sum, e) { return sum + e.wrongKeyCount; }, 0);
+  const accuracyPercent = calcAccuracy() ?? 0;
+  const allFast         = successTimes.length > 0 && medianTime !== null && medianTime < 2500;
+
+  // Hints are only viable when the timer is infinite or 10 seconds
+  const hintsWereViable = (questionTimer === null || questionTimer === 10);
+
+  // ── Coach memory ──────────────────────────────────────────────────────────
+  const PreviousMemory         = LoadCoachMemory();
+  const PreviousSuggestion     = PreviousMemory.settingSuggested;
+  const PreviousMessageKey     = PreviousMemory.messageKey;
+
+  // Did the player act on a setting suggestion from last round?
+  function PlayerActedOnSuggestion() {
+    if (!PreviousSuggestion) return false;
+    if (PreviousSuggestion.type === 'timer')      return questionTimer     === PreviousSuggestion.toValue;
+    if (PreviousSuggestion.type === 'lives')      return playerLives       === PreviousSuggestion.toValue;
+    if (PreviousSuggestion.type === 'difficulty') return currentDifficulty === PreviousSuggestion.toValue;
+    return false;
+  }
+  function PlayerIgnoredSuggestion() {
+    if (!PreviousSuggestion) return false;
+    if (PreviousSuggestion.type === 'timer')      return questionTimer     === PreviousSuggestion.fromValue;
+    if (PreviousSuggestion.type === 'lives')      return playerLives       === PreviousSuggestion.fromValue;
+    if (PreviousSuggestion.type === 'difficulty') return currentDifficulty === PreviousSuggestion.fromValue;
+    return false;
+  }
+
+  // ── Message pool builder ──────────────────────────────────────────────────
+  // Each entry: { key, text, settingSuggested (optional) }
+  // Priority order: memory-aware → Cat 3 specific → Cat 3b literacy → Cat 4 settings → Cat 1/2 general
+
+  var MemoryAwareMessages   = [];
+  var SpecificMessages      = []; // Cat 3
+  var LiteracyMessages      = []; // Cat 3b
+  var SettingsMessages      = []; // Cat 4
+  var GeneralMessages       = []; // Cat 1 + 2
+
+  // Helper: push only if not the same key as last round
+  function AddMessage(pool, key, text, settingSuggested) {
+    if (key === PreviousMessageKey) return;
+    pool.push({ key: key, text: text, settingSuggested: settingSuggested || null });
+  }
+  // Settings messages bypass the "shown last round" dedup so they always compete
+  function ForceAddMessage(pool, key, text, settingSuggested) {
+    pool.push({ key: key, text: text, settingSuggested: settingSuggested || null });
+  }
+
+  // ── Memory-aware messages ─────────────────────────────────────────────────
+  if (hasTrophy && PreviousSuggestion) {
+    var acted   = PlayerActedOnSuggestion();
+    var ignored = PlayerIgnoredSuggestion();
+
+    if (PreviousSuggestion.type === 'timer' && PreviousSuggestion.toValue < PreviousSuggestion.fromValue) {
+      // Suggested a shorter timer last round
+      if (acted && timeoutCount < 2 && accuracyPercent >= 80) {
+        AddMessage(MemoryAwareMessages, 'mem_shorter_timer_held',
+          'You tried a shorter timer last round and came through well. That is worth keeping.');
+      } else if (acted && timeoutCount >= 3) {
+        AddMessage(MemoryAwareMessages, 'mem_shorter_timer_struggling',
+          'That shorter timer is still causing pressure. No harm in stepping back up while you build the muscle memory.');
+      }
+    }
+    if (PreviousSuggestion.type === 'difficulty' && PreviousSuggestion.toValue !== PreviousSuggestion.fromValue) {
+      var wentHarder = (PreviousSuggestion.toValue === 'hardcore' || PreviousSuggestion.toValue === 'normal');
+      if (acted && wentHarder && accuracyPercent >= 75) {
+        AddMessage(MemoryAwareMessages, 'mem_diff_up_held',
+          'You took the difficulty up and held your own. Good call.');
+      } else if (acted && wentHarder && accuracyPercent < 60) {
+        AddMessage(MemoryAwareMessages, 'mem_diff_up_struggling',
+          'That difficulty change was a step too far right now. No shame in stepping back.');
+      } else if (ignored) {
+        // Check if the conditions that triggered the suggestion still apply
+        var DifficultyRank      = { fundamentals: 0, normal: 1, hardcore: 2 };
+        var CurrentRank         = DifficultyRank[currentDifficulty] || 0;
+        var SuggestedRank       = DifficultyRank[PreviousSuggestion.toValue] || 0;
+        var StillWorthGoing     = SuggestedRank > CurrentRank
+          && accuracyPercent >= 95 && allFast && hintCount === 0 && wrongKeyTotal === 0 && skipCount === 0;
+        if (StillWorthGoing) {
+          AddMessage(MemoryAwareMessages, 'mem_diff_ignored',
+            'You ignored the suggestion to try a harder difficulty. That is your call, but the data still suggests you are ready.');
+        }
+      }
+    }
+  }
+
+  // ── Cat 3: Specific comments on what just happened ────────────────────────
+  if (hasTrophy && playerLives !== null && livesRemaining === 1) {
+    var OneLiveMessages = [
+      { key: 'cat3_one_life_a', text: 'You made it through with just one life. That was a nail-biter!' },
+      { key: 'cat3_one_life_b', text: 'Down to your last life and you held on. Good nerves.' },
+      { key: 'cat3_one_life_c', text: 'One life standing at the end. That took some composure.' },
+      { key: 'cat3_one_life_d', text: 'Squeezed through on a single life. Breathe.' },
+    ];
+    var EligibleOneLife = OneLiveMessages.filter(function(m) { return m.key !== PreviousMessageKey; });
+    var PickedOneLife   = EligibleOneLife[Math.floor(Math.random() * EligibleOneLife.length)];
+    if (PickedOneLife) AddMessage(SpecificMessages, PickedOneLife.key, PickedOneLife.text);
+  }
+  if (hasTrophy && playerLives !== null && livesRemaining === playerLives && playerLives > 1) {
+    AddMessage(SpecificMessages, 'cat3_all_lives',
+      'You kept every life. Composed from start to finish.');
+  }
+  if (accuracyPercent === 100 && hintCount === 0 && skipCount === 0 && hintsWereViable) {
+    AddMessage(SpecificMessages, 'cat3_perfect_no_hint',
+      'A perfect run with no hints. That is what consistent practice looks like.');
+  }
+  if (accuracyPercent === 100 && !hintsWereViable) {
+    AddMessage(SpecificMessages, 'cat3_perfect_fast_timer',
+      'Perfect accuracy. Clean.');
+  }
+  if (accuracyPercent >= 95 && hintCount === 0 && hintsWereViable && accuracyPercent < 100) {
+    AddMessage(SpecificMessages, 'cat3_clean_no_hint',
+      'Clean run, no hints. You clearly know this material.');
+  }
+  if (hintCount === 0 && accuracyPercent >= 90 && !hintsWereViable) {
+    AddMessage(SpecificMessages, 'cat3_no_hint_fast_timer',
+      'No hints needed. You have internalised these.');
+  }
+  if (allFast && accuracyPercent >= 85) {
+    AddMessage(SpecificMessages, 'cat3_fast',
+      'Fast answers throughout. Your hands are starting to know where to go.');
+  }
+  if (skipCount >= 3) {
+    AddMessage(SpecificMessages, 'cat3_skips',
+      'You skipped quite a few this round. That is fine, skipping what you do not know yet is honest.');
+  }
+  if (timeoutCount >= 3) {
+    AddMessage(SpecificMessages, 'cat3_timeouts',
+      'Several timeouts. The shortcuts are there; the speed just needs more reps.');
+  }
+  if (hintCount >= 1 && accuracyPercent >= 85 && hintsWereViable) {
+    AddMessage(SpecificMessages, 'cat3_hint_strong',
+      'You used a hint and still finished strongly. That is exactly what it is there for.');
+  }
+  if (accuracyPercent < 70 && skipCount < 3 && timeoutCount < 3) {
+    AddMessage(SpecificMessages, 'cat3_ragged',
+      'Accuracy was a little ragged this round, but you finished. That counts.');
+  }
+  if (accuracyPercent < 50) {
+    AddMessage(SpecificMessages, 'cat3_rough',
+      'That was a rough one. Rest if you need to, then come back.');
+  }
+
+  // ── Cat 3b: Literacy recovery (trophy required -- timer setting is not accessible without it) ──
+  if (hasTrophy && questionTimer !== null && accuracyPercent < 60 && timeoutCount >= 3 && hintCount >= 3) {
+    AddMessage(LiteracyMessages, 'cat3b_literacy_full',
+      'Your accuracy is low and the timer is working against you. Try switching the question timer to unlimited for a while and lean on the hints. Build the knowledge first, then bring the speed back.');
+  }
+  if (hasTrophy && questionTimer !== null && accuracyPercent < 50) {
+    AddMessage(LiteracyMessages, 'cat3b_literacy_slow',
+      'There is no shame in slowing right down. Switch the timer off, use the hints freely, and focus on learning where the keys are. Speed comes later.');
+  }
+
+  // ── Cat 4: Settings suggestions (strict thresholds) ──────────────────────
+  {
+    var DifficultyRank = { fundamentals: 0, normal: 1, hardcore: 2 };
+    var CurrentRank    = DifficultyRank[currentDifficulty] || 0;
+
+    // Raise difficulty: high accuracy, clean execution
+    // wrongKeyTotal deliberately excluded -- a single mispress should not block this for the whole round
+    if (accuracyPercent >= 95 && hintCount === 0 && skipCount === 0) {
+      if (CurrentRank < 2) {
+        var NextMode = CurrentRank === 0 ? 'normal' : 'hardcore';
+        var NextLabel = CurrentRank === 0 ? 'Normal' : 'Hardcore';
+        // Settings messages use ForceAddMessage so they are not suppressed by the "shown last round" guard
+        ForceAddMessage(SettingsMessages, 'cat4_diff_up',
+          'You are performing very well. Consider raising the difficulty to ' + NextLabel + '.',
+          { type: 'difficulty', fromValue: currentDifficulty, toValue: NextMode });
+      }
+    }
+
+    // Drop difficulty: genuinely struggling
+    if (accuracyPercent < 60 && (skipCount >= 4 || timeoutCount >= 4)) {
+      if (CurrentRank > 0) {
+        var PrevMode  = CurrentRank === 2 ? 'normal' : 'fundamentals';
+        var PrevLabel = CurrentRank === 2 ? 'Normal' : 'Fundamentals';
+        ForceAddMessage(SettingsMessages, 'cat4_diff_down',
+          'This round was genuinely challenging. Dropping to ' + PrevLabel + ' may help consolidate your learning.',
+          { type: 'difficulty', fromValue: currentDifficulty, toValue: PrevMode });
+      }
+    }
+
+    // The remaining settings suggestions (timer, lives) still require a trophy
+    if (hasTrophy) {
+    var TimerStops        = [1, 3, 5, 10, null];
+    var CurrentTimerIndex = TimerStops.indexOf(questionTimer);
+    if (timeoutCount >= 4 && CurrentTimerIndex < TimerStops.length - 1) {
+      var LongerTimerValue = TimerStops[CurrentTimerIndex + 1];
+      var LongerTimerLabel = LongerTimerValue === null ? 'unlimited' : LongerTimerValue + ' seconds';
+      ForceAddMessage(SettingsMessages, 'cat4_timer_up',
+        'You timed out on several questions. Try increasing the question timer to ' + LongerTimerLabel + '.',
+        { type: 'timer', fromValue: questionTimer, toValue: LongerTimerValue });
+    }
+
+    // Shorter timer: flawless fast run
+    if (timeoutCount === 0 && allFast && accuracyPercent === 100 && hintCount === 0 && CurrentTimerIndex > 0) {
+      var ShorterTimerValue = TimerStops[CurrentTimerIndex - 1];
+      if (ShorterTimerValue !== null) {
+        ForceAddMessage(SettingsMessages, 'cat4_timer_down',
+          'You handled that comfortably. Try a shorter timer to raise the challenge.',
+          { type: 'timer', fromValue: questionTimer, toValue: ShorterTimerValue });
+      }
+    }
+
+    // More lives: losing lives under pressure with room to add more
+    var LivesStops        = [1, 3, 5, 10, null];
+    var CurrentLivesIndex = LivesStops.indexOf(playerLives);
+    if (playerLives !== null && livesRemaining !== null && livesRemaining <= 1
+        && accuracyPercent < 75 && CurrentLivesIndex < LivesStops.length - 1) {
+      var MoreLivesValue = LivesStops[CurrentLivesIndex + 1];
+      var MoreLivesLabel = MoreLivesValue === null ? 'unlimited' : String(MoreLivesValue);
+      ForceAddMessage(SettingsMessages, 'cat4_lives_up',
+        'You are losing lives most rounds. Consider adding a few more to reduce the pressure while you build speed.',
+        { type: 'lives', fromValue: playerLives, toValue: MoreLivesValue });
+    }
+
+    // Fewer lives: keeping all lives comfortably
+    if (playerLives !== null && livesRemaining === playerLives && accuracyPercent >= 95 && allFast
+        && CurrentLivesIndex > 0) {
+      var FewerLivesValue = LivesStops[CurrentLivesIndex - 1];
+      if (FewerLivesValue !== null) {
+        ForceAddMessage(SettingsMessages, 'cat4_lives_down',
+          'You are keeping all your lives easily. Try fewer to sharpen your focus.',
+          { type: 'lives', fromValue: playerLives, toValue: FewerLivesValue });
+      }
+    }
+    } // end hasTrophy (timer/lives)
+  } // end Cat 4 block
+
+  // ── Cat 1 + 2: General and contextual encouragement ───────────────────────
+  // Always available; drawn when no higher-priority message fires.
+  var AllGeneralMessages = [
+    { key: 'gen_nondominant',
+      text: 'The more shortcuts you can execute with your non-dominant hand, the more your dominant hand can stay on the mouse.',
+      condition: true },
+    { key: 'gen_sessions',
+      text: 'Short, regular sessions beat the occasional marathon. Even five minutes a day compounds.',
+      condition: true },
+    { key: 'gen_eyes',
+      text: 'Eyes on the work, not the keyboard. Trust the muscle memory you are building.',
+      condition: true },
+    { key: 'gen_goal',
+      text: 'The goal is to reach for a shortcut without thinking. You are not there yet, but you are getting closer.',
+      condition: true },
+    { key: 'gen_modifiers',
+      text: 'Modifier keys are the grammar of your keyboard. Once they feel natural, everything else follows.',
+      condition: true },
+    { key: 'gen_home_row',
+      text: 'Your keyboard hand position matters. Resting your fingers on the home row makes modifier reaches much shorter.',
+      condition: true },
+    { key: 'gen_priority',
+      text: 'The shortcuts worth mastering first are the ones you reach for most in real work. Everything else can wait.',
+      condition: true },
+    { key: 'gen_slow_down',
+      text: 'When a shortcut feels awkward, slow it right down and feel each key deliberately. Speed follows accuracy, not the other way around.',
+      condition: accuracyPercent < 85 },
+    { key: 'gen_think',
+      text: 'You are learning to think in shortcuts. That takes time, but the payoff is real.',
+      condition: true },
+    { key: 'gen_no_rush',
+      text: 'No rush. Accuracy now means speed later.',
+      condition: accuracyPercent < 75 },
+    { key: 'enc_slump',
+      text: 'Even when you feel you are in a slump, training regularly is steadily building your skills.',
+      condition: (skipCount >= 2 || timeoutCount >= 2) },
+    { key: 'enc_impossible',
+      text: 'The ones that feel impossible today will be automatic in a week. Keep going.',
+      condition: (hintCount >= 2 || skipCount >= 3) },
+    { key: 'enc_difficult',
+      text: 'A difficult round teaches you more than an easy one.',
+      condition: (skipCount >= 2 || timeoutCount >= 2) },
+    { key: 'enc_improving',
+      text: 'You are clearly improving. Keep showing up.',
+      condition: accuracyPercent >= 80 && hintCount === 0 },
+    { key: 'enc_consistency',
+      text: 'Consistency is the whole game. You are doing it.',
+      condition: accuracyPercent >= 90 },
+    { key: 'gen_workflow',
+      text: 'A shortcut you reach for without pausing is the difference between flow and friction.',
+      condition: true },
+    { key: 'gen_real_work',
+      text: 'Try using the shortcuts you practice here in real work today. That is when they stick.',
+      condition: true },
+    { key: 'gen_muscle',
+      text: 'Muscle memory is built through repetition, not through understanding. Keep repeating.',
+      condition: true },
+    { key: 'gen_chain',
+      text: 'The real payoff is chaining shortcuts. One flows into the next without interruption.',
+      condition: true },
+    { key: 'gen_mental_model',
+      text: 'Try picturing where your fingers are going before you press. The mental model speeds up the movement.',
+      condition: true },
+    { key: 'gen_hesitation',
+      text: 'Hesitation is normal. It means the shortcut is still being retrieved consciously. More reps change that.',
+      condition: true },
+    { key: 'enc_tired',
+      text: 'If you are feeling tired, a short break is more useful than a frustrated run.',
+      condition: (skipCount >= 3 || accuracyPercent < 65) },
+    { key: 'enc_plateau',
+      text: 'A plateau is not a ceiling. It is your brain consolidating before the next jump.',
+      condition: true },
+    { key: 'enc_clean_run',
+      text: 'A clean round with no hints is worth more than a fast one full of misfires.',
+      condition: accuracyPercent >= 85 },
+    { key: 'enc_pressure',
+      text: 'The shortcuts that feel natural under pressure are the ones truly learned. Keep building that base.',
+      condition: hasTrophy },
+    { key: 'enc_almost',
+      text: 'You are closer to automatic recall than it feels right now.',
+      condition: accuracyPercent >= 70 },
+    { key: 'enc_show_up',
+      text: 'Showing up is most of the battle. You showed up.',
+      condition: true },
+    { key: 'enc_tomorrow',
+      text: 'Come back tomorrow. The gains are cumulative even when you cannot see them.',
+      condition: true },
+  ];
+
+  // Pre-trophy: only Cat 1/2 messages, filtered to relevant ones
+  if (!hasTrophy) {
+    AllGeneralMessages.forEach(function(m) {
+      if (m.condition && m.key !== PreviousMessageKey) {
+        GeneralMessages.push({ key: m.key, text: m.text, settingSuggested: null });
+      }
+    });
+  } else {
+    AllGeneralMessages.forEach(function(m) {
+      if (m.condition && m.key !== PreviousMessageKey) {
+        GeneralMessages.push({ key: m.key, text: m.text, settingSuggested: null });
+      }
+    });
+  }
+
+  // ── Pick the advice messages (up to two) ─────────────────────────────────
+  // Priority slot 1: memory-aware → specific/settings (merged when <= 1 weakness) → literacy → settings → general
+  // Priority slot 2: always a general message, different key from slot 1
+  function PickRandom(pool) {
+    if (pool.length === 0) return null;
+    return pool[Math.floor(Math.random() * pool.length)];
+  }
+  function PickRandomExcluding(pool, ExcludeKey) {
+    var Filtered = pool.filter(function(m) { return m.key !== ExcludeKey; });
+    if (Filtered.length === 0) return null;
+    return Filtered[Math.floor(Math.random() * Filtered.length)];
+  }
+
+  var HasFewWeaknessesThisRound = questionSummaries.filter(function(s) { return s.isWeakness; }).length <= 1;
+  var SpecificOrSettings = HasFewWeaknessesThisRound
+    ? PickRandom(SpecificMessages.concat(SettingsMessages))
+    : PickRandom(SpecificMessages);
+
+  var PrimaryMessage = PickRandom(MemoryAwareMessages)
+    || SpecificOrSettings
+    || PickRandom(LiteracyMessages)
+    || PickRandom(SettingsMessages)
+    || PickRandom(GeneralMessages);
+
+  // Second message: always a general/encouragement line, different key from primary
+  var PrimaryKey     = PrimaryMessage ? PrimaryMessage.key : null;
+  var SecondaryMessage = PickRandomExcluding(GeneralMessages, PrimaryKey);
+
+  // Persist the primary message key to memory (secondary is supplementary, not memorised)
+  if (PrimaryMessage) {
+    SaveCoachMemory(PrimaryMessage.key, PrimaryMessage.settingSuggested || null, DefeatCount || 0);
+  }
+
+  var trainerAdvice = [];
+  if (PrimaryMessage)   trainerAdvice.push(PrimaryMessage.text);
+  if (SecondaryMessage) trainerAdvice.push(SecondaryMessage.text);
+
+  // The settings link attaches to whichever message carries a setting suggestion
+  var trainerSettingSuggested = PrimaryMessage && PrimaryMessage.settingSuggested
+    ? PrimaryMessage.settingSuggested
+    : null;
+
+  return { questionSummaries, trainerAdvice, trainerSettingSuggested };
+}
+
+
+function _refreshCheatSheet() {
+  var List = document.getElementById('cheatSheetList');
+  var ListRight = document.getElementById('cheatSheetListRight');
+  var ContextLabel   = document.getElementById('cheatSheetContextLabel');
+  var HeadingEl      = document.getElementById('cheatSheetHeading');
+  if (!List) return;
+  List.innerHTML = '';
+  if (ListRight) ListRight.innerHTML = '';
+
+  // Populate context label: current app name + OS
+  if (ContextLabel) {
+    var AppEntry  = APPS.find(function(a) { return a.key === currentApp; });
+    var AppName   = AppEntry ? AppEntry.label : currentApp;
+    var OsName    = currentOs === 'pc' ? 'PC' : 'Mac';
+    ContextLabel.textContent = AppName + ' on ' + OsName;
+  }
+
+  // Use the adaptive pool for the next round if available, otherwise the current pool
+  var Pool = questionPool;
+  if (lastCompletedReport) {
+    var AdaptivePool = getAdaptiveNextRoundPool();
+    if (AdaptivePool && AdaptivePool.length > 0) Pool = AdaptivePool;
+  }
+
+  var First10 = Pool.slice(0, 10);
+
+  // Empty state: hide the heading and show a message instead
+  if (First10.length === 0) {
+    if (HeadingEl) HeadingEl.style.visibility = 'hidden';
+    if (ContextLabel) ContextLabel.style.visibility = 'hidden';
+    var EmptyItem = document.createElement('li');
+    EmptyItem.style.cssText = 'font-size:11px;font-style:italic;color:#9ca3af;list-style:none;padding:4px 0;';
+    EmptyItem.textContent = 'Start a game to load your cheat sheet.';
+    List.appendChild(EmptyItem);
+    return;
+  }
+
+  if (HeadingEl) HeadingEl.style.visibility = '';
+  if (ContextLabel) ContextLabel.style.visibility = '';
+
+  First10.forEach(function(Question, Idx) {
+    var ShortcutDisplay = currentOs === 'pc' ? Question.pc_sc : Question.mac_sc;
+    var Token           = Question.shortcut;
+
+    var li  = document.createElement('li');
+    li.style.alignItems = 'flex-start';
+    li.dataset.shortcutToken = Token;
+
+    var dot = document.createElement('span');
+    dot.className = 'sp-report-dot';
+    dot.style.marginTop = '5px';
+
+    var label = document.createElement('span');
+    label.className = 'sp-report-question-label';
+    label.textContent = (Question.display || '').replace(/\\\\/g, '\\');
+
+    li.appendChild(dot);
+    li.appendChild(label);
+    li.appendChild(BuildShortcutKeyChips(ShortcutDisplay, true));
+
+    // First 5 go in left column, next 5 in right column
+    if (Idx < 5) {
+      List.appendChild(li);
+    } else if (ListRight) {
+      ListRight.appendChild(li);
+    }
+  });
+}
+
+function HighlightCheatSheetItems(ShortcutToken) {
+  var AllItems = document.querySelectorAll('#cheatSheetList li, #cheatSheetListRight li');
+  AllItems.forEach(function(ListItem) {
+    if ((ListItem.dataset.shortcutToken || '').toUpperCase() !== ShortcutToken.toUpperCase()) return;
+
+    // Light up chips directly via inline style (bypasses any CSS specificity issues)
+    var Chips = ListItem.querySelectorAll('.sp-report-chip-key');
+    Chips.forEach(function(Chip) {
+      Chip.style.background    = '#10b981';
+      Chip.style.color         = 'white';
+      Chip.style.borderColor   = '#059669';
+      Chip.style.boxShadow     = '0 0 6px rgba(16,185,129,0.45)';
+      setTimeout(function() {
+        Chip.style.background  = '#f3f4f6';
+        Chip.style.color       = '#1e3a5f';
+        Chip.style.borderColor = '#d1d5db';
+        Chip.style.boxShadow   = '0 1.5px 0 #c9cdd3';
+      }, 1400);
+    });
+
+    // Turn dot green directly via inline style
+    var Dot = ListItem.querySelector('.sp-report-dot');
+    if (Dot) Dot.style.background = '#10b981';
+  });
+}
+
+function HighlightReportListItems(ShortcutToken) {
+  var AllListItems = document.querySelectorAll('#reportStrengths li, #reportWeaknesses li');
+  AllListItems.forEach(function(ListItem) {
+    if ((ListItem.dataset.shortcutToken || '').toUpperCase() !== ShortcutToken.toUpperCase()) return;
+    var ChipWrapper = ListItem.querySelector('[data-chips-wrapper]');
+    if (!ChipWrapper) return;
+    ChipWrapper.classList.add('sp-report-chips-lit');
+    setTimeout(function() {
+      ChipWrapper.classList.remove('sp-report-chips-lit');
+    }, 1400);
+    // Practice items: permanently turn the dot green when the shortcut is executed
+    var IsPracticeItem = ListItem.closest('#reportWeaknesses') !== null;
+    if (IsPracticeItem) {
+      ListItem.classList.add('practice-done');
+    }
+  });
+}
+
+function BuildShortcutKeyChips(DisplayString, IsWeakness) {
+  DisplayString = (DisplayString || '').replace(/\\\\/g, '\\');
+  var Wrapper = document.createElement('span');
+  Wrapper.dataset.chipsWrapper = '1';
+  Wrapper.style.cssText = 'flex-shrink:0;margin-left:6px;display:inline-flex;align-items:center;flex-wrap:nowrap;';
+  // Split on spaces, then merge modifier symbols (⌘⇧⌥⌃) with a following word label
+  // e.g. '⇧ Shift' → ['⇧ Shift'] (one chip), '⌘ Z' → ['⌘', 'Z'] (two chips)
+  var WordLabels = new Set(['shift','option','opt','control','ctrl','command','alt','fn']);
+  var RawTokens = DisplayString.trim().split(/\s+/).filter(function(t) { return t.length > 0; });
+  var Tokens = [];
+  var ModifierSymbols = /^[⌘⇧⌥⌃]$/;
+  for (var ti = 0; ti < RawTokens.length; ti++) {
+    var tok = RawTokens[ti];
+    if (ModifierSymbols.test(tok) && ti + 1 < RawTokens.length && WordLabels.has(RawTokens[ti + 1].toLowerCase())) {
+      Tokens.push(tok + '\u00a0' + RawTokens[ti + 1]);
+      ti++; // skip the word label, it's been merged
+    } else {
+      Tokens.push(tok);
+    }
+  }
+  Tokens.forEach(function(Token, TokenIndex) {
+    if (TokenIndex > 0) {
+      var Separator = document.createElement('span');
+      Separator.textContent = '+';
+      Separator.style.cssText = 'margin:0 1px;color:#9ca3af;font-size:10px;line-height:1;vertical-align:middle;';
+      Wrapper.appendChild(Separator);
+    }
+    var Chip = document.createElement('span');
+    Chip.className = 'sp-report-chip-key';
+    Chip.textContent = Token;
+    var ChipStyles = [
+      'display:inline-block',
+      'font-family:inherit',
+      'font-size:10px',
+      'font-weight:600',
+      'color:#1e3a5f',
+      'border:1px solid #d1d5db',
+      'border-radius:3px',
+      'padding:1px 4px 0',
+      'line-height:1.6',
+      'white-space:nowrap',
+      'vertical-align:middle',
+    ];
+    if (IsWeakness) {
+      ChipStyles.push('background:#f3f4f6');
+      ChipStyles.push('box-shadow:0 1.5px 0 #c9cdd3');
+    }
+    Chip.style.cssText = ChipStyles.join(';');
+    Wrapper.appendChild(Chip);
+  });
+  return Wrapper;
+}
+
+function _refreshReportPanel() {
+  if (!lastCompletedReport) return;
+
+  const { questionSummaries, trainerAdvice } = lastCompletedReport;
+
+  // ── Strengths (left column) ───────────────────────────────────────────────
+  // Sort: fastest first (lowest timeToAnswerMs), then no-hint, then no-wrong-keys
+  const strengthItems = questionSummaries
+    .filter(function(s) { return s.isStrength; })
+    .sort(function(a, b) {
+      const timeA = a.timeToAnswerMs !== null ? a.timeToAnswerMs : Infinity;
+      const timeB = b.timeToAnswerMs !== null ? b.timeToAnswerMs : Infinity;
+      return timeA - timeB;
+    })
+    .slice(0, 4);
+
+  const strengthsList = document.getElementById('reportStrengths');
+  if (strengthsList) {
+    strengthsList.innerHTML = '';
+    if (strengthItems.length === 0) {
+      var emptyLi = document.createElement('li');
+      emptyLi.style.cssText = 'font-size:11px;font-style:italic;color:#9ca3af;';
+      emptyLi.textContent = 'None this round.';
+      strengthsList.appendChild(emptyLi);
+    } else {
+      strengthItems.forEach(function(s) {
+        var li      = document.createElement('li');
+        li.dataset.shortcutToken = s.shortcutToken || '';
+        var dot     = document.createElement('span');
+        dot.className = 'sp-report-dot';
+        var label   = document.createElement('span');
+        label.className = 'sp-report-question-label';
+        label.textContent = (s.displayText || '').replace(/\\\\/g, '\\');
+        li.appendChild(dot);
+        li.appendChild(label);
+        li.appendChild(BuildShortcutKeyChips(s.shortcut, false));
+        strengthsList.appendChild(li);
+      });
+    }
+  }
+
+  // ── Weaknesses (right column) ─────────────────────────────────────────────
+  // Sort: worst first (timeout > skip > slow+wrong > slow > hint)
+  function severityScore(s) {
+    if (s.endType === 'timeout')                        return 5;
+    if (s.endType === 'skip')                           return 4;
+    if (s.isSlow && s.wrongKeyCount > 0)                return 3;
+    if (s.isSlow)                                       return 2;
+    if (s.hintUsed || s.wrongKeyCount > 0)              return 1;
+    return 0;
+  }
+
+  const weaknessItems = questionSummaries
+    .filter(function(s) { return s.isWeakness; })
+    .sort(function(a, b) { return severityScore(b) - severityScore(a); })
+    .slice(0, 4);
+
+  const weaknessesList = document.getElementById('reportWeaknesses');
+  if (weaknessesList) {
+    weaknessesList.innerHTML = '';
+    if (weaknessItems.length === 0) {
+      var emptyLi2 = document.createElement('li');
+      emptyLi2.style.cssText = 'font-size:11px;font-style:italic;color:#9ca3af;';
+      emptyLi2.textContent = 'None this round.';
+      weaknessesList.appendChild(emptyLi2);
+    } else {
+      weaknessItems.forEach(function(s) {
+        var detail = [];
+        if (s.endType === 'timeout')    detail.push('timed out');
+        else if (s.endType === 'skip')  detail.push('skipped');
+        else if (s.isSlow && !(s.timeToAnswerMs !== null && s.timeToAnswerMs <= 1000)) detail.push('slower');
+        if (s.hintUsed)                 detail.push('hint used');
+        if (s.partialNudgeFired)        detail.push('needed a nudge');
+        if (s.wrongKeyCount > 0)        detail.push(s.wrongKeyCount + ' wrong key' + (s.wrongKeyCount > 1 ? 's' : ''));
+
+        var li      = document.createElement('li');
+        li.style.alignItems = 'flex-start';
+        li.dataset.shortcutToken = s.shortcutToken || '';
+        var dot     = document.createElement('span');
+        dot.className = 'sp-report-dot';
+        dot.style.marginTop = '5px';
+        var label   = document.createElement('span');
+        label.className = 'sp-report-question-label';
+        label.textContent = (s.displayText || '').replace(/\\\\/g, '\\');
+        if (detail.length > 0) {
+          var detailSpan = document.createElement('span');
+          detailSpan.className = 'sp-report-detail';
+          detailSpan.textContent = detail.join(', ');
+          label.appendChild(detailSpan);
+        }
+        li.appendChild(dot);
+        li.appendChild(label);
+        li.appendChild(BuildShortcutKeyChips(s.shortcut, true));
+        weaknessesList.appendChild(li);
+      });
+    }
+  }
+
+  // ── Trainer advice (bottom section) ──────────────────────────────────────
+  const adviceContainer = document.getElementById('reportTrainerAdvice');
+  if (adviceContainer) {
+    adviceContainer.innerHTML = '';
+    if (trainerAdvice.length > 0) {
+      trainerAdvice.forEach(function(line, index) {
+        var p = document.createElement('p');
+        p.className = 'sp-report-advice';
+        // Append the settings link only on the primary message (index 0) when it carries a suggestion
+        var HasSettingsSuggestion = index === 0
+          && lastCompletedReport.trainerSettingSuggested !== null
+          && lastCompletedReport.trainerSettingSuggested !== undefined;
+        if (HasSettingsSuggestion) {
+          p.textContent = line + ' ';
+          var link = document.createElement('a');
+          link.textContent = 'You can adjust this in difficulty settings.';
+          link.href = '#';
+          link.style.cssText = 'color:#9ca3af;font-style:italic;text-decoration:none;cursor:pointer;';
+          link.addEventListener('click', function(e) {
+            e.preventDefault();
+            openSettings('panelDifficulty');
+          });
+          p.appendChild(link);
+        } else {
+          p.textContent = line;
+        }
+        adviceContainer.appendChild(p);
+      });
+    } else {
+      var noAdvice = document.createElement('p');
+      noAdvice.className = 'sp-report-no-advice';
+      noAdvice.textContent = 'No suggestions this round. Keep it up.';
+      adviceContainer.appendChild(noAdvice);
+    }
+  }
+}
+
+
+function getAdaptiveNextRoundPool() {
+  if (!lastCompletedReport) return null;
+
+  const { questionSummaries } = lastCompletedReport;
+  const fullPool = buildPool();
+  if (fullPool.length === 0) return null;
+
+  // ── Severity scoring ──────────────────────────────────────────────────────
+  // Higher score = higher priority for inclusion in the next round
+  function severityScore(summary) {
+    if (summary.endType === 'timeout')  return 5;
+    if (summary.endType === 'skip')     return 4;
+    if (summary.isSlow && summary.wrongKeyCount > 0) return 3;
+    if (summary.isSlow)                 return 2;
+    if (summary.hintUsed)               return 1;
+    return 0;
+  }
+
+  // ── Primary: weak questions ───────────────────────────────────────────────
+  const weakSummaries = questionSummaries
+    .filter(function(s) { return s.isWeakness; })
+    .sort(function(a, b) { return severityScore(b) - severityScore(a); })
+    .slice(0, 10);
+
+  // Map back to actual question objects by display text (since questionIndex
+  // may refer to a pool that has since been reshuffled)
+  const weakQuestions = weakSummaries.reduce(function(acc, summary) {
+    const match = fullPool.find(function(q) { return q.display === summary.displayText; });
+    if (match && !acc.some(function(q) { return q.display === match.display; })) {
+      acc.push(match);
+    }
+    return acc;
+  }, []);
+
+  // ── Secondary: medium difficulty fill ─────────────────────────────────────
+  const weakDisplayTexts = new Set(weakQuestions.map(function(q) { return q.display; }));
+
+  // Determine the modal difficulty of weak questions to find "adjacent" ones
+  const weakDifficulties = weakQuestions.map(function(q) { return q.difficulty || 1; });
+  const adjacentDifficulty = weakDifficulties.length > 0
+    ? Math.round(weakDifficulties.reduce(function(a, b) { return a + b; }, 0) / weakDifficulties.length)
+    : 1;
+
+  // Questions answered correctly but not instantly (medium performance)
+  const mediumSummaries = questionSummaries.filter(function(s) {
+    return s.endType === 'success' && s.isSlow === false && (s.hintUsed || s.wrongKeyCount > 0);
+  });
+  const mediumDisplayTexts = new Set(mediumSummaries.map(function(s) { return s.displayText; }));
+
+  const secondaryPool = fullPool.filter(function(q) {
+    if (weakDisplayTexts.has(q.display)) return false;
+    if (mediumDisplayTexts.has(q.display)) return true;
+    if (Math.abs((q.difficulty || 1) - adjacentDifficulty) <= 1) return true;
+    return false;
+  });
+
+  const shuffledSecondary = shuffleArray(secondaryPool);
+  const secondaryQuestions = shuffledSecondary.slice(0, 20 - weakQuestions.length);
+
+  // ── Combine and fill ──────────────────────────────────────────────────────
+  let combined = weakQuestions.concat(secondaryQuestions);
+
+  if (combined.length < 20) {
+    const usedDisplayTexts = new Set(combined.map(function(q) { return q.display; }));
+    const filler = shuffleArray(fullPool.filter(function(q) {
+      return !usedDisplayTexts.has(q.display);
+    }));
+    combined = combined.concat(filler.slice(0, 20 - combined.length));
+  }
+
+  if (combined.length === 0) return null;
+
+  // Weak questions are placed first (shuffled among themselves) so they always
+  // fall within positions 0-9, which are the 10 questions the game actually plays.
+  // The remainder (secondary + filler) are shuffled separately and appended.
+  var WeakSet   = new Set(weakQuestions.map(function(q) { return q.display; }));
+  var Remainder = combined.filter(function(q) { return !WeakSet.has(q.display); });
+  return shuffleArray(weakQuestions).concat(shuffleArray(Remainder));
 }
 
 // ── Medal lighting: mouse-driven gradient rotation ──────────────────────────
@@ -8227,11 +9318,29 @@ document.addEventListener('keydown', handleKeydown);
 document.addEventListener('keyup',   handleKeyup);
 
 document.getElementById('keyboardWrap').addEventListener('click', function(e) {
-  if (gameState !== 'readyToUnpause') return;
-  // Any click in the keyboard area folds it away to the pause screen
-  _enterReadyToUnpauseCleanup();
-  gameState = 'paused'; // set before enterPause so it doesn't double-trigger
-  enterPause();
+  // If a settings panel is open, the keyboard is not truly resting idle --
+  // ignore the click so it does not trigger unpausing beneath the panel.
+  if (activeSettings !== null) return;
+  if (gameState === 'readyToUnpause') {
+    // Any click in the keyboard area folds it away to the pause screen
+    _enterReadyToUnpauseCleanup();
+    gameState = 'paused';
+    enterPause();
+    return;
+  }
+
+  // When the keyboard is folded and touch is not enabled, clicking it raises it back up.
+  // In paused/finished states this enters the readyToUnpause / face position.
+  if (_kbPos !== 'face' && !touchEnabled) {
+    if (gameState === 'paused') {
+      _enterReadyToUnpause();
+      return;
+    }
+    if (gameState === 'finished' || gameState === 'idle') {
+      closeSettings();
+      return;
+    }
+  }
 });
 
 function showTip(index) {
@@ -8267,12 +9376,51 @@ function handleKeydown(e) {
     dbgRefreshCtx(); dbgRefreshAccuracy();
   }
   if (gameState === 'finished') {
+    // When the report card is visible, check if this key matches any listed shortcut first.
+    // If it does, use it for Practice lighting and consume the event — do not pass to UI navigation.
+    if (activeSettings === 'panelReport' && lastCompletedReport) {
+      var ReportShortcutMatched = false;
+      lastCompletedReport.questionSummaries.forEach(function(Summary) {
+        if (Summary.shortcutToken && matchesShortcut(e, Summary.shortcutToken)) {
+          HighlightReportListItems(Summary.shortcutToken);
+          ReportShortcutMatched = true;
+        }
+      });
+      if (ReportShortcutMatched) { e.preventDefault(); return; }
+    }
+    // Cheat sheet key lighting (runs alongside report card check)
+    if (activeSettings === 'panelPadlock' && questionPool.length > 0) {
+      questionPool.slice(0, 10).forEach(function(Question) {
+        if (Question.shortcut && matchesShortcut(e, Question.shortcut)) {
+          HighlightCheatSheetItems(Question.shortcut);
+        }
+      });
+    }
+    // UI navigation — only reached if no report card shortcut consumed the key
     if (e.key === 'ArrowRight') { showTip(tipIndex + 1); e.preventDefault(); return; }
     if (e.key === 'ArrowLeft')  { showTip(tipIndex - 1); e.preventDefault(); return; }
     if (e.key === 'Enter') { e.preventDefault(); _closeAllModals(); beginCountdown(); return; }
   }
   if (gameState === 'idle') {
     if (e.key === 'Enter') { e.preventDefault(); _closeAllModals(); beginCountdown(); return; }
+  }
+  // Cheat sheet lighting when paused
+  if (activeSettings === 'panelPadlock' && questionPool.length > 0) {
+    var _cheatItems = document.querySelectorAll('#cheatSheetList li, #cheatSheetListRight li');
+    console.log('[CheatSheet] keydown: key=' + e.key + ' code=' + e.code + ' cmd=' + (currentOs==='pc'?e.ctrlKey:e.metaKey) + ' sh=' + e.shiftKey + ' opt=' + e.altKey);
+    console.log('[CheatSheet] pool slice tokens:', questionPool.slice(0,10).map(function(q){return q.shortcut;}));
+    console.log('[CheatSheet] li tokens in DOM:', Array.from(_cheatItems).map(function(li){return li.dataset.shortcutToken;}));
+    questionPool.slice(0, 10).forEach(function(Question) {
+      if (Question.shortcut && matchesShortcut(e, Question.shortcut)) {
+        console.log('[CheatSheet] MATCHED:', Question.shortcut);
+        HighlightCheatSheetItems(Question.shortcut);
+      }
+    });
+  }
+  // Enter unpauses when the cheat sheet is open (mirrors the unpause button)
+  if (activeSettings === 'panelPadlock' && e.key === 'Enter') {
+    if (gameState === 'paused') { e.preventDefault(); _closeAllModals(); beginResumeCountdown(); return; }
+    if (gameState === 'readyToUnpause') { e.preventDefault(); _enterReadyToUnpauseCleanup(); beginResumeCountdown(); return; }
   }
   if (gameState === 'paused' || gameState === 'readyToUnpause' || gameState === 'confirm-reset' || gameState === 'confirm-quit') { e.preventDefault(); return; }
   if (gameState !== 'playing' || transitioning) { e.preventDefault(); return; }
@@ -8293,6 +9441,14 @@ function handleKeydown(e) {
       clearAllLit();
       heldKeys.clear();
       stickyLit.clear();
+      runData.push({
+  questionIndex,
+  timeToAnswerMs: performance.now() - startTime,
+  hintUsedAtMs,
+  wrongKeyCount,
+  partialNudgeFired: partialNudgeFiredThisQuestion,
+  endType: 'success'
+});
       recordAnswer();
       if (gameState === 'playing') {
         resetscoreDisc();
@@ -8328,6 +9484,7 @@ function handleKeydown(e) {
       }
     } else {
       consecutiveExtraKeyCount = 0;
+      wrongKeyCount = totalHits - greenHits;
     }
   }
   e.preventDefault();
@@ -8348,9 +9505,14 @@ function releaseAllKeys() {
   greenHeld.clear();
 }
 
-window.addEventListener('blur', releaseAllKeys);
-document.addEventListener('visibilitychange', () => {
-  if (document.hidden) releaseAllKeys();
+window.addEventListener('blur', function() {
+  releaseAllKeys();
+  if (gameState === 'playing') enterPause();
+});
+document.addEventListener('visibilitychange', function() {
+  if (!document.hidden) return;
+  releaseAllKeys();
+  if (gameState === 'playing') enterPause();
 });
 
 function handleKeyup(e) {
@@ -9317,7 +10479,220 @@ body.returning-screen #diffIconWrap .icon-tip { display: none; }
 #diffIconWrap.sp-icon-active #diffIcon   { fill: #374151; }
 #diffIconWrap.sp-icon-active #diffIcon .gauge-stroke { stroke: #374151; }
 #diffIconWrap.sp-icon-active #diffIcon #Needle        { fill:  #374151; }
+/* ── Report Card panel ───────────────────────────── */
 
+/* Override the standard two-column grid to add a full-width bottom row */
+#panelReport.sp-page-report.sp-active {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  grid-template-rows: auto auto;
+  grid-template-areas:
+    "left right"
+    "bottom bottom";
+  position: relative;
+}
+
+/* "Report Card" label — small grey, sits left of "Strengths" in same flex row */
+.sp-small-card-title {
+  font-size: 10px;
+  font-variant: small;
+  letter-spacing: 0.06em;
+  color: #9ca3af;
+  font-weight: 400;
+  margin: 0;
+  line-height: 1;
+  flex-shrink: 0;
+}
+
+/* Column header row: "Report Card" + "Strengths" on left; "Needs Work" on right */
+.sp-report-col-header {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  margin-bottom: 5px;
+  gap: 6px;
+}
+.sp-report-col-header-right {
+  justify-content: flex-end;
+}
+
+/* Suppress the standard centred gutter line — we draw it manually */
+#panelReport.sp-page-report.sp-active::after {
+  display: none;
+}
+
+/* The column divider: sits between left and right, terminates at the horizontal line */
+#panelReport.sp-page-report .sp-col-left {
+  padding-right: 20px;
+  position: relative;
+}
+#panelReport.sp-page-report .sp-col-left::after {
+  content: '';
+  position: absolute;
+  top: 16px;
+  right: 0;
+  width: 1px;
+  background: #e5e7eb;
+  /* height is set to stop at the bottom section — controlled via padding */
+  bottom: 0;
+  pointer-events: none;
+}
+
+#panelReport.sp-page-report .sp-col-right {
+  padding-left: 20px;
+}
+
+/* Bottom section: full-width advice area */
+.sp-report-bottom {
+  grid-area: bottom;
+  padding-top: 0;
+  margin-top: 8px;
+}
+
+/* Coaching advice box: rounded rect with inset shadow, mirrors the advanced settings style */
+.sp-report-advice-box {
+  background: #f7f9fb;
+  border: 1.5px solid #c8cdd4;
+  border-radius: 14px;
+  padding: 10px 16px;
+  box-shadow: inset 0 3px 0 rgba(0,0,0,0.04), inset 0 -3px 0 rgba(255,255,255,0.70);
+}
+
+/* Section titles: bold dark, natural flow within the flex header row */
+.sp-report-section-title {
+  font-size: 12px;
+  font-weight: 700;
+  color: #374151;
+  margin: 0;
+  line-height: 1;
+}
+
+/* Shortcut list rows — mirror the browser conflict list style */
+.sp-report-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+.sp-report-list li {
+  margin-bottom: 6px;
+  display: flex;
+  align-items: center;
+  flex-wrap: nowrap;
+  gap: 0;
+  line-height: 1.6;
+  font-size: 12px;
+  color: #6b7280;
+}
+
+/* Coloured dot replacing the radio button */
+.sp-report-dot {
+  flex-shrink: 0;
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  margin-right: 7px;
+}
+.sp-report-strength .sp-report-dot {
+  background: #10b981;
+  box-shadow: none;
+}
+.sp-report-weakness .sp-report-dot {
+  background: #f97316;
+  box-shadow: none;
+}
+
+/* Question label */
+.sp-report-question-label {
+  flex: 1;
+  font-size: 11px;
+  color: #6b7280;
+  line-height: 1.5;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
+}
+.sp-report-detail {
+  font-size: 10px;
+  color: #9ca3af;
+  font-style: italic;
+}
+
+/* Shortcut chip — light style for strengths (unchecked equivalent) */
+.sp-report-strength .sp-report-chip {
+  display: inline-block;
+  font-family: inherit;
+  font-size: 10px;
+  font-weight: 600;
+  color: #1e3a5f;
+  border: 1px solid #d1d5db;
+  border-radius: 3px;
+  padding: 1px 4px 0;
+  line-height: 1.6;
+  white-space: nowrap;
+  vertical-align: middle;
+  background: transparent;
+  box-shadow: none;
+  flex-shrink: 0;
+  margin-left: 6px;
+}
+
+/* Shortcut chip — heavy style for weaknesses (checked equivalent) */
+.sp-report-weakness .sp-report-chip {
+  display: inline-block;
+  font-family: inherit;
+  font-size: 10px;
+  font-weight: 600;
+  color: #1e3a5f;
+  border: 1px solid #d1d5db;
+  border-radius: 3px;
+  padding: 1px 4px 0;
+  line-height: 1.6;
+  white-space: nowrap;
+  vertical-align: middle;
+  background: #f3f4f6;
+  box-shadow: 0 1.5px 0 #c9cdd3;
+  flex-shrink: 0;
+  margin-left: 6px;
+}
+
+/* Trainer advice prose */
+.sp-report-advice {
+  font-size: 12px;
+  color: #374151;
+  line-height: 1.6;
+  margin: 0 0 6px 0;
+}
+.sp-report-advice a {
+  color: #9ca3af;
+  font-style: italic;
+  text-decoration: none;
+  cursor: pointer;
+}
+.sp-report-advice a:hover {
+  color: #6b7280;
+}
+.sp-report-no-advice {
+  font-size: 11px;
+  font-style: italic;
+  color: #9ca3af;
+  margin: 0;
+}
+
+/* Practice item completed: dot turns green permanently until report card is rebuilt */
+.sp-report-weakness li.practice-done .sp-report-dot {
+  background: #10b981;
+  transition: background 0.3s ease;
+}
+
+/* Chip wrapper lit state — only key chips, not the + separators between them */
+.sp-report-chips-lit .sp-report-chip-key {
+  background: #10b981 !important;
+  color: white !important;
+  border-color: #059669 !important;
+  box-shadow: 0 0 6px rgba(16,185,129,0.45) !important;
+  transition: background 0.15s ease, color 0.15s ease, box-shadow 0.15s ease;
+}
 /* ── Ghost Mode ───────────────────────────────────────────────────────────────
    Keyboard panel becomes invisible. Only green/orange lit states show.       */
 #keyboardPanel.ghost-mode {

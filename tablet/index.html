@@ -1786,14 +1786,14 @@ body.landing-state #statsRow {
 
 /* ══════════════════════════════════════
    FIXED LAYOUT — TABLET ZONES
-   Top block: osRow + gameContainer + statsRow
-   Sits in normal flow at top of body (position: fixed, inset: 0).
-   Middle zone: settings panel, fixed between top block and keyboard.
-   Bottom chrome: credit line + diffIconWrap, fixed to screen bottom.
-   Keyboard: fixed above bottom chrome, slides down when settings open.
+   Top block: osRow + gameContainer + statsRow — normal flow, fixed at top.
+   Settings panel: fixed below top block, content aligned to top of zone.
+   Keyboard: fixed at bottom of viewport during play, slides down when folded.
+   Icons: visible only when settings are open (keyboard folded).
+   Bottom chrome (credit + diffIcon): fixed at screen bottom.
 ══════════════════════════════════════ */
 
-/* ── Top block stays in normal flow (flex column) at the top ── */
+/* ── Top block stays in normal flow at top of body ── */
 #osRow,
 #gameContainer,
 #statsRow {
@@ -1801,21 +1801,19 @@ body.landing-state #statsRow {
   width: 100%;
 }
 
-/* ── Settings panel: fixed, centred in the middle zone ─────────
-   Uses top + bottom anchoring so it centres content between the
-   top block and the keyboard. Width is capped to match the
-   keyboard panel width (692px natural) plus flanking icon space. */
+/* ── Settings panel: fixed below statsRow, content aligned top ──────────
+   No bottom anchor or align-items:center — content sits naturally at the
+   top of the zone and takes only the height it needs.                    */
 #settingsPanel {
   position: fixed;
-  top: 294px;
-  bottom: var(--keyboard-face-bottom, 86px);
+  top: 302px;
   left: 50%;
   transform: translateX(-50%);
   width: min(692px, calc(100vw - 32px));
   pointer-events: none;
   z-index: 5;
   display: flex;
-  align-items: center;
+  align-items: flex-start;
   justify-content: center;
   overflow: visible;
 }
@@ -1834,7 +1832,7 @@ body.landing-state #statsRow {
     opacity   0.3s ease 0.25s,
     transform 0.3s ease 0.25s;
   pointer-events: none;
-  max-height: calc(100vh - 294px - var(--keyboard-face-bottom, 86px) - 8px);
+  max-height: calc(100vh - 302px - 60px);
   overflow-y: auto;
 }
 
@@ -1844,14 +1842,14 @@ body.landing-state #statsRow {
   pointer-events: auto;
 }
 
-/* ── Keyboard wrapper: fixed above bottom chrome ──────────────
-   During play (face-up): sits at --keyboard-face-bottom.
-   During settings (folded): slides to --keyboard-folded-bottom. */
+/* ── Keyboard wrapper: fixed at viewport bottom during play ─────────────
+   bottom: 0 during play — keyboard flush to viewport bottom.
+   kb-settings-open shifts it to the folded position.                    */
 #keyboardWrap {
   position: fixed;
   left: 50%;
   transform: translateX(-50%);
-  bottom: var(--keyboard-face-bottom, 86px);
+  bottom: 0;
   width: min(900px, calc(100vw - 32px));
   display: flex;
   justify-content: center;
@@ -1865,7 +1863,33 @@ body.landing-state #statsRow {
   bottom: var(--keyboard-folded-bottom, 6px);
 }
 
-/* ── Bottom chrome: fixed to screen bottom ──────────────────── */
+/* ── Icon wraps: visible only when settings are open ───────────────────
+   Hidden during play so they never overlap the keyboard.
+   Pushed to viewport edges so they stay clear of the folded keyboard.  */
+#kbIconWrap, #brIconWrap {
+  position: fixed;
+  bottom: 34px;
+  overflow: visible;
+  width: 44px;
+  height: 44px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 7;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.3s ease;
+}
+#kbIconWrap { left: 16px; }
+#brIconWrap { right: 16px; }
+
+#kbIconWrap.icons-folded,
+#brIconWrap.icons-folded {
+  opacity: 1;
+  pointer-events: auto;
+}
+
+/* ── Bottom chrome: credit line and difficulty icon ─────────────────── */
 #credit {
   position: fixed;
   bottom: 6px;
@@ -1882,8 +1906,8 @@ body.landing-state #statsRow {
 }
 
 #diffIconWrap {
-  position: fixed !important;  /* overrides the position:relative rule in the icon tooltip section */
-  bottom: 28px;
+  position: fixed !important;
+  bottom: 26px;
   left: 50%;
   transform: translateX(-50%);
   display: flex;
@@ -1892,86 +1916,27 @@ body.landing-state #statsRow {
   z-index: 6;
 }
 
-/* ── Keyboard stage: scale set by CSS custom property ─────────
-   transform-origin top-center anchors during flip animation.   */
+/* ── Keyboard stage scale ───────────────────────────────────────────── */
 #kbFlipStage {
   transform-origin: top center;
-  scale: var(--keyboard-scale, 1.00);
+  scale: var(--keyboard-scale, 0.85);
 }
 
-/* ── Icon wraps: position:fixed, aligned under the stat record labels ─
-   They move vertically with the keyboard via matching bottom values
-   driven by the .icons-folded class (toggled by JS alongside kb-settings-open). */
-#kbIconWrap, #brIconWrap {
-  position: fixed;
-  bottom: var(--keyboard-face-bottom, 86px);
-  transition: bottom 0.85s cubic-bezier(0.4, 0, 0.2, 1), opacity 0.3s ease;
-  overflow: visible;
-  width: 44px;
-  height: 44px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  z-index: 7;
-}
-/* Horizontal alignment: centred under statLeft and statRight columns.
-   Both gameContainer and statsRow share 44px side padding, plus body has 16px padding.
-   statLeft is 140px wide → its centre is at 16 + 44 + 70 = 130px from viewport left.
-   statRight is 130px wide → its centre is at 16 + 44 + 65 = 125px from viewport right. */
-#kbIconWrap { left: 130px; transform: translateX(-50%); }
-#brIconWrap { right: 125px; transform: translateX(50%); }
-
-/* When settings are open the icons slide down with the keyboard */
-#kbIconWrap.icons-folded,
-#brIconWrap.icons-folded {
-  bottom: var(--keyboard-folded-bottom, 6px);
-}
-
-/* Remove the redundant sibling-selector attempts from above */
-   Values are based on usable viewport height (below browser chrome).
-   Base values cover the tightest realistic case (small tablet + max chrome).
-   Larger viewports unlock larger keyboard scales and more generous spacing. */
-
-/* Base — covers everything up to ~679px usable height */
+/* ── Per-device breakpoints ─────────────────────────────────────────── */
 :root {
-  --keyboard-scale:         1.00;
-  --keyboard-face-bottom:   86px;
+  --keyboard-scale:         0.85;
   --keyboard-folded-bottom: 6px;
 }
 
-/* Medium — ~680px and above (Air / Pro 11 with some chrome) */
 @media (min-height: 680px) {
-  :root {
-    --keyboard-scale:         1.08;
-    --keyboard-face-bottom:   90px;
-    --keyboard-folded-bottom: 6px;
-  }
-  #settingsPanel { top: 294px; bottom: 90px; }
-  #settingsPanelInner { max-height: calc(100vh - 294px - 90px - 8px); }
+  :root { --keyboard-scale: 0.95; --keyboard-folded-bottom: 6px; }
 }
-
-/* Large — ~780px and above (Pro 11 / Air with minimal chrome) */
 @media (min-height: 780px) {
-  :root {
-    --keyboard-scale:         1.16;
-    --keyboard-face-bottom:   100px;
-    --keyboard-folded-bottom: 6px;
-  }
-  #settingsPanel { top: 294px; bottom: 100px; }
-  #settingsPanelInner { max-height: calc(100vh - 294px - 100px - 8px); }
+  :root { --keyboard-scale: 1.08; --keyboard-folded-bottom: 6px; }
 }
-
-/* Extra-large — ~920px and above (Pro 12.9 comfortably) */
 @media (min-height: 920px) {
-  :root {
-    --keyboard-scale:         1.35;
-    --keyboard-face-bottom:   130px;
-    --keyboard-folded-bottom: 6px;
-  }
-  #settingsPanel { top: 294px; bottom: 130px; }
-  #settingsPanelInner { max-height: calc(100vh - 294px - 130px - 8px); }
+  :root { --keyboard-scale: 1.28; --keyboard-folded-bottom: 6px; }
 }
-
 
 /* ── Shared modal shell ───────────────────────────────────────────────────
    Styled to match #gameContainer: blue fill, white border, same radius

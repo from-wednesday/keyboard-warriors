@@ -2058,9 +2058,7 @@ li.conflict-dismissed .conflict-desc {
         <ul id="cheatSheetList" class="sp-report-list sp-report-weakness"></ul>
       </div>
       <div class="sp-col sp-col-right">
-        <p class="sp-body sp-hint" style="margin-top:4px;">If you encounter an error, hold down
-          <span class="sp-key-chip">Esc</span>
-          to open the debug window and send a report.</p>
+        <ul id="cheatSheetListRight" class="sp-report-list sp-report-weakness"></ul>
       </div>
     </div>
 
@@ -8529,7 +8527,7 @@ function finalizeRunData(completedRun, currentPool, DefeatCount) {
   }
 
   // ── Cat 4: Settings suggestions (strict thresholds) ──────────────────────
-  if (hasTrophy) {
+  {
     var DifficultyRank = { fundamentals: 0, normal: 1, hardcore: 2 };
     var CurrentRank    = DifficultyRank[currentDifficulty] || 0;
 
@@ -8557,7 +8555,8 @@ function finalizeRunData(completedRun, currentPool, DefeatCount) {
       }
     }
 
-    // Longer timer: timed out on 4+ questions
+    // The remaining settings suggestions (timer, lives) still require a trophy
+    if (hasTrophy) {
     var TimerStops        = [1, 3, 5, 10, null];
     var CurrentTimerIndex = TimerStops.indexOf(questionTimer);
     if (timeoutCount >= 4 && CurrentTimerIndex < TimerStops.length - 1) {
@@ -8600,7 +8599,8 @@ function finalizeRunData(completedRun, currentPool, DefeatCount) {
           { type: 'lives', fromValue: playerLives, toValue: FewerLivesValue });
       }
     }
-  }
+    } // end hasTrophy (timer/lives)
+  } // end Cat 4 block
 
   // ── Cat 1 + 2: General and contextual encouragement ───────────────────────
   // Always available; drawn when no higher-priority message fires.
@@ -8754,10 +8754,12 @@ function finalizeRunData(completedRun, currentPool, DefeatCount) {
 
 function _refreshCheatSheet() {
   var List = document.getElementById('cheatSheetList');
+  var ListRight = document.getElementById('cheatSheetListRight');
   var ContextLabel   = document.getElementById('cheatSheetContextLabel');
   var HeadingEl      = document.getElementById('cheatSheetHeading');
   if (!List) return;
   List.innerHTML = '';
+  if (ListRight) ListRight.innerHTML = '';
 
   // Populate context label: current app name + OS
   if (ContextLabel) {
@@ -8790,7 +8792,7 @@ function _refreshCheatSheet() {
   if (HeadingEl) HeadingEl.style.visibility = '';
   if (ContextLabel) ContextLabel.style.visibility = '';
 
-  First10.forEach(function(Question) {
+  First10.forEach(function(Question, Idx) {
     var ShortcutDisplay = currentOs === 'pc' ? Question.pc_sc : Question.mac_sc;
     var Token           = Question.shortcut;
 
@@ -8809,12 +8811,18 @@ function _refreshCheatSheet() {
     li.appendChild(dot);
     li.appendChild(label);
     li.appendChild(BuildShortcutKeyChips(ShortcutDisplay, true));
-    List.appendChild(li);
+
+    // First 5 go in left column, next 5 in right column
+    if (Idx < 5) {
+      List.appendChild(li);
+    } else if (ListRight) {
+      ListRight.appendChild(li);
+    }
   });
 }
 
 function HighlightCheatSheetItems(ShortcutToken) {
-  var AllItems = document.querySelectorAll('#cheatSheetList li');
+  var AllItems = document.querySelectorAll('#cheatSheetList li, #cheatSheetListRight li');
   AllItems.forEach(function(ListItem) {
     if ((ListItem.dataset.shortcutToken || '').toUpperCase() !== ShortcutToken.toUpperCase()) return;
     var ChipWrapper = ListItem.lastElementChild;
@@ -8848,7 +8856,7 @@ function BuildShortcutKeyChips(DisplayString, IsWeakness) {
   DisplayString = (DisplayString || '').replace(/\\\\/g, '\\');
   var Wrapper = document.createElement('span');
   Wrapper.style.cssText = 'flex-shrink:0;margin-left:6px;display:inline-flex;align-items:center;flex-wrap:nowrap;';
-  var Tokens = DisplayString.trim().split(/\s+/).filter(function(Token) { return Token.length > 0; });
+  var Tokens = DisplayString.trim().split(' + ').filter(function(Token) { return Token.length > 0; });
   Tokens.forEach(function(Token, TokenIndex) {
     if (TokenIndex > 0) {
       var Separator = document.createElement('span');

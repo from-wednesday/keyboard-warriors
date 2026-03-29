@@ -8829,12 +8829,25 @@ function HighlightCheatSheetItems(ShortcutToken) {
   var AllItems = document.querySelectorAll('#cheatSheetList li, #cheatSheetListRight li');
   AllItems.forEach(function(ListItem) {
     if ((ListItem.dataset.shortcutToken || '').toUpperCase() !== ShortcutToken.toUpperCase()) return;
-    var ChipWrapper = ListItem.lastElementChild;
-    if (ChipWrapper) {
-      ChipWrapper.classList.add('sp-report-chips-lit');
-      setTimeout(function() { ChipWrapper.classList.remove('sp-report-chips-lit'); }, 1400);
-    }
-    ListItem.classList.add('practice-done');
+
+    // Light up chips directly via inline style (bypasses any CSS specificity issues)
+    var Chips = ListItem.querySelectorAll('.sp-report-chip-key');
+    Chips.forEach(function(Chip) {
+      Chip.style.background    = '#10b981';
+      Chip.style.color         = 'white';
+      Chip.style.borderColor   = '#059669';
+      Chip.style.boxShadow     = '0 0 6px rgba(16,185,129,0.45)';
+      setTimeout(function() {
+        Chip.style.background  = '#f3f4f6';
+        Chip.style.color       = '#1e3a5f';
+        Chip.style.borderColor = '#d1d5db';
+        Chip.style.boxShadow   = '0 1.5px 0 #c9cdd3';
+      }, 1400);
+    });
+
+    // Turn dot green directly via inline style
+    var Dot = ListItem.querySelector('.sp-report-dot');
+    if (Dot) Dot.style.background = '#10b981';
   });
 }
 
@@ -8842,7 +8855,7 @@ function HighlightReportListItems(ShortcutToken) {
   var AllListItems = document.querySelectorAll('#reportStrengths li, #reportWeaknesses li');
   AllListItems.forEach(function(ListItem) {
     if ((ListItem.dataset.shortcutToken || '').toUpperCase() !== ShortcutToken.toUpperCase()) return;
-    var ChipWrapper = ListItem.lastElementChild;
+    var ChipWrapper = ListItem.querySelector('[data-chips-wrapper]');
     if (!ChipWrapper) return;
     ChipWrapper.classList.add('sp-report-chips-lit');
     setTimeout(function() {
@@ -8859,6 +8872,7 @@ function HighlightReportListItems(ShortcutToken) {
 function BuildShortcutKeyChips(DisplayString, IsWeakness) {
   DisplayString = (DisplayString || '').replace(/\\\\/g, '\\');
   var Wrapper = document.createElement('span');
+  Wrapper.dataset.chipsWrapper = '1';
   Wrapper.style.cssText = 'flex-shrink:0;margin-left:6px;display:inline-flex;align-items:center;flex-wrap:nowrap;';
   // Split on spaces, then merge modifier symbols (⌘⇧⌥⌃) with a following word label
   // e.g. '⇧ Shift' → ['⇧ Shift'] (one chip), '⌘ Z' → ['⌘', 'Z'] (two chips)

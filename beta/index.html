@@ -5338,11 +5338,15 @@ function _spAlignPanel() {
     requestAnimationFrame(function() {
       var contentH = inner.scrollHeight;
       var stageH   = stage.offsetHeight;
-      // On larger screens contentH is comfortably less than stageH -- just add a small buffer.
-      // On small screens contentH exceeds stageH, so we need room for both stacked.
-      var needed = contentH > stageH
-        ? contentH + stageH + 24
-        : contentH + 16;
+      // Edge-position panels (report, cheat sheet, pause, browser, difficulty) sit
+      // above a fully folded keyboard. Only the content height matters; the stage
+      // height is already accounted for by the fold. Add a small buffer only.
+      var IsEdgePanel = (activeSettings === 'panelReport' || activeSettings === 'panelPadlock' ||
+                         activeSettings === 'panelPause'  || activeSettings === 'panelBrowser' ||
+                         activeSettings === 'panelDifficulty');
+      var needed = IsEdgePanel
+        ? contentH + 8
+        : (contentH > stageH ? contentH + stageH + 24 : contentH + 16);
       wrap.style.minHeight = Math.max(needed, 320) + 'px';
     });
   });
@@ -9278,11 +9282,11 @@ document.getElementById('keyboardWrap').addEventListener('click', function(e) {
   // If a settings panel is open, the keyboard is not truly resting idle --
   // ignore the click so it does not trigger unpausing beneath the panel.
   if (activeSettings !== null) return;
-  if (gameState !== 'readyToUnpause') return;
-  // Any click in the keyboard area folds it away to the pause screen
-  _enterReadyToUnpauseCleanup();
-  gameState = 'paused'; // set before enterPause so it doesn't double-trigger
-  enterPause();
+  if (gameState === 'readyToUnpause') {
+    // Any click in the keyboard area folds it away to the pause screen
+    _enterReadyToUnpauseCleanup();
+    gameState = 'paused';
+    enterPause();
     return;
   }
 

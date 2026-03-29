@@ -2058,6 +2058,10 @@ li.conflict-dismissed .conflict-desc {
         <ul id="cheatSheetList" class="sp-report-list sp-report-weakness"></ul>
       </div>
       <div class="sp-col sp-col-right">
+        <div class="sp-report-col-header" aria-hidden="true" style="visibility:hidden;">
+          <p class="sp-small-card-title">&nbsp;</p>
+          <p class="sp-report-section-title">&nbsp;</p>
+        </div>
         <ul id="cheatSheetListRight" class="sp-report-list sp-report-weakness"></ul>
       </div>
     </div>
@@ -8856,7 +8860,21 @@ function BuildShortcutKeyChips(DisplayString, IsWeakness) {
   DisplayString = (DisplayString || '').replace(/\\\\/g, '\\');
   var Wrapper = document.createElement('span');
   Wrapper.style.cssText = 'flex-shrink:0;margin-left:6px;display:inline-flex;align-items:center;flex-wrap:nowrap;';
-  var Tokens = DisplayString.trim().split(' + ').filter(function(Token) { return Token.length > 0; });
+  // Split on spaces, then merge modifier symbols (⌘⇧⌥⌃) with a following word label
+  // e.g. '⇧ Shift' → ['⇧ Shift'] (one chip), '⌘ Z' → ['⌘', 'Z'] (two chips)
+  var WordLabels = new Set(['shift','option','opt','control','ctrl','command','alt','fn']);
+  var RawTokens = DisplayString.trim().split(/\s+/).filter(function(t) { return t.length > 0; });
+  var Tokens = [];
+  var ModifierSymbols = /^[⌘⇧⌥⌃]$/;
+  for (var ti = 0; ti < RawTokens.length; ti++) {
+    var tok = RawTokens[ti];
+    if (ModifierSymbols.test(tok) && ti + 1 < RawTokens.length && WordLabels.has(RawTokens[ti + 1].toLowerCase())) {
+      Tokens.push(tok + '\u00a0' + RawTokens[ti + 1]);
+      ti++; // skip the word label, it's been merged
+    } else {
+      Tokens.push(tok);
+    }
+  }
   Tokens.forEach(function(Token, TokenIndex) {
     if (TokenIndex > 0) {
       var Separator = document.createElement('span');

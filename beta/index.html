@@ -9,7 +9,7 @@
 <title>beta</title>
 <script>
   const DefaultTitle = 'Keyboard Warriors';
-  const VersionLabel   = '0004';
+  const VersionLabel   = '0005';
   const TitlePrefix  = document.title !== DefaultTitle ? document.title.trim() + '_' : '';
   const DBG_DEVICE   = TitlePrefix + VersionLabel;
 </script>
@@ -1953,13 +1953,13 @@ li.conflict-dismissed .conflict-desc {
       <div class="sp-col sp-col-left">
         <p class="sp-body" id="browserCompatHeading"></p>
         <p class="sp-body" id="browserCompatIntro"></p>
-        <p class="sp-body" id="browserCompatFooter"></p>
+        <p class="sp-body" id="browserCompatFooter"></p> <p class="sp-body sp-hint">If you encounter an error, hold down
+          <span class="sp-key-chip">Esc</span>
+          to open the debug window and send a report.</p>
       </div>
       <div class="sp-col sp-col-right">
         <ul id="browserCompatList" class="sp-conflict-list"></ul>
-        <p class="sp-body sp-hint">If you encounter an error, hold down
-          <span class="sp-key-chip">Esc</span>
-          to open the debug window and send a report.</p>
+    
       </div>
     </div>
 
@@ -2033,7 +2033,7 @@ li.conflict-dismissed .conflict-desc {
 <div id="panelReport" class="sp-page sp-page-report">
   <div class="sp-col sp-col-left">
     <div class="sp-report-col-header">
-      <p class="sp-report-card-title">Report Card</p>
+      <p class="sp-small-card-title">REPORT CARD</p>
       <p class="sp-report-section-title">Mastered</p>
     </div>
     <ul id="reportStrengths" class="sp-report-list sp-report-strength"></ul>
@@ -2052,8 +2052,8 @@ li.conflict-dismissed .conflict-desc {
     <div id="panelPadlock" class="sp-page">
       <div class="sp-col sp-col-left">
         <div class="sp-report-col-header">
-          <p class="sp-report-card-title">Up Next</p>
-          <p class="sp-report-section-title">Cheat Sheet</p>
+          <p class="sp-small-card-title" id="cheatSheetContextLabel"></p>
+          <p class="sp-report-section-title" id="cheatSheetHeading">Cheat Sheet</p>
         </div>
         <ul id="cheatSheetList" class="sp-report-list sp-report-weakness"></ul>
       </div>
@@ -2874,8 +2874,18 @@ function buildOsLabels() {
   leftLabel.style.cursor  = 'pointer';
   rightLabel.style.cursor = 'pointer';
 
-  leftLabel.addEventListener('click',  function() { applyOsMode(leftOperatingSystem);  if (activeSettings === 'panelKeyboard') updateModalToggles(); });
-  rightLabel.addEventListener('click', function() { applyOsMode(rightOperatingSystem); if (activeSettings === 'panelKeyboard') updateModalToggles(); });
+  leftLabel.addEventListener('click',  function() {
+    applyOsMode(leftOperatingSystem);
+    if (activeSettings === 'panelKeyboard') updateModalToggles();
+    if (activeSettings === 'panelReport')   _refreshReportPanel();
+    if (activeSettings === 'panelPadlock')  _refreshCheatSheet();
+  });
+  rightLabel.addEventListener('click', function() {
+    applyOsMode(rightOperatingSystem);
+    if (activeSettings === 'panelKeyboard') updateModalToggles();
+    if (activeSettings === 'panelReport')   _refreshReportPanel();
+    if (activeSettings === 'panelPadlock')  _refreshCheatSheet();
+  });
 }
 
 function updateToggleVisual(os) {
@@ -2990,6 +3000,8 @@ function onOsToggle() {
     : (nativeMac ? 'mac' : 'pc'));
   if (activeSettings === 'panelKeyboard') updateModalToggles();
   if (activeSettings === 'panelBrowser')  _refreshBrowserContent();
+  if (activeSettings === 'panelReport')     _refreshReportPanel();
+  if (activeSettings === 'panelPadlock')    _refreshCheatSheet();
   runData.length = 0; lastCompletedReport = null;
 }
 
@@ -3207,7 +3219,6 @@ function resetPartialShortcutNudgeTimers() {
   partialShortcutNudgeTimer    = null;
   partialShortcutFollowUpTimer = null;
   partialShortcutNudgeArmed    = false;
-  // Note: partialNudgeFiredThisQuestion is reset in advanceQuestion/startGame, not here
 }
 
 function checkAndArmPartialShortcutNudge() {
@@ -3466,7 +3477,14 @@ function updateKeyboardLighting(e, isDown) {
   } else {
     heldKeys.delete(code);
     greenHeld.delete(code);
+    // Only reset the nudge timers if we are no longer in a partial correct state.
+    // If the player released a correct key but other correct keys are still lit
+    // (sticky mode), or the question still has required keys unmet, keep the nudge armed.
+    if (!isPartialCorrectState()) {
     resetPartialShortcutNudgeTimers();
+    } else {
+      checkAndArmPartialShortcutNudge();
+    }
     if (isExtKey) {
       hideExtKeyPill();
     } else {
@@ -8732,8 +8750,18 @@ function finalizeRunData(completedRun, currentPool, DefeatCount) {
 
 function _refreshCheatSheet() {
   var List = document.getElementById('cheatSheetList');
+  var ContextLabel   = document.getElementById('cheatSheetContextLabel');
+  var HeadingEl      = document.getElementById('cheatSheetHeading');
   if (!List) return;
   List.innerHTML = '';
+
+  // Populate context label: current app name + OS
+  if (ContextLabel) {
+    var AppEntry  = APPS.find(function(a) { return a.key === currentApp; });
+    var AppName   = AppEntry ? AppEntry.label : currentApp;
+    var OsName    = currentOs === 'pc' ? 'PC' : 'Mac';
+    ContextLabel.textContent = AppName + ' on ' + OsName;
+  }
 
   // Use the adaptive pool for the next round if available, otherwise the current pool
   var Pool = questionPool;
@@ -8743,6 +8771,21 @@ function _refreshCheatSheet() {
   }
 
   var First10 = Pool.slice(0, 10);
+
+  // Empty state: hide the heading and show a message instead
+  if (First10.length === 0) {
+    if (HeadingEl) HeadingEl.style.visibility = 'hidden';
+    if (ContextLabel) ContextLabel.style.visibility = 'hidden';
+    var EmptyItem = document.createElement('li');
+    EmptyItem.style.cssText = 'font-size:11px;font-style:italic;color:#9ca3af;list-style:none;padding:4px 0;';
+    EmptyItem.textContent = 'Start a game to load your cheat sheet.';
+    List.appendChild(EmptyItem);
+    return;
+  }
+
+  if (HeadingEl) HeadingEl.style.visibility = '';
+  if (ContextLabel) ContextLabel.style.visibility = '';
+
   First10.forEach(function(Question) {
     var ShortcutDisplay = currentOs === 'pc' ? Question.pc_sc : Question.mac_sc;
     var Token           = Question.shortcut;
@@ -9240,6 +9283,21 @@ document.getElementById('keyboardWrap').addEventListener('click', function(e) {
   _enterReadyToUnpauseCleanup();
   gameState = 'paused'; // set before enterPause so it doesn't double-trigger
   enterPause();
+    return;
+  }
+
+  // When the keyboard is folded and touch is not enabled, clicking it raises it back up.
+  // In paused/finished states this enters the readyToUnpause / face position.
+  if (_kbPos !== 'face' && !touchEnabled) {
+    if (gameState === 'paused') {
+      _enterReadyToUnpause();
+      return;
+    }
+    if (gameState === 'finished' || gameState === 'idle') {
+      closeSettings();
+      return;
+    }
+  }
 });
 
 function showTip(index) {
@@ -9302,6 +9360,19 @@ function handleKeydown(e) {
   }
   if (gameState === 'idle') {
     if (e.key === 'Enter') { e.preventDefault(); _closeAllModals(); beginCountdown(); return; }
+  }
+  // Cheat sheet lighting when paused
+  if (activeSettings === 'panelPadlock' && questionPool.length > 0) {
+    questionPool.slice(0, 10).forEach(function(Question) {
+      if (Question.shortcut && matchesShortcut(e, Question.shortcut)) {
+        HighlightCheatSheetItems(Question.shortcut);
+      }
+    });
+  }
+  // Enter unpauses when the cheat sheet is open (mirrors the unpause button)
+  if (activeSettings === 'panelPadlock' && e.key === 'Enter') {
+    if (gameState === 'paused') { e.preventDefault(); _closeAllModals(); beginResumeCountdown(); return; }
+    if (gameState === 'readyToUnpause') { e.preventDefault(); _enterReadyToUnpauseCleanup(); beginResumeCountdown(); return; }
   }
   if (gameState === 'paused' || gameState === 'readyToUnpause' || gameState === 'confirm-reset' || gameState === 'confirm-quit') { e.preventDefault(); return; }
   if (gameState !== 'playing' || transitioning) { e.preventDefault(); return; }
@@ -10373,13 +10444,13 @@ body.returning-screen #diffIconWrap .icon-tip { display: none; }
   position: relative;
 }
 
-/* "Report Card" label — small-caps grey, sits left of "Strengths" in same flex row */
-.sp-report-card-title {
+/* "Report Card" label — small grey, sits left of "Strengths" in same flex row */
+.sp-small-card-title {
   font-size: 10px;
-  font-variant: small-caps;
+  font-variant: small;
   letter-spacing: 0.06em;
   color: #9ca3af;
-  font-weight: 600;
+  font-weight: 400;
   margin: 0;
   line-height: 1;
   flex-shrink: 0;

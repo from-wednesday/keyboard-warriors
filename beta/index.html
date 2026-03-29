@@ -9407,8 +9407,13 @@ function handleKeydown(e) {
   }
   // Cheat sheet lighting when paused
   if (activeSettings === 'panelPadlock' && questionPool.length > 0) {
+    var _cheatItems = document.querySelectorAll('#cheatSheetList li, #cheatSheetListRight li');
+    console.log('[CheatSheet] keydown: key=' + e.key + ' code=' + e.code + ' cmd=' + (currentOs==='pc'?e.ctrlKey:e.metaKey) + ' sh=' + e.shiftKey + ' opt=' + e.altKey);
+    console.log('[CheatSheet] pool slice tokens:', questionPool.slice(0,10).map(function(q){return q.shortcut;}));
+    console.log('[CheatSheet] li tokens in DOM:', Array.from(_cheatItems).map(function(li){return li.dataset.shortcutToken;}));
     questionPool.slice(0, 10).forEach(function(Question) {
       if (Question.shortcut && matchesShortcut(e, Question.shortcut)) {
+        console.log('[CheatSheet] MATCHED:', Question.shortcut);
         HighlightCheatSheetItems(Question.shortcut);
       }
     });

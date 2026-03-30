@@ -9,7 +9,7 @@
 <title>beta</title>
 <script>
   const DefaultTitle = 'Keyboard Warriors';
-  const VersionLabel   = '0007';
+  const VersionLabel   = '0009';
   const TitlePrefix  = document.title !== DefaultTitle ? document.title.trim() + '_' : '';
   const DBG_DEVICE   = TitlePrefix + VersionLabel;
 </script>
@@ -1025,26 +1025,6 @@ body.pc-mode #extKeyPill {
 #kbToast.show { opacity: 1; }
 #kbToast.warning { background: #f59e0b; }
 
-/* ── Difficulty toast — appears over the keyboard ── */
-#diffToast {
-  position: absolute;
-  left: 50%;
-  top: 50%;
-  transform: translate(-50%, -50%);
-  background: rgba(30, 30, 35, 0.88);
-  color: #f3f4f6;
-  font-family: 'Lato', system-ui, sans-serif;
-  font-size: 13px;
-  font-weight: 500;
-  padding: 7px 16px;
-  border-radius: 12px;
-  white-space: nowrap;
-  pointer-events: none;
-  opacity: 0;
-  transition: opacity 0.25s ease;
-  z-index: 20;
-}
-#diffToast.visible { opacity: 1; }
 
 /* ── Unified notification toast ─────────────────────────────────────────────
    position:fixed so it floats above everything including modals.
@@ -2398,7 +2378,6 @@ li.conflict-dismissed .conflict-desc {
   <span class="icon-tip" onclick="event.stopPropagation();diffIconClick()">difficulty<br>settings</span>
 </div>
 
-<div id="diffToast"></div>
 <div id="kwToast"></div>
 
 <script>
@@ -2640,8 +2619,6 @@ const MAC_BOTTOM_ROWS = {
 // Active variant keys — default to standard layouts
 var kbVariantMac = 'mac-3key';
 var kbVariantPc  = 'pc-fn-left';
-// Legacy alias used in buildKeyboard
-var PC_BOTTOM_ROW = PC_BOTTOM_ROWS['pc-fn-left'];
 // Bottom-row config state
 var kbLeftCount = 3;   // 3 or 4 keys left of space
 var kbFnLeft    = true; // true = Fn at far left, false = Fn right of Alt (PC only)
@@ -3764,8 +3741,7 @@ function setTimerState(state, text) {
    BUTTON HANDLERS
 ══════════════════════════════════════ */
 function _closeAllModals() {
-  if (kbModalOpen)      closeKbModal();
-  if (browserModalOpen) closeBrowserModal();
+  if (activeSettings !== null) closeSettings();
 }
 
 function mainButtonClick() {
@@ -3803,13 +3779,13 @@ const IMPROVEMENT_TIPS = [
   'Pressing the timer will pause your game.\nYou can reset scores and more.',
   'Play daily for a week to lock in muscle memory.',
   'Short sessions beat marathon drills.',
-  'So you’ve maxed your accuracy — but can you chain three perfect runs?',
+  'So you’ve maxed your accuracy, but can you chain three perfect runs?',
   'Isolate trouble combos and master one at a time.',
   'Work on your most frequently used functions first.',
   'Learn common cross-app shortcuts early.',
   'High score reset unlocks a clean challenge.',
   'Pause the game to reflect on a miss.',
-  'The help button isn’t to cheat — it’s to learn.',
+  'The help button isn’t to cheat. It’s to learn.',
   'Celebrate streaks. How many can you do in a row?',
   'Compare your scores over time to see your progress.',
   'Share scores with classmates for friendly rivalry.',
@@ -5210,9 +5186,6 @@ function onTouchToggle() {
 // ── Keyboard variant picker ───────────────────────────────────────────────────
 
 
-// ── Modal OS toggle ───────────────────────────────────────────────────────────
-var modalOs = currentOs; // independent from the game OS toggle
-
 // ── Keyboard layout toggles in modal ─────────────────────────────────────────
 function activeVariantKey() {
   if (currentOs === 'mac') {
@@ -5324,11 +5297,6 @@ function onModalFnToggle() {
 // ── Settings panel ──────────────────────────────────────────────
 // activeSettings: null | 'panelKeyboard' | 'panelBrowser' | 'panelDifficulty' | 'panelPause' | 'panelReturning' | 'panelWelcome'
 var activeSettings = null;
-
-// Kept as aliases so existing code that checks kbModalOpen/browserModalOpen
-// continues to work during the transition. Both are now always false.
-var kbModalOpen = false;
-var browserModalOpen = false;
 
 var SP_PAGE_ORDER = ['panelKeyboard', 'panelBrowser', 'panelDifficulty', 'panelPause', 'panelReport', 'panelPadlock', 'panelReturning', 'panelWelcome'];
 
@@ -5476,8 +5444,6 @@ function closeSettings() {
   if (activeSettings === null) return;
   var closingPage = activeSettings;
   activeSettings = null;
-  kbModalOpen    = false;
-  browserModalOpen = false;
   // Closing the panel always cancels any active confirm overlay
   _exitScoreClearConfirm();
   _exitDiffConfirm();
@@ -5553,8 +5519,6 @@ function _closeAllModals() {
 function _closeAllModalsInstant() {
   if (activeSettings === null) return;
   activeSettings = null;
-  kbModalOpen    = false;
-  browserModalOpen = false;
   _exitScoreClearConfirm();
   _exitDiffConfirm();
   _exitQuitConfirm();
@@ -5579,9 +5543,6 @@ function toggleKbModal()     { activeSettings === 'panelKeyboard' ? closeSetting
 function openBrowserModal()  { openSettings('panelBrowser'); }
 function closeBrowserModal() { closeSettings(); }
 function toggleBrowserModal(){ activeSettings === 'panelBrowser'  ? closeSettings() : openSettings('panelBrowser');  }
-function positionKbModal()   { _spAlignPanel(); }
-function positionBrowserModal() { _spAlignPanel(); }
-
 function _renderKeyChips(label) {
   var em      = '\u2014';
   var dashIdx = label.indexOf(' ' + em + ' ');
@@ -5756,11 +5717,6 @@ function positionIcons() {
   if (brWrap) { brWrap.style.left = brLeft + 'px'; brWrap.style.right = 'auto'; }
   else if (br) br.style.left = brLeft + 'px';
 }
-
-window.addEventListener('resize', function() {
-  positionIcons();
-  if (activeSettings !== null) _spAlignPanel();
-});
 
 // ── Game-area click pulses the contextually useful button ────────────────────
 document.getElementById('gameContainer').addEventListener('click', function(e) {
@@ -9694,7 +9650,6 @@ function handleKeyup(e) {
 
 /* ── Keyboard flip ────────────────────────────────── */
 var _kbPos     = 'face'; // 'face' | 'partial' | 'edge'
-var _flipBusy  = false;  // kept for applyOsMode compatibility — unused by setKbPosition
 var _kbFlipped = false;  // kept for applyOsMode compatibility — true when pos is 'edge'
 var _flipSeq   = 0;      // still used by the show/hide icon timing
 
@@ -9710,7 +9665,6 @@ function setKbPosition(pos) {
   var prev = _kbPos;
   _kbPos     = pos;
   _kbFlipped = (pos === 'edge');
-  _flipBusy  = false;
   var seq = ++_flipSeq;
 
   var panel = document.getElementById('keyboardPanel');
@@ -9776,7 +9730,6 @@ function _resetFlipState() {
   _flipSeq++;
   _kbPos     = 'face';
   _kbFlipped = false;
-  _flipBusy  = false;
   var panel = document.getElementById('keyboardPanel');
   var stage = document.getElementById('kbFlipStage');
   var wrap  = document.getElementById('keyboardWrap');
@@ -9785,35 +9738,14 @@ function _resetFlipState() {
   if (wrap)  { wrap.classList.remove('kb-flipping'); wrap.classList.add('kb-at-face'); }
 }
 
-/* ── Difficulty toast helper ───────────────────────── */
-var _diffToastTimer = null;
-function showDiffToast(msg) {
-  var el = document.getElementById('diffToast');
-  if (!el) { showModeToast(msg); return; }
-  clearTimeout(_diffToastTimer);
-  el.textContent = msg;
-  el.classList.add('visible');
-  var readingDuration = Math.min(5000, 1400 + msg.length * 40);
-  _diffToastTimer = setTimeout(function() {
-    el.classList.remove('visible');
-  }, readingDuration);
-}
-
-/* ── Difficulty needle states (ready, not yet wired to click) ── */
+/* ── Difficulty needle states ── */
 var _diffState = -1;   // -1 = fundamentals, 0 = normal, 1 = hardcore
 var _diffFirst = false;
 var DIFF_ANGLES = { '-1': -60, '0': 0, '1': 60 };
-var DIFF_TOASTS = {
-  '-1': 'Fundamentals mode coming soon.',
-   '0': 'Normal mode.',
-   '1': 'Hardcore mode coming soon.'
-};
 function setDiffState(newState) {
-  var changed = (newState !== _diffState);
   _diffState = newState;
   var needle = document.querySelector('#diffIcon #Needle');
   if (needle) needle.style.transform = 'rotate(' + DIFF_ANGLES[String(newState)] + 'deg)';
-  if (changed && !_diffFirst) showDiffToast(DIFF_TOASTS[String(newState)]);
   _diffFirst = false;
 }
 

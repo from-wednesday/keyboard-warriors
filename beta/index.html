@@ -9,7 +9,7 @@
 <title>beta</title>
 <script>
   const DefaultTitle = 'Keyboard Warriors';
-  const VersionLabel   = '0006';
+  const VersionLabel   = '0007';
   const TitlePrefix  = document.title !== DefaultTitle ? document.title.trim() + '_' : '';
   const DBG_DEVICE   = TitlePrefix + VersionLabel;
 </script>
@@ -2044,13 +2044,13 @@ li.conflict-dismissed .conflict-desc {
   <div class="sp-col sp-col-left">
     <div class="sp-report-col-header">
       <p class="sp-small-card-title">REPORT CARD</p>
-      <p class="sp-report-section-title">Mastered</p>
+      <p class="sp-report-section-title" id="reportMasteredHeading">Mastered</p>
     </div>
     <ul id="reportStrengths" class="sp-report-list sp-report-strength"></ul>
   </div>
   <div class="sp-col sp-col-right">
     <div class="sp-report-col-header sp-report-col-header-right">
-      <p class="sp-report-section-title">Practice</p>
+      <p class="sp-report-section-title" id="reportPracticeHeading">Practice</p>
     </div>
     <ul id="reportWeaknesses" class="sp-report-list sp-report-weakness"></ul>
   </div>
@@ -3489,6 +3489,18 @@ function updateKeyboardLighting(e, isDown) {
   } else {
     heldKeys.delete(code);
     greenHeld.delete(code);
+    // If a green key is released mid-partial (correct key pressed but shortcut not completed),
+    // record that a partial attempt happened and show an immediate nudge if the toast hasn't fired yet.
+    if (gameState === 'playing' && !transitioning && greenHeld.size === 0 && !neededSatisfied(shortcutToCodes(currentAnswer))) {
+      const wasGreen = keyEls[code] && (keyEls[code].classList.contains('lit-green-down') || keyEls[code].classList.contains('lit-green-up'));
+      if (wasGreen) {
+        partialCorrectKeyPressedThisQuestion = true;
+        if (!partialNudgeFiredThisQuestion) {
+          partialNudgeFiredThisQuestion = true;
+          showToast("The shortcut isn't complete yet");
+        }
+      }
+    }
     // Only reset the nudge timers if we are no longer in a partial correct state.
     // If the player released a correct key but other correct keys are still lit
     // (sticky mode), or the question still has required keys unmet, keep the nudge armed.
@@ -3548,6 +3560,7 @@ let partialShortcutNudgeTimer    = null;
 let partialShortcutFollowUpTimer = null;
 let partialShortcutNudgeArmed    = false;
 let partialNudgeFiredThisQuestion = false;  // true once the nudge toast actually fires
+let partialCorrectKeyPressedThisQuestion = false; // true if a correct key was pressed then released without completing
 let consecutiveExtraKeyCount     = 0;  // increments when correct keys + a wrong key are all present
 let endScreenInactivityTimer      = null;
 let readyToUnpauseInactivityTimer = null;
@@ -7500,6 +7513,7 @@ function onQuestionTimerExpired() {
   hintUsedAtMs,
   wrongKeyCount,
   partialNudgeFired: partialNudgeFiredThisQuestion,
+  partialCorrectKey: partialCorrectKeyPressedThisQuestion,
   endType: 'timeout'
 });
       advanceQuestion();
@@ -7521,6 +7535,7 @@ function onQuestionTimerExpired() {
   hintUsedAtMs,
   wrongKeyCount,
   partialNudgeFired: partialNudgeFiredThisQuestion,
+  partialCorrectKey: partialCorrectKeyPressedThisQuestion,
   endType: 'timeout'
 });
     advanceQuestion();
@@ -7860,6 +7875,7 @@ startTime    = performance.now();
 hintUsedAtMs = null;
 wrongKeyCount = 0;
 partialNudgeFiredThisQuestion = false;
+partialCorrectKeyPressedThisQuestion = false;
 }
 
 function skipShortcut() {
@@ -7894,6 +7910,7 @@ function skipShortcut() {
   hintUsedAtMs,
   wrongKeyCount,
   partialNudgeFired: partialNudgeFiredThisQuestion,
+  partialCorrectKey: partialCorrectKeyPressedThisQuestion,
   endType: 'skip'
 });
       advanceQuestion();
@@ -7916,6 +7933,7 @@ function skipShortcut() {
   hintUsedAtMs,
   wrongKeyCount,
   partialNudgeFired: partialNudgeFiredThisQuestion,
+  partialCorrectKey: partialCorrectKeyPressedThisQuestion,
   endType: 'skip'
 });
       advanceQuestion();
@@ -7964,6 +7982,7 @@ startTime    = performance.now();
 hintUsedAtMs = null;
 wrongKeyCount = 0;
 partialNudgeFiredThisQuestion = false;
+partialCorrectKeyPressedThisQuestion = false;
 }
 
 function recordAnswer() {
@@ -8380,6 +8399,7 @@ function finalizeRunData(completedRun, currentPool, DefeatCount) {
       shortcut,
       shortcutToken: question ? question.shortcut : '',
       partialNudgeFired: entry.partialNudgeFired || false,
+      partialCorrectKey: entry.partialCorrectKey || false,
       timeToAnswerMs: entry.timeToAnswerMs,
       outcome: entry.endType === 'success'
         ? (entry.timeToAnswerMs !== null ? Math.round(entry.timeToAnswerMs) + 'ms' : 'Correct')
@@ -8539,6 +8559,12 @@ function finalizeRunData(completedRun, currentPool, DefeatCount) {
   if (accuracyPercent < 50) {
     AddMessage(SpecificMessages, 'cat3_rough',
       'That was a rough one. Rest if you need to, then come back.');
+  }
+  // Partial correct key presses: sign the player is learning the structure of a shortcut
+  var partialCorrectCount = questionSummaries.filter(function(s) { return s.partialCorrectKey; }).length;
+  if (partialCorrectCount >= 2) {
+    AddMessage(SpecificMessages, 'cat3_partial_correct',
+      'You pressed the right keys on several shortcuts but did not finish them. That means the knowledge is forming. You just need to connect the pieces.');
   }
 
   // ── Cat 3b: Literacy recovery (trophy required -- timer setting is not accessible without it) ──
@@ -9010,6 +9036,8 @@ function _refreshReportPanel() {
         strengthsList.appendChild(li);
       });
     }
+    var masteredH = document.getElementById('reportMasteredHeading');
+    if (masteredH) masteredH.classList.toggle('sp-title-empty', strengthItems.length === 0);
   }
 
   // ── Weaknesses (right column) ─────────────────────────────────────────────
@@ -9042,8 +9070,8 @@ function _refreshReportPanel() {
         if (s.endType === 'timeout')    detail.push('timed out');
         else if (s.endType === 'skip')  detail.push('skipped');
         else if (s.isSlow && !(s.timeToAnswerMs !== null && s.timeToAnswerMs <= 1000)) detail.push('slower');
-        if (s.hintUsed)                 detail.push('hint used');
-        if (s.partialNudgeFired)        detail.push('needed a nudge');
+        if (s.partialNudgeFired || s.partialCorrectKey) detail.push('partly there — keep building it');
+        else if (s.hintUsed)                 detail.push('hint used');
         if (s.wrongKeyCount > 0)        detail.push(s.wrongKeyCount + ' wrong key' + (s.wrongKeyCount > 1 ? 's' : ''));
 
         var li      = document.createElement('li');
@@ -9067,6 +9095,8 @@ function _refreshReportPanel() {
         weaknessesList.appendChild(li);
       });
     }
+    var practiceH = document.getElementById('reportPracticeHeading');
+    if (practiceH) practiceH.classList.toggle('sp-title-empty', weaknessItems.length === 0);
   }
 
   // ── Trainer advice (bottom section) ──────────────────────────────────────
@@ -9494,6 +9524,7 @@ function handleKeydown(e) {
   hintUsedAtMs,
   wrongKeyCount,
   partialNudgeFired: partialNudgeFiredThisQuestion,
+  partialCorrectKey: partialCorrectKeyPressedThisQuestion,
   endType: 'success'
 });
       recordAnswer();
@@ -10612,6 +10643,12 @@ body.returning-screen #diffIconWrap .icon-tip { display: none; }
   color: #374151;
   margin: 0;
   line-height: 1;
+}
+.sp-report-section-title.sp-title-empty {
+  color: #9ca3af;
+  font-weight: 400;
+  text-decoration: line-through;
+  text-decoration-color: #d1d5db;
 }
 
 /* Shortcut list rows — mirror the browser conflict list style */

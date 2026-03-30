@@ -8613,6 +8613,40 @@ function finalizeRunData(completedRun, currentPool, DefeatCount) {
         }
       }
 
+      // Average answer time near a timer stop: suggest calibrating the timer to match natural pace.
+      // Condition A: timer is infinite -- all successful answer times are genuine and unconstrained.
+      // Condition B: timer is finite but no more than 2 questions timed out -- estimate timed-out
+      //   questions at 1.25x the timer limit so the average reflects the full picture fairly.
+      //   Skips are excluded in both cases (a skip is a deliberate choice, not a timing signal).
+      var TimerCalibrationEligible = (questionTimer === null && successTimes.length >= 3)
+        || (questionTimer !== null && timeoutCount <= 2 && successTimes.length + timeoutCount >= 3);
+      if (TimerCalibrationEligible) {
+        var TimedOutEstimateMs = questionTimer !== null ? questionTimer * 1000 * 1.25 : 0;
+        var TimeoutEstimates   = [];
+        for (var TimeoutIndex = 0; TimeoutIndex < timeoutCount; TimeoutIndex++) {
+          TimeoutEstimates.push(TimedOutEstimateMs);
+        }
+        var AllTimesForAverage  = successTimes.concat(TimeoutEstimates);
+        var AverageAnswerTimeMs = AllTimesForAverage.reduce(function(Sum, T) { return Sum + T; }, 0) / AllTimesForAverage.length;
+        var AverageAnswerTimeSeconds = AverageAnswerTimeMs / 1000;
+        var FiniteTimerStops = [1, 3, 5, 10];
+        var NearestStop = null;
+        var SmallestDistance = Infinity;
+        FiniteTimerStops.forEach(function(Stop) {
+          var Distance = Math.abs(AverageAnswerTimeSeconds - Stop);
+          if (Distance < SmallestDistance) {
+            SmallestDistance = Distance;
+            NearestStop = Stop;
+          }
+        });
+        if (NearestStop !== null && SmallestDistance <= 1 && NearestStop !== questionTimer) {
+          var AverageAnswerTimeDisplay = AverageAnswerTimeSeconds.toFixed(1);
+          ForceAddMessage(TimerAndLivesMessages, 'cat4_timer_calibrate',
+            'Your average answer time this round was ' + AverageAnswerTimeDisplay + ' seconds. That is close to the ' + NearestStop + '-second question timer setting, which would match your natural pace well.',
+            { type: 'timer', fromValue: questionTimer, toValue: NearestStop });
+        }
+      }
+
       var LivesStops        = [1, 3, 5, 10, null];
       var CurrentLivesIndex = LivesStops.indexOf(playerLives);
 
@@ -8802,9 +8836,12 @@ function finalizeRunData(completedRun, currentPool, DefeatCount) {
     || PickRandom(DifficultyMessages)
     || PickRandom(GeneralMessages);
 
-  // Second message: always a general/encouragement line, different key from primary
+  // Second message: always a general/encouragement line, different key from primary.
+  // Suppressed when the calibrate message is drawn -- it is long and self-contained.
   var PrimaryKey     = PrimaryMessage ? PrimaryMessage.key : null;
-  var SecondaryMessage = PickRandomExcluding(GeneralMessages, PrimaryKey);
+  var SecondaryMessage = (PrimaryKey === 'cat4_timer_calibrate')
+    ? null
+    : PickRandomExcluding(GeneralMessages, PrimaryKey);
 
   // Persist the primary message key to memory (secondary is supplementary, not memorised)
   if (PrimaryMessage) {
@@ -9509,6 +9546,7 @@ function handleKeydown(e) {
     clearHelp();
     hideQuestionTimerArc();  // remove the arc for the answered question
     clearInterval(timerInterval);
+    const AnswerTimestampMs = performance.now() - startTime;
     setTimerState('green', 'right');
     titleEl.style.color = '#10b981'; // instant green — directs attention before hiding
     requestAnimationFrame(() => titleEl.classList.add('hidden'));
@@ -9520,7 +9558,7 @@ function handleKeydown(e) {
       stickyLit.clear();
       runData.push({
   questionIndex,
-  timeToAnswerMs: performance.now() - startTime,
+  timeToAnswerMs: AnswerTimestampMs,
   hintUsedAtMs,
   wrongKeyCount,
   partialNudgeFired: partialNudgeFiredThisQuestion,

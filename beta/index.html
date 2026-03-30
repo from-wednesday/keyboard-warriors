@@ -9070,7 +9070,7 @@ function _refreshReportPanel() {
         if (s.endType === 'timeout')    detail.push('timed out');
         else if (s.endType === 'skip')  detail.push('skipped');
         else if (s.isSlow && !(s.timeToAnswerMs !== null && s.timeToAnswerMs <= 1000)) detail.push('slower');
-        if (s.partialNudgeFired || s.partialCorrectKey) detail.push('partly there — keep building it');
+        if (s.partialNudgeFired || s.partialCorrectKey) detail.push('part way there');
         else if (s.hintUsed)                 detail.push('hint used');
         if (s.wrongKeyCount > 0)        detail.push(s.wrongKeyCount + ' wrong key' + (s.wrongKeyCount > 1 ? 's' : ''));
 

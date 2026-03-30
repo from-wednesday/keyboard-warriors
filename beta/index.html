@@ -9,7 +9,7 @@
 <title>beta</title>
 <script>
   const DefaultTitle = 'Keyboard Warriors';
-  const VersionLabel   = '0007';
+  const VersionLabel   = '0006';
   const TitlePrefix  = document.title !== DefaultTitle ? document.title.trim() + '_' : '';
   const DBG_DEVICE   = TitlePrefix + VersionLabel;
 </script>
@@ -8815,14 +8815,21 @@ function _refreshCheatSheet() {
     ContextLabel.textContent = AppName + ' on ' + OsName;
   }
 
-  // Use the adaptive pool for the next round if available, otherwise the current pool
+  // Use the adaptive pool for the next round if available, otherwise the current pool.
+  // During a game, start from the current question so the list matches what is being asked.
+  // Store the resolved pool so the keydown lighting handler uses the same tokens.
   var Pool = questionPool;
   if (lastCompletedReport) {
     var AdaptivePool = getAdaptiveNextRoundPool();
     if (AdaptivePool && AdaptivePool.length > 0) Pool = AdaptivePool;
   }
+  var StartIndex = (gameState === 'playing' || gameState === 'paused' || gameState === 'readyToUnpause')
+    ? questionIndex
+    : 0;
+  var OrderedPool = Pool.slice(StartIndex).concat(Pool.slice(0, StartIndex));
+  window._cheatSheetResolvedPool = OrderedPool;
 
-  var First10 = Pool.slice(0, 10);
+  var First10 = OrderedPool.slice(0, 10);
 
   // Empty state: hide the heading and show a message instead
   if (First10.length === 0) {
@@ -9433,7 +9440,8 @@ function handleKeydown(e) {
     }
     // Cheat sheet key lighting (runs alongside report card check)
     if (activeSettings === 'panelPadlock' && questionPool.length > 0) {
-      questionPool.slice(0, 10).forEach(function(Question) {
+      var FinishedCheatPool = window._cheatSheetResolvedPool || questionPool;
+      FinishedCheatPool.slice(0, 10).forEach(function(Question) {
         if (Question.shortcut && matchesShortcut(e, Question.shortcut)) {
           HighlightCheatSheetItems(Question.shortcut);
         }
@@ -9449,13 +9457,9 @@ function handleKeydown(e) {
   }
   // Cheat sheet lighting when paused
   if (activeSettings === 'panelPadlock' && questionPool.length > 0) {
-    var _cheatItems = document.querySelectorAll('#cheatSheetList li, #cheatSheetListRight li');
-    console.log('[CheatSheet] keydown: key=' + e.key + ' code=' + e.code + ' cmd=' + (currentOs==='pc'?e.ctrlKey:e.metaKey) + ' sh=' + e.shiftKey + ' opt=' + e.altKey);
-    console.log('[CheatSheet] pool slice tokens:', questionPool.slice(0,10).map(function(q){return q.shortcut;}));
-    console.log('[CheatSheet] li tokens in DOM:', Array.from(_cheatItems).map(function(li){return li.dataset.shortcutToken;}));
-    questionPool.slice(0, 10).forEach(function(Question) {
+    var PausedCheatPool = window._cheatSheetResolvedPool || questionPool;
+    PausedCheatPool.slice(0, 10).forEach(function(Question) {
       if (Question.shortcut && matchesShortcut(e, Question.shortcut)) {
-        console.log('[CheatSheet] MATCHED:', Question.shortcut);
         HighlightCheatSheetItems(Question.shortcut);
       }
     });

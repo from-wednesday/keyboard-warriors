@@ -9,7 +9,7 @@
 <title>Keyboard Warriors</title>
 <script>
   const DefaultTitle = 'Keyboard Warriors';
-  const VersionLabel   = '0006';
+  const VersionLabel   = '0008';
   const TitlePrefix  = document.title !== DefaultTitle ? document.title.trim() + '_' : '';
   const DBG_DEVICE   = TitlePrefix + VersionLabel;
 </script>
@@ -2044,13 +2044,13 @@ li.conflict-dismissed .conflict-desc {
   <div class="sp-col sp-col-left">
     <div class="sp-report-col-header">
       <p class="sp-small-card-title">REPORT CARD</p>
-      <p class="sp-report-section-title">Mastered</p>
+      <p class="sp-report-section-title" id="reportMasteredHeading">Mastered</p>
     </div>
     <ul id="reportStrengths" class="sp-report-list sp-report-strength"></ul>
   </div>
   <div class="sp-col sp-col-right">
     <div class="sp-report-col-header sp-report-col-header-right">
-      <p class="sp-report-section-title">Practice</p>
+      <p class="sp-report-section-title" id="reportPracticeHeading">Practice</p>
     </div>
     <ul id="reportWeaknesses" class="sp-report-list sp-report-weakness"></ul>
   </div>
@@ -3489,6 +3489,18 @@ function updateKeyboardLighting(e, isDown) {
   } else {
     heldKeys.delete(code);
     greenHeld.delete(code);
+    // If a green key is released mid-partial (correct key pressed but shortcut not completed),
+    // record that a partial attempt happened and show an immediate nudge if the toast hasn't fired yet.
+    if (gameState === 'playing' && !transitioning && greenHeld.size === 0 && !neededSatisfied(shortcutToCodes(currentAnswer))) {
+      const wasGreen = keyEls[code] && (keyEls[code].classList.contains('lit-green-down') || keyEls[code].classList.contains('lit-green-up'));
+      if (wasGreen) {
+        partialCorrectKeyPressedThisQuestion = true;
+        if (!partialNudgeFiredThisQuestion) {
+          partialNudgeFiredThisQuestion = true;
+          showToast("The shortcut isn't complete yet");
+        }
+      }
+    }
     // Only reset the nudge timers if we are no longer in a partial correct state.
     // If the player released a correct key but other correct keys are still lit
     // (sticky mode), or the question still has required keys unmet, keep the nudge armed.
@@ -3548,6 +3560,7 @@ let partialShortcutNudgeTimer    = null;
 let partialShortcutFollowUpTimer = null;
 let partialShortcutNudgeArmed    = false;
 let partialNudgeFiredThisQuestion = false;  // true once the nudge toast actually fires
+let partialCorrectKeyPressedThisQuestion = false; // true if a correct key was pressed then released without completing
 let consecutiveExtraKeyCount     = 0;  // increments when correct keys + a wrong key are all present
 let endScreenInactivityTimer      = null;
 let readyToUnpauseInactivityTimer = null;
@@ -7500,6 +7513,7 @@ function onQuestionTimerExpired() {
   hintUsedAtMs,
   wrongKeyCount,
   partialNudgeFired: partialNudgeFiredThisQuestion,
+  partialCorrectKey: partialCorrectKeyPressedThisQuestion,
   endType: 'timeout'
 });
       advanceQuestion();
@@ -7521,6 +7535,7 @@ function onQuestionTimerExpired() {
   hintUsedAtMs,
   wrongKeyCount,
   partialNudgeFired: partialNudgeFiredThisQuestion,
+  partialCorrectKey: partialCorrectKeyPressedThisQuestion,
   endType: 'timeout'
 });
     advanceQuestion();
@@ -7860,6 +7875,7 @@ startTime    = performance.now();
 hintUsedAtMs = null;
 wrongKeyCount = 0;
 partialNudgeFiredThisQuestion = false;
+partialCorrectKeyPressedThisQuestion = false;
 }
 
 function skipShortcut() {
@@ -7894,6 +7910,7 @@ function skipShortcut() {
   hintUsedAtMs,
   wrongKeyCount,
   partialNudgeFired: partialNudgeFiredThisQuestion,
+  partialCorrectKey: partialCorrectKeyPressedThisQuestion,
   endType: 'skip'
 });
       advanceQuestion();
@@ -7916,6 +7933,7 @@ function skipShortcut() {
   hintUsedAtMs,
   wrongKeyCount,
   partialNudgeFired: partialNudgeFiredThisQuestion,
+  partialCorrectKey: partialCorrectKeyPressedThisQuestion,
   endType: 'skip'
 });
       advanceQuestion();
@@ -7964,6 +7982,7 @@ startTime    = performance.now();
 hintUsedAtMs = null;
 wrongKeyCount = 0;
 partialNudgeFiredThisQuestion = false;
+partialCorrectKeyPressedThisQuestion = false;
 }
 
 function recordAnswer() {
@@ -8327,14 +8346,26 @@ _refreshReportPanel()
 function LoadCoachMemory() {
   try {
     var raw = localStorage.getItem('kw_coach_memory');
-    if (raw) return JSON.parse(raw);
+    if (raw) {
+      var parsed = JSON.parse(raw);
+      // Backfill recentMessageKeys for saves that predate this field
+      if (!Array.isArray(parsed.recentMessageKeys)) {
+        parsed.recentMessageKeys = parsed.messageKey ? [parsed.messageKey] : [];
+      }
+      return parsed;
+    }
   } catch(e) {}
-  return { messageKey: null, settingSuggested: null, consecutiveDefeatCount: 0 };
+  return { messageKey: null, recentMessageKeys: [], settingSuggested: null, consecutiveDefeatCount: 0 };
 }
-function SaveCoachMemory(messageKey, settingSuggested, defeatCount) {
+function SaveCoachMemory(messageKey, settingSuggested, defeatCount, previousRecentKeys) {
+  // Prepend the new key and keep only the most recent 3
+  var UpdatedRecentKeys = [messageKey].concat((previousRecentKeys || []).filter(function(Key) {
+    return Key !== messageKey;
+  })).slice(0, 3);
   try {
     localStorage.setItem('kw_coach_memory', JSON.stringify({
       messageKey: messageKey,
+      recentMessageKeys: UpdatedRecentKeys,
       settingSuggested: settingSuggested || null,
       consecutiveDefeatCount: defeatCount || 0,
     }));
@@ -8380,6 +8411,7 @@ function finalizeRunData(completedRun, currentPool, DefeatCount) {
       shortcut,
       shortcutToken: question ? question.shortcut : '',
       partialNudgeFired: entry.partialNudgeFired || false,
+      partialCorrectKey: entry.partialCorrectKey || false,
       timeToAnswerMs: entry.timeToAnswerMs,
       outcome: entry.endType === 'success'
         ? (entry.timeToAnswerMs !== null ? Math.round(entry.timeToAnswerMs) + 'ms' : 'Correct')
@@ -8409,6 +8441,7 @@ function finalizeRunData(completedRun, currentPool, DefeatCount) {
   const PreviousMemory         = LoadCoachMemory();
   const PreviousSuggestion     = PreviousMemory.settingSuggested;
   const PreviousMessageKey     = PreviousMemory.messageKey;
+  const RecentMessageKeys      = PreviousMemory.recentMessageKeys || [];
 
   // Did the player act on a setting suggestion from last round?
   function PlayerActedOnSuggestion() {
@@ -8433,12 +8466,12 @@ function finalizeRunData(completedRun, currentPool, DefeatCount) {
   var MemoryAwareMessages   = [];
   var SpecificMessages      = []; // Cat 3
   var LiteracyMessages      = []; // Cat 3b
-  var SettingsMessages      = []; // Cat 4
+
   var GeneralMessages       = []; // Cat 1 + 2
 
   // Helper: push only if not the same key as last round
   function AddMessage(pool, key, text, settingSuggested) {
-    if (key === PreviousMessageKey) return;
+    if (RecentMessageKeys.indexOf(key) !== -1) return;
     pool.push({ key: key, text: text, settingSuggested: settingSuggested || null });
   }
   // Settings messages bypass the "shown last round" dedup so they always compete
@@ -8492,7 +8525,7 @@ function finalizeRunData(completedRun, currentPool, DefeatCount) {
       { key: 'cat3_one_life_c', text: 'One life standing at the end. That took some composure.' },
       { key: 'cat3_one_life_d', text: 'Squeezed through on a single life. Breathe.' },
     ];
-    var EligibleOneLife = OneLiveMessages.filter(function(m) { return m.key !== PreviousMessageKey; });
+    var EligibleOneLife = OneLiveMessages.filter(function(m) { return RecentMessageKeys.indexOf(m.key) === -1; });
     var PickedOneLife   = EligibleOneLife[Math.floor(Math.random() * EligibleOneLife.length)];
     if (PickedOneLife) AddMessage(SpecificMessages, PickedOneLife.key, PickedOneLife.text);
   }
@@ -8540,6 +8573,12 @@ function finalizeRunData(completedRun, currentPool, DefeatCount) {
     AddMessage(SpecificMessages, 'cat3_rough',
       'That was a rough one. Rest if you need to, then come back.');
   }
+  // Partial correct key presses: sign the player is learning the structure of a shortcut
+  var partialCorrectCount = questionSummaries.filter(function(s) { return s.partialCorrectKey; }).length;
+  if (partialCorrectCount >= 2) {
+    AddMessage(SpecificMessages, 'cat3_partial_correct',
+      'You pressed the right keys on several shortcuts but did not finish them. That means the knowledge is forming. You just need to connect the pieces.');
+  }
 
   // ── Cat 3b: Literacy recovery (trophy required -- timer setting is not accessible without it) ──
   if (hasTrophy && questionTimer !== null && accuracyPercent < 60 && timeoutCount >= 3 && hintCount >= 3) {
@@ -8551,19 +8590,129 @@ function finalizeRunData(completedRun, currentPool, DefeatCount) {
       'There is no shame in slowing right down. Switch the timer off, use the hints freely, and focus on learning where the keys are. Speed comes later.');
   }
 
-  // ── Cat 4: Settings suggestions (strict thresholds) ──────────────────────
+  // ── Cat 4: Settings suggestions ──────────────────────────────────────
+  // Timer and lives are the primary growth levers once the trophy is earned.
+  // Difficulty changes are a secondary fallback -- Hardcore is too niche for
+  // most players and Normal mode should stay the focus.
+  // Two separate pools let us prioritise timer/lives over difficulty in the
+  // final selection logic below.
+  var TimerAndLivesMessages = [];
+  var DifficultyMessages    = [];
   {
     var DifficultyRank = { fundamentals: 0, normal: 1, hardcore: 2 };
     var CurrentRank    = DifficultyRank[currentDifficulty] || 0;
 
-    // Raise difficulty: high accuracy, clean execution
-    // wrongKeyTotal deliberately excluded -- a single mispress should not block this for the whole round
+    // ── Timer and lives (trophy required) ──────────────────────────────
+    if (hasTrophy) {
+      var TimerStops        = [1, 3, 5, 10, null];
+      var CurrentTimerIndex = TimerStops.indexOf(questionTimer);
+
+      // Longer timer: struggling with timeouts
+      if (timeoutCount >= 4 && CurrentTimerIndex < TimerStops.length - 1) {
+        var LongerTimerValue = TimerStops[CurrentTimerIndex + 1];
+        var LongerTimerLabel = LongerTimerValue === null ? 'unlimited' : LongerTimerValue + ' seconds';
+        ForceAddMessage(TimerAndLivesMessages, 'cat4_timer_up',
+          'You timed out on several questions. Try increasing the question timer to ' + LongerTimerLabel + '.',
+          { type: 'timer', fromValue: questionTimer, toValue: LongerTimerValue });
+      }
+
+      // Shorter timer: strong run with room to push
+      if (timeoutCount === 0 && allFast && accuracyPercent >= 90 && hintCount === 0 && CurrentTimerIndex > 0) {
+        var ShorterTimerValue = TimerStops[CurrentTimerIndex - 1];
+        if (ShorterTimerValue !== null) {
+          ForceAddMessage(TimerAndLivesMessages, 'cat4_timer_down',
+            'You handled that comfortably. Try a shorter timer to raise the challenge.',
+            { type: 'timer', fromValue: questionTimer, toValue: ShorterTimerValue });
+        }
+      }
+
+      // Average answer time near a timer stop: suggest calibrating the timer to match natural pace.
+      // Condition A: timer is infinite -- all successful answer times are genuine and unconstrained.
+      // Condition B: timer is finite but no more than 2 questions timed out -- estimate timed-out
+      //   questions at 1.25x the timer limit so the average reflects the full picture fairly.
+      //   Skips are excluded in both cases (a skip is a deliberate choice, not a timing signal).
+      var TimerCalibrationEligible = (questionTimer === null && successTimes.length >= 3)
+        || (questionTimer !== null && timeoutCount <= 2 && successTimes.length + timeoutCount >= 3);
+      if (TimerCalibrationEligible) {
+        var TimedOutEstimateMs = questionTimer !== null ? questionTimer * 1000 * 1.25 : 0;
+        var TimeoutEstimates   = [];
+        for (var TimeoutIndex = 0; TimeoutIndex < timeoutCount; TimeoutIndex++) {
+          TimeoutEstimates.push(TimedOutEstimateMs);
+        }
+        var AllTimesForAverage  = successTimes.concat(TimeoutEstimates);
+        var AverageAnswerTimeMs = AllTimesForAverage.reduce(function(Sum, T) { return Sum + T; }, 0) / AllTimesForAverage.length;
+        var AverageAnswerTimeSeconds = AverageAnswerTimeMs / 1000;
+        var FiniteTimerStops = [1, 3, 5, 10];
+        var NearestStop = null;
+        var SmallestDistance = Infinity;
+        FiniteTimerStops.forEach(function(Stop) {
+          var Distance = Math.abs(AverageAnswerTimeSeconds - Stop);
+          if (Distance < SmallestDistance) {
+            SmallestDistance = Distance;
+            NearestStop = Stop;
+          }
+        });
+        // Option C: suppress if the timer setting and suggested stop are both unchanged
+        // since the last time this message fired. Resurfaces if either shifts.
+        var CalibrateWasShownBefore = PreviousSuggestion
+          && PreviousSuggestion.type === 'timer'
+          && PreviousSuggestion.fromValue === questionTimer
+          && PreviousSuggestion.toValue   === NearestStop;
+
+        if (NearestStop !== null && SmallestDistance <= 1 && NearestStop !== questionTimer && !CalibrateWasShownBefore) {
+          var AverageAnswerTimeDisplay = AverageAnswerTimeSeconds.toFixed(1);
+          var CalibrateMessageText;
+          var IsChallenge  = NearestStop < AverageAnswerTimeSeconds;
+          var IsBorderline = Math.abs(NearestStop - AverageAnswerTimeSeconds) <= 0.25;
+          if (IsBorderline) {
+            // Average is right on the stop -- confirmatory challenge with gentler life suggestion
+            CalibrateMessageText = 'Your average answer time this round was ' + AverageAnswerTimeDisplay + ' seconds. If you want to challenge yourself, try setting the question timer to ' + NearestStop + ' seconds, and start with five lives.';
+          } else if (IsChallenge) {
+            // Suggested stop is faster than their average -- aspirational challenge
+            CalibrateMessageText = 'Your average answer time this round was ' + AverageAnswerTimeDisplay + ' seconds. If you want to challenge yourself, try setting the question timer to ' + NearestStop + ' second' + (NearestStop === 1 ? '' : 's') + ', and lives initially to ten.';
+          } else {
+            // Suggested stop is slower than their average -- natural pace match
+            CalibrateMessageText = 'Your average answer time this round was ' + AverageAnswerTimeDisplay + ' seconds. That is close to the ' + NearestStop + '-second question timer setting, which would match your natural pace well.';
+          }
+          ForceAddMessage(TimerAndLivesMessages, 'cat4_timer_calibrate',
+            CalibrateMessageText,
+            { type: 'timer', fromValue: questionTimer, toValue: NearestStop });
+        }
+      }
+
+      var LivesStops        = [1, 3, 5, 10, null];
+      var CurrentLivesIndex = LivesStops.indexOf(playerLives);
+
+      // More lives: losing lives under pressure
+      if (playerLives !== null && livesRemaining !== null && livesRemaining <= 1
+          && accuracyPercent < 75 && CurrentLivesIndex < LivesStops.length - 1) {
+        var MoreLivesValue = LivesStops[CurrentLivesIndex + 1];
+        var MoreLivesLabel = MoreLivesValue === null ? 'unlimited' : String(MoreLivesValue);
+        ForceAddMessage(TimerAndLivesMessages, 'cat4_lives_up',
+          'You are losing lives most rounds. Consider adding a few more to reduce the pressure while you build speed.',
+          { type: 'lives', fromValue: playerLives, toValue: MoreLivesValue });
+      }
+
+      // Fewer lives: keeping all lives comfortably
+      if (playerLives !== null && livesRemaining === playerLives && accuracyPercent >= 85
+          && CurrentLivesIndex > 0) {
+        var FewerLivesValue = LivesStops[CurrentLivesIndex - 1];
+        if (FewerLivesValue !== null) {
+          ForceAddMessage(TimerAndLivesMessages, 'cat4_lives_down',
+            'You are keeping all your lives easily. Try fewer to sharpen your focus.',
+            { type: 'lives', fromValue: playerLives, toValue: FewerLivesValue });
+        }
+      }
+    } // end hasTrophy
+
+    // ── Difficulty (lower priority, fires only when timer/lives have nothing to say) ──
+
+    // Raise difficulty: only suggest Hardcore if already on Normal and truly clean
     if (accuracyPercent >= 95 && hintCount === 0 && skipCount === 0) {
       if (CurrentRank < 2) {
-        var NextMode = CurrentRank === 0 ? 'normal' : 'hardcore';
-        var NextLabel = CurrentRank === 0 ? 'Normal' : 'Hardcore';
-        // Settings messages use ForceAddMessage so they are not suppressed by the "shown last round" guard
-        ForceAddMessage(SettingsMessages, 'cat4_diff_up',
+        var NextMode  = CurrentRank === 0 ? 'normal' : 'hardcore';
+        var NextLabel = CurrentRank === 0 ? 'Normal'  : 'Hardcore';
+        ForceAddMessage(DifficultyMessages, 'cat4_diff_up',
           'You are performing very well. Consider raising the difficulty to ' + NextLabel + '.',
           { type: 'difficulty', fromValue: currentDifficulty, toValue: NextMode });
       }
@@ -8573,58 +8722,12 @@ function finalizeRunData(completedRun, currentPool, DefeatCount) {
     if (accuracyPercent < 60 && (skipCount >= 4 || timeoutCount >= 4)) {
       if (CurrentRank > 0) {
         var PrevMode  = CurrentRank === 2 ? 'normal' : 'fundamentals';
-        var PrevLabel = CurrentRank === 2 ? 'Normal' : 'Fundamentals';
-        ForceAddMessage(SettingsMessages, 'cat4_diff_down',
+        var PrevLabel = CurrentRank === 2 ? 'Normal'  : 'Fundamentals';
+        ForceAddMessage(DifficultyMessages, 'cat4_diff_down',
           'This round was genuinely challenging. Dropping to ' + PrevLabel + ' may help consolidate your learning.',
           { type: 'difficulty', fromValue: currentDifficulty, toValue: PrevMode });
       }
     }
-
-    // The remaining settings suggestions (timer, lives) still require a trophy
-    if (hasTrophy) {
-    var TimerStops        = [1, 3, 5, 10, null];
-    var CurrentTimerIndex = TimerStops.indexOf(questionTimer);
-    if (timeoutCount >= 4 && CurrentTimerIndex < TimerStops.length - 1) {
-      var LongerTimerValue = TimerStops[CurrentTimerIndex + 1];
-      var LongerTimerLabel = LongerTimerValue === null ? 'unlimited' : LongerTimerValue + ' seconds';
-      ForceAddMessage(SettingsMessages, 'cat4_timer_up',
-        'You timed out on several questions. Try increasing the question timer to ' + LongerTimerLabel + '.',
-        { type: 'timer', fromValue: questionTimer, toValue: LongerTimerValue });
-    }
-
-    // Shorter timer: flawless fast run
-    if (timeoutCount === 0 && allFast && accuracyPercent === 100 && hintCount === 0 && CurrentTimerIndex > 0) {
-      var ShorterTimerValue = TimerStops[CurrentTimerIndex - 1];
-      if (ShorterTimerValue !== null) {
-        ForceAddMessage(SettingsMessages, 'cat4_timer_down',
-          'You handled that comfortably. Try a shorter timer to raise the challenge.',
-          { type: 'timer', fromValue: questionTimer, toValue: ShorterTimerValue });
-      }
-    }
-
-    // More lives: losing lives under pressure with room to add more
-    var LivesStops        = [1, 3, 5, 10, null];
-    var CurrentLivesIndex = LivesStops.indexOf(playerLives);
-    if (playerLives !== null && livesRemaining !== null && livesRemaining <= 1
-        && accuracyPercent < 75 && CurrentLivesIndex < LivesStops.length - 1) {
-      var MoreLivesValue = LivesStops[CurrentLivesIndex + 1];
-      var MoreLivesLabel = MoreLivesValue === null ? 'unlimited' : String(MoreLivesValue);
-      ForceAddMessage(SettingsMessages, 'cat4_lives_up',
-        'You are losing lives most rounds. Consider adding a few more to reduce the pressure while you build speed.',
-        { type: 'lives', fromValue: playerLives, toValue: MoreLivesValue });
-    }
-
-    // Fewer lives: keeping all lives comfortably
-    if (playerLives !== null && livesRemaining === playerLives && accuracyPercent >= 95 && allFast
-        && CurrentLivesIndex > 0) {
-      var FewerLivesValue = LivesStops[CurrentLivesIndex - 1];
-      if (FewerLivesValue !== null) {
-        ForceAddMessage(SettingsMessages, 'cat4_lives_down',
-          'You are keeping all your lives easily. Try fewer to sharpen your focus.',
-          { type: 'lives', fromValue: playerLives, toValue: FewerLivesValue });
-      }
-    }
-    } // end hasTrophy (timer/lives)
   } // end Cat 4 block
 
   // ── Cat 1 + 2: General and contextual encouragement ───────────────────────
@@ -8725,13 +8828,13 @@ function finalizeRunData(completedRun, currentPool, DefeatCount) {
   // Pre-trophy: only Cat 1/2 messages, filtered to relevant ones
   if (!hasTrophy) {
     AllGeneralMessages.forEach(function(m) {
-      if (m.condition && m.key !== PreviousMessageKey) {
+      if (m.condition && RecentMessageKeys.indexOf(m.key) === -1) {
         GeneralMessages.push({ key: m.key, text: m.text, settingSuggested: null });
       }
     });
   } else {
     AllGeneralMessages.forEach(function(m) {
-      if (m.condition && m.key !== PreviousMessageKey) {
+      if (m.condition && RecentMessageKeys.indexOf(m.key) === -1) {
         GeneralMessages.push({ key: m.key, text: m.text, settingSuggested: null });
       }
     });
@@ -8750,24 +8853,32 @@ function finalizeRunData(completedRun, currentPool, DefeatCount) {
     return Filtered[Math.floor(Math.random() * Filtered.length)];
   }
 
+  // Priority: memory-aware → timer/lives (primary growth levers for trophy holders)
+  // → specific run commentary → literacy recovery → difficulty (secondary)
+  // → general encouragement.
+  // Timer/lives always beat difficulty suggestions so Normal mode stays the focus.
   var HasFewWeaknessesThisRound = questionSummaries.filter(function(s) { return s.isWeakness; }).length <= 1;
-  var SpecificOrSettings = HasFewWeaknessesThisRound
-    ? PickRandom(SpecificMessages.concat(SettingsMessages))
+  var SpecificOrTimerLives = HasFewWeaknessesThisRound
+    ? PickRandom(SpecificMessages.concat(TimerAndLivesMessages))
     : PickRandom(SpecificMessages);
 
   var PrimaryMessage = PickRandom(MemoryAwareMessages)
-    || SpecificOrSettings
+    || PickRandom(TimerAndLivesMessages)
+    || SpecificOrTimerLives
     || PickRandom(LiteracyMessages)
-    || PickRandom(SettingsMessages)
+    || PickRandom(DifficultyMessages)
     || PickRandom(GeneralMessages);
 
-  // Second message: always a general/encouragement line, different key from primary
+  // Second message: always a general/encouragement line, different key from primary.
+  // Suppressed when the calibrate message is drawn -- it is long and self-contained.
   var PrimaryKey     = PrimaryMessage ? PrimaryMessage.key : null;
-  var SecondaryMessage = PickRandomExcluding(GeneralMessages, PrimaryKey);
+  var SecondaryMessage = (PrimaryKey === 'cat4_timer_calibrate')
+    ? null
+    : PickRandomExcluding(GeneralMessages, PrimaryKey);
 
   // Persist the primary message key to memory (secondary is supplementary, not memorised)
   if (PrimaryMessage) {
-    SaveCoachMemory(PrimaryMessage.key, PrimaryMessage.settingSuggested || null, DefeatCount || 0);
+    SaveCoachMemory(PrimaryMessage.key, PrimaryMessage.settingSuggested || null, DefeatCount || 0, RecentMessageKeys);
   }
 
   var trainerAdvice = [];
@@ -8800,14 +8911,21 @@ function _refreshCheatSheet() {
     ContextLabel.textContent = AppName + ' on ' + OsName;
   }
 
-  // Use the adaptive pool for the next round if available, otherwise the current pool
+  // Use the adaptive pool for the next round if available, otherwise the current pool.
+  // During a game, start from the current question so the list matches what is being asked.
+  // Store the resolved pool so the keydown lighting handler uses the same tokens.
   var Pool = questionPool;
   if (lastCompletedReport) {
     var AdaptivePool = getAdaptiveNextRoundPool();
     if (AdaptivePool && AdaptivePool.length > 0) Pool = AdaptivePool;
   }
+  var StartIndex = (gameState === 'playing' || gameState === 'paused' || gameState === 'readyToUnpause')
+    ? questionIndex
+    : 0;
+  var OrderedPool = Pool.slice(StartIndex).concat(Pool.slice(0, StartIndex));
+  window._cheatSheetResolvedPool = OrderedPool;
 
-  var First10 = Pool.slice(0, 10);
+  var First10 = OrderedPool.slice(0, 10);
 
   // Empty state: hide the heading and show a message instead
   if (First10.length === 0) {
@@ -8988,6 +9106,8 @@ function _refreshReportPanel() {
         strengthsList.appendChild(li);
       });
     }
+    var masteredH = document.getElementById('reportMasteredHeading');
+    if (masteredH) masteredH.classList.toggle('sp-title-empty', strengthItems.length === 0);
   }
 
   // ── Weaknesses (right column) ─────────────────────────────────────────────
@@ -9020,8 +9140,8 @@ function _refreshReportPanel() {
         if (s.endType === 'timeout')    detail.push('timed out');
         else if (s.endType === 'skip')  detail.push('skipped');
         else if (s.isSlow && !(s.timeToAnswerMs !== null && s.timeToAnswerMs <= 1000)) detail.push('slower');
-        if (s.hintUsed)                 detail.push('hint used');
-        if (s.partialNudgeFired)        detail.push('needed a nudge');
+        if (s.partialNudgeFired || s.partialCorrectKey) detail.push('part way there');
+        else if (s.hintUsed)                 detail.push('hint used');
         if (s.wrongKeyCount > 0)        detail.push(s.wrongKeyCount + ' wrong key' + (s.wrongKeyCount > 1 ? 's' : ''));
 
         var li      = document.createElement('li');
@@ -9045,6 +9165,8 @@ function _refreshReportPanel() {
         weaknessesList.appendChild(li);
       });
     }
+    var practiceH = document.getElementById('reportPracticeHeading');
+    if (practiceH) practiceH.classList.toggle('sp-title-empty', weaknessItems.length === 0);
   }
 
   // ── Trainer advice (bottom section) ──────────────────────────────────────
@@ -9418,7 +9540,8 @@ function handleKeydown(e) {
     }
     // Cheat sheet key lighting (runs alongside report card check)
     if (activeSettings === 'panelPadlock' && questionPool.length > 0) {
-      questionPool.slice(0, 10).forEach(function(Question) {
+      var FinishedCheatPool = window._cheatSheetResolvedPool || questionPool;
+      FinishedCheatPool.slice(0, 10).forEach(function(Question) {
         if (Question.shortcut && matchesShortcut(e, Question.shortcut)) {
           HighlightCheatSheetItems(Question.shortcut);
         }
@@ -9434,13 +9557,9 @@ function handleKeydown(e) {
   }
   // Cheat sheet lighting when paused
   if (activeSettings === 'panelPadlock' && questionPool.length > 0) {
-    var _cheatItems = document.querySelectorAll('#cheatSheetList li, #cheatSheetListRight li');
-    console.log('[CheatSheet] keydown: key=' + e.key + ' code=' + e.code + ' cmd=' + (currentOs==='pc'?e.ctrlKey:e.metaKey) + ' sh=' + e.shiftKey + ' opt=' + e.altKey);
-    console.log('[CheatSheet] pool slice tokens:', questionPool.slice(0,10).map(function(q){return q.shortcut;}));
-    console.log('[CheatSheet] li tokens in DOM:', Array.from(_cheatItems).map(function(li){return li.dataset.shortcutToken;}));
-    questionPool.slice(0, 10).forEach(function(Question) {
+    var PausedCheatPool = window._cheatSheetResolvedPool || questionPool;
+    PausedCheatPool.slice(0, 10).forEach(function(Question) {
       if (Question.shortcut && matchesShortcut(e, Question.shortcut)) {
-        console.log('[CheatSheet] MATCHED:', Question.shortcut);
         HighlightCheatSheetItems(Question.shortcut);
       }
     });
@@ -9460,6 +9579,7 @@ function handleKeydown(e) {
     clearHelp();
     hideQuestionTimerArc();  // remove the arc for the answered question
     clearInterval(timerInterval);
+    const AnswerTimestampMs = performance.now() - startTime;
     setTimerState('green', 'right');
     titleEl.style.color = '#10b981'; // instant green — directs attention before hiding
     requestAnimationFrame(() => titleEl.classList.add('hidden'));
@@ -9471,10 +9591,11 @@ function handleKeydown(e) {
       stickyLit.clear();
       runData.push({
   questionIndex,
-  timeToAnswerMs: performance.now() - startTime,
+  timeToAnswerMs: AnswerTimestampMs,
   hintUsedAtMs,
   wrongKeyCount,
   partialNudgeFired: partialNudgeFiredThisQuestion,
+  partialCorrectKey: partialCorrectKeyPressedThisQuestion,
   endType: 'success'
 });
       recordAnswer();
@@ -10593,6 +10714,12 @@ body.returning-screen #diffIconWrap .icon-tip { display: none; }
   color: #374151;
   margin: 0;
   line-height: 1;
+}
+.sp-report-section-title.sp-title-empty {
+  color: #9ca3af;
+  font-weight: 400;
+  text-decoration: line-through;
+  text-decoration-color: #d1d5db;
 }
 
 /* Shortcut list rows — mirror the browser conflict list style */

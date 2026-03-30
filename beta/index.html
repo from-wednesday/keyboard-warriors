@@ -8346,14 +8346,26 @@ _refreshReportPanel()
 function LoadCoachMemory() {
   try {
     var raw = localStorage.getItem('kw_coach_memory');
-    if (raw) return JSON.parse(raw);
+    if (raw) {
+      var parsed = JSON.parse(raw);
+      // Backfill recentMessageKeys for saves that predate this field
+      if (!Array.isArray(parsed.recentMessageKeys)) {
+        parsed.recentMessageKeys = parsed.messageKey ? [parsed.messageKey] : [];
+      }
+      return parsed;
+    }
   } catch(e) {}
-  return { messageKey: null, settingSuggested: null, consecutiveDefeatCount: 0 };
+  return { messageKey: null, recentMessageKeys: [], settingSuggested: null, consecutiveDefeatCount: 0 };
 }
-function SaveCoachMemory(messageKey, settingSuggested, defeatCount) {
+function SaveCoachMemory(messageKey, settingSuggested, defeatCount, previousRecentKeys) {
+  // Prepend the new key and keep only the most recent 3
+  var UpdatedRecentKeys = [messageKey].concat((previousRecentKeys || []).filter(function(Key) {
+    return Key !== messageKey;
+  })).slice(0, 3);
   try {
     localStorage.setItem('kw_coach_memory', JSON.stringify({
       messageKey: messageKey,
+      recentMessageKeys: UpdatedRecentKeys,
       settingSuggested: settingSuggested || null,
       consecutiveDefeatCount: defeatCount || 0,
     }));
@@ -8429,6 +8441,7 @@ function finalizeRunData(completedRun, currentPool, DefeatCount) {
   const PreviousMemory         = LoadCoachMemory();
   const PreviousSuggestion     = PreviousMemory.settingSuggested;
   const PreviousMessageKey     = PreviousMemory.messageKey;
+  const RecentMessageKeys      = PreviousMemory.recentMessageKeys || [];
 
   // Did the player act on a setting suggestion from last round?
   function PlayerActedOnSuggestion() {
@@ -8458,7 +8471,7 @@ function finalizeRunData(completedRun, currentPool, DefeatCount) {
 
   // Helper: push only if not the same key as last round
   function AddMessage(pool, key, text, settingSuggested) {
-    if (key === PreviousMessageKey) return;
+    if (RecentMessageKeys.indexOf(key) !== -1) return;
     pool.push({ key: key, text: text, settingSuggested: settingSuggested || null });
   }
   // Settings messages bypass the "shown last round" dedup so they always compete
@@ -8512,7 +8525,7 @@ function finalizeRunData(completedRun, currentPool, DefeatCount) {
       { key: 'cat3_one_life_c', text: 'One life standing at the end. That took some composure.' },
       { key: 'cat3_one_life_d', text: 'Squeezed through on a single life. Breathe.' },
     ];
-    var EligibleOneLife = OneLiveMessages.filter(function(m) { return m.key !== PreviousMessageKey; });
+    var EligibleOneLife = OneLiveMessages.filter(function(m) { return RecentMessageKeys.indexOf(m.key) === -1; });
     var PickedOneLife   = EligibleOneLife[Math.floor(Math.random() * EligibleOneLife.length)];
     if (PickedOneLife) AddMessage(SpecificMessages, PickedOneLife.key, PickedOneLife.text);
   }
@@ -8639,10 +8652,30 @@ function finalizeRunData(completedRun, currentPool, DefeatCount) {
             NearestStop = Stop;
           }
         });
-        if (NearestStop !== null && SmallestDistance <= 1 && NearestStop !== questionTimer) {
+        // Option C: suppress if the timer setting and suggested stop are both unchanged
+        // since the last time this message fired. Resurfaces if either shifts.
+        var CalibrateWasShownBefore = PreviousSuggestion
+          && PreviousSuggestion.type === 'timer'
+          && PreviousSuggestion.fromValue === questionTimer
+          && PreviousSuggestion.toValue   === NearestStop;
+
+        if (NearestStop !== null && SmallestDistance <= 1 && NearestStop !== questionTimer && !CalibrateWasShownBefore) {
           var AverageAnswerTimeDisplay = AverageAnswerTimeSeconds.toFixed(1);
+          var CalibrateMessageText;
+          var IsChallenge  = NearestStop < AverageAnswerTimeSeconds;
+          var IsBorderline = Math.abs(NearestStop - AverageAnswerTimeSeconds) <= 0.25;
+          if (IsBorderline) {
+            // Average is right on the stop -- confirmatory challenge with gentler life suggestion
+            CalibrateMessageText = 'Your average answer time this round was ' + AverageAnswerTimeDisplay + ' seconds. If you want to challenge yourself, try setting the question timer to ' + NearestStop + ' seconds, and start with five lives.';
+          } else if (IsChallenge) {
+            // Suggested stop is faster than their average -- aspirational challenge
+            CalibrateMessageText = 'Your average answer time this round was ' + AverageAnswerTimeDisplay + ' seconds. If you want to challenge yourself, try setting the question timer to ' + NearestStop + ' second' + (NearestStop === 1 ? '' : 's') + ', and lives initially to ten.';
+          } else {
+            // Suggested stop is slower than their average -- natural pace match
+            CalibrateMessageText = 'Your average answer time this round was ' + AverageAnswerTimeDisplay + ' seconds. That is close to the ' + NearestStop + '-second question timer setting, which would match your natural pace well.';
+          }
           ForceAddMessage(TimerAndLivesMessages, 'cat4_timer_calibrate',
-            'Your average answer time this round was ' + AverageAnswerTimeDisplay + ' seconds. That is close to the ' + NearestStop + '-second question timer setting, which would match your natural pace well.',
+            CalibrateMessageText,
             { type: 'timer', fromValue: questionTimer, toValue: NearestStop });
         }
       }
@@ -8795,13 +8828,13 @@ function finalizeRunData(completedRun, currentPool, DefeatCount) {
   // Pre-trophy: only Cat 1/2 messages, filtered to relevant ones
   if (!hasTrophy) {
     AllGeneralMessages.forEach(function(m) {
-      if (m.condition && m.key !== PreviousMessageKey) {
+      if (m.condition && RecentMessageKeys.indexOf(m.key) === -1) {
         GeneralMessages.push({ key: m.key, text: m.text, settingSuggested: null });
       }
     });
   } else {
     AllGeneralMessages.forEach(function(m) {
-      if (m.condition && m.key !== PreviousMessageKey) {
+      if (m.condition && RecentMessageKeys.indexOf(m.key) === -1) {
         GeneralMessages.push({ key: m.key, text: m.text, settingSuggested: null });
       }
     });
@@ -8845,7 +8878,7 @@ function finalizeRunData(completedRun, currentPool, DefeatCount) {
 
   // Persist the primary message key to memory (secondary is supplementary, not memorised)
   if (PrimaryMessage) {
-    SaveCoachMemory(PrimaryMessage.key, PrimaryMessage.settingSuggested || null, DefeatCount || 0);
+    SaveCoachMemory(PrimaryMessage.key, PrimaryMessage.settingSuggested || null, DefeatCount || 0, RecentMessageKeys);
   }
 
   var trainerAdvice = [];

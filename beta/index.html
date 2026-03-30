@@ -9,7 +9,7 @@
 <title>beta</title>
 <script>
   const DefaultTitle = 'Keyboard Warriors';
-  const VersionLabel   = '0006';
+  const VersionLabel   = '0007';
   const TitlePrefix  = document.title !== DefaultTitle ? document.title.trim() + '_' : '';
   const DBG_DEVICE   = TitlePrefix + VersionLabel;
 </script>
@@ -8433,7 +8433,7 @@ function finalizeRunData(completedRun, currentPool, DefeatCount) {
   var MemoryAwareMessages   = [];
   var SpecificMessages      = []; // Cat 3
   var LiteracyMessages      = []; // Cat 3b
-  var SettingsMessages      = []; // Cat 4
+
   var GeneralMessages       = []; // Cat 1 + 2
 
   // Helper: push only if not the same key as last round
@@ -8551,19 +8551,75 @@ function finalizeRunData(completedRun, currentPool, DefeatCount) {
       'There is no shame in slowing right down. Switch the timer off, use the hints freely, and focus on learning where the keys are. Speed comes later.');
   }
 
-  // ── Cat 4: Settings suggestions (strict thresholds) ──────────────────────
+  // ── Cat 4: Settings suggestions ──────────────────────────────────────
+  // Timer and lives are the primary growth levers once the trophy is earned.
+  // Difficulty changes are a secondary fallback -- Hardcore is too niche for
+  // most players and Normal mode should stay the focus.
+  // Two separate pools let us prioritise timer/lives over difficulty in the
+  // final selection logic below.
+  var TimerAndLivesMessages = [];
+  var DifficultyMessages    = [];
   {
     var DifficultyRank = { fundamentals: 0, normal: 1, hardcore: 2 };
     var CurrentRank    = DifficultyRank[currentDifficulty] || 0;
 
-    // Raise difficulty: high accuracy, clean execution
-    // wrongKeyTotal deliberately excluded -- a single mispress should not block this for the whole round
+    // ── Timer and lives (trophy required) ──────────────────────────────
+    if (hasTrophy) {
+      var TimerStops        = [1, 3, 5, 10, null];
+      var CurrentTimerIndex = TimerStops.indexOf(questionTimer);
+
+      // Longer timer: struggling with timeouts
+      if (timeoutCount >= 4 && CurrentTimerIndex < TimerStops.length - 1) {
+        var LongerTimerValue = TimerStops[CurrentTimerIndex + 1];
+        var LongerTimerLabel = LongerTimerValue === null ? 'unlimited' : LongerTimerValue + ' seconds';
+        ForceAddMessage(TimerAndLivesMessages, 'cat4_timer_up',
+          'You timed out on several questions. Try increasing the question timer to ' + LongerTimerLabel + '.',
+          { type: 'timer', fromValue: questionTimer, toValue: LongerTimerValue });
+      }
+
+      // Shorter timer: strong run with room to push
+      if (timeoutCount === 0 && allFast && accuracyPercent >= 90 && hintCount === 0 && CurrentTimerIndex > 0) {
+        var ShorterTimerValue = TimerStops[CurrentTimerIndex - 1];
+        if (ShorterTimerValue !== null) {
+          ForceAddMessage(TimerAndLivesMessages, 'cat4_timer_down',
+            'You handled that comfortably. Try a shorter timer to raise the challenge.',
+            { type: 'timer', fromValue: questionTimer, toValue: ShorterTimerValue });
+        }
+      }
+
+      var LivesStops        = [1, 3, 5, 10, null];
+      var CurrentLivesIndex = LivesStops.indexOf(playerLives);
+
+      // More lives: losing lives under pressure
+      if (playerLives !== null && livesRemaining !== null && livesRemaining <= 1
+          && accuracyPercent < 75 && CurrentLivesIndex < LivesStops.length - 1) {
+        var MoreLivesValue = LivesStops[CurrentLivesIndex + 1];
+        var MoreLivesLabel = MoreLivesValue === null ? 'unlimited' : String(MoreLivesValue);
+        ForceAddMessage(TimerAndLivesMessages, 'cat4_lives_up',
+          'You are losing lives most rounds. Consider adding a few more to reduce the pressure while you build speed.',
+          { type: 'lives', fromValue: playerLives, toValue: MoreLivesValue });
+      }
+
+      // Fewer lives: keeping all lives comfortably
+      if (playerLives !== null && livesRemaining === playerLives && accuracyPercent >= 85
+          && CurrentLivesIndex > 0) {
+        var FewerLivesValue = LivesStops[CurrentLivesIndex - 1];
+        if (FewerLivesValue !== null) {
+          ForceAddMessage(TimerAndLivesMessages, 'cat4_lives_down',
+            'You are keeping all your lives easily. Try fewer to sharpen your focus.',
+            { type: 'lives', fromValue: playerLives, toValue: FewerLivesValue });
+        }
+      }
+    } // end hasTrophy
+
+    // ── Difficulty (lower priority, fires only when timer/lives have nothing to say) ──
+
+    // Raise difficulty: only suggest Hardcore if already on Normal and truly clean
     if (accuracyPercent >= 95 && hintCount === 0 && skipCount === 0) {
       if (CurrentRank < 2) {
-        var NextMode = CurrentRank === 0 ? 'normal' : 'hardcore';
-        var NextLabel = CurrentRank === 0 ? 'Normal' : 'Hardcore';
-        // Settings messages use ForceAddMessage so they are not suppressed by the "shown last round" guard
-        ForceAddMessage(SettingsMessages, 'cat4_diff_up',
+        var NextMode  = CurrentRank === 0 ? 'normal' : 'hardcore';
+        var NextLabel = CurrentRank === 0 ? 'Normal'  : 'Hardcore';
+        ForceAddMessage(DifficultyMessages, 'cat4_diff_up',
           'You are performing very well. Consider raising the difficulty to ' + NextLabel + '.',
           { type: 'difficulty', fromValue: currentDifficulty, toValue: NextMode });
       }
@@ -8573,58 +8629,12 @@ function finalizeRunData(completedRun, currentPool, DefeatCount) {
     if (accuracyPercent < 60 && (skipCount >= 4 || timeoutCount >= 4)) {
       if (CurrentRank > 0) {
         var PrevMode  = CurrentRank === 2 ? 'normal' : 'fundamentals';
-        var PrevLabel = CurrentRank === 2 ? 'Normal' : 'Fundamentals';
-        ForceAddMessage(SettingsMessages, 'cat4_diff_down',
+        var PrevLabel = CurrentRank === 2 ? 'Normal'  : 'Fundamentals';
+        ForceAddMessage(DifficultyMessages, 'cat4_diff_down',
           'This round was genuinely challenging. Dropping to ' + PrevLabel + ' may help consolidate your learning.',
           { type: 'difficulty', fromValue: currentDifficulty, toValue: PrevMode });
       }
     }
-
-    // The remaining settings suggestions (timer, lives) still require a trophy
-    if (hasTrophy) {
-    var TimerStops        = [1, 3, 5, 10, null];
-    var CurrentTimerIndex = TimerStops.indexOf(questionTimer);
-    if (timeoutCount >= 4 && CurrentTimerIndex < TimerStops.length - 1) {
-      var LongerTimerValue = TimerStops[CurrentTimerIndex + 1];
-      var LongerTimerLabel = LongerTimerValue === null ? 'unlimited' : LongerTimerValue + ' seconds';
-      ForceAddMessage(SettingsMessages, 'cat4_timer_up',
-        'You timed out on several questions. Try increasing the question timer to ' + LongerTimerLabel + '.',
-        { type: 'timer', fromValue: questionTimer, toValue: LongerTimerValue });
-    }
-
-    // Shorter timer: flawless fast run
-    if (timeoutCount === 0 && allFast && accuracyPercent === 100 && hintCount === 0 && CurrentTimerIndex > 0) {
-      var ShorterTimerValue = TimerStops[CurrentTimerIndex - 1];
-      if (ShorterTimerValue !== null) {
-        ForceAddMessage(SettingsMessages, 'cat4_timer_down',
-          'You handled that comfortably. Try a shorter timer to raise the challenge.',
-          { type: 'timer', fromValue: questionTimer, toValue: ShorterTimerValue });
-      }
-    }
-
-    // More lives: losing lives under pressure with room to add more
-    var LivesStops        = [1, 3, 5, 10, null];
-    var CurrentLivesIndex = LivesStops.indexOf(playerLives);
-    if (playerLives !== null && livesRemaining !== null && livesRemaining <= 1
-        && accuracyPercent < 75 && CurrentLivesIndex < LivesStops.length - 1) {
-      var MoreLivesValue = LivesStops[CurrentLivesIndex + 1];
-      var MoreLivesLabel = MoreLivesValue === null ? 'unlimited' : String(MoreLivesValue);
-      ForceAddMessage(SettingsMessages, 'cat4_lives_up',
-        'You are losing lives most rounds. Consider adding a few more to reduce the pressure while you build speed.',
-        { type: 'lives', fromValue: playerLives, toValue: MoreLivesValue });
-    }
-
-    // Fewer lives: keeping all lives comfortably
-    if (playerLives !== null && livesRemaining === playerLives && accuracyPercent >= 95 && allFast
-        && CurrentLivesIndex > 0) {
-      var FewerLivesValue = LivesStops[CurrentLivesIndex - 1];
-      if (FewerLivesValue !== null) {
-        ForceAddMessage(SettingsMessages, 'cat4_lives_down',
-          'You are keeping all your lives easily. Try fewer to sharpen your focus.',
-          { type: 'lives', fromValue: playerLives, toValue: FewerLivesValue });
-      }
-    }
-    } // end hasTrophy (timer/lives)
   } // end Cat 4 block
 
   // ── Cat 1 + 2: General and contextual encouragement ───────────────────────
@@ -8750,15 +8760,20 @@ function finalizeRunData(completedRun, currentPool, DefeatCount) {
     return Filtered[Math.floor(Math.random() * Filtered.length)];
   }
 
+  // Priority: memory-aware → timer/lives (primary growth levers for trophy holders)
+  // → specific run commentary → literacy recovery → difficulty (secondary)
+  // → general encouragement.
+  // Timer/lives always beat difficulty suggestions so Normal mode stays the focus.
   var HasFewWeaknessesThisRound = questionSummaries.filter(function(s) { return s.isWeakness; }).length <= 1;
-  var SpecificOrSettings = HasFewWeaknessesThisRound
-    ? PickRandom(SpecificMessages.concat(SettingsMessages))
+  var SpecificOrTimerLives = HasFewWeaknessesThisRound
+    ? PickRandom(SpecificMessages.concat(TimerAndLivesMessages))
     : PickRandom(SpecificMessages);
 
   var PrimaryMessage = PickRandom(MemoryAwareMessages)
-    || SpecificOrSettings
+    || PickRandom(TimerAndLivesMessages)
+    || SpecificOrTimerLives
     || PickRandom(LiteracyMessages)
-    || PickRandom(SettingsMessages)
+    || PickRandom(DifficultyMessages)
     || PickRandom(GeneralMessages);
 
   // Second message: always a general/encouragement line, different key from primary

@@ -2890,6 +2890,7 @@ function updateToggleVisual(os) {
 
 function applyOsMode(os) {
   currentOs = os;
+try { localStorage.setItem('kw_kb_os', currentOs); } catch (SaveError) {}
   var savedPos = _kbPos;
   var panel = document.getElementById('keyboardPanel');
   var stage = document.getElementById('kbFlipStage');
@@ -3037,6 +3038,28 @@ window.addEventListener('resize', function() {
 });
 updateKeyboardMode();
 setTimeout(positionIcons, 50);
+// Restore visual state of keyboard behaviour toggles from persisted settings if (ghostModeOn) {
+  var GhostRadio = document.getElementById('ghostRadio');
+  if (GhostRadio) GhostRadio.classList.add('on');
+  document.getElementById('keyboardPanel').classList.add('ghost-mode');
+}
+if (killPunctuationOn) {
+  var KillPunctuationRadio = document.getElementById('killPunctuationRadio');
+  if (KillPunctuationRadio) KillPunctuationRadio.classList.add('on');
+}
+if (touchEnabled) {
+  var TouchRadio = document.getElementById('touchRadio');
+  if (TouchRadio) TouchRadio.classList.add('on');
+  setStickyKeys(true);
+  document.getElementById('stickyRow').classList.add('disabled');
+  document.getElementById('audibleRow').classList.remove('disabled');
+  var GhostRow = document.getElementById('ghostRow');
+  if (GhostRow) GhostRow.classList.add('disabled');
+}
+if (stickyKeysOn && !touchEnabled) {
+  var StickyRadio = document.getElementById('stickyRadio');
+  if (StickyRadio) StickyRadio.classList.add('on'); }
+
 // Show mismatch pill after initial keyboard build
 updateMismatchPill();
 // Apply rounded style if starting in PC mode
@@ -4957,6 +4980,7 @@ var hasFullKeyboard  = true;  // false = tenkeyless/compact — skip extended ke
 
 function setStickyKeys(on) {
   stickyKeysOn = on;
+try { localStorage.setItem('kw_kb_sticky_keys', String(stickyKeysOn)); } catch (SaveError) {}
   var radio = document.getElementById('stickyRadio');
   if (!radio) return;
   radio.classList.toggle('on', on);
@@ -4966,6 +4990,7 @@ function setStickyKeys(on) {
 
 function setKbSizeToggle(full) {
   hasFullKeyboard = full;
+try { localStorage.setItem('kw_kb_full_keyboard', String(hasFullKeyboard)); } catch (SaveError) {}
   updateKbSizeToggle();
 }
 
@@ -5005,6 +5030,7 @@ function onKbSizeToggle() {
 
 function setTouchEnabled(on) {
   touchEnabled = on;
+try { localStorage.setItem('kw_kb_touch_enabled', String(touchEnabled)); } catch (SaveError) {}
   var radio = document.getElementById('touchRadio');
   if (radio) radio.classList.toggle('on', on);
   if (on) {
@@ -5043,6 +5069,47 @@ var questionTimer = null;
 var playerLives   = null;
 var TIMER_VALUES = [1, 3, 5, 10, null];
 var LIVES_VALUES = [1, 3, 5, 10, null];
+// ── Keyboard layout and behaviour settings ──────────────────────────────── // Loaded before buildKeyboard() runs so the correct variant is shown on first paint.
+(function() {
+  try {
+    var SavedKeyboardOs = localStorage.getItem('kw_kb_os');
+    if (SavedKeyboardOs === 'mac' || SavedKeyboardOs === 'pc') {
+      currentOs = SavedKeyboardOs;
+      document.getElementById('keyboardPanel').classList.toggle('pc-keys', currentOs === 'pc');
+      document.body.classList.toggle('pc-mode', currentOs === 'pc');
+    }
+
+    var SavedLeftCount = localStorage.getItem('kw_kb_left_count');
+    if (SavedLeftCount === '3' || SavedLeftCount === '4') kbLeftCount = parseInt(SavedLeftCount, 10);
+
+    var SavedFnLeft = localStorage.getItem('kw_kb_fn_left');
+    if (SavedFnLeft === 'true' || SavedFnLeft === 'false') kbFnLeft = (SavedFnLeft === 'true');
+
+    var SavedFullKeyboard = localStorage.getItem('kw_kb_full_keyboard');
+    if (SavedFullKeyboard === 'true' || SavedFullKeyboard === 'false') hasFullKeyboard = (SavedFullKeyboard === 'true');
+
+    var SavedGhostMode = localStorage.getItem('kw_kb_ghost_mode');
+    if (SavedGhostMode === 'true') ghostModeOn = true;
+
+    var SavedKillPunctuation = localStorage.getItem('kw_kb_kill_punctuation');
+    if (SavedKillPunctuation === 'true') killPunctuationOn = true;
+
+    var SavedTouchEnabled = localStorage.getItem('kw_kb_touch_enabled');
+    if (SavedTouchEnabled === 'true') touchEnabled = true;
+
+    var SavedStickyKeys = localStorage.getItem('kw_kb_sticky_keys');
+    if (SavedStickyKeys === 'true') stickyKeysOn = true;
+
+    // Sync the derived variant strings from the loaded values
+    if (currentOs === 'mac') {
+      kbVariantMac = (kbLeftCount === 3) ? 'mac-3key'
+        : (kbFnLeft ? 'mac-4key' : 'mac-4key-ctrl-left');
+    } else {
+      kbVariantPc = (kbLeftCount === 3) ? 'pc-no-fn'
+        : (kbFnLeft ? 'pc-fn-left' : 'pc-fn-right');
+    }
+  } catch (LoadError) {}
+})();
 
 (function() {
   try {
@@ -5066,6 +5133,7 @@ function onGhostModeToggle() {
     return;
   }
   ghostModeOn = !ghostModeOn;
+try { localStorage.setItem('kw_kb_ghost_mode', String(ghostModeOn)); } catch (SaveError) {}
   var radio = document.getElementById('ghostRadio');
   if (radio) radio.classList.toggle('on', ghostModeOn);
   document.getElementById('keyboardPanel').classList.toggle('ghost-mode', ghostModeOn);
@@ -5145,6 +5213,7 @@ function _returnAfterKillPunctuationConfirm(message) {
 
 function setKillPunctuation(on) {
   killPunctuationOn = on;
+try { localStorage.setItem('kw_kb_kill_punctuation', String(killPunctuationOn)); } catch (SaveError) {}
   var radio = document.getElementById('killPunctuationRadio');
   if (radio) radio.classList.toggle('on', on);
   // Rebuild pool immediately so the change takes effect mid-session if needed
@@ -5276,6 +5345,7 @@ function onModalOsToggle() {
   var tog = document.getElementById('modalOsToggle');
   var goingTo4 = tog.checked;
   kbLeftCount = goingTo4 ? 4 : 3;
+try { localStorage.setItem('kw_kb_left_count', String(kbLeftCount)); } catch (SaveError) {}
   // applyVariant first — it saves kbVariantMac/Pc from the new kbLeftCount.
   // updateModalToggles calls _syncKbCountFromVariant which reads the stored
   // variant, so we must update it before calling updateModalToggles.
@@ -5285,10 +5355,10 @@ function onModalOsToggle() {
   applyVariant(flash);
   updateModalToggles();
 }
-
 function onModalFnToggle() {
   var tog = document.getElementById('modalFnToggle');
   kbFnLeft = tog.checked;
+try { localStorage.setItem('kw_kb_fn_left', String(kbFnLeft)); } catch (SaveError) {}
   // applyVariant first so kbVariantMac/Pc is updated before _syncKbCountFromVariant reads it.
   applyVariant(['ControlLeft', 'Fn']);
   updateModalToggles();

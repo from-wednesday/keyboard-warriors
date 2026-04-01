@@ -1363,7 +1363,11 @@ function _initialiseLayout() {
       positionIcons();
     }
   });
-  KeyboardPanelResizeObserver.observe(document.getElementById('keyboardPanel'));
+  var KeyboardPanelElement = document.getElementById('keyboardPanel');
+  KeyboardPanelResizeObserver.observe(KeyboardPanelElement);
+  if (KeyboardPanelElement.offsetWidth > 0) {
+    positionIcons();
+  }
 }
 
 // Gate layout initialisation behind the stylesheet being fully applied.

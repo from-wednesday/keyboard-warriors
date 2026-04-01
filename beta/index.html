@@ -305,6 +305,22 @@
         </div>
       </div>
     </div>
+    <!-- ── Blur Pause Diagnostic ─────────────────────── -->
+    <div id="blurPauseDiagnostic" style="display:none;width:100%;grid-column:1/-1;">
+      <div class="diff-advanced-panel diff-advanced-active" id="blurDiagnosticBox">
+        <p class="sp-body" id="blurDiagnosticIntro" style="margin-bottom:10px;">If you think it was the shortcut that caused the problem, we should take a closer look. Do you want to reveal the answer?</p>
+        <ul class="sp-report-list sp-report-weakness" style="margin-bottom:0;">
+          <li id="blurDiagnosticQuestionRow" style="align-items:flex-start;">
+            <span class="sp-report-dot" id="blurDiagnosticDot" style="margin-top:5px;"></span>
+            <span class="sp-report-question-label" id="blurDiagnosticQuestionLabel"></span>
+            <span id="blurDiagnosticChipsArea" style="flex-shrink:0;margin-left:6px;">
+              <button id="blurDiagnosticRevealBtn" class="score-pill-seg score-pill-full" style="border-radius:12px;border:1.5px solid #d1d5db;min-width:100px;" onclick="_blurDiagnosticReveal()"><span class="diff-btn-text">reveal answer</span></button>
+            </span>
+          </li>
+        </ul>
+        <p class="sp-body" id="blurDiagnosticFollowUp" style="display:none;margin-top:8px;"></p>
+      </div>
+    </div>
 <!-- ── Report Card ────────────────────────────────── -->
 <div id="panelReport" class="sp-page sp-page-report">
   <div class="sp-col sp-col-left">

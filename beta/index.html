@@ -9,7 +9,7 @@
 <title>beta</title>
 <script>
   const DefaultTitle = 'Keyboard Warriors';
-  const VersionLabel   = '0012';
+  const VersionLabel   = '0011';
   const TitlePrefix  = document.title !== DefaultTitle ? document.title.trim() + '_' : '';
   const DBG_DEVICE   = TitlePrefix + VersionLabel;
 </script>
@@ -1369,13 +1369,18 @@ function _initialiseLayout() {
   });
 }
 
-document.addEventListener('DOMContentLoaded', function() {
-  requestAnimationFrame(function() {
+// Always run synchronously so the keyboard is built before the welcome screen fires.
+// Also listen for the stylesheet load event and re-align the settings panel in case
+// it opened before the stylesheet had applied its dimensions.
+_initialiseLayout();
+if (window._StyleSheetLink) {
+  window._StyleSheetLink.addEventListener('load', function() {
     requestAnimationFrame(function() {
-      _initialiseLayout();
+      updateKeyboardMode();
+      if (activeSettings !== null) _spAlignPanel();
     });
-  });
-});
+  }, { once: true });
+}
 /* ══════════════════════════════════════
    SHORTCUT → KEY CODES
    CHANGE 1: extended for new shortcuts
@@ -4478,6 +4483,12 @@ function _showWelcomeScreen() {
   _updateDiffBtnStyles('fundamentals');
   _updateDiffSubtitle('fundamentals');
   openSettings('panelWelcome');
+  // Re-align panel after first paint so it reads real keyboard dimensions.
+  requestAnimationFrame(function() {
+    requestAnimationFrame(function() {
+      if (activeSettings !== null) _spAlignPanel();
+    });
+  });
 }
 
 // Shared handler for both the welcome panel and the difficulty settings panel
@@ -5353,6 +5364,12 @@ function _showReturningScreen() {
   _updateDiffBtnStyles(currentDifficulty);
   _updateDiffSubtitle(currentDifficulty);
   openSettings('panelReturning');
+  // Re-align panel after first paint so it reads real keyboard dimensions.
+  requestAnimationFrame(function() {
+    requestAnimationFrame(function() {
+      if (activeSettings !== null) _spAlignPanel();
+    });
+  });
 }
 
 function _returningContinue() {

@@ -6,10 +6,10 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>beta</title>
+<title>Keyboard Warriors</title>
 <script>
   const DefaultTitle = 'Keyboard Warriors';
-  const VersionLabel   = '0010';
+  const VersionLabel   = '0011';
   const TitlePrefix  = document.title !== DefaultTitle ? document.title.trim() + '_' : '';
   const DBG_DEVICE   = TitlePrefix + VersionLabel;
 </script>
@@ -119,7 +119,6 @@ GameContainer.addEventListener('animationend', function () {
       Element.classList.add('skeleton-revealed');
     });
     document.getElementById('gameContainer').classList.add('content-ready');
-    _initialiseLayoutWhenReady();
   }, { once: true });
   });
 </script>
@@ -1353,7 +1352,6 @@ window.addEventListener('resize', function() {
 });
 
 function _initialiseLayout() {
-  currentKbMode = null;
   updateKeyboardMode();
   updateMismatchPill();
   document.getElementById('keyboardPanel').classList.toggle('pc-keys', currentOs === 'pc');
@@ -1366,19 +1364,22 @@ function _initialiseLayout() {
   });
   var KeyboardPanelElement = document.getElementById('keyboardPanel');
   KeyboardPanelResizeObserver.observe(KeyboardPanelElement);
-  if (KeyboardPanelElement.offsetWidth > 0) {
+  requestAnimationFrame(function() {
     positionIcons();
-  }
+  });
 }
 
-function _initialiseLayoutWhenReady() {
-  if (window._StyleSheetLink && !window._StyleSheetLink.sheet) {
-    window._StyleSheetLink.addEventListener('load',  _initialiseLayout, { once: true });
-    window._StyleSheetLink.addEventListener('error', _initialiseLayout, { once: true });
-  } else {
-    _initialiseLayout();
-  }
+if (window._StyleSheetLink && !window._StyleSheetLink.sheet) {
+  window._StyleSheetLink.addEventListener('load',  _initialiseLayout, { once: true });
+  window._StyleSheetLink.addEventListener('error', _initialiseLayout, { once: true });
+} else {
+  _initialiseLayout();
 }
+/* ══════════════════════════════════════
+   SHORTCUT → KEY CODES
+   CHANGE 1: extended for new shortcuts
+══════════════════════════════════════ */
+function shortcutToCodes(s) {
   const u = s.toUpperCase();
   const CMD  = currentOs === 'pc' ? ['ControlLeft','ControlRight'] : ['MetaLeft','MetaRight'];
   const OPT  = ['AltLeft','AltRight'];

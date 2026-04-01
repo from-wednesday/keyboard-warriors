@@ -99,17 +99,25 @@
   opacity: 1;
   transition: opacity 0.3s ease;
 }
+#gameContainer > * {
+  opacity: 0;
+}
+#gameContainer.content-ready > * {
+  opacity: 1;
+  transition: opacity 0.3s ease;
+}
 </style>
 <script>
   document.addEventListener('DOMContentLoaded', function () {
   var SiblingElements = document.querySelectorAll('#pageBody > *:not(#skeletonLoader):not(style):not(script)');
     SiblingElements.forEach(function (Element) { Element.classList.add('skeleton-hidden'); });
     var GameContainer = document.getElementById('skeletonLoader');
-    GameContainer.addEventListener('animationend', function () {
+   GameContainer.addEventListener('animationend', function () {
       SiblingElements.forEach(function (Element) {
         Element.classList.remove('skeleton-hidden');
         Element.classList.add('skeleton-revealed');
       });
+      document.getElementById('gameContainer').classList.add('content-ready');
     }, { once: true });
   });
 </script>

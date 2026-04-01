@@ -7953,7 +7953,11 @@ window.addEventListener('blur', function() {
   if (gameState === 'playing') {
     _blurPauseActive = true;
     enterPause();
-    _activateBlurPauseScreen();
+    requestAnimationFrame(function() {
+      requestAnimationFrame(function() {
+        _activateBlurPauseScreen();
+      });
+    });
   } else if (gameState === 'paused' && _blurPauseActive && _blurDiagnosticAnswerRevealed) {
     _blurDiagnosticSecondBlur();
   }

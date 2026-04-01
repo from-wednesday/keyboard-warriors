@@ -1,5 +1,5 @@
 <!-- ═══════════════════════════════════════════════════
-    BUILD March 2026 
+    BUILD April 2026 
      ═══════════════════════════════════════════════════ -->
 <!DOCTYPE html>
 <html>
@@ -9,7 +9,7 @@
 <title>beta</title>
 <script>
   const DefaultTitle = 'Keyboard Warriors';
-  const VersionLabel   = '0009';
+  const VersionLabel   = '0007';
   const TitlePrefix  = document.title !== DefaultTitle ? document.title.trim() + '_' : '';
   const DBG_DEVICE   = TitlePrefix + VersionLabel;
 </script>
@@ -1025,7 +1025,6 @@ body.pc-mode #extKeyPill {
 #kbToast.show { opacity: 1; }
 #kbToast.warning { background: #f59e0b; }
 
-
 /* ── Unified notification toast ─────────────────────────────────────────────
    position:fixed so it floats above everything including modals.
    JS positions it: centred above keyboard normally, or top-of-modal when
@@ -1558,7 +1557,7 @@ li.conflict-dismissed .conflict-desc {
   height: 41px;
 }
 /* Wrap is exactly as wide as the Start button (130px).
-   Three columns: Mac-label (left), switch (centre), PC-label (right).
+   Three columns: system OS (left), switch (centre), alternate OS (right).
    justify-content: space-between pushes labels to the edges;
    the switch sits in the physical centre of the box. */
 #osToggleWrap {
@@ -5444,6 +5443,7 @@ function closeSettings() {
   if (activeSettings === null) return;
   var closingPage = activeSettings;
   activeSettings = null;
+  
   // Closing the panel always cancels any active confirm overlay
   _exitScoreClearConfirm();
   _exitDiffConfirm();

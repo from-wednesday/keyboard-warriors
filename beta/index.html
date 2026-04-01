@@ -21,6 +21,7 @@
     link.href = document.title === 'beta'
       ? '/keyboard-warriors/styles/beta.css'
       : '/keyboard-warriors/styles/main.css';
+    window._StyleSheetLink = link;
     document.head.appendChild(link);
   })();
 </script>
@@ -118,6 +119,7 @@
         Element.classList.add('skeleton-revealed');
       });
       document.getElementById('gameContainer').classList.add('content-ready');
+      positionIcons();
     }, { once: true });
   });
 </script>
@@ -1347,15 +1349,32 @@ function updateKeyboardMode() {
 
 window.addEventListener('resize', function() {
   updateKeyboardMode();
-  positionIcons();
   if (activeSettings !== null) _spAlignPanel();
 });
-updateKeyboardMode();
-setTimeout(positionIcons, 50);
-// Show mismatch pill after initial keyboard build
-updateMismatchPill();
-// Apply rounded style if starting in PC mode
-document.getElementById('keyboardPanel').classList.toggle('pc-keys', currentOs === 'pc');
+
+function _initialiseLayout() {
+  updateKeyboardMode();
+  updateMismatchPill();
+  document.getElementById('keyboardPanel').classList.toggle('pc-keys', currentOs === 'pc');
+
+  var KeyboardPanelResizeObserver = new ResizeObserver(function(ObservedEntries) {
+    var Entry = ObservedEntries[0];
+    if (Entry && Entry.contentRect.width > 0) {
+      positionIcons();
+    }
+  });
+  KeyboardPanelResizeObserver.observe(document.getElementById('keyboardPanel'));
+}
+
+// Gate layout initialisation behind the stylesheet being fully applied.
+// If the sheet is already cached and parsed (link.sheet is non-null), run immediately.
+// Otherwise wait for the load event, with an error fallback so we never hang.
+if (window._StyleSheetLink && !window._StyleSheetLink.sheet) {
+  window._StyleSheetLink.addEventListener('load',  _initialiseLayout, { once: true });
+  window._StyleSheetLink.addEventListener('error', _initialiseLayout, { once: true });
+} else {
+  _initialiseLayout();
+}
 
 // Hover states removed from pills -- no longer part of the design.
 

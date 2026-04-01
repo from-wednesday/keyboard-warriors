@@ -2853,6 +2853,30 @@ body.returning-screen #diffIconWrap .icon-tip { display: none; }
 /* Pause-nudge SVG gauge strokes (was inline in SVG element) */
 .pn-stroke { fill:none; stroke:currentColor; stroke-width:2px; stroke-linecap:round; stroke-miterlimit:10; }
 
+/* ── Blur pause diagnostic panel ────────────────────────────────────────────
+   Hides both settings columns and shows the full-width diagnostic block.   */
+#panelPause.blur-pause-active {
+  display: block;
+}
+#panelPause.blur-pause-active .sp-col {
+  display: none;
+}
+#panelPause.blur-pause-active #blurPauseDiagnostic {
+  display: block !important;
+}
+
 /* Difficulty gauge icon (was inline <style> inside #diffIconWrap SVG) */
 #diffIcon .gauge-stroke { fill:none; stroke:#9ca3af; stroke-width:2px; stroke-linecap:round; stroke-miterlimit:10; }
 #diffIcon #Needle { fill:#9ca3af; transform-origin:45px 50.9px; transition:transform 0.35s cubic-bezier(0.34,1.56,0.64,1); }
+/* ── Blur pause diagnostic panel ────────────────────────────────────────────
+   Overrides the two-column grid to show a single full-width column.        */
+#panelPause.blur-pause-active {
+  display: flex;
+  flex-direction: column;
+}
+#panelPause.blur-pause-active .sp-col {
+  display: none;
+}
+#panelPause.blur-pause-active #blurPauseDiagnostic {
+  display: block !important;
+}

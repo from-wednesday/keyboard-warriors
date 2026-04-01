@@ -102,7 +102,7 @@
 </style>
 <script>
   document.addEventListener('DOMContentLoaded', function () {
-    var SiblingElements = document.querySelectorAll('#pageBody > *:not(#gameContainer):not(style):not(script)');
+  var SiblingElements = document.querySelectorAll('#pageBody > *:not(#skeletonLoader):not(style):not(script)');
     SiblingElements.forEach(function (Element) { Element.classList.add('skeleton-hidden'); });
     var GameContainer = document.getElementById('skeletonLoader');
     GameContainer.addEventListener('animationend', function () {

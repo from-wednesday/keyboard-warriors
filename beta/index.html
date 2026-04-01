@@ -1375,6 +1375,11 @@ if (window._StyleSheetLink && !window._StyleSheetLink.sheet) {
 } else {
   _initialiseLayout();
 }
+/* ══════════════════════════════════════
+   SHORTCUT → KEY CODES
+   CHANGE 1: extended for new shortcuts
+══════════════════════════════════════ */
+function shortcutToCodes(s) {
   const u = s.toUpperCase();
   const CMD  = currentOs === 'pc' ? ['ControlLeft','ControlRight'] : ['MetaLeft','MetaRight'];
   const OPT  = ['AltLeft','AltRight'];

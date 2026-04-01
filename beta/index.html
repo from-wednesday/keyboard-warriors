@@ -113,14 +113,14 @@
   var SiblingElements = document.querySelectorAll('#pageBody > *:not(#skeletonLoader):not(style):not(script)');
     SiblingElements.forEach(function (Element) { Element.classList.add('skeleton-hidden'); });
     var GameContainer = document.getElementById('skeletonLoader');
-   GameContainer.addEventListener('animationend', function () {
-      SiblingElements.forEach(function (Element) {
-        Element.classList.remove('skeleton-hidden');
-        Element.classList.add('skeleton-revealed');
-      });
-      document.getElementById('gameContainer').classList.add('content-ready');
-      positionIcons();
-    }, { once: true });
+GameContainer.addEventListener('animationend', function () {
+    SiblingElements.forEach(function (Element) {
+      Element.classList.remove('skeleton-hidden');
+      Element.classList.add('skeleton-revealed');
+    });
+    document.getElementById('gameContainer').classList.add('content-ready');
+    _initialiseLayoutWhenReady();
+  }, { once: true });
   });
 </script>
 <div id="skeletonLoader" style="width:18px;min-height:168px;border-radius:9px;background:#e0f2fe;animation:SkeletonGrow 2s cubic-bezier(0.4,0,0.2,1) forwards;margin-right:auto;overflow:hidden;position:relative;z-index:0;">
@@ -1370,23 +1370,14 @@ function _initialiseLayout() {
   }
 }
 
-// Gate layout initialisation behind the stylesheet being fully applied.
-// If the sheet is already cached and parsed (link.sheet is non-null), run immediately.
-// Otherwise wait for the load event, with an error fallback so we never hang.
-if (window._StyleSheetLink && !window._StyleSheetLink.sheet) {
-  window._StyleSheetLink.addEventListener('load',  _initialiseLayout, { once: true });
-  window._StyleSheetLink.addEventListener('error', _initialiseLayout, { once: true });
-} else {
-  _initialiseLayout();
+function _initialiseLayoutWhenReady() {
+  if (window._StyleSheetLink && !window._StyleSheetLink.sheet) {
+    window._StyleSheetLink.addEventListener('load',  _initialiseLayout, { once: true });
+    window._StyleSheetLink.addEventListener('error', _initialiseLayout, { once: true });
+  } else {
+    _initialiseLayout();
+  }
 }
-
-// Hover states removed from pills -- no longer part of the design.
-
-/* ══════════════════════════════════════
-   SHORTCUT → KEY CODES
-   CHANGE 1: extended for new shortcuts
-══════════════════════════════════════ */
-function shortcutToCodes(s) {
   const u = s.toUpperCase();
   const CMD  = currentOs === 'pc' ? ['ControlLeft','ControlRight'] : ['MetaLeft','MetaRight'];
   const OPT  = ['AltLeft','AltRight'];

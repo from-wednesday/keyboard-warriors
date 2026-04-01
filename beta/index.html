@@ -86,13 +86,10 @@
 </div>
 
 <style>
-@@keyframes SkeletonGrow {
+<style>
+@keyframes SkeletonGrow {
   from { width: 18px; border-radius: 9px; }
   to   { width: 100%; border-radius: 16px; }
-}
-#gameContainer {
-  animation: SkeletonGrow 2s cubic-bezier(0.4, 0, 0.2, 1) forwards;
-  align-self: flex-start;
 }
 .skeleton-hidden {
   visibility: hidden;

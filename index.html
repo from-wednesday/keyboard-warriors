@@ -6,14 +6,25 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Keyboard Warriors</title>
+<title>beta</title>
 <script>
   const DefaultTitle = 'Keyboard Warriors';
-  const VersionLabel   = '0008';
+  const VersionLabel   = '0010';
   const TitlePrefix  = document.title !== DefaultTitle ? document.title.trim() + '_' : '';
   const DBG_DEVICE   = TitlePrefix + VersionLabel;
 </script>
 <link rel="icon" type="image/png" href="/keyboard-warriors/keyboard-warriors-favicon.png">
+<script>
+  (function() {
+    var link = document.createElement('link');
+    link.rel  = 'stylesheet';
+    link.href = document.title === 'beta'
+      ? '/keyboard-warriors/styles/beta.css'
+      : '/keyboard-warriors/styles/main.css';
+    window._StyleSheetLink = link;
+    document.head.appendChild(link);
+  })();
+</script>
 <script>
   // Redirect iOS, iPad OS and Android tablet users to the optimised tablet build
   (function() {
@@ -36,1772 +47,11 @@
     }
   })();
 </script>
-<style>
-* { margin:0; padding:0; box-sizing:border-box; }
-
-#phonePrompt {
-  display: none;
-  position: fixed;
-  inset: 0;
-  z-index: 10000;
-  background: #f0f4f8;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  gap: 20px;
-  padding: 40px 28px;
-  text-align: center;
-  font-family: 'Lato', system-ui, sans-serif;
-}
-#phonePrompt svg {
-  flex-shrink: 0;
-  fill: #1e3a5f;
-  opacity: 0.6;
-}
-.prompt-sorry {
-  font-size: 18px;
-  font-weight: 700;
-  color: #1e3a5f;
-  margin: 0;
-  line-height: 1.4;
-}
-.prompt-info {
-  font-size: 14px;
-  color: #6b7280;
-  line-height: 1.6;
-  max-width: 300px;
-}
-
-body {
-  font-family: system-ui, -apple-system, sans-serif;
-  background: #f0f4f8;
-  padding: 20px;
-  min-height: 100vh;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  gap: 0;
-}
-
-/* ══════════════════════════════════════
-   GAME PANEL
-══════════════════════════════════════ */
-#gameContainer {
-  display: flex;
-  flex-direction: column;
-  align-items: stretch;
-  width: 100%;
-  background: #e0f2fe;
-  border-radius: 16px;
-  padding: 6px 60px 6px;
-  box-shadow: 0 10px 30px rgba(0,0,0,0.1);
-  border: 1.5px solid white;
-  overflow: visible;
-}
-.topRow {
-  display: flex;
-  align-items: center;
-  gap: 16px;
-}
-.leftPanel {
-  display: flex;
-  flex-direction: column;
-  align-items: flex-start;
-  gap: 6px;
-  flex-shrink: 0;
-  width: 140px;
-  position: relative;
-}
-.middlePanel {
-  flex: 1;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  padding: 0 20px;
-  overflow: visible;
-  /* Height driven by scoreDisc (130px) via topRow align-items:center */
-}
-.rightPanel {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 6px;
-  flex-shrink: 0;
-  width: 130px;
-  justify-content: center;
-}
-
-/* ══════════════════════════════════════
-   BUTTONS
-══════════════════════════════════════ */
-#mainBtn, #helpBtn {
-  width: 130px;
-  height: 32px;
-  border: none;
-  outline: none;
-  border-radius: 16px;
-  font-weight: 600;
-  cursor: pointer;
-  font-size: 14px;
-  text-align: center;
-  padding: 0 16px;
-  box-shadow: none;
-  -webkit-appearance: none;
-  appearance: none;
-}
-#mainBtn:focus, #helpBtn:focus { outline: none; box-shadow: none; }
-
-/* Curly bracket shown during binary confirmation states for destructive actions */
-#confirmBracket {
-  position: absolute;
-  left: 136px;
-  top: 50%;
-  transform: translateY(-50%);
-  width: 16px;
-  height: 70px;
-  opacity: 0;
-  transition: opacity 0.2s ease;
-  pointer-events: none;
-  fill: #9ca3af;
-  overflow: visible;
-}
-.leftPanel.showing-confirm #confirmBracket { opacity: 1; }
-#mainBtn { background: #10b981; color: white; }
-#mainBtn:hover { background: #059669; }
-#helpBtn { background: #6b7280; color: white; font-size: 12px; transition: background 0.8s ease; }
-#helpBtn:hover { background: #4b5563; }
-#helpBtn:active { background: #9ca3af; transition: background 0s; }
-#mainBtn:disabled, #helpBtn:disabled {
-  opacity: 0.45;
-  cursor: default;
-  pointer-events: none;
-}
-
-/* ══════════════════════════════════════
-   TIMER
-══════════════════════════════════════ */
-.scoreDisc {
-  background: #1f2937;
-  color: white;
-  border-radius: 50%;
-  width: 130px;
-  height: 130px;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: flex-start;
-  gap: 0;
-  padding: 0;
-  transition: background 0.2s ease;
-  cursor: default;
-  overflow: hidden;
-  flex-shrink: 0;
-  position: relative;
-}
-/* Each half occupies exactly 50% so the divider always lands at centre */
-.scoreDisc .timer-top,
-.scoreDisc .timer-bottom {
-  flex: 1;
-  width: 100%;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 2px;
-}
-/* Top: number sits closest to divider (flex-end), icon floats up */
-.scoreDisc .timer-top    { justify-content: flex-end;   padding-bottom: 2px; }
-/* Bottom: number sits closest to divider (flex-start), icon floats down */
-.scoreDisc .timer-bottom { justify-content: flex-start;  padding-top: 8px; }
-.scoreDisc .timer-icon {
-  width: 14px;
-  height: 14px;
-  opacity: 0.55;
-}
-.scoreDisc .accuracy-icon {
-  width: 14px;
-  height: 14px;
-  opacity: 0.55;
-}
-.scoreDisc .timer-time {
-  font-size: 26px;
-  font-weight: 700;
-  font-family: 'Courier New', monospace;
-  letter-spacing: 1px;
-  line-height: 1;
-}
-/* SVG dashed divider — zero flex-shrink so it never collapses */
-.scoreDisc .timer-divider {
-  display: block;
-  width: 100%;
-  flex-shrink: 0;
-  overflow: visible;
-}
-/* Groove lines hidden during normal play */
-.scoreDisc .div-groove-dark,
-.scoreDisc .div-groove-light { display: none; }
-/* On medals: hide dashed, show solid groove */
-.scoreDisc.medal-gold   .div-dashed,
-.scoreDisc.medal-silver .div-dashed,
-.scoreDisc.medal-bronze .div-dashed,
-.scoreDisc.medal-lead   .div-dashed { display: none; }
-.scoreDisc.medal-gold   .div-groove-dark,
-.scoreDisc.medal-gold   .div-groove-light,
-.scoreDisc.medal-silver .div-groove-dark,
-.scoreDisc.medal-silver .div-groove-light,
-.scoreDisc.medal-bronze .div-groove-dark,
-.scoreDisc.medal-bronze .div-groove-light,
-.scoreDisc.medal-lead   .div-groove-dark,
-.scoreDisc.medal-lead   .div-groove-light { display: block; }
-/* Per-medal groove colours */
-.scoreDisc.medal-gold   .div-groove-dark  { stroke: rgba(50,20,0,0.80); }
-.scoreDisc.medal-gold   .div-groove-light { stroke: rgba(255,225,80,0.70); }
-.scoreDisc.medal-silver .div-groove-dark  { stroke: rgba(15,30,50,0.75); }
-.scoreDisc.medal-silver .div-groove-light { stroke: rgba(245,255,255,0.85); }
-.scoreDisc.medal-bronze .div-groove-dark  { stroke: rgba(30,8,0,0.80); }
-.scoreDisc.medal-bronze .div-groove-light { stroke: rgba(255,180,90,0.65); }
-.scoreDisc.medal-lead   .div-groove-dark  { stroke: rgba(5,6,9,0.85); }
-.scoreDisc.medal-lead   .div-groove-light { stroke: rgba(90,105,130,0.90); }
-/* Accuracy number */
-.scoreDisc .timer-accuracy {
-  font-size: 26px;
-  font-weight: 700;
-  font-family: 'Courier New', monospace;
-  letter-spacing: 1px;
-  line-height: 1;
-}
-
-/* CHANGE 5: paused timer is clickable to unpause */
-.scoreDisc.paused        { background: #4b5563; cursor: pointer; }
-.scoreDisc.green         { background: #10b981; }
-.scoreDisc.finished      { background: #1f2937; }
-
-/* ── Medal states ───────────────────────────────────────────────────────────
-   Outer rim = chiselled conic gradient. ::before = metal face disc (3px inset).
-   Drop shadow soft + translucent, offset bottom-right (light source top-left).
-──────────────────────────────────────────────────────────────────────────── */
-.scoreDisc.medal-gold,
-.scoreDisc.medal-silver,
-.scoreDisc.medal-bronze,
-.scoreDisc.medal-lead {
-  position: relative;
-  overflow: visible;
-  transition: background 0.6s ease, box-shadow 0.6s ease;
-  box-shadow:
-    4px 8px 20px rgba(0,0,0,0.28),
-    2px 3px  8px rgba(0,0,0,0.15);
-}
-.scoreDisc.medal-gold::before,
-.scoreDisc.medal-silver::before,
-.scoreDisc.medal-bronze::before,
-.scoreDisc.medal-lead::before {
-  content: '';
-  position: absolute;
-  inset: 3px;
-  border-radius: 50%;
-  z-index: 0;
-  box-shadow:
-    inset  1px  1px 1px rgba(255,255,255,0.55),
-    inset -1px -1px 1px rgba(0,0,0,0.55);
-}
-.scoreDisc.medal-gold   > *,
-.scoreDisc.medal-silver > *,
-.scoreDisc.medal-bronze > *,
-.scoreDisc.medal-lead   > * { position: relative; z-index: 2; }
-
-/* GOLD */
-.scoreDisc.medal-gold {
-  background: conic-gradient(
-    from 225deg,
-    #b8730a 0deg, #b8730a 1deg,
-    #fff9d6 14deg, #fff9d6 17deg,
-    #e8c060 35deg, #c88810 70deg,
-    #7c4d04 108deg, #3d1e00 128deg, #3d1e00 132deg,
-    #6b3e03 155deg, #a06818 185deg, #c8860a 210deg,
-    #f0d070 222deg, #b8730a 225deg, #b8730a 360deg
-  );
-  color: #3b1a00;
-  text-shadow: 0 1px 0 rgba(255,230,80,0.8);
-}
-.scoreDisc.medal-gold::before {
-  background: conic-gradient(
-    #c8860a 0deg, #fde68a 40deg, #f6c547 70deg, #b8730a 110deg,
-    #7c4d04 140deg, #e8b84b 175deg, #fef08a 200deg, #d4a017 230deg,
-    #8a5c08 265deg, #f0c040 295deg, #fde68a 325deg, #c8860a 360deg
-  );
-  box-shadow:
-    inset 1px 1px 1px rgba(255,248,180,0.65),
-    inset -1px -1px 1px rgba(35,12,0,0.65);
-}
-
-/* SILVER */
-.scoreDisc.medal-silver {
-  background: conic-gradient(
-    from 225deg,
-    #6a8090 0deg, #6a8090 1deg,
-    #ffffff 14deg, #ffffff 17deg,
-    #d8eaf5 35deg, #90aabf 70deg,
-    #3a5060 108deg, #1a2830 128deg, #1a2830 132deg,
-    #3a5060 155deg, #6a8898 185deg, #7a8fa6 210deg,
-    #c8dce8 222deg, #6a8090 225deg, #6a8090 360deg
-  );
-  color: #1a2530;
-  text-shadow: 0 1px 0 rgba(230,245,255,0.9);
-}
-.scoreDisc.medal-silver::before {
-  background: conic-gradient(
-    #7a8fa6 0deg, #dce8f0 40deg, #f4f8fb 70deg, #8fa8bf 110deg,
-    #4a6070 140deg, #c8d8e8 175deg, #f4f8fb 200deg, #90a8be 230deg,
-    #506070 265deg, #d0e0ee 295deg, #dce8f0 325deg, #7a8fa6 360deg
-  );
-  box-shadow:
-    inset 1px 1px 1px rgba(255,255,255,0.70),
-    inset -1px -1px 1px rgba(10,20,35,0.65);
-}
-
-/* BRONZE */
-.scoreDisc.medal-bronze {
-  background: conic-gradient(
-    from 225deg,
-    #6a3010 0deg, #6a3010 1deg,
-    #ffd4a0 14deg, #ffd4a0 17deg,
-    #d07040 35deg, #8b4515 70deg,
-    #3a1808 108deg, #1a0800 128deg, #1a0800 132deg,
-    #3a1808 155deg, #703018 185deg, #7a3e10 210deg,
-    #d08040 222deg, #6a3010 225deg, #6a3010 360deg
-  );
-  color: #2a0e00;
-  text-shadow: 0 1px 0 rgba(255,175,80,0.7);
-}
-.scoreDisc.medal-bronze::before {
-  background: conic-gradient(
-    #7a3e10 0deg, #e8915a 40deg, #c8703a 70deg, #8b4515 110deg,
-    #4a2008 140deg, #d4814a 175deg, #f0a060 200deg, #a05820 230deg,
-    #5a2a0a 265deg, #c07840 295deg, #e8915a 325deg, #7a3e10 360deg
-  );
-  box-shadow:
-    inset 1px 1px 1px rgba(255,200,120,0.60),
-    inset -1px -1px 1px rgba(20,5,0,0.70);
-}
-
-/* LEAD — wrought iron, charcoal-etched numbers */
-.scoreDisc.medal-lead {
-  background: conic-gradient(
-    from 225deg,
-    #30343c 0deg, #30343c 1deg,
-    #8090a0 14deg, #8090a0 17deg,
-    #505860 35deg, #343840 70deg,
-    #141820 108deg, #0a0c12 128deg, #0a0c12 132deg,
-    #141820 155deg, #282c34 185deg, #343840 210deg,
-    #687080 222deg, #30343c 225deg, #30343c 360deg
-  );
-  color: #0c1014;
-  text-shadow: none;
-  box-shadow:
-    2px 5px 14px rgba(0,0,0,0.45),
-    1px 2px  5px rgba(0,0,0,0.25);
-}
-.scoreDisc.medal-lead::before {
-  background: conic-gradient(
-    #30343c 0deg, #687080 40deg, #788898 70deg, #485060 110deg,
-    #181c24 140deg, #506070 175deg, #687888 200deg, #404858 230deg,
-    #20242c 265deg, #505860 295deg, #687080 325deg, #30343c 360deg
-  );
-  box-shadow:
-    inset 1px 1px 1px rgba(120,136,152,0.30),
-    inset -1px -1px 1px rgba(0,0,0,0.80);
-}
-/* Numbers: etched/chiseled — fully opaque, dark, with fine relief shadow */
-.scoreDisc.medal-lead .timer-time,
-.scoreDisc.medal-lead .timer-accuracy {
-  opacity: 1;
-  text-shadow:
-    0  1px 0 rgba(255,255,255,0.4),
-    0 -1px 0 rgba(0,0,0,0.6),
-    1px 0  0 rgba(0,0,0,0.6);
-}
-/* Icons: slightly lifted from the original dim */
-.scoreDisc.medal-lead .timer-icon    { opacity: 1; filter: none; }
-.scoreDisc.medal-lead .accuracy-icon { opacity: 0.58; filter: none; }
-.scoreDisc.medal-silver .timer-divider line { stroke: rgba(15,30,50,0.50); }
-.scoreDisc.medal-bronze .timer-divider line { stroke: rgba(30,8,0,0.55); }
-.scoreDisc.medal-lead   .timer-divider line { stroke: rgba(20,25,35,0.50); }
-/* Timer icon — bevel drop-shadow */
-.scoreDisc.medal-gold   .timer-icon { opacity:0.85; filter: drop-shadow(0 1px 0 rgba(255,230,80,0.7))  drop-shadow(0 -1px 0 rgba(50,20,0,0.5)); }
-.scoreDisc.medal-silver .timer-icon { opacity:0.85; filter: drop-shadow(0 1px 0 rgba(230,245,255,0.8)) drop-shadow(0 -1px 0 rgba(15,30,50,0.5)); }
-.scoreDisc.medal-bronze .timer-icon { opacity:0.85; filter: drop-shadow(0 1px 0 rgba(255,175,80,0.65)) drop-shadow(0 -1px 0 rgba(30,8,0,0.55)); }
-/* Accuracy icon */
-.scoreDisc.medal-gold   .accuracy-icon { opacity:0.75; color: rgba(50,20,0,0.85);   filter: none; }
-.scoreDisc.medal-silver .accuracy-icon { opacity:0.75; color: rgba(15,30,50,0.85);  filter: none; }
-.scoreDisc.medal-bronze .accuracy-icon { opacity:0.75; color: rgba(30,8,0,0.85);    filter: none; }
-/* Penalty gradients — sharp split at 50%, rapid transition in */
-.scoreDisc.penalty-time  {
-  background: linear-gradient(to bottom, #ef4444 0%, #ef4444 50%, #1f2937 50%, #1f2937 100%);
-  transition: background 0.08s ease;
-}
-.scoreDisc.penalty-acc   {
-  background: linear-gradient(to bottom, #1f2937 0%, #1f2937 50%, #f59e0b 50%, #f59e0b 100%);
-  transition: background 0.08s ease;
-}
-
-/* ══════════════════════════════════════
-   TITLE
-══════════════════════════════════════ */
-#title {
-  font-size: 24px;
-  font-weight: 600;
-  text-align: center;
-  line-height: 1.3;
-  color: #1f2937;
-  opacity: 1;
-  transition: opacity 0.3s, filter 0.4s;
-  filter: none;
-  white-space: pre-line;
-  overflow: visible;
-}
-#title.hidden  { opacity: 0; }
-#title.strike  { text-decoration: line-through; opacity: 0.45; transition: opacity 0.5s ease; }
-#title.strike.fading { opacity: 0; }
-#title.blurred { filter: blur(6px); opacity: 0.6; user-select: none; }
-#confirmHeading {
-  font-size: 24px;
-  font-weight: 600;
-  text-align: center;
-  line-height: 1.3;
-  color: #1f2937;
-  white-space: pre-line;
-  position: absolute;
-  left: -12px; right: -12px;
-  top: 50%; transform: translateY(-50%);
-  z-index: 2;
-  pointer-events: none;
-  padding: 14px 20px;
-  border-radius: 10px;
-  background: transparent;
-  overflow: visible;
-}
-/* The frosted background is constrained to the gameContainer interior via
-   clip-path on #gameContainer. The pseudo-element uses absolute positioning
-   inset from the heading's own edges. */
-#confirmHeading:not(:empty)::before {
-  content: '';
-  position: absolute;
-  inset: 6px 0;
-  border-radius: 8px;
-  background: rgba(224, 242, 254, 0.33);
-  backdrop-filter: blur(2px);
-  z-index: -1;
-}
-#title.blur-instant,
-#questionRow.blur-instant { transition: none !important; }
-#questionRow.blurred { filter: blur(3px); opacity: 0.75; user-select: none; }
-#livesRow.blurred    { filter: blur(3px); opacity: 0.75; user-select: none; }
-
-/* ══════════════════════════════════════
-   INFO ROWS (question count + best record)
-══════════════════════════════════════ */
-@import url('https://fonts.googleapis.com/css2?family=Lato:wght@400;700&display=swap');
-
-#questionRow {
-  width: 100%;
-  height: 23px;
-  padding: 0 60px 2px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 8px;
-  box-sizing: border-box;
-  flex-shrink: 0;
-}
-/* Individual progress dot */
-.prog-dot {
-  opacity: 0;
-  transition: opacity 0.18s ease;
-  flex-shrink: 0;
-}
-.prog-dot.visible { opacity: 1; }
-.prog-dot.fading  { opacity: 0; }
-/* Inner fill circle — hidden until answered */
-.prog-dot .dot-fill { opacity: 0; transition: opacity 0.15s ease; }
-.prog-dot.answered .dot-fill { opacity: 1; }
-
-/* Pop animation — used for both dot fill-reveal and heart-break.
-   Swap happens at peak (50%) where the scale change masks it. */
-@keyframes indicatorPop {
-  0%   { transform: scale(1);    }
-  50%  { transform: scale(1.35); }
-  100% { transform: scale(1);    }
-}
-.indicator-pop {
-  animation: indicatorPop 0.22s cubic-bezier(0.22, 0.61, 0.36, 1);
-}
-
-/* ── Lives row ───────────────────────────────────────────────────────────────
-   Exact mirror of questionRow: same fixed height, same horizontal padding.
-   Always present in layout so the container never shifts height.
-   Hearts are invisible (opacity 0) until shown; display:none only when
-   playerLives is null (infinite lives). */
-#livesRow {
-  width: 100%;
-  height: 23px;
-  padding: 2px 60px 0;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 8px;
-  box-sizing: border-box;
-  flex-shrink: 0;
-}
-#livesRow.lives-hidden { visibility: hidden; }
-.life-heart {
-  opacity: 0;
-  flex-shrink: 0;
-  transition: opacity 0.18s ease;
-}
-.life-heart.visible { opacity: 1; }
-.life-heart.fading  { opacity: 0; transition: opacity 0.4s ease; }
-/* Stats row: mirrors leftPanel/rightPanel widths, sits under game panel */
-#statsRow {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  width: 100%;
-  padding: 8px 60px 4px;
-  position: relative;
-  box-sizing: border-box;
-  min-height: 37px;
-}
-#statLeft, #statRight {
-  font-family: 'Lato', system-ui, sans-serif;
-  font-size: 13px;
-  color: #6b7280;
-  white-space: nowrap;
-}
-#statLeft  { width: 140px; text-align: center; }
-#statRight { width: 130px; text-align: center; }
-
-@keyframes statPulse {
-  0%   { transform: scale(1);    color: #6b7280; }
-  50%  { transform: scale(1.18); color: #f59e0b; }
-  100% { transform: scale(1);    color: #6b7280; }
-}
-.stat-pulse { animation: statPulse 0.5s ease-in-out; }
-
-#credit {
-  font-family: 'Lato', system-ui, sans-serif;
-  font-size: 12px;
-  color: #9ca3af;
-  text-align: center;
-  width: 100%;
-  padding: 8px 60px 0;
-  box-sizing: border-box;
-  transform: translateY(0);
-  transition: transform 0.85s cubic-bezier(0.4, 0, 0.2, 1);
-}
-/* Nudge credit and difficulty icon up into the keyboard shadow when face-down */
-#keyboardWrap.kb-at-face ~ #credit,
-#keyboardWrap.kb-at-face ~ #diffIconWrap {
-  transform: translateY(-22px);
-}
-
-/* Extended key ghost pill — appears in statsRow when a key not on the
-   graphical keyboard is held. Styled to match the current keyboard mode. */
-#extKeyPill {
-  position: absolute;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  top: 50%;
-  background: #f5f5f7;
-  color: #1d1d1f;
-  font-family: system-ui, sans-serif;
-  font-size: 11px;
-  font-weight: 500;
-  padding: 0 14px;
-  height: 32px;
-  min-width: 48px;
-  display: none;
-  align-items: center;
-  justify-content: center;
-  border-radius: 4px;           /* Mac style by default */
-  box-shadow: 0 2px 0 #8a9099, inset 0 -1px 0 rgba(0,0,0,0.08);
-  pointer-events: none;
-  z-index: 11;
-  transition: background 0.07s, box-shadow 0.07s, color 0.07s;
-  white-space: nowrap;
-}
-/* PC mode: circular/pill */
-body.pc-mode #extKeyPill {
-  border-radius: 40px;
-}
-/* Lit states mirror real keys */
-#extKeyPill.lit-green {
-  background: #10b981 !important;
-  box-shadow: 0 2px 0 #059669, 0 0 8px rgba(16,185,129,0.5) !important;
-  color: white !important;
-}
-#extKeyPill.lit-orange {
-  background: #f97316 !important;
-  box-shadow: 0 2px 0 #c2410c, 0 0 8px rgba(249,115,22,0.5) !important;
-  color: white !important;
-}
-#extKeyPill.lit-fading {
-  transition: background 0.8s ease, box-shadow 0.8s ease, color 0.8s ease !important;
-}
-
-/* Toast pill — centred over the stats row, overlaps if needed */
-/* ══════════════════════════════════════
-   KEYBOARD ICON MODAL
-══════════════════════════════════════ */
-
-/* Modal inline rows (label = toggle) */
-/* All three layout rows share a grid so their switches column-align */
-/* All three toggle rows share one table so the switch column aligns perfectly.
-   Left cells are right-aligned (labels hang leftward from switch),
-   switch cells are centred, right cells are left-aligned. */
-.modal-layout-rows {
-  display: table;
-  border-collapse: separate;
-  border-spacing: 0 6px;
-  width: auto;
-}
-.modal-inline-row {
-  display: table-row;
-}
-.modal-inline-row.disabled {
-  opacity: 0.38;
-  pointer-events: none;
-}
-.modal-inline-row.disabled .modal-left-label,
-.modal-inline-row.disabled .modal-right-label {
-  text-decoration: line-through;
-}
-/* Column 1: left label — right-aligned so it butts up against the switch */
-.modal-left-label {
-  display: table-cell;
-  text-align: right;
-  vertical-align: middle;
-  padding-right: 5px;
-  white-space: nowrap;
-  font-size: 12px;
-  color: #374151;
-}
-/* Column 2: the toggle switch itself */
-.modal-switch-wrap {
-  display: table-cell;
-  vertical-align: middle;
-  white-space: nowrap;
-}
-/* Column 3: right label — left-aligned from the switch */
-.modal-right-label {
-  display: table-cell;
-  vertical-align: middle;
-  padding-left: 5px;
-  white-space: nowrap;
-  font-size: 12px;
-  color: #374151;
-}
-.modal-inline-val {
-  font-size: 12px;
-  color: #6b7280;
-}
-.modal-inline-label {
-  font-size: 12px;
-  color: #374151;
-}
-.modal-kbsize-icons {
-  display: inline-flex;
-  align-items: center;
-  gap: 10px;
-}
-
-/* Keyboard variant picker */
-.kb-variant-picker {
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
-  margin-top: 4px;
-}
-.kb-variant-option {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  cursor: pointer;
-  padding: 6px 8px;
-  border-radius: 6px;
-  border: 1.5px solid transparent;
-  transition: border-color 0.15s;
-}
-.kb-variant-option:hover { border-color: #d1d5db; }
-.kb-variant-option.selected { border-color: #374151; }
-.kb-variant-keys {
-  display: flex;
-  gap: 3px;
-  align-items: center;
-  flex-shrink: 0;
-}
-.kb-variant-key {
-  background: #e5e7eb;
-  border-radius: 3px;
-  font-size: 9px;
-  font-family: system-ui, sans-serif;
-  color: #374151;
-  padding: 3px 5px;
-  white-space: nowrap;
-  border-bottom: 1.5px solid #9ca3af;
-}
-.kb-variant-key.wide { padding: 3px 14px; }
-.kb-variant-label {
-  font-size: 12px;
-  color: #6b7280;
-}
-
-/* Modal toggle rows */
-
-
-/* ── Keyboard modal shell ─────────────────────────────────────── */
-
-.modal-toggle-row {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  margin-bottom: 4px;
-  user-select: none;
-}
-.modal-toggle-row label {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  cursor: pointer;
-}
-.modal-toggle-row.disabled {
-  opacity: 0.4;
-  pointer-events: none;
-}
-.modal-toggle-row.disabled .modal-toggle-label {
-  text-decoration: line-through;
-}
-.modal-toggle-label {
-  font-size: 13px;
-  color: #374151;
-}
-.modal-section-gap { height: 4px; }
-.modal-section-title {
-  font-size: 12px;
-  font-weight: 700;
-  color: #374151;
-  margin: 0;
-}
-/* Radio dot toggle */
-.modal-radio {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  flex-shrink: 0;
-  cursor: pointer;
-  width: 19px;
-  height: 19px;
-}
-.modal-radio input {
-  position: absolute;
-  opacity: 0;
-  width: 0; height: 0;
-  pointer-events: none;
-}
-.modal-radio-dot { display: block; }
-.modal-radio-fill { opacity: 0; transition: opacity 0.15s ease; }
-.modal-radio.on .modal-radio-fill { opacity: 1; }
-
-/* ══════════════════════════════════════
-   SETTINGS PANEL
-   Absolutely positioned inside #keyboardWrap, top-aligned.
-   As the keyboard tilts down it reveals this content above it.
-   Width/left aligned to keyboardPanel by JS.
-══════════════════════════════════════ */
-
-#settingsPanel {
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  pointer-events: none;
-  z-index: 1; /* above bg, below keyboard 3D stage */
-  overflow: hidden;
-}
-
-#settingsPanelInner {
-  position: absolute;
-  top: 0;
-  /* left and width set by JS to match keyboardPanel */
-  padding: 0 0 8px;
-  font-family: 'Lato', system-ui, sans-serif;
-  font-size: 13px;
-  color: #374151;
-  line-height: 1.55;
-  opacity: 0;
-  transform: translateY(-8px);
-  transition:
-    opacity   0.3s ease 0.25s,
-    transform 0.3s ease 0.25s;
-  pointer-events: none;
-}
-
-#settingsPanel.sp-open #settingsPanelInner {
-  opacity: 1;
-  transform: translateY(0);
-  pointer-events: auto;
-}
-
-/* Fade content out quickly as the keyboard rises to face position */
-#settingsPanel.sp-closing #settingsPanelInner {
-  opacity: 0;
-  transform: translateY(-6px);
-  transition: opacity 0.2s ease, transform 0.2s ease;
-  pointer-events: none;
-}
-
-/* ── Two-column grid ──────────────────────────────── */
-.sp-page {
-  display: none;
-  gap: 0;
-  width: 100%;
-}
-.sp-page.sp-active {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-}
-
-/* Returning-user, Welcome, and Difficulty pages: full-width single column, centred */
-#panelDifficulty.sp-active,
-#panelReturning.sp-active,
-#panelWelcome.sp-active {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-}
-#panelDifficulty.sp-active::after,
-#panelReturning.sp-active::after,
-#panelWelcome.sp-active::after  { display: none; }
-
-/* Gutter: a 1px line at the midpoint — centred above diffIcon */
-.sp-page.sp-active::after {
-  content: '';
-  position: absolute;
-  top: 16px;
-  bottom: 12px;
-  left: 50%;
-  width: 1px;
-  background: #e5e7eb;
-  pointer-events: none;
-}
-
-.sp-col {
-  min-width: 0;
-}
-.sp-col-left  { padding-right: 20px; }
-.sp-col-right { padding-left:  20px; }
-
-/* ── Typography ──────────────────────────────────── */
-.sp-title {
-  font-size: 12px;
-  font-weight: 700;
-  color: #374151;
-  margin: 4px 0 5px 0;
-}
-.sp-body {
-  font-size: 12px;
-  color: #374151;
-  line-height: 1.6;
-  margin: 0 0 10px 0;
-}
-.sp-hint {
-  font-size: 11px;
-  color: #6b7280;
-  margin-top: 8px;
-}
-
-/* ── Welcome screen — middlePanel tagline ─────────── */
-#welcomeTagline {
-  display: none;
-  font-size: 14px;
-  font-style: italic;
-  color: #6b7280;
-  margin: 4px 0 0;
-  text-align: center;
-  line-height: 1.5;
-}
-.diff-btn {
-  flex: 1;
-  max-width: 140px;
-  padding: 9px 10px;
-  font-family: 'Lato', system-ui, sans-serif;
-  font-size: 13px;
-  font-weight: 600;
-  color: #9ca3af;
-  background: #f7f9fb;
-  border: 1.5px solid #d1d5db;
-  border-radius: 8px;
-  cursor: pointer;
-  line-height: 1.2;
-}
-.sp-key-chip {
-  display: inline-block;
-  font-size: 10px;
-  font-weight: 600;
-  color: #1e3a5f;
-  border: 1px solid #d1d5db;
-  border-radius: 3px;
-  padding: 1px 4px 0;
-  line-height: 1.6;
-  white-space: nowrap;
-}
-
-/* ── Browser conflict list ───────────────────────── */
-.sp-conflict-list {
-  margin: 0 0 8px 0;
-  padding-left: 0;
-  list-style: none;
-  font-size: 12px;
-  color: #6b7280;
-  line-height: 1.75;
-}
-.sp-conflict-list li {
-  margin-bottom: 6px;
-  display: flex;
-  align-items: center;
-  flex-wrap: nowrap;
-  gap: 0;
-  line-height: 1.6;
-  cursor: pointer;
-}
-
-/* ── Page switch wipe animation ──────────────────── */
-@keyframes spWipeIn {
-  from { opacity: 0; transform: translateX(18px); }
-  to   { opacity: 1; transform: translateX(0);    }
-}
-@keyframes spWipeInLeft {
-  from { opacity: 0; transform: translateX(-18px); }
-  to   { opacity: 1; transform: translateX(0);     }
-}
-@keyframes spWipeInUp {
-  from { opacity: 0; transform: translateY(14px); }
-  to   { opacity: 1; transform: translateY(0);    }
-}
-.sp-page.sp-wipe-in       { animation: spWipeIn     0.22s ease forwards; }
-.sp-page.sp-wipe-in-left  { animation: spWipeInLeft 0.22s ease forwards; }
-.sp-page.sp-wipe-in-up    { animation: spWipeInUp   0.22s ease forwards; }
-
-@keyframes btnPulse {
-  0%   { transform: scale(1); }
-  35%  { transform: scale(1.13); }
-  65%  { transform: scale(1.07); }
-  100% { transform: scale(1); }
-}
-#mainBtn.pulse {
-  animation: btnPulse 0.45s cubic-bezier(0.25, 0.46, 0.45, 0.94);
-}
-
-
-#kbToast {
-  position: absolute;
-  left: 50%;
-  transform: translateX(-50%);
-  background: transparent;
-  color: white;
-  font-size: 12px;
-  font-weight: 600;
-  padding: 5px 14px;
-  border-radius: 12px;
-  white-space: nowrap;
-  pointer-events: none;
-  opacity: 0;
-  transition: opacity 0.15s;
-  z-index: 10;
-  top: 50%;
-  transform: translate(-50%, -50%);
-}
-#kbToast.show { opacity: 1; }
-#kbToast.warning { background: #f59e0b; }
-
-/* ── Unified notification toast ─────────────────────────────────────────────
-   position:fixed so it floats above everything including modals.
-   JS positions it: centred above keyboard normally, or top-of-modal when
-   a modal is open. Drop shadow with top-left light source.              ── */
-#kwToast {
-  position: fixed;
-  background: rgba(28, 28, 32, 0.92);
-  color: #f3f4f6;
-  font-family: 'Lato', system-ui, sans-serif;
-  font-size: 13px;
-  font-weight: 500;
-  padding: 7px 18px;
-  border-radius: 12px;
-  white-space: nowrap;
-  pointer-events: none;
-  opacity: 0;
-  transform: translate(-50%, 0);
-  transition: opacity 0.22s ease;
-  box-shadow: 2px 3px 12px rgba(0,0,0,0.48), 1px 1px 3px rgba(0,0,0,0.28);
-  z-index: 210;
-  max-width: 340px;
-  white-space: normal;
-  text-align: center;
-  line-height: 1.4;
-}
-#kwToast.visible { opacity: 1; }
-
-/* ══════════════════════════════════════
-   KEYBOARD WRAPPER
-══════════════════════════════════════ */
-#keyboardWrap {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  width: 100%;
-  margin-top: 0;
-  position: relative;
-  min-height: 320px;
-  transition: min-height 0.75s cubic-bezier(0.4, 0, 0.2, 1);
-}
-#kbIcon {
-  display: block;
-  cursor: pointer;
-  fill: #9ca3af;
-  transition: fill 0.2s ease;
-}
-@keyframes kbIconPulse {
-  0%   { transform: scale(1); }
-  40%  { transform: scale(1.22); }
-  100% { transform: scale(1); }
-}
-#kbIcon.pulse {
-  animation: kbIconPulse 0.5s cubic-bezier(0.25, 0.46, 0.45, 0.94);
-}
-#kbIcon:hover {
-  transform: scale(1.12);
-  transition: transform 0.18s ease;
-}
-#kbIcon.pulse:hover {
-  transform: none;
-  transition: none;
-}
-
-
-/* ── Browser icon (mirrors kbIcon, right side) ─────────────────── */
-#browserIcon {
-  display: block;
-  cursor: pointer;
-  fill: #9ca3af;
-  transition: fill 0.2s ease;
-}
-@keyframes browserIconPulse {
-  0%   { transform: scale(1); }
-  40%  { transform: scale(1.22); }
-  100% { transform: scale(1); }
-}
-#browserIcon.pulse {
-  animation: browserIconPulse 0.5s cubic-bezier(0.25, 0.46, 0.45, 0.94);
-}
-#browserIcon:hover {
-  transform: scale(1.12);
-  transition: transform 0.18s ease;
-}
-#browserIcon.pulse:hover {
-  transform: none;
-  transition: none;
-}
-
-/* ── Browser modal inner content ──────────────────────────────── */
-/* Conflict chip and dismissed styles — still used in settings panel */
-.conflict-chip {
-  background: transparent;
-  box-shadow: none;
-}
-/* Dismissed row: chips "light up" as available; description struck through */
-li.conflict-dismissed .conflict-chip {
-  background: #f3f4f6;
-  box-shadow: 0 1.5px 0 #c9cdd3;
-}
-li.conflict-dismissed .conflict-desc {
-  text-decoration: line-through;
-  color: #c0c5cc;
-}
-/* ══════════════════════════════════════
-   KEYBOARD PANEL
-   Outer: 14px → corner keys: 9px → base keys: 4px
-══════════════════════════════════════ */
-#keyboardPanel {
-  background: #b2b8c0;
-  border-radius: 14px;
-  padding: 9px;
-  box-shadow: 0 8px 24px rgba(0,0,0,0.18);
-  display: inline-flex;
-  flex-direction: column;
-  position: relative;
-  z-index: 1;
-  gap: 4px;
-}
-.kb-row {
-  display: flex;
-  gap: 4px;
-  position: relative;
-}
-
-/* Base key */
-.key {
-  background: #f5f5f7;
-  border-radius: 4px;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  color: #1d1d1f;
-  font-family: system-ui, sans-serif;
-  box-shadow: 0 1px 0 #8a9099, inset 0 -1px 0 rgba(0,0,0,0.08);
-  user-select: none;
-  position: relative;
-  transition: background 0.07s;
-  width: 40px;
-  height: 40px;
-  flex-shrink: 0;
-  cursor: default;
-}
-.key.corner-tl { border-top-left-radius: 9px; }
-.key.corner-tr { border-top-right-radius: 9px; }
-.key.corner-bl { border-bottom-left-radius: 9px; }
-.key.corner-br { border-bottom-right-radius: 9px; }
-
-/* Keys that sit one step in from a panel corner get a mid-level radius.
-   Panel = 14px, true corner keys = 9px, these edge-adjacent keys = 6px. */
-/* ~` key: top-left */
-#keyboardPanel [data-key="Backquote"]  { border-top-left-radius: 6px; }
-/* delete key: top-right */
-#keyboardPanel [data-key="Backspace"]  { border-top-right-radius: 6px; }
-/* shift keys: all corners standard 4px — no overrides needed */
-/* Right arrow: bottom-right is a true panel corner → full concentric radius */
-#keyboardPanel [data-key="ArrowRight"] { border-bottom-right-radius: 9px; }
-
-/* Fn row */
-.key.fn {
-  background: #ffffff;
-  height: 28px;
-  box-shadow: 0 1px 0 #9aa0a8, inset 0 -1px 0 rgba(0,0,0,0.06);
-}
-.key.fn .fn-lbl {
-  font-size: 8.5px;
-  font-weight: 400;
-  color: #555;
-  position: absolute;
-  bottom: 4px;
-  left: 0; right: 0;
-  text-align: center;
-}
-
-/* Letter keys */
-.key .letter-lbl {
-  font-size: 14px;
-  font-weight: 500;
-  color: #555;
-  line-height: 1;
-}
-
-/* Symbol keys */
-.key .sym-sub {
-  position: absolute;
-  top: 4px; left: 5px;
-  font-size: 8px;
-  color: #777;
-  line-height: 1;
-}
-.key .sym-main {
-  font-size: 13px;
-  font-weight: 500;
-  color: #555;
-  line-height: 1;
-}
-/* PC mode: pull sym-sub away from the now-rounded corner,
-   centred above the main glyph with a small upward nudge */
-#keyboardPanel.pc-keys .key .sym-sub {
-  top: 5px;
-  left: 50%;
-  transform: translateX(-50%);
-}
-/* PC mini: sym-main shrinks to same size as sym-sub so the two
-   stacked symbols fit inside the smaller circular key */
-#keyboardPanel.pc-keys.mini-keys .key .sym-main {
-  font-size: 8px;
-}
-#keyboardPanel.pc-keys.mini-keys .key .sym-sub {
-  top: 3px;
-  font-size: 7px;
-}
-
-/* Utility keys */
-.key .util-lbl {
-  font-size: 9px;
-  font-weight: 400;
-  color: #555;
-}
-
-/* Modifier keys */
-.key .mod-sym {
-  font-size: 16px;
-  color: #555;
-  line-height: 1;
-  margin-bottom: 2px;
-}
-.key .mod-word {
-  position: absolute;
-  bottom: 4px;
-  left: 0; right: 0;
-  text-align: center;
-  font-size: 8px;
-  color: #555;
-  font-weight: 400;
-  line-height: 1;
-}
-.key .win-svg {
-  width: 14px;
-  height: 14px;
-  color: #555;
-}
-.key.lit-green-up   .win-svg, .key.lit-green-down  .win-svg,
-.key.lit-orange-up  .win-svg, .key.lit-orange-down .win-svg { color: white; }
-
-/* Mini-only: mod key with symbol only, centred */
-.key .mod-sym-only {
-  font-size: 14px;
-  color: #555;
-  line-height: 1;
-}
-/* Mini-only: util key with symbol only, centred */
-.key .util-sym-only {
-  font-size: 14px;
-  color: #555;
-  line-height: 1;
-}
-
-/* Lock key
-   CHANGE 2: .active stays white — no yellow highlight */
-.key.lock-key { cursor: pointer; }
-.key.lock-key:hover  { background: #e8e8ea; }
-.key.lock-key.active { background: #f5f5f7; }
-.key .lock-svg { width: 14px; height: 14px; opacity: 0.55; }
-
-/* Spacebar */
-.key.space-key { width: 180px; }
-
-/* Arrow keys */
-.arrow-stack {
-  display: flex;
-  flex-direction: column;
-  gap: 4px;
-}
-/* Left/right arrows: full height of bottom row, standard 4px rounding all corners.
-   Right arrow gets corner-br (9px) from its corner[] config for the keyboard corner. */
-.key.arrow-lr {
-  /* Width and height set by inline style in buildKeyboard so mini scales correctly.
-     No border-radius here — inherits 4px from .key; .corner-br overrides ▶ bottom-right. */
-}
-/* Mac: half-width arrows with square inner corners so they butt against updown stack */
-.key.arrow-half { width: 20px !important; }
-.key.arrow-sq-right { border-top-right-radius: 0 !important; border-bottom-right-radius: 0 !important; }
-.key.arrow-sq-left  { border-top-left-radius:  0 !important; border-bottom-left-radius:  0 !important; }
-.key.arrow-lr .letter-lbl { font-size: 11px; }
-/* Up/down: width, height and gap all set by inline style in buildKeyboard. */
-.key.arrow-ud {
-}
-.key.arrow-up   { border-radius: 4px 4px 0 0; }
-.key.arrow-down { border-radius: 0 0 4px 4px; }
-.key.arrow-ud .letter-lbl { font-size: 10px; }
-
-/* ══════════════════════════════════════
-   PC MODE — rounded keys
-   #keyboardPanel.pc-keys sets all keys
-   to near-circular. Concentric radii:
-   panel 14px → keys 50% (full circle).
-   Wide/tall keys use a fixed large px
-   value so they pill rather than ellipse.
-   Arrow halves get asymmetric rounding.
-══════════════════════════════════════ */
-#keyboardPanel.pc-keys .key {
-  border-radius: 50%;
-  transition: background 0.07s, border-radius 0.2s ease;
-}
-/* Wide utility keys: pill shape */
-#keyboardPanel.pc-keys [data-key="Backspace"],
-#keyboardPanel.pc-keys [data-key="Tab"],
-#keyboardPanel.pc-keys [data-key="CapsLock"],
-#keyboardPanel.pc-keys [data-key="Enter"],
-#keyboardPanel.pc-keys [data-key="ShiftLeft"],
-#keyboardPanel.pc-keys [data-key="ShiftRight"],
-#keyboardPanel.pc-keys [data-key="Space"],
-#keyboardPanel.pc-keys [data-key="ControlLeft"],
-#keyboardPanel.pc-keys [data-key="ControlRight"],
-#keyboardPanel.pc-keys [data-key="MetaLeft"],
-#keyboardPanel.pc-keys [data-key="AltLeft"],
-#keyboardPanel.pc-keys [data-key="AltRight"],
-#keyboardPanel.pc-keys [data-key="Fn"] {
-  border-radius: 40px;
-}
-/* Fn row keys inherit 50% border-radius from .pc-keys .key —
-   their 40×28 native dimensions produce a natural stadium shape.
-   Lock key stretches wider via flex and auto-pills. No override needed. */
-/* Fn row: pill shape — radius = half the key height (28÷2 = 14px).
-   This overrides 50% for fn keys so they pill rather than oval. */
-#keyboardPanel.pc-keys .key.fn {
-  border-radius: 14px;
-}
-
-/* Backquote and ArrowRight sit at panel corners but are sym/arrow keys
-   not covered by any pill rule — explicitly keep them circular.
-   The .corner-* classes are NOT overridden here: they would stomp the
-   pill rules (40px / 14px) applied to Esc, lock, ControlLeft, Backspace. */
-#keyboardPanel.pc-keys [data-key="Backquote"],
-#keyboardPanel.pc-keys [data-key="ArrowRight"] {
-  border-radius: 50%;
-}
-/* Up/down arrow halves — keep the flat join between them */
-#keyboardPanel.pc-keys .key.arrow-up   { border-radius: 40px 40px 8px 8px; }
-#keyboardPanel.pc-keys .key.arrow-down { border-radius: 8px 8px 40px 40px; }
-
-/* Mini keyboards (both Mac and PC): shrink regular key heights to
-   match the scaled-down width (~28px), keeping keys squarish.
-   Fn row scales proportionally. Wide flex keys keep natural height. */
-#keyboardPanel.mini-keys .key {
-  height: 28px;
-}
-#keyboardPanel.mini-keys .key.fn {
-  height: 19px;
-}
-/* PC mini overrides — already handled by the rules above now shared */
-/* Up/down arrow halves in mini PC: height now set correctly by JS (12px) */
-/* Wide/pill/flex keys: keep at 28px in all mini keyboards */
-#keyboardPanel.mini-keys [data-key="Backspace"],
-#keyboardPanel.mini-keys [data-key="Tab"],
-#keyboardPanel.mini-keys [data-key="CapsLock"],
-#keyboardPanel.mini-keys [data-key="Enter"],
-#keyboardPanel.mini-keys [data-key="ShiftLeft"],
-#keyboardPanel.mini-keys [data-key="ShiftRight"],
-#keyboardPanel.mini-keys [data-key="Space"],
-#keyboardPanel.mini-keys [data-key="ControlLeft"],
-#keyboardPanel.mini-keys [data-key="ControlRight"],
-#keyboardPanel.mini-keys [data-key="MetaLeft"],
-#keyboardPanel.mini-keys [data-key="AltLeft"],
-#keyboardPanel.mini-keys [data-key="AltRight"] {
-  height: 28px;
-}
-
-/* PC keyboard panel: rounder corners + cyan-tinted plastic body */
-#keyboardPanel.pc-keys {
-  border-radius: 22px;
-  background: #9eb8bf;
-}
-
-/* Mini Mac number row: nudge sym-main down-right to clear the sym-sub
-   which sits top-left. Only digit keys (Digit0-9, Minus, Equal, Backquote)
-   need this — letter keys have no sym-sub clash. */
-#keyboardPanel.mini-keys:not(.pc-keys) [data-key="Backquote"] .sym-main,
-#keyboardPanel.mini-keys:not(.pc-keys) [data-key="Digit1"] .sym-main,
-#keyboardPanel.mini-keys:not(.pc-keys) [data-key="Digit2"] .sym-main,
-#keyboardPanel.mini-keys:not(.pc-keys) [data-key="Digit3"] .sym-main,
-#keyboardPanel.mini-keys:not(.pc-keys) [data-key="Digit4"] .sym-main,
-#keyboardPanel.mini-keys:not(.pc-keys) [data-key="Digit5"] .sym-main,
-#keyboardPanel.mini-keys:not(.pc-keys) [data-key="Digit6"] .sym-main,
-#keyboardPanel.mini-keys:not(.pc-keys) [data-key="Digit7"] .sym-main,
-#keyboardPanel.mini-keys:not(.pc-keys) [data-key="Digit8"] .sym-main,
-#keyboardPanel.mini-keys:not(.pc-keys) [data-key="Digit9"] .sym-main,
-#keyboardPanel.mini-keys:not(.pc-keys) [data-key="Digit0"] .sym-main,
-#keyboardPanel.mini-keys:not(.pc-keys) [data-key="Minus"] .sym-main,
-#keyboardPanel.mini-keys:not(.pc-keys) [data-key="Equal"] .sym-main {
-  position: relative;
-  top: 4px;
-  left: 3px;
-}
-
-/* PC: fn-lbl centres in the key (both full and mini) */
-#keyboardPanel.pc-keys .key.fn .fn-lbl {
-  position: static;
-  font-size: 8px;
-}
-
-/* ══════════════════════════════════════
-   LIT STATES
-══════════════════════════════════════ */
-/* ── GREEN UP: resting coloured state — top highlight gives dimensionality ── */
-.key.lit-green-up {
-  background: #10b981 !important;
-  box-shadow:
-    inset 0 1px 0 rgba(180,255,220,0.55),
-    0 1px 0 #059669,
-    0 0 8px rgba(16,185,129,0.5) !important;
-}
-/* ── GREEN DOWN: key physically held — no bottom drop, 1px dark perimeter ── */
-.key.lit-green-down {
-  background: #10b981 !important;
-  box-shadow:
-    inset 0 0 0 1px #059669,
-    0 0 6px rgba(16,185,129,0.4) !important;
-}
-.key.lit-green-up .letter-lbl,    .key.lit-green-down .letter-lbl,
-.key.lit-green-up .sym-main,      .key.lit-green-down .sym-main,
-.key.lit-green-up .sym-sub,       .key.lit-green-down .sym-sub,
-.key.lit-green-up .util-lbl,      .key.lit-green-down .util-lbl,
-.key.lit-green-up .fn-lbl,        .key.lit-green-down .fn-lbl,
-.key.lit-green-up .mod-sym,       .key.lit-green-down .mod-sym,
-.key.lit-green-up .mod-sym-only,  .key.lit-green-down .mod-sym-only,
-.key.lit-green-up .mod-word,      .key.lit-green-down .mod-word,
-.key.lit-green-up .util-sym-only, .key.lit-green-down .util-sym-only { color: white !important; }
-
-/* ── ORANGE UP: resting coloured state ── */
-.key.lit-orange-up {
-  background: #f97316 !important;
-  box-shadow:
-    inset 0 1px 0 rgba(255,220,160,0.60),
-    0 1px 0 #c2410c,
-    0 0 8px rgba(249,115,22,0.5) !important;
-}
-/* ── ORANGE DOWN: key physically held ── */
-.key.lit-orange-down {
-  background: #f97316 !important;
-  box-shadow:
-    inset 0 0 0 1px #c2410c,
-    0 0 6px rgba(249,115,22,0.4) !important;
-}
-.key.lit-orange-up .letter-lbl,    .key.lit-orange-down .letter-lbl,
-.key.lit-orange-up .sym-main,      .key.lit-orange-down .sym-main,
-.key.lit-orange-up .sym-sub,       .key.lit-orange-down .sym-sub,
-.key.lit-orange-up .util-lbl,      .key.lit-orange-down .util-lbl,
-.key.lit-orange-up .fn-lbl,        .key.lit-orange-down .fn-lbl,
-.key.lit-orange-up .mod-sym,       .key.lit-orange-down .mod-sym,
-.key.lit-orange-up .mod-sym-only,  .key.lit-orange-down .mod-sym-only,
-.key.lit-orange-up .mod-word,      .key.lit-orange-down .mod-word,
-.key.lit-orange-up .util-sym-only, .key.lit-orange-down .util-sym-only { color: white !important; }
-
-/* Fade-out transition — applied just before removing lit class */
-.key.lit-fading {
-  transition: background 0.8s ease, box-shadow 0.8s ease !important;
-}
-.key.lit-fading .letter-lbl,
-.key.lit-fading .sym-main,
-.key.lit-fading .sym-sub,
-.key.lit-fading .util-lbl,
-.key.lit-fading .fn-lbl,
-.key.lit-fading .mod-sym,
-.key.lit-fading .mod-sym-only,
-.key.lit-fading .mod-word,
-.key.lit-fading .util-sym-only {
-  transition: color 0.8s ease !important;
-}
-
-/* ══════════════════════════════════════
-   BREAKPOINTS
-   < 600px: keyboard hidden; stats bar still shows
-   600-819: mini keyboard
-   >= 820:  full keyboard
-══════════════════════════════════════ */
-@media (max-width: 599px) {
-  #keyboardWrap { display: none; }
-
-  body { padding: 12px; }
-
-  #gameContainer { padding: 6px 16px 6px; max-width: none; }
-
-  .topRow { gap: 10px; }
-
-  .leftPanel { width: 108px; }
-
-  #mainBtn, #helpBtn { width: 108px; font-size: 12px; }
-
-  .rightPanel { width: 90px; }
-
-  .scoreDisc { width: 90px; height: 90px; }
-  .scoreDisc .timer-time,
-  .scoreDisc .timer-accuracy { font-size: 18px; }
-  .scoreDisc .timer-icon,
-  .scoreDisc .accuracy-icon  { width: 11px; height: 11px; }
-  .scoreDisc .timer-top    { padding-bottom: 3px; }
-  .scoreDisc .timer-bottom { padding-top: 3px; }
-
-  #title { font-size: 18px; }
-
-  #questionRow { padding: 0 16px 2px; }
-  #livesRow    { padding: 2px 16px 0; }
-
-  #statsRow { padding: 6px 16px 8px; }
-  #statLeft  { width: 108px; }
-  #statRight { width: 90px; }
-}
-
-/* ══════════════════════════════════════
-   OS TOGGLE ROW
-   The toggle group is pinned to the same
-   left edge as the buttons (24px inset).
-   The switch itself — not its labels —
-   aligns with the horizontal centre of
-   the buttons (width 140px → centre 70px).
-   So we offset: 24px + 70px - (switch_w/2)
-   Switch track: 36×14px stroke rect.
-   Knob: 10px circle, 2px stroke.
-══════════════════════════════════════ */
-#osRow {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  width: 100%;
-  padding: 0 60px;
-  position: relative;
-  box-sizing: border-box;
-  height: 41px;
-}
-/* Wrap is exactly as wide as the Start button (130px).
-   Three columns: system OS (left), switch (centre), alternate OS (right).
-   justify-content: space-between pushes labels to the edges;
-   the switch sits in the physical centre of the box. */
-#osToggleWrap {
-  width: 130px;
-  flex-shrink: 0;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-}
-#osToggleWrap .os-label {
-  font-family: 'Lato', system-ui, sans-serif;
-  font-size: 12px;
-  color: #9ca3af;
-  user-select: none;
-  display: flex;
-  align-items: center;
-  gap: 3px;
-  line-height: 1;
-}
-#osLabelLeft  { justify-content: flex-start; }
-#osLabelRight { justify-content: flex-end; }
-
-/* SVG toggle switch */
-.os-switch {
-  position: relative;
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  cursor: pointer;
-  flex-shrink: 0;
-  /* reserve space for the SVG track (36×14) */
-  width: 36px;
-  height: 14px;
-}
-.os-switch input {
-  position: absolute;
-  opacity: 0;
-  width: 0; height: 0;
-  pointer-events: none;
-}
-.os-track {
-  display: block;
-  pointer-events: none;
-  overflow: visible;
-}
-/* Knob: slide via transform; fill swap gives mac/pc visual state */
-#osKnobEl {
-  transition: transform 0.18s ease, fill 0.18s ease;
-  transform-origin: 7px 7px;
-  transform-box: fill-box;
-}
-
-#osMismatchPill {
-  position: absolute;
-  left: 50%;
-  transform: translateX(-50%);
-  background: #f59e0b;
-  color: white;
-  font-family: 'Lato', system-ui, sans-serif;
-  font-size: 12px;
-  font-weight: 600;
-  padding: 5px 14px;
-  border-radius: 12px;
-  white-space: nowrap;
-  opacity: 0;
-  pointer-events: none;
-  transition: opacity 0.3s;
-  z-index: 10;
-}
-#osMismatchPill.show { opacity: 1; }
-/* ══════════════════════════════════════
-   APP SELECTOR — in osRow, right-aligned
-   "now training on:" label inline-left
-   of the pill. Pill expands in-place to
-   show full list; selected item stays in
-   its natural list slot always.
-══════════════════════════════════════ */
-#appSelectorWrap {
-  margin-left: auto;          /* pushes to right end of osRow */
-  display: flex;
-  align-items: center;
-  gap: 7px;
-  flex-shrink: 0;
-  position: relative;
-  overflow: visible;
-}
-#appSelectorLabel {
-  font-family: 'Lato', system-ui, sans-serif;
-  font-size: 12px;
-  color: #9ca3af;
-  line-height: 1;
-  white-space: nowrap;
-  margin: 0;
-}
-
-/* The pill container. Clips overflow so expanding rows
-   never bleed outside the rounded border. */
-#appPill {
-  position: relative;
-  border-radius: 10px;
-  border: 1.5px solid #9ca3af;
-  background: white;
-  overflow: hidden;
-  cursor: pointer;
-  user-select: none;
-  /* closed: fixed height so border transparency never shifts content */
-  height: 27px;
-  max-height: 27px;
-  transition: max-height 0.22s ease, height 0.22s ease, border-color 0.15s, background-color 0.15s;
-  box-sizing: border-box;
-  overscroll-behavior: none;
-}
-#appPill.open {
-  height: auto;
-  max-height: 123px;
-}
-/* Flip class: used when there is not enough room above to expand upward,
-   so the pill drops down as an overlay instead */
-#appPill.open.drop-down {
-  position: absolute;
-  top: 100%;
-  right: 0;
-  z-index: 500;
-  width: max-content;
-  min-width: 100%;
-  border-radius: 0 0 10px 10px;
-}
-/* During game: border and background vanish — looks like plain text.
-   JS blocks interaction via gameState check. Pill stays in layout. */
-#appPill.game-active {
-  border-color: transparent;
-  background-color: transparent;
-  cursor: default;
-}
-#appPill.game-active .app-caret {
-  opacity: 0;
-}
-
-/* Each row inside the pill */
-.app-option {
-  display: flex;
-  align-items: center;
-  gap: 5px;
-  height: 24px;
-  line-height: 1;
-  padding: 0 10px 0 7px;
-  font-family: 'Lato', system-ui, sans-serif;
-  font-size: 12px;
-  color: #9ca3af;
-  white-space: nowrap;
-  box-sizing: border-box;
-  opacity: 0;
-  transition: opacity 0.18s ease, background 0.1s;
-  cursor: pointer;
-  pointer-events: none;
-}
-#appPill.open .app-option {
-  opacity: 1;
-  pointer-events: auto;
-}
-.app-option:hover {
-  background: #f0f9ff;
-  color: #374151;
-}
-/* Selected row always visible — scrollTop brings it into the 22px window */
-.app-option.selected {
-  opacity: 1;
-  color: #6b7280;
-  font-weight: 500;
-  pointer-events: none;    /* not clickable when closed (it's already selected) */
-}
-#appPill.open .app-option.selected {
-  pointer-events: auto;
-}
-/* Caret — sits left of the app name, rotates when open */
-.app-caret {
-  font-size: 7px;
-  color: #9ca3af;
-  line-height: 1;
-  flex-shrink: 0;
-  width: 8px;                /* fixed width so name column is stable */
-  display: inline-block;
-  transition: transform 0.2s ease;
-  text-align: center;
-}
-/* Non-selected rows: caret invisible (space reserved) */
-.app-option:not(.selected) .app-caret {
-  opacity: 0;
-}
-#appPill.open .app-option.selected .app-caret {
-  transform: rotate(90deg);   /* points down ▼ when open */
-}
-
-/* Countdown overlay inside #title area */
-@keyframes questionPop {
-  0%   { opacity: 0; transform: scale(0.94); }
-  60%  { opacity: 1; transform: scale(1.015); }
-  100% { opacity: 1; transform: scale(1); }
-}
-#title.question-pop {
-  animation: questionPop 0.28s cubic-bezier(0.22, 0.61, 0.36, 1) forwards;
-}
-/* Trophy unlock message — pops in with gold colour at peak, settles to normal */
-@keyframes trophyMessagePop {
-  0%   { opacity: 0; transform: scale(0.88); color: #1f2937; }
-  45%  { opacity: 1; transform: scale(1.06); color: #c88810; }
-  70%  { transform: scale(0.99); color: #b8730a; }
-  100% { opacity: 1; transform: scale(1);    color: #1f2937; }
-}
-#title.trophy-pop {
-  animation: trophyMessagePop 0.9s cubic-bezier(0.22, 0.61, 0.36, 1) forwards;
-}
-@keyframes countPop {
-  0%   { transform: scale(2.2); opacity: 0; }
-  20%  { transform: scale(1.0); opacity: 1; }
-  75%  { transform: scale(1.0); opacity: 1; }
-  100% { transform: scale(0.6); opacity: 0; }
-}
-#countdownOverlay {
-  position: absolute;
-  inset: 0;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  pointer-events: none;
-  z-index: 10;
-}
-#countdownNum {
-  font-family: 'Lato', system-ui, sans-serif;
-  font-size: 64px;
-  font-weight: 600;
-  color: #1e3a5f;
-  opacity: 0;
-  line-height: 1;
-}
-#countdownNum.pop {
-  animation: countPop 0.9s cubic-bezier(0.22, 0.61, 0.36, 1) forwards;
-}
-</style>
 </head>
-<body>
+<body style="background:#f0f4f8;" id="pageBody">
 
 <!-- OS toggle row: sits above the game panel -->
-<div id="phonePrompt">
+<div id="phonePrompt" style="display:none;">
   <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 60" width="72" height="90" fill="white">
     <path d="M31.3,9h-14.6c-2.6,0-4.7,2.1-4.7,4.7v34.6c0,2.6,2.1,4.7,4.7,4.7h14.6c2.6,0,4.7-2.1,4.7-4.7V13.7c0-2.6-2.1-4.7-4.7-4.7ZM31.3,51h-14.6c-1.5,0-2.7-1.2-2.7-2.7v-16.9c.7,1,1.9,1.7,3.2,1.7,2.2,0,3.9-1.8,3.9-3.9s-1.8-3.9-3.9-3.9-2.5.7-3.2,1.7v-13.3c0-1.5,1.2-2.7,2.7-2.7h14.6c1.5,0,2.7,1.2,2.7,2.7v13.3c-.7-1-1.9-1.7-3.2-1.7-2.2,0-3.9,1.8-3.9,3.9s1.8,3.9,3.9,3.9,2.5-.7,3.2-1.7v16.9c0,1.5-1.2,2.7-2.7,2.7Z"/>
     <path d="M28,14c0-.6-.4-1-1-1h-6c-.6,0-1,.4-1,1s.4,1,1,1h6c.6,0,1-.4,1-1Z"/>
@@ -1836,6 +86,44 @@ li.conflict-dismissed .conflict-desc {
   </div>
 </div>
 
+<style>
+@keyframes SkeletonGrow {
+  from { width: 18px; border-radius: 9px; }
+  to   { width: 100%; border-radius: 16px; }
+}
+.skeleton-hidden {
+  visibility: hidden;
+  opacity: 0;
+}
+.skeleton-revealed {
+  visibility: visible;
+  opacity: 1;
+  transition: opacity 0.3s ease;
+}
+#gameContainer > * {
+  opacity: 0;
+}
+#gameContainer.content-ready > * {
+  opacity: 1;
+  transition: opacity 0.3s ease;
+}
+</style>
+<script>
+  document.addEventListener('DOMContentLoaded', function () {
+  var SiblingElements = document.querySelectorAll('#pageBody > *:not(#skeletonLoader):not(style):not(script)');
+    SiblingElements.forEach(function (Element) { Element.classList.add('skeleton-hidden'); });
+    var GameContainer = document.getElementById('skeletonLoader');
+GameContainer.addEventListener('animationend', function () {
+    SiblingElements.forEach(function (Element) {
+      Element.classList.remove('skeleton-hidden');
+      Element.classList.add('skeleton-revealed');
+    });
+    document.getElementById('gameContainer').classList.add('content-ready');
+    _initialiseLayoutWhenReady();
+  }, { once: true });
+  });
+</script>
+<div id="skeletonLoader" style="width:18px;min-height:168px;border-radius:9px;background:#e0f2fe;animation:SkeletonGrow 2s cubic-bezier(0.4,0,0.2,1) forwards;margin-right:auto;overflow:hidden;position:relative;z-index:0;">
 <div id="gameContainer">
   <div id="questionRow"></div>
   <div class="topRow">
@@ -1920,6 +208,7 @@ li.conflict-dismissed .conflict-desc {
   <!-- Lives row: only visible when playerLives is finite. Mirrors questionRow. -->
   <div id="livesRow" class="lives-hidden"></div>
 </div>
+</div>
 <div id="statsRow">
   <span id="statLeft"></span>
   <div id="kbToast">This keyboard is for display only. Play with an actual Mac keyboard.</div>
@@ -1952,7 +241,7 @@ li.conflict-dismissed .conflict-desc {
       </div>
     </div>
 
-    <!-- ── Pause Screen ──────────────────────────────── -->
+<!-- ── Pause Screen ──────────────────────────────── -->
     <div id="panelPause" class="sp-page">
       <div class="sp-col sp-col-left">
         <p class="sp-body sp-paused-heading" id="pausePanelHeading"><strong>Your game is paused.</strong></p>
@@ -1967,7 +256,7 @@ li.conflict-dismissed .conflict-desc {
         <span id="pauseDiffNudge" class="sp-settings-nudge sp-nudge-inactive" onclick="_pauseDifficultyNudgeClick()">
           <span class="sp-nudge-text">We are adding knowledge and training your muscle memory.<br><em>As you level up, raise the bar.</em></span>
           <svg class="sp-nudge-icon" viewBox="0 0 90 90" xmlns="http://www.w3.org/2000/svg">
-            <style>.pn-stroke{fill:none;stroke:currentColor;stroke-width:2px;stroke-linecap:round;stroke-miterlimit:10;}</style>
+            
             <g id="PauseNudgeDiffStatic">
               <line class="pn-stroke" x1="44.7" y1="24.1" x2="44.7" y2="19.8"/>
               <line class="pn-stroke" x1="25.9" y1="32.1" x2="22.8" y2="29.1"/>
@@ -2017,7 +306,25 @@ li.conflict-dismissed .conflict-desc {
           </button>
         </div>
       </div>
+       <!-- ── Blur Pause Diagnostic ─────────────────────── -->
+    <div id="blurPauseDiagnostic" style="display:none;width:100%;grid-column:1/-1;">
+      <p class="sp-body sp-paused-heading" id="blurPauseHeading" style="margin-bottom:10px;"><strong>You went away for a bit, so we paused your game.</strong></p>
+      <div class="diff-advanced-panel diff-advanced-active" id="blurDiagnosticBox" style="display:grid;grid-template-columns:1fr 1fr;gap:0;">
+        <div id="blurDiagnosticLeft" style="padding-right:20px;">
+          <p class="sp-body" id="blurDiagnosticIntro" style="margin-bottom:8px;">If you think it was the shortcut that caused the problem, we should take a closer look. Do you want to reveal the answer?</p>
+          <span class="sp-report-question-label" id="blurDiagnosticQuestionLabel"></span>
+          <p class="sp-body" id="blurDiagnosticFollowUp" style="display:none;margin-top:8px;"></p>
+        </div>
+        <div id="blurDiagnosticRight" style="padding-left:20px;display:flex;flex-direction:column;align-items:flex-start;justify-content:flex-start;gap:6px;">
+          <span class="sp-report-dot" id="blurDiagnosticDot" style="margin-top:4px;flex-shrink:0;"></span>
+          <span id="blurDiagnosticChipsArea" style="flex-shrink:0;">
+            <button id="blurDiagnosticRevealBtn" class="score-pill-seg score-pill-full" style="border-radius:12px;border:1.5px solid #d1d5db;min-width:100px;" onclick="_blurDiagnosticReveal()"><span class="diff-btn-text">reveal answer</span></button>
+          </span>
+        </div>
+      </div>
     </div>
+    </div>
+   
 <!-- ── Report Card ────────────────────────────────── -->
 <div id="panelReport" class="sp-page sp-page-report">
   <div class="sp-col sp-col-left">
@@ -2344,10 +651,6 @@ li.conflict-dismissed .conflict-desc {
 
 <div id="diffIconWrap">
   <svg id="diffIcon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 90 90" style="width:44px;height:auto;" cursor="pointer">
-    <style>
-      #diffIcon .gauge-stroke { fill:none; stroke:#9ca3af; stroke-width:2px; stroke-linecap:round; stroke-miterlimit:10; }
-      #diffIcon #Needle { fill:#9ca3af; transform-origin:45px 50.9px; transition:transform 0.35s cubic-bezier(0.34,1.56,0.64,1); }
-    </style>
     <g id="DiffStatic">
       <g id="notches">
         <line class="gauge-stroke" x1="44.7" y1="24.1" x2="44.7" y2="19.8"/>
@@ -3046,23 +1349,36 @@ function updateKeyboardMode() {
 
 window.addEventListener('resize', function() {
   updateKeyboardMode();
-  positionIcons();
   if (activeSettings !== null) _spAlignPanel();
 });
-updateKeyboardMode();
-setTimeout(positionIcons, 50);
-// Show mismatch pill after initial keyboard build
-updateMismatchPill();
-// Apply rounded style if starting in PC mode
-document.getElementById('keyboardPanel').classList.toggle('pc-keys', currentOs === 'pc');
 
-// Hover states removed from pills -- no longer part of the design.
+function _initialiseLayout() {
+  currentKbMode = null;
+  updateKeyboardMode();
+  updateMismatchPill();
+  document.getElementById('keyboardPanel').classList.toggle('pc-keys', currentOs === 'pc');
 
-/* ══════════════════════════════════════
-   SHORTCUT → KEY CODES
-   CHANGE 1: extended for new shortcuts
-══════════════════════════════════════ */
-function shortcutToCodes(s) {
+  var KeyboardPanelResizeObserver = new ResizeObserver(function(ObservedEntries) {
+    var Entry = ObservedEntries[0];
+    if (Entry && Entry.contentRect.width > 0) {
+      positionIcons();
+    }
+  });
+  var KeyboardPanelElement = document.getElementById('keyboardPanel');
+  KeyboardPanelResizeObserver.observe(KeyboardPanelElement);
+  if (KeyboardPanelElement.offsetWidth > 0) {
+    positionIcons();
+  }
+}
+
+function _initialiseLayoutWhenReady() {
+  if (window._StyleSheetLink && !window._StyleSheetLink.sheet) {
+    window._StyleSheetLink.addEventListener('load',  _initialiseLayout, { once: true });
+    window._StyleSheetLink.addEventListener('error', _initialiseLayout, { once: true });
+  } else {
+    _initialiseLayout();
+  }
+}
   const u = s.toUpperCase();
   const CMD  = currentOs === 'pc' ? ['ControlLeft','ControlRight'] : ['MetaLeft','MetaRight'];
   const OPT  = ['AltLeft','AltRight'];
@@ -4144,6 +2460,7 @@ function _exitQuitConfirm() {
 
 function confirmQuitYes() {
   _exitQuitConfirm();
+  _deactivateBlurPauseScreen();
   _stopPauseInactivityTimer();
   mainBtn.style.background = '';
   if (lockKeyEl) lockKeyEl.classList.remove('active');
@@ -4157,6 +2474,7 @@ function confirmQuitNo() {
 
 function unpause() {
   gameState = 'playing';
+  _deactivateBlurPauseScreen();
   _stopPauseInactivityTimer();
   clearAllLit();
   heldKeys.clear();
@@ -5623,12 +3941,14 @@ function _makeConflictRadio(canonicalKey) {
     if (dismissedConflicts.has(canonicalKey)) {
       // Restore
       dismissedConflicts.delete(canonicalKey);
+      _saveCustomDismissedConflicts();
       wrap.classList.remove('on');
       if (li) li.classList.remove('conflict-dismissed');
       showModeToast('Assumption restored');
     } else {
       // Dismiss
       dismissedConflicts.add(canonicalKey);
+      _saveCustomDismissedConflicts();
       wrap.classList.add('on');
       if (li) li.classList.add('conflict-dismissed');
       showModeToast('Assumption removed');
@@ -5687,6 +4007,35 @@ function _refreshBrowserContent() {
       var label = document.createElement('span');
       label.className = 'conflict-label';
       label.appendChild(_renderKeyChips(s));
+      li.appendChild(label);
+      li.addEventListener('click', function(e) {
+        if (e.target.closest('.modal-radio')) return;
+        li.querySelector('.modal-radio').click();
+      });
+      ul.appendChild(li);
+    });
+
+    // Also show any custom-blocked shortcuts from the blur-pause diagnostic
+    // (shortcuts not in the standard browser conflict table)
+    var BrowserConflictKeys = new Set(d.keys);
+    dismissedConflicts.forEach(function(BlockedKey) {
+      if (BrowserConflictKeys.has(BlockedKey)) return; // already shown above
+      var li = document.createElement('li');
+      li.className = 'conflict-dismissed';
+      li.style.cssText = 'margin-bottom:6px;display:flex;align-items:center;flex-wrap:nowrap;gap:0;line-height:1.6;cursor:pointer;';
+      li.appendChild(_makeConflictRadio(BlockedKey));
+      var label = document.createElement('span');
+      label.className = 'conflict-label';
+      var chip = document.createElement('span');
+      chip.className = 'conflict-chip';
+      chip.textContent = BlockedKey;
+      chip.style.cssText = 'display:inline-block;font-family:inherit;font-size:10px;font-weight:600;color:#1e3a5f;border:1px solid #d1d5db;border-radius:3px;padding:1px 4px 0;line-height:1.6;white-space:nowrap;vertical-align:middle;';
+      label.appendChild(chip);
+      var desc = document.createElement('span');
+      desc.className = 'conflict-desc';
+      desc.style.cssText = 'margin-left:5px;color:#6b7280;font-size:11px;vertical-align:middle;';
+      desc.textContent = 'blocked via diagnostic';
+      label.appendChild(desc);
       li.appendChild(label);
       li.addEventListener('click', function(e) {
         if (e.target.closest('.modal-radio')) return;
@@ -6085,8 +4434,23 @@ function getBrowserConflicts() {
 }
 
 // Returns a Set of shortcut strings that conflict for the current browser+OS.
-// Shortcuts the user has manually re-enabled (dismissed from conflict list)
+// Shortcuts the user has manually dismissed (from conflict list) plus any
+// custom-blocked shortcuts from the blur-pause diagnostic flow.
 var dismissedConflicts = new Set();
+(function() {
+  try {
+    var SavedDismissed = localStorage.getItem('kw_dismissed_conflicts');
+    if (SavedDismissed) {
+      JSON.parse(SavedDismissed).forEach(function(Key) { dismissedConflicts.add(Key); });
+    }
+  } catch(e) {}
+})();
+
+function _saveCustomDismissedConflicts() {
+  try {
+    localStorage.setItem('kw_dismissed_conflicts', JSON.stringify(Array.from(dismissedConflicts)));
+  } catch(e) {}
+}
 
 // Called by buildPool() to silently exclude them.
 function getBrowserConflictSet() {
@@ -6941,6 +5305,7 @@ function confirmStartOverYes() {
       try { localStorage.removeItem('kw_timer'); }        catch(e) {}
       try { localStorage.removeItem('kw_lives'); }        catch(e) {}
       try { localStorage.removeItem('kw_coach_memory'); } catch(e) {}
+      try { localStorage.removeItem('kw_dismissed_conflicts'); } catch(e) {}
       try { sessionStorage.removeItem('kw_welcomed'); }   catch(e) {}
       bestRecord = { time: null, accuracy: null };
       hasTrophy = false;
@@ -7021,7 +5386,25 @@ function _returningStartOver() {
       try { localStorage.removeItem('kw_timer'); }        catch(e) {}
       try { localStorage.removeItem('kw_lives'); }        catch(e) {}
       try { localStorage.removeItem('kw_coach_memory'); } catch(e) {}
+      try { localStorage.removeItem('kw_dismissed_conflicts'); } catch(e) {}
       try { sessionStorage.removeItem('kw_welcomed'); }   catch(e) {}
+      try { localStorage.removeItem('kw_coach_memory'); } catch(e) {}
+      try { localStorage.removeItem('kw_dismissed_conflicts'); } catch(e) {}
+      try { sessionStorage.removeItem('kw_welcomed'); }   catch(e) {}
+      bestRecord = { time: null, accuracy: null };
+      hasTrophy = false;
+      questionTimer = null;
+      playerLives   = null;
+      dismissedConflicts.clear();
+      currentDifficulty = 'fundamentals';
+      _diffFirst = true;
+      setDiffState(-1);
+      updateBestDisplay();
+      _syncSliderToValue('timer', null);
+      _syncSliderToValue('lives', null);
+      if (panelInner) { panelInner.style.transition = ''; panelInner.style.opacity = ''; }
+      closeSettings();
+      _showWelcomeScreen();
       bestRecord = { time: null, accuracy: null };
       hasTrophy = false;
       questionTimer = null;
@@ -8054,14 +6437,23 @@ function endGameMessage(time, accuracy, record, wasFirst) {
     ]);
   }
   return _pickEndGameFallback([
+    "'Failure' is just practice in disguise.",
+    'Everyone starts as a beginner.',    
+    'Practice now, brag at parties later.',
+    'One step closer to being a total wizard.',    
+    'Leveling up looks good on you. Keep at it!',
+    "Don't stop until you’re the one giving tips.",    
+    'Mastering this is your destiny. No big deal.',
     'Keep practising. Every rep counts.',
-    'Come back tomorrow. The gains are cumulative.',
-    'Progress is happening even when it does not feel like it.',
+    'Sucking is the first step to being sorta good.',
+    'Practice several times per week. Gains are cumulative.',
+    "Progress is happening even if it doesn't always feel like it.",
     'Repetition is how shortcuts become reflexes.',
     'Showing up is most of the battle. Well done.',
     'Each round is training your hands, not just your memory.',
     'The shortcut you hesitated on today will be automatic soon.',
     'Consistent practice compounds. Keep going.',
+    'Push your current ability with harder difficulty settings.',
   ]);
 }
 
@@ -8531,7 +6923,7 @@ function finalizeRunData(completedRun, currentPool, DefeatCount) {
   }
   if (allFast && accuracyPercent >= 85) {
     AddMessage(SpecificMessages, 'cat3_fast',
-      'Fast answers throughout. Your hands are starting to know where to go.');
+      'Fast answers throughout. Your hands seem to know where to go.');
   }
   if (skipCount >= 3) {
     AddMessage(SpecificMessages, 'cat3_skips',
@@ -9634,15 +8026,213 @@ function releaseAllKeys() {
   greenHeld.clear();
 }
 
+var _blurPauseActive = false;
+var _blurDiagnosticAnswerRevealed = false;
+var _blurDiagnosticShortcutToken = null;
+
 window.addEventListener('blur', function() {
   releaseAllKeys();
-  if (gameState === 'playing') enterPause();
+  if (gameState === 'playing') {
+    _blurPauseActive = true;
+    enterPause();
+    requestAnimationFrame(function() {
+      requestAnimationFrame(function() {
+        _activateBlurPauseScreen();
+      });
+    });
+  } else if (gameState === 'paused' && _blurPauseActive && _blurDiagnosticAnswerRevealed) {
+    _blurDiagnosticSecondBlur();
+  }
 });
 document.addEventListener('visibilitychange', function() {
   if (!document.hidden) return;
   releaseAllKeys();
-  if (gameState === 'playing') enterPause();
+  if (gameState === 'playing') {
+    _blurPauseActive = true;
+    enterPause();
+    _activateBlurPauseScreen();
+  }
 });
+
+function _blurDiagnosticKeydownHandler(e) {
+  if (!_blurDiagnosticAnswerRevealed) return;
+  if (gameState !== 'paused') return;
+  if (!_blurDiagnosticShortcutToken) return;
+  if (!matchesShortcut(e, _blurDiagnosticShortcutToken)) return;
+  e.preventDefault();
+  document.removeEventListener('keydown', _blurDiagnosticKeydownHandler);
+
+  // Correct shortcut pressed -- light the dot green
+  var DotEl = document.getElementById('blurDiagnosticDot');
+  if (DotEl) { DotEl.style.background = '#10b981'; DotEl.style.transition = 'background 0.3s ease'; }
+
+  // Replace question immediately so the revealed answer is no longer the active question
+  // (prevents the player from using the diagnostic as a free clue)
+  var FullPool = shuffleArray(buildPool());
+  var PreviousDisplay = questionPool[questionIndex] ? questionPool[questionIndex].display : null;
+  var ReplacementQuestion = FullPool.find(function(Question) {
+    return Question.shortcut !== _blurDiagnosticShortcutToken &&
+           Question.display !== PreviousDisplay;
+  });
+  if (ReplacementQuestion) {
+    questionPool[questionIndex] = ReplacementQuestion;
+    currentAnswer = ReplacementQuestion.shortcut;
+  }
+
+  var FollowUpEl = document.getElementById('blurDiagnosticFollowUp');
+  if (FollowUpEl) {
+    FollowUpEl.textContent = 'Seems fine to me. You are free to restart and continue your level.';
+    FollowUpEl.style.display = 'block';
+  }
+}
+
+function _activateBlurPauseScreen() {
+  _blurDiagnosticAnswerRevealed = false;
+  _blurDiagnosticShortcutToken = currentAnswer;
+  var question = questionPool[questionIndex];
+  if (!question) return;
+
+  // Activate diagnostic layout (hides the standard two columns)
+  var PausePanelEl = document.getElementById('panelPause');
+  if (PausePanelEl) PausePanelEl.classList.add('blur-pause-active');
+
+  // Populate the question label
+  var QuestionLabelEl = document.getElementById('blurDiagnosticQuestionLabel');
+  if (QuestionLabelEl) QuestionLabelEl.textContent = (question.display || '').replace(/\\\\/g, '\\');
+
+  // Reset dot to orange
+  var DotEl = document.getElementById('blurDiagnosticDot');
+  if (DotEl) { DotEl.style.background = '#f97316'; DotEl.style.transition = ''; }
+
+  // Reset chips area to reveal button
+  var ChipsArea = document.getElementById('blurDiagnosticChipsArea');
+  if (ChipsArea) {
+    ChipsArea.innerHTML = '<button id="blurDiagnosticRevealBtn" class="score-pill-seg score-pill-full" style="border-radius:12px;border:1.5px solid #d1d5db;min-width:100px;" onclick="_blurDiagnosticReveal()"><span class="diff-btn-text">reveal answer</span></button>';
+  }
+
+  // Reset intro text
+  var IntroEl = document.getElementById('blurDiagnosticIntro');
+  if (IntroEl) {
+    IntroEl.style.opacity = '1';
+    IntroEl.style.visibility = 'visible';
+    IntroEl.style.transition = '';
+    IntroEl.textContent = 'If you think it was the shortcut that caused the problem, we should take a closer look. Do you want to reveal the answer?';
+  }
+
+  // Hide follow-up
+  var FollowUpEl = document.getElementById('blurDiagnosticFollowUp');
+  if (FollowUpEl) { FollowUpEl.style.display = 'none'; FollowUpEl.textContent = ''; }
+
+  // Register keydown listener for shortcut verification
+  document.addEventListener('keydown', _blurDiagnosticKeydownHandler);
+}
+
+function _deactivateBlurPauseScreen() {
+  _blurPauseActive = false;
+  _blurDiagnosticAnswerRevealed = false;
+  _blurDiagnosticShortcutToken = null;
+  document.removeEventListener('keydown', _blurDiagnosticKeydownHandler);
+  var PausePanelEl = document.getElementById('panelPause');
+  if (PausePanelEl) PausePanelEl.classList.remove('blur-pause-active');
+  var HeadingEl = document.getElementById('pausePanelHeading');
+  if (HeadingEl) HeadingEl.innerHTML = '<strong>Your game is paused.</strong>';
+}
+
+function _blurDiagnosticReveal() {
+  _blurDiagnosticAnswerRevealed = true;
+  var question = questionPool[questionIndex];
+  if (!question) return;
+  var ShortcutDisplay = currentOs === 'pc' ? question.pc_sc : question.mac_sc;
+  var ChipsArea = document.getElementById('blurDiagnosticChipsArea');
+  if (ChipsArea) {
+    ChipsArea.innerHTML = '';
+    ChipsArea.appendChild(BuildShortcutKeyChips(ShortcutDisplay, true));
+  }
+  // Fade out the intro question
+  var IntroEl = document.getElementById('blurDiagnosticIntro');
+  if (IntroEl) {
+    IntroEl.style.transition = 'opacity 0.4s ease';
+    IntroEl.style.opacity = '0';
+    setTimeout(function() { IntroEl.style.visibility = 'hidden'; }, 400);
+  }
+  // Show follow-up prompt
+  var FollowUpEl = document.getElementById('blurDiagnosticFollowUp');
+  if (FollowUpEl) {
+    FollowUpEl.textContent = 'Is this what you pressed when the problem happened? Try it again now.';
+    FollowUpEl.style.display = 'block';
+  }
+}
+
+function _blurDiagnosticKeydownHandler(e) {
+  if (!_blurDiagnosticAnswerRevealed) return;
+  if (gameState !== 'paused') return;
+  if (!_blurDiagnosticShortcutToken) return;
+  if (!matchesShortcut(e, _blurDiagnosticShortcutToken)) return;
+  e.preventDefault();
+  // Correct shortcut pressed -- light the dot green and update follow-up
+  var DotEl = document.getElementById('blurDiagnosticDot');
+  if (DotEl) { DotEl.style.background = '#10b981'; DotEl.style.transition = 'background 0.3s ease'; }
+  var FollowUpEl = document.getElementById('blurDiagnosticFollowUp');
+  if (FollowUpEl) FollowUpEl.textContent = 'Seems fine to me. You are free to restart and continue your level.';
+  document.removeEventListener('keydown', _blurDiagnosticKeydownHandler);
+}
+
+function _blurDiagnosticSecondBlur() {
+  // Second blur after answer revealed -- assume the shortcut is causing the problem
+  if (!_blurDiagnosticShortcutToken) return;
+  document.removeEventListener('keydown', _blurDiagnosticKeydownHandler);
+
+  // Add to dismissed conflicts and persist to localStorage
+  dismissedConflicts.add(_blurDiagnosticShortcutToken);
+  _saveCustomDismissedConflicts();
+
+  // Replace the current question in the pool without penalty
+  // (also done in keydownHandler on success, but this is the fallback path)
+  var FullPool = shuffleArray(buildPool());
+  var PreviousDisplay = questionPool[questionIndex] ? questionPool[questionIndex].display : null;
+  var ReplacementQuestion = FullPool.find(function(Question) {
+    return Question.shortcut !== _blurDiagnosticShortcutToken &&
+           Question.display !== PreviousDisplay;
+  });
+  if (ReplacementQuestion) {
+    questionPool[questionIndex] = ReplacementQuestion;
+    currentAnswer = ReplacementQuestion.shortcut;
+  }
+
+  // Build the report mailto
+  var OsName = currentOs === 'pc' ? 'PC/Windows' : 'Mac';
+  var BrowserName = (navigator.userAgent.match(/Edg\//) ? 'Edge' :
+    navigator.userAgent.match(/Firefox\//) ? 'Firefox' :
+    navigator.userAgent.match(/Safari\//) && !navigator.userAgent.match(/Chrome\//) ? 'Safari' :
+    navigator.userAgent.match(/OPR\//) ? 'Opera' :
+    navigator.userAgent.match(/Chrome\//) ? 'Chrome' : 'Unknown browser');
+  var MailSubject = 'Keyboard Warriors: new key conflict report';
+  var MailBody = '\n\nOS: ' + OsName + '\nBrowser: ' + BrowserName + '\nShortcut: ' + _blurDiagnosticShortcutToken;
+
+  // Update the panel
+  var FollowUpEl = document.getElementById('blurDiagnosticFollowUp');
+  if (FollowUpEl) {
+    FollowUpEl.innerHTML =
+      'It seems that your browser or OS is intercepting this shortcut. We have blocked it and will not ask questions needing this shortcut again.' +
+      '<br><br>You can review and unblock it in the Browser Settings screen. You are now free to restart and continue your level, but if you do not mind, I would like it if you reported this to me:' +
+      '<br><br><div class="score-clear-pill" style="margin-top:4px;">' +
+      '<button class="score-pill-seg score-pill-full" onclick="_blurDiagnosticSendReport(\'' +
+      encodeURIComponent(MailSubject) + '\',\'' + encodeURIComponent(MailBody) + '\')" title="Report conflict">' +
+      '<span class="diff-btn-text"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="14" height="14"><rect x="2" y="4" width="20" height="16" rx="2"/><polyline points="2,4 12,13 22,4"/></svg></span>' +
+      '</button></div>';
+    FollowUpEl.style.display = 'block';
+  }
+}
+
+function _blurDiagnosticSendReport(EncodedSubject, EncodedBody) {
+  var Anchor = document.createElement('a');
+  Anchor.href = 'mailto:Wednesday%20Dessauer%20%3Cddessauer%40swin.edu.au%3E?subject=' + EncodedSubject + '&body=' + EncodedBody;
+  Anchor.target = '_blank';
+  Anchor.rel = 'noopener';
+  document.body.appendChild(Anchor);
+  Anchor.click();
+  document.body.removeChild(Anchor);
+}
 
 function handleKeyup(e) {
   updateKeyboardLighting(e, false);
@@ -9800,1075 +8390,6 @@ document.addEventListener('DOMContentLoaded', function() {
      Content fades/wipes in as keyboard descends.
 ══════════════════════════════════════ -->
 
-<style>
-#modalKbSizeSection {
-  margin-top: 2px;
-}
-#modalKbSizeSection p {
-  font-size: 12px;
-  color: #374151;
-  line-height: 1.55;
-  margin: 0 0 5px 0;
-}
-#modalKbSizeSection p:last-of-type {
-  margin-bottom: 2px;
-}
-.modal-kbsize-row {
-  display: flex;
-  align-items: center;
-  margin-top: 4px;
-}
-.modal-kbsize-row.disabled {
-  opacity: 0.38;
-  pointer-events: none;
-}
-/* During kill punctuation confirm: block all panel interactions except
-   the Kill Punctuation radio itself, which acts as the No button. */
-#settingsPanelInner[data-kill-punctuation-confirming] {
-  pointer-events: none;
-}
-#settingsPanelInner[data-kill-punctuation-confirming] #killPunctuationRow {
-  pointer-events: auto;
-  cursor: pointer;
-}
-/* Nudge opacity down on everything except the kill punctuation row */
-#settingsPanelInner[data-kill-punctuation-confirming] .sp-col,
-#settingsPanelInner[data-kill-punctuation-confirming] .sp-page > *:not(#killPunctuationRow) {
-  opacity: 0.35;
-}
-#settingsPanelInner[data-kill-punctuation-confirming] #killPunctuationRow {
-  opacity: 1;
-}
-.kb-size-word-label {
-  font-family: 'Lato', system-ui, sans-serif;
-  font-size: 11px;
-  color: #374151;
-  line-height: 1;
-}
-/* Nudge the size toggle switch down so the knob aligns with label x-height */
-.modal-kbsize-row .os-switch {
-  position: relative;
-  top: 2px;
-}
-
-/* ── Settings panel toggle tracks: filled trough with inner shadow ───────────
-   Scoped to .sp-col so the top-bar OS toggle is untouched.
-   The track rect gets a light fill matching the pill style, plus a slightly
-   darker stroke so it reads as a recessed channel.                          */
-.sp-col .os-track rect:first-child {
-  fill: #f0f2f5;
-  stroke: #c4c9d1;
-}
-
-/* ── Pause panel additions ───────────────────────── */
-.sp-paused-heading {
-  font-size: 15px !important;
-  margin-bottom: 10px !important;
-}
-.sp-clear-label {
-  margin-bottom: 6px !important;
-}
-.score-clear-pill {
-  display: flex;
-  width: 100%;
-  border: 1.5px solid #d1d5db;
-  border-radius: 20px;
-}
-.score-clear-pill .score-pill-seg:first-child { border-radius: 18px 0 0 18px; }
-.score-clear-pill .score-pill-seg:last-child  { border-radius: 0 18px 18px 0; }
-.score-clear-pill .score-pill-seg:only-child  { border-radius: 18px; }
-.score-pill-seg {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  min-height: 32px;
-  padding: 7px 0;
-  font-family: 'Lato', system-ui, sans-serif;
-  font-size: 12px;
-  font-weight: 600;
-  color: #9ca3af;
-  background: #f7f9fb;
-  box-shadow: inset 0 3px 0 rgba(0,0,0,0.04), inset 0 -3px 0 rgba(255,255,255,0.70);
-  border: none;
-  cursor: pointer;
-  outline: none;
-  -webkit-appearance: none;
-  transition: background 1.5s ease, color 1.5s ease, box-shadow 1.5s ease;
-}
-.score-pill-seg + .score-pill-seg {
-  border-left: 1.5px solid #d1d5db;
-}
-.score-pill-quarter { flex: 1; }
-.score-pill-half    { flex: 2; }
-.score-pill-full    { flex: 1; width: 100%; }
-.score-pill-seg svg { pointer-events: none; stroke: #9ca3af; }
-.score-pill-seg.score-pill-active {
-  background: white;
-  color: #374151;
-  box-shadow: none;
-  transition: background 0s, color 0s, box-shadow 0s;
-}
-.score-pill-seg.score-pill-active svg { stroke: #374151;  }
-.score-pill-inactive {
-  background: #f0f4f8;
-  cursor: default;
-  color: #d1d5db;
-  text-decoration: line-through;
-  pointer-events: none;
-}
-.score-pill-inactive svg { stroke: #d1d5db; }
-.sp-clear-label-inactive {
-  color: #d1d5db !important;
-}
-.sp-clear-label-inactive strong {
-  color: inherit;
-}
-/* Score confirm overlay: everything in the pause col fades except the active pill */
-#settingsPanelInner[data-score-confirm] .sp-col-right > *:not(.score-confirm-source) {
-  opacity: 0.35;
-  pointer-events: none;
-  transition: opacity 0.25s ease;
-}
-#settingsPanelInner[data-score-confirm] .sp-col-left {
-  opacity: 0.35;
-  pointer-events: none;
-  transition: opacity 0.25s ease;
-}
-#settingsPanelInner[data-score-confirm] .score-confirm-source {
-  opacity: 1;
-  pointer-events: auto;
-}
-/* Diff-change confirm overlay: dims everything in the difficulty panel except the pill */
-#settingsPanelInner[data-diff-confirm] > * {
-  opacity: 0.35;
-  pointer-events: none;
-  transition: opacity 0.25s ease;
-}
-#settingsPanelInner[data-diff-confirm] .diff-confirm-source {
-  opacity: 1;
-  pointer-events: auto;
-}
-/* Quit-confirm overlay: dims all panel content */
-#settingsPanelInner[data-quit-confirm] > * {
-  opacity: 0.35;
-  pointer-events: none;
-  transition: opacity 0.25s ease;
-}
-.diff-subtitle {
-  font-size: 12px;
-  font-style: italic;
-  color: #9ca3af;
-  text-align: center;
-  margin: 8px 0 0;
-  line-height: 1.6;
-}
-/* Welcome panel: collapse the subtitle gap so Skill-set loaded sits flush */
-#panelWelcome .diff-subtitle {
-  display: none;
-}
-
-/* Temporary transition class applied to pill buttons during the trophy reveal
-   so the active state change is slow enough for the eye to follow. */
-.diff-btn.diff-btn-transitioning {
-  transition: background 0.7s ease, color 0.7s ease;
-}
-
-/* Pop animation for the newly selected difficulty label */
-@keyframes diffLabelPop {
-  0%   { transform: scale(1); }
-  40%  { transform: scale(1.18); }
-  70%  { transform: scale(0.96); }
-  100% { transform: scale(1); }
-}
-.diff-btn-text.diff-btn-label-pop,
-.score-pill-seg.diff-btn-label-pop,
-.diff-slider-side-label.diff-btn-label-pop,
-.diff-knob-label.diff-btn-label-pop,
-.diff-advanced-footer.diff-btn-label-pop {
-  display: inline-block; /* required for transform on inline/block elements */
-  animation: diffLabelPop 0.35s cubic-bezier(0.22, 0.61, 0.36, 1) forwards;
-}
-
-/* Footer hint below the advanced panel — hidden until trophy is awarded.
-   Revealed with a left-to-right clip wipe. */
-@keyframes diffFooterWipe {
-  from { clip-path: inset(0 100% 0 0); }
-  to   { clip-path: inset(0 0% 0 0); }
-}
-.diff-advanced-footer {
-  font-size: 12px;
-  font-style: italic;
-  color: #9ca3af;
-  text-align: center;
-  margin-top: 8px;
-  line-height: 1.6;
-  display: none;
-  pointer-events: none;
-}
-.diff-advanced-footer.diff-advanced-footer-visible {
-  display: block;
-  pointer-events: auto;
-  /* colour is set by JS -- starts as page bg colour, transitions to #9ca3af */
-}
-
-/* Horizontal divider on difficulty panel — inset to align with pill corner radius */
-/* ── Advanced settings rounded rect panel ─────────────────────────────────── */
-.diff-advanced-panel {
-  width: 100%;
-  border-radius: 14px;
-  border: 1.5px solid #e5e7eb;
-  padding: 10px 16px 12px;
-  margin-top: 6px;
-  display: flex;
-  flex-direction: column;
-  align-items: stretch;
-  box-sizing: border-box;
-  background: transparent;
-  transition: background 0.5s ease, box-shadow 0.5s ease, border-color 0.5s ease;
-}
-/* Active state: slight fill + consistent top/bottom inset shadows */
-.diff-advanced-panel.diff-advanced-active {
-  background: #f7f9fb;
-  box-shadow: inset 0 3px 0 rgba(0,0,0,0.04), inset 0 -3px 0 rgba(255,255,255,0.70);
-  border-color: #c8cdd4;
-}
-
-/* Inactive panel: intercept pointer to show toast, except on the knobs */
-.diff-advanced-panel:not(.diff-advanced-active) {
-  cursor: pointer;
-}
-.diff-advanced-panel:not(.diff-advanced-active) .diff-slider-knob {
-  cursor: default;
-  pointer-events: auto;
-}
-
-/* Labels inside the panel — mid-grey by default; JS updates colour per slider value */
-.diff-advanced-label {
-  color: #9ca3af;
-  transition: color 0.5s ease;
-  font-size: 11px;
-  font-family: 'Lato', system-ui, sans-serif;
-  font-weight: 600;
-  line-height: 1;
-  white-space: nowrap;
-  flex-shrink: 0;
-  width: 90px;
-}
-
-/* Each slider row: label on left, slider fills remaining space */
-.diff-slider-row {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  width: 100%;
-}
-
-/* Thin separator between the two slider rows */
-.diff-advanced-separator {
-  width: 100%;
-  height: 1px;
-  background: #e5e7eb;
-  margin: 8px 0;
-  transition: background 0.5s ease;
-}
-.diff-advanced-panel.diff-advanced-active .diff-advanced-separator {
-  background: #d0d5db;
-}
-
-/* ── Fibonacci slider ──────────────────────────────────────────────────────── */
-.diff-slider-wrap {
-  position: relative;
-  flex: 1;
-  height: 32px;
-  display: flex;
-  align-items: center;
-  user-select: none;
-  touch-action: none;
-  /* Right inset so the knob at 100% stays visually inside the panel border */
-  margin-right: 18px;
-}
-
-/* Track — inactive: border colour; active: slightly darker mid-tone */
-.diff-slider-track {
-  position: absolute;
-  left: 0; right: 0;
-  top: 50%; transform: translateY(-50%);
-  height: 1.5px;
-  background: #e5e7eb;
-  border-radius: 2px;
-  transition: background 0.5s ease;
-}
-.diff-advanced-panel.diff-advanced-active .diff-slider-track {
-  background: #c4cad2;
-  box-shadow: 0 1px 2px rgba(0,0,0,0.06);
-}
-
-/* Tick marks — match track colours */
-.diff-slider-ticks {
-  position: absolute;
-  left: 0; right: 0;
-  top: 50%;
-  pointer-events: none;
-}
-.diff-slider-tick {
-  position: absolute;
-  width: 1.5px;
-  height: 7px;
-  background: #e5e7eb;
-  transform: translate(-50%, -50%);
-  border-radius: 1px;
-  transition: background 0.5s ease;
-}
-.diff-advanced-panel.diff-advanced-active .diff-slider-tick {
-  background: #c4cad2;
-}
-
-/* Knob */
-.diff-slider-knob {
-  position: absolute;
-  top: 50%;
-  transform: translate(-50%, -50%);
-  background: white;
-  border: 1.5px solid #d1d5db;
-  border-radius: 20px;
-  box-shadow: 0 2px 6px rgba(0,0,0,0.10), inset 0 -3px 0 rgba(255,255,255,0.80);
-  min-width: 36px;
-  height: 26px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  padding: 0 10px;
-  cursor: grab;
-  z-index: 2;
-  outline: none;
-  transition: box-shadow 0.2s ease;
-}
-.diff-slider-knob:active { cursor: grabbing; }
-.diff-advanced-panel:not(.diff-advanced-active) .diff-slider-knob {
-  border-color: #e5e7eb;
-  box-shadow: none;
-}
-
-/* Label crossfade — ∞ stays mid-grey (signals no limit); integers darken when active */
-.diff-knob-label {
-  position: absolute;
-  font-family: 'Lato', system-ui, sans-serif;
-  font-size: 13px;
-  font-weight: 600;
-  color: #9ca3af;
-  line-height: 1;
-  transition: opacity 0.2s ease, color 0.5s ease;
-  pointer-events: none;
-  white-space: nowrap;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-.diff-knob-label svg {
-  display: block;
-  fill: currentColor;
-}
-.diff-advanced-panel.diff-advanced-active .diff-knob-label:not(.diff-knob-infinity) {
-  color: #374151;
-}
-.diff-knob-label.diff-knob-infinity {
-  color: #374151;
-}
-.diff-knob-label-hidden { opacity: 0; }
-/* ── Pause panel: settings nudge rows ───────────────── */
-.sp-settings-nudge {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 12px;
-  margin-bottom: 10px;
-  text-decoration: none;
-  color: inherit;
-  cursor: pointer;
-  border-radius: 6px;
-  padding: 4px 2px;
-  transition: opacity 0.15s;
-}
-.sp-settings-nudge:hover:not(.sp-nudge-inactive) {
-  opacity: 0.7;
-}
-.sp-nudge-inactive {
-  cursor: default;
-  color: #9ca3af;
-}
-.sp-nudge-inactive .sp-nudge-text {
-  color: #9ca3af;
-}
-.sp-nudge-icon {
-  flex-shrink: 0;
-  width: 44px;
-  height: auto;
-  fill: currentColor;
-}
-.sp-nudge-inactive .sp-nudge-icon {
-  opacity: 1;
-  color: #9ca3af;
-}
-.sp-nudge-text {
-  font-size: 12px;
-  color: #374151;
-  line-height: 1.55;
-  margin: 0;
-  flex: 1;
-}
-/* When diff-btn is inside a segmented pill, suppress its own border/radius/max-width */
-.sp-seg-pill .diff-btn {
-  border: none;
-  border-radius: 0;
-  max-width: none;
-}
-/* ── Segmented control pill ── */
-.sp-seg-pill {
-  display: flex;
-  width: 100%;
-  border: 1.5px solid #d1d5db;
-  border-radius: 20px;
-  background: #f0f4f8;
-}
-.sp-seg-pill .sp-seg-btn:first-child,
-.sp-seg-pill .diff-btn:first-child { border-radius: 18px 0 0 18px; }
-.sp-seg-pill .sp-seg-btn:last-child,
-.sp-seg-pill .diff-btn:last-child  { border-radius: 0 18px 18px 0; }
-.sp-seg-btn {
-  flex: 1;
-  padding: 10px 12px;
-  font-family: 'Lato', system-ui, sans-serif;
-  font-size: 13px;
-  font-weight: 600;
-  color: #9ca3af;
-  background: #f7f9fb;
-  border: none;
-  cursor: pointer;
-  line-height: 1.2;
-  outline: none;
-  -webkit-appearance: none;
-  appearance: none;
-  box-shadow: inset 0 3px 0 rgba(0,0,0,0.04), inset 0 -3px 0 rgba(255,255,255,0.70);
-}
-.sp-seg-btn:focus { outline: none; }
-/* Divider */
-.sp-seg-btn + .sp-seg-btn,
-.sp-seg-pill .diff-btn + .diff-btn {
-  border-left: 1.5px solid #d1d5db;
-}
-/* Alignment */
-.sp-seg-btn.sp-seg-btn-left  { text-align: right; }
-.sp-seg-btn.sp-seg-btn-right { text-align: left; }
-.sp-seg-pill-three .sp-seg-btn { text-align: center; }
-/* Unavailable */
-.sp-seg-btn.diff-btn-inactive,
-.sp-seg-pill .diff-btn.diff-btn-inactive {
-  background: #f0f4f8;
-  color: #d1d5db;
-  text-decoration: line-through;
-  cursor: default;
-  pointer-events: none;
-}
-.sp-seg-pill .diff-btn.diff-btn-inactive:last-child {
-  border-radius: 0 18px 18px 0;
-}
-/* Selected */
-.sp-seg-btn.diff-btn-active,
-.sp-seg-pill .diff-btn.diff-btn-active {
-  background: white;
-  color: #374151;
-  box-shadow: none;
-}
-/* ── Returning screen layout ─────────────────────────── */
-.sp-returning-inner {
-  display: flex;
-  flex-direction: column;
-  align-items: stretch;
-  gap: 0;
-  width: 100%;
-}
-.sp-returning-privacy {
-  margin-top: 16px;
-  font-size: 12px;
-  color: #374151;
-  line-height: 1.6;
-}
-.sp-returning-tagline {
-  display: block;
-  text-align: center;
-  margin-top: 6px;
-  color: #9ca3af;
-}
-/* ── Keyboard flip animation ──────────────────────── */
-
-/* ─── 3D STAGE ──────────────────────────────────────*/
-#kbFlipStage {
-  perspective:        900px;
-  perspective-origin: 50% 50%;
-  transform-style:    preserve-3d;
-  transition:         transform 0.85s cubic-bezier(0.4, 0, 0.2, 1);
-  overflow:           visible;
-  position:           relative;
-  z-index:            2; /* above settingsPanel (z:1) */
-}
-
-/* ─── PANEL ──────────────────────────────────────────*/
-#keyboardPanel {
-  transform-style:  preserve-3d;
-  transform-origin: center center;
-  transform:        rotateX(0deg);
-  transition:
-    transform    0.85s cubic-bezier(0.4, 0, 0.2, 1),
-    background   0.5s  ease 0.2s,
-    box-shadow   0.5s  ease 0.2s;
-  will-change: transform;
-}
-#keyboardPanel.kb-edged {
-  background: #868e99;
-  box-shadow: none;
-}
-#keyboardPanel.pc-keys.kb-edged {
-  background: #7a9fa8;
-}
-
-/* ─── KEYS ───────────────────────────────────────────
-   preserve-3d so ::before front face participates
-   in the same 3D space. overflow visible so the
-   front face isn't clipped.                          */
-#keyboardPanel .key {
-  transform:       translateZ(8px);
-  transition:
-    background 0.45s ease 0.15s,
-    box-shadow 0.45s ease 0.15s,
-    color      0.35s ease 0.2s,
-    transform  0.5s  ease 0.15s;
-}
-/* Applied for one frame when returning to face so keys snap back instantly */
-#keyboardPanel.no-key-transition .key {
-  transition: none !important;
-}
-#keyboardPanel.kb-edged .key {
-  background: #e4e7ea;
-  color:      transparent;
-  box-shadow: none;
-  transform:  translateZ(8px);
-  transition:
-    background 0.45s ease 0.15s,
-    box-shadow 0.45s ease 0.15s,
-    color      0.35s ease 0.2s,
-    transform  0.5s  ease 0.15s;
-}
-
-
-/* ─── SLAB WALLS ─────────────────────────────────────
-   Full edge-to-edge — no inset offsets.
-   Left/right walls use z-index to sit atop top/bottom
-   at corners, filling the gap cleanly.
-   border-radius on the correct corners follows the
-   panel's 14px curve.                                 */
-
-#kb-wall-top, #kb-wall-bottom {
-  position:       absolute;
-  pointer-events: none;
-  opacity:        0;
-  transition:     opacity 0.3s ease 0.1s;
-}
-#keyboardPanel.kb-edged #kb-wall-top,
-#keyboardPanel.kb-edged #kb-wall-bottom {
-  opacity: 1;
-}
-
-/* Bottom wall corner radius: capped at half wall height (3px) at partial so the
-   arc never exceeds the foreshortened strip height at any viewing angle. At full
-   edge (82deg) the strip is nearly perpendicular so 14px/22px reads correctly. */
-#keyboardPanel.kb-partial #kb-wall-bottom          { border-radius: 3px 3px 0 0; }
-#keyboardPanel.pc-keys.kb-partial #kb-wall-bottom  { border-radius: 3px 3px 0 0; }
-
-/* PC panel has 22px radius — bottom wall corners match */
-#keyboardPanel.pc-keys #kb-wall-bottom {
-  border-radius: 22px 22px 0 0;
-}
-#keyboardPanel.pc-keys #kb-wall-top {
-  border-radius: 0 0 6px 6px;
-}
-
-/* Top wall — full width, hinges backward from top edge */
-#kb-wall-top {
-  top:              0;
-  left:             0;
-  right:            0;
-  height:           7px;
-  z-index:          1;
-  transform-origin: center top;
-  transform:        rotateX(-90deg);
-  background:       linear-gradient(to bottom, #a8aeb8, #989eb0);
-  border-radius:    0 0 4px 4px;
-  display:          none;
-}
-
-/* Bottom wall — full width, hinges backward from bottom edge.
-   Most visible face when tilting top-away.             */
-#kb-wall-bottom {
-  bottom:           0;
-  left:             0;
-  right:            0;
-  height:           7px;
-  z-index:          1;
-  transform-origin: center bottom;
-  transform:        rotateX(90deg);
-  /* Horizontal metallic ramp: dark edges → light centre → dark edges
-     Gives the illusion of a curved/rounded front face.
-     The top-to-bottom gradient layered on top adds the bevel sheen. */
-  background:
-    linear-gradient(to bottom,
-      rgba(0,0,0,0.30)       0px,
-      rgba(0,0,0,0.30)       1.5px,
-      rgba(0,0,0,0.0)        1.5px,
-      rgba(0,0,0,0.0)        5.5px,
-      rgba(255,255,255,0.70) 5.5px,
-      rgba(255,255,255,0.70) 7px),
-    linear-gradient(to right,
-      #6e7480 0%,
-      #9aa0aa 10%,
-      #bfc4cb 22%,
-      #c8cdd4 35%,
-      #c8cdd4 65%,
-      #bfc4cb 78%,
-      #9aa0aa 90%,
-      #6e7480 100%);
-  border-radius:    14px 14px 0 0;
-}
-
-
-/* ─── SLAB BACK — closes the box, invisible ─────────*/
-#kb-slab-back {
-  position:       absolute;
-  inset:          0;
-  border-radius:  14px;
-  pointer-events: none;
-  transform:      translateZ(-7px);
-  background:     transparent;
-  z-index:        0;
-}
-
-/* ─── DROP SHADOW ─────────────────────────────────────
-   Blurred translucent blob at negative Z — floats the
-   keyboard just above the surface, shadow falls on
-   whatever is below (credit line etc).               */
-#kb-shadow {
-  position:       absolute;
-  inset:          12px 24px;
-  border-radius:  20px;
-  pointer-events: none;
-  transform:      translateZ(-10px) translateY(4px);
-  background:     rgba(0,0,0,0.0);
-  filter:         blur(22px);
-  transition:
-    background 0.6s ease 0.1s,
-    transform  0.85s cubic-bezier(0.4, 0, 0.2, 1);
-  z-index:        0;
-}
-#keyboardPanel.kb-edged #kb-shadow {
-  background: rgba(0,0,0,0.6);
-  transform:  translateZ(-10px) translateY(42px);
-}
-
-/* ─── BASE EDGE HIGHLIGHT ─────────────────────────────*/
-#kb-base-edge {
-  position:       absolute;
-  bottom:         0;
-  left:           14px;
-  right:          14px;
-  height:         0;
-  border-radius:  0 0 3px 3px;
-  pointer-events: none;
-  z-index:        5;
-  opacity:        0;
-  transition:     height 0.3s ease, opacity 0.3s ease;
-  background:     rgba(255,255,255,0.55);
-}
-#kbFlipStage.kb-show-base #kb-base-edge {
-  height:  3px;
-  opacity: 1;
-}
-
-/* ─── ROW STRIPS — suppressed ────────────────────────*/
-.kb-row::after { display: none; }
-
-/* ─── ICONS ──────────────────────────────────────────*/
-#kbIconWrap, #brIconWrap {
-  transition: opacity 0.3s ease;
-  overflow: visible;
-  position: absolute;
-  top: 50%;
-  transform: translateY(-50%);
-  width: 44px;
-  height: 44px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-#kbIconWrap { left: 0; }
-#brIconWrap { right: 0; }
-
-/* ─── DIFF GAUGE ─────────────────────────────────────*/
-#diffIconWrap {
-  display: flex;
-  justify-content: center;
-  margin-top: 4px;
-  transform: translateY(0);
-  transition: transform 0.85s cubic-bezier(0.4, 0, 0.2, 1);
-}
-#diffIcon {
-  display: block; fill: #9ca3af; pointer-events: auto;
-  cursor: pointer; width: 44px; transition: transform 0.18s ease;
-}
-#diffIcon:hover { transform: scale(1.12); }
-#diffIcon #Needle {
-  fill: #9ca3af; transform-origin: 45px 50.9px; transform: rotate(-60deg);
-}
-
-/* ─── TOOLTIP ────────────────────────────────────────*/
-/* ─── ICON TOOLTIPS — pure CSS, anchored to each icon wrap ──────*/
-#diffIconWrap { position: relative; }
-
-.icon-tip {
-  position: absolute;
-  left: 50%;
-  transform: translateX(-50%);
-  font-family: 'Lato', system-ui, sans-serif;
-  font-size: 10px;
-  color: #9ca3af;
-  line-height: 1.25;
-  text-align: center;
-  white-space: nowrap;
-  pointer-events: none;
-  opacity: 0;
-  transition: opacity 0.18s ease;
-  z-index: 9990;
-}
-
-/* For kb/browser wraps: wrap is sized to the icon, tip sits directly below */
-#kbIconWrap  .icon-tip { top: calc(100% + 6px); }
-#brIconWrap  .icon-tip { top: calc(100% + 6px); }
-/* diffIconWrap is normal flow — tip sits below the svg */
-#diffIconWrap .icon-tip { top: calc(100% + 4px); }
-
-/* Show on hover */
-#kbIconWrap:hover  .icon-tip,
-#brIconWrap:hover  .icon-tip,
-#diffIconWrap:hover .icon-tip { opacity: 1; }
-
-/* Keep visible and darken when that settings page is active */
-#kbIconWrap.sp-icon-active  .icon-tip,
-#brIconWrap.sp-icon-active  .icon-tip,
-#diffIconWrap.sp-icon-active .icon-tip {
-  opacity: 1;
-  color: #374151;
-  pointer-events: auto;
-  cursor: pointer;
-}
-
-/* Returning screen: all settings icons passive, no hover, no interaction */
-body.returning-screen #kbIconWrap,
-body.returning-screen #brIconWrap,
-body.returning-screen #diffIconWrap {
-  opacity: 0.4;
-  pointer-events: none;
-}
-body.returning-screen #kbIconWrap  .icon-tip,
-body.returning-screen #brIconWrap  .icon-tip,
-body.returning-screen #diffIconWrap .icon-tip { display: none; }
-#kbIconWrap.sp-icon-active  #kbIcon      { fill: #374151; }
-#brIconWrap.sp-icon-active  #browserIcon { fill: #374151; }
-#diffIconWrap.sp-icon-active #diffIcon   { fill: #374151; }
-#diffIconWrap.sp-icon-active #diffIcon .gauge-stroke { stroke: #374151; }
-#diffIconWrap.sp-icon-active #diffIcon #Needle        { fill:  #374151; }
-/* ── Report Card panel ───────────────────────────── */
-
-/* Override the standard two-column grid to add a full-width bottom row */
-#panelReport.sp-page-report.sp-active {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  grid-template-rows: auto auto;
-  grid-template-areas:
-    "left right"
-    "bottom bottom";
-  position: relative;
-}
-
-/* "Report Card" label — small grey, sits left of "Strengths" in same flex row */
-.sp-small-card-title {
-  font-size: 10px;
-  font-variant: small;
-  letter-spacing: 0.06em;
-  color: #9ca3af;
-  font-weight: 400;
-  margin: 0;
-  line-height: 1;
-  flex-shrink: 0;
-}
-
-/* Column header row: "Report Card" + "Strengths" on left; "Needs Work" on right */
-.sp-report-col-header {
-  display: flex;
-  align-items: baseline;
-  justify-content: space-between;
-  margin-bottom: 5px;
-  gap: 6px;
-}
-.sp-report-col-header-right {
-  justify-content: flex-end;
-}
-
-/* Suppress the standard centred gutter line — we draw it manually */
-#panelReport.sp-page-report.sp-active::after {
-  display: none;
-}
-
-/* The column divider: sits between left and right, terminates at the horizontal line */
-#panelReport.sp-page-report .sp-col-left {
-  padding-right: 20px;
-  position: relative;
-}
-#panelReport.sp-page-report .sp-col-left::after {
-  content: '';
-  position: absolute;
-  top: 16px;
-  right: 0;
-  width: 1px;
-  background: #e5e7eb;
-  /* height is set to stop at the bottom section — controlled via padding */
-  bottom: 0;
-  pointer-events: none;
-}
-
-#panelReport.sp-page-report .sp-col-right {
-  padding-left: 20px;
-}
-
-/* Bottom section: full-width advice area */
-.sp-report-bottom {
-  grid-area: bottom;
-  padding-top: 0;
-  margin-top: 8px;
-}
-
-/* Coaching advice box: rounded rect with inset shadow, mirrors the advanced settings style */
-.sp-report-advice-box {
-  background: #f7f9fb;
-  border: 1.5px solid #c8cdd4;
-  border-radius: 14px;
-  padding: 10px 16px;
-  box-shadow: inset 0 3px 0 rgba(0,0,0,0.04), inset 0 -3px 0 rgba(255,255,255,0.70);
-}
-
-/* Section titles: bold dark, natural flow within the flex header row */
-.sp-report-section-title {
-  font-size: 12px;
-  font-weight: 700;
-  color: #374151;
-  margin: 0;
-  line-height: 1;
-}
-.sp-report-section-title.sp-title-empty {
-  color: #9ca3af;
-  font-weight: 400;
-  text-decoration: line-through;
-  text-decoration-color: #d1d5db;
-}
-
-/* Shortcut list rows — mirror the browser conflict list style */
-.sp-report-list {
-  list-style: none;
-  padding: 0;
-  margin: 0;
-}
-.sp-report-list li {
-  margin-bottom: 6px;
-  display: flex;
-  align-items: center;
-  flex-wrap: nowrap;
-  gap: 0;
-  line-height: 1.6;
-  font-size: 12px;
-  color: #6b7280;
-}
-
-/* Coloured dot replacing the radio button */
-.sp-report-dot {
-  flex-shrink: 0;
-  width: 8px;
-  height: 8px;
-  border-radius: 50%;
-  margin-right: 7px;
-}
-.sp-report-strength .sp-report-dot {
-  background: #10b981;
-  box-shadow: none;
-}
-.sp-report-weakness .sp-report-dot {
-  background: #f97316;
-  box-shadow: none;
-}
-
-/* Question label */
-.sp-report-question-label {
-  flex: 1;
-  font-size: 11px;
-  color: #6b7280;
-  line-height: 1.5;
-  min-width: 0;
-  display: flex;
-  flex-direction: column;
-  gap: 1px;
-}
-.sp-report-detail {
-  font-size: 10px;
-  color: #9ca3af;
-  font-style: italic;
-}
-
-/* Shortcut chip — light style for strengths (unchecked equivalent) */
-.sp-report-strength .sp-report-chip {
-  display: inline-block;
-  font-family: inherit;
-  font-size: 10px;
-  font-weight: 600;
-  color: #1e3a5f;
-  border: 1px solid #d1d5db;
-  border-radius: 3px;
-  padding: 1px 4px 0;
-  line-height: 1.6;
-  white-space: nowrap;
-  vertical-align: middle;
-  background: transparent;
-  box-shadow: none;
-  flex-shrink: 0;
-  margin-left: 6px;
-}
-
-/* Shortcut chip — heavy style for weaknesses (checked equivalent) */
-.sp-report-weakness .sp-report-chip {
-  display: inline-block;
-  font-family: inherit;
-  font-size: 10px;
-  font-weight: 600;
-  color: #1e3a5f;
-  border: 1px solid #d1d5db;
-  border-radius: 3px;
-  padding: 1px 4px 0;
-  line-height: 1.6;
-  white-space: nowrap;
-  vertical-align: middle;
-  background: #f3f4f6;
-  box-shadow: 0 1.5px 0 #c9cdd3;
-  flex-shrink: 0;
-  margin-left: 6px;
-}
-
-/* Trainer advice prose */
-.sp-report-advice {
-  font-size: 12px;
-  color: #374151;
-  line-height: 1.6;
-  margin: 0 0 6px 0;
-}
-.sp-report-advice a {
-  color: #9ca3af;
-  font-style: italic;
-  text-decoration: none;
-  cursor: pointer;
-}
-.sp-report-advice a:hover {
-  color: #6b7280;
-}
-.sp-report-no-advice {
-  font-size: 11px;
-  font-style: italic;
-  color: #9ca3af;
-  margin: 0;
-}
-
-/* Practice item completed: dot turns green permanently until report card is rebuilt */
-.sp-report-weakness li.practice-done .sp-report-dot {
-  background: #10b981;
-  transition: background 0.3s ease;
-}
-
-/* Chip wrapper lit state — only key chips, not the + separators between them */
-.sp-report-chips-lit .sp-report-chip-key {
-  background: #10b981 !important;
-  color: white !important;
-  border-color: #059669 !important;
-  box-shadow: 0 0 6px rgba(16,185,129,0.45) !important;
-  transition: background 0.15s ease, color 0.15s ease, box-shadow 0.15s ease;
-}
-/* ── Ghost Mode ───────────────────────────────────────────────────────────────
-   Keyboard panel becomes invisible. Only green/orange lit states show.       */
-#keyboardPanel.ghost-mode {
-  background: transparent !important;
-  box-shadow: none !important;
-}
-#keyboardPanel.ghost-mode .key {
-  background: transparent !important;
-  box-shadow: none !important;
-}
-#keyboardPanel.ghost-mode .key .letter-lbl,
-#keyboardPanel.ghost-mode .key .sym-main,
-#keyboardPanel.ghost-mode .key .sym-sub,
-#keyboardPanel.ghost-mode .key .util-lbl,
-#keyboardPanel.ghost-mode .key .fn-lbl,
-#keyboardPanel.ghost-mode .key .mod-sym,
-#keyboardPanel.ghost-mode .key .mod-sym-only,
-#keyboardPanel.ghost-mode .key .mod-word,
-#keyboardPanel.ghost-mode .key .util-sym-only,
-#keyboardPanel.ghost-mode .key .lock-svg,
-#keyboardPanel.ghost-mode .key .win-svg { opacity: 0; }
-#keyboardPanel.ghost-mode #kb-wall-top,
-#keyboardPanel.ghost-mode #kb-wall-bottom,
-#keyboardPanel.ghost-mode #kb-slab-back,
-#keyboardPanel.ghost-mode #kb-shadow,
-#keyboardPanel.ghost-mode #kb-base-edge { display: none; }
-/* Lit states remain fully visible in ghost mode */
-#keyboardPanel.ghost-mode .key.lit-green-up,
-#keyboardPanel.ghost-mode .key.lit-green-down {
-  background: #10b981 !important;
-  box-shadow: 0 0 12px rgba(16,185,129,0.7) !important;
-}
-#keyboardPanel.ghost-mode .key.lit-orange-up,
-#keyboardPanel.ghost-mode .key.lit-orange-down {
-  background: #f97316 !important;
-  box-shadow: 0 0 12px rgba(249,115,22,0.7) !important;
-}
-#keyboardPanel.ghost-mode .key.lit-green-up  .letter-lbl,
-#keyboardPanel.ghost-mode .key.lit-green-down .letter-lbl,
-#keyboardPanel.ghost-mode .key.lit-green-up  .sym-main,
-#keyboardPanel.ghost-mode .key.lit-green-down .sym-main,
-#keyboardPanel.ghost-mode .key.lit-green-up  .mod-sym,
-#keyboardPanel.ghost-mode .key.lit-green-down .mod-sym,
-#keyboardPanel.ghost-mode .key.lit-green-up  .mod-sym-only,
-#keyboardPanel.ghost-mode .key.lit-green-down .mod-sym-only,
-#keyboardPanel.ghost-mode .key.lit-green-up  .util-lbl,
-#keyboardPanel.ghost-mode .key.lit-green-down .util-lbl,
-#keyboardPanel.ghost-mode .key.lit-green-up  .util-sym-only,
-#keyboardPanel.ghost-mode .key.lit-green-down .util-sym-only,
-#keyboardPanel.ghost-mode .key.lit-orange-up  .letter-lbl,
-#keyboardPanel.ghost-mode .key.lit-orange-down .letter-lbl,
-#keyboardPanel.ghost-mode .key.lit-orange-up  .sym-main,
-#keyboardPanel.ghost-mode .key.lit-orange-down .sym-main,
-#keyboardPanel.ghost-mode .key.lit-orange-up  .mod-sym,
-#keyboardPanel.ghost-mode .key.lit-orange-down .mod-sym,
-#keyboardPanel.ghost-mode .key.lit-orange-up  .mod-sym-only,
-#keyboardPanel.ghost-mode .key.lit-orange-down .mod-sym-only,
-#keyboardPanel.ghost-mode .key.lit-orange-up  .util-lbl,
-#keyboardPanel.ghost-mode .key.lit-orange-down .util-lbl,
-#keyboardPanel.ghost-mode .key.lit-orange-up  .util-sym-only,
-#keyboardPanel.ghost-mode .key.lit-orange-down .util-sym-only {
-  opacity: 1 !important;
-  color: white !important;
-}
-</style>
 
 </body>
 </html>

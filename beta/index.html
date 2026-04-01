@@ -9,7 +9,7 @@
 <title>beta</title>
 <script>
   const DefaultTitle = 'Keyboard Warriors';
-  const VersionLabel   = '0011';
+  const VersionLabel   = '0012';
   const TitlePrefix  = document.title !== DefaultTitle ? document.title.trim() + '_' : '';
   const DBG_DEVICE   = TitlePrefix + VersionLabel;
 </script>
@@ -307,18 +307,19 @@ GameContainer.addEventListener('animationend', function () {
       </div>
        <!-- ── Blur Pause Diagnostic ─────────────────────── -->
     <div id="blurPauseDiagnostic" style="display:none;width:100%;grid-column:1/-1;">
-      <p class="sp-body sp-paused-heading" id="blurPauseHeading" style="margin-bottom:10px;"><strong>You went away for a bit, so we paused your game.</strong></p>
-      <div class="diff-advanced-panel diff-advanced-active" id="blurDiagnosticBox" style="display:grid;grid-template-columns:1fr 1fr;gap:0;">
+      <div class="diff-advanced-panel diff-advanced-active" id="blurDiagnosticBox" style="display:grid;grid-template-columns:1fr 1fr;gap:0;overflow:hidden;">
         <div id="blurDiagnosticLeft" style="padding-right:20px;">
-          <p class="sp-body" id="blurDiagnosticIntro" style="margin-bottom:8px;">If you think it was the shortcut that caused the problem, we should take a closer look. Do you want to reveal the answer?</p>
-          <span class="sp-report-question-label" id="blurDiagnosticQuestionLabel"></span>
-          <p class="sp-body" id="blurDiagnosticFollowUp" style="display:none;margin-top:8px;"></p>
+          <p class="sp-body" id="blurDiagnosticIntro" style="margin-bottom:0;">If you think it was the shortcut that caused the problem, we should take a closer look. Do you want to reveal the answer?</p>
         </div>
         <div id="blurDiagnosticRight" style="padding-left:20px;display:flex;flex-direction:column;align-items:flex-start;justify-content:flex-start;gap:6px;">
-          <span class="sp-report-dot" id="blurDiagnosticDot" style="margin-top:4px;flex-shrink:0;"></span>
+          <div style="display:flex;align-items:flex-start;gap:7px;">
+            <span class="sp-report-dot" id="blurDiagnosticDot" style="margin-top:5px;flex-shrink:0;"></span>
+            <span class="sp-report-question-label" id="blurDiagnosticQuestionLabel" style="font-size:11px;color:#6b7280;line-height:1.5;"></span>
+          </div>
           <span id="blurDiagnosticChipsArea" style="flex-shrink:0;">
             <button id="blurDiagnosticRevealBtn" class="score-pill-seg score-pill-full" style="border-radius:12px;border:1.5px solid #d1d5db;min-width:100px;" onclick="_blurDiagnosticReveal()"><span class="diff-btn-text">reveal answer</span></button>
           </span>
+          <p class="sp-body" id="blurDiagnosticFollowUp" style="display:none;margin:0;font-size:11px;color:#6b7280;line-height:1.5;"></p>
         </div>
       </div>
     </div>
@@ -1369,17 +1370,11 @@ function _initialiseLayout() {
   });
 }
 
-// Always run synchronously so the keyboard is built before the welcome screen fires.
-// Also listen for the stylesheet load event and re-align the settings panel in case
-// it opened before the stylesheet had applied its dimensions.
-_initialiseLayout();
-if (window._StyleSheetLink) {
-  window._StyleSheetLink.addEventListener('load', function() {
-    requestAnimationFrame(function() {
-      updateKeyboardMode();
-      if (activeSettings !== null) _spAlignPanel();
-    });
-  }, { once: true });
+if (window._StyleSheetLink && !window._StyleSheetLink.sheet) {
+  window._StyleSheetLink.addEventListener('load',  _initialiseLayout, { once: true });
+  window._StyleSheetLink.addEventListener('error', _initialiseLayout, { once: true });
+} else {
+  _initialiseLayout();
 }
 /* ══════════════════════════════════════
    SHORTCUT → KEY CODES
@@ -4036,12 +4031,11 @@ function _refreshBrowserContent() {
       var chip = document.createElement('span');
       chip.className = 'conflict-chip';
       chip.textContent = BlockedKey;
-      chip.style.cssText = 'display:inline-block;font-family:inherit;font-size:10px;font-weight:600;color:#1e3a5f;border:1px solid #d1d5db;border-radius:3px;padding:1px 4px 0;line-height:1.6;white-space:nowrap;vertical-align:middle;';
-      label.appendChild(chip);
       var desc = document.createElement('span');
       desc.className = 'conflict-desc';
       desc.style.cssText = 'margin-left:5px;color:#6b7280;font-size:11px;vertical-align:middle;';
       desc.textContent = 'blocked via diagnostic';
+      label.appendChild(chip);
       label.appendChild(desc);
       li.appendChild(label);
       li.addEventListener('click', function(e) {
@@ -4483,12 +4477,6 @@ function _showWelcomeScreen() {
   _updateDiffBtnStyles('fundamentals');
   _updateDiffSubtitle('fundamentals');
   openSettings('panelWelcome');
-  // Re-align panel after first paint so it reads real keyboard dimensions.
-  requestAnimationFrame(function() {
-    requestAnimationFrame(function() {
-      if (activeSettings !== null) _spAlignPanel();
-    });
-  });
 }
 
 // Shared handler for both the welcome panel and the difficulty settings panel
@@ -5364,12 +5352,6 @@ function _showReturningScreen() {
   _updateDiffBtnStyles(currentDifficulty);
   _updateDiffSubtitle(currentDifficulty);
   openSettings('panelReturning');
-  // Re-align panel after first paint so it reads real keyboard dimensions.
-  requestAnimationFrame(function() {
-    requestAnimationFrame(function() {
-      if (activeSettings !== null) _spAlignPanel();
-    });
-  });
 }
 
 function _returningContinue() {
@@ -8111,6 +8093,11 @@ function _activateBlurPauseScreen() {
   var question = questionPool[questionIndex];
   if (!question) return;
 
+  // Show heading in the title area of the game panel
+  titleEl.classList.remove('blurred');
+  titleEl.className = '';
+  titleEl.textContent = 'You went away for a bit, so we paused your game.';
+
   // Activate diagnostic layout (hides the standard two columns)
   var PausePanelEl = document.getElementById('panelPause');
   if (PausePanelEl) PausePanelEl.classList.add('blur-pause-active');
@@ -8153,8 +8140,10 @@ function _deactivateBlurPauseScreen() {
   document.removeEventListener('keydown', _blurDiagnosticKeydownHandler);
   var PausePanelEl = document.getElementById('panelPause');
   if (PausePanelEl) PausePanelEl.classList.remove('blur-pause-active');
-  var HeadingEl = document.getElementById('pausePanelHeading');
-  if (HeadingEl) HeadingEl.innerHTML = '<strong>Your game is paused.</strong>';
+  // Restore the blurred question text in the title area
+  titleEl.className = '';
+  titleEl.textContent = (questionPool[questionIndex]?.display || '').replace(/\\\\/g, '\\');
+  titleEl.classList.add('blurred');
 }
 
 function _blurDiagnosticReveal() {

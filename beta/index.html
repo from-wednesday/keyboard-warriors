@@ -108,7 +108,7 @@
   document.addEventListener('DOMContentLoaded', function () {
     var SiblingElements = document.querySelectorAll('#pageBody > *:not(#gameContainer):not(style):not(script)');
     SiblingElements.forEach(function (Element) { Element.classList.add('skeleton-hidden'); });
-    var GameContainer = document.getElementById('gameContainer');
+    var GameContainer = document.getElementById('skeletonLoader');
     GameContainer.addEventListener('animationend', function () {
       SiblingElements.forEach(function (Element) {
         Element.classList.remove('skeleton-hidden');
@@ -117,7 +117,8 @@
     }, { once: true });
   });
 </script>
-<div id="gameContainer" style="background:#e0f2fe;min-height:168px;width:18px;border-radius:9px;overflow:hidden;align-self:flex-start;">
+<div id="skeletonLoader" style="width:18px;min-height:168px;border-radius:9px;background:#e0f2fe;animation:SkeletonGrow 2s cubic-bezier(0.4,0,0.2,1) forwards;margin-right:auto;overflow:hidden;position:relative;z-index:0;">
+<div id="gameContainer">
   <div id="questionRow"></div>
   <div class="topRow">
     <div class="leftPanel">
@@ -201,6 +202,7 @@
   <!-- Lives row: only visible when playerLives is finite. Mirrors questionRow. -->
   <div id="livesRow" class="lives-hidden"></div>
 </div>
+</div>
 <div id="statsRow">
   <span id="statLeft"></span>
   <div id="kbToast">This keyboard is for display only. Play with an actual Mac keyboard.</div>
@@ -233,7 +235,7 @@
       </div>
     </div>
 
-    <!-- ── Pause Screen ──────────────────────────────── -->
+var GameContainer = document.getElementById('gameContainer');\n    GameContainer.addEventListener('animationend', function () {    <!-- ── Pause Screen ──────────────────────────────── -->
     <div id="panelPause" class="sp-page">
       <div class="sp-col sp-col-left">
         <p class="sp-body sp-paused-heading" id="pausePanelHeading"><strong>Your game is paused.</strong></p>

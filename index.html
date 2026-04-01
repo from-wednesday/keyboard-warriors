@@ -1369,11 +1369,17 @@ function _initialiseLayout() {
   });
 }
 
-if (window._StyleSheetLink && !window._StyleSheetLink.sheet) {
-  window._StyleSheetLink.addEventListener('load',  _initialiseLayout, { once: true });
-  window._StyleSheetLink.addEventListener('error', _initialiseLayout, { once: true });
-} else {
-  _initialiseLayout();
+// Always run synchronously so the keyboard is built before the welcome screen fires.
+// Also listen for the stylesheet load event and re-align the settings panel in case
+// it opened before the stylesheet had applied its dimensions.
+_initialiseLayout();
+if (window._StyleSheetLink) {
+  window._StyleSheetLink.addEventListener('load', function() {
+    requestAnimationFrame(function() {
+      updateKeyboardMode();
+      if (activeSettings !== null) _spAlignPanel();
+    });
+  }, { once: true });
 }
 /* ══════════════════════════════════════
    SHORTCUT → KEY CODES
@@ -4477,6 +4483,12 @@ function _showWelcomeScreen() {
   _updateDiffBtnStyles('fundamentals');
   _updateDiffSubtitle('fundamentals');
   openSettings('panelWelcome');
+  // Re-align panel after first paint so it reads real keyboard dimensions.
+  requestAnimationFrame(function() {
+    requestAnimationFrame(function() {
+      if (activeSettings !== null) _spAlignPanel();
+    });
+  });
 }
 
 // Shared handler for both the welcome panel and the difficulty settings panel
@@ -5352,6 +5364,12 @@ function _showReturningScreen() {
   _updateDiffBtnStyles(currentDifficulty);
   _updateDiffSubtitle(currentDifficulty);
   openSettings('panelReturning');
+  // Re-align panel after first paint so it reads real keyboard dimensions.
+  requestAnimationFrame(function() {
+    requestAnimationFrame(function() {
+      if (activeSettings !== null) _spAlignPanel();
+    });
+  });
 }
 
 function _returningContinue() {

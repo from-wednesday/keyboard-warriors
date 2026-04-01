@@ -6299,14 +6299,23 @@ function endGameMessage(time, accuracy, record, wasFirst) {
     ]);
   }
   return _pickEndGameFallback([
+    "'Failure' is just practice in disguise.",
+    'Everyone starts as a beginner.',    
+    'Practice now, brag at parties later.',
+    'One step closer to being a total wizard.',    
+    'Leveling up looks good on you. Keep at it!',
+    "Don't stop until you’re the one giving tips.",    
+    'Mastering this is your destiny. No big deal.',
     'Keep practising. Every rep counts.',
-    'Come back tomorrow. The gains are cumulative.',
-    'Progress is happening even when it does not feel like it.',
+    'Sucking is the first step to being sorta good.',
+    'Practice several times per week. Gains are cumulative.',
+    "Progress is happening even if it doesn't always feel like it.",
     'Repetition is how shortcuts become reflexes.',
     'Showing up is most of the battle. Well done.',
     'Each round is training your hands, not just your memory.',
     'The shortcut you hesitated on today will be automatic soon.',
     'Consistent practice compounds. Keep going.',
+    'Push your current ability with harder difficulty settings.',
   ]);
 }
 
@@ -6776,7 +6785,7 @@ function finalizeRunData(completedRun, currentPool, DefeatCount) {
   }
   if (allFast && accuracyPercent >= 85) {
     AddMessage(SpecificMessages, 'cat3_fast',
-      'Fast answers throughout. Your hands are starting to know where to go.');
+      'Fast answers throughout. Your hands seem to know where to go.');
   }
   if (skipCount >= 3) {
     AddMessage(SpecificMessages, 'cat3_skips',

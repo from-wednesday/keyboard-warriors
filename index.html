@@ -9,7 +9,7 @@
 <title>Keyboard Warriors</title>
 <script>
   const DefaultTitle = 'Keyboard Warriors';
-  const VersionLabel   = '0007';
+  const VersionLabel   = '0008';
   const TitlePrefix  = document.title !== DefaultTitle ? document.title.trim() + '_' : '';
   const DBG_DEVICE   = TitlePrefix + VersionLabel;
 </script>
@@ -2615,12 +2615,27 @@ const MAC_BOTTOM_ROWS = {
     {type:'arrow', id:'ArrowRight', label:'▶', corner:['br'], half:true, squareLeft:true},
   ],
 };
-// Active variant keys — default to standard layouts
+// Active variant keys — default to standard layouts, restored from localStorage if saved
 var kbVariantMac = 'mac-3key';
 var kbVariantPc  = 'pc-fn-left';
 // Bottom-row config state
 var kbLeftCount = 3;   // 3 or 4 keys left of space
 var kbFnLeft    = true; // true = Fn at far left, false = Fn right of Alt (PC only)
+(function() {
+  var VALID_MAC = ['mac-3key','mac-4key','mac-4key-ctrl-left'];
+  var VALID_PC  = ['pc-fn-left','pc-fn-right','pc-no-fn'];
+  try {
+    var savedMac = localStorage.getItem('kw_kb_variant_mac');
+    if (savedMac && VALID_MAC.indexOf(savedMac) !== -1) kbVariantMac = savedMac;
+    var savedPc  = localStorage.getItem('kw_kb_variant_pc');
+    if (savedPc  && VALID_PC.indexOf(savedPc)   !== -1) kbVariantPc  = savedPc;
+  } catch(e) {}
+  // Derive kbLeftCount / kbFnLeft from the restored variants so toggles render correctly
+  var v = kbVariantMac; // mac is the primary variant read by _syncKbCountFromVariant
+  if (v === 'mac-3key' || v === 'pc-no-fn') { kbLeftCount = 3; kbFnLeft = true; }
+  else if (v === 'mac-4key' || v === 'pc-fn-left') { kbLeftCount = 4; kbFnLeft = true; }
+  else if (v === 'mac-4key-ctrl-left' || v === 'pc-fn-right') { kbLeftCount = 4; kbFnLeft = false; }
+})();
 
 function buildKeyboard(isMini) {
   const rowIds = ['row-fn','row-num','row-q','row-a','row-z','row-bot'];
@@ -4953,6 +4968,12 @@ var stickyKeysOn = false;
 var touchEnabled     = false;
 var soundEnabled     = false; // enabled automatically when touch turns on
 var hasFullKeyboard  = true;  // false = tenkeyless/compact — skip extended key questions
+(function() {
+  try {
+    var savedFull = localStorage.getItem('kw_kb_full');
+    if (savedFull !== null) hasFullKeyboard = (savedFull === 'true');
+  } catch(e) {}
+})();
 
 function setStickyKeys(on) {
   stickyKeysOn = on;
@@ -4965,6 +4986,7 @@ function setStickyKeys(on) {
 
 function setKbSizeToggle(full) {
   hasFullKeyboard = full;
+  try { localStorage.setItem('kw_kb_full', String(full)); } catch(e) {}
   updateKbSizeToggle();
 }
 
@@ -5212,6 +5234,8 @@ function flashKeys(codes) {
 function applyVariant(flashCodes) {
   if (currentOs === 'mac') kbVariantMac = activeVariantKey();
   else                     kbVariantPc  = activeVariantKey();
+  try { localStorage.setItem('kw_kb_variant_mac', kbVariantMac); } catch(e) {}
+  try { localStorage.setItem('kw_kb_variant_pc',  kbVariantPc);  } catch(e) {}
   if (currentKbMode && currentKbMode !== 'none') {
     buildKeyboard(currentKbMode === 'mini');
     if (flashCodes) flashKeys(flashCodes);

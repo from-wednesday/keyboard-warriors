@@ -47,7 +47,7 @@
   })();
 </script>
 </head>
-<body style="background:#f0f4f8;">
+<<body style="background:#f0f4f8;" id="pageBody">
 
 <!-- OS toggle row: sits above the game panel -->
 <div id="phonePrompt" style="display:none;">
@@ -86,7 +86,7 @@
 </div>
 
 <style>
-@keyframes SkeletonGrow {
+@@keyframes SkeletonGrow {
   from { width: 18px; border-radius: 9px; }
   to   { width: 100%; border-radius: 16px; }
 }
@@ -94,7 +94,29 @@
   animation: SkeletonGrow 2s cubic-bezier(0.4, 0, 0.2, 1) forwards;
   align-self: flex-start;
 }
+.skeleton-hidden {
+  visibility: hidden;
+  opacity: 0;
+}
+.skeleton-revealed {
+  visibility: visible;
+  opacity: 1;
+  transition: opacity 0.3s ease;
+}
 </style>
+<script>
+  document.addEventListener('DOMContentLoaded', function () {
+    var SiblingElements = document.querySelectorAll('#pageBody > *:not(#gameContainer):not(style):not(script)');
+    SiblingElements.forEach(function (Element) { Element.classList.add('skeleton-hidden'); });
+    var GameContainer = document.getElementById('gameContainer');
+    GameContainer.addEventListener('animationend', function () {
+      SiblingElements.forEach(function (Element) {
+        Element.classList.remove('skeleton-hidden');
+        Element.classList.add('skeleton-revealed');
+      });
+    }, { once: true });
+  });
+</script>
 <div id="gameContainer" style="background:#e0f2fe;min-height:168px;width:18px;border-radius:9px;overflow:hidden;align-self:flex-start;">
   <div id="questionRow"></div>
   <div class="topRow">

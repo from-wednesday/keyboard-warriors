@@ -9,7 +9,7 @@
 <title>beta</title>
 <script>
   const DefaultTitle = 'Keyboard Warriors';
-  const VersionLabel   = '0011';
+  const VersionLabel   = '0012';
   const TitlePrefix  = document.title !== DefaultTitle ? document.title.trim() + '_' : '';
   const DBG_DEVICE   = TitlePrefix + VersionLabel;
 </script>
@@ -1369,12 +1369,13 @@ function _initialiseLayout() {
   });
 }
 
-if (window._StyleSheetLink && !window._StyleSheetLink.sheet) {
-  window._StyleSheetLink.addEventListener('load',  _initialiseLayout, { once: true });
-  window._StyleSheetLink.addEventListener('error', _initialiseLayout, { once: true });
-} else {
-  _initialiseLayout();
-}
+document.addEventListener('DOMContentLoaded', function() {
+  requestAnimationFrame(function() {
+    requestAnimationFrame(function() {
+      _initialiseLayout();
+    });
+  });
+});
 /* ══════════════════════════════════════
    SHORTCUT → KEY CODES
    CHANGE 1: extended for new shortcuts

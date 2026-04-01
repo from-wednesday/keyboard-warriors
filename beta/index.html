@@ -1353,6 +1353,7 @@ window.addEventListener('resize', function() {
 });
 
 function _initialiseLayout() {
+  currentKbMode = null;
   updateKeyboardMode();
   updateMismatchPill();
   document.getElementById('keyboardPanel').classList.toggle('pc-keys', currentOs === 'pc');
@@ -1365,9 +1366,11 @@ function _initialiseLayout() {
   });
   var KeyboardPanelElement = document.getElementById('keyboardPanel');
   KeyboardPanelResizeObserver.observe(KeyboardPanelElement);
-  if (KeyboardPanelElement.offsetWidth > 0) {
-    positionIcons();
-  }
+  requestAnimationFrame(function() {
+    requestAnimationFrame(function() {
+      positionIcons();
+    });
+  });
 }
 
 function _initialiseLayoutWhenReady() {

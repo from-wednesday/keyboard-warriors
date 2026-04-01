@@ -2863,7 +2863,7 @@ body.returning-screen #diffIconWrap .icon-tip { display: none; }
 }
 #panelPause.blur-pause-active #blurPauseDiagnostic {
   display: block !important;
-}; stroke:currentColor; stroke-width:2px; stroke-linecap:round; stroke-miterlimit:10; }
+}
 
 /* Difficulty gauge icon (was inline <style> inside #diffIconWrap SVG) */
 #diffIcon .gauge-stroke { fill:none; stroke:#9ca3af; stroke-width:2px; stroke-linecap:round; stroke-miterlimit:10; }

@@ -308,17 +308,32 @@ GameContainer.addEventListener('animationend', function () {
        <!-- ── Blur Pause Diagnostic ─────────────────────── -->
     <div id="blurPauseDiagnostic" style="display:none;width:100%;grid-column:1/-1;">
       <div class="diff-advanced-panel diff-advanced-active" id="blurDiagnosticBox" style="display:grid;grid-template-columns:1fr 1fr;gap:0;overflow:hidden;">
+        <!-- Left col: intro text (pre-reveal) or question label + chips (post-reveal) -->
         <div id="blurDiagnosticLeft" style="padding-right:20px;">
+          <!-- Pre-reveal: intro paragraph -->
           <p class="sp-body" id="blurDiagnosticIntro" style="margin-bottom:0;">If you think it was the shortcut that caused the problem, we should take a closer look. Do you want to reveal the answer?</p>
-        </div>
-        <div id="blurDiagnosticRight" style="padding-left:20px;display:flex;flex-direction:column;align-items:flex-start;justify-content:flex-start;gap:6px;">
-          <div style="display:flex;align-items:flex-start;gap:7px;">
-            <span class="sp-report-dot" id="blurDiagnosticDot" style="margin-top:5px;flex-shrink:0;"></span>
-            <span class="sp-report-question-label" id="blurDiagnosticQuestionLabel" style="font-size:11px;color:#6b7280;line-height:1.5;"></span>
+          <!-- Post-reveal: question + chips moved here (hidden initially) -->
+          <div id="blurDiagnosticQuestionBlock" style="display:none;">
+            <div style="display:flex;align-items:flex-start;gap:7px;">
+              <span class="sp-report-dot" id="blurDiagnosticDot" style="margin-top:5px;flex-shrink:0;background:#f97316;"></span>
+              <span class="sp-report-question-label" id="blurDiagnosticQuestionLabel" style="font-size:11px;color:#6b7280;line-height:1.5;"></span>
+            </div>
+            <div id="blurDiagnosticChipsInner" style="margin-top:6px;margin-left:15px;"></div>
           </div>
-          <span id="blurDiagnosticChipsArea" style="flex-shrink:0;">
-            <button id="blurDiagnosticRevealBtn" class="score-pill-seg score-pill-full" style="border-radius:12px;border:1.5px solid #d1d5db;min-width:100px;" onclick="_blurDiagnosticReveal()"><span class="diff-btn-text">reveal answer</span></button>
-          </span>
+        </div>
+        <!-- Right col: reveal button (pre-reveal) or response text (post-reveal) -->
+        <div id="blurDiagnosticRight" style="padding-left:20px;display:flex;flex-direction:column;align-items:flex-start;justify-content:flex-start;gap:6px;">
+          <!-- Pre-reveal state: question label + reveal button -->
+          <div id="blurDiagnosticPreReveal" style="display:flex;flex-direction:column;gap:6px;width:100%;">
+            <div style="display:flex;align-items:flex-start;gap:7px;">
+              <span class="sp-report-dot" id="blurDiagnosticDotPre" style="margin-top:5px;flex-shrink:0;background:#f97316;"></span>
+              <span class="sp-report-question-label" id="blurDiagnosticQuestionLabelPre" style="font-size:11px;color:#6b7280;line-height:1.5;"></span>
+            </div>
+            <span id="blurDiagnosticChipsArea" style="flex-shrink:0;margin-left:15px;">
+              <button id="blurDiagnosticRevealBtn" class="score-pill-seg score-pill-full" style="border-radius:12px;border:1.5px solid #d1d5db;min-width:100px;" onclick="_blurDiagnosticReveal()"><span class="diff-btn-text">reveal answer</span></button>
+            </span>
+          </div>
+          <!-- Post-reveal: follow-up text responses -->
           <p class="sp-body" id="blurDiagnosticFollowUp" style="display:none;margin:0;font-size:11px;color:#6b7280;line-height:1.5;"></p>
         </div>
       </div>
@@ -2476,6 +2491,11 @@ function confirmQuitNo() {
 
 function unpause() {
   gameState = 'playing';
+  // If diagnostic answer was revealed but player didn't re-test the shortcut,
+  // replace it now so the revealed answer isn't the first question on resumption.
+  if (_blurPauseActive && _blurDiagnosticAnswerRevealed && _blurDiagnosticShortcutToken) {
+    _blurDiagnosticReplaceQuestion();
+  }
   _deactivateBlurPauseScreen();
   _stopPauseInactivityTimer();
   clearAllLit();
@@ -4022,20 +4042,26 @@ function _refreshBrowserContent() {
     var BrowserConflictKeys = new Set(d.keys);
     dismissedConflicts.forEach(function(BlockedKey) {
       if (BrowserConflictKeys.has(BlockedKey)) return; // already shown above
+      var isDismissed = dismissedConflicts.has(BlockedKey); // always true here, but kept for _makeConflictRadio
       var li = document.createElement('li');
       li.className = 'conflict-dismissed';
       li.style.cssText = 'margin-bottom:6px;display:flex;align-items:center;flex-wrap:nowrap;gap:0;line-height:1.6;cursor:pointer;';
       li.appendChild(_makeConflictRadio(BlockedKey));
+      // Build a proper label with chips using the same pattern as standard conflicts
       var label = document.createElement('span');
       label.className = 'conflict-label';
-      var chip = document.createElement('span');
-      chip.className = 'conflict-chip';
-      chip.textContent = BlockedKey;
+      // Derive a human-readable display string for the chips.
+      // Try to find a matching shortcut in the pool for a display string; fall back to the raw token.
+      var allShortcuts = UNIVERSAL_SHORTCUTS.concat(loadedAppShortcuts);
+      var matchedShortcut = allShortcuts.find(function(s) { return s.shortcut === BlockedKey; });
+      var chipDisplayStr = matchedShortcut
+        ? (currentOs === 'pc' ? matchedShortcut.pc_sc : matchedShortcut.mac_sc)
+        : BlockedKey;
+      label.appendChild(_renderKeyChips(chipDisplayStr));
       var desc = document.createElement('span');
       desc.className = 'conflict-desc';
       desc.style.cssText = 'margin-left:5px;color:#6b7280;font-size:11px;vertical-align:middle;';
       desc.textContent = 'blocked via diagnostic';
-      label.appendChild(chip);
       label.appendChild(desc);
       li.appendChild(label);
       li.addEventListener('click', function(e) {
@@ -8055,20 +8081,9 @@ document.addEventListener('visibilitychange', function() {
   }
 });
 
-function _blurDiagnosticKeydownHandler(e) {
-  if (!_blurDiagnosticAnswerRevealed) return;
-  if (gameState !== 'paused') return;
-  if (!_blurDiagnosticShortcutToken) return;
-  if (!matchesShortcut(e, _blurDiagnosticShortcutToken)) return;
-  e.preventDefault();
-  document.removeEventListener('keydown', _blurDiagnosticKeydownHandler);
-
-  // Correct shortcut pressed -- light the dot green
-  var DotEl = document.getElementById('blurDiagnosticDot');
-  if (DotEl) { DotEl.style.background = '#10b981'; DotEl.style.transition = 'background 0.3s ease'; }
-
-  // Replace question immediately so the revealed answer is no longer the active question
-  // (prevents the player from using the diagnostic as a free clue)
+// Replaces the current question with a different one (no penalty, no report card entry).
+// Called whenever the diagnostic answer was revealed, regardless of outcome.
+function _blurDiagnosticReplaceQuestion() {
   var FullPool = shuffleArray(buildPool());
   var PreviousDisplay = questionPool[questionIndex] ? questionPool[questionIndex].display : null;
   var ReplacementQuestion = FullPool.find(function(Question) {
@@ -8079,6 +8094,29 @@ function _blurDiagnosticKeydownHandler(e) {
     questionPool[questionIndex] = ReplacementQuestion;
     currentAnswer = ReplacementQuestion.shortcut;
   }
+  // Remove this question's entry from runData if it was recorded (it shouldn't be yet,
+  // but guard just in case to keep report card clean)
+  runData = runData.filter(function(entry) {
+    return !(entry.questionIndex === questionIndex &&
+             questionPool[entry.questionIndex] &&
+             questionPool[entry.questionIndex].shortcut === _blurDiagnosticShortcutToken);
+  });
+}
+
+function _blurDiagnosticKeydownHandler(e) {
+  if (!_blurDiagnosticAnswerRevealed) return;
+  if (gameState !== 'paused') return;
+  if (!_blurDiagnosticShortcutToken) return;
+  if (!matchesShortcut(e, _blurDiagnosticShortcutToken)) return;
+  e.preventDefault();
+  document.removeEventListener('keydown', _blurDiagnosticKeydownHandler);
+
+  // Correct shortcut pressed -- light the dot green (post-reveal dot in left col)
+  var DotEl = document.getElementById('blurDiagnosticDot');
+  if (DotEl) { DotEl.style.background = '#10b981'; DotEl.style.transition = 'background 0.3s ease'; }
+
+  // Replace question (no penalty, excluded from report card)
+  _blurDiagnosticReplaceQuestion();
 
   var FollowUpEl = document.getElementById('blurDiagnosticFollowUp');
   if (FollowUpEl) {
@@ -8102,21 +8140,39 @@ function _activateBlurPauseScreen() {
   var PausePanelEl = document.getElementById('panelPause');
   if (PausePanelEl) PausePanelEl.classList.add('blur-pause-active');
 
-  // Populate the question label
+  // Populate the pre-reveal question label (right col, above reveal button)
+  var QuestionLabelPreEl = document.getElementById('blurDiagnosticQuestionLabelPre');
+  if (QuestionLabelPreEl) QuestionLabelPreEl.textContent = (question.display || '').replace(/\\\\/g, '\\');
+
+  // Also populate the post-reveal question label (left col, shown after reveal)
   var QuestionLabelEl = document.getElementById('blurDiagnosticQuestionLabel');
   if (QuestionLabelEl) QuestionLabelEl.textContent = (question.display || '').replace(/\\\\/g, '\\');
 
-  // Reset dot to orange
+  // Reset pre-reveal dot to orange
+  var DotPreEl = document.getElementById('blurDiagnosticDotPre');
+  if (DotPreEl) { DotPreEl.style.background = '#f97316'; DotPreEl.style.transition = ''; }
+
+  // Reset post-reveal dot to orange (hidden until reveal)
   var DotEl = document.getElementById('blurDiagnosticDot');
   if (DotEl) { DotEl.style.background = '#f97316'; DotEl.style.transition = ''; }
 
-  // Reset chips area to reveal button
+  // Reset chips area to reveal button (pre-reveal state)
   var ChipsArea = document.getElementById('blurDiagnosticChipsArea');
   if (ChipsArea) {
     ChipsArea.innerHTML = '<button id="blurDiagnosticRevealBtn" class="score-pill-seg score-pill-full" style="border-radius:12px;border:1.5px solid #d1d5db;min-width:100px;" onclick="_blurDiagnosticReveal()"><span class="diff-btn-text">reveal answer</span></button>';
   }
 
-  // Reset intro text
+  // Clear post-reveal chips
+  var ChipsInner = document.getElementById('blurDiagnosticChipsInner');
+  if (ChipsInner) ChipsInner.innerHTML = '';
+
+  // Show pre-reveal block, hide post-reveal question block
+  var PreRevealEl = document.getElementById('blurDiagnosticPreReveal');
+  if (PreRevealEl) PreRevealEl.style.display = 'flex';
+  var QuestionBlockEl = document.getElementById('blurDiagnosticQuestionBlock');
+  if (QuestionBlockEl) QuestionBlockEl.style.display = 'none';
+
+  // Reset intro text (shown in left col during pre-reveal)
   var IntroEl = document.getElementById('blurDiagnosticIntro');
   if (IntroEl) {
     IntroEl.style.opacity = '1';
@@ -8151,38 +8207,37 @@ function _blurDiagnosticReveal() {
   var question = questionPool[questionIndex];
   if (!question) return;
   var ShortcutDisplay = currentOs === 'pc' ? question.pc_sc : question.mac_sc;
-  var ChipsArea = document.getElementById('blurDiagnosticChipsArea');
-  if (ChipsArea) {
-    ChipsArea.innerHTML = '';
-    ChipsArea.appendChild(BuildShortcutKeyChips(ShortcutDisplay, true));
-  }
-  // Fade out the intro question
+
+  // ── Column swap ──────────────────────────────────────────────────────────
+  // Hide pre-reveal block (question label + reveal button in right col)
+  var PreRevealEl = document.getElementById('blurDiagnosticPreReveal');
+  if (PreRevealEl) PreRevealEl.style.display = 'none';
+
+  // Fade out the intro text in left col
   var IntroEl = document.getElementById('blurDiagnosticIntro');
   if (IntroEl) {
-    IntroEl.style.transition = 'opacity 0.4s ease';
+    IntroEl.style.transition = 'opacity 0.3s ease';
     IntroEl.style.opacity = '0';
-    setTimeout(function() { IntroEl.style.visibility = 'hidden'; }, 400);
+    setTimeout(function() { IntroEl.style.visibility = 'hidden'; }, 300);
   }
-  // Show follow-up prompt
+
+  // Show question + chips in left col
+  var QuestionBlockEl = document.getElementById('blurDiagnosticQuestionBlock');
+  if (QuestionBlockEl) QuestionBlockEl.style.display = 'block';
+
+  // Build chips in the left col chips area
+  var ChipsInner = document.getElementById('blurDiagnosticChipsInner');
+  if (ChipsInner) {
+    ChipsInner.innerHTML = '';
+    ChipsInner.appendChild(BuildShortcutKeyChips(ShortcutDisplay, true));
+  }
+
+  // Show follow-up prompt in right col
   var FollowUpEl = document.getElementById('blurDiagnosticFollowUp');
   if (FollowUpEl) {
     FollowUpEl.textContent = 'Is this what you pressed when the problem happened? Try it again now.';
     FollowUpEl.style.display = 'block';
   }
-}
-
-function _blurDiagnosticKeydownHandler(e) {
-  if (!_blurDiagnosticAnswerRevealed) return;
-  if (gameState !== 'paused') return;
-  if (!_blurDiagnosticShortcutToken) return;
-  if (!matchesShortcut(e, _blurDiagnosticShortcutToken)) return;
-  e.preventDefault();
-  // Correct shortcut pressed -- light the dot green and update follow-up
-  var DotEl = document.getElementById('blurDiagnosticDot');
-  if (DotEl) { DotEl.style.background = '#10b981'; DotEl.style.transition = 'background 0.3s ease'; }
-  var FollowUpEl = document.getElementById('blurDiagnosticFollowUp');
-  if (FollowUpEl) FollowUpEl.textContent = 'Seems fine to me. You are free to restart and continue your level.';
-  document.removeEventListener('keydown', _blurDiagnosticKeydownHandler);
 }
 
 function _blurDiagnosticSecondBlur() {
@@ -8194,18 +8249,8 @@ function _blurDiagnosticSecondBlur() {
   dismissedConflicts.add(_blurDiagnosticShortcutToken);
   _saveCustomDismissedConflicts();
 
-  // Replace the current question in the pool without penalty
-  // (also done in keydownHandler on success, but this is the fallback path)
-  var FullPool = shuffleArray(buildPool());
-  var PreviousDisplay = questionPool[questionIndex] ? questionPool[questionIndex].display : null;
-  var ReplacementQuestion = FullPool.find(function(Question) {
-    return Question.shortcut !== _blurDiagnosticShortcutToken &&
-           Question.display !== PreviousDisplay;
-  });
-  if (ReplacementQuestion) {
-    questionPool[questionIndex] = ReplacementQuestion;
-    currentAnswer = ReplacementQuestion.shortcut;
-  }
+  // Replace the current question without penalty, excluded from report card
+  _blurDiagnosticReplaceQuestion();
 
   // Build the report mailto
   var OsName = currentOs === 'pc' ? 'PC/Windows' : 'Mac';

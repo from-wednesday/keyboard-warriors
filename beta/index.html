@@ -297,7 +297,7 @@ GameContainer.addEventListener('animationend', function () {
           <button id="startOverBtn" class="score-pill-seg score-pill-full" onclick="_pauseStartOverClick()">
             <span class="diff-btn-text">clear memory &amp; start fresh</span>
           </button>
-        </div>
+        </div><br/>
         <p class="sp-body sp-clear-label" style="margin-top:8px;"><strong>Report a problem:</strong></p>
         <div class="score-clear-pill">
           <button class="score-pill-seg score-pill-full" onclick="_reportImpossibleQuestion()" title="Report a problem">
@@ -4163,9 +4163,8 @@ function _refreshBrowserContent() {
       var label = document.createElement('span');
       label.className = 'conflict-label';
 
-      // Build chips from the symbol-translated shortcut string
-      var ChipWrapper = _renderKeyChips(Parsed.displayShortcut);
-      label.appendChild(ChipWrapper);
+      // Build chips using the same function as cheat sheet and report card
+      label.appendChild(BuildShortcutKeyChips(Parsed.displayShortcut, false));
 
       if (Parsed.descriptor) {
         var DescEl = document.createElement('span');
@@ -4195,7 +4194,7 @@ function _refreshBrowserContent() {
 
       var label = document.createElement('span');
       label.className = 'conflict-label';
-      label.appendChild(_renderKeyChips(BlockedKey));
+      label.appendChild(BuildShortcutKeyChips(BlockedKey, false));
 
       var DescEl = document.createElement('span');
       DescEl.className = 'conflict-desc';
@@ -4496,7 +4495,6 @@ function getBrowserConflicts() {
   var macLabels = {
     Edge: [
       'Cmd+T \u2014 opens new tab',
-      'Cmd+` \u2014 cycles app windows (macOS)',
       'Cmd+Opt+I \u2014 opens DevTools',
       'Cmd+Shift+C \u2014 opens DevTools inspector',
       'Cmd+Shift+J \u2014 opens DevTools console',
@@ -4506,15 +4504,12 @@ function getBrowserConflicts() {
     ],
     Firefox: [
       'Cmd+T \u2014 opens new tab',
-      'Cmd+` \u2014 cycles app windows (macOS)',
     ],
     Safari: [
       'Cmd+T \u2014 opens new tab',
-      'Cmd+` \u2014 cycles app windows (macOS)',
     ],
     Opera: [
       'Cmd+T \u2014 opens new tab',
-      'Cmd+` \u2014 cycles app windows (macOS)',
       'Cmd+Opt+I \u2014 opens DevTools',
       'Cmd+Opt+J \u2014 opens DevTools console',
       'Cmd+Shift+D \u2014 saves bookmark',
@@ -4522,7 +4517,6 @@ function getBrowserConflicts() {
     ],
     Chrome: [
       'Cmd+T \u2014 opens new tab',
-      'Cmd+` \u2014 cycles app windows (macOS)',
       'Cmd+Shift+N \u2014 opens Incognito window',
     ],
   };
@@ -7571,7 +7565,11 @@ function BuildShortcutKeyChips(DisplayString, IsWeakness) {
     var Chip = document.createElement('span');
     Chip.className = 'sp-report-chip-key';
     Chip.textContent = Token;
-    var ChipStyles = [
+    var Edge:    ['CMD+T'],
+    Firefox: ['CMD+T'],
+    Safari:  ['CMD+T'],
+    Opera:   ['CMD+T','CMD+OPTION+I','CMD+OPTION+J','CMD+SHIFT+D','CMD+SHIFT+N'],
+    Chrome:  ['CMD+T','CMD+SHIFT+N'],tyles = [
       'display:inline-block',
       'font-family:inherit',
       'font-size:10px',
@@ -8327,7 +8325,7 @@ function _deactivateBlurPauseScreen() {
   if (IntroEl) {
     IntroEl.style.transition = 'opacity 0.4s ease';
     IntroEl.style.opacity = '0';
-    setTimeout(function() { IntroEl.style.visibility = 'hidden'; }, 400);
+    setTimeout(function() { IntroEl.style.display = 'none'; }, 400);
   }
 
   // Show chips inline in the question row
@@ -8346,7 +8344,7 @@ function _deactivateBlurPauseScreen() {
   // Show follow-up prompt in right col
   var FollowUpEl = document.getElementById('blurDiagnosticFollowUp');
   if (FollowUpEl) {
-    FollowUpEl.textContent = 'Is this what you pressed when the problem happened? Try it again now.';
+    FollowUpEl.textContent = 'Is this what you pressed when the problem happened?<br/>Try it again now.';
     FollowUpEl.style.display = 'block';
   }
 }
@@ -8378,7 +8376,7 @@ function _blurDiagnosticSecondBlur() {
   if (FollowUpEl) {
     FollowUpEl.innerHTML =
       'It seems that your browser or OS is intercepting this shortcut. We will not ask questions needing this shortcut again (see Browser Settings screen).' +
-      '<br><br>You are now free to unpause your level, but if you do not mind, I would like it if you reported this to me:' +
+      '<br><br>You are now free to unpause your level, but <em>if you do not mind,</em> I would like it if you reported this issue:' +
       '<br><br><div class="score-clear-pill" style="margin-top:4px;">' +
       '<button class="score-pill-seg score-pill-full" onclick="_blurDiagnosticSendReport(\'' +
       encodeURIComponent(MailSubject) + '\',\'' + encodeURIComponent(MailBody) + '\')" title="Report conflict">' +

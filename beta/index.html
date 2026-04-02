@@ -3983,6 +3983,14 @@ function _setConflictBlocked(canonicalKey, blocked, liEl) {
   _saveCustomDismissedConflicts();
   questionPool = shuffleArray(buildPool());
 
+  // Refresh the clear overrides pill state
+  var ClearBtn = document.querySelector('#browserCompatFooter .score-pill-seg');
+  if (ClearBtn) {
+    var NowHasOverrides = _hasBrowserOverrides();
+    ClearBtn.classList.toggle('score-pill-inactive', !NowHasOverrides);
+    ClearBtn.onclick = NowHasOverrides ? _clearBrowserOverrides : null;
+  }
+
   if (!liEl) return;
   var radio = liEl.querySelector('.modal-radio');
   // blocked = radio ON (filled dot), strikethrough label
@@ -4010,7 +4018,201 @@ function _makeConflictRadio(canonicalKey) {
   return wrap;
 }
 
+// Converts a browser conflict label like "Cmd+T — opens new tab" into
+// a display string where the shortcut tokens use the same symbols as the
+// Report Card and Cheat Sheet, and the descriptor follows as plain text.
+function _BuildBrowserConflictLabel(RawLabel) {
+  // Split on the em-dash separator (raw string uses \u2014)
+  var Parts = RawLabel.split('\u2014');
+  var ShortcutPart = (Parts[0] || '').trim();
+  var DescriptorPart = Parts.length > 1 ? Parts.slice(1).join('\u2014').trim() : '';
+
+  // Translate token names to display symbols
+  var TokenDisplayMap = {
+    'Cmd':   currentOs === 'pc' ? 'Ctrl' : '⌘',
+    'Ctrl':  'Ctrl',
+    'Opt':   '⌥',
+    'Shift': '⇧',
+    'Alt':   'Alt',
+  };
+  var ArrowMap = {
+    'ArrowLeft':  '←',
+    'ArrowRight': '→',
+    'ArrowUp':    '↑',
+    'ArrowDown':  '↓',
+    'ArrowLeft':  '←',
+  };
+
+  // Replace known long token names with symbols
+  var DisplayShortcut = ShortcutPart;
+  Object.entries(TokenDisplayMap).forEach(function(Entry) {
+    DisplayShortcut = DisplayShortcut.replace(new RegExp('\b' + Entry[0] + '\b', 'g'), Entry[1]);
+  });
+  Object.entries(ArrowMap).forEach(function(Entry) {
+    DisplayShortcut = DisplayShortcut.replace(new RegExp('\b' + Entry[0] + '\b', 'g'), Entry[1]);
+  });
+
+  return { displayShortcut: DisplayShortcut, descriptor: DescriptorPart };
+}
+
+function _hasBrowserOverrides() {
+  // Returns true if any toggles differ from the auto-blocked default,
+  // or any diagnostic-added entries exist.
+  var DefaultBrowserKeys = new Set(getBrowserConflicts().keys);
+  // Check if any diagnostic custom entries exist
+  var HasDiagnosticEntries = false;
+  dismissedConflicts.forEach(function(Key) {
+    if (!DefaultBrowserKeys.has(Key)) HasDiagnosticEntries = true;
+  });
+  if (HasDiagnosticEntries) return true;
+  // Check if any standard key has been manually unblocked (radio toggled off)
+  var HasManualUnblock = false;
+  DefaultBrowserKeys.forEach(function(Key) {
+    if (!dismissedConflicts.has(Key)) HasManualUnblock = true;
+  });
+  return HasManualUnblock;
+}
+
+function _clearBrowserOverrides() {
+  // Remove all diagnostic-added entries
+  var DefaultBrowserKeys = new Set(getBrowserConflicts().keys);
+  var KeysToRemove = [];
+  dismissedConflicts.forEach(function(Key) {
+    if (!DefaultBrowserKeys.has(Key)) KeysToRemove.push(Key);
+  });
+  KeysToRemove.forEach(function(Key) { dismissedConflicts.delete(Key); });
+  // Re-block all standard browser conflicts
+  DefaultBrowserKeys.forEach(function(Key) { dismissedConflicts.add(Key); });
+  _saveCustomDismissedConflicts();
+  questionPool = shuffleArray(buildPool());
+  _refreshBrowserContent();
+}
+
 function _refreshBrowserContent() {
+  var d     = getBrowserConflicts();
+  var bname = d.name;
+  var knownBrowser = (bname !== 'your browser');
+
+  var h = document.getElementById('browserCompatHeading');
+  if (h) {
+    h.innerHTML = '';
+    var t1 = document.createElement('strong');
+    t1.style.color = '#1e3a5f';
+    t1.textContent = 'Keyboard Warriors';
+    h.appendChild(t1);
+    if (knownBrowser) {
+      h.appendChild(document.createTextNode(', the shortcuts coach, is compatible with your browser, '));
+      var t3 = document.createElement('strong');
+      t3.textContent = bname + '.';
+      h.appendChild(t3);
+    } else {
+      h.appendChild(document.createTextNode(', the shortcuts coach, is compatible with your browser.'));
+    }
+  }
+
+  var intro = document.getElementById('browserCompatIntro');
+  if (intro) {
+    if (d.labels.length > 0) {
+      intro.textContent = 'But, your browser owns some shortcuts and may interrupt us. We will try not to ask you any questions that use those indicated here. You can also test them now. Any working ones will unblock automatically.';
+    } else {
+      intro.textContent = 'We haven\u2019t spotted any shortcut conflicts for your current setup \u2014 you\u2019re good to go.';
+    }
+  }
+
+  // Clear overrides pill
+  var ft = document.getElementById('browserCompatFooter');
+  if (ft) {
+    ft.innerHTML = '';
+    var HasOverrides = _hasBrowserOverrides();
+    var ClearPill = document.createElement('div');
+    ClearPill.className = 'score-clear-pill';
+    ClearPill.style.marginBottom = '4px';
+    var ClearBtn = document.createElement('button');
+    ClearBtn.className = 'score-pill-seg score-pill-full' + (HasOverrides ? '' : ' score-pill-inactive');
+    ClearBtn.onclick = HasOverrides ? _clearBrowserOverrides : null;
+    ClearBtn.innerHTML = '<span class="diff-btn-text">clear overrides</span>';
+    ClearPill.appendChild(ClearBtn);
+    ft.appendChild(ClearPill);
+  }
+
+  var ul = document.getElementById('browserCompatList');
+  if (ul) {
+    ul.innerHTML = '';
+
+    // Auto-block standard browser conflicts on first encounter
+    d.keys.forEach(function(canonicalKey) {
+      if (!dismissedConflicts.has(canonicalKey)) {
+        dismissedConflicts.add(canonicalKey);
+      }
+    });
+    _saveCustomDismissedConflicts();
+    questionPool = shuffleArray(buildPool());
+
+    d.labels.forEach(function(RawLabel, i) {
+      var canonicalKey = d.keys[i];
+      var isBlocked    = dismissedConflicts.has(canonicalKey);
+      var Parsed       = _BuildBrowserConflictLabel(RawLabel);
+
+      var li = document.createElement('li');
+      li.className = isBlocked ? 'conflict-dismissed' : '';
+      li.dataset.conflictKey = canonicalKey;
+      li.style.cssText = 'margin-bottom:6px;display:flex;align-items:center;flex-wrap:nowrap;gap:0;line-height:1.6;cursor:pointer;';
+      li.appendChild(_makeConflictRadio(canonicalKey));
+
+      var label = document.createElement('span');
+      label.className = 'conflict-label';
+
+      // Build chips from the symbol-translated shortcut string
+      var ChipWrapper = _renderKeyChips(Parsed.displayShortcut);
+      label.appendChild(ChipWrapper);
+
+      if (Parsed.descriptor) {
+        var DescEl = document.createElement('span');
+        DescEl.className = 'conflict-desc';
+        DescEl.style.cssText = 'margin-left:5px;color:#6b7280;font-size:11px;vertical-align:middle;';
+        DescEl.textContent = Parsed.descriptor;
+        label.appendChild(DescEl);
+      }
+
+      li.appendChild(label);
+      li.addEventListener('click', function(e) {
+        if (e.target.closest('.modal-radio')) return;
+        li.querySelector('.modal-radio').click();
+      });
+      ul.appendChild(li);
+    });
+
+    // Diagnostic-added entries
+    var BrowserConflictKeys = new Set(d.keys);
+    dismissedConflicts.forEach(function(BlockedKey) {
+      if (BrowserConflictKeys.has(BlockedKey)) return;
+      var li = document.createElement('li');
+      li.className = 'conflict-dismissed';
+      li.dataset.conflictKey = BlockedKey;
+      li.style.cssText = 'margin-bottom:6px;display:flex;align-items:center;flex-wrap:nowrap;gap:0;line-height:1.6;cursor:pointer;';
+      li.appendChild(_makeConflictRadio(BlockedKey));
+
+      var label = document.createElement('span');
+      label.className = 'conflict-label';
+      label.appendChild(_renderKeyChips(BlockedKey));
+
+      var DescEl = document.createElement('span');
+      DescEl.className = 'conflict-desc';
+      DescEl.style.cssText = 'margin-left:5px;color:#6b7280;font-size:11px;vertical-align:middle;';
+      DescEl.textContent = 'owned by OS / Browser / Plugin';
+      label.appendChild(DescEl);
+
+      li.appendChild(label);
+      li.addEventListener('click', function(e) {
+        if (e.target.closest('.modal-radio')) return;
+        li.querySelector('.modal-radio').click();
+      });
+      ul.appendChild(li);
+    });
+  }
+
+  _attachBrowserPanelKeypressVerifier();
+}
   var d     = getBrowserConflicts();
   var bname = d.name;    // e.g. 'Chrome' or 'your browser' if unknown
   var knownBrowser = (bname !== 'your browser');
@@ -4528,7 +4730,7 @@ function _showWelcomeScreen() {
 function diffBtnClick(mode) {
   var hardcoreUnlocked = hasTrophy;
   if (mode === 'hardcore' && !hardcoreUnlocked) {
-    showToast('To unlock Hardcore you must achieve 100% accuracy.');
+    showToast('Score a 100% run to unlock Hardcore Mode.');
     return;
   }
 
@@ -8168,9 +8370,14 @@ function _activateBlurPauseScreen() {
   var DotEl = document.getElementById('blurDiagnosticDot');
   if (DotEl) { DotEl.style.background = '#f97316'; DotEl.style.transition = ''; }
 
+  // Reset chips area
+  var ChipsArea = document.getElementById('blurDiagnosticChipsArea');
+  if (ChipsArea) { ChipsArea.innerHTML = ''; ChipsArea.style.display = 'none'; }
+
   // Reset action area to reveal button
   var ActionArea = document.getElementById('blurDiagnosticActionArea');
   if (ActionArea) {
+    ActionArea.style.display = '';
     ActionArea.innerHTML = '<button id="blurDiagnosticRevealBtn" class="score-pill-seg score-pill-full" style="border-radius:12px;border:1.5px solid #d1d5db;" onclick="_blurDiagnosticReveal()"><span class="diff-btn-text">reveal answer</span></button>';
   }
 
@@ -8204,7 +8411,18 @@ function _deactivateBlurPauseScreen() {
   titleEl.classList.add('blurred');
 }
 
-function _blurDiagnosticReveal() {
+<div id="blurDiagnosticLeft" style="padding-right:20px;display:flex;flex-direction:column;gap:8px;">
+          <div id="blurDiagnosticQuestionRow" style="display:flex;align-items:center;gap:7px;flex-wrap:nowrap;">
+            <span class="sp-report-dot" id="blurDiagnosticDot" style="flex-shrink:0;background:#f97316;"></span>
+            <span class="sp-report-question-label" id="blurDiagnosticQuestionLabel" style="font-size:11px;color:#6b7280;line-height:1.5;flex:1;min-width:0;"></span>
+            <span id="blurDiagnosticChipsArea" style="flex-shrink:0;display:none;"></span>
+          </div>
+          <!-- Reveal button sits below the question row -->
+          <div id="blurDiagnosticActionArea" style="margin-left:15px;">
+            <button id="blurDiagnosticRevealBtn" class="score-pill-seg score-pill-full" style="border-radius:12px;border:1.5px solid #d1d5db;" onclick="_blurDiagnosticReveal()"><span class="diff-btn-text">reveal answer</span></button>
+          </div>
+        </div>
+  function _blurDiagnosticReveal() {
   _blurDiagnosticAnswerRevealed = true;
   var question = questionPool[questionIndex];
   if (!question) return;
@@ -8218,12 +8436,18 @@ function _blurDiagnosticReveal() {
     setTimeout(function() { IntroEl.style.visibility = 'hidden'; }, 400);
   }
 
-  // Replace reveal button with shortcut chips in the action area
-  var ActionArea = document.getElementById('blurDiagnosticActionArea');
-  if (ActionArea) {
-    ActionArea.innerHTML = '';
-    ActionArea.appendChild(BuildShortcutKeyChips(ShortcutDisplay, true));
+  // Show chips inline in the question row
+  var ChipsArea = document.getElementById('blurDiagnosticChipsArea');
+  if (ChipsArea) {
+    ChipsArea.innerHTML = '';
+    ChipsArea.appendChild(BuildShortcutKeyChips(ShortcutDisplay, true));
+    ChipsArea.style.display = 'inline-flex';
+    ChipsArea.style.alignItems = 'center';
   }
+
+  // Hide the reveal button
+  var ActionArea = document.getElementById('blurDiagnosticActionArea');
+  if (ActionArea) ActionArea.style.display = 'none';
 
   // Show follow-up prompt in right col
   var FollowUpEl = document.getElementById('blurDiagnosticFollowUp');

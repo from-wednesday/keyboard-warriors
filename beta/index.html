@@ -308,20 +308,20 @@ GameContainer.addEventListener('animationend', function () {
        <!-- ── Blur Pause Diagnostic ─────────────────────── -->
     <div id="blurPauseDiagnostic" style="display:none;width:100%;grid-column:1/-1;">
       <div class="diff-advanced-panel diff-advanced-active" id="blurDiagnosticBox" style="display:grid;grid-template-columns:1fr 1fr;gap:0;overflow:hidden;">
-        <!-- Left col: intro text (pre-reveal) or unified question row (post-reveal) -->
-        <div id="blurDiagnosticLeft" style="padding-right:20px;">
-          <p class="sp-body" id="blurDiagnosticIntro" style="margin-bottom:0;">If you think it was the shortcut that caused the problem, we should take a closer look. Do you want to reveal the answer?</p>
-        </div>
-        <!-- Right col: unified question row (pre-reveal) or follow-up text (post-reveal) -->
-        <div id="blurDiagnosticRight" style="padding-left:20px;display:flex;flex-direction:column;align-items:flex-start;justify-content:flex-start;gap:6px;">
-          <!-- Unified row: dot + label + (button OR chips). Moved to left col on reveal. -->
-          <div id="blurDiagnosticQuestionRow" style="display:flex;align-items:center;gap:7px;width:100%;">
-            <span class="sp-report-dot" id="blurDiagnosticDot" style="flex-shrink:0;background:#f97316;"></span>
-            <span class="sp-report-question-label" id="blurDiagnosticQuestionLabel" style="font-size:11px;color:#6b7280;line-height:1.5;flex:1;min-width:0;"></span>
-            <span id="blurDiagnosticChipsArea" style="flex-shrink:0;max-width:45%;">
-              <button id="blurDiagnosticRevealBtn" class="score-pill-seg score-pill-full" style="border-radius:12px;border:1.5px solid #d1d5db;min-width:80px;" onclick="_blurDiagnosticReveal()"><span class="diff-btn-text">reveal answer</span></button>
-            </span>
+        <!-- Left col: question block always lives here (dot + label, then button or chips below) -->
+        <div id="blurDiagnosticLeft" style="padding-right:20px;display:flex;flex-direction:column;gap:8px;">
+          <div id="blurDiagnosticQuestionRow" style="display:flex;align-items:flex-start;gap:7px;">
+            <span class="sp-report-dot" id="blurDiagnosticDot" style="margin-top:4px;flex-shrink:0;background:#f97316;"></span>
+            <span class="sp-report-question-label" id="blurDiagnosticQuestionLabel" style="font-size:11px;color:#6b7280;line-height:1.5;"></span>
           </div>
+          <!-- Button (pre-reveal) or chips (post-reveal) — sits below the question label -->
+          <div id="blurDiagnosticActionArea" style="margin-left:15px;">
+            <button id="blurDiagnosticRevealBtn" class="score-pill-seg score-pill-full" style="border-radius:12px;border:1.5px solid #d1d5db;" onclick="_blurDiagnosticReveal()"><span class="diff-btn-text">reveal answer</span></button>
+          </div>
+        </div>
+        <!-- Right col: text passages, sequenced -->
+        <div id="blurDiagnosticRight" style="padding-left:20px;display:flex;flex-direction:column;gap:6px;">
+          <p class="sp-body" id="blurDiagnosticIntro" style="margin:0;">If you think it was the shortcut that caused the problem, we should take a closer look. Do you want to reveal the answer?</p>
           <p class="sp-body" id="blurDiagnosticFollowUp" style="display:none;margin:0;font-size:11px;color:#6b7280;line-height:1.5;"></p>
         </div>
       </div>
@@ -4088,14 +4088,11 @@ function _refreshBrowserContent() {
       li.appendChild(_makeConflictRadio(BlockedKey));
       var label = document.createElement('span');
       label.className = 'conflict-label';
-      var chip = document.createElement('span');
-      chip.className = 'conflict-chip';
-      chip.textContent = BlockedKey;
       var desc = document.createElement('span');
       desc.className = 'conflict-desc';
       desc.style.cssText = 'margin-left:5px;color:#6b7280;font-size:11px;vertical-align:middle;';
       desc.textContent = 'blocked by diagnostic';
-      label.appendChild(chip);
+      label.appendChild(_renderKeyChips(BlockedKey));
       label.appendChild(desc);
       li.appendChild(label);
       li.addEventListener('click', function(e) {
@@ -5647,6 +5644,7 @@ function buildPool() {
     if (s.difficulty > maxDiff) return false;
     if ((touchEnabled || !hasFullKeyboard) && requiresExtKey(s.shortcut)) return false;
     if (browserSkip.has(s.shortcut)) return false;
+    if (dismissedConflicts.has(s.shortcut)) return false;
     if (killPunctuationOn && UNSTABLE_PUNCTUATION_TOKENS.has(s.shortcut)) return false;
     return true;
   });
@@ -8162,7 +8160,7 @@ function _activateBlurPauseScreen() {
   var PausePanelEl = document.getElementById('panelPause');
   if (PausePanelEl) PausePanelEl.classList.add('blur-pause-active');
 
-  // Populate the question label in the unified row
+  // Populate the question label
   var QuestionLabelEl = document.getElementById('blurDiagnosticQuestionLabel');
   if (QuestionLabelEl) QuestionLabelEl.textContent = (question.display || '').replace(/\\\\/g, '\\');
 
@@ -8170,18 +8168,13 @@ function _activateBlurPauseScreen() {
   var DotEl = document.getElementById('blurDiagnosticDot');
   if (DotEl) { DotEl.style.background = '#f97316'; DotEl.style.transition = ''; }
 
-  // Reset chips area to the reveal button
-  var ChipsArea = document.getElementById('blurDiagnosticChipsArea');
-  if (ChipsArea) {
-    ChipsArea.innerHTML = '<button id="blurDiagnosticRevealBtn" class="score-pill-seg score-pill-full" style="border-radius:12px;border:1.5px solid #d1d5db;min-width:80px;" onclick="_blurDiagnosticReveal()"><span class="diff-btn-text">reveal answer</span></button>';
+  // Reset action area to reveal button
+  var ActionArea = document.getElementById('blurDiagnosticActionArea');
+  if (ActionArea) {
+    ActionArea.innerHTML = '<button id="blurDiagnosticRevealBtn" class="score-pill-seg score-pill-full" style="border-radius:12px;border:1.5px solid #d1d5db;" onclick="_blurDiagnosticReveal()"><span class="diff-btn-text">reveal answer</span></button>';
   }
 
-  // Move the unified question row back to the right column
-  var QuestionRowEl = document.getElementById('blurDiagnosticQuestionRow');
-  var RightColEl = document.getElementById('blurDiagnosticRight');
-  if (QuestionRowEl && RightColEl) RightColEl.insertBefore(QuestionRowEl, RightColEl.firstChild);
-
-  // Restore intro text in the left column
+  // Restore intro text
   var IntroEl = document.getElementById('blurDiagnosticIntro');
   if (IntroEl) {
     IntroEl.style.opacity = '1';
@@ -8217,7 +8210,7 @@ function _blurDiagnosticReveal() {
   if (!question) return;
   var ShortcutDisplay = currentOs === 'pc' ? question.pc_sc : question.mac_sc;
 
-  // Fade out and hide intro text in left col
+  // Fade out intro text in right col
   var IntroEl = document.getElementById('blurDiagnosticIntro');
   if (IntroEl) {
     IntroEl.style.transition = 'opacity 0.4s ease';
@@ -8225,17 +8218,12 @@ function _blurDiagnosticReveal() {
     setTimeout(function() { IntroEl.style.visibility = 'hidden'; }, 400);
   }
 
-  // Replace reveal button with shortcut chips in the chips area
-  var ChipsArea = document.getElementById('blurDiagnosticChipsArea');
-  if (ChipsArea) {
-    ChipsArea.innerHTML = '';
-    ChipsArea.appendChild(BuildShortcutKeyChips(ShortcutDisplay, true));
+  // Replace reveal button with shortcut chips in the action area
+  var ActionArea = document.getElementById('blurDiagnosticActionArea');
+  if (ActionArea) {
+    ActionArea.innerHTML = '';
+    ActionArea.appendChild(BuildShortcutKeyChips(ShortcutDisplay, true));
   }
-
-  // Move the unified question row to the top of the left column
-  var QuestionRowEl = document.getElementById('blurDiagnosticQuestionRow');
-  var LeftColEl = document.getElementById('blurDiagnosticLeft');
-  if (QuestionRowEl && LeftColEl) LeftColEl.insertBefore(QuestionRowEl, LeftColEl.firstChild);
 
   // Show follow-up prompt in right col
   var FollowUpEl = document.getElementById('blurDiagnosticFollowUp');

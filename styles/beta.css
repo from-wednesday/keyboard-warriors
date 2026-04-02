@@ -872,6 +872,15 @@ body.pc-mode #extKeyPill {
 .sp-col-left  { padding-right: 20px; }
 .sp-col-right { padding-left:  20px; }
 
+/* ── Both columns always align content from the top ── */
+.sp-col-left,
+.sp-col-right {
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  justify-content: flex-start;
+}
+
 /* ── Typography ──────────────────────────────────── */
 .sp-title {
   font-size: 12px;
@@ -1084,20 +1093,29 @@ body.pc-mode #extKeyPill {
 }
 
 /* ── Browser modal inner content ──────────────────────────────── */
-/* Conflict chip and dismissed styles — still used in settings panel */
+
+/* ── Conflict chip styles ─────────────────────────────────────────────────
+   Active (radio OFF): shadowed chip, normal descriptor text.
+   Blocked/dismissed (radio ON): flat chip, strikethrough descriptor.
+──────────────────────────────────────────────────────────────────────────── */
 .conflict-chip {
-  background: transparent;
-  box-shadow: none;
-}
-/* Dismissed row: chips "light up" as available; description struck through */
-li.conflict-dismissed .conflict-chip {
   background: #f3f4f6;
   box-shadow: 0 1.5px 0 #c9cdd3;
+}
+.conflict-desc {
+  color: #6b7280;
+}
+
+/* Dismissed/blocked (radio ON): flat chip, strikethrough label */
+li.conflict-dismissed .conflict-chip {
+  background: transparent;
+  box-shadow: none;
 }
 li.conflict-dismissed .conflict-desc {
   text-decoration: line-through;
   color: #c0c5cc;
 }
+
 /* ══════════════════════════════════════
    KEYBOARD PANEL
    Outer: 14px → corner keys: 9px → base keys: 4px
@@ -2391,9 +2409,6 @@ li.conflict-dismissed .conflict-desc {
   z-index:          1;
   transform-origin: center bottom;
   transform:        rotateX(90deg);
-  /* Horizontal metallic ramp: dark edges → light centre → dark edges
-     Gives the illusion of a curved/rounded front face.
-     The top-to-bottom gradient layered on top adds the bevel sheen. */
   background:
     linear-gradient(to bottom,
       rgba(0,0,0,0.30)       0px,

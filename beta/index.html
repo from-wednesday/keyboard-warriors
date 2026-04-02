@@ -8174,45 +8174,32 @@ function _activateBlurPauseScreen() {
   var PausePanelEl = document.getElementById('panelPause');
   if (PausePanelEl) PausePanelEl.classList.add('blur-pause-active');
 
-  // Populate the pre-reveal question label (right col, above reveal button)
-  var QuestionLabelPreEl = document.getElementById('blurDiagnosticQuestionLabelPre');
-  if (QuestionLabelPreEl) QuestionLabelPreEl.textContent = (question.display || '').replace(/\\\\/g, '\\');
-
-  // Also populate the post-reveal question label (left col, shown after reveal)
+  // Populate the question label in the unified row
   var QuestionLabelEl = document.getElementById('blurDiagnosticQuestionLabel');
   if (QuestionLabelEl) QuestionLabelEl.textContent = (question.display || '').replace(/\\\\/g, '\\');
 
-  // Reset pre-reveal dot to orange
-  var DotPreEl = document.getElementById('blurDiagnosticDotPre');
-  if (DotPreEl) { DotPreEl.style.background = '#f97316'; DotPreEl.style.transition = ''; }
-
-  // Reset post-reveal dot to orange (hidden until reveal)
+  // Reset dot to orange
   var DotEl = document.getElementById('blurDiagnosticDot');
   if (DotEl) { DotEl.style.background = '#f97316'; DotEl.style.transition = ''; }
 
-  // Reset chips area to reveal button (pre-reveal state)
+  // Reset chips area to the reveal button
   var ChipsArea = document.getElementById('blurDiagnosticChipsArea');
   if (ChipsArea) {
-    ChipsArea.innerHTML = '<button id="blurDiagnosticRevealBtn" class="score-pill-seg score-pill-full" style="border-radius:12px;border:1.5px solid #d1d5db;min-width:100px;" onclick="_blurDiagnosticReveal()"><span class="diff-btn-text">reveal answer</span></button>';
+    ChipsArea.innerHTML = '<button id="blurDiagnosticRevealBtn" class="score-pill-seg score-pill-full" style="border-radius:12px;border:1.5px solid #d1d5db;min-width:80px;" onclick="_blurDiagnosticReveal()"><span class="diff-btn-text">reveal answer</span></button>';
   }
 
-  // Clear post-reveal chips
-  var ChipsInner = document.getElementById('blurDiagnosticChipsInner');
-  if (ChipsInner) ChipsInner.innerHTML = '';
+  // Move the unified question row back to the right column
+  var QuestionRowEl = document.getElementById('blurDiagnosticQuestionRow');
+  var RightColEl = document.getElementById('blurDiagnosticRight');
+  if (QuestionRowEl && RightColEl) RightColEl.insertBefore(QuestionRowEl, RightColEl.firstChild);
 
-  // Show pre-reveal block, hide post-reveal question block
-  var PreRevealEl = document.getElementById('blurDiagnosticPreReveal');
-  if (PreRevealEl) PreRevealEl.style.display = 'flex';
-  var QuestionBlockEl = document.getElementById('blurDiagnosticQuestionBlock');
-  if (QuestionBlockEl) QuestionBlockEl.style.display = 'none';
-
-  // Reset intro text (shown in left col during pre-reveal)
+  // Restore intro text in the left column
   var IntroEl = document.getElementById('blurDiagnosticIntro');
   if (IntroEl) {
     IntroEl.style.opacity = '1';
     IntroEl.style.visibility = 'visible';
     IntroEl.style.transition = '';
-    IntroEl.textContent = 'If you think it was the shortcut that caused the problem, we should take a closer look.\nDo you want to reveal the answer?';
+    IntroEl.textContent = 'If you think it was the shortcut that caused the problem, we should take a closer look. Do you want to reveal the answer?';
   }
 
   // Hide follow-up
@@ -8242,12 +8229,7 @@ function _blurDiagnosticReveal() {
   if (!question) return;
   var ShortcutDisplay = currentOs === 'pc' ? question.pc_sc : question.mac_sc;
 
-  // ── Column swap ──────────────────────────────────────────────────────────
-  // Hide pre-reveal block (question label + reveal button in right col)
-  var PreRevealEl = document.getElementById('blurDiagnosticPreReveal');
-  if (PreRevealEl) PreRevealEl.style.display = 'none';
-
-  // Fade out the intro text in left col
+  // Fade out and hide intro text in left col
   var IntroEl = document.getElementById('blurDiagnosticIntro');
   if (IntroEl) {
     IntroEl.style.transition = 'opacity 0.4s ease';
@@ -8255,21 +8237,22 @@ function _blurDiagnosticReveal() {
     setTimeout(function() { IntroEl.style.visibility = 'hidden'; }, 400);
   }
 
-  // Show question + chips in left col
-  var QuestionBlockEl = document.getElementById('blurDiagnosticQuestionBlock');
-  if (QuestionBlockEl) QuestionBlockEl.style.display = 'block';
-
-  // Build chips in the left col chips area
-  var ChipsInner = document.getElementById('blurDiagnosticChipsInner');
-  if (ChipsInner) {
-    ChipsInner.innerHTML = '';
-    ChipsInner.appendChild(BuildShortcutKeyChips(ShortcutDisplay, true));
+  // Replace reveal button with shortcut chips in the chips area
+  var ChipsArea = document.getElementById('blurDiagnosticChipsArea');
+  if (ChipsArea) {
+    ChipsArea.innerHTML = '';
+    ChipsArea.appendChild(BuildShortcutKeyChips(ShortcutDisplay, true));
   }
+
+  // Move the unified question row to the top of the left column
+  var QuestionRowEl = document.getElementById('blurDiagnosticQuestionRow');
+  var LeftColEl = document.getElementById('blurDiagnosticLeft');
+  if (QuestionRowEl && LeftColEl) LeftColEl.insertBefore(QuestionRowEl, LeftColEl.firstChild);
 
   // Show follow-up prompt in right col
   var FollowUpEl = document.getElementById('blurDiagnosticFollowUp');
   if (FollowUpEl) {
-    FollowUpEl.textContent = 'Is this what you pressed when the problem happened?\nTry it again now.';
+    FollowUpEl.textContent = 'Is this what you pressed when the problem happened? Try it again now.';
     FollowUpEl.style.display = 'block';
   }
 }
@@ -8301,7 +8284,27 @@ function _blurDiagnosticSecondBlur() {
   if (FollowUpEl) {
     FollowUpEl.innerHTML =
       'It seems that your browser or OS is intercepting this shortcut. We will not ask questions needing this shortcut again (see Browser Settings screen).' +
-      '<br><br>You are now free to unpause your level, but if you do not mind, I would like it if you reported this to me:' +
+      '<br><br>You are now free to unpause your level, but if you do not mind, I would like it if you reported th<!-- ── Blur Pause Diagnostic ─────────────────────── -->
+    <div id="blurPauseDiagnostic" style="display:none;width:100%;grid-column:1/-1;">
+      <div class="diff-advanced-panel diff-advanced-active" id="blurDiagnosticBox" style="display:grid;grid-template-columns:1fr 1fr;gap:0;overflow:hidden;">
+        <!-- Left col: intro text (pre-reveal) or unified question row (post-reveal) -->
+        <div id="blurDiagnosticLeft" style="padding-right:20px;">
+          <p class="sp-body" id="blurDiagnosticIntro" style="margin-bottom:0;">If you think it was the shortcut that caused the problem, we should take a closer look. Do you want to reveal the answer?</p>
+        </div>
+        <!-- Right col: unified question row (pre-reveal) or follow-up text (post-reveal) -->
+        <div id="blurDiagnosticRight" style="padding-left:20px;display:flex;flex-direction:column;align-items:flex-start;justify-content:flex-start;gap:6px;">
+          <!-- Unified row: dot + label + (button OR chips). Moved to left col on reveal. -->
+          <div id="blurDiagnosticQuestionRow" style="display:flex;align-items:center;gap:7px;width:100%;">
+            <span class="sp-report-dot" id="blurDiagnosticDot" style="flex-shrink:0;background:#f97316;"></span>
+            <span class="sp-report-question-label" id="blurDiagnosticQuestionLabel" style="font-size:11px;color:#6b7280;line-height:1.5;flex:1;min-width:0;"></span>
+            <span id="blurDiagnosticChipsArea" style="flex-shrink:0;max-width:45%;">
+              <button id="blurDiagnosticRevealBtn" class="score-pill-seg score-pill-full" style="border-radius:12px;border:1.5px solid #d1d5db;min-width:80px;" onclick="_blurDiagnosticReveal()"><span class="diff-btn-text">reveal answer</span></button>
+            </span>
+          </div>
+          <p class="sp-body" id="blurDiagnosticFollowUp" style="display:none;margin:0;font-size:11px;color:#6b7280;line-height:1.5;"></p>
+        </div>
+      </div>
+    </div> to me:' +
       '<br><br><div class="score-clear-pill" style="margin-top:4px;">' +
       '<button class="score-pill-seg score-pill-full" onclick="_blurDiagnosticSendReport(\'' +
       encodeURIComponent(MailSubject) + '\',\'' + encodeURIComponent(MailBody) + '\')" title="Report conflict">' +

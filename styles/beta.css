@@ -1606,13 +1606,14 @@ li.conflict-dismissed .conflict-desc {
    its natural list slot always.
 ══════════════════════════════════════ */
 #appSelectorWrap {
-  margin-left: auto;          /* pushes to right end of osRow */
+  margin-left: auto;
   display: flex;
   align-items: center;
   gap: 7px;
   flex-shrink: 0;
   position: relative;
   overflow: visible;
+  z-index: 500;
 }
 #appSelectorLabel {
   font-family: 'Lato', system-ui, sans-serif;

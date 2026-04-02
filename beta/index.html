@@ -308,32 +308,20 @@ GameContainer.addEventListener('animationend', function () {
        <!-- ── Blur Pause Diagnostic ─────────────────────── -->
     <div id="blurPauseDiagnostic" style="display:none;width:100%;grid-column:1/-1;">
       <div class="diff-advanced-panel diff-advanced-active" id="blurDiagnosticBox" style="display:grid;grid-template-columns:1fr 1fr;gap:0;overflow:hidden;">
-        <!-- Left col: intro text (pre-reveal) or question label + chips (post-reveal) -->
+        <!-- Left col: intro text (pre-reveal) or unified question row (post-reveal) -->
         <div id="blurDiagnosticLeft" style="padding-right:20px;">
-          <!-- Pre-reveal: intro paragraph -->
           <p class="sp-body" id="blurDiagnosticIntro" style="margin-bottom:0;">If you think it was the shortcut that caused the problem, we should take a closer look. Do you want to reveal the answer?</p>
-          <!-- Post-reveal: question + chips moved here (hidden initially) -->
-          <div id="blurDiagnosticQuestionBlock" style="display:none;">
-            <div style="display:flex;align-items:flex-start;gap:7px;">
-              <span class="sp-report-dot" id="blurDiagnosticDot" style="margin-top:5px;flex-shrink:0;background:#f97316;"></span>
-              <span class="sp-report-question-label" id="blurDiagnosticQuestionLabel" style="font-size:11px;color:#6b7280;line-height:1.5;"></span>
-            </div>
-            <div id="blurDiagnosticChipsInner" style="margin-top:6px;margin-left:15px;"></div>
-          </div>
         </div>
-        <!-- Right col: reveal button (pre-reveal) or response text (post-reveal) -->
+        <!-- Right col: unified question row (pre-reveal) or follow-up text (post-reveal) -->
         <div id="blurDiagnosticRight" style="padding-left:20px;display:flex;flex-direction:column;align-items:flex-start;justify-content:flex-start;gap:6px;">
-          <!-- Pre-reveal state: question label + reveal button -->
-          <div id="blurDiagnosticPreReveal" style="display:flex;flex-direction:column;gap:6px;width:100%;">
-            <div style="display:flex;align-items:flex-start;gap:7px;">
-              <span class="sp-report-dot" id="blurDiagnosticDotPre" style="margin-top:5px;flex-shrink:0;background:#f97316;"></span>
-              <span class="sp-report-question-label" id="blurDiagnosticQuestionLabelPre" style="font-size:11px;color:#6b7280;line-height:1.5;"></span>
-            </div>
-            <span id="blurDiagnosticChipsArea" style="flex-shrink:0;margin-left:15px;">
-              <button id="blurDiagnosticRevealBtn" class="score-pill-seg score-pill-full" style="border-radius:12px;border:1.5px solid #d1d5db;min-width:100px;" onclick="_blurDiagnosticReveal()"><span class="diff-btn-text">reveal answer</span></button>
+          <!-- Unified row: dot + label + (button OR chips). Moved to left col on reveal. -->
+          <div id="blurDiagnosticQuestionRow" style="display:flex;align-items:center;gap:7px;width:100%;">
+            <span class="sp-report-dot" id="blurDiagnosticDot" style="flex-shrink:0;background:#f97316;"></span>
+            <span class="sp-report-question-label" id="blurDiagnosticQuestionLabel" style="font-size:11px;color:#6b7280;line-height:1.5;flex:1;min-width:0;"></span>
+            <span id="blurDiagnosticChipsArea" style="flex-shrink:0;max-width:45%;">
+              <button id="blurDiagnosticRevealBtn" class="score-pill-seg score-pill-full" style="border-radius:12px;border:1.5px solid #d1d5db;min-width:80px;" onclick="_blurDiagnosticReveal()"><span class="diff-btn-text">reveal answer</span></button>
             </span>
           </div>
-          <!-- Post-reveal: follow-up text responses -->
           <p class="sp-body" id="blurDiagnosticFollowUp" style="display:none;margin:0;font-size:11px;color:#6b7280;line-height:1.5;"></p>
         </div>
       </div>
@@ -8284,27 +8272,7 @@ function _blurDiagnosticSecondBlur() {
   if (FollowUpEl) {
     FollowUpEl.innerHTML =
       'It seems that your browser or OS is intercepting this shortcut. We will not ask questions needing this shortcut again (see Browser Settings screen).' +
-      '<br><br>You are now free to unpause your level, but if you do not mind, I would like it if you reported th<!-- ── Blur Pause Diagnostic ─────────────────────── -->
-    <div id="blurPauseDiagnostic" style="display:none;width:100%;grid-column:1/-1;">
-      <div class="diff-advanced-panel diff-advanced-active" id="blurDiagnosticBox" style="display:grid;grid-template-columns:1fr 1fr;gap:0;overflow:hidden;">
-        <!-- Left col: intro text (pre-reveal) or unified question row (post-reveal) -->
-        <div id="blurDiagnosticLeft" style="padding-right:20px;">
-          <p class="sp-body" id="blurDiagnosticIntro" style="margin-bottom:0;">If you think it was the shortcut that caused the problem, we should take a closer look. Do you want to reveal the answer?</p>
-        </div>
-        <!-- Right col: unified question row (pre-reveal) or follow-up text (post-reveal) -->
-        <div id="blurDiagnosticRight" style="padding-left:20px;display:flex;flex-direction:column;align-items:flex-start;justify-content:flex-start;gap:6px;">
-          <!-- Unified row: dot + label + (button OR chips). Moved to left col on reveal. -->
-          <div id="blurDiagnosticQuestionRow" style="display:flex;align-items:center;gap:7px;width:100%;">
-            <span class="sp-report-dot" id="blurDiagnosticDot" style="flex-shrink:0;background:#f97316;"></span>
-            <span class="sp-report-question-label" id="blurDiagnosticQuestionLabel" style="font-size:11px;color:#6b7280;line-height:1.5;flex:1;min-width:0;"></span>
-            <span id="blurDiagnosticChipsArea" style="flex-shrink:0;max-width:45%;">
-              <button id="blurDiagnosticRevealBtn" class="score-pill-seg score-pill-full" style="border-radius:12px;border:1.5px solid #d1d5db;min-width:80px;" onclick="_blurDiagnosticReveal()"><span class="diff-btn-text">reveal answer</span></button>
-            </span>
-          </div>
-          <p class="sp-body" id="blurDiagnosticFollowUp" style="display:none;margin:0;font-size:11px;color:#6b7280;line-height:1.5;"></p>
-        </div>
-      </div>
-    </div> to me:' +
+      '<br><br>You are now free to unpause your level, but if you do not mind, I would like it if you reported this to me:' +
       '<br><br><div class="score-clear-pill" style="margin-top:4px;">' +
       '<button class="score-pill-seg score-pill-full" onclick="_blurDiagnosticSendReport(\'' +
       encodeURIComponent(MailSubject) + '\',\'' + encodeURIComponent(MailBody) + '\')" title="Report conflict">' +

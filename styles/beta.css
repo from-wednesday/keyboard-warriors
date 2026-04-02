@@ -2856,7 +2856,7 @@ body.returning-screen #diffIconWrap .icon-tip { display: none; }
 
 /* ── Blur pause diagnostic panel ────────────────────────────────────────────
    Hides both settings columns and shows the full-width diagnostic block.   */
-#panelPause.blur-pause-active {
+#panelPause.blur-pause-active.sp-active {
   display: block;
 }
 #panelPause.blur-pause-active .sp-col {
@@ -2871,7 +2871,7 @@ body.returning-screen #diffIconWrap .icon-tip { display: none; }
 #diffIcon #Needle { fill:#9ca3af; transform-origin:45px 50.9px; transition:transform 0.35s cubic-bezier(0.34,1.56,0.64,1); }
 /* ── Blur pause diagnostic panel ────────────────────────────────────────────
    Overrides the two-column grid to show a single full-width column.        */
-#panelPause.blur-pause-active {
+#panelPause.blur-pause-active.sp-active {
   display: flex;
   flex-direction: column;
 }

@@ -230,7 +230,7 @@ GameContainer.addEventListener('animationend', function () {
       <div class="sp-col sp-col-left">
         <p class="sp-body" id="browserCompatHeading"></p>
         <p class="sp-body" id="browserCompatIntro"></p>
-        <p class="sp-body" id="browserCompatFooter"></p> <p class="sp-body sp-hint">If you encounter an error, hold down
+        <p class="sp-body" id="browserCompatFooter"></p> <p class="sp-body sp-hint">If you encounter any other error, hold down
           <span class="sp-key-chip">Esc</span>
           to open the debug window and send a report.</p>
       </div>
@@ -4047,7 +4047,7 @@ function _refreshBrowserContent() {
   var intro = document.getElementById('browserCompatIntro');
   if (intro) {
     if (d.labels.length > 0) {
-      intro.textContent = 'But, your browser owns some of these shortcuts and may intercept them during play. To test whether shortcuts ones listed here actually reach the game, press them now \u2014 if it works, it will unblock automatically.';
+      intro.textContent = 'But, your browser owns some shortcuts and may interrupt us. We will try not to ask you any questions that use those indicated here. You can also test them now. Any working ones will unblock automatically.';
     } else {
       intro.textContent = 'We haven\u2019t spotted any shortcut conflicts for your current setup \u2014 you\u2019re good to go.';
     }
@@ -8168,7 +8168,7 @@ function _activateBlurPauseScreen() {
   // Show heading in the title area of the game panel
   titleEl.classList.remove('blurred');
   titleEl.className = '';
-  titleEl.textContent = 'You went away for a bit, so we paused your game.';
+  titleEl.textContent = 'You went away for a bit,\nso we paused your game.';
 
   // Activate diagnostic layout (hides the standard two columns)
   var PausePanelEl = document.getElementById('panelPause');
@@ -8212,7 +8212,7 @@ function _activateBlurPauseScreen() {
     IntroEl.style.opacity = '1';
     IntroEl.style.visibility = 'visible';
     IntroEl.style.transition = '';
-    IntroEl.textContent = 'If you think it was the shortcut that caused the problem, we should take a closer look. Do you want to reveal the answer?';
+    IntroEl.textContent = 'If you think it was the shortcut that caused the problem, we should take a closer look.\nDo you want to reveal the answer?';
   }
 
   // Hide follow-up
@@ -8269,7 +8269,7 @@ function _blurDiagnosticReveal() {
   // Show follow-up prompt in right col
   var FollowUpEl = document.getElementById('blurDiagnosticFollowUp');
   if (FollowUpEl) {
-    FollowUpEl.textContent = 'Is this what you pressed when the problem happened? Try it again now.';
+    FollowUpEl.textContent = 'Is this what you pressed when the problem happened?\nTry it again now.';
     FollowUpEl.style.display = 'block';
   }
 }
@@ -8300,8 +8300,8 @@ function _blurDiagnosticSecondBlur() {
   var FollowUpEl = document.getElementById('blurDiagnosticFollowUp');
   if (FollowUpEl) {
     FollowUpEl.innerHTML =
-      'It seems that your browser or OS is intercepting this shortcut. We have blocked it and will not ask questions needing this shortcut again.' +
-      '<br><br>You can review and unblock it in the Browser Settings screen. You are now free to restart and continue your level, but if you do not mind, I would like it if you reported this to me:' +
+      'It seems that your browser or OS is intercepting this shortcut. We will not ask questions needing this shortcut again (see Browser Settings screen).' +
+      '<br><br>You are now free to unpause your level, but if you do not mind, I would like it if you reported this to me:' +
       '<br><br><div class="score-clear-pill" style="margin-top:4px;">' +
       '<button class="score-pill-seg score-pill-full" onclick="_blurDiagnosticSendReport(\'' +
       encodeURIComponent(MailSubject) + '\',\'' + encodeURIComponent(MailBody) + '\')" title="Report conflict">' +

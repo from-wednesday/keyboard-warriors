@@ -4213,101 +4213,7 @@ function _refreshBrowserContent() {
 
   _attachBrowserPanelKeypressVerifier();
 }
-  var d     = getBrowserConflicts();
-  var bname = d.name;    // e.g. 'Chrome' or 'your browser' if unknown
-  var knownBrowser = (bname !== 'your browser');
 
-  var h = document.getElementById('browserCompatHeading');
-  if (h) {
-    h.innerHTML = '';
-    var t1 = document.createElement('strong');
-    t1.style.color = '#1e3a5f';
-    t1.textContent = 'Keyboard Warriors';
-    h.appendChild(t1);
-    if (knownBrowser) {
-      h.appendChild(document.createTextNode(', the shortcuts coach, is compatible with your browser, '));
-      var t3 = document.createElement('strong');
-      t3.textContent = bname + '.';
-      h.appendChild(t3);
-    } else {
-      h.appendChild(document.createTextNode(', the shortcuts coach, is compatible with your browser.'));
-    }
-  }
-
-  var intro = document.getElementById('browserCompatIntro');
-  if (intro) {
-    if (d.labels.length > 0) {
-      intro.textContent = 'But, your browser owns some shortcuts and may interrupt us. We will try not to ask you any questions that use those indicated here. You can also test them now. Any working ones will unblock automatically.';
-    } else {
-      intro.textContent = 'We haven\u2019t spotted any shortcut conflicts for your current setup \u2014 you\u2019re good to go.';
-    }
-  }
-
-  // Hide the footer paragraph when intro already contains the full explanation
-  var ft = document.getElementById('browserCompatFooter');
-  if (ft) ft.textContent = '';
-
-  var ul = document.getElementById('browserCompatList');
-  if (ul) {
-    ul.innerHTML = '';
-
-    // Standard browser conflict shortcuts: default to blocked (dismissed) on first encounter
-    d.keys.forEach(function(canonicalKey) {
-      if (!dismissedConflicts.has(canonicalKey)) {
-        dismissedConflicts.add(canonicalKey);
-      }
-    });
-    _saveCustomDismissedConflicts();
-    questionPool = shuffleArray(buildPool());
-
-    d.labels.forEach(function(s, i) {
-      var canonicalKey = d.keys[i];
-      var isBlocked    = dismissedConflicts.has(canonicalKey);
-      var li = document.createElement('li');
-      li.className = isBlocked ? 'conflict-dismissed' : '';
-      li.dataset.conflictKey = canonicalKey;
-      li.style.cssText = 'margin-bottom:6px;display:flex;align-items:center;flex-wrap:nowrap;gap:0;line-height:1.6;cursor:pointer;';
-      li.appendChild(_makeConflictRadio(canonicalKey));
-      var label = document.createElement('span');
-      label.className = 'conflict-label';
-      label.appendChild(_renderKeyChips(s));
-      li.appendChild(label);
-      li.addEventListener('click', function(e) {
-        if (e.target.closest('.modal-radio')) return;
-        li.querySelector('.modal-radio').click();
-      });
-      ul.appendChild(li);
-    });
-
-    // Also show any custom-blocked shortcuts from the blur-pause diagnostic
-    var BrowserConflictKeys = new Set(d.keys);
-    dismissedConflicts.forEach(function(BlockedKey) {
-      if (BrowserConflictKeys.has(BlockedKey)) return;
-      var li = document.createElement('li');
-      li.className = 'conflict-dismissed';
-      li.dataset.conflictKey = BlockedKey;
-      li.style.cssText = 'margin-bottom:6px;display:flex;align-items:center;flex-wrap:nowrap;gap:0;line-height:1.6;cursor:pointer;';
-      li.appendChild(_makeConflictRadio(BlockedKey));
-      var label = document.createElement('span');
-      label.className = 'conflict-label';
-      var desc = document.createElement('span');
-      desc.className = 'conflict-desc';
-      desc.style.cssText = 'margin-left:5px;color:#6b7280;font-size:11px;vertical-align:middle;';
-      desc.textContent = 'blocked by diagnostic';
-      label.appendChild(_renderKeyChips(BlockedKey));
-      label.appendChild(desc);
-      li.appendChild(label);
-      li.addEventListener('click', function(e) {
-        if (e.target.closest('.modal-radio')) return;
-        li.querySelector('.modal-radio').click();
-      });
-      ul.appendChild(li);
-    });
-  }
-
-  // Attach keypress verifier so users can prove a shortcut works live
-  _attachBrowserPanelKeypressVerifier();
-}
 
 // ── Unified icon click handlers ──────────────────────────────────────────────
 document.getElementById('kbIcon').addEventListener('click', function(e) {
@@ -8410,18 +8316,17 @@ function _deactivateBlurPauseScreen() {
   titleEl.textContent = (questionPool[questionIndex]?.display || '').replace(/\\\\/g, '\\');
   titleEl.classList.add('blurred');
 }
-
 <div id="blurDiagnosticLeft" style="padding-right:20px;display:flex;flex-direction:column;gap:8px;">
-          <div id="blurDiagnosticQuestionRow" style="display:flex;align-items:center;gap:7px;flex-wrap:nowrap;">
-            <span class="sp-report-dot" id="blurDiagnosticDot" style="flex-shrink:0;background:#f97316;"></span>
-            <span class="sp-report-question-label" id="blurDiagnosticQuestionLabel" style="font-size:11px;color:#6b7280;line-height:1.5;flex:1;min-width:0;"></span>
-            <span id="blurDiagnosticChipsArea" style="flex-shrink:0;display:none;"></span>
-          </div>
-          <!-- Reveal button sits below the question row -->
-          <div id="blurDiagnosticActionArea" style="margin-left:15px;">
-            <button id="blurDiagnosticRevealBtn" class="score-pill-seg score-pill-full" style="border-radius:12px;border:1.5px solid #d1d5db;" onclick="_blurDiagnosticReveal()"><span class="diff-btn-text">reveal answer</span></button>
-          </div>
-        </div>
+  <div id="blurDiagnosticQuestionRow" style="display:flex;align-items:center;gap:7px;flex-wrap:nowrap;">
+    <span class="sp-report-dot" id="blurDiagnosticDot" style="flex-shrink:0;background:#f97316;"></span>
+    <span class="sp-report-question-label" id="blurDiagnosticQuestionLabel" style="font-size:11px;color:#6b7280;line-height:1.5;flex:1;min-width:0;"></span>
+    <span id="blurDiagnosticChipsArea" style="flex-shrink:0;display:none;"></span>
+  </div>
+  <!-- Reveal button sits below the question row -->
+  <div id="blurDiagnosticActionArea" style="margin-left:15px;">
+    <button id="blurDiagnosticRevealBtn" class="score-pill-seg score-pill-full" style="border-radius:12px;border:1.5px solid #d1d5db;" onclick="_blurDiagnosticReveal()"><span class="diff-btn-text">reveal answer</span></button>
+  </div>
+</div>
   function _blurDiagnosticReveal() {
   _blurDiagnosticAnswerRevealed = true;
   var question = questionPool[questionIndex];

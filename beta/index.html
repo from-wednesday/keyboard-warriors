@@ -313,6 +313,7 @@ GameContainer.addEventListener('animationend', function () {
           <div id="blurDiagnosticQuestionRow" style="display:flex;align-items:flex-start;gap:7px;">
             <span class="sp-report-dot" id="blurDiagnosticDot" style="margin-top:4px;flex-shrink:0;background:#f97316;"></span>
             <span class="sp-report-question-label" id="blurDiagnosticQuestionLabel" style="font-size:11px;color:#6b7280;line-height:1.5;"></span>
+            <span id="blurDiagnosticChipsArea" style="flex-shrink:0;display:none;"></span>
           </div>
           <!-- Button (pre-reveal) or chips (post-reveal) — sits below the question label -->
           <div id="blurDiagnosticActionArea" style="margin-left:15px;">
@@ -4213,7 +4214,6 @@ function _refreshBrowserContent() {
 
   _attachBrowserPanelKeypressVerifier();
 }
-
 
 // ── Unified icon click handlers ──────────────────────────────────────────────
 document.getElementById('kbIcon').addEventListener('click', function(e) {
@@ -8316,16 +8316,6 @@ function _deactivateBlurPauseScreen() {
   titleEl.textContent = (questionPool[questionIndex]?.display || '').replace(/\\\\/g, '\\');
   titleEl.classList.add('blurred');
 }
-<div id="blurDiagnosticLeft" style="padding-right:20px;display:flex;flex-direction:column;gap:8px;">
-  <div id="blurDiagnosticQuestionRow" style="display:flex;align-items:center;gap:7px;flex-wrap:nowrap;">
-    <span class="sp-report-dot" id="blurDiagnosticDot" style="flex-shrink:0;background:#f97316;"></span>
-    <span class="sp-report-question-label" id="blurDiagnosticQuestionLabel" style="font-size:11px;color:#6b7280;line-height:1.5;flex:1;min-width:0;"></span>
-    <span id="blurDiagnosticChipsArea" style="flex-shrink:0;display:none;"></span>
-  </div>
-  <!-- Reveal button sits below the question row -->
-  <div id="blurDiagnosticActionArea" style="margin-left:15px;">
-    <button id="blurDiagnosticRevealBtn" class="score-pill-seg score-pill-full" style="border-radius:12px;border:1.5px solid #d1d5db;" onclick="_blurDiagnosticReveal()"><span class="diff-btn-text">reveal answer</span></button>
-  </div>
 </div>
   function _blurDiagnosticReveal() {
   _blurDiagnosticAnswerRevealed = true;

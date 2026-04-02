@@ -9,7 +9,7 @@
 <title>beta</title>
 <script>
   const DefaultTitle = 'Keyboard Warriors';
-  const VersionLabel   = '0013';
+  const VersionLabel   = '0014';
   const TitlePrefix  = document.title !== DefaultTitle ? document.title.trim() + '_' : '';
   const DBG_DEVICE   = TitlePrefix + VersionLabel;
 </script>
@@ -3142,11 +3142,11 @@ function matchesShortcut(event, str) {
 
   // ── CMD + special keys ───────────────────────────────────────────
   if (s === 'CMD+DEL')              return (k === 'Backspace' || k === 'Delete') && cmd && !opt && !sh;
-  if (s === 'CMD+GRAVE')            return (k === "'" || k === '`' || e.code === 'Backquote') && cmd && !opt && !sh;
-  if (s === 'CMD+OPTION+GRAVE')     return (k === "'" || k === '`' || e.code === 'Backquote') && cmd && opt && !sh;
-  if (s === 'CMD+BACKSLASH')        return (k === '\\' || e.code === 'Backslash') && cmd && !opt && !sh;
-  if (s === 'CMD+SHIFT+BACKSLASH')  return (k === '\\' || e.code === 'Backslash') && cmd && sh && !opt;
-  if (s === 'CMD+OPTION+BACKSLASH') return (k === '\\' || e.code === 'Backslash') && cmd && opt && !sh;
+  if (s === 'CMD+GRAVE')            return (k === "'" || k === '`' || event.code === 'Backquote') && cmd && !opt && !sh;
+  if (s === 'CMD+OPTION+GRAVE')     return (k === "'" || k === '`' || event.code === 'Backquote') && cmd && opt && !sh;
+  if (s === 'CMD+BACKSLASH')        return (k === '\\' || event.code === 'Backslash') && cmd && !opt && !sh;
+  if (s === 'CMD+SHIFT+BACKSLASH')  return (k === '\\' || event.code === 'Backslash') && cmd && sh && !opt;
+  if (s === 'CMD+OPTION+BACKSLASH') return (k === '\\' || event.code === 'Backslash') && cmd && opt && !sh;
 
   // ── CTRL+C (Fi Eyedropper legacy) ─────────────────────────────────
   if (s === 'CTRL+C') return event.ctrlKey && !event.metaKey && k.toUpperCase() === 'C' && !sh && !opt;

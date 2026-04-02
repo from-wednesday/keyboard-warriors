@@ -4339,9 +4339,9 @@ function getBrowserConflicts() {
   var mac = {
     Edge:    ['CMD+T','CMD+GRAVE','CMD+OPTION+I','CMD+SHIFT+C','CMD+SHIFT+J','CMD+SHIFT+H','CMD+SHIFT+D','CMD+SHIFT+N'],
     Firefox: ['CMD+T','CMD+GRAVE','CMD+OPTION+I','CMD+SHIFT+A','CMD+SHIFT+H','CMD+SHIFT+U','CMD+SHIFT+D','CMD+SHIFT+N'],
-    Safari:  ['CMD+T','CMD+GRAVE','CMD+OPTION+U','CMD+OPTION+I','CMD+OPTION+C','CMD+SHIFT+H','CMD+SHIFT+I','CMD+SHIFT+L'],
+    Safari:  ['CMD+T','CMD+GRAVE'],
     Opera:   ['CMD+T','CMD+GRAVE','CMD+OPTION+I','CMD+OPTION+J','CMD+SHIFT+D','CMD+SHIFT+N'],
-    Chrome:  ['CMD+T','CMD+GRAVE','CMD+OPTION+I','CMD+OPTION+J','CMD+SHIFT+C','CMD+SHIFT+N'],
+    Chrome:  ['CMD+T','CMD+GRAVE','CMD+SHIFT+N'],
   };
   var pc = {
     Edge:    ['CMD+T','CMD+SHIFT+I','CMD+SHIFT+C','CMD+SHIFT+J','CMD+SHIFT+H','CMD+SHIFT+D','CMD+SHIFT+N'],
@@ -4375,12 +4375,6 @@ function getBrowserConflicts() {
     Safari: [
       'Cmd+T \u2014 opens new tab',
       'Cmd+` \u2014 cycles app windows (macOS)',
-      'Cmd+Opt+U \u2014 opens Page Source',
-      'Cmd+Opt+I \u2014 opens Web Inspector',
-      'Cmd+Opt+C \u2014 opens Inspector Console',
-      'Cmd+Shift+H \u2014 opens Home \u2215 History',
-      'Cmd+Shift+I \u2014 opens Mail',
-      'Cmd+Shift+L \u2014 opens Sidebar',
     ],
     Opera: [
       'Cmd+T \u2014 opens new tab',
@@ -4393,9 +4387,6 @@ function getBrowserConflicts() {
     Chrome: [
       'Cmd+T \u2014 opens new tab',
       'Cmd+` \u2014 cycles app windows (macOS)',
-      'Cmd+Opt+I \u2014 opens DevTools',
-      'Cmd+Opt+J \u2014 opens DevTools console',
-      'Cmd+Shift+C \u2014 opens DevTools inspector',
       'Cmd+Shift+N \u2014 opens Incognito window',
     ],
   };

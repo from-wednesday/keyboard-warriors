@@ -9,7 +9,7 @@
 <title>beta</title>
 <script>
   const DefaultTitle = 'Keyboard Warriors';
-  const VersionLabel   = '0012';
+  const VersionLabel   = '0013';
   const TitlePrefix  = document.title !== DefaultTitle ? document.title.trim() + '_' : '';
   const DBG_DEVICE   = TitlePrefix + VersionLabel;
 </script>
@@ -3949,10 +3949,65 @@ function _renderKeyChips(label) {
   return frag;
 }
 
+// ── Browser conflict shortcut verification via keypress ───────────────────────
+// When the browser panel is open, listens for the user successfully pressing
+// a listed shortcut. If it fires without a blur, the shortcut is auto-unblocked.
+var _browserPanelKeydownHandler = null;
+
+function _attachBrowserPanelKeypressVerifier() {
+  _detachBrowserPanelKeypressVerifier();
+  _browserPanelKeydownHandler = function(e) {
+    if (activeSettings !== 'panelBrowser') { _detachBrowserPanelKeypressVerifier(); return; }
+    // Check every item in the conflict list against this keypress
+    var ul = document.getElementById('browserCompatList');
+    if (!ul) return;
+    var items = ul.querySelectorAll('li[data-conflict-key]');
+    items.forEach(function(li) {
+      var key = li.dataset.conflictKey;
+      if (!key) return;
+      // Only act on currently-blocked shortcuts (dismissed = blocked = radio on)
+      if (!dismissedConflicts.has(key)) return;
+      if (!matchesShortcut(e, key)) return;
+      // Keypress succeeded without blur — unblock it
+      e.preventDefault();
+      _setConflictBlocked(key, false, li);
+      showToast('Shortcut working');
+    });
+  };
+  document.addEventListener('keydown', _browserPanelKeydownHandler);
+}
+
+function _detachBrowserPanelKeypressVerifier() {
+  if (_browserPanelKeydownHandler) {
+    document.removeEventListener('keydown', _browserPanelKeydownHandler);
+    _browserPanelKeydownHandler = null;
+  }
+}
+
+// Central toggle for blocked state — updates DOM, storage, pool, and toast.
+// toastMsg: pass null to suppress toast (used on initial render).
+function _setConflictBlocked(canonicalKey, blocked, liEl) {
+  if (blocked) {
+    dismissedConflicts.add(canonicalKey);
+  } else {
+    dismissedConflicts.delete(canonicalKey);
+  }
+  _saveCustomDismissedConflicts();
+  questionPool = shuffleArray(buildPool());
+
+  if (!liEl) return;
+  var radio = liEl.querySelector('.modal-radio');
+  // blocked = radio ON (filled dot), strikethrough label
+  // active  = radio OFF (empty ring), normal label
+  if (radio) radio.classList.toggle('on', blocked);
+  liEl.classList.toggle('conflict-dismissed', blocked);
+}
+
 function _makeConflictRadio(canonicalKey) {
-  var isDismissed = dismissedConflicts.has(canonicalKey);
+  // Blocked (dismissed) = radio ON. Active = radio OFF.
+  var isBlocked = dismissedConflicts.has(canonicalKey);
   var wrap = document.createElement('span');
-  wrap.className = 'modal-radio' + (isDismissed ? ' on' : '');
+  wrap.className = 'modal-radio' + (isBlocked ? ' on' : '');
   wrap.style.cssText = 'flex-shrink:0;margin-right:7px;cursor:pointer;';
   wrap.innerHTML = '<svg class="modal-radio-dot" width="16" height="16" viewBox="0 0 19 19" xmlns="http://www.w3.org/2000/svg">'
     + '<circle cx="9.5" cy="9.5" r="6.5" stroke="#374151" stroke-width="1.5" fill="none"/>'
@@ -3960,23 +4015,9 @@ function _makeConflictRadio(canonicalKey) {
     + '</svg>';
   wrap.addEventListener('click', function(e) {
     var li = wrap.closest('li');
-    if (dismissedConflicts.has(canonicalKey)) {
-      // Restore
-      dismissedConflicts.delete(canonicalKey);
-      _saveCustomDismissedConflicts();
-      wrap.classList.remove('on');
-      if (li) li.classList.remove('conflict-dismissed');
-      showModeToast('Assumption restored');
-    } else {
-      // Dismiss
-      dismissedConflicts.add(canonicalKey);
-      _saveCustomDismissedConflicts();
-      wrap.classList.add('on');
-      if (li) li.classList.add('conflict-dismissed');
-      showModeToast('Assumption removed');
-    }
-    // Rebuild pool immediately so the change takes effect
-    questionPool = shuffleArray(buildPool());
+    var nowBlocked = !dismissedConflicts.has(canonicalKey); // toggling
+    _setConflictBlocked(canonicalKey, nowBlocked, li);
+    showToast(nowBlocked ? 'Shortcut blocked' : 'Shortcut working');
   });
   return wrap;
 }
@@ -4006,7 +4047,7 @@ function _refreshBrowserContent() {
   var intro = document.getElementById('browserCompatIntro');
   if (intro) {
     if (d.labels.length > 0) {
-      intro.textContent = 'But, you may find it can take over if it hears one of its favourite shortcuts. We will try not to ask you any questions that use these specific key combinations, but if we do get interrupted during play, just click back into our window to continue training.';
+      intro.textContent = 'But, your browser owns some of these shortcuts and may intercept them during play. To test whether shortcuts ones listed here actually reach the game, press them now \u2014 if it works, it will unblock automatically.';
     } else {
       intro.textContent = 'We haven\u2019t spotted any shortcut conflicts for your current setup \u2014 you\u2019re good to go.';
     }
@@ -4019,11 +4060,22 @@ function _refreshBrowserContent() {
   var ul = document.getElementById('browserCompatList');
   if (ul) {
     ul.innerHTML = '';
+
+    // Standard browser conflict shortcuts: default to blocked (dismissed) on first encounter
+    d.keys.forEach(function(canonicalKey) {
+      if (!dismissedConflicts.has(canonicalKey)) {
+        dismissedConflicts.add(canonicalKey);
+      }
+    });
+    _saveCustomDismissedConflicts();
+    questionPool = shuffleArray(buildPool());
+
     d.labels.forEach(function(s, i) {
       var canonicalKey = d.keys[i];
-      var isDismissed  = dismissedConflicts.has(canonicalKey);
+      var isBlocked    = dismissedConflicts.has(canonicalKey);
       var li = document.createElement('li');
-      li.className = isDismissed ? 'conflict-dismissed' : '';
+      li.className = isBlocked ? 'conflict-dismissed' : '';
+      li.dataset.conflictKey = canonicalKey;
       li.style.cssText = 'margin-bottom:6px;display:flex;align-items:center;flex-wrap:nowrap;gap:0;line-height:1.6;cursor:pointer;';
       li.appendChild(_makeConflictRadio(canonicalKey));
       var label = document.createElement('span');
@@ -4038,30 +4090,24 @@ function _refreshBrowserContent() {
     });
 
     // Also show any custom-blocked shortcuts from the blur-pause diagnostic
-    // (shortcuts not in the standard browser conflict table)
     var BrowserConflictKeys = new Set(d.keys);
     dismissedConflicts.forEach(function(BlockedKey) {
-      if (BrowserConflictKeys.has(BlockedKey)) return; // already shown above
-      var isDismissed = dismissedConflicts.has(BlockedKey); // always true here, but kept for _makeConflictRadio
+      if (BrowserConflictKeys.has(BlockedKey)) return;
       var li = document.createElement('li');
       li.className = 'conflict-dismissed';
+      li.dataset.conflictKey = BlockedKey;
       li.style.cssText = 'margin-bottom:6px;display:flex;align-items:center;flex-wrap:nowrap;gap:0;line-height:1.6;cursor:pointer;';
       li.appendChild(_makeConflictRadio(BlockedKey));
-      // Build a proper label with chips using the same pattern as standard conflicts
       var label = document.createElement('span');
       label.className = 'conflict-label';
-      // Derive a human-readable display string for the chips.
-      // Try to find a matching shortcut in the pool for a display string; fall back to the raw token.
-      var allShortcuts = UNIVERSAL_SHORTCUTS.concat(loadedAppShortcuts);
-      var matchedShortcut = allShortcuts.find(function(s) { return s.shortcut === BlockedKey; });
-      var chipDisplayStr = matchedShortcut
-        ? (currentOs === 'pc' ? matchedShortcut.pc_sc : matchedShortcut.mac_sc)
-        : BlockedKey;
-      label.appendChild(_renderKeyChips(chipDisplayStr));
+      var chip = document.createElement('span');
+      chip.className = 'conflict-chip';
+      chip.textContent = BlockedKey;
       var desc = document.createElement('span');
       desc.className = 'conflict-desc';
       desc.style.cssText = 'margin-left:5px;color:#6b7280;font-size:11px;vertical-align:middle;';
-      desc.textContent = 'blocked via diagnostic';
+      desc.textContent = 'blocked by diagnostic';
+      label.appendChild(chip);
       label.appendChild(desc);
       li.appendChild(label);
       li.addEventListener('click', function(e) {
@@ -4071,6 +4117,9 @@ function _refreshBrowserContent() {
       ul.appendChild(li);
     });
   }
+
+  // Attach keypress verifier so users can prove a shortcut works live
+  _attachBrowserPanelKeypressVerifier();
 }
 
 // ── Unified icon click handlers ──────────────────────────────────────────────
@@ -4337,8 +4386,8 @@ function getBrowserConflicts() {
   // Conflict tables — Mac shortcuts use Cmd, PC use Ctrl (same token in our shortcut strings)
   // Values are the canonical shortcut strings used in SHORTCUTS[].shortcut
   var mac = {
-    Edge:    ['CMD+T','CMD+GRAVE','CMD+OPTION+I','CMD+SHIFT+C','CMD+SHIFT+J','CMD+SHIFT+H','CMD+SHIFT+D','CMD+SHIFT+N'],
-    Firefox: ['CMD+T','CMD+GRAVE','CMD+OPTION+I','CMD+SHIFT+A','CMD+SHIFT+H','CMD+SHIFT+U','CMD+SHIFT+D','CMD+SHIFT+N'],
+    Edge:    ['CMD+T','CMD+GRAVE'],
+    Firefox: ['CMD+T','CMD+GRAVE'],
     Safari:  ['CMD+T','CMD+GRAVE'],
     Opera:   ['CMD+T','CMD+GRAVE','CMD+OPTION+I','CMD+OPTION+J','CMD+SHIFT+D','CMD+SHIFT+N'],
     Chrome:  ['CMD+T','CMD+GRAVE','CMD+SHIFT+N'],
@@ -4365,12 +4414,6 @@ function getBrowserConflicts() {
     Firefox: [
       'Cmd+T \u2014 opens new tab',
       'Cmd+` \u2014 cycles app windows (macOS)',
-      'Cmd+Opt+I \u2014 opens DevTools',
-      'Cmd+Shift+A \u2014 opens Add-ons',
-      'Cmd+Shift+H \u2014 opens History',
-      'Cmd+Shift+U \u2014 opens Page Source',
-      'Cmd+Shift+D \u2014 bookmarks page',
-      'Cmd+Shift+N \u2014 opens Private window',
     ],
     Safari: [
       'Cmd+T \u2014 opens new tab',
@@ -8207,9 +8250,9 @@ function _blurDiagnosticReveal() {
   // Fade out the intro text in left col
   var IntroEl = document.getElementById('blurDiagnosticIntro');
   if (IntroEl) {
-    IntroEl.style.transition = 'opacity 0.3s ease';
+    IntroEl.style.transition = 'opacity 0.4s ease';
     IntroEl.style.opacity = '0';
-    setTimeout(function() { IntroEl.style.visibility = 'hidden'; }, 300);
+    setTimeout(function() { IntroEl.style.visibility = 'hidden'; }, 400);
   }
 
   // Show question + chips in left col

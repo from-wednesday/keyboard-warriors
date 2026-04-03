@@ -350,19 +350,28 @@ GameContainer.addEventListener('animationend', function () {
   </div>
 </div>
     <!-- ── Cheat Sheet Panel ─────────────────────────────── -->
-    <div id="panelPadlock" class="sp-page">
-      <div class="sp-col sp-col-left">
-        <div class="sp-report-col-header">
-          <p class="sp-small-card-title" id="cheatSheetContextLabel"></p>
-          <p class="sp-report-section-title" id="cheatSheetHeading">Cheat Sheet</p>
-        </div>
-        <ul id="cheatSheetList" class="sp-report-list sp-report-weakness"></ul>
-      </div>
-      <div class="sp-col sp-col-right">
-       
-        <ul id="cheatSheetListRight" class="sp-report-list sp-report-weakness"></ul>
-      </div>
-    </div>
+    var IsActiveGame = (gameState === 'playing' || gameState === 'paused' || gameState === 'readyToUnpause');
+
+  // Build a map of shortcut token → dot colour based on runData outcomes.
+  // This is computed fresh each time the panel opens and does not persist.
+  var AnsweredOutcomeColourMap = {};
+  runData.forEach(function(Entry) {
+    var Question = questionPool[Entry.questionIndex];
+    if (!Question) return;
+    var Token = Question.shortcut;
+    var Colour;
+    if (Entry.endType === 'success' && Entry.wrongKeyCount === 0 && Entry.hintUsedAtMs === null) {
+      Colour = '#10b981'; // green: clean success
+    } else if (Entry.endType === 'success') {
+      Colour = '#f5c842'; // yellow: success but wrong keys or hint used
+    } else {
+      Colour = '#f59e0b'; // amber: skip or timeout
+    }
+    // If a token appears multiple times, the most recent entry wins (runData is in order)
+    AnsweredOutcomeColourMap[Token] = Colour;
+  });
+
+  if (OrderedPool.length === 0) {
 
     <!-- ── Returning User Landing ───────────────────────── -->
     <div id="panelReturning" class="sp-page">
@@ -7489,10 +7498,10 @@ function _refreshCheatSheet() {
       li.style.alignItems = 'flex-start';
       li.dataset.shortcutToken = Question.shortcut;
 
-      var dot = document.createElement('span');
+var dot = document.createElement('span');
       dot.className = 'sp-report-dot';
       dot.style.marginTop = '5px';
-      dot.style.background = '#10b981';
+      dot.style.background = AnsweredOutcomeColourMap[Question.shortcut] || '#10b981';
 
       var label = document.createElement('span');
       label.className = 'sp-report-question-label';
@@ -8129,7 +8138,26 @@ function handleKeydown(e) {
     });
   }
   // Enter unpauses when the cheat sheet is open (mirrors the unpause button)
-  if (activeSettings === 'panelPadlock' && e.key === 'Enter') {
+  if (activeSettings === '<!-- ── Cheat Sheet Panel ─────────────────────────────── -->
+    <div id="panelPadlock" class="sp-page sp-page-padlock">
+      <div class="sp-padlock-title-row">
+        <p class="sp-padlock-main-heading">Cheat Sheet</p>
+        <p class="sp-padlock-byline">Your study companion.</p>
+      </div>
+      <div class="sp-col sp-col-left">
+        <div class="sp-report-col-header">
+          <p class="sp-small-card-title" id="cheatSheetContextLabel"></p>
+          <p class="sp-report-section-title" id="cheatSheetHeading">Past Questions</p>
+        </div>
+        <ul id="cheatSheetList" class="sp-report-list sp-report-weakness"></ul>
+      </div>
+      <div class="sp-col sp-col-right">
+        <div class="sp-report-col-header sp-report-col-header-right">
+          <p class="sp-report-section-title">Coming Up</p>
+        </div>
+        <ul id="cheatSheetListRight" class="sp-report-list sp-report-weakness"></ul>
+      </div>
+    </div>' && e.key === 'Enter') {
     if (gameState === 'paused') { e.preventDefault(); _closeAllModals(); beginResumeCountdown(); return; }
     if (gameState === 'readyToUnpause') { e.preventDefault(); _enterReadyToUnpauseCleanup(); beginResumeCountdown(); return; }
   }

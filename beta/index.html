@@ -8394,7 +8394,7 @@ function _deactivateBlurPauseScreen() {
   if (IntroEl) {
     IntroEl.style.transition = 'opacity 0.4s ease';
     IntroEl.style.opacity = '0';
-    setTimeout(function() { IntroEl.style.visibility = 'hidden'; }, 400);
+    setTimeout(function() { IntroEl.style.display = 'none'; }, 450);
   }
 
   // Show chips in place of the reveal button: centred, scaled to button height
@@ -8438,7 +8438,7 @@ function _deactivateBlurPauseScreen() {
   // Stage 2 right-column text (line break between the two sentences)
   var FollowUpEl = document.getElementById('blurDiagnosticFollowUp');
   if (FollowUpEl) {
-    FollowUpEl.innerHTML = 'Is this what you pressed when the problem happened?<br>Try it again now.';
+    FollowUpEl.innerHTML = 'Is this what you pressed when the problem happened?<br><strong>Try it again now.</strong>';
     FollowUpEl.style.display = 'block';
   }
 }
@@ -8544,15 +8544,16 @@ function _blurDiagnosticSecondBlur() {
     NudgeRow.appendChild(NudgeIcon);
     FollowUpEl.appendChild(NudgeRow);
 
-    // Paragraph 3: report request
-    var ReportPara = document.createElement('p');
-    ReportPara.className = 'sp-body';
-    ReportPara.style.margin = '0';
-    ReportPara.textContent = 'If you do need to block this, I would appreciate it if you reported it to me too:';
-    FollowUpEl.appendChild(ReportPara);
-
     FollowUpEl.style.display = 'block';
   }
+
+  // Paragraph 3: report request — pinned to the bottom of the left column
+  var LeftColEl = document.getElementById('blurDiagnosticLeft');
+  var ReportPara = document.createElement('p');
+  ReportPara.className = 'sp-body';
+  ReportPara.style.cssText = 'margin:auto 0 0 0;font-size:11px;color:#6b7280;';
+  ReportPara.textContent = 'If you do need to block this, I would appreciate it if you reported it to me too.';
+  if (LeftColEl) LeftColEl.appendChild(ReportPara);
 
   // Build the chip clone for the left button label
   var ChipClone = _blurDiagnosticBuildSymbolChips(_blurDiagnosticShortcutToken);
@@ -8568,6 +8569,9 @@ function _blurDiagnosticSecondBlur() {
   LeftBtn.className = 'score-pill-seg sp-seg-btn';
   LeftBtn.style.cssText = 'border-radius:18px 0 0 18px;flex:1;text-align:center;overflow:hidden;white-space:nowrap;';
   LeftBtn.onclick = _blurDiagnosticBlockShortcut;
+  LeftBtn.addEventListener('pointerdown', function() { this.classList.add('score-pill-active'); });
+  LeftBtn.addEventListener('pointerup', function() { this.classList.remove('score-pill-active'); });
+  LeftBtn.addEventListener('pointerleave', function() { this.classList.remove('score-pill-active'); });
   LeftBtn.appendChild(LeftLabel);
 
   var RightLabel = document.createElement('span');
@@ -8579,6 +8583,9 @@ function _blurDiagnosticSecondBlur() {
   RightBtn.className = 'score-pill-seg sp-seg-btn';
   RightBtn.style.cssText = 'border-radius:0 18px 18px 0;flex:1;border-left:1.5px solid #d1d5db;text-align:center;';
   RightBtn.onclick = _blurDiagnosticBlockAndReport;
+  RightBtn.addEventListener('pointerdown', function() { this.classList.add('score-pill-active'); });
+  RightBtn.addEventListener('pointerup', function() { this.classList.remove('score-pill-active'); });
+  RightBtn.addEventListener('pointerleave', function() { this.classList.remove('score-pill-active'); });
   RightBtn.appendChild(RightLabel);
 
   var Pill = document.createElement('div');

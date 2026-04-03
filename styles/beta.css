@@ -1870,6 +1870,7 @@ li.conflict-dismissed .conflict-desc {
 .score-clear-pill .score-pill-seg:first-child { border-radius: 18px 0 0 18px; }
 .score-clear-pill .score-pill-seg:last-child  { border-radius: 0 18px 18px 0; }
 .score-clear-pill .score-pill-seg:only-child  { border-radius: 18px; }
+
 .score-pill-seg {
   display: flex;
   align-items: center;
@@ -1887,6 +1888,10 @@ li.conflict-dismissed .conflict-desc {
   outline: none;
   -webkit-appearance: none;
   transition: background 1.5s ease, color 1.5s ease, box-shadow 1.5s ease;
+}
+
+.score-pill-seg.pulse {
+  animation: btnPulse 0.45s cubic-bezier(0.25, 0.46, 0.45, 0.94);
 }
 .score-pill-seg + .score-pill-seg {
   border-left: 1.5px solid #d1d5db;

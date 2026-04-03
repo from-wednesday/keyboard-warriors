@@ -307,9 +307,9 @@ GameContainer.addEventListener('animationend', function () {
       </div>
        <!-- ── Blur Pause Diagnostic ─────────────────────── -->
     <div id="blurPauseDiagnostic" style="display:none;width:100%;grid-column:1/-1;">
-      <div class="diff-advanced-panel diff-advanced-active" id="blurDiagnosticBox" style="display:grid;grid-template-columns:1fr 1fr;gap:0;overflow:hidden;">
+      <div class="diff-advanced-panel diff-advanced-active" id="blurDiagnosticBox" style="display:grid;grid-template-columns:1fr 1fr;grid-template-rows:auto auto;gap:0;overflow:hidden;">
         <!-- Left col: question and chips always live here -->
-        <div id="blurDiagnosticLeft" style="padding-right:20px;display:flex;flex-direction:column;gap:8px;">
+        <div id="blurDiagnosticLeft" style="padding-right:20px;display:flex;flex-direction:column;gap:8px;grid-column:1;grid-row:1;">
           <div id="blurDiagnosticQuestionRow" style="display:flex;align-items:flex-start;gap:7px;">
             <span class="sp-report-dot" id="blurDiagnosticDot" style="margin-top:4px;flex-shrink:0;background:#f97316;"></span>
             <span class="sp-report-question-label" id="blurDiagnosticQuestionLabel" style="font-size:11px;color:#6b7280;line-height:1.5;"></span>
@@ -320,11 +320,13 @@ GameContainer.addEventListener('animationend', function () {
           </div>
         </div>
         <!-- Right col: text passages, sequenced -->
-        <div id="blurDiagnosticRight" style="padding-left:20px;display:flex;flex-direction:column;gap:6px;justify-content:center;">
+        <div id="blurDiagnosticRight" style="padding-left:20px;display:flex;flex-direction:column;gap:6px;justify-content:flex-start;grid-column:2;grid-row:1;">
           <p class="sp-body" id="blurDiagnosticIntro" style="margin:0;">If you think it was the shortcut that caused the problem, we should take a closer look.
 Do you want to reveal the answer?</p>
-          <p class="sp-body" id="blurDiagnosticFollowUp" style="display:none;margin:0;font-size:11px;color:#6b7280;line-height:1.5;"></p>
+          <div id="blurDiagnosticFollowUp" style="display:none;font-size:11px;color:#6b7280;line-height:1.5;"></div>
         </div>
+        <!-- Full-width bottom row: spans both columns, only shown in stage 3 -->
+        <div id="blurDiagnosticBottomRow" style="grid-column:1/-1;grid-row:2;display:none;padding-top:10px;margin-top:10px;border-top:1px solid #e5e7eb;"></div>
       </div>
     </div>
     </div>
@@ -8352,9 +8354,11 @@ function _activateBlurPauseScreen() {
     IntroEl.textContent = 'If you think it was the shortcut that caused the problem, we should take a closer look. Do you want to reveal the answer?';
   }
 
-  // Hide follow-up
+  // Hide follow-up and bottom row
   var FollowUpEl = document.getElementById('blurDiagnosticFollowUp');
-  if (FollowUpEl) { FollowUpEl.style.display = 'none'; FollowUpEl.textContent = ''; }
+  if (FollowUpEl) { FollowUpEl.style.display = 'none'; FollowUpEl.innerHTML = ''; }
+  var BottomRow = document.getElementById('blurDiagnosticBottomRow');
+  if (BottomRow) { BottomRow.style.display = 'none'; BottomRow.innerHTML = ''; }
 
   // Register keydown listener for shortcut verification
   document.addEventListener('keydown', _blurDiagnosticKeydownHandler);
@@ -8464,70 +8468,93 @@ function _blurDiagnosticShowBlockedConfirmation() {
 }
 
 function _blurDiagnosticSecondBlur() {
-  // Second blur while in stage 2 -- show stage 3 without auto-blocking
   if (!_blurDiagnosticShortcutToken) return;
   document.removeEventListener('keydown', _blurDiagnosticKeydownHandler);
 
-  // Title: stage 3
   titleEl.className = '';
   titleEl.textContent = 'Do you want to block this?';
 
-  // Build the browser icon SVG inline (matches #browserIcon)
-  var BrowserIconSvg = '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 86 64.1" style="width:13px;height:auto;display:inline-block;vertical-align:middle;fill:#9ca3af;cursor:pointer;" onclick="pulseKbIcon();openSettings(\'panelBrowser\');" title="Open browser settings"><g><path d="M7,11.7v42c0,2.2,1.8,4,4,4h63c2.2,0,4-1.8,4-4V11.7c0-2.2-1.8-4-4-4H11c-2.2,0-4,1.8-4,4ZM9,19.7h67v34c0,1.1-.9,2-2,2H11c-1.1,0-2-.9-2-2V19.7ZM9,11.7c0-1.1.9-2,2-2h63c1.1,0,2,.9,2,2v6H9v-6Z"/><circle cx="19.3" cy="13.7" r="2"/><circle cx="13.3" cy="13.7" r="2"/><circle cx="25.3" cy="13.7" r="2"/></g><path d="M42.5,23.4c-6,0-11.4,2.1-14.9,5.4h0c0,0-.1.1-.2.2-2.4,2.3-3.8,5.2-3.8,8.4s1.4,6,3.8,8.4c0,0,0,.1.2.2,3.4,3.3,8.8,5.4,14.9,5.4s11.4-2.1,14.9-5.4h0c0,0,.1-.1.2-.2,0,0,0,0,0,0,2.4-2.3,3.8-5.2,3.8-8.4s-1.4-6-3.8-8.4c0,0-.1-.1-.2-.2-3.4-3.3-8.8-5.4-14.9-5.4h0ZM41.3,25.3v5.4c-1.9,0-3.7-.2-5.4-.4.3-.6.7-1.2,1-1.7,1.3-1.7,2.8-2.8,4.4-3.2h0ZM43.7,25.3c1.6.4,3.1,1.5,4.4,3.2.4.5.7,1.1,1.1,1.7-1.7.2-3.5.4-5.4.4v-5.3ZM49,26.2c2.1.7,4,1.7,5.5,2.9-.9.3-1.9.5-2.9.8-.4-.8-.8-1.5-1.3-2.2-.4-.5-.8-1-1.3-1.5h0ZM36,26.2c-.5.4-.9.9-1.2,1.5-.5.7-.9,1.4-1.3,2.2-1.1-.2-2.1-.5-2.9-.8,1.5-1.2,3.4-2.2,5.5-2.9h0ZM28.9,30.6c1.1.4,2.4.8,3.8,1-.5,1.5-.8,3.1-.9,4.8h-5.6c.2-2.1,1.2-4.1,2.7-5.8h0ZM56.1,30.6c1.5,1.7,2.5,3.7,2.7,5.8h-5.6c0-1.7-.4-3.3-.9-4.8,1.4-.3,2.7-.6,3.8-1h0ZM35.1,32c1.9.3,4,.4,6.1.5v3.9h-7c0-1.5.4-3,.8-4.3h0ZM49.9,32c.4,1.3.7,2.8.8,4.3h-7v-3.9c2.2,0,4.2-.2,6.1-.5h0ZM26.2,38.2h5.6c0,1.7.4,3.3.9,4.8-1.4.3-2.7.6-3.8,1-1.5-1.7-2.5-3.7-2.7-5.8h0ZM34.3,38.2h7v3.9c-2.2,0-4.2.2-6.1.5-.4-1.3-.7-2.8-.8-4.3h0ZM43.7,38.2h7c0,1.5-.4,3-.8,4.3-1.9-.3-4-.4-6.1-.5v-3.9ZM53.2,38.2h5.6c-.2,2.1-1.2,4.1-2.7,5.8-1.1-.4-2.4-.8-3.8-1,.5-1.5.8-3.1.9-4.8h0ZM41.3,43.9v5.4c-1.6-.4-3.1-1.4-4.4-3.2-.4-.5-.7-1.1-1.1-1.7,1.7-.2,3.5-.4,5.4-.4h0ZM43.7,43.9c1.9,0,3.7.2,5.4.4-.3.6-.7,1.2-1.1,1.7-1.3,1.7-2.8,2.8-4.4,3.2v-5.3ZM33.4,44.7c.4.8.8,1.5,1.3,2.2.4.5.8,1,1.2,1.5-2.1-.7-4-1.7-5.5-2.9.9-.3,1.9-.5,2.9-.8h0ZM51.6,44.7c1.1.2,2.1.5,2.9.8-1.5,1.2-3.4,2.2-5.5,2.9.5-.4.9-.9,1.3-1.5.5-.7.9-1.4,1.3-2.2h0Z"/></svg>';
-
-  // Build the chip sequence for the button label
-  var ChipNodes = _blurDiagnosticBuildSymbolChips(_blurDiagnosticShortcutToken);
-
-  // Envelope SVG
   var EnvelopeSvg = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="13" height="13" style="vertical-align:middle;flex-shrink:0;"><rect x="2" y="4" width="20" height="16" rx="2"/><polyline points="2,4 12,13 22,4"/></svg>';
 
   var FollowUpEl = document.getElementById('blurDiagnosticFollowUp');
   if (FollowUpEl) {
     FollowUpEl.innerHTML = '';
 
-    var Para = document.createElement('p');
-    Para.className = 'sp-body';
-    Para.style.margin = '0 0 10px 0';
-    Para.innerHTML = 'It looks like your browser or OS may be intercepting this shortcut. You can ask to block questions needing these keys below. Manage blocked keys in\u00a0' + BrowserIconSvg + '.'
-      + '<br><br>If you do need to block this, I would appreciate it if you reported it to me too:';
-    FollowUpEl.appendChild(Para);
+    // Paragraph 1: conflict explanation
+    var ConflictPara = document.createElement('p');
+    ConflictPara.className = 'sp-body';
+    ConflictPara.style.margin = '0 0 6px 0';
+    ConflictPara.textContent = 'It looks like your browser or OS may be intercepting this shortcut. You can ask to block questions needing these keys below.';
+    FollowUpEl.appendChild(ConflictPara);
 
-    // Build the chip clone for the left button label
-    var ChipClone = _blurDiagnosticBuildSymbolChips(_blurDiagnosticShortcutToken);
-    ChipClone.style.cssText = 'display:inline-flex;align-items:center;flex-wrap:nowrap;max-width:calc(50% - 24px);overflow:hidden;vertical-align:middle;';
+    // Paragraph 2: nudge row linking to browser settings
+    var NudgeRow = document.createElement('a');
+    NudgeRow.className = 'sp-settings-nudge';
+    NudgeRow.href = '#';
+    NudgeRow.style.marginBottom = '6px';
+    NudgeRow.addEventListener('click', function(e) {
+      e.preventDefault();
+      openSettings('panelBrowser');
+    });
+    var NudgeText = document.createElement('span');
+    NudgeText.className = 'sp-nudge-text';
+    NudgeText.textContent = 'You can then manage blocked keys in:';
+    var NudgeIcon = document.createElement('span');
+    NudgeIcon.className = 'sp-nudge-icon';
+    NudgeIcon.innerHTML = '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 86 64.1" style="width:44px;height:auto;fill:#9ca3af;"><g><path d="M7,11.7v42c0,2.2,1.8,4,4,4h63c2.2,0,4-1.8,4-4V11.7c0-2.2-1.8-4-4-4H11c-2.2,0-4,1.8-4,4ZM9,19.7h67v34c0,1.1-.9,2-2,2H11c-1.1,0-2-.9-2-2V19.7ZM9,11.7c0-1.1.9-2,2-2h63c1.1,0,2,.9,2,2v6H9v-6Z"/><circle cx="19.3" cy="13.7" r="2"/><circle cx="13.3" cy="13.7" r="2"/><circle cx="25.3" cy="13.7" r="2"/></g><path d="M42.5,23.4c-6,0-11.4,2.1-14.9,5.4h0c0,0-.1.1-.2.2-2.4,2.3-3.8,5.2-3.8,8.4s1.4,6,3.8,8.4c0,0,0,.1.2.2,3.4,3.3,8.8,5.4,14.9,5.4s11.4-2.1,14.9-5.4h0c0,0,.1-.1.2-.2,0,0,0,0,0,0,2.4-2.3,3.8-5.2,3.8-8.4s-1.4-6-3.8-8.4c0,0-.1-.1-.2-.2-3.4-3.3-8.8-5.4-14.9-5.4h0ZM41.3,25.3v5.4c-1.9,0-3.7-.2-5.4-.4.3-.6.7-1.2,1-1.7,1.3-1.7,2.8-2.8,4.4-3.2h0ZM43.7,25.3c1.6.4,3.1,1.5,4.4,3.2.4.5.7,1.1,1.1,1.7-1.7.2-3.5.4-5.4.4v-5.3ZM49,26.2c2.1.7,4,1.7,5.5,2.9-.9.3-1.9.5-2.9.8-.4-.8-.8-1.5-1.3-2.2-.4-.5-.8-1-1.3-1.5h0ZM36,26.2c-.5.4-.9.9-1.2,1.5-.5.7-.9,1.4-1.3,2.2-1.1-.2-2.1-.5-2.9-.8,1.5-1.2,3.4-2.2,5.5-2.9h0ZM28.9,30.6c1.1.4,2.4.8,3.8,1-.5,1.5-.8,3.1-.9,4.8h-5.6c.2-2.1,1.2-4.1,2.7-5.8h0ZM56.1,30.6c1.5,1.7,2.5,3.7,2.7,5.8h-5.6c0-1.7-.4-3.3-.9-4.8,1.4-.3,2.7-.6,3.8-1h0ZM35.1,32c1.9.3,4,.4,6.1.5v3.9h-7c0-1.5.4-3,.8-4.3h0ZM49.9,32c.4,1.3.7,2.8.8,4.3h-7v-3.9c2.2,0,4.2-.2,6.1-.5h0ZM26.2,38.2h5.6c0,1.7.4,3.3.9,4.8-1.4.3-2.7.6-3.8,1-1.5-1.7-2.5-3.7-2.7-5.8h0ZM34.3,38.2h7v3.9c-2.2,0-4.2.2-6.1.5-.4-1.3-.7-2.8-.8-4.3h0ZM43.7,38.2h7c0,1.5-.4,3-.8,4.3-1.9-.3-4-.4-6.1-.5v-3.9ZM53.2,38.2h5.6c-.2,2.1-1.2,4.1-2.7,5.8-1.1-.4-2.4-.8-3.8-1,.5-1.5.8-3.1.9-4.8h0ZM41.3,43.9v5.4c-1.6-.4-3.1-1.4-4.4-3.2-.4-.5-.7-1.1-1.1-1.7,1.7-.2,3.5-.4,5.4-.4h0ZM43.7,43.9c1.9,0,3.7.2,5.4.4-.3.6-.7,1.2-1.1,1.7-1.3,1.7-2.8,2.8-4.4,3.2v-5.3ZM33.4,44.7c.4.8.8,1.5,1.3,2.2.4.5.8,1,1.2,1.5-2.1-.7-4-1.7-5.5-2.9.9-.3,1.9-.5,2.9-.8h0ZM51.6,44.7c1.1.2,2.1.5,2.9.8-1.5,1.2-3.4,2.2-5.5,2.9.5-.4.9-.9,1.3-1.5.5-.7.9-1.4,1.3-2.2h0Z"/></svg>';
+    NudgeRow.appendChild(NudgeText);
+    NudgeRow.appendChild(NudgeIcon);
+    FollowUpEl.appendChild(NudgeRow);
 
-    var LeftLabel = document.createElement('span');
-    LeftLabel.className = 'diff-btn-text';
-    LeftLabel.style.cssText = 'display:inline-flex;align-items:center;gap:4px;overflow:hidden;max-width:100%;';
-    LeftLabel.appendChild(document.createTextNode('stop asking for\u00a0'));
-    LeftLabel.appendChild(ChipClone);
+    // Paragraph 3: report request
+    var ReportPara = document.createElement('p');
+    ReportPara.className = 'sp-body';
+    ReportPara.style.margin = '0';
+    ReportPara.textContent = 'If you do need to block this, I would appreciate it if you reported it to me too:';
+    FollowUpEl.appendChild(ReportPara);
 
-    var LeftBtn = document.createElement('button');
-    LeftBtn.className = 'score-pill-seg sp-seg-btn';
-    LeftBtn.style.cssText = 'border-radius:18px 0 0 18px;flex:1;text-align:center;overflow:hidden;white-space:nowrap;';
-    LeftBtn.onclick = _blurDiagnosticBlockShortcut;
-    LeftBtn.appendChild(LeftLabel);
-
-    var RightLabel = document.createElement('span');
-    RightLabel.className = 'diff-btn-text';
-    RightLabel.style.cssText = 'display:inline-flex;align-items:center;gap:5px;';
-    RightLabel.innerHTML = 'do that\u00a0+\u00a0' + EnvelopeSvg;
-
-    var RightBtn = document.createElement('button');
-    RightBtn.className = 'score-pill-seg sp-seg-btn';
-    RightBtn.style.cssText = 'border-radius:0 18px 18px 0;flex:1;border-left:1.5px solid #d1d5db;text-align:center;';
-    RightBtn.onclick = _blurDiagnosticBlockAndReport;
-    RightBtn.appendChild(RightLabel);
-
-    var Pill = document.createElement('div');
-    Pill.id = 'blurDiagnosticBlockPill';
-    Pill.className = 'score-clear-pill';
-    Pill.style.marginTop = '8px';
-    Pill.appendChild(LeftBtn);
-    Pill.appendChild(RightBtn);
-
-    FollowUpEl.appendChild(Pill);
     FollowUpEl.style.display = 'block';
+  }
+
+  // Build the chip clone for the left button label
+  var ChipClone = _blurDiagnosticBuildSymbolChips(_blurDiagnosticShortcutToken);
+  ChipClone.style.cssText = 'display:inline-flex;align-items:center;flex-wrap:nowrap;max-width:calc(50% - 24px);overflow:hidden;vertical-align:middle;';
+
+  var LeftLabel = document.createElement('span');
+  LeftLabel.className = 'diff-btn-text';
+  LeftLabel.style.cssText = 'display:inline-flex;align-items:center;gap:4px;overflow:hidden;max-width:100%;';
+  LeftLabel.appendChild(document.createTextNode('stop asking for '));
+  LeftLabel.appendChild(ChipClone);
+
+  var LeftBtn = document.createElement('button');
+  LeftBtn.className = 'score-pill-seg sp-seg-btn';
+  LeftBtn.style.cssText = 'border-radius:18px 0 0 18px;flex:1;text-align:center;overflow:hidden;white-space:nowrap;';
+  LeftBtn.onclick = _blurDiagnosticBlockShortcut;
+  LeftBtn.appendChild(LeftLabel);
+
+  var RightLabel = document.createElement('span');
+  RightLabel.className = 'diff-btn-text';
+  RightLabel.style.cssText = 'display:inline-flex;align-items:center;gap:5px;';
+  RightLabel.innerHTML = 'do that + ' + EnvelopeSvg;
+
+  var RightBtn = document.createElement('button');
+  RightBtn.className = 'score-pill-seg sp-seg-btn';
+  RightBtn.style.cssText = 'border-radius:0 18px 18px 0;flex:1;border-left:1.5px solid #d1d5db;text-align:center;';
+  RightBtn.onclick = _blurDiagnosticBlockAndReport;
+  RightBtn.appendChild(RightLabel);
+
+  var Pill = document.createElement('div');
+  Pill.id = 'blurDiagnosticBlockPill';
+  Pill.className = 'score-clear-pill';
+  Pill.appendChild(LeftBtn);
+  Pill.appendChild(RightBtn);
+
+  // Place pill in the full-width bottom row
+  var BottomRow = document.getElementById('blurDiagnosticBottomRow');
+  if (BottomRow) {
+    BottomRow.innerHTML = '';
+    BottomRow.appendChild(Pill);
+    BottomRow.style.display = 'block';
   }
 }
 

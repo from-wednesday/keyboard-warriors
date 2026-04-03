@@ -8083,28 +8083,7 @@ function handleKeydown(e) {
   // Cheat sheet lighting when paused
   if (activeSettings === 'panelPadlock' && questionPool.length > 0) {
     var PausedCheatPool = window._cheatSheetResolvedPool || questionPool;
-    PausedCheatPool.slice(0, 10).forEach(fu<div id="blurPauseDiagnostic" style="display:none;width:100%;grid-column:1/-1;">
-      <!-- Two-column panel: fixed min-height so the pill row below never shifts position -->
-      <div class="diff-advanced-panel diff-advanced-active" id="blurDiagnosticBox" style="display:grid;grid-template-columns:1fr 1fr;gap:0;overflow:visible;min-height:120px;">
-        <!-- Left col: question label, then giant chips after reveal -->
-        <div id="blurDiagnosticLeft" style="padding-right:20px;display:flex;flex-direction:column;gap:8px;grid-column:1;grid-row:1;">
-          <div id="blurDiagnosticQuestionRow" style="display:flex;align-items:flex-start;gap:7px;">
-            <span class="sp-report-dot" id="blurDiagnosticDot" style="margin-top:4px;flex-shrink:0;background:#f97316;"></span>
-            <span class="sp-report-question-label" id="blurDiagnosticQuestionLabel" style="font-size:11px;color:#6b7280;line-height:1.5;"></span>
-          </div>
-          <div id="blurDiagnosticChipsArea" style="display:none;align-items:center;justify-content:center;"></div>
-          <div id="blurDiagnosticActionArea">
-            <button id="blurDiagnosticRevealBtn" class="score-pill-seg score-pill-full" style="border-radius:12px;border:1.5px solid #d1d5db;" onclick="_blurDiagnosticReveal()"><span class="diff-btn-text">reveal answer</span></button>
-          </div>
-        </div>
-        <!-- Right col: single container, text replaced at each stage -->
-        <div id="blurDiagnosticRight" style="padding-left:20px;display:flex;flex-direction:column;gap:6px;justify-content:flex-start;grid-column:2;grid-row:1;">
-          <p class="sp-body" id="blurDiagnosticRightText" style="margin:0;font-size:11px;color:#6b7280;line-height:1.5;">If you think it was the shortcut that caused the problem, we should take a closer look. Do you want to reveal the answer?</p>
-        </div>
-      </div>
-      <!-- Pill row: outside the roundrect, vertically stable -->
-      <div id="blurDiagnosticBottomRow" style="display:none;margin-top:8px;"></div>
-    </div>tion(Question) {
+    PausedCheatPool.slice(0, 10).forEach(function(Question) {
       if (Question.shortcut && matchesShortcut(e, Question.shortcut)) {
         HighlightCheatSheetItems(Question.shortcut);
       }

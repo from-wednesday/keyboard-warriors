@@ -2795,7 +2795,7 @@ body.returning-screen #diffIconWrap .icon-tip { display: none; }
    The left column header (.sp-report-col-header) is roughly 30px tall (small-caps label
    at ~11px + section title at ~14px + 5px margin-bottom). */
 .cheat-sheet-right-spacer {
-  height: 30px;
+  height: 20px;
   flex-shrink: 0;
 }
 

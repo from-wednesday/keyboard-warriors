@@ -8261,10 +8261,10 @@ function _blurDiagnosticKeydownHandler(e) {
 
   var RightTextEl = document.getElementById('blurDiagnosticRightText');
   if (RightTextEl) {
-    RightTextEl.textContent = "<strong>Seems fine to me.</strong><br/><br/>You are free to unpause and continue your level.";
+    RightTextEl.innerHTML = "<strong>Seems fine to me.</strong><br/><br/>You are free to unpause and continue your level.";
   }
 }
-
+   
 function _blurDiagnosticFindQuestion() {
   // Look up the question by token rather than by current pool index,
   // so a mid-transition blur cannot return the wrong question.

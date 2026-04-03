@@ -2791,6 +2791,14 @@ body.returning-screen #diffIconWrap .icon-tip { display: none; }
   transition: background 0.3s ease;
 }
 
+/* Right column spacer: aligns upcoming questions below the header row in the left column.
+   The left column header (.sp-report-col-header) is roughly 30px tall (small-caps label
+   at ~11px + section title at ~14px + 5px margin-bottom). */
+.cheat-sheet-right-spacer {
+  height: 30px;
+  flex-shrink: 0;
+}
+
 /* Chip wrapper lit state — only key chips, not the + separators between them */
 .sp-report-chips-lit .sp-report-chip-key {
   background: #10b981 !important;

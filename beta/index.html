@@ -7459,9 +7459,17 @@ function _refreshCheatSheet() {
   if (HeadingEl) HeadingEl.style.visibility = '';
   if (ContextLabel) ContextLabel.style.visibility = '';
 
+  // Build a set of shortcut tokens already answered this round
+  var AnsweredTokens = new Set();
+  runData.forEach(function(entry) {
+    var q = questionPool[entry.questionIndex];
+    if (q) AnsweredTokens.add(q.shortcut);
+  });
+
   First10.forEach(function(Question, Idx) {
     var ShortcutDisplay = currentOs === 'pc' ? Question.pc_sc : Question.mac_sc;
     var Token           = Question.shortcut;
+    var WasAnswered     = AnsweredTokens.has(Token);
 
     var li  = document.createElement('li');
     li.style.alignItems = 'flex-start';
@@ -7470,6 +7478,7 @@ function _refreshCheatSheet() {
     var dot = document.createElement('span');
     dot.className = 'sp-report-dot';
     dot.style.marginTop = '5px';
+    if (WasAnswered) dot.style.background = '#10b981';
 
     var label = document.createElement('span');
     label.className = 'sp-report-question-label';
@@ -8367,7 +8376,7 @@ function _activateBlurPauseScreen() {
   // Stage 1 right-column text (single container, replaced at each stage)
   var RightTextEl = document.getElementById('blurDiagnosticRightText');
   if (RightTextEl) {
-    RightTextEl.innerHTML = 'If you think it was the shortcut that caused the problem, we should <em>take a closer look.</em><br><br><strong>Do you want to show the answer? </strong> <small> #spoilerAlert</small>';
+    RightTextEl.innerHTML = 'If you think it was the shortcut that caused the problem, we should <em>take a closer look.</em><br><br><strong>Do you want to show the answer?</strong> #spoilerAlert';
     RightTextEl.style.color = '#6b7280';
   }
 

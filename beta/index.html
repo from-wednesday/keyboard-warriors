@@ -8374,7 +8374,7 @@ function _activateBlurPauseScreen() {
   // Stage 1 right-column text (single container, replaced at each stage)
   var RightTextEl = document.getElementById('blurDiagnosticRightText');
   if (RightTextEl) {
-    RightTextEl.textContent = 'If you think it was the shortcut that caused the problem, we should take a closer look. Do you want to reveal the answer?';
+    RightTextEl.innerHTML = 'If you think it was the shortcut that caused the problem, we should take a closer look.<br><br><strong>Do you want to reveal the answer?</strong>';
     RightTextEl.style.color = '#6b7280';
   }
 
@@ -8508,7 +8508,7 @@ function _blurDiagnosticSecondBlur() {
   // Right-column text: conflict explanation
   var RightTextEl = document.getElementById('blurDiagnosticRightText');
   if (RightTextEl) {
-    RightTextEl.textContent = 'It looks like your browser or OS may be intercepting this shortcut. You can ask to block questions needing these keys below.';
+    RightTextEl.innerHTML = 'It looks like your web browser, a plug-in or the OS may be intercepting this shortcut.<br><br>You can now ask to <strong>block</strong> any questions needing these keys from appearing if you wish:';
     RightTextEl.style.color = '#6b7280';
   }
 
@@ -8576,16 +8576,14 @@ function _blurDiagnosticSecondBlur() {
   // Left: plain text + browser icon, pointerdown pulses the pill, no hyperlink
   var ManageNoteEl = document.createElement('div');
   ManageNoteEl.style.cssText = 'display:inline-flex;align-items:center;gap:6px;cursor:pointer;padding-top:8px;';
-  ManageNoteEl.addEventListener('pointerdown', function() {
-    Pill.classList.remove('pulse');
-    void Pill.offsetWidth;
-    Pill.classList.add('pulse');
-  });
-  ManageNoteEl.addEventListener('pointerup', function() {
-    Pill.classList.remove('pulse');
-  });
-  ManageNoteEl.addEventListener('pointerleave', function() {
-    Pill.classList.remove('pulse');
+    ManageNoteEl.addEventListener('click', function() {
+    LeftBtn.classList.remove('pulse');
+    void LeftBtn.offsetWidth;
+    LeftBtn.classList.add('pulse');
+    LeftBtn.addEventListener('animationend', function handler() {
+      LeftBtn.classList.remove('pulse');
+      LeftBtn.removeEventListener('animationend', handler);
+    });
   });
 
   var ManageText = document.createElement('span');
@@ -8602,6 +8600,16 @@ function _blurDiagnosticSecondBlur() {
   var ReportNote = document.createElement('p');
   ReportNote.style.cssText = 'margin:0;padding-top:8px;font-size:11px;color:#9ca3af;line-height:1.5;text-align:center;';
   ReportNote.textContent = '(I appreciate you reporting issues)';
+ReportNote.style.cursor = 'pointer';
+  ReportNote.addEventListener('click', function() {
+    RightBtn.classList.remove('pulse');
+    void RightBtn.offsetWidth;
+    RightBtn.classList.add('pulse');
+    RightBtn.addEventListener('animationend', function handler() {
+      RightBtn.classList.remove('pulse');
+      RightBtn.removeEventListener('animationend', handler);
+    });
+  });
 
   var NotesRow = document.createElement('div');
   NotesRow.style.cssText = 'display:grid;grid-template-columns:1fr 1fr;gap:0;';

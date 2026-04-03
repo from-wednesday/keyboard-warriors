@@ -2795,14 +2795,50 @@ body.returning-screen #diffIconWrap .icon-tip { display: none; }
    The left column header (.sp-report-col-header) is roughly 30px tall (small-caps label
    at ~11px + section title at ~14px + 5px margin-bottom). */
 .cheat-sheet-right-spacer {
-  height: 20px;
+  height: 30px;
   flex-shrink: 0;
 }
 
-/* Cheat sheet: left column list starts lower to align with the right column list,
+/* Cheat sheet: left column list starts 30px lower to align with the right column list,
    which is offset by the same height spacer. */
 #cheatSheetList {
-  padding-top: 20px;
+  padding-top: 30px;
+}
+
+/* Cheat sheet panel: full-width title row above the two columns */
+#panelPadlock.sp-page-padlock.sp-active {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  grid-template-rows: auto auto;
+  grid-template-areas:
+    "title title"
+    "left  right";
+}
+#panelPadlock.sp-page-padlock .sp-col-left  { grid-area: left; }
+#panelPadlock.sp-page-padlock .sp-col-right { grid-area: right; }
+#panelPadlock.sp-page-padlock.sp-active::after {
+  top: 56px;
+}
+.sp-padlock-title-row {
+  grid-area: title;
+  text-align: center;
+  padding-bottom: 10px;
+  border-bottom: 1px solid #e5e7eb;
+  margin-bottom: 10px;
+}
+.sp-padlock-main-heading {
+  font-size: 15px;
+  font-weight: 700;
+  color: #1e3a5f;
+  margin: 0 0 2px 0;
+  line-height: 1.2;
+}
+.sp-padlock-byline {
+  font-size: 11px;
+  font-style: italic;
+  color: #9ca3af;
+  margin: 0;
+  line-height: 1.4;
 }
 
 /* Chip wrapper lit state — only key chips, not the + separators between them */

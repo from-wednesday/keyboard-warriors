@@ -4477,11 +4477,11 @@ function getBrowserConflicts() {
   // Conflict tables — Mac shortcuts use Cmd, PC use Ctrl (same token in our shortcut strings)
   // Values are the canonical shortcut strings used in SHORTCUTS[].shortcut
   var mac = {
-    Edge:    ['CMD+T','CMD+GRAVE'],
-    Firefox: ['CMD+T','CMD+GRAVE'],
-    Safari:  ['CMD+T','CMD+GRAVE'],
-    Opera:   ['CMD+T','CMD+GRAVE','CMD+OPTION+I','CMD+OPTION+J','CMD+SHIFT+D','CMD+SHIFT+N'],
-    Chrome:  ['CMD+T','CMD+GRAVE','CMD+SHIFT+N'],
+    Edge:    ['CMD+T','CMD+SHIFT+N'],
+    Firefox: ['CMD+T','CMD+SHIFT+P'],
+    Safari:  ['CMD+T','CMD+N','CMD+SHIFT+N','CMD+O'],
+    Opera:   ['CMD+T','CMD+SHIFT+N'],
+    Chrome:  ['CMD+T','CMD+SHIFT+N'],
   };
   var pc = {
     Edge:    ['CMD+T','CMD+SHIFT+I','CMD+SHIFT+C','CMD+SHIFT+J','CMD+SHIFT+H','CMD+SHIFT+D','CMD+SHIFT+N'],
@@ -4494,33 +4494,26 @@ function getBrowserConflicts() {
   var macLabels = {
     Edge: [
       'Cmd+T \u2014 opens new tab',
-      'Cmd+` \u2014 cycles app windows (macOS)',
-      'Cmd+Opt+I \u2014 opens DevTools',
-      'Cmd+Shift+C \u2014 opens DevTools inspector',
-      'Cmd+Shift+J \u2014 opens DevTools console',
-      'Cmd+Shift+H \u2014 opens History',
-      'Cmd+Shift+D \u2014 saves all tabs',
-      'Cmd+Shift+N \u2014 opens InPrivate window',
+      'Cmd+Shift+N \u2014 opens Private window',
     ],
     Firefox: [
       'Cmd+T \u2014 opens new tab',
-      'Cmd+` \u2014 cycles app windows (macOS)',
+      'Cmd+Shift+P \u2014 opens Private window',
+
     ],
     Safari: [
       'Cmd+T \u2014 opens new tab',
-      'Cmd+` \u2014 cycles app windows (macOS)',
+      'Cmd+N \u2014 opens new window',
+      'Cmd+Shift+N \u2014 opens Private window',
+      'Cmd+O \u2014 open a file',
     ],
     Opera: [
       'Cmd+T \u2014 opens new tab',
-      'Cmd+` \u2014 cycles app windows (macOS)',
-      'Cmd+Opt+I \u2014 opens DevTools',
-      'Cmd+Opt+J \u2014 opens DevTools console',
       'Cmd+Shift+D \u2014 saves bookmark',
       'Cmd+Shift+N \u2014 opens Private window',
     ],
     Chrome: [
       'Cmd+T \u2014 opens new tab',
-      'Cmd+` \u2014 cycles app windows (macOS)',
       'Cmd+Shift+N \u2014 opens Incognito window',
     ],
   };
@@ -4571,11 +4564,11 @@ function getBrowserConflicts() {
   } else {
     // Generic fallback — show both platforms' most universal conflicts
     conflictKeys = isMacOs
-      ? ['CMD+T','CMD+GRAVE','CMD+OPTION+I','CMD+SHIFT+H','CMD+SHIFT+N']
+      ? ['CMD+T','CMD+OPTION+I','CMD+SHIFT+H','CMD+SHIFT+N']
       : ['CMD+T','CMD+SHIFT+I', 'CMD+SHIFT+H','CMD+SHIFT+N'];
     labels = isMacOs
-      ? ['Cmd+T \u2014 opens new tab','Cmd+` \u2014 cycles app windows (macOS)','Cmd+Opt+I \u2014 opens DevTools','Cmd+Shift+H \u2014 opens History','Cmd+Shift+N \u2014 opens Private window']
-      : ['Ctrl+T \u2014 opens new tab','Ctrl+Shift+I \u2014 opens DevTools','Ctrl+Shift+H \u2014 opens History','Ctrl+Shift+N \u2014 opens Private window'];
+      ? ['Cmd+T \u2014 opens new tab','Cmd+Shift+H \u2014 opens History','Cmd+Shift+N \u2014 opens Private window']
+      : ['Ctrl+T \u2014 opens new tab','Ctrl+Shift+H \u2014 opens History','Ctrl+Shift+N \u2014 opens Private window'];
   }
 
   return {
@@ -8268,7 +8261,7 @@ function _blurDiagnosticKeydownHandler(e) {
 
   var RightTextEl = document.getElementById('blurDiagnosticRightText');
   if (RightTextEl) {
-    RightTextEl.textContent = "Seems fine to me. You are free to restart and continue your level.";
+    RightTextEl.textContent = "<strong>Seems fine to me.</strong><br/><br/>You are free to unpause and continue your level.";
   }
 }
 
@@ -8364,7 +8357,7 @@ function _activateBlurPauseScreen() {
   var ActionArea = document.getElementById('blurDiagnosticActionArea');
   if (ActionArea) {
     ActionArea.style.display = '';
-    ActionArea.innerHTML = '<button id="blurDiagnosticRevealBtn" class="score-pill-seg score-pill-full" style="border-radius:12px;border:1.5px solid #d1d5db;" onclick="_blurDiagnosticReveal()"><span class="diff-btn-text">reveal answer</span></button>';
+    ActionArea.innerHTML = '<button id="blurDiagnosticRevealBtn" class="score-pill-seg score-pill-full" style="border-radius:12px;border:1.5px solid #d1d5db;" onclick="_blurDiagnosticReveal()"><span class="diff-btn-text">reveal the answer</span></button>';
   }
 
   // Reset roundrect to normal state (clears any amber/resolved styling from a prior run)
@@ -8374,7 +8367,7 @@ function _activateBlurPauseScreen() {
   // Stage 1 right-column text (single container, replaced at each stage)
   var RightTextEl = document.getElementById('blurDiagnosticRightText');
   if (RightTextEl) {
-    RightTextEl.innerHTML = 'If you think it was the shortcut that caused the problem, we should take a closer look.<br><br><strong>Do you want to reveal the answer?</strong>';
+    RightTextEl.innerHTML = 'If you think it was the shortcut that caused the problem, we should <em>take a closer look.</em><br><br><strong>Do you want to show the answer?</strong> #spoilerAlert';
     RightTextEl.style.color = '#6b7280';
   }
 
@@ -8413,7 +8406,7 @@ function _deactivateBlurPauseScreen() {
   // Replace right-column text for stage 2
   var RightTextEl = document.getElementById('blurDiagnosticRightText');
   if (RightTextEl) {
-    RightTextEl.innerHTML = 'Is this what you pressed when the problem happened?<br><strong>Try it again now.</strong>';
+    RightTextEl.innerHTML = 'Is this what you pressed when the problem happened?<br><br><strong>Try it again now.</strong>';
   }
 
   // Hide reveal button, show giant chips

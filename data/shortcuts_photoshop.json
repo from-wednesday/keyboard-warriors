@@ -489,7 +489,7 @@
     "group": ""
   },
   {
-    "shortcut": "OPTION+ARROWLEFT",
+    "shortcut": "OPTION+←",
     "display": "Decrease kerning or tracking",
     "mac_sc": "⌥ ← ",
     "pc_sc": "Alt ← ",
@@ -498,7 +498,7 @@
     "group": ""
   },
   {
-    "shortcut": "OPTION+ARROWRIGHT",
+    "shortcut": "OPTION+→",
     "display": "Increase kerning or tracking",
     "mac_sc": "⌥ → ",
     "pc_sc": "Alt → ",
@@ -507,7 +507,7 @@
     "group": ""
   },
   {
-    "shortcut": "OPTION+ARROWUP",
+    "shortcut": "OPTION+↑",
     "display": "Decrease leading",
     "mac_sc": "⌥ ↑ ",
     "pc_sc": "Alt ↑ ",
@@ -516,7 +516,7 @@
     "group": ""
   },
   {
-    "shortcut": "OPTION+ARROWDOWN",
+    "shortcut": "OPTION+↓",
     "display": "Increase leading",
     "mac_sc": "⌥ ↓ ",
     "pc_sc": "Alt ↓ ",
@@ -525,7 +525,7 @@
     "group": ""
   },
   {
-    "shortcut": "ARROWLEFT",
+    "shortcut": "←",
     "display": "Nudge selection 1px to the left",
     "mac_sc": "← ",
     "pc_sc": "← ",
@@ -534,7 +534,7 @@
     "group": "nudge"
   },
   {
-    "shortcut": "ARROWRIGHT",
+    "shortcut": "→",
     "display": "Nudge selection 1px to the right",
     "mac_sc": "→ ",
     "pc_sc": "→ ",
@@ -543,7 +543,7 @@
     "group": "nudge"
   },
   {
-    "shortcut": "ARROWUP",
+    "shortcut": "↑",
     "display": "Nudge selection 1px upward",
     "mac_sc": "↑ ",
     "pc_sc": "↑ ",
@@ -552,7 +552,7 @@
     "group": "nudge"
   },
   {
-    "shortcut": "ARROWDOWN",
+    "shortcut": "↓",
     "display": "Nudge selection 1px downward",
     "mac_sc": "↓ ",
     "pc_sc": "↓ ",
@@ -561,7 +561,7 @@
     "group": "nudge"
   },
   {
-    "shortcut": "SHIFT+ARROWLEFT",
+    "shortcut": "SHIFT+←",
     "display": "Nudge selection 10px to the left",
     "mac_sc": "⇧ ← ",
     "pc_sc": "⇧ ← ",
@@ -570,7 +570,7 @@
     "group": "nudge"
   },
   {
-    "shortcut": "SHIFT+ARROWRIGHT",
+    "shortcut": "SHIFT+→",
     "display": "Nudge selection 10px to the right",
     "mac_sc": "⇧ → ",
     "pc_sc": "⇧ → ",
@@ -579,7 +579,7 @@
     "group": "nudge"
   },
   {
-    "shortcut": "SHIFT+ARROWUP",
+    "shortcut": "SHIFT+↑",
     "display": "Nudge selection 10px upward",
     "mac_sc": "⇧ ↑ ",
     "pc_sc": "⇧ ↑ ",
@@ -588,7 +588,7 @@
     "group": "nudge"
   },
   {
-    "shortcut": "SHIFT+ARROWDOWN",
+    "shortcut": "SHIFT+↓",
     "display": "Nudge selection 10px downward",
     "mac_sc": "⇧ ↓ ",
     "pc_sc": "⇧ ↓ ",
@@ -696,7 +696,7 @@
     "group": ""
   },
   {
-    "shortcut": "BACKSLASH",
+    "shortcut": "\\\\",
     "display": "Toggle red layer mask overlay view",
     "mac_sc": "\\\\",
     "pc_sc": "\\\\",

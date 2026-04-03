@@ -2884,6 +2884,17 @@ body.returning-screen #diffIconWrap .icon-tip { display: none; }
 #panelPause.blur-pause-active.sp-active::after {
   display: none;
 }
+/* Resolved state: roundrect recedes to let the pill below take focus */
+#blurDiagnosticBox.blur-diagnostic-resolved {
+  background: #f0f4f8;
+  border-color: transparent;
+  box-shadow: none;
+}
+#blurDiagnosticBox.blur-diagnostic-resolved .sp-body,
+#blurDiagnosticBox.blur-diagnostic-resolved .sp-report-question-label,
+#blurDiagnosticBox.blur-diagnostic-resolved #blurDiagnosticRightText {
+  color: #9ca3af;
+}
 
 /* Difficulty gauge icon (was inline <style> inside #diffIconWrap SVG) */
 #diffIcon .gauge-stroke { fill:none; stroke:#9ca3af; stroke-width:2px; stroke-linecap:round; stroke-miterlimit:10; }

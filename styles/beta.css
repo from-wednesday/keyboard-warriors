@@ -2817,7 +2817,7 @@ body.returning-screen #diffIconWrap .icon-tip { display: none; }
 #panelPadlock.sp-page-padlock .sp-col-left  { grid-area: left; }
 #panelPadlock.sp-page-padlock .sp-col-right { grid-area: right; }
 #panelPadlock.sp-page-padlock.sp-active::after {
-  top: 56px;
+  top: 16px;
 }
 .sp-padlock-title-row {
   grid-area: title;

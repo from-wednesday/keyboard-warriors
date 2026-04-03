@@ -307,27 +307,28 @@ GameContainer.addEventListener('animationend', function () {
       </div>
        <!-- ── Blur Pause Diagnostic ─────────────────────── -->
     <div id="blurPauseDiagnostic" style="display:none;width:100%;grid-column:1/-1;">
-      <div class="diff-advanced-panel diff-advanced-active" id="blurDiagnosticBox" style="display:grid;grid-template-columns:1fr 1fr;grid-template-rows:auto auto;gap:0;overflow:hidden;">
-        <!-- Left col: question and chips always live here -->
+      <!-- Two-column panel: column divider terminates at the bottom of this box -->
+      <div class="diff-advanced-panel diff-advanced-active" id="blurDiagnosticBox" style="display:grid;grid-template-columns:1fr 1fr;gap:0;overflow:visible;">
+        <!-- Left col: question label, then chips (scaled up, centred) after reveal -->
         <div id="blurDiagnosticLeft" style="padding-right:20px;display:flex;flex-direction:column;gap:8px;grid-column:1;grid-row:1;">
           <div id="blurDiagnosticQuestionRow" style="display:flex;align-items:flex-start;gap:7px;">
             <span class="sp-report-dot" id="blurDiagnosticDot" style="margin-top:4px;flex-shrink:0;background:#f97316;"></span>
             <span class="sp-report-question-label" id="blurDiagnosticQuestionLabel" style="font-size:11px;color:#6b7280;line-height:1.5;"></span>
           </div>
-          <div id="blurDiagnosticChipsArea" style="margin-left:15px;display:none;"></div>
-          <div id="blurDiagnosticActionArea" style="margin-left:15px;">
+          <div id="blurDiagnosticChipsArea" style="display:none;align-items:center;justify-content:center;"></div>
+          <div id="blurDiagnosticActionArea">
             <button id="blurDiagnosticRevealBtn" class="score-pill-seg score-pill-full" style="border-radius:12px;border:1.5px solid #d1d5db;" onclick="_blurDiagnosticReveal()"><span class="diff-btn-text">reveal answer</span></button>
           </div>
         </div>
-        <!-- Right col: text passages, sequenced -->
+        <!-- Right col: text passages, always top-aligned -->
         <div id="blurDiagnosticRight" style="padding-left:20px;display:flex;flex-direction:column;gap:6px;justify-content:flex-start;grid-column:2;grid-row:1;">
           <p class="sp-body" id="blurDiagnosticIntro" style="margin:0;">If you think it was the shortcut that caused the problem, we should take a closer look.
 Do you want to reveal the answer?</p>
           <div id="blurDiagnosticFollowUp" style="display:none;font-size:11px;color:#6b7280;line-height:1.5;"></div>
         </div>
-        <!-- Full-width bottom row: spans both columns, only shown in stage 3 -->
-        <div id="blurDiagnosticBottomRow" style="grid-column:1/-1;grid-row:2;display:none;padding-top:10px;margin-top:10px;border-top:1px solid #e5e7eb;"></div>
       </div>
+      <!-- Full-width pill: outside the roundrect so the column divider does not extend into it -->
+      <div id="blurDiagnosticBottomRow" style="display:none;margin-top:8px;"></div>
     </div>
     </div>
    
@@ -8396,18 +8397,43 @@ function _deactivateBlurPauseScreen() {
     setTimeout(function() { IntroEl.style.visibility = 'hidden'; }, 400);
   }
 
-  // Show chips below the question label (using symbol-only rendering)
+  // Show chips in place of the reveal button: centred, scaled to button height
+  var ActionArea = document.getElementById('blurDiagnosticActionArea');
+  var ButtonHeight = 32; // default fallback
+  if (ActionArea) {
+    var RevealBtn = ActionArea.querySelector('#blurDiagnosticRevealBtn');
+    if (RevealBtn) ButtonHeight = RevealBtn.offsetHeight || 32;
+    ActionArea.style.display = 'none';
+  }
   var ChipsArea = document.getElementById('blurDiagnosticChipsArea');
   if (ChipsArea) {
     ChipsArea.innerHTML = '';
-    ChipsArea.appendChild(_blurDiagnosticBuildSymbolChips(_blurDiagnosticShortcutToken));
+    var ChipWrapper = _blurDiagnosticBuildSymbolChips(_blurDiagnosticShortcutToken);
+    // Scale all chips to fill the button height
+    var TargetHeight = Math.max(ButtonHeight, 32);
+    ChipWrapper.querySelectorAll && ChipWrapper.style && (function() {
+      ChipWrapper.style.cssText = 'display:inline-flex;align-items:center;gap:4px;';
+    })();
+    // Apply large chip styles by iterating after appending
+    ChipsArea.appendChild(ChipWrapper);
     ChipsArea.style.display = 'flex';
     ChipsArea.style.alignItems = 'center';
+    ChipsArea.style.justifyContent = 'center';
+    ChipsArea.style.minHeight = TargetHeight + 'px';
+    // Scale up the individual chips
+    var IndividualChips = ChipsArea.querySelectorAll('.sp-report-chip-key');
+    IndividualChips.forEach(function(Chip) {
+      Chip.style.fontSize = '16px';
+      Chip.style.padding = '4px 10px';
+      Chip.style.borderRadius = '5px';
+      Chip.style.lineHeight = '1.4';
+    });
+    // Scale up the + separators
+    var Separators = ChipsArea.querySelectorAll('span:not(.sp-report-chip-key)');
+    Separators.forEach(function(Sep) {
+      Sep.style.fontSize = '14px';
+    });
   }
-
-  // Hide the reveal button
-  var ActionArea = document.getElementById('blurDiagnosticActionArea');
-  if (ActionArea) ActionArea.style.display = 'none';
 
   // Stage 2 right-column text (line break between the two sentences)
   var FollowUpEl = document.getElementById('blurDiagnosticFollowUp');
@@ -8468,9 +8494,11 @@ function _blurDiagnosticShowBlockedConfirmation() {
 }
 
 function _blurDiagnosticSecondBlur() {
+  // Second blur while in stage 2 -- show stage 3 without auto-blocking
   if (!_blurDiagnosticShortcutToken) return;
   document.removeEventListener('keydown', _blurDiagnosticKeydownHandler);
 
+  // Title: stage 3
   titleEl.className = '';
   titleEl.textContent = 'Do you want to block this?';
 
@@ -8488,13 +8516,23 @@ function _blurDiagnosticSecondBlur() {
     FollowUpEl.appendChild(ConflictPara);
 
     // Paragraph 2: nudge row linking to browser settings
+    // Clicking the icon here pulses the segmented pill (does not navigate away)
     var NudgeRow = document.createElement('a');
     NudgeRow.className = 'sp-settings-nudge';
     NudgeRow.href = '#';
     NudgeRow.style.marginBottom = '6px';
     NudgeRow.addEventListener('click', function(e) {
       e.preventDefault();
-      openSettings('panelBrowser');
+      var PillEl = document.getElementById('blurDiagnosticBlockPill');
+      if (PillEl) {
+        PillEl.classList.remove('pulse');
+        void PillEl.offsetWidth;
+        PillEl.classList.add('pulse');
+        PillEl.addEventListener('animationend', function handler() {
+          PillEl.classList.remove('pulse');
+          PillEl.removeEventListener('animationend', handler);
+        });
+      }
     });
     var NudgeText = document.createElement('span');
     NudgeText.className = 'sp-nudge-text';
@@ -8549,7 +8587,7 @@ function _blurDiagnosticSecondBlur() {
   Pill.appendChild(LeftBtn);
   Pill.appendChild(RightBtn);
 
-  // Place pill in the full-width bottom row
+  // Place pill in the full-width bottom row, outside the roundrect
   var BottomRow = document.getElementById('blurDiagnosticBottomRow');
   if (BottomRow) {
     BottomRow.innerHTML = '';

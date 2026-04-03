@@ -349,7 +349,7 @@ GameContainer.addEventListener('animationend', function () {
     <div class="sp-report-advice-box" id="reportTrainerAdvice"></div>
   </div>
 </div>
-  '<!-- ── Cheat Sheet Panel ─────────────────────────────── -->
+  <!-- ── Cheat Sheet Panel ─────────────────────────────── -->
     <div id="panelPadlock" class="sp-page sp-page-padlock">
       <div class="sp-padlock-title-row">
         <p class="sp-padlock-main-heading">Cheat Sheet</p>
@@ -1846,7 +1846,8 @@ function updateKeyboardLighting(e, isDown) {
 ══════════════════════════════════════ */
 let gameState = 'idle';
 let currentMedal = null;
-let _confirmFromFinished  = false; // true when confirm-reset entered from finished state
+let _confirmFromFinished  = false;
+let _padlockSavedTitle = '';
 let _confirmFromPause     = false; // true when confirm-reset entered from active paused game
 let _welcomeIsReturning   = false; // true when the returning-visitor landing screen is showing
 let _pendingDifficulty   = null;  // difficulty mode awaiting confirmation
@@ -2305,6 +2306,10 @@ function clearHelp() {
 function openPadlockPanel() {
   // If the padlock panel is already open, close it.
   if (activeSettings === 'panelPadlock') { closeSettings(); return; }
+  // Save title text then show cheat sheet heading in the game div
+  _padlockSavedTitle = titleEl.textContent;
+  titleEl.className = '';
+  titleEl.textContent = 'Cheat Sheet';
   // Open the panel first so enterPause does not auto-open panelPause on top.
   openSettings('panelPadlock');
   // Now suspend play if a game is active.
@@ -3847,6 +3852,7 @@ function closeSettings() {
     // quietly -- the keyboard stays at edge and the game stays paused.
     // Only raise the keyboard (readyToUnpause) when the pause panel itself is closed.
     if (closingPage === 'panelPadlock' || closingPage === 'panelKeyboard' || closingPage === 'panelBrowser' || closingPage === 'panelDifficulty') {
+      if (closingPage === 'panelPadlock') titleEl.textContent = _padlockSavedTitle;
       openSettings('panelPause');
       return;
     }

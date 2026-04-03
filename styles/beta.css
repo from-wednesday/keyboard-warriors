@@ -2799,6 +2799,12 @@ body.returning-screen #diffIconWrap .icon-tip { display: none; }
   flex-shrink: 0;
 }
 
+/* Cheat sheet: left column list starts 30px lower to align with the right column list,
+   which is offset by the same height spacer. */
+#cheatSheetList {
+  padding-top: 30px;
+}
+
 /* Chip wrapper lit state — only key chips, not the + separators between them */
 .sp-report-chips-lit .sp-report-chip-key {
   background: #10b981 !important;

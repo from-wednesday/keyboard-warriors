@@ -351,7 +351,7 @@ GameContainer.addEventListener('animationend', function () {
 </div>
   <!-- ── Cheat Sheet Panel ─────────────────────────────── -->
     <div id="panelPadlock" class="sp-page sp-page-padlock">
-      <div class="sp-padlock-title-row">
+      <div class="sp-padlock-title-row" style="display:none;">
         <p class="sp-padlock-main-heading">Cheat Sheet</p>
         <p class="sp-padlock-byline">Your study companion.</p>
       </div>
@@ -2312,10 +2312,11 @@ function openPadlockPanel() {
   titleEl.textContent = 'Cheat Sheet';
   // Open the panel first so enterPause does not auto-open panelPause on top.
   openSettings('panelPadlock');
-  // Now suspend play if a game is active.
   if (gameState === 'counting')        { cancelCountdown(); }
   else if (gameState === 'readyToUnpause') { _enterReadyToUnpauseCleanup(); enterPause(); }
   else if (gameState === 'playing')    { enterPause(); }
+  titleEl.className = '';
+  titleEl.textContent = 'Cheat Sheet';
   }
 
 function _enterReadyToUnpause() {

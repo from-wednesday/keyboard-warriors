@@ -8360,6 +8360,11 @@ function _activateBlurPauseScreen() {
   if (FollowUpEl) { FollowUpEl.style.display = 'none'; FollowUpEl.innerHTML = ''; }
   var BottomRow = document.getElementById('blurDiagnosticBottomRow');
   if (BottomRow) { BottomRow.style.display = 'none'; BottomRow.innerHTML = ''; }
+  // Clear any stale paragraphs appended directly to the left column by a prior stage-3 pass
+  var LeftColEl = document.getElementById('blurDiagnosticLeft');
+  if (LeftColEl) {
+    Array.from(LeftColEl.querySelectorAll('p')).forEach(function(el) { el.remove(); });
+  }
 
   // Register keydown listener for shortcut verification
   document.addEventListener('keydown', _blurDiagnosticKeydownHandler);
@@ -8547,27 +8552,19 @@ function _blurDiagnosticSecondBlur() {
     FollowUpEl.style.display = 'block';
   }
 
-  // Paragraph 3: report request — pinned to the bottom of the left column
-  var LeftColEl = document.getElementById('blurDiagnosticLeft');
-  var ReportPara = document.createElement('p');
-  ReportPara.className = 'sp-body';
-  ReportPara.style.cssText = 'margin:auto 0 0 0;font-size:11px;color:#6b7280;';
-  ReportPara.textContent = 'If you do need to block this, I would appreciate it if you reported it to me too.';
-  if (LeftColEl) LeftColEl.appendChild(ReportPara);
-
   // Build the chip clone for the left button label
   var ChipClone = _blurDiagnosticBuildSymbolChips(_blurDiagnosticShortcutToken);
-  ChipClone.style.cssText = 'display:inline-flex;align-items:center;flex-wrap:nowrap;max-width:calc(50% - 24px);overflow:hidden;vertical-align:middle;';
+  ChipClone.style.cssText = 'display:inline-flex;align-items:center;flex-wrap:nowrap;flex-shrink:1;min-width:0;overflow:hidden;vertical-align:middle;';
 
   var LeftLabel = document.createElement('span');
   LeftLabel.className = 'diff-btn-text';
-  LeftLabel.style.cssText = 'display:inline-flex;align-items:center;gap:4px;overflow:hidden;max-width:100%;';
-  LeftLabel.appendChild(document.createTextNode('stop asking for '));
+  LeftLabel.style.cssText = 'display:inline-flex;align-items:center;gap:4px;flex-shrink:1;min-width:0;overflow:hidden;';
+  LeftLabel.appendChild(document.createTextNode('stop asking for\u00a0'));
   LeftLabel.appendChild(ChipClone);
 
   var LeftBtn = document.createElement('button');
   LeftBtn.className = 'score-pill-seg sp-seg-btn';
-  LeftBtn.style.cssText = 'border-radius:18px 0 0 18px;flex:1;text-align:center;overflow:hidden;white-space:nowrap;';
+  LeftBtn.style.cssText = 'border-radius:18px 0 0 18px;flex:1;text-align:center;min-width:0;overflow:hidden;';
   LeftBtn.onclick = _blurDiagnosticBlockShortcut;
   LeftBtn.addEventListener('pointerdown', function() { this.classList.add('score-pill-active'); });
   LeftBtn.addEventListener('pointerup', function() { this.classList.remove('score-pill-active'); });
@@ -8577,7 +8574,7 @@ function _blurDiagnosticSecondBlur() {
   var RightLabel = document.createElement('span');
   RightLabel.className = 'diff-btn-text';
   RightLabel.style.cssText = 'display:inline-flex;align-items:center;gap:5px;';
-  RightLabel.innerHTML = 'do that + ' + EnvelopeSvg;
+  RightLabel.innerHTML = 'do that + ' + EnvelopeSvg;
 
   var RightBtn = document.createElement('button');
   RightBtn.className = 'score-pill-seg sp-seg-btn';
@@ -8591,15 +8588,32 @@ function _blurDiagnosticSecondBlur() {
   var Pill = document.createElement('div');
   Pill.id = 'blurDiagnosticBlockPill';
   Pill.className = 'score-clear-pill';
+  // Inset so pill rounded ends align with where the roundrect corner radius begins/ends
+  Pill.style.cssText = 'margin-left:14px;margin-right:14px;';
   Pill.appendChild(LeftBtn);
   Pill.appendChild(RightBtn);
 
-  // Place pill in the full-width bottom row, outside the roundrect
+  // Sub-notes below pill on the page background: ‘manage’ left, ‘report request’ right
+  var ManageNote = document.createElement('p');
+  ManageNote.style.cssText = 'margin:8px 0 0 0;font-size:11px;color:#9ca3af;line-height:1.5;padding-left:14px;';
+  ManageNote.textContent = 'You can manage all blocked shortcuts in Browser Settings.';
+
+  var ReportNote = document.createElement('p');
+  ReportNote.style.cssText = 'margin:8px 0 0 0;font-size:11px;color:#6b7280;line-height:1.5;text-align:right;padding-right:14px;';
+  ReportNote.textContent = 'If you do need to block this, I’d appreciate it if you reported it too.';
+
+  var NotesRow = document.createElement('div');
+  NotesRow.style.cssText = 'display:grid;grid-template-columns:1fr 1fr;gap:0;';
+  NotesRow.appendChild(ManageNote);
+  NotesRow.appendChild(ReportNote);
+
+  // Place pill + notes in the full-width bottom row, outside the roundrect
   var BottomRow = document.getElementById('blurDiagnosticBottomRow');
   if (BottomRow) {
     BottomRow.innerHTML = '';
-    BottomRow.appendChild(Pill);
     BottomRow.style.display = 'block';
+    BottomRow.appendChild(Pill);
+    BottomRow.appendChild(NotesRow);
   }
 }
 

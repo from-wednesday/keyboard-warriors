@@ -9,7 +9,7 @@
 <title>Keyboard Warriors</title>
 <script>
   const DefaultTitle = 'Keyboard Warriors';
-  const VersionLabel   = '0012';
+  const VersionLabel   = '0013';
   const TitlePrefix  = document.title !== DefaultTitle ? document.title.trim() + '_' : '';
   const DBG_DEVICE   = TitlePrefix + VersionLabel;
 </script>
@@ -222,7 +222,7 @@ GameContainer.addEventListener('animationend', function () {
   </svg>
   <span class="icon-tip" onclick="event.stopPropagation();toggleKbModal()">keyboard<br>settings</span>
   </div>
-  <div id="settingsPanel" aria-hidden="true">
+  <div id="settingsPanel">
     <div id="settingsPanelInner">
 
     <!-- ── Browser Settings ─────────────────────────────── -->
@@ -230,7 +230,7 @@ GameContainer.addEventListener('animationend', function () {
       <div class="sp-col sp-col-left">
         <p class="sp-body" id="browserCompatHeading"></p>
         <p class="sp-body" id="browserCompatIntro"></p>
-        <p class="sp-body" id="browserCompatFooter"></p> <p class="sp-body sp-hint">If you encounter an error, hold down
+        <p class="sp-body" id="browserCompatFooter"></p> <p class="sp-body sp-hint">If you encounter any other error, hold down
           <span class="sp-key-chip">Esc</span>
           to open the debug window and send a report.</p>
       </div>
@@ -307,36 +307,26 @@ GameContainer.addEventListener('animationend', function () {
       </div>
        <!-- ── Blur Pause Diagnostic ─────────────────────── -->
     <div id="blurPauseDiagnostic" style="display:none;width:100%;grid-column:1/-1;">
-      <div class="diff-advanced-panel diff-advanced-active" id="blurDiagnosticBox" style="display:grid;grid-template-columns:1fr 1fr;gap:0;overflow:hidden;">
-        <!-- Left col: intro text (pre-reveal) or question label + chips (post-reveal) -->
-        <div id="blurDiagnosticLeft" style="padding-right:20px;">
-          <!-- Pre-reveal: intro paragraph -->
-          <p class="sp-body" id="blurDiagnosticIntro" style="margin-bottom:0;">If you think it was the shortcut that caused the problem, we should take a closer look. Do you want to reveal the answer?</p>
-          <!-- Post-reveal: question + chips moved here (hidden initially) -->
-          <div id="blurDiagnosticQuestionBlock" style="display:none;">
-            <div style="display:flex;align-items:flex-start;gap:7px;">
-              <span class="sp-report-dot" id="blurDiagnosticDot" style="margin-top:5px;flex-shrink:0;background:#f97316;"></span>
-              <span class="sp-report-question-label" id="blurDiagnosticQuestionLabel" style="font-size:11px;color:#6b7280;line-height:1.5;"></span>
-            </div>
-            <div id="blurDiagnosticChipsInner" style="margin-top:6px;margin-left:15px;"></div>
+      <!-- Two-column panel: fixed min-height so the pill row below never shifts position -->
+      <div class="diff-advanced-panel diff-advanced-active" id="blurDiagnosticBox" style="display:grid;grid-template-columns:1fr 1fr;gap:0;overflow:visible;min-height:120px;">
+        <!-- Left col: question label, then giant chips after reveal -->
+        <div id="blurDiagnosticLeft" style="padding-right:20px;display:flex;flex-direction:column;gap:8px;grid-column:1;grid-row:1;">
+          <div id="blurDiagnosticQuestionRow" style="display:flex;align-items:flex-start;gap:7px;">
+            <span class="sp-report-dot" id="blurDiagnosticDot" style="margin-top:4px;flex-shrink:0;background:#f97316;"></span>
+            <span class="sp-report-question-label" id="blurDiagnosticQuestionLabel" style="font-size:11px;color:#6b7280;line-height:1.5;"></span>
+          </div>
+          <div id="blurDiagnosticChipsArea" style="display:none;align-items:center;justify-content:center;"></div>
+          <div id="blurDiagnosticActionArea">
+            <button id="blurDiagnosticRevealBtn" class="score-pill-seg score-pill-full" style="border-radius:12px;border:1.5px solid #d1d5db;" onclick="_blurDiagnosticReveal()"><span class="diff-btn-text">reveal answer</span></button>
           </div>
         </div>
-        <!-- Right col: reveal button (pre-reveal) or response text (post-reveal) -->
-        <div id="blurDiagnosticRight" style="padding-left:20px;display:flex;flex-direction:column;align-items:flex-start;justify-content:flex-start;gap:6px;">
-          <!-- Pre-reveal state: question label + reveal button -->
-          <div id="blurDiagnosticPreReveal" style="display:flex;flex-direction:column;gap:6px;width:100%;">
-            <div style="display:flex;align-items:flex-start;gap:7px;">
-              <span class="sp-report-dot" id="blurDiagnosticDotPre" style="margin-top:5px;flex-shrink:0;background:#f97316;"></span>
-              <span class="sp-report-question-label" id="blurDiagnosticQuestionLabelPre" style="font-size:11px;color:#6b7280;line-height:1.5;"></span>
-            </div>
-            <span id="blurDiagnosticChipsArea" style="flex-shrink:0;margin-left:15px;">
-              <button id="blurDiagnosticRevealBtn" class="score-pill-seg score-pill-full" style="border-radius:12px;border:1.5px solid #d1d5db;min-width:100px;" onclick="_blurDiagnosticReveal()"><span class="diff-btn-text">reveal answer</span></button>
-            </span>
-          </div>
-          <!-- Post-reveal: follow-up text responses -->
-          <p class="sp-body" id="blurDiagnosticFollowUp" style="display:none;margin:0;font-size:11px;color:#6b7280;line-height:1.5;"></p>
+        <!-- Right col: single container, text replaced at each stage -->
+        <div id="blurDiagnosticRight" style="padding-left:20px;display:flex;flex-direction:column;gap:6px;justify-content:flex-start;grid-column:2;grid-row:1;">
+          <p class="sp-body" id="blurDiagnosticRightText" style="margin:0;font-size:11px;color:#6b7280;line-height:1.5;">If you think it was the shortcut that caused the problem, we should take a closer look. Do you want to reveal the answer?</p>
         </div>
       </div>
+      <!-- Pill row: outside the roundrect, vertically stable -->
+      <div id="blurDiagnosticBottomRow" style="display:none;margin-top:8px;"></div>
     </div>
     </div>
    
@@ -369,10 +359,7 @@ GameContainer.addEventListener('animationend', function () {
         <ul id="cheatSheetList" class="sp-report-list sp-report-weakness"></ul>
       </div>
       <div class="sp-col sp-col-right">
-        <div class="sp-report-col-header" aria-hidden="true" style="visibility:hidden;">
-          <p class="sp-small-card-title">&nbsp;</p>
-          <p class="sp-report-section-title">&nbsp;</p>
-        </div>
+       
         <ul id="cheatSheetListRight" class="sp-report-list sp-report-weakness"></ul>
       </div>
     </div>
@@ -3949,10 +3936,73 @@ function _renderKeyChips(label) {
   return frag;
 }
 
+// ── Browser conflict shortcut verification via keypress ───────────────────────
+// When the browser panel is open, listens for the user successfully pressing
+// a listed shortcut. If it fires without a blur, the shortcut is auto-unblocked.
+var _browserPanelKeydownHandler = null;
+
+function _attachBrowserPanelKeypressVerifier() {
+  _detachBrowserPanelKeypressVerifier();
+  _browserPanelKeydownHandler = function(e) {
+    if (activeSettings !== 'panelBrowser') { _detachBrowserPanelKeypressVerifier(); return; }
+    // Check every item in the conflict list against this keypress
+    var ul = document.getElementById('browserCompatList');
+    if (!ul) return;
+    var items = ul.querySelectorAll('li[data-conflict-key]');
+    items.forEach(function(li) {
+      var key = li.dataset.conflictKey;
+      if (!key) return;
+      // Only act on currently-blocked shortcuts (dismissed = blocked = radio on)
+      if (!dismissedConflicts.has(key)) return;
+      if (!matchesShortcut(e, key)) return;
+      // Keypress succeeded without blur — unblock it
+      e.preventDefault();
+      _setConflictBlocked(key, false, li);
+      showToast('Shortcut working');
+    });
+  };
+  document.addEventListener('keydown', _browserPanelKeydownHandler);
+}
+
+function _detachBrowserPanelKeypressVerifier() {
+  if (_browserPanelKeydownHandler) {
+    document.removeEventListener('keydown', _browserPanelKeydownHandler);
+    _browserPanelKeydownHandler = null;
+  }
+}
+
+// Central toggle for blocked state — updates DOM, storage, pool, and toast.
+// toastMsg: pass null to suppress toast (used on initial render).
+function _setConflictBlocked(canonicalKey, blocked, liEl) {
+  if (blocked) {
+    dismissedConflicts.add(canonicalKey);
+  } else {
+    dismissedConflicts.delete(canonicalKey);
+  }
+  _saveCustomDismissedConflicts();
+  questionPool = shuffleArray(buildPool());
+
+  // Refresh the clear overrides pill state
+  var ClearBtn = document.querySelector('#browserCompatFooter .score-pill-seg');
+  if (ClearBtn) {
+    var NowHasOverrides = _hasBrowserOverrides();
+    ClearBtn.classList.toggle('score-pill-inactive', !NowHasOverrides);
+    ClearBtn.onclick = NowHasOverrides ? _clearBrowserOverrides : null;
+  }
+
+  if (!liEl) return;
+  var radio = liEl.querySelector('.modal-radio');
+  // blocked = radio ON (filled dot), strikethrough label
+  // active  = radio OFF (empty ring), normal label
+  if (radio) radio.classList.toggle('on', blocked);
+  liEl.classList.toggle('conflict-dismissed', blocked);
+}
+
 function _makeConflictRadio(canonicalKey) {
-  var isDismissed = dismissedConflicts.has(canonicalKey);
+  // Blocked (dismissed) = radio ON. Active = radio OFF.
+  var isBlocked = dismissedConflicts.has(canonicalKey);
   var wrap = document.createElement('span');
-  wrap.className = 'modal-radio' + (isDismissed ? ' on' : '');
+  wrap.className = 'modal-radio' + (isBlocked ? ' on' : '');
   wrap.style.cssText = 'flex-shrink:0;margin-right:7px;cursor:pointer;';
   wrap.innerHTML = '<svg class="modal-radio-dot" width="16" height="16" viewBox="0 0 19 19" xmlns="http://www.w3.org/2000/svg">'
     + '<circle cx="9.5" cy="9.5" r="6.5" stroke="#374151" stroke-width="1.5" fill="none"/>'
@@ -3960,30 +4010,86 @@ function _makeConflictRadio(canonicalKey) {
     + '</svg>';
   wrap.addEventListener('click', function(e) {
     var li = wrap.closest('li');
-    if (dismissedConflicts.has(canonicalKey)) {
-      // Restore
-      dismissedConflicts.delete(canonicalKey);
-      _saveCustomDismissedConflicts();
-      wrap.classList.remove('on');
-      if (li) li.classList.remove('conflict-dismissed');
-      showModeToast('Assumption restored');
-    } else {
-      // Dismiss
-      dismissedConflicts.add(canonicalKey);
-      _saveCustomDismissedConflicts();
-      wrap.classList.add('on');
-      if (li) li.classList.add('conflict-dismissed');
-      showModeToast('Assumption removed');
-    }
-    // Rebuild pool immediately so the change takes effect
-    questionPool = shuffleArray(buildPool());
+    var nowBlocked = !dismissedConflicts.has(canonicalKey); // toggling
+    _setConflictBlocked(canonicalKey, nowBlocked, li);
+    showToast(nowBlocked ? 'Shortcut blocked' : 'Shortcut working');
   });
   return wrap;
 }
 
+// Converts a browser conflict label like "Cmd+T — opens new tab" into
+// a display string where the shortcut tokens use the same symbols as the
+// Report Card and Cheat Sheet, and the descriptor follows as plain text.
+function _BuildBrowserConflictLabel(RawLabel) {
+  // Split on the em-dash separator (raw string uses \u2014)
+  var Parts = RawLabel.split('\u2014');
+  var ShortcutPart = (Parts[0] || '').trim();
+  var DescriptorPart = Parts.length > 1 ? Parts.slice(1).join('\u2014').trim() : '';
+
+  // Translate token names to display symbols
+  var TokenDisplayMap = {
+    'Cmd':   currentOs === 'pc' ? 'Ctrl' : '⌘',
+    'Ctrl':  'Ctrl',
+    'Opt':   '⌥',
+    'Shift': '⇧',
+    'Alt':   'Alt',
+  };
+  var ArrowMap = {
+    'ArrowLeft':  '←',
+    'ArrowRight': '→',
+    'ArrowUp':    '↑',
+    'ArrowDown':  '↓',
+    'ArrowLeft':  '←',
+  };
+
+  // Replace known long token names with symbols
+  var DisplayShortcut = ShortcutPart;
+  Object.entries(TokenDisplayMap).forEach(function(Entry) {
+    DisplayShortcut = DisplayShortcut.replace(new RegExp('\b' + Entry[0] + '\b', 'g'), Entry[1]);
+  });
+  Object.entries(ArrowMap).forEach(function(Entry) {
+    DisplayShortcut = DisplayShortcut.replace(new RegExp('\b' + Entry[0] + '\b', 'g'), Entry[1]);
+  });
+
+  return { displayShortcut: DisplayShortcut, descriptor: DescriptorPart };
+}
+
+function _hasBrowserOverrides() {
+  // Returns true if any toggles differ from the auto-blocked default,
+  // or any diagnostic-added entries exist.
+  var DefaultBrowserKeys = new Set(getBrowserConflicts().keys);
+  // Check if any diagnostic custom entries exist
+  var HasDiagnosticEntries = false;
+  dismissedConflicts.forEach(function(Key) {
+    if (!DefaultBrowserKeys.has(Key)) HasDiagnosticEntries = true;
+  });
+  if (HasDiagnosticEntries) return true;
+  // Check if any standard key has been manually unblocked (radio toggled off)
+  var HasManualUnblock = false;
+  DefaultBrowserKeys.forEach(function(Key) {
+    if (!dismissedConflicts.has(Key)) HasManualUnblock = true;
+  });
+  return HasManualUnblock;
+}
+
+function _clearBrowserOverrides() {
+  // Remove all diagnostic-added entries
+  var DefaultBrowserKeys = new Set(getBrowserConflicts().keys);
+  var KeysToRemove = [];
+  dismissedConflicts.forEach(function(Key) {
+    if (!DefaultBrowserKeys.has(Key)) KeysToRemove.push(Key);
+  });
+  KeysToRemove.forEach(function(Key) { dismissedConflicts.delete(Key); });
+  // Re-block all standard browser conflicts
+  DefaultBrowserKeys.forEach(function(Key) { dismissedConflicts.add(Key); });
+  _saveCustomDismissedConflicts();
+  questionPool = shuffleArray(buildPool());
+  _refreshBrowserContent();
+}
+
 function _refreshBrowserContent() {
   var d     = getBrowserConflicts();
-  var bname = d.name;    // e.g. 'Chrome' or 'your browser' if unknown
+  var bname = d.name;
   var knownBrowser = (bname !== 'your browser');
 
   var h = document.getElementById('browserCompatHeading');
@@ -4006,29 +4112,67 @@ function _refreshBrowserContent() {
   var intro = document.getElementById('browserCompatIntro');
   if (intro) {
     if (d.labels.length > 0) {
-      intro.textContent = 'But, you may find it can take over if it hears one of its favourite shortcuts. We will try not to ask you any questions that use these specific key combinations, but if we do get interrupted during play, just click back into our window to continue training.';
+      intro.textContent = 'But, your browser owns some shortcuts and may interrupt us. We will try not to ask you any questions that use those indicated here. You can also test them now. Any working ones will unblock automatically.';
     } else {
       intro.textContent = 'We haven\u2019t spotted any shortcut conflicts for your current setup \u2014 you\u2019re good to go.';
     }
   }
 
-  // Hide the footer paragraph when intro already contains the full explanation
+  // Clear overrides pill
   var ft = document.getElementById('browserCompatFooter');
-  if (ft) ft.textContent = '';
+  if (ft) {
+    ft.innerHTML = '';
+    var HasOverrides = _hasBrowserOverrides();
+    var ClearPill = document.createElement('div');
+    ClearPill.className = 'score-clear-pill';
+    ClearPill.style.marginBottom = '4px';
+    var ClearBtn = document.createElement('button');
+    ClearBtn.className = 'score-pill-seg score-pill-full' + (HasOverrides ? '' : ' score-pill-inactive');
+    ClearBtn.onclick = HasOverrides ? _clearBrowserOverrides : null;
+    ClearBtn.innerHTML = '<span class="diff-btn-text">clear overrides</span>';
+    ClearPill.appendChild(ClearBtn);
+    ft.appendChild(ClearPill);
+  }
 
   var ul = document.getElementById('browserCompatList');
   if (ul) {
     ul.innerHTML = '';
-    d.labels.forEach(function(s, i) {
+
+    // Auto-block standard browser conflicts on first encounter
+    d.keys.forEach(function(canonicalKey) {
+      if (!dismissedConflicts.has(canonicalKey)) {
+        dismissedConflicts.add(canonicalKey);
+      }
+    });
+    _saveCustomDismissedConflicts();
+    questionPool = shuffleArray(buildPool());
+
+    d.labels.forEach(function(RawLabel, i) {
       var canonicalKey = d.keys[i];
-      var isDismissed  = dismissedConflicts.has(canonicalKey);
+      var isBlocked    = dismissedConflicts.has(canonicalKey);
+      var Parsed       = _BuildBrowserConflictLabel(RawLabel);
+
       var li = document.createElement('li');
-      li.className = isDismissed ? 'conflict-dismissed' : '';
+      li.className = isBlocked ? 'conflict-dismissed' : '';
+      li.dataset.conflictKey = canonicalKey;
       li.style.cssText = 'margin-bottom:6px;display:flex;align-items:center;flex-wrap:nowrap;gap:0;line-height:1.6;cursor:pointer;';
       li.appendChild(_makeConflictRadio(canonicalKey));
+
       var label = document.createElement('span');
       label.className = 'conflict-label';
-      label.appendChild(_renderKeyChips(s));
+
+      // Build chips from the symbol-translated shortcut string
+      var ChipWrapper = _renderKeyChips(Parsed.displayShortcut);
+      label.appendChild(ChipWrapper);
+
+      if (Parsed.descriptor) {
+        var DescEl = document.createElement('span');
+        DescEl.className = 'conflict-desc';
+        DescEl.style.cssText = 'margin-left:5px;color:#6b7280;font-size:11px;vertical-align:middle;';
+        DescEl.textContent = Parsed.descriptor;
+        label.appendChild(DescEl);
+      }
+
       li.appendChild(label);
       li.addEventListener('click', function(e) {
         if (e.target.closest('.modal-radio')) return;
@@ -4037,32 +4181,26 @@ function _refreshBrowserContent() {
       ul.appendChild(li);
     });
 
-    // Also show any custom-blocked shortcuts from the blur-pause diagnostic
-    // (shortcuts not in the standard browser conflict table)
+    // Diagnostic-added entries
     var BrowserConflictKeys = new Set(d.keys);
     dismissedConflicts.forEach(function(BlockedKey) {
-      if (BrowserConflictKeys.has(BlockedKey)) return; // already shown above
-      var isDismissed = dismissedConflicts.has(BlockedKey); // always true here, but kept for _makeConflictRadio
+      if (BrowserConflictKeys.has(BlockedKey)) return;
       var li = document.createElement('li');
       li.className = 'conflict-dismissed';
+      li.dataset.conflictKey = BlockedKey;
       li.style.cssText = 'margin-bottom:6px;display:flex;align-items:center;flex-wrap:nowrap;gap:0;line-height:1.6;cursor:pointer;';
       li.appendChild(_makeConflictRadio(BlockedKey));
-      // Build a proper label with chips using the same pattern as standard conflicts
+
       var label = document.createElement('span');
       label.className = 'conflict-label';
-      // Derive a human-readable display string for the chips.
-      // Try to find a matching shortcut in the pool for a display string; fall back to the raw token.
-      var allShortcuts = UNIVERSAL_SHORTCUTS.concat(loadedAppShortcuts);
-      var matchedShortcut = allShortcuts.find(function(s) { return s.shortcut === BlockedKey; });
-      var chipDisplayStr = matchedShortcut
-        ? (currentOs === 'pc' ? matchedShortcut.pc_sc : matchedShortcut.mac_sc)
-        : BlockedKey;
-      label.appendChild(_renderKeyChips(chipDisplayStr));
-      var desc = document.createElement('span');
-      desc.className = 'conflict-desc';
-      desc.style.cssText = 'margin-left:5px;color:#6b7280;font-size:11px;vertical-align:middle;';
-      desc.textContent = 'blocked via diagnostic';
-      label.appendChild(desc);
+      label.appendChild(_renderKeyChips(BlockedKey));
+
+      var DescEl = document.createElement('span');
+      DescEl.className = 'conflict-desc';
+      DescEl.style.cssText = 'margin-left:5px;color:#6b7280;font-size:11px;vertical-align:middle;';
+      DescEl.textContent = 'owned by OS / Browser / Plugin';
+      label.appendChild(DescEl);
+
       li.appendChild(label);
       li.addEventListener('click', function(e) {
         if (e.target.closest('.modal-radio')) return;
@@ -4071,6 +4209,8 @@ function _refreshBrowserContent() {
       ul.appendChild(li);
     });
   }
+
+  _attachBrowserPanelKeypressVerifier();
 }
 
 // ── Unified icon click handlers ──────────────────────────────────────────────
@@ -4337,11 +4477,11 @@ function getBrowserConflicts() {
   // Conflict tables — Mac shortcuts use Cmd, PC use Ctrl (same token in our shortcut strings)
   // Values are the canonical shortcut strings used in SHORTCUTS[].shortcut
   var mac = {
-    Edge:    ['CMD+T','CMD+GRAVE','CMD+OPTION+I','CMD+SHIFT+C','CMD+SHIFT+J','CMD+SHIFT+H','CMD+SHIFT+D','CMD+SHIFT+N'],
-    Firefox: ['CMD+T','CMD+GRAVE','CMD+OPTION+I','CMD+SHIFT+A','CMD+SHIFT+H','CMD+SHIFT+U','CMD+SHIFT+D','CMD+SHIFT+N'],
-    Safari:  ['CMD+T','CMD+GRAVE','CMD+OPTION+U','CMD+OPTION+I','CMD+OPTION+C','CMD+SHIFT+H','CMD+SHIFT+I','CMD+SHIFT+L'],
-    Opera:   ['CMD+T','CMD+GRAVE','CMD+OPTION+I','CMD+OPTION+J','CMD+SHIFT+D','CMD+SHIFT+N'],
-    Chrome:  ['CMD+T','CMD+GRAVE','CMD+OPTION+I','CMD+OPTION+J','CMD+SHIFT+C','CMD+SHIFT+N'],
+    Edge:    ['CMD+T','CMD+SHIFT+N'],
+    Firefox: ['CMD+T','CMD+SHIFT+P'],
+    Safari:  ['CMD+T','CMD+N','CMD+SHIFT+N','CMD+O'],
+    Opera:   ['CMD+T','CMD+SHIFT+N'],
+    Chrome:  ['CMD+T','CMD+SHIFT+N'],
   };
   var pc = {
     Edge:    ['CMD+T','CMD+SHIFT+I','CMD+SHIFT+C','CMD+SHIFT+J','CMD+SHIFT+H','CMD+SHIFT+D','CMD+SHIFT+N'],
@@ -4354,48 +4494,26 @@ function getBrowserConflicts() {
   var macLabels = {
     Edge: [
       'Cmd+T \u2014 opens new tab',
-      'Cmd+` \u2014 cycles app windows (macOS)',
-      'Cmd+Opt+I \u2014 opens DevTools',
-      'Cmd+Shift+C \u2014 opens DevTools inspector',
-      'Cmd+Shift+J \u2014 opens DevTools console',
-      'Cmd+Shift+H \u2014 opens History',
-      'Cmd+Shift+D \u2014 saves all tabs',
-      'Cmd+Shift+N \u2014 opens InPrivate window',
+      'Cmd+Shift+N \u2014 opens Private window',
     ],
     Firefox: [
       'Cmd+T \u2014 opens new tab',
-      'Cmd+` \u2014 cycles app windows (macOS)',
-      'Cmd+Opt+I \u2014 opens DevTools',
-      'Cmd+Shift+A \u2014 opens Add-ons',
-      'Cmd+Shift+H \u2014 opens History',
-      'Cmd+Shift+U \u2014 opens Page Source',
-      'Cmd+Shift+D \u2014 bookmarks page',
-      'Cmd+Shift+N \u2014 opens Private window',
+      'Cmd+Shift+P \u2014 opens Private window',
+
     ],
     Safari: [
       'Cmd+T \u2014 opens new tab',
-      'Cmd+` \u2014 cycles app windows (macOS)',
-      'Cmd+Opt+U \u2014 opens Page Source',
-      'Cmd+Opt+I \u2014 opens Web Inspector',
-      'Cmd+Opt+C \u2014 opens Inspector Console',
-      'Cmd+Shift+H \u2014 opens Home \u2215 History',
-      'Cmd+Shift+I \u2014 opens Mail',
-      'Cmd+Shift+L \u2014 opens Sidebar',
+      'Cmd+N \u2014 opens new window',
+      'Cmd+Shift+N \u2014 opens Private window',
+      'Cmd+O \u2014 open a file',
     ],
     Opera: [
       'Cmd+T \u2014 opens new tab',
-      'Cmd+` \u2014 cycles app windows (macOS)',
-      'Cmd+Opt+I \u2014 opens DevTools',
-      'Cmd+Opt+J \u2014 opens DevTools console',
       'Cmd+Shift+D \u2014 saves bookmark',
       'Cmd+Shift+N \u2014 opens Private window',
     ],
     Chrome: [
       'Cmd+T \u2014 opens new tab',
-      'Cmd+` \u2014 cycles app windows (macOS)',
-      'Cmd+Opt+I \u2014 opens DevTools',
-      'Cmd+Opt+J \u2014 opens DevTools console',
-      'Cmd+Shift+C \u2014 opens DevTools inspector',
       'Cmd+Shift+N \u2014 opens Incognito window',
     ],
   };
@@ -4446,11 +4564,11 @@ function getBrowserConflicts() {
   } else {
     // Generic fallback — show both platforms' most universal conflicts
     conflictKeys = isMacOs
-      ? ['CMD+T','CMD+GRAVE','CMD+OPTION+I','CMD+SHIFT+H','CMD+SHIFT+N']
+      ? ['CMD+T','CMD+OPTION+I','CMD+SHIFT+H','CMD+SHIFT+N']
       : ['CMD+T','CMD+SHIFT+I', 'CMD+SHIFT+H','CMD+SHIFT+N'];
     labels = isMacOs
-      ? ['Cmd+T \u2014 opens new tab','Cmd+` \u2014 cycles app windows (macOS)','Cmd+Opt+I \u2014 opens DevTools','Cmd+Shift+H \u2014 opens History','Cmd+Shift+N \u2014 opens Private window']
-      : ['Ctrl+T \u2014 opens new tab','Ctrl+Shift+I \u2014 opens DevTools','Ctrl+Shift+H \u2014 opens History','Ctrl+Shift+N \u2014 opens Private window'];
+      ? ['Cmd+T \u2014 opens new tab','Cmd+Shift+H \u2014 opens History','Cmd+Shift+N \u2014 opens Private window']
+      : ['Ctrl+T \u2014 opens new tab','Ctrl+Shift+H \u2014 opens History','Ctrl+Shift+N \u2014 opens Private window'];
   }
 
   return {
@@ -4509,7 +4627,7 @@ function _showWelcomeScreen() {
 function diffBtnClick(mode) {
   var hardcoreUnlocked = hasTrophy;
   if (mode === 'hardcore' && !hardcoreUnlocked) {
-    showToast('To unlock Hardcore you must achieve 100% accuracy.');
+    showToast('Score a 100% run to unlock Hardcore Mode.');
     return;
   }
 
@@ -5625,6 +5743,7 @@ function buildPool() {
     if (s.difficulty > maxDiff) return false;
     if ((touchEnabled || !hasFullKeyboard) && requiresExtKey(s.shortcut)) return false;
     if (browserSkip.has(s.shortcut)) return false;
+    if (dismissedConflicts.has(s.shortcut)) return false;
     if (killPunctuationOn && UNSTABLE_PUNCTUATION_TOKENS.has(s.shortcut)) return false;
     return true;
   });
@@ -8056,6 +8175,7 @@ function releaseAllKeys() {
 var _blurPauseActive = false;
 var _blurDiagnosticAnswerRevealed = false;
 var _blurDiagnosticShortcutToken = null;
+var _blurDiagnosticFlowComplete = false;
 
 window.addEventListener('blur', function() {
   releaseAllKeys();
@@ -8111,79 +8231,149 @@ function _blurDiagnosticKeydownHandler(e) {
   e.preventDefault();
   document.removeEventListener('keydown', _blurDiagnosticKeydownHandler);
 
-  // Correct shortcut pressed -- light the dot green (post-reveal dot in left col)
+  // Flow resolved: player successfully pressed the shortcut. Block further blur diversions.
+  _blurDiagnosticFlowComplete = true;
+
+  // Light dot green
   var DotEl = document.getElementById('blurDiagnosticDot');
   if (DotEl) { DotEl.style.background = '#10b981'; DotEl.style.transition = 'background 0.3s ease'; }
+
+  // Light giant chips green
+  var ChipsArea = document.getElementById('blurDiagnosticChipsArea');
+  if (ChipsArea) {
+    ChipsArea.querySelectorAll('.sp-report-chip-key').forEach(function(Chip) {
+      Chip.style.background  = '#10b981';
+      Chip.style.color       = 'white';
+      Chip.style.borderColor = '#059669';
+      Chip.style.boxShadow   = '0 0 8px rgba(16,185,129,0.5)';
+      Chip.style.transition  = 'background 0.2s ease, box-shadow 0.2s ease';
+    });
+    ChipsArea.querySelectorAll('span:not(.sp-report-chip-key)').forEach(function(Sep) {
+      Sep.style.color = '#059669';
+    });
+  }
 
   // Replace question (no penalty, excluded from report card)
   _blurDiagnosticReplaceQuestion();
 
-  var FollowUpEl = document.getElementById('blurDiagnosticFollowUp');
-  if (FollowUpEl) {
-    FollowUpEl.textContent = 'Seems fine to me. You are free to restart and continue your level.';
-    FollowUpEl.style.display = 'block';
+  titleEl.className = '';
+  titleEl.textContent = "Let's keep training.";
+
+  var RightTextEl = document.getElementById('blurDiagnosticRightText');
+  if (RightTextEl) {
+    RightTextEl.innerHTML = "<strong>Seems fine to me.</strong><br/><br/>You are free to unpause and continue your level.";
   }
+}
+   
+function _blurDiagnosticFindQuestion() {
+  // Look up the question by token rather than by current pool index,
+  // so a mid-transition blur cannot return the wrong question.
+  if (!_blurDiagnosticShortcutToken) return null;
+  return questionPool.find(function(Question) {
+    return Question.shortcut === _blurDiagnosticShortcutToken;
+  }) || null;
+}
+
+function _blurDiagnosticBuildSymbolChips(ShortcutToken) {
+  // Produces compact symbol-only chips from the shortcut token string,
+  // e.g. "CMD+SHIFT+E" → ⌘ + ⇧ + E chips. Falls back gracefully for PC mode.
+  var MacSymbols = { 'CMD': '⌘', 'SHIFT': '⇧', 'OPTION': '⌥', 'CTRL': '⌃',
+                     'ARROWLEFT': '←', 'ARROWRIGHT': '→', 'ARROWUP': '↑', 'ARROWDOWN': '↓',
+                     'RETURN': '↩', 'ENTER': '↩', 'SPACE': '␣', 'TAB': '⇥',
+                     'DEL': '⌫', 'BACKSPACE': '⌫', 'ESCAPE': '⎋' };
+  var PcSymbols  = { 'CMD': 'Ctrl', 'SHIFT': '⇧', 'OPTION': 'Alt',
+                     'ARROWLEFT': '←', 'ARROWRIGHT': '→', 'ARROWUP': '↑', 'ARROWDOWN': '↓',
+                     'RETURN': '↵', 'ENTER': '↵', 'SPACE': '␣', 'TAB': '⇥',
+                     'DEL': '⌫', 'BACKSPACE': '⌫', 'ESCAPE': 'Esc' };
+  var SymbolMap = currentOs === 'pc' ? PcSymbols : MacSymbols;
+  var Tokens = ShortcutToken.toUpperCase().split('+').map(function(Token) {
+    return SymbolMap[Token] || Token;
+  });
+  var Wrapper = document.createElement('span');
+  Wrapper.style.cssText = 'display:inline-flex;align-items:center;flex-wrap:nowrap;max-width:100%;overflow:hidden;';
+  var TotalWidth = 0;
+  var Truncated = false;
+  Tokens.forEach(function(Token, Index) {
+    if (Truncated) return;
+    if (Index > 0) {
+      var Sep = document.createElement('span');
+      Sep.textContent = '+';
+      Sep.style.cssText = 'margin:0 1px;color:#9ca3af;font-size:10px;line-height:1;vertical-align:middle;flex-shrink:0;';
+      Wrapper.appendChild(Sep);
+      TotalWidth += 12;
+    }
+    var Chip = document.createElement('span');
+    Chip.className = 'sp-report-chip-key';
+    // Estimate whether this chip will overflow -- rough heuristic: 8px per character + 8px padding
+    var EstimatedWidth = Token.length * 8 + 8;
+    if (TotalWidth + EstimatedWidth > 120) {
+      Chip.textContent = '…';
+      Truncated = true;
+    } else {
+      Chip.textContent = Token;
+      TotalWidth += EstimatedWidth;
+    }
+    Chip.style.cssText = 'display:inline-block;font-family:inherit;font-size:10px;font-weight:600;color:#1e3a5f;border:1px solid #d1d5db;border-radius:3px;padding:1px 4px 0;line-height:1.6;white-space:nowrap;vertical-align:middle;background:#f3f4f6;box-shadow:0 1.5px 0 #c9cdd3;flex-shrink:0;';
+    Wrapper.appendChild(Chip);
+  });
+  return Wrapper;
 }
 
 function _activateBlurPauseScreen() {
+  // If the flow already reached a resolution this session, do not restart it.
+  // The guard is cleared when the player unpauses or resets to idle.
+  if (_blurDiagnosticFlowComplete) return;
+
   _blurDiagnosticAnswerRevealed = false;
   _blurDiagnosticShortcutToken = currentAnswer;
-  var question = questionPool[questionIndex];
-  if (!question) return;
 
-  // Show heading in the title area of the game panel
+  // Title: stage 1
   titleEl.classList.remove('blurred');
   titleEl.className = '';
-  titleEl.textContent = 'You went away for a bit, so we paused your game.';
+  titleEl.textContent = 'You went away for a bit,\nso we paused your game.';
 
   // Activate diagnostic layout (hides the standard two columns)
   var PausePanelEl = document.getElementById('panelPause');
   if (PausePanelEl) PausePanelEl.classList.add('blur-pause-active');
 
-  // Populate the pre-reveal question label (right col, above reveal button)
-  var QuestionLabelPreEl = document.getElementById('blurDiagnosticQuestionLabelPre');
-  if (QuestionLabelPreEl) QuestionLabelPreEl.textContent = (question.display || '').replace(/\\\\/g, '\\');
-
-  // Also populate the post-reveal question label (left col, shown after reveal)
+  // Populate the question label
+  var Question = _blurDiagnosticFindQuestion();
   var QuestionLabelEl = document.getElementById('blurDiagnosticQuestionLabel');
-  if (QuestionLabelEl) QuestionLabelEl.textContent = (question.display || '').replace(/\\\\/g, '\\');
+  if (QuestionLabelEl) {
+    QuestionLabelEl.textContent = Question
+      ? (Question.display || '').replace(/\\\\/g, '\\')
+      : '';
+  }
 
-  // Reset pre-reveal dot to orange
-  var DotPreEl = document.getElementById('blurDiagnosticDotPre');
-  if (DotPreEl) { DotPreEl.style.background = '#f97316'; DotPreEl.style.transition = ''; }
-
-  // Reset post-reveal dot to orange (hidden until reveal)
+  // Reset dot to orange
   var DotEl = document.getElementById('blurDiagnosticDot');
   if (DotEl) { DotEl.style.background = '#f97316'; DotEl.style.transition = ''; }
 
-  // Reset chips area to reveal button (pre-reveal state)
+  // Reset chips area (hidden until reveal)
   var ChipsArea = document.getElementById('blurDiagnosticChipsArea');
-  if (ChipsArea) {
-    ChipsArea.innerHTML = '<button id="blurDiagnosticRevealBtn" class="score-pill-seg score-pill-full" style="border-radius:12px;border:1.5px solid #d1d5db;min-width:100px;" onclick="_blurDiagnosticReveal()"><span class="diff-btn-text">reveal answer</span></button>';
+  if (ChipsArea) { ChipsArea.innerHTML = ''; ChipsArea.style.display = 'none'; }
+
+  // Reset action area to reveal button
+  var ActionArea = document.getElementById('blurDiagnosticActionArea');
+  if (ActionArea) {
+    ActionArea.style.display = '';
+    ActionArea.innerHTML = '<button id="blurDiagnosticRevealBtn" class="score-pill-seg score-pill-full" style="border-radius:12px;border:1.5px solid #d1d5db;" onclick="_blurDiagnosticReveal()"><span class="diff-btn-text">reveal the answer</span></button>';
   }
 
-  // Clear post-reveal chips
-  var ChipsInner = document.getElementById('blurDiagnosticChipsInner');
-  if (ChipsInner) ChipsInner.innerHTML = '';
+  // Reset roundrect to normal state (clears any amber/resolved styling from a prior run)
+  var BoxEl = document.getElementById('blurDiagnosticBox');
+  if (BoxEl) BoxEl.classList.remove('blur-diagnostic-resolved');
 
-  // Show pre-reveal block, hide post-reveal question block
-  var PreRevealEl = document.getElementById('blurDiagnosticPreReveal');
-  if (PreRevealEl) PreRevealEl.style.display = 'flex';
-  var QuestionBlockEl = document.getElementById('blurDiagnosticQuestionBlock');
-  if (QuestionBlockEl) QuestionBlockEl.style.display = 'none';
-
-  // Reset intro text (shown in left col during pre-reveal)
-  var IntroEl = document.getElementById('blurDiagnosticIntro');
-  if (IntroEl) {
-    IntroEl.style.opacity = '1';
-    IntroEl.style.visibility = 'visible';
-    IntroEl.style.transition = '';
-    IntroEl.textContent = 'If you think it was the shortcut that caused the problem, we should take a closer look. Do you want to reveal the answer?';
+  // Stage 1 right-column text (single container, replaced at each stage)
+  var RightTextEl = document.getElementById('blurDiagnosticRightText');
+  if (RightTextEl) {
+    RightTextEl.innerHTML = 'If you think it was the shortcut that caused the problem, we should <em>take a closer look.</em><br><br><strong>Do you want to show the answer?</strong> #spoilerAlert';
+    RightTextEl.style.color = '#6b7280';
   }
 
-  // Hide follow-up
-  var FollowUpEl = document.getElementById('blurDiagnosticFollowUp');
-  if (FollowUpEl) { FollowUpEl.style.display = 'none'; FollowUpEl.textContent = ''; }
+  // Reset bottom row
+  var BottomRow = document.getElementById('blurDiagnosticBottomRow');
+  if (BottomRow) { BottomRow.style.display = 'none'; BottomRow.style.padding = ''; BottomRow.innerHTML = ''; }
 
   // Register keydown listener for shortcut verification
   document.addEventListener('keydown', _blurDiagnosticKeydownHandler);
@@ -8193,6 +8383,7 @@ function _deactivateBlurPauseScreen() {
   _blurPauseActive = false;
   _blurDiagnosticAnswerRevealed = false;
   _blurDiagnosticShortcutToken = null;
+  _blurDiagnosticFlowComplete = false;
   document.removeEventListener('keydown', _blurDiagnosticKeydownHandler);
   var PausePanelEl = document.getElementById('panelPause');
   if (PausePanelEl) PausePanelEl.classList.remove('blur-pause-active');
@@ -8202,78 +8393,229 @@ function _deactivateBlurPauseScreen() {
   titleEl.classList.add('blurred');
 }
 
-function _blurDiagnosticReveal() {
+  function _blurDiagnosticReveal() {
   _blurDiagnosticAnswerRevealed = true;
-  var question = questionPool[questionIndex];
-  if (!question) return;
-  var ShortcutDisplay = currentOs === 'pc' ? question.pc_sc : question.mac_sc;
 
-  // ── Column swap ──────────────────────────────────────────────────────────
-  // Hide pre-reveal block (question label + reveal button in right col)
-  var PreRevealEl = document.getElementById('blurDiagnosticPreReveal');
-  if (PreRevealEl) PreRevealEl.style.display = 'none';
+  var Question = _blurDiagnosticFindQuestion();
+  if (!Question) return;
 
-  // Fade out the intro text in left col
-  var IntroEl = document.getElementById('blurDiagnosticIntro');
-  if (IntroEl) {
-    IntroEl.style.transition = 'opacity 0.3s ease';
-    IntroEl.style.opacity = '0';
-    setTimeout(function() { IntroEl.style.visibility = 'hidden'; }, 300);
+  // Title: stage 2
+  titleEl.className = '';
+  titleEl.textContent = 'Check if the shortcut is causing a problem.';
+
+  // Replace right-column text for stage 2
+  var RightTextEl = document.getElementById('blurDiagnosticRightText');
+  if (RightTextEl) {
+    RightTextEl.innerHTML = '<em>Is <strong>this</strong> </em> what you pressed when the problem happened?<br><br><strong>Try it again now.</strong>';
   }
 
-  // Show question + chips in left col
-  var QuestionBlockEl = document.getElementById('blurDiagnosticQuestionBlock');
-  if (QuestionBlockEl) QuestionBlockEl.style.display = 'block';
-
-  // Build chips in the left col chips area
-  var ChipsInner = document.getElementById('blurDiagnosticChipsInner');
-  if (ChipsInner) {
-    ChipsInner.innerHTML = '';
-    ChipsInner.appendChild(BuildShortcutKeyChips(ShortcutDisplay, true));
+  // Hide reveal button, show giant chips
+  var ActionArea = document.getElementById('blurDiagnosticActionArea');
+  var ButtonHeight = 32;
+  if (ActionArea) {
+    var RevealBtn = ActionArea.querySelector('#blurDiagnosticRevealBtn');
+    if (RevealBtn) ButtonHeight = RevealBtn.offsetHeight || 32;
+    ActionArea.style.display = 'none';
   }
+  var ChipsArea = document.getElementById('blurDiagnosticChipsArea');
+  if (ChipsArea) {
+    ChipsArea.innerHTML = '';
+    var ChipWrapper = _blurDiagnosticBuildSymbolChips(_blurDiagnosticShortcutToken);
+    ChipWrapper.style.cssText = 'display:inline-flex;align-items:center;gap:4px;';
+    ChipsArea.appendChild(ChipWrapper);
+    ChipsArea.style.display = 'flex';
+    ChipsArea.style.alignItems = 'center';
+    ChipsArea.style.justifyContent = 'center';
+    ChipsArea.style.minHeight = Math.max(ButtonHeight, 32) + 'px';
+    ChipsArea.querySelectorAll('.sp-report-chip-key').forEach(function(Chip) {
+      Chip.style.fontSize = '16px';
+      Chip.style.padding = '4px 10px';
+      Chip.style.borderRadius = '5px';
+      Chip.style.lineHeight = '1.4';
+    });
+    ChipsArea.querySelectorAll('span:not(.sp-report-chip-key)').forEach(function(Sep) {
+      Sep.style.fontSize = '14px';
+    });
+  }
+}
 
-  // Show follow-up prompt in right col
-  var FollowUpEl = document.getElementById('blurDiagnosticFollowUp');
-  if (FollowUpEl) {
-    FollowUpEl.textContent = 'Is this what you pressed when the problem happened? Try it again now.';
-    FollowUpEl.style.display = 'block';
+function _blurDiagnosticBuildMailtoParams() {
+  var OsName = currentOs === 'pc' ? 'PC/Windows' : 'Mac';
+  var BrowserName = navigator.userAgent.match(/Edg\//) ? 'Edge' :
+    navigator.userAgent.match(/Firefox\//) ? 'Firefox' :
+    navigator.userAgent.match(/Safari\//) && !navigator.userAgent.match(/Chrome\//) ? 'Safari' :
+    navigator.userAgent.match(/OPR\//) ? 'Opera' :
+    navigator.userAgent.match(/Chrome\//) ? 'Chrome' : 'Unknown browser';
+  return {
+    subject: encodeURIComponent('Keyboard Warriors: new key conflict report'),
+    body:    encodeURIComponent('\n\nOS: ' + OsName + '\nBrowser: ' + BrowserName + '\nShortcut: ' + _blurDiagnosticShortcutToken),
+  };
+}
+
+function _blurDiagnosticBlockShortcut() {
+  // Block only -- no report sent
+  dismissedConflicts.add(_blurDiagnosticShortcutToken);
+  _saveCustomDismissedConflicts();
+  questionPool = shuffleArray(buildPool());
+  _blurDiagnosticReplaceQuestion();
+  _blurDiagnosticShowBlockedConfirmation();
+}
+
+function _blurDiagnosticBlockAndReport() {
+  // Block and send report
+  dismissedConflicts.add(_blurDiagnosticShortcutToken);
+  _saveCustomDismissedConflicts();
+  questionPool = shuffleArray(buildPool());
+  _blurDiagnosticReplaceQuestion();
+  var Params = _blurDiagnosticBuildMailtoParams();
+  _blurDiagnosticSendReport(Params.subject, Params.body);
+  _blurDiagnosticShowBlockedConfirmation();
+}
+
+function _blurDiagnosticShowBlockedConfirmation() {
+  titleEl.className = '';
+  titleEl.textContent = 'Do you want to block this?';
+  var RightTextEl = document.getElementById('blurDiagnosticRightText');
+  if (RightTextEl) {
+    RightTextEl.textContent = 'Done. That shortcut has been blocked. You are free to continue your level.';
+  }
+  var PillEl = document.getElementById('blurDiagnosticBlockPill');
+  if (PillEl) {
+    PillEl.style.opacity = '0.4';
+    PillEl.style.pointerEvents = 'none';
   }
 }
 
 function _blurDiagnosticSecondBlur() {
-  // Second blur after answer revealed -- assume the shortcut is causing the problem
   if (!_blurDiagnosticShortcutToken) return;
   document.removeEventListener('keydown', _blurDiagnosticKeydownHandler);
 
-  // Add to dismissed conflicts and persist to localStorage
-  dismissedConflicts.add(_blurDiagnosticShortcutToken);
-  _saveCustomDismissedConflicts();
+  // Flow resolved: second blur without a successful press means a likely conflict.
+  // Block further blur diversions for the rest of this session.
+  _blurDiagnosticFlowComplete = true;
 
-  // Replace the current question without penalty, excluded from report card
-  _blurDiagnosticReplaceQuestion();
+  // Title: stage 3
+  titleEl.className = '';
+  titleEl.textContent = 'Do you want to block this?';
 
-  // Build the report mailto
-  var OsName = currentOs === 'pc' ? 'PC/Windows' : 'Mac';
-  var BrowserName = (navigator.userAgent.match(/Edg\//) ? 'Edge' :
-    navigator.userAgent.match(/Firefox\//) ? 'Firefox' :
-    navigator.userAgent.match(/Safari\//) && !navigator.userAgent.match(/Chrome\//) ? 'Safari' :
-    navigator.userAgent.match(/OPR\//) ? 'Opera' :
-    navigator.userAgent.match(/Chrome\//) ? 'Chrome' : 'Unknown browser');
-  var MailSubject = 'Keyboard Warriors: new key conflict report';
-  var MailBody = '\n\nOS: ' + OsName + '\nBrowser: ' + BrowserName + '\nShortcut: ' + _blurDiagnosticShortcutToken;
+  // Right-column text: conflict explanation
+  var RightTextEl = document.getElementById('blurDiagnosticRightText');
+  if (RightTextEl) {
+    RightTextEl.innerHTML = 'It looks like your web browser, a plug-in or the OS may be intercepting this shortcut.<br><br>You can now ask to <strong>block</strong> any questions needing these keys from appearing if you wish:';
+    RightTextEl.style.color = '#6b7280';
+  }
 
-  // Update the panel
-  var FollowUpEl = document.getElementById('blurDiagnosticFollowUp');
-  if (FollowUpEl) {
-    FollowUpEl.innerHTML =
-      'It seems that your browser or OS is intercepting this shortcut. We have blocked it and will not ask questions needing this shortcut again.' +
-      '<br><br>You can review and unblock it in the Browser Settings screen. You are now free to restart and continue your level, but if you do not mind, I would like it if you reported this to me:' +
-      '<br><br><div class="score-clear-pill" style="margin-top:4px;">' +
-      '<button class="score-pill-seg score-pill-full" onclick="_blurDiagnosticSendReport(\'' +
-      encodeURIComponent(MailSubject) + '\',\'' + encodeURIComponent(MailBody) + '\')" title="Report conflict">' +
-      '<span class="diff-btn-text"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="14" height="14"><rect x="2" y="4" width="20" height="16" rx="2"/><polyline points="2,4 12,13 22,4"/></svg></span>' +
-      '</button></div>';
-    FollowUpEl.style.display = 'block';
+  // Amber giant chips to signal a suspected conflict
+  var ChipsArea = document.getElementById('blurDiagnosticChipsArea');
+  if (ChipsArea) {
+    ChipsArea.querySelectorAll('.sp-report-chip-key').forEach(function(Chip) {
+      Chip.style.background  = '#f97316';
+      Chip.style.color       = 'white';
+      Chip.style.borderColor = '#c2410c';
+      Chip.style.boxShadow   = '0 0 8px rgba(249,115,22,0.5)';
+      Chip.style.transition  = 'background 0.2s ease, box-shadow 0.2s ease';
+    });
+    ChipsArea.querySelectorAll('span:not(.sp-report-chip-key)').forEach(function(Sep) {
+      Sep.style.color = '#c2410c';
+    });
+  }
+
+  // Recede the roundrect: remove border and background to shift focus to the pill below
+  var BoxEl = document.getElementById('blurDiagnosticBox');
+  if (BoxEl) BoxEl.classList.add('blur-diagnostic-resolved');
+
+  var EnvelopeSvg = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="13" height="13" style="vertical-align:middle;flex-shrink:0;"><rect x="2" y="4" width="20" height="16" rx="2"/><polyline points="2,4 12,13 22,4"/></svg>';
+
+  // Build left pill button with chip clone
+  var ChipClone = _blurDiagnosticBuildSymbolChips(_blurDiagnosticShortcutToken);
+  ChipClone.style.cssText = 'display:inline-flex;align-items:center;flex-wrap:nowrap;flex-shrink:1;min-width:0;overflow:hidden;vertical-align:middle;';
+
+  var LeftLabel = document.createElement('span');
+  LeftLabel.className = 'diff-btn-text';
+  LeftLabel.style.cssText = 'display:inline-flex;align-items:center;gap:4px;flex-shrink:1;min-width:0;overflow:hidden;';
+  LeftLabel.appendChild(document.createTextNode('stop asking for\u00a0'));
+  LeftLabel.appendChild(ChipClone);
+
+  var LeftBtn = document.createElement('button');
+  LeftBtn.className = 'score-pill-seg sp-seg-btn';
+  LeftBtn.style.cssText = 'border-radius:18px 0 0 18px;flex:1;text-align:center;min-width:0;overflow:hidden;color:#6b7280;';
+  LeftBtn.onclick = _blurDiagnosticBlockShortcut;
+  LeftBtn.addEventListener('pointerdown', function() { this.classList.add('score-pill-active'); });
+  LeftBtn.addEventListener('pointerup',   function() { this.classList.remove('score-pill-active'); });
+  LeftBtn.addEventListener('pointerleave',function() { this.classList.remove('score-pill-active'); });
+  LeftBtn.appendChild(LeftLabel);
+
+  var RightLabel = document.createElement('span');
+  RightLabel.className = 'diff-btn-text';
+  RightLabel.style.cssText = 'display:inline-flex;align-items:center;gap:5px;color:#6b7280;';
+  RightLabel.innerHTML = 'do that + let me know ' + EnvelopeSvg;
+
+  var RightBtn = document.createElement('button');
+  RightBtn.className = 'score-pill-seg sp-seg-btn';
+  RightBtn.style.cssText = 'border-radius:0 18px 18px 0;flex:1;border-left:1.5px solid #d1d5db;text-align:center;';
+  RightBtn.onclick = _blurDiagnosticBlockAndReport;
+  RightBtn.addEventListener('pointerdown', function() { this.classList.add('score-pill-active'); });
+  RightBtn.addEventListener('pointerup',   function() { this.classList.remove('score-pill-active'); });
+  RightBtn.addEventListener('pointerleave',function() { this.classList.remove('score-pill-active'); });
+  RightBtn.appendChild(RightLabel);
+
+  var Pill = document.createElement('div');
+  Pill.id = 'blurDiagnosticBlockPill';
+  Pill.className = 'score-clear-pill';
+  Pill.appendChild(LeftBtn);
+  Pill.appendChild(RightBtn);
+
+  // Sub-notes: two-column grid aligned under their respective pill halves
+  // Left: plain text + browser icon, pointerdown pulses the pill, no hyperlink
+  var ManageNoteEl = document.createElement('div');
+  ManageNoteEl.style.cssText = 'display:inline-flex;align-items:center;gap:6px;cursor:pointer;padding-top:8px;';
+    ManageNoteEl.addEventListener('click', function() {
+    LeftBtn.classList.remove('pulse');
+    void LeftBtn.offsetWidth;
+    LeftBtn.classList.add('pulse');
+    LeftBtn.addEventListener('animationend', function handler() {
+      LeftBtn.classList.remove('pulse');
+      LeftBtn.removeEventListener('animationend', handler);
+    });
+  });
+
+  var ManageText = document.createElement('span');
+  ManageText.style.cssText = 'font-size:11px;color:#9ca3af;line-height:1.5;';
+  ManageText.textContent = 'You can then manage blocked keys in:';
+
+  var ManageIcon = document.createElement('span');
+  ManageIcon.style.cssText = 'display:inline-flex;align-items:center;flex-shrink:0;';
+  ManageIcon.innerHTML = '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 86 64.1" style="width:28px;height:auto;fill:#9ca3af;display:block;"><g><path d="M7,11.7v42c0,2.2,1.8,4,4,4h63c2.2,0,4-1.8,4-4V11.7c0-2.2-1.8-4-4-4H11c-2.2,0-4,1.8-4,4ZM9,19.7h67v34c0,1.1-.9,2-2,2H11c-1.1,0-2-.9-2-2V19.7ZM9,11.7c0-1.1.9-2,2-2h63c1.1,0,2,.9,2,2v6H9v-6Z"/><circle cx="19.3" cy="13.7" r="2"/><circle cx="13.3" cy="13.7" r="2"/><circle cx="25.3" cy="13.7" r="2"/></g><path d="M42.5,23.4c-6,0-11.4,2.1-14.9,5.4h0c0,0-.1.1-.2.2-2.4,2.3-3.8,5.2-3.8,8.4s1.4,6,3.8,8.4c0,0,0,.1.2.2,3.4,3.3,8.8,5.4,14.9,5.4s11.4-2.1,14.9-5.4h0c0,0,.1-.1.2-.2,0,0,0,0,0,0,2.4-2.3,3.8-5.2,3.8-8.4s-1.4-6-3.8-8.4c0,0-.1-.1-.2-.2-3.4-3.3-8.8-5.4-14.9-5.4h0ZM41.3,25.3v5.4c-1.9,0-3.7-.2-5.4-.4.3-.6.7-1.2,1-1.7,1.3-1.7,2.8-2.8,4.4-3.2h0ZM43.7,25.3c1.6.4,3.1,1.5,4.4,3.2.4.5.7,1.1,1.1,1.7-1.7.2-3.5.4-5.4.4v-5.3ZM49,26.2c2.1.7,4,1.7,5.5,2.9-.9.3-1.9.5-2.9.8-.4-.8-.8-1.5-1.3-2.2-.4-.5-.8-1-1.3-1.5h0ZM36,26.2c-.5.4-.9.9-1.2,1.5-.5.7-.9,1.4-1.3,2.2-1.1-.2-2.1-.5-2.9-.8,1.5-1.2,3.4-2.2,5.5-2.9h0ZM28.9,30.6c1.1.4,2.4.8,3.8,1-.5,1.5-.8,3.1-.9,4.8h-5.6c.2-2.1,1.2-4.1,2.7-5.8h0ZM56.1,30.6c1.5,1.7,2.5,3.7,2.7,5.8h-5.6c0-1.7-.4-3.3-.9-4.8,1.4-.3,2.7-.6,3.8-1h0ZM35.1,32c1.9.3,4,.4,6.1.5v3.9h-7c0-1.5.4-3,.8-4.3h0ZM49.9,32c.4,1.3.7,2.8.8,4.3h-7v-3.9c2.2,0,4.2-.2,6.1-.5h0ZM26.2,38.2h5.6c0,1.7.4,3.3.9,4.8-1.4.3-2.7.6-3.8,1-1.5-1.7-2.5-3.7-2.7-5.8h0ZM34.3,38.2h7v3.9c-2.2,0-4.2.2-6.1.5-.4-1.3-.7-2.8-.8-4.3h0ZM43.7,38.2h7c0,1.5-.4,3-.8,4.3-1.9-.3-4-.4-6.1-.5v-3.9ZM53.2,38.2h5.6c-.2,2.1-1.2,4.1-2.7,5.8-1.1-.4-2.4-.8-3.8-1,.5-1.5.8-3.1.9-4.8h0ZM41.3,43.9v5.4c-1.6-.4-3.1-1.4-4.4-3.2-.4-.5-.7-1.1-1.1-1.7,1.7-.2,3.5-.4,5.4-.4h0ZM43.7,43.9c1.9,0,3.7.2,5.4.4-.3.6-.7,1.2-1.1,1.7-1.3,1.7-2.8,2.8-4.4,3.2v-5.3ZM33.4,44.7c.4.8.8,1.5,1.3,2.2.4.5.8,1,1.2,1.5-2.1-.7-4-1.7-5.5-2.9.9-.3,1.9-.5,2.9-.8h0ZM51.6,44.7c1.1.2,2.1.5,2.9.8-1.5,1.2-3.4,2.2-5.5,2.9.5-.4.9-.9,1.3-1.5.5-.7.9-1.4,1.3-2.2h0Z"/></svg>';
+
+  ManageNoteEl.appendChild(ManageText);
+  ManageNoteEl.appendChild(ManageIcon);
+
+  var ReportNote = document.createElement('p');
+  ReportNote.style.cssText = 'margin:0;padding-top:8px;font-size:11px;color:#9ca3af;line-height:1.5;text-align:center;';
+  ReportNote.textContent = '(I appreciate you reporting issues)';
+ReportNote.style.cursor = 'pointer';
+  ReportNote.addEventListener('click', function() {
+    RightBtn.classList.remove('pulse');
+    void RightBtn.offsetWidth;
+    RightBtn.classList.add('pulse');
+    RightBtn.addEventListener('animationend', function handler() {
+      RightBtn.classList.remove('pulse');
+      RightBtn.removeEventListener('animationend', handler);
+    });
+  });
+
+  var NotesRow = document.createElement('div');
+  NotesRow.style.cssText = 'display:grid;grid-template-columns:1fr 1fr;gap:0;';
+  NotesRow.appendChild(ManageNoteEl);
+  NotesRow.appendChild(ReportNote);
+
+  var BottomRow = document.getElementById('blurDiagnosticBottomRow');
+  if (BottomRow) {
+    BottomRow.innerHTML = '';
+    BottomRow.style.display = 'block';
+    BottomRow.style.padding = '0 16px';
+    BottomRow.appendChild(Pill);
+    BottomRow.appendChild(NotesRow);
   }
 }
 

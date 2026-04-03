@@ -8359,7 +8359,7 @@ function _activateBlurPauseScreen() {
   var FollowUpEl = document.getElementById('blurDiagnosticFollowUp');
   if (FollowUpEl) { FollowUpEl.style.display = 'none'; FollowUpEl.innerHTML = ''; }
   var BottomRow = document.getElementById('blurDiagnosticBottomRow');
-  if (BottomRow) { BottomRow.style.display = 'none'; BottomRow.innerHTML = ''; }
+  if (BottomRow) { BottomRow.style.display = 'none'; BottomRow.style.padding = ''; BottomRow.innerHTML = ''; }
   // Clear any stale paragraphs appended directly to the left column by a prior stage-3 pass
   var LeftColEl = document.getElementById('blurDiagnosticLeft');
   if (LeftColEl) {
@@ -8520,12 +8520,11 @@ function _blurDiagnosticSecondBlur() {
     ConflictPara.textContent = 'It looks like your browser or OS may be intercepting this shortcut. You can ask to block questions needing these keys below.';
     FollowUpEl.appendChild(ConflictPara);
 
-    // Paragraph 2: nudge row linking to browser settings
-    // Clicking the icon here pulses the segmented pill (does not navigate away)
+    // Manage-note row: plain flex row, not sp-settings-nudge (avoids CSS overrides)
+    // Clicking anywhere pulses the segmented pill below
     var NudgeRow = document.createElement('a');
-    NudgeRow.className = 'sp-settings-nudge';
     NudgeRow.href = '#';
-    NudgeRow.style.cssText = 'margin-bottom:6px;justify-content:flex-start;gap:6px;';
+    NudgeRow.style.cssText = 'display:inline-flex;align-items:center;gap:6px;text-decoration:none;cursor:pointer;';
     NudgeRow.addEventListener('click', function(e) {
       e.preventDefault();
       var PillEl = document.getElementById('blurDiagnosticBlockPill');
@@ -8540,12 +8539,11 @@ function _blurDiagnosticSecondBlur() {
       }
     });
     var NudgeText = document.createElement('span');
-    NudgeText.className = 'sp-nudge-text';
+    NudgeText.style.cssText = 'font-size:11px;color:#9ca3af;line-height:1.5;';
     NudgeText.textContent = 'You can then manage blocked keys in:';
     var NudgeIcon = document.createElement('span');
-    NudgeIcon.className = 'sp-nudge-icon';
-    NudgeIcon.style.cssText = 'width:20px;height:auto;flex-shrink:0;';
-    NudgeIcon.innerHTML = '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 86 64.1" style="width:20px;height:auto;fill:#9ca3af;"><g><path d="M7,11.7v42c0,2.2,1.8,4,4,4h63c2.2,0,4-1.8,4-4V11.7c0-2.2-1.8-4-4-4H11c-2.2,0-4,1.8-4,4ZM9,19.7h67v34c0,1.1-.9,2-2,2H11c-1.1,0-2-.9-2-2V19.7ZM9,11.7c0-1.1.9-2,2-2h63c1.1,0,2,.9,2,2v6H9v-6Z"/><circle cx="19.3" cy="13.7" r="2"/><circle cx="13.3" cy="13.7" r="2"/><circle cx="25.3" cy="13.7" r="2"/></g><path d="M42.5,23.4c-6,0-11.4,2.1-14.9,5.4h0c0,0-.1.1-.2.2-2.4,2.3-3.8,5.2-3.8,8.4s1.4,6,3.8,8.4c0,0,0,.1.2.2,3.4,3.3,8.8,5.4,14.9,5.4s11.4-2.1,14.9-5.4h0c0,0,.1-.1.2-.2,0,0,0,0,0,0,2.4-2.3,3.8-5.2,3.8-8.4s-1.4-6-3.8-8.4c0,0-.1-.1-.2-.2-3.4-3.3-8.8-5.4-14.9-5.4h0ZM41.3,25.3v5.4c-1.9,0-3.7-.2-5.4-.4.3-.6.7-1.2,1-1.7,1.3-1.7,2.8-2.8,4.4-3.2h0ZM43.7,25.3c1.6.4,3.1,1.5,4.4,3.2.4.5.7,1.1,1.1,1.7-1.7.2-3.5.4-5.4.4v-5.3ZM49,26.2c2.1.7,4,1.7,5.5,2.9-.9.3-1.9.5-2.9.8-.4-.8-.8-1.5-1.3-2.2-.4-.5-.8-1-1.3-1.5h0ZM36,26.2c-.5.4-.9.9-1.2,1.5-.5.7-.9,1.4-1.3,2.2-1.1-.2-2.1-.5-2.9-.8,1.5-1.2,3.4-2.2,5.5-2.9h0ZM28.9,30.6c1.1.4,2.4.8,3.8,1-.5,1.5-.8,3.1-.9,4.8h-5.6c.2-2.1,1.2-4.1,2.7-5.8h0ZM56.1,30.6c1.5,1.7,2.5,3.7,2.7,5.8h-5.6c0-1.7-.4-3.3-.9-4.8,1.4-.3,2.7-.6,3.8-1h0ZM35.1,32c1.9.3,4,.4,6.1.5v3.9h-7c0-1.5.4-3,.8-4.3h0ZM49.9,32c.4,1.3.7,2.8.8,4.3h-7v-3.9c2.2,0,4.2-.2,6.1-.5h0ZM26.2,38.2h5.6c0,1.7.4,3.3.9,4.8-1.4.3-2.7.6-3.8,1-1.5-1.7-2.5-3.7-2.7-5.8h0ZM34.3,38.2h7v3.9c-2.2,0-4.2.2-6.1.5-.4-1.3-.7-2.8-.8-4.3h0ZM43.7,38.2h7c0,1.5-.4,3-.8,4.3-1.9-.3-4-.4-6.1-.5v-3.9ZM53.2,38.2h5.6c-.2,2.1-1.2,4.1-2.7,5.8-1.1-.4-2.4-.8-3.8-1,.5-1.5.8-3.1.9-4.8h0ZM41.3,43.9v5.4c-1.6-.4-3.1-1.4-4.4-3.2-.4-.5-.7-1.1-1.1-1.7,1.7-.2,3.5-.4,5.4-.4h0ZM43.7,43.9c1.9,0,3.7.2,5.4.4-.3.6-.7,1.2-1.1,1.7-1.3,1.7-2.8,2.8-4.4,3.2v-5.3ZM33.4,44.7c.4.8.8,1.5,1.3,2.2.4.5.8,1,1.2,1.5-2.1-.7-4-1.7-5.5-2.9.9-.3,1.9-.5,2.9-.8h0ZM51.6,44.7c1.1.2,2.1.5,2.9.8-1.5,1.2-3.4,2.2-5.5,2.9.5-.4.9-.9,1.3-1.5.5-.7.9-1.4,1.3-2.2h0Z"/></svg>';
+    NudgeIcon.style.cssText = 'display:inline-flex;align-items:center;flex-shrink:0;';
+    NudgeIcon.innerHTML = '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 86 64.1" style="width:18px;height:auto;fill:#9ca3af;display:block;"><g><path d="M7,11.7v42c0,2.2,1.8,4,4,4h63c2.2,0,4-1.8,4-4V11.7c0-2.2-1.8-4-4-4H11c-2.2,0-4,1.8-4,4ZM9,19.7h67v34c0,1.1-.9,2-2,2H11c-1.1,0-2-.9-2-2V19.7ZM9,11.7c0-1.1.9-2,2-2h63c1.1,0,2,.9,2,2v6H9v-6Z"/><circle cx="19.3" cy="13.7" r="2"/><circle cx="13.3" cy="13.7" r="2"/><circle cx="25.3" cy="13.7" r="2"/></g><path d="M42.5,23.4c-6,0-11.4,2.1-14.9,5.4h0c0,0-.1.1-.2.2-2.4,2.3-3.8,5.2-3.8,8.4s1.4,6,3.8,8.4c0,0,0,.1.2.2,3.4,3.3,8.8,5.4,14.9,5.4s11.4-2.1,14.9-5.4h0c0,0,.1-.1.2-.2,0,0,0,0,0,0,2.4-2.3,3.8-5.2,3.8-8.4s-1.4-6-3.8-8.4c0,0-.1-.1-.2-.2-3.4-3.3-8.8-5.4-14.9-5.4h0ZM41.3,25.3v5.4c-1.9,0-3.7-.2-5.4-.4.3-.6.7-1.2,1-1.7,1.3-1.7,2.8-2.8,4.4-3.2h0ZM43.7,25.3c1.6.4,3.1,1.5,4.4,3.2.4.5.7,1.1,1.1,1.7-1.7.2-3.5.4-5.4.4v-5.3ZM49,26.2c2.1.7,4,1.7,5.5,2.9-.9.3-1.9.5-2.9.8-.4-.8-.8-1.5-1.3-2.2-.4-.5-.8-1-1.3-1.5h0ZM36,26.2c-.5.4-.9.9-1.2,1.5-.5.7-.9,1.4-1.3,2.2-1.1-.2-2.1-.5-2.9-.8,1.5-1.2,3.4-2.2,5.5-2.9h0ZM28.9,30.6c1.1.4,2.4.8,3.8,1-.5,1.5-.8,3.1-.9,4.8h-5.6c.2-2.1,1.2-4.1,2.7-5.8h0ZM56.1,30.6c1.5,1.7,2.5,3.7,2.7,5.8h-5.6c0-1.7-.4-3.3-.9-4.8,1.4-.3,2.7-.6,3.8-1h0ZM35.1,32c1.9.3,4,.4,6.1.5v3.9h-7c0-1.5.4-3,.8-4.3h0ZM49.9,32c.4,1.3.7,2.8.8,4.3h-7v-3.9c2.2,0,4.2-.2,6.1-.5h0ZM26.2,38.2h5.6c0,1.7.4,3.3.9,4.8-1.4.3-2.7.6-3.8,1-1.5-1.7-2.5-3.7-2.7-5.8h0ZM34.3,38.2h7v3.9c-2.2,0-4.2.2-6.1.5-.4-1.3-.7-2.8-.8-4.3h0ZM43.7,38.2h7c0,1.5-.4,3-.8,4.3-1.9-.3-4-.4-6.1-.5v-3.9ZM53.2,38.2h5.6c-.2,2.1-1.2,4.1-2.7,5.8-1.1-.4-2.4-.8-3.8-1,.5-1.5.8-3.1.9-4.8h0ZM41.3,43.9v5.4c-1.6-.4-3.1-1.4-4.4-3.2-.4-.5-.7-1.1-1.1-1.7,1.7-.2,3.5-.4,5.4-.4h0ZM43.7,43.9c1.9,0,3.7.2,5.4.4-.3.6-.7,1.2-1.1,1.7-1.3,1.7-2.8,2.8-4.4,3.2v-5.3ZM33.4,44.7c.4.8.8,1.5,1.3,2.2.4.5.8,1,1.2,1.5-2.1-.7-4-1.7-5.5-2.9.9-.3,1.9-.5,2.9-.8h0ZM51.6,44.7c1.1.2,2.1.5,2.9.8-1.5,1.2-3.4,2.2-5.5,2.9.5-.4.9-.9,1.3-1.5.5-.7.9-1.4,1.3-2.2h0Z"/></svg>';
     NudgeRow.appendChild(NudgeText);
     NudgeRow.appendChild(NudgeIcon);
     // NudgeRow moves to the bottom-left area outside the roundrect (built below)
@@ -8590,17 +8588,17 @@ function _blurDiagnosticSecondBlur() {
   Pill.id = 'blurDiagnosticBlockPill';
   Pill.className = 'score-clear-pill';
   // Inset so pill rounded ends align with where the roundrect corner radius begins/ends
-  Pill.style.cssText = 'margin-left:16px;margin-right:16px;';
+  Pill.style.cssText = '';
   Pill.appendChild(LeftBtn);
   Pill.appendChild(RightBtn);
 
   // Sub-notes below pill on the page background: nudge block left, ‘report request’ right
   // Left: reuse the full NudgeRow (text + browser icon) built above
   var ManageNote = NudgeRow;
-  ManageNote.style.cssText = 'margin:8px 0 0 0;padding-left:14px;flex-shrink:0;';
+  ManageNote.style.cssText = 'margin:8px 0 0 0;flex-shrink:0;';
 
   var ReportNote = document.createElement('p');
-  ReportNote.style.cssText = 'margin:8px 0 0 0;font-size:11px;color:#9ca3af;line-height:1.5;text-align:center;padding-right:14px;';
+  ReportNote.style.cssText = 'margin:8px 0 0 0;font-size:11px;color:#9ca3af;line-height:1.5;text-align:center;';
   ReportNote.textContent = '(I appreciate you reporting issues)';
 
   var NotesRow = document.createElement('div');
@@ -8613,6 +8611,7 @@ function _blurDiagnosticSecondBlur() {
   if (BottomRow) {
     BottomRow.innerHTML = '';
     BottomRow.style.display = 'block';
+    BottomRow.style.padding = '0 16px';
     BottomRow.appendChild(Pill);
     BottomRow.appendChild(NotesRow);
   }

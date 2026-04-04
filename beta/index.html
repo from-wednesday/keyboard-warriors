@@ -98,7 +98,9 @@
 
 
 
-<div id="skeletonLoader" style="width:18px;min-height:168px;border-radius:9px;background:#e0f2fe;animation:SkeletonGrow 2s cubic-bezier(0.4,0,0.2,1) forwards;margin-right:auto;"></div>
+<div id="skeletonWrapper" style="display:flex;flex-direction:column;align-items:flex-start;width:100%;min-height:560px;">
+<div id="skeletonLoader" style="width:18px;border-radius:9px;background:#e0f2fe;animation:SkeletonGrow 2s cubic-bezier(0.4,0,0.2,1) forwards;margin-right:auto;flex-shrink:0;height:168px;"></div>
+</div>
 <div id="gameContainer" class="page-initially-hidden">
   <div id="questionRow"></div>
   <div class="topRow">
@@ -1364,12 +1366,12 @@ function _revealPageContent() {
     Element.classList.remove('page-initially-hidden');
     Element.classList.add('page-revealed');
   });
-  var SkeletonElement = document.getElementById('skeletonLoader');
-  if (SkeletonElement) {
-    SkeletonElement.style.transition = 'opacity 0.3s ease';
-    SkeletonElement.style.opacity = '0';
+  var SkeletonWrapper = document.getElementById('skeletonWrapper');
+  if (SkeletonWrapper) {
+    SkeletonWrapper.style.transition = 'opacity 0.3s ease';
+    SkeletonWrapper.style.opacity = '0';
     setTimeout(function() {
-      if (SkeletonElement.parentNode) SkeletonElement.parentNode.removeChild(SkeletonElement);
+      if (SkeletonWrapper.parentNode) SkeletonWrapper.parentNode.removeChild(SkeletonWrapper);
     }, 350);
   }
 }

@@ -7221,9 +7221,13 @@ function finalizeRunData(completedRun, currentPool, DefeatCount) {
             // Suggested stop is slower than their average -- natural pace match
             CalibrateMessageText = 'Your average answer time this round was ' + AverageAnswerTimeDisplay + ' seconds. That is close to the ' + NearestStop + '-second question timer setting, which would match your natural pace well.';
           }
+          var CalibrateLivesValue = (IsBorderline || IsChallenge) ? 5 : 10;
           ForceAddMessage(TimerAndLivesMessages, 'cat4_timer_calibrate',
             CalibrateMessageText,
-            { type: 'timer', fromValue: questionTimer, toValue: NearestStop });
+            [
+              { type: 'timer', fromValue: questionTimer, toValue: NearestStop        },
+              { type: 'lives', fromValue: playerLives,   toValue: CalibrateLivesValue },
+            ]);
         }
       }
 
@@ -7387,17 +7391,10 @@ function finalizeRunData(completedRun, currentPool, DefeatCount) {
     });
   }
 
-  // ── Pick the advice messages (up to two) ─────────────────────────────────
-  // Priority slot 1: memory-aware → specific/settings (merged when <= 1 weakness) → literacy → settings → general
-  // Priority slot 2: always a general message, different key from slot 1
+  // ── Pick the advice message ───────────────────────────────────────────────
   function PickRandom(pool) {
     if (pool.length === 0) return null;
     return pool[Math.floor(Math.random() * pool.length)];
-  }
-  function PickRandomExcluding(pool, ExcludeKey) {
-    var Filtered = pool.filter(function(m) { return m.key !== ExcludeKey; });
-    if (Filtered.length === 0) return null;
-    return Filtered[Math.floor(Math.random() * Filtered.length)];
   }
 
   // Priority: memory-aware → timer/lives (primary growth levers for trophy holders)
@@ -7416,22 +7413,21 @@ function finalizeRunData(completedRun, currentPool, DefeatCount) {
     || PickRandom(DifficultyMessages)
     || PickRandom(GeneralMessages);
 
-  // Second message: always a general/encouragement line, different key from primary.
-  // Suppressed when the calibrate message is drawn -- it is long and self-contained.
-  var PrimaryKey     = PrimaryMessage ? PrimaryMessage.key : null;
-  
-
-  // Persist the primary message key to memory (secondary is supplementary, not memorised)
   if (PrimaryMessage) {
-    SaveCoachMemory(PrimaryMessage.key, PrimaryMessage.settingSuggested || null, DefeatCount || 0, RecentMessageKeys);
+    var RawSuggestionForMemory = PrimaryMessage.settingSuggested || null;
+    var FirstSuggestionForMemory = Array.isArray(RawSuggestionForMemory)
+      ? RawSuggestionForMemory[0]
+      : RawSuggestionForMemory;
+    SaveCoachMemory(PrimaryMessage.key, FirstSuggestionForMemory, DefeatCount || 0, RecentMessageKeys);
   }
 
-var trainerAdvice = [];
-if (PrimaryMessage) trainerAdvice.push(PrimaryMessage.text);
+  var trainerAdvice = [];
+  if (PrimaryMessage) trainerAdvice.push(PrimaryMessage.text);
 
-  // The settings link attaches to whichever message carries a setting suggestion
-  var trainerSettingSuggested = PrimaryMessage && PrimaryMessage.settingSuggested
-    ? PrimaryMessage.settingSuggested
+  // Normalise suggestions to an array (or null) so downstream code always handles the same shape
+  var RawSuggestions = PrimaryMessage ? (PrimaryMessage.settingSuggested || null) : null;
+  var trainerSettingSuggested = RawSuggestions
+    ? (Array.isArray(RawSuggestions) ? RawSuggestions : [RawSuggestions])
     : null;
 
   return { questionSummaries, trainerAdvice, trainerSettingSuggested };
@@ -7784,29 +7780,29 @@ function _refreshReportPanel() {
   if (adviceContainer) {
     adviceContainer.innerHTML = '';
     if (trainerAdvice.length > 0) {
-      trainerAdvice.forEach(function(line, index) {
+      trainerAdvice.forEach(function(line) {
         var p = document.createElement('p');
         p.className = 'sp-report-advice';
-        // Append the settings link only on the primary message (index 0) when it carries a suggestion
-        var HasSettingsSuggestion = index === 0
-          && lastCompletedReport.trainerSettingSuggested !== null
-          && lastCompletedReport.trainerSettingSuggested !== undefined;
-        if (HasSettingsSuggestion) {
-          p.textContent = line + ' ';
-          var link = document.createElement('a');
-          link.textContent = 'You can adjust this in difficulty settings.';
-          link.href = '#';
-          link.style.cssText = 'color:#9ca3af;font-style:italic;text-decoration:none;cursor:pointer;';
-          link.addEventListener('click', function(e) {
-            e.preventDefault();
-            openSettings('panelDifficulty');
-          });
-          p.appendChild(link);
-        } else {
-          p.textContent = line;
-        }
+        p.textContent = line;
         adviceContainer.appendChild(p);
       });
+
+      // Pill button: only shown when there is at least one setting suggestion
+      var HasSettingsSuggestion = Array.isArray(lastCompletedReport.trainerSettingSuggested)
+        && lastCompletedReport.trainerSettingSuggested.length > 0;
+      if (HasSettingsSuggestion) {
+        var AcceptPill = document.createElement('div');
+        AcceptPill.className = 'score-clear-pill';
+        AcceptPill.style.marginTop = '8px';
+        var AcceptButton = document.createElement('button');
+        AcceptButton.className = 'score-pill-seg score-pill-full';
+        AcceptButton.innerHTML = '<span class="diff-btn-text">Accept the coach\'s advice</span>';
+        AcceptButton.addEventListener('click', function() {
+          _applyCoachSuggestionsWithAnimation(lastCompletedReport.trainerSettingSuggested);
+        });
+        AcceptPill.appendChild(AcceptButton);
+        adviceContainer.appendChild(AcceptPill);
+      }
     } else {
       var noAdvice = document.createElement('p');
       noAdvice.className = 'sp-report-no-advice';
@@ -7816,6 +7812,132 @@ function _refreshReportPanel() {
   }
 }
 
+
+/* ══════════════════════════════════════
+   COACH ADVICE ANIMATION
+   Applies trainerSettingSuggested changes
+   one by one with the same timing as the
+   trophy award sequence, then shows a
+   confirmation message in the roundrect.
+══════════════════════════════════════ */
+function _applyCoachSuggestionsWithAnimation(SuggestionsArray) {
+  if (!SuggestionsArray || SuggestionsArray.length === 0) return;
+
+  // Disable the button immediately so it cannot be pressed twice
+  var AcceptButton = document.querySelector('#reportTrainerAdvice .score-pill-seg');
+  if (AcceptButton) {
+    AcceptButton.disabled = true;
+    AcceptButton.style.opacity = '0.45';
+    AcceptButton.style.pointerEvents = 'none';
+  }
+
+  // Open the difficulty panel -- the animation plays inside it
+  openSettings('panelDifficulty');
+
+  // Wait for the panel to fully open before starting (keyboard flip + panel fade-in)
+  var PanelOpenDelayMs = 1400;
+
+  function AnimateSuggestion(Suggestion, OnComplete) {
+    var DifficultyRankMap = { fundamentals: -1, normal: 0, hardcore: 1 };
+
+    if (Suggestion.type === 'difficulty') {
+      currentDifficulty = Suggestion.toValue;
+      try { localStorage.setItem('kw_difficulty', currentDifficulty); } catch (StorageError) {}
+      var PillButtons = document.querySelectorAll('#difficultyPill .diff-btn');
+      PillButtons.forEach(function(Button) { Button.classList.add('diff-btn-transitioning'); });
+      _diffFirst = true;
+      setDiffState(DifficultyRankMap[Suggestion.toValue] !== undefined ? DifficultyRankMap[Suggestion.toValue] : 0);
+      _updateDiffBtnStyles(Suggestion.toValue);
+      _updateDiffSubtitle(Suggestion.toValue);
+      var ActivePillButton = document.querySelector('#difficultyPill .diff-btn[data-mode="' + Suggestion.toValue + '"]');
+      if (ActivePillButton) _popDiffLabel(ActivePillButton);
+      setTimeout(function() {
+        PillButtons.forEach(function(Button) { Button.classList.remove('diff-btn-transitioning'); });
+        if (OnComplete) OnComplete();
+      }, 700);
+
+    } else if (Suggestion.type === 'timer') {
+      questionTimer = Suggestion.toValue;
+      try { localStorage.setItem('kw_timer', String(Suggestion.toValue)); } catch (StorageError) {}
+      var TimerSliderElement = document.getElementById('questionTimerSlider');
+      if (TimerSliderElement) {
+        var TimerSpring = _sliderSprings['timer'];
+        if (TimerSpring) {
+          TimerSpring.target = SLIDER_STOPS[_valueToStopIndex(Suggestion.toValue)];
+          _animateSpring('timer', TimerSliderElement, 'smooth');
+          _setKnobLabel(TimerSliderElement, _labelForValue(Suggestion.toValue));
+          _updateSliderSideLabel('timer', Suggestion.toValue);
+        }
+      }
+      setTimeout(function() {
+        var VisibleKnob = TimerSliderElement
+          ? TimerSliderElement.querySelector('.diff-knob-label:not(.diff-knob-label-hidden)')
+          : null;
+        if (VisibleKnob) _popDiffLabel(VisibleKnob);
+        if (OnComplete) OnComplete();
+      }, 340);
+
+    } else if (Suggestion.type === 'lives') {
+      playerLives = Suggestion.toValue;
+      try { localStorage.setItem('kw_lives', String(Suggestion.toValue)); } catch (StorageError) {}
+      var LivesSliderElement = document.getElementById('playerLivesSlider');
+      if (LivesSliderElement) {
+        var LivesSpring = _sliderSprings['lives'];
+        if (LivesSpring) {
+          LivesSpring.target = SLIDER_STOPS[_valueToStopIndex(Suggestion.toValue)];
+          _animateSpring('lives', LivesSliderElement, 'smooth');
+          _setKnobLabel(LivesSliderElement, _labelForValue(Suggestion.toValue));
+          _updateSliderSideLabel('lives', Suggestion.toValue);
+        }
+      }
+      setTimeout(function() {
+        var VisibleKnob = LivesSliderElement
+          ? LivesSliderElement.querySelector('.diff-knob-label:not(.diff-knob-label-hidden)')
+          : null;
+        if (VisibleKnob) _popDiffLabel(VisibleKnob);
+        if (OnComplete) OnComplete();
+      }, 340);
+    } else {
+      if (OnComplete) OnComplete();
+    }
+  }
+
+  // Chain the suggestions in sequence with a gap between each
+  var GapBetweenSuggestionsMs = 350;
+
+  setTimeout(function() {
+    var RemainingSteps = SuggestionsArray.slice();
+
+    function RunNextStep() {
+      if (RemainingSteps.length === 0) {
+        // All done -- show confirmation in the roundrect footer
+        setTimeout(function() {
+          var AdviceContainer = document.getElementById('reportTrainerAdvice');
+          if (!AdviceContainer) return;
+          // Replace pill button with confirmation text
+          var ExistingPill = AdviceContainer.querySelector('.score-clear-pill');
+          if (ExistingPill) ExistingPill.remove();
+          var ConfirmationParagraph = document.createElement('p');
+          ConfirmationParagraph.className = 'sp-report-advice';
+          ConfirmationParagraph.style.cssText = 'margin-top:8px;font-style:italic;color:#9ca3af;';
+          ConfirmationParagraph.textContent = 'The coach has adjusted your settings, but you still have final say.';
+          AdviceContainer.appendChild(ConfirmationParagraph);
+        }, 400);
+        return;
+      }
+      var CurrentStep = RemainingSteps.shift();
+      AnimateSuggestion(CurrentStep, function() {
+        if (RemainingSteps.length > 0) {
+          setTimeout(RunNextStep, GapBetweenSuggestionsMs);
+        } else {
+          RunNextStep(); // runs the completion block above
+        }
+      });
+    }
+
+    RunNextStep();
+  }, PanelOpenDelayMs);
+}
 
 function getAdaptiveNextRoundPool() {
   if (!lastCompletedReport) return null;

@@ -1616,6 +1616,7 @@ li.conflict-dismissed .conflict-desc {
   z-index: 10;
 }
 #osMismatchPill.show { opacity: 1; }
+#osMismatchPill.show.clickable { pointer-events: auto; cursor: pointer; }
 /* ══════════════════════════════════════
    APP SELECTOR — in osRow, right-aligned
    "now training on:" label inline-left

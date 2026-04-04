@@ -1161,6 +1161,10 @@ function updateMedalFaceStyle(angle) {
 
 const osToggleEl     = document.getElementById('osToggle');
 const osMismatchEl   = document.getElementById('osMismatchPill');
+osMismatchEl.addEventListener('click', function() {
+  if (!osMismatchEl.classList.contains('clickable')) return;
+  openSettings('panelKeyboard');
+});
 
 const osKnobEl  = document.getElementById('osKnobEl');
 
@@ -1302,9 +1306,9 @@ function updateMismatchPill() {
     } else {
       osMismatchEl.innerHTML = CrossPrefix + `Playing ${playing} mode on ${machine}`;
     }
-    osMismatchEl.classList.add('show');
+    osMismatchEl.classList.add('show', 'clickable');
   } else {
-    osMismatchEl.classList.remove('show');
+    osMismatchEl.classList.remove('show', 'clickable');
   }
 }
 

@@ -7419,18 +7419,15 @@ function finalizeRunData(completedRun, currentPool, DefeatCount) {
   // Second message: always a general/encouragement line, different key from primary.
   // Suppressed when the calibrate message is drawn -- it is long and self-contained.
   var PrimaryKey     = PrimaryMessage ? PrimaryMessage.key : null;
-  var SecondaryMessage = (PrimaryKey === 'cat4_timer_calibrate')
-    ? null
-    : PickRandomExcluding(GeneralMessages, PrimaryKey);
+  
 
   // Persist the primary message key to memory (secondary is supplementary, not memorised)
   if (PrimaryMessage) {
     SaveCoachMemory(PrimaryMessage.key, PrimaryMessage.settingSuggested || null, DefeatCount || 0, RecentMessageKeys);
   }
 
-  var trainerAdvice = [];
-  if (PrimaryMessage)   trainerAdvice.push(PrimaryMessage.text);
-  if (SecondaryMessage) trainerAdvice.push(SecondaryMessage.text);
+var trainerAdvice = [];
+if (PrimaryMessage) trainerAdvice.push(PrimaryMessage.text);
 
   // The settings link attaches to whichever message carries a setting suggestion
   var trainerSettingSuggested = PrimaryMessage && PrimaryMessage.settingSuggested

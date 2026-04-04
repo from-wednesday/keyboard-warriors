@@ -1321,7 +1321,7 @@ function onOsToggle() {
   if (activeSettings === 'panelBrowser')  _refreshBrowserContent();
   if (activeSettings === 'panelReport')     _refreshReportPanel();
   if (activeSettings === 'panelPadlock')    _refreshCheatSheet();
-  runData.length = 0; lastCompletedReport = null;
+  runData.length = 0; lastCompletedReport = null; CoachAdviceAccepted = false;
 }
 
 // On mobile: auto-enable sticky + touch modes, show updated message
@@ -1875,6 +1875,7 @@ let startTime          = 0;
 let hintUsedAtMs       = null;
 let wrongKeyCount      = 0;
 let lastCompletedReport = null;  // retained so report card remains visible until next game
+let CoachAdviceAccepted = false; // true once the accept button has been pressed this round
 // ── Lives state ───────────────────────────────────────────────────────────────
 let livesRemaining  = null;  // null when playerLives is infinite
 let heartEls        = [];    // SVG elements in the livesRow
@@ -3255,7 +3256,7 @@ function buildAppPill() {
       try { localStorage.setItem('kw_app', currentApp); } catch(e) {}
       buildAppPill();
       closeAppPill();
-      runData.length = 0; lastCompletedReport = null;
+      runData.length = 0; lastCompletedReport = null; CoachAdviceAccepted = false;
     });
     appPillEl.appendChild(row);
   });
@@ -4688,7 +4689,7 @@ function diffBtnClick(mode) {
   var activeBtn = document.querySelector('#difficultyPill .diff-btn[data-mode="' + mode + '"], #welcomeDifficultyPill .diff-btn[data-mode="' + mode + '"]');
   _popDiffLabel(activeBtn);
   try { localStorage.setItem('kw_difficulty', currentDifficulty); } catch(e) {}
-runData.length = 0; lastCompletedReport = null;
+runData.length = 0; lastCompletedReport = null; CoachAdviceAccepted = false;
   // Only apply timer/lives presets once the trophy has been earned.
   // Before that the sliders are locked at ∞ and should not change.
   if (hasTrophy) {
@@ -4773,7 +4774,7 @@ function questionTimerBtnClick(value) {
   questionTimer = value;
   try { localStorage.setItem('kw_timer', String(value)); } catch(e) {}
   _syncSliderToValue('timer', questionTimer);
-  runData.length = 0; lastCompletedReport = null;
+  runData.length = 0; lastCompletedReport = null; CoachAdviceAccepted = false;
 }
 
 function playerLivesBtnClick(value) {
@@ -4782,7 +4783,7 @@ function playerLivesBtnClick(value) {
   playerLives = value;
   try { localStorage.setItem('kw_lives', String(value)); } catch(e) {}
   _syncSliderToValue('lives', playerLives);
-  runData.length = 0; lastCompletedReport = null;
+  runData.length = 0; lastCompletedReport = null; CoachAdviceAccepted = false;
 }
 
 /* ── Fibonacci Slider ────────────────────────────────────────────────────────
@@ -7779,31 +7780,58 @@ function _refreshReportPanel() {
   const adviceContainer = document.getElementById('reportTrainerAdvice');
   if (adviceContainer) {
     adviceContainer.innerHTML = '';
+    var HasSettingsSuggestion = Array.isArray(lastCompletedReport.trainerSettingSuggested)
+      && lastCompletedReport.trainerSettingSuggested.length > 0;
+
     if (trainerAdvice.length > 0) {
+      // Two-column layout when button is present, single column otherwise
+      if (HasSettingsSuggestion) {
+        adviceContainer.style.display = 'flex';
+        adviceContainer.style.flexDirection = 'row';
+        adviceContainer.style.alignItems = 'flex-start';
+        adviceContainer.style.gap = '12px';
+      } else {
+        adviceContainer.style.display = '';
+        adviceContainer.style.flexDirection = '';
+        adviceContainer.style.alignItems = '';
+        adviceContainer.style.gap = '';
+      }
+
+      var TextColumn = document.createElement('div');
+      TextColumn.style.flex = '1';
+      TextColumn.style.minWidth = '0';
       trainerAdvice.forEach(function(line) {
         var p = document.createElement('p');
         p.className = 'sp-report-advice';
+        p.style.margin = '0';
         p.textContent = line;
-        adviceContainer.appendChild(p);
+        TextColumn.appendChild(p);
       });
+      adviceContainer.appendChild(TextColumn);
 
-      // Pill button: only shown when there is at least one setting suggestion
-      var HasSettingsSuggestion = Array.isArray(lastCompletedReport.trainerSettingSuggested)
-        && lastCompletedReport.trainerSettingSuggested.length > 0;
       if (HasSettingsSuggestion) {
-        var AcceptPill = document.createElement('div');
-        AcceptPill.className = 'score-clear-pill';
-        AcceptPill.style.marginTop = '8px';
         var AcceptButton = document.createElement('button');
-        AcceptButton.className = 'score-pill-seg score-pill-full';
-        AcceptButton.innerHTML = '<span class="diff-btn-text">Accept the coach\'s advice</span>';
-        AcceptButton.addEventListener('click', function() {
-          _applyCoachSuggestionsWithAnimation(lastCompletedReport.trainerSettingSuggested);
-        });
-        AcceptPill.appendChild(AcceptButton);
-        adviceContainer.appendChild(AcceptPill);
+        AcceptButton.className = 'score-pill-seg';
+        AcceptButton.style.cssText = 'flex-shrink:0;border-radius:12px;border:1.5px solid #d1d5db;padding:5px 12px;white-space:nowrap;height:auto;';
+        AcceptButton.innerHTML = '<span class="diff-btn-text">Accept the coach's advice</span>';
+        if (CoachAdviceAccepted) {
+          AcceptButton.disabled = true;
+          AcceptButton.classList.add('score-pill-inactive');
+        } else {
+          AcceptButton.addEventListener('click', function() {
+            CoachAdviceAccepted = true;
+            AcceptButton.disabled = true;
+            AcceptButton.classList.add('score-pill-inactive');
+            _applyCoachSuggestionsWithAnimation(lastCompletedReport.trainerSettingSuggested);
+          });
+        }
+        adviceContainer.appendChild(AcceptButton);
       }
     } else {
+      adviceContainer.style.display = '';
+      adviceContainer.style.flexDirection = '';
+      adviceContainer.style.alignItems = '';
+      adviceContainer.style.gap = '';
       var noAdvice = document.createElement('p');
       noAdvice.className = 'sp-report-no-advice';
       noAdvice.textContent = 'No suggestions this round. Keep it up.';
@@ -7822,14 +7850,6 @@ function _refreshReportPanel() {
 ══════════════════════════════════════ */
 function _applyCoachSuggestionsWithAnimation(SuggestionsArray) {
   if (!SuggestionsArray || SuggestionsArray.length === 0) return;
-
-  // Disable the button immediately so it cannot be pressed twice
-  var AcceptButton = document.querySelector('#reportTrainerAdvice .score-pill-seg');
-  if (AcceptButton) {
-    AcceptButton.disabled = true;
-    AcceptButton.style.opacity = '0.45';
-    AcceptButton.style.pointerEvents = 'none';
-  }
 
   // Open the difficulty panel -- the animation plays inside it
   openSettings('panelDifficulty');
@@ -7910,18 +7930,19 @@ function _applyCoachSuggestionsWithAnimation(SuggestionsArray) {
 
     function RunNextStep() {
       if (RemainingSteps.length === 0) {
-        // All done -- show confirmation in the roundrect footer
+        // All done -- reveal the footer below the advanced panel with the colour-wipe animation
         setTimeout(function() {
-          var AdviceContainer = document.getElementById('reportTrainerAdvice');
-          if (!AdviceContainer) return;
-          // Replace pill button with confirmation text
-          var ExistingPill = AdviceContainer.querySelector('.score-clear-pill');
-          if (ExistingPill) ExistingPill.remove();
-          var ConfirmationParagraph = document.createElement('p');
-          ConfirmationParagraph.className = 'sp-report-advice';
-          ConfirmationParagraph.style.cssText = 'margin-top:8px;font-style:italic;color:#9ca3af;';
-          ConfirmationParagraph.textContent = 'The coach has adjusted your settings, but you still have final say.';
-          AdviceContainer.appendChild(ConfirmationParagraph);
+          var FooterElement = document.getElementById('diffAdvancedFooter');
+          if (!FooterElement) return;
+          FooterElement.textContent = 'The coach has adjusted your settings, but you still have final say.';
+          FooterElement.style.color = '#f0f4f8'; // start invisible (matches page background)
+          FooterElement.style.display = 'block';
+          FooterElement.classList.add('diff-advanced-footer-visible');
+          setTimeout(function() {
+            FooterElement.style.transition = 'color 1s ease';
+            FooterElement.style.color = '#9ca3af';
+            setTimeout(function() { FooterElement.style.transition = ''; }, 1050);
+          }, 50);
         }, 400);
         return;
       }

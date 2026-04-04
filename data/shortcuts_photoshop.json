@@ -489,7 +489,7 @@
     "group": ""
   },
   {
-    "shortcut": "OPTION+←",
+    "shortcut": "OPTION+ARROWLEFT",
     "display": "Decrease kerning or tracking",
     "mac_sc": "⌥ ← ",
     "pc_sc": "Alt ← ",
@@ -498,7 +498,7 @@
     "group": ""
   },
   {
-    "shortcut": "OPTION+→",
+    "shortcut": "OPTION+ARROWRIGHT",
     "display": "Increase kerning or tracking",
     "mac_sc": "⌥ → ",
     "pc_sc": "Alt → ",
@@ -507,7 +507,7 @@
     "group": ""
   },
   {
-    "shortcut": "OPTION+↑",
+    "shortcut": "OPTION+ARROWUP",
     "display": "Decrease leading",
     "mac_sc": "⌥ ↑ ",
     "pc_sc": "Alt ↑ ",
@@ -525,7 +525,7 @@
     "group": ""
   },
   {
-    "shortcut": "←",
+    "shortcut": "ARROWLEFT",
     "display": "Nudge selection 1px to the left",
     "mac_sc": "← ",
     "pc_sc": "← ",
@@ -534,7 +534,7 @@
     "group": "nudge"
   },
   {
-    "shortcut": "→",
+    "shortcut": "ARROWRIGHT",
     "display": "Nudge selection 1px to the right",
     "mac_sc": "→ ",
     "pc_sc": "→ ",
@@ -543,7 +543,7 @@
     "group": "nudge"
   },
   {
-    "shortcut": "↑",
+    "shortcut": "ARROWUP",
     "display": "Nudge selection 1px upward",
     "mac_sc": "↑ ",
     "pc_sc": "↑ ",
@@ -552,7 +552,7 @@
     "group": "nudge"
   },
   {
-    "shortcut": "↓",
+    "shortcut": "ARROWDOWN",
     "display": "Nudge selection 1px downward",
     "mac_sc": "↓ ",
     "pc_sc": "↓ ",
@@ -561,7 +561,7 @@
     "group": "nudge"
   },
   {
-    "shortcut": "SHIFT+←",
+    "shortcut": "SHIFT+ARROWLEFT",
     "display": "Nudge selection 10px to the left",
     "mac_sc": "⇧ ← ",
     "pc_sc": "⇧ ← ",
@@ -570,7 +570,7 @@
     "group": "nudge"
   },
   {
-    "shortcut": "SHIFT+→",
+    "shortcut": "SHIFT+ARROWRIGHT",
     "display": "Nudge selection 10px to the right",
     "mac_sc": "⇧ → ",
     "pc_sc": "⇧ → ",
@@ -579,7 +579,7 @@
     "group": "nudge"
   },
   {
-    "shortcut": "SHIFT+↑",
+    "shortcut": "SHIFT+ARROWUP",
     "display": "Nudge selection 10px upward",
     "mac_sc": "⇧ ↑ ",
     "pc_sc": "⇧ ↑ ",
@@ -588,7 +588,7 @@
     "group": "nudge"
   },
   {
-    "shortcut": "SHIFT+↓",
+    "shortcut": "SHIFT+ARROWDOWN",
     "display": "Nudge selection 10px downward",
     "mac_sc": "⇧ ↓ ",
     "pc_sc": "⇧ ↓ ",

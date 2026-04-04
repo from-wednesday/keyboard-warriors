@@ -2308,16 +2308,17 @@ function openPadlockPanel() {
   if (activeSettings === 'panelPadlock') { closeSettings(); return; }
   // Save title text then show cheat sheet heading in the game div
   _padlockSavedTitle = titleEl.textContent;
-  titleEl.className = '';
-  titleEl.textContent = 'Cheat Sheet';
   // Open the panel first so enterPause does not auto-open panelPause on top.
   openSettings('panelPadlock');
   if (gameState === 'counting')        { cancelCountdown(); }
   else if (gameState === 'readyToUnpause') { _enterReadyToUnpauseCleanup(); enterPause(); }
   else if (gameState === 'playing')    { enterPause(); }
+  // Always set title + tagline last, overwriting any blur/text from enterPause
   titleEl.className = '';
   titleEl.textContent = 'Cheat Sheet';
-  }
+  var tagline = document.getElementById('welcomeTagline');
+  if (tagline) { tagline.innerHTML = '<em>Your study companion.</em>'; tagline.style.display = 'block'; }
+}
 
 function _enterReadyToUnpause() {
   gameState = 'readyToUnpause';
@@ -3833,6 +3834,14 @@ function closeSettings() {
   // Restoring here while the keyboard is still tilted was causing the icons to fire through the stage.
   var stage = document.getElementById('kbFlipStage');
   if (stage && _kbPos === 'face') stage.style.pointerEvents = '';
+  // If the cheat sheet was open, clear the tagline it added
+  if (closingPage === 'panelPadlock') {
+    var tagline = document.getElementById('welcomeTagline');
+    if (tagline) {
+      tagline.style.display = 'none';
+      tagline.innerHTML = '<em>Your keyboard shortcuts coach &amp; personal trainer.</em>';
+    }
+  }
   // Reset wrap height
   var wrap = document.getElementById('keyboardWrap');
   if (wrap) wrap.style.minHeight = '';
@@ -3853,7 +3862,9 @@ function closeSettings() {
     // quietly -- the keyboard stays at edge and the game stays paused.
     // Only raise the keyboard (readyToUnpause) when the pause panel itself is closed.
     if (closingPage === 'panelPadlock' || closingPage === 'panelKeyboard' || closingPage === 'panelBrowser' || closingPage === 'panelDifficulty') {
-      if (closingPage === 'panelPadlock') titleEl.textContent = _padlockSavedTitle;
+      if (closingPage === 'panelPadlock') {
+        titleEl.textContent = _padlockSavedTitle;
+      }
       openSettings('panelPause');
       return;
     }

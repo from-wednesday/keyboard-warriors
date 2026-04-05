@@ -2527,6 +2527,8 @@ function unpause() {
   titleEl.classList.remove('blurred');
   questionCountEl.classList.remove('blurred');
   document.getElementById('livesRow').classList.remove('blurred');
+  var _untagline = document.getElementById('welcomeTagline');
+  if (_untagline) { _untagline.style.display = 'none'; _untagline.innerHTML = '<em>Your keyboard shortcuts coach &amp; personal trainer.</em>'; }
   helpBtn.style.background = '';
   helpBtn.style.color = '';
   resetscoreDisc();
@@ -6390,6 +6392,8 @@ questionPool = adaptivePool || shuffleArray(buildPool());  if (currentApp === 'A
   helpBtn.textContent = 'Help';
   helpBtn.style.background = '';
   helpBtn.style.color = '';
+  var _sgTagline = document.getElementById('welcomeTagline');
+  if (_sgTagline) { _sgTagline.style.display = 'none'; _sgTagline.innerHTML = '<em>Your keyboard shortcuts coach &amp; personal trainer.</em>'; }
   titleEl.className = '';
   titleEl.textContent = (questionPool[0].display || '').replace(/\\\\/g, '\\');
   questionCountEl.classList.remove('blurred', 'blur-instant');

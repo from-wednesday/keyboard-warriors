@@ -4228,19 +4228,7 @@ function _refreshBrowserContent() {
 
   // Clear overrides pill
   var ft = document.getElementById('browserCompatFooter');
-  if (ft) {
-    ft.innerHTML = '';
-    var HasOverrides = _hasBrowserOverrides();
-    var ClearPill = document.createElement('div');
-    ClearPill.className = 'score-clear-pill';
-    ClearPill.style.marginBottom = '4px';
-    var ClearBtn = document.createElement('button');
-    ClearBtn.className = 'score-pill-seg score-pill-full' + (HasOverrides ? '' : ' score-pill-inactive');
-    ClearBtn.onclick = HasOverrides ? _clearBrowserOverrides : null;
-    ClearBtn.innerHTML = '<span class="diff-btn-text">clear overrides</span>';
-    ClearPill.appendChild(ClearBtn);
-    ft.appendChild(ClearPill);
-  }
+  if (ft) ft.innerHTML = '';
 
   var ul = document.getElementById('browserCompatList');
   if (ul) {
@@ -4319,7 +4307,22 @@ function _refreshBrowserContent() {
   }
 
   _attachBrowserPanelKeypressVerifier();
-}
+
+  var rightCol = document.querySelector('#panelBrowser .sp-col-right');
+  if (rightCol) {
+    var HasOverrides = _hasBrowserOverrides();
+    var ClearPill = document.createElement('div');
+    ClearPill.className = 'score-clear-pill';
+    ClearPill.style.cssText = 'margin-top: 8px; flex-shrink: 0;';
+    var ClearBtn = document.createElement('button');
+    ClearBtn.className = 'score-pill-seg score-pill-full' + (HasOverrides ? '' : ' score-pill-inactive');
+    ClearBtn.onclick = HasOverrides ? _clearBrowserOverrides : null;
+    ClearBtn.innerHTML = '<span class="diff-btn-text">clear overrides</span>';
+    ClearPill.appendChild(ClearBtn);
+    rightCol.appendChild(ClearPill);
+  }
+  
+
 
 // ── Unified icon click handlers ──────────────────────────────────────────────
 document.getElementById('kbIcon').addEventListener('click', function(e) {

@@ -40,8 +40,7 @@
       /iPad/.test(ua) ||
       (/Macintosh/.test(ua) && navigator.maxTouchPoints > 1) ||
       (/Android/.test(ua) && !/Mobile/.test(ua)) ||
-      (navigator.maxTouchPoints > 1 && window.screen.width >= 768)
-    );
+      (navigator.maxTouchPoints > 1 && window.screen.width >= 768);
     if (isTablet && window.location.pathname.indexOf('tablet') === -1) {
       document.addEventListener('DOMContentLoaded', function() {
         var modal = document.createElement('div');

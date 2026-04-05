@@ -4115,9 +4115,9 @@ function _makeConflictRadio(canonicalKey) {
     + '<circle class="modal-radio-fill" cx="9.5" cy="9.5" r="3.5" fill="#374151"/>'
     + '</svg>';
   wrap.addEventListener('click', function(e) {
-    if (touchEnabled) { showToast('Browser conflicts are bypassed while touch mode is active.'); return; }
     var li = wrap.closest('li');
-    var nowBlocked = !dismissedConflicts.has(canonicalKey); // toggling    _setConflictBlocked(canonicalKey, nowBlocked, li);
+    var nowBlocked = !dismissedConflicts.has(canonicalKey);
+    _setConflictBlocked(canonicalKey, nowBlocked, li);
     showToast(nowBlocked ? 'Shortcut blocked' : 'Shortcut working');
   });
   return wrap;

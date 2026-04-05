@@ -26,37 +26,34 @@
   })();
 </script>
 <script>
-  // Redirect iOS, iPad OS and Android tablet users to the optimised flow
+  // Redirect iOS, iPadOS and Android tablet users to the optimised flow
   (function() {
     var ua = navigator.userAgent || '';
     var isPhone = /iPhone|iPod/.test(ua) || (/Android/.test(ua) && /Mobile/.test(ua));
-    if (isPhone) {
-      document.addEventListener('DOMContentLoaded', function() {
-        var el = document.getElementById('phonePrompt');
-        if (el) el.style.display = 'flex';
-      });
-    }
-  })();
+    var isTablet =
       /iPad/.test(ua) ||
       (/Macintosh/.test(ua) && navigator.maxTouchPoints > 1) ||
       (/Android/.test(ua) && !/Mobile/.test(ua)) ||
       (navigator.maxTouchPoints > 1 && window.screen.width >= 768);
+
     if (isTablet && window.location.pathname.indexOf('tablet') === -1) {
       document.addEventListener('DOMContentLoaded', function() {
         var modal = document.createElement('div');
         modal.style.cssText = 'position:fixed;inset:0;z-index:10001;background:rgba(0,0,0,0.45);display:flex;align-items:center;justify-content:center;padding:24px;';
-        modal.innerHTML = '<div style="background:white;border-radius:16px;padding:32px 28px;max-width:320px;width:100%;text-align:center;font-family:\'Lato\',system-ui,sans-serif;box-shadow:0 16px 48px rgba(0,0,0,0.18);">'
+        modal.innerHTML = '<div style="background:white;border-radius:16px;padding:32px 28px;max-width:320px;width:100%;text-align:center;font-family:\\'Lato\\',system-ui,sans-serif;box-shadow:0 16px 48px rgba(0,0,0,0.18);">'
           + '<p style="font-size:17px;font-weight:700;color:#1e3a5f;margin:0 0 10px;">Tablet support coming soon.</p>'
           + '<p style="font-size:14px;color:#6b7280;line-height:1.6;margin:0 0 24px;">For now, tap below to continue with touch mode enabled.</p>'
           + '<button style="width:100%;padding:12px;background:#10b981;color:white;border:none;border-radius:12px;font-size:15px;font-weight:600;cursor:pointer;" id="_tabletDismissBtn">Continue</button>'
           + '</div>';
         document.body.appendChild(modal);
-document.getElementById('_tabletDismissBtn').addEventListener('click', function() {
-  document.body.removeChild(modal);
-  onTouchToggle();
-});
+
+        document.getElementById('_tabletDismissBtn').addEventListener('click', function() {
+          document.body.removeChild(modal);
+          onTouchToggle();
+        });
       });
     }
+
     if (isPhone) {
       document.addEventListener('DOMContentLoaded', function() {
         var el = document.getElementById('phonePrompt');

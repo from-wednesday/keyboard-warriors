@@ -9,7 +9,7 @@
 <title>Keyboard Warriors</title>
 <script>
   const DefaultTitle = 'Keyboard Warriors';
-  const VersionLabel   = '0014';
+  const VersionLabel   = '0015';
   const TitlePrefix  = document.title !== DefaultTitle ? document.title.trim() + '_' : '';
   const DBG_DEVICE   = TitlePrefix + VersionLabel;
 </script>
@@ -26,11 +26,17 @@
   })();
 </script>
 <script>
-  // Redirect iOS, iPad OS and Android tablet users to tablet specific flows
+  // Redirect iOS, iPad OS and Android tablet users to the optimised tablet build
   (function() {
     var ua = navigator.userAgent || '';
     var isPhone = /iPhone|iPod/.test(ua) || (/Android/.test(ua) && /Mobile/.test(ua));
-    var isTablet = !isPhone && (
+    if (isPhone) {
+      document.addEventListener('DOMContentLoaded', function() {
+        var el = document.getElementById('phonePrompt');
+        if (el) el.style.display = 'flex';
+      });
+    }
+  })();
       /iPad/.test(ua) ||
       (/Macintosh/.test(ua) && navigator.maxTouchPoints > 1) ||
       (/Android/.test(ua) && !/Mobile/.test(ua)) ||
@@ -1390,12 +1396,14 @@ function _initialiseLayout() {
   updateMismatchPill();
   document.getElementById('keyboardPanel').classList.toggle('pc-keys', currentOs === 'pc');
 
-  var KeyboardPanelResizeObserver = new ResizeObserver(function(ObservedEntries) {
-    var Entry = ObservedEntries[0];
-    if (Entry && Entry.contentRect.width > 0) {
-      positionIcons();
-    }
-  });
+var KeyboardPanelResizeObserver = new ResizeObserver(function(ObservedEntries) {
+  var Entry = ObservedEntries[0];
+  if (Entry && Entry.contentRect.width > 0) {
+    positionIcons();
+    if (activeSettings !== null) _spAlignPanel();
+  }
+});
+
   var KeyboardPanelElement = document.getElementById('keyboardPanel');
   KeyboardPanelResizeObserver.observe(KeyboardPanelElement);
   requestAnimationFrame(function() {
@@ -1443,6 +1451,7 @@ var SkeletonAnimationComplete = new Promise(function(resolve) {
 Promise.all([DomReady, StylesheetReady, SkeletonAnimationComplete]).then(function() {
   _revealPageContent();
   _initialiseLayout();
+  if (activeSettings !== null) _spAlignPanel();
 });
 /* ══════════════════════════════════════
    SHORTCUT → KEY CODES

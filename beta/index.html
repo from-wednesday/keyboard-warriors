@@ -256,9 +256,7 @@ document.getElementById('_tabletDismissBtn').addEventListener('click', function(
       <div class="sp-col sp-col-left">
         <p class="sp-body" id="browserCompatHeading"></p>
         <p class="sp-body" id="browserCompatIntro"></p>
-        <p class="sp-body" id="browserCompatFooter"></p> <p class="sp-body sp-hint">If you encounter any other error, hold down
-          <span class="sp-key-chip">Esc</span>
-          to open the debug window and send a report.</p>
+        <p class="sp-body" id="browserCompatFooter"></p> <p class="sp-body sp-hint">Keyboard setting <strong><small>'Touch Enabled'</small></strong> avoids all these conflicts.</p>
       </div>
       <div class="sp-col sp-col-right">
         <ul id="browserCompatList" class="sp-conflict-list"></ul>
@@ -3447,6 +3445,7 @@ function setTouchEnabled(on) {
   touchEnabled = on;
   var radio = document.getElementById('touchRadio');
   if (radio) radio.classList.toggle('on', on);
+  if (activeSettings === 'panelBrowser') _refreshBrowserContent();
   if (on) {
     setKbSizeToggle(false);
     setSoundEnabled(true);   // audible on by default when touch activates
@@ -4106,7 +4105,8 @@ function _setConflictBlocked(canonicalKey, blocked, liEl) {
 
 function _makeConflictRadio(canonicalKey) {
   // Blocked (dismissed) = radio ON. Active = radio OFF.
-  var isBlocked = dismissedConflicts.has(canonicalKey);
+  // Touch mode bypasses all conflicts, so nothing is shown as blocked.
+  var isBlocked = !touchEnabled && dismissedConflicts.has(canonicalKey);
   var wrap = document.createElement('span');
   wrap.className = 'modal-radio' + (isBlocked ? ' on' : '');
   wrap.style.cssText = 'flex-shrink:0;margin-right:7px;cursor:pointer;';
@@ -4115,9 +4115,9 @@ function _makeConflictRadio(canonicalKey) {
     + '<circle class="modal-radio-fill" cx="9.5" cy="9.5" r="3.5" fill="#374151"/>'
     + '</svg>';
   wrap.addEventListener('click', function(e) {
+    if (touchEnabled) { showToast('Browser conflicts are bypassed while touch mode is active.'); return; }
     var li = wrap.closest('li');
-    var nowBlocked = !dismissedConflicts.has(canonicalKey); // toggling
-    _setConflictBlocked(canonicalKey, nowBlocked, li);
+    var nowBlocked = !dismissedConflicts.has(canonicalKey); // toggling    _setConflictBlocked(canonicalKey, nowBlocked, li);
     showToast(nowBlocked ? 'Shortcut blocked' : 'Shortcut working');
   });
   return wrap;
@@ -4217,7 +4217,9 @@ function _refreshBrowserContent() {
 
   var intro = document.getElementById('browserCompatIntro');
   if (intro) {
-    if (d.labels.length > 0) {
+    if (touchEnabled) {
+      intro.textContent = 'Touch mode is active, so browser conflicts are bypassed and all shortcuts are available. Your saved settings here are preserved for when you switch back.';
+    } else if (d.labels.length > 0) {
       intro.textContent = 'But, your browser owns some shortcuts and may interrupt us. We will try not to ask you any questions that use those indicated here. You can also test them now. Any working ones will unblock automatically.';
     } else {
       intro.textContent = 'We haven\u2019t spotted any shortcut conflicts for your current setup \u2014 you\u2019re good to go.';
@@ -4255,9 +4257,8 @@ function _refreshBrowserContent() {
 
     d.labels.forEach(function(RawLabel, i) {
       var canonicalKey = d.keys[i];
-      var isBlocked    = dismissedConflicts.has(canonicalKey);
+      var isBlocked    = !touchEnabled && dismissedConflicts.has(canonicalKey);
       var Parsed       = _BuildBrowserConflictLabel(RawLabel);
-
       var li = document.createElement('li');
       li.className = isBlocked ? 'conflict-dismissed' : '';
       li.dataset.conflictKey = canonicalKey;
@@ -4287,9 +4288,10 @@ function _refreshBrowserContent() {
       ul.appendChild(li);
     });
 
-    // Diagnostic-added entries
+    // Diagnostic-added entries (hidden when touch mode is active)
     var BrowserConflictKeys = new Set(d.keys);
     dismissedConflicts.forEach(function(BlockedKey) {
+      if (touchEnabled) return;
       if (BrowserConflictKeys.has(BlockedKey)) return;
       var li = document.createElement('li');
       li.className = 'conflict-dismissed';

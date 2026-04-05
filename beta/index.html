@@ -18,7 +18,7 @@
   (function() {
     var link = document.createElement('link');
     link.rel  = 'stylesheet';
-    link.href = document.title === 'beta'
+    link.href = dont.title === 'beta'
       ? '/keyboard-warriors/styles/beta.css'
       : '/keyboard-warriors/styles/main.css';
     window._StyleSheetLink = link;
@@ -27,16 +27,7 @@
 </script>
 <script>
   // Redirect iOS, iPad OS and Android tablet users to the optimised tablet build
-  (function() {
-    var ua = navigator.userAgent || '';
-    var isPhone = /iPhone|iPod/.test(ua) || (/Android/.test(ua) && /Mobile/.test(ua));
-    if (isPhone) {
-      document.addEventListener('DOMContentLoaded', function() {
-        var el = document.getElementById('phonePrompt');
-        if (el) el.style.display = 'flex';
-      });
-    }
-  })();
+ 
       /iPad/.test(ua) ||
       (/Macintosh/.test(ua) && navigator.maxTouchPoints > 1) ||
       (/Android/.test(ua) && !/Mobile/.test(ua)) ||
@@ -391,7 +382,7 @@ document.getElementById('_tabletDismissBtn').addEventListener('click', function(
         </div>
         <ul id="cheatSheetListRight" class="sp-report-list sp-report-weakness"></ul>
       </div>
-    </div>' 
+    </div>
 
 
     <!-- ── Returning User Landing ───────────────────────── -->
@@ -3227,8 +3218,8 @@ function matchesShortcut(event, str) {
   // ── CMD + special keys ───────────────────────────────────────────
   if (s === 'CMD+DEL')              return (k === 'Backspace' || k === 'Delete') && cmd && !opt && !sh;
   if (s === 'CMD+GRAVE')            return (k === "'" || k === '`' || e.code === 'Backquote') && cmd && !opt && !sh;
-  if (s === 'CMD+OPTION+GRAVE')     return (k === "'" || k === '`' || e.code === 'Backquote') && cmd && opt && !sh;
-  if (s === 'CMD+BACKSLASH')        return (k === '\\' || e.code === 'Backslash') && cmd && !opt && !sh;
+  if (s === 'CMD+OPTION+GRAVE')     return (k === "'" || k === '`' || event.code === 'Backquote') && cmd && opt && !sh;
+  if (s === 'CMD+BACKSLASH')        return (k === '\\' || event.code === 'Backslash') && cmd && !opt && !sh;
   if (s === 'CMD+SHIFT+BACKSLASH')  return (k === '\\' || e.code === 'Backslash') && cmd && sh && !opt;
   if (s === 'CMD+OPTION+BACKSLASH') return (k === '\\' || e.code === 'Backslash') && cmd && opt && !sh;
 
@@ -4322,7 +4313,7 @@ function _refreshBrowserContent() {
   }
   
 
-
+}
 // ── Unified icon click handlers ──────────────────────────────────────────────
 document.getElementById('kbIcon').addEventListener('click', function(e) {
   e.stopPropagation();
@@ -8354,7 +8345,7 @@ function handleKeydown(e) {
     document.getElementById('dbgAnswer').textContent = 'answer: ' + currentAnswer;
     document.getElementById('dbgQuestion').textContent = questionPool[questionIndex]?.display || '';
     document.getElementById('dbgKey').textContent =
-      'key=' + JSON.stringify(e.key) + ' code=' + e.code +
+      'key=' + JSON.stringify(e.key) + ' code=' + || event.code === 'Backquote') && cmd && !opt && !sh; +
       ' cmd=' + (currentOs==='pc'?e.ctrlKey:e.metaKey) +
       ' sh=' + e.shiftKey + ' opt=' + e.altKey;
     const matchResult = matchesShortcut(e, currentAnswer);

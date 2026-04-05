@@ -16,38 +16,7 @@
   transition: opacity 0.3s ease;
 }
 
-#phonePrompt {
-  display: none;
-  position: fixed;
-  inset: 0;
-  z-index: 10000;
-  background: #f0f4f8;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  gap: 20px;
-  padding: 40px 28px;
-  text-align: center;
-  font-family: 'Lato', system-ui, sans-serif;
-}
-#phonePrompt svg {
-  flex-shrink: 0;
-  fill: #1e3a5f;
-  opacity: 0.6;
-}
-.prompt-sorry {
-  font-size: 18px;
-  font-weight: 700;
-  color: #1e3a5f;
-  margin: 0;
-  line-height: 1.4;
-}
-.prompt-info {
-  font-size: 14px;
-  color: #6b7280;
-  line-height: 1.6;
-  max-width: 300px;
-}
+
 
 body {
   font-family: system-ui, -apple-system, sans-serif;
@@ -1121,6 +1090,16 @@ li.conflict-dismissed .conflict-desc {
   text-decoration: line-through;
   color: #c0c5cc;
 }
+
+#panelBrowser .sp-col-right {
+  justify-content: flex-end;
+  overflow: visible;
+}
+
+#browserCompatList {
+  overflow: visible;
+}
+
 
 /* ══════════════════════════════════════
    KEYBOARD PANEL

@@ -71,7 +71,37 @@ document.getElementById('_tabletDismissBtn').addEventListener('click', function(
   }
 </style>
 </head>
-<body style="background:#f0f4f8;" id="pageBody">
+<!-- ══════════════════════════════════════
+     GYRO PERMISSION MODAL
+     Shown once on iOS/iPadOS (localStorage persists the decision).
+     iOS 13+ requires a user gesture before DeviceOrientationEvent.requestPermission.
+══════════════════════════════════════ -->
+<div id="gyroBackdrop" class="touch-modal-backdrop"></div>
+<div id="gyroModal" class="touch-modal-card" role="dialog" aria-modal="true">
+  <p class="touch-modal-heading">One quick thing</p>
+  <p class="touch-modal-body">When you earn a medal, tilting your device brings the shine to life.</p>
+  <p class="touch-modal-body">May we use your device's motion sensor for this?</p>
+  <div class="touch-modal-buttons">
+    <button class="touch-modal-btn-primary" onclick="onGyroAllow()">Yes, allow motion</button>
+    <button class="touch-modal-btn-secondary" onclick="onGyroDeny()">No thanks</button>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════
+     KEYBOARD RECOMMENDATION MODAL
+     Shown on every fresh session for touch devices.
+     Sets touch/sticky defaults based on the player's answer.
+══════════════════════════════════════ -->
+<div id="keyboardRecommendBackdrop" class="touch-modal-backdrop"></div>
+<div id="keyboardRecommendModal" class="touch-modal-card" role="dialog" aria-modal="true">
+  <p class="touch-modal-heading">Training tip</p>
+  <p class="touch-modal-body">Keyboard Warriors is designed for use with a physical keyboard. Connecting one to your device will give you the most realistic training experience.</p>
+  <p class="touch-modal-body">Are you using a physical keyboard right now?</p>
+  <div class="touch-modal-buttons">
+    <button class="touch-modal-btn-primary" onclick="onKeyboardRecommendHaveOne()">Yes, I have one</button>
+    <button class="touch-modal-btn-secondary" onclick="onKeyboardRecommendTouchOnly()">I will use touch for now</button>
+  </div>
+</div>
 
 <!-- OS toggle row: sits above the game panel -->
 <div id="phonePrompt" class="page-initially-hidden" style="display:none;">
@@ -3580,6 +3610,9 @@ function onTouchToggle() {
     setStickyKeys(false);
     document.getElementById('stickyRow').classList.remove('disabled');
     showModeToast('On-Screen Keyboard = Display Only');
+    // If the keyboard recommendation pill was showing, clear it now
+    // because the user has indicated they have a physical keyboard.
+    osMismatchEl.classList.remove('show', 'clickable');
   }
 }
 
@@ -4531,6 +4564,20 @@ function getBrowserConflicts() {
   // Use the real detected OS, not the UI toggle — browser shortcuts are a physical
   // fact about the machine, unaffected by which platform the user is practising.
   var isMacOs = (detectedOs === 'mac' || detectedOs === 'mobile');
+
+  // Touch devices are assumed to be running Mobile Safari (even "Chrome" on iOS
+  // uses WebKit under the hood). Return the Safari conflict set directly.
+  if (detectedOs === 'mobile') {
+    return {
+      name:   'Safari on iOS/iPadOS',
+      keys:   ['CMD+T', 'CMD+SHIFT+H', 'CMD+SHIFT+N'],
+      labels: [
+        'Cmd+T \u2014 opens a new tab',
+        'Cmd+Shift+H \u2014 opens Bookmarks / History',
+        'Cmd+Shift+N \u2014 opens a Private tab',
+      ],
+    };
+  }
 
   // Detect browser
   var browser;
@@ -8124,6 +8171,7 @@ function medalPressUp() {
 }
 
 document.addEventListener('mousemove', e => {
+  if (detectedOs === 'mobile') return; // touch devices use gyro tilt instead
   if (!currentMedal) return;
   if (gameState !== 'finished' && gameState !== 'confirm-reset' && gameState !== 'confirm-quit') return;
   const d = (e.clientX / window.innerWidth) - 0.5; // -0.5..+0.5
@@ -9041,14 +9089,189 @@ document.addEventListener('DOMContentLoaded', function() {
   var di = document.getElementById('diffIcon');
   if (di) di.addEventListener('click', diffIconClick);
 });
+/* ══════════════════════════════════════
+   DEVICE ORIENTATION / GYRO MEDAL TILT
+   Wired only when the user grants permission on iOS/iPadOS.
+   Android and other non-permission browsers wire up directly.
+   Desktop uses the existing pointer-based rimTarget system.
+══════════════════════════════════════ */
+
+var GyroPermissionGranted = false;
+
+function InitialiseGyroOrientationListener() {
+  if (GyroPermissionGranted) return;
+  GyroPermissionGranted = true;
+  window.addEventListener('deviceorientation', OnDeviceOrientationChange);
+}
+
+function OnDeviceOrientationChange(OrientationEvent) {
+  if (!currentMedal) return;
+  // gamma: negative = tilted left, positive = right
+  var GammaDegrees = OrientationEvent.gamma || 0;
+  // ±10 degrees of physical tilt maps to the full ±15 degree rim range
+  rimTarget = Math.max(-15, Math.min(15, (GammaDegrees / 10) * 15));
+  if (!rimRafId) rimRafId = requestAnimationFrame(rimTick);
+}
+
+/* ══════════════════════════════════════
+   TOUCH MODAL HELPERS
+══════════════════════════════════════ */
+
+function ShowTouchModal(BackdropId, ModalId) {
+  var Backdrop = document.getElementById(BackdropId);
+  var Modal    = document.getElementById(ModalId);
+  if (!Backdrop || !Modal) return;
+  Backdrop.classList.add('visible');
+  Modal.style.display = 'block';
+  // Double rAF: first commits display:block so layout runs,
+  // second applies .visible so the animation fires correctly.
+  requestAnimationFrame(function() {
+    requestAnimationFrame(function() {
+      Modal.classList.add('visible');
+    });
+  });
+}
+
+function HideTouchModal(BackdropId, ModalId) {
+  var Backdrop = document.getElementById(BackdropId);
+  var Modal    = document.getElementById(ModalId);
+  if (Backdrop) Backdrop.classList.remove('visible');
+  if (Modal)    { Modal.classList.remove('visible'); Modal.style.display = 'none'; }
+}
+
+/* ══════════════════════════════════════
+   GYRO PERMISSION MODAL
+══════════════════════════════════════ */
+
+function ShowGyroModal() {
+  ShowTouchModal('gyroBackdrop', 'gyroModal');
+}
+
+function HideGyroModal() {
+  HideTouchModal('gyroBackdrop', 'gyroModal');
+}
+
+function onGyroAllow() {
+  HideGyroModal();
+  var NeedsPermission = typeof DeviceOrientationEvent !== 'undefined' &&
+                        typeof DeviceOrientationEvent.requestPermission === 'function';
+  if (NeedsPermission) {
+    DeviceOrientationEvent.requestPermission().then(function(PermissionState) {
+      try { localStorage.setItem('kw_gyro', PermissionState); } catch(StorageError) {}
+      if (PermissionState === 'granted') InitialiseGyroOrientationListener();
+    }).catch(function() {
+      try { localStorage.setItem('kw_gyro', 'denied'); } catch(StorageError) {}
+    });
+  } else {
+    // Android and other non-permission browsers: wire up directly
+    try { localStorage.setItem('kw_gyro', 'granted'); } catch(StorageError) {}
+    InitialiseGyroOrientationListener();
+  }
+  ShowKeyboardRecommendModal();
+}
+
+function onGyroDeny() {
+  try { localStorage.setItem('kw_gyro', 'denied'); } catch(StorageError) {}
+  HideGyroModal();
+  ShowKeyboardRecommendModal();
+}
+
+/* ══════════════════════════════════════
+   KEYBOARD RECOMMENDATION MODAL
+══════════════════════════════════════ */
+
+function ShowKeyboardRecommendModal() {
+  ShowTouchModal('keyboardRecommendBackdrop', 'keyboardRecommendModal');
+}
+
+function HideKeyboardRecommendModal() {
+  HideTouchModal('keyboardRecommendBackdrop', 'keyboardRecommendModal');
+}
+
+function onKeyboardRecommendHaveOne() {
+  HideKeyboardRecommendModal();
+  // Physical keyboard connected: behave like desktop mode
+  setTouchEnabled(false);
+  setStickyKeys(false);
+  var StickyRow = document.getElementById('stickyRow');
+  if (StickyRow) StickyRow.classList.remove('disabled');
+  // Hide the mismatch pill — the keyboard recommendation it was showing is resolved
+  osMismatchEl.classList.remove('show', 'clickable');
+}
+
+function onKeyboardRecommendTouchOnly() {
+  HideKeyboardRecommendModal();
+  // Touch only: enable sticky and touch modes
+  setTouchEnabled(true);
+  setStickyKeys(true);
+  var StickyRow = document.getElementById('stickyRow');
+  if (StickyRow) StickyRow.classList.add('disabled');
+}
+
+/* ══════════════════════════════════════
+   TOUCH BOOT SEQUENCE
+   Fires on page load for touch devices only.
+   Gyro modal: iOS/iPadOS, first visit only (localStorage persists decision).
+   Keyboard recommendation: every fresh session (sessionStorage gates it).
+══════════════════════════════════════ */
+
+(function InitialiseTouchBootSequence() {
+  if (detectedOs !== 'mobile') return;
+
+  var SavedGyroDecision = null;
+  try { SavedGyroDecision = localStorage.getItem('kw_gyro'); } catch(StorageError) {}
+
+  // If gyro was previously granted, re-wire the listener silently
+  if (SavedGyroDecision === 'granted') {
+    // On iOS, permission persists within the same origin across page loads.
+    // Wiring the listener here works if the browser still honours the grant.
+    InitialiseGyroOrientationListener();
+  }
+
+  var IsIos = /iPad|iPhone|iPod/.test(navigator.userAgent) ||
+              (navigator.maxTouchPoints > 1 && /Mac/.test(navigator.userAgent));
+
+  var RequiresExplicitGyroPrompt = IsIos &&
+    SavedGyroDecision === null &&
+    typeof DeviceOrientationEvent !== 'undefined' &&
+    typeof DeviceOrientationEvent.requestPermission === 'function';
+
+  if (RequiresExplicitGyroPrompt) {
+    // Show gyro first; its handlers chain to the keyboard modal
+    setTimeout(ShowGyroModal, 600);
+  } else {
+    // Non-iOS touch, or iOS that already answered the gyro prompt:
+    // go straight to the keyboard recommendation modal
+    setTimeout(ShowKeyboardRecommendModal, 400);
+  }
+})();
+
+/* ══════════════════════════════════════
+   LAYOUT CHANGE HANDLER
+   Handles both window resize (desktop) and device orientation change (mobile).
+   Debounced at 300ms, then runs inside a requestAnimationFrame so
+   getBoundingClientRect() reads settled geometry after reflow.
+   Pauses the game if it is actively playing.
+══════════════════════════════════════ */
+
+var LayoutRedrawDebounceTimer = null;
+
+function OnLayoutChange() {
+  clearTimeout(LayoutRedrawDebounceTimer);
+  LayoutRedrawDebounceTimer = setTimeout(function() {
+    requestAnimationFrame(function() {
+      if (gameState === 'playing') {
+        enterPause();
+      }
+      updateKeyboardMode();
+      positionIcons();
+      if (activeSettings !== null) _spAlignPanel();
+    });
+  }, 300);
+}
+
+window.addEventListener('resize',            OnLayoutChange, { passive: true });
+window.addEventListener('orientationchange', OnLayoutChange, { passive: true });
 </script>
-<!-- ══════════════════════════════════════
-     SETTINGS PANEL
-     Sits in page flow between statsRow and keyboardWrap.
-     Width is aligned to keyboardPanel via JS on open.
-     Content fades/wipes in as keyboard descends.
-══════════════════════════════════════ -->
-
-
 </body>
 </html>

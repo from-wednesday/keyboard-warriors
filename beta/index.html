@@ -3765,6 +3765,113 @@ function _unpinTooltip() {
   }
 }
 
+// ── Contextual panel tips ─────────────────────────────────────────────────────
+// Shown in the confirmHeading element when no confirm overlay is active.
+// Each panel has its own pool; context-aware tips are filtered at call time.
+// Tips re-roll every time the panel is opened.
+
+var _PANEL_TIPS = {
+  panelPause: function() {
+    var pool = [
+      'we have suspended the timer',
+      'someone called a time-out',
+      'quit or continue?',
+      'you have time for coffee',
+      'have you tried the padlock key?',
+      'your progress is saved',
+      'the help button reveals the answer',
+      'wrong keys light up orange',
+      'accuracy penalties decay as you improve',
+    ];
+    if (playerLives === null) {
+      pool.push('skipping costs five seconds');
+    } else {
+      pool.push('skipping questions breaks hearts');
+    }
+    return pool;
+  },
+  panelBrowser: function() {
+    var pool = [
+      'manage conflicted keys here',
+      'holding ESC opens the debugger',
+      'Chrome has few conflicts',
+      'Safari has the most conflicts out of the box',
+      'conflicts vary by operating system too',
+      'plugins can add their own conflicts',
+      'you can test a shortcut right here',
+      'sticky keys help when modifier chords feel awkward',
+    ];
+    if (touchEnabled) {
+      pool.push('key conflicts aren\'t an issue for the onscreen keyboard');
+    }
+    return pool;
+  },
+  panelKeyboard: function() {
+    var pool = [
+      'have you tried ghost mode yet?',
+      'touch enabled is ideal for cross training',
+      'kill punctuation suits a few non-English keyboards',
+      'does your keyboard have a number pad?',
+      'sticky keys help when modifier chords feel awkward',
+      'ghost mode is great for testing your memory',
+      'the PC layout trains Ctrl muscle memory',
+    ];
+    return pool;
+  },
+  panelDifficulty: function() {
+    var pool = [
+      'take time to learn first, then push your speed second',
+      'the right balance of difficulty speeds your learning',
+      'the coach can help you balance your settings',
+      'one app\'s normal might be another\'s hardcore',
+      'medals get awarded based on your own past performance',
+      'listen to your coach',
+      'have you found the cheat sheet yet?',
+      'fundamentals focuses on the shortcuts worth knowing first',
+      'hardcore mixes in some obscure ones',
+      'your medal reflects your own past performance, not a global standard',
+    ];
+    if (!hasTrophy) {
+      // High probability — add it multiple times to weight it
+      pool.push('first focus on recording a perfect accuracy run');
+      pool.push('first focus on recording a perfect accuracy run');
+      pool.push('first focus on recording a perfect accuracy run');
+      pool.push('the advanced panel unlocks after your first perfect run');
+    } else {
+      pool.push('a shorter timer is harder than fewer lives');
+      pool.push('you can adjust lives and timer independently');
+    }
+    return pool;
+  },
+};
+
+function _showPanelTip(page) {
+  // Only show for the four panels with tip pools; others manage their own heading
+  var poolFn = _PANEL_TIPS[page];
+  if (!poolFn) return;
+  var pool = poolFn();
+  if (!pool.length) return;
+  var tip = pool[Math.floor(Math.random() * pool.length)];
+  // Use showConfirmHeading with blurTitle=false and showBracket=false
+  // so it displays ambient text without triggering confirm styling
+  var el = document.getElementById('confirmHeading');
+  if (!el) return;
+  el.textContent = tip;
+  el.style.display = 'block';
+  // Do NOT blur the title or show the bracket — this is ambient, not actionable
+}
+
+function _clearPanelTip() {
+  // Only clears if no real confirm heading is active
+  // (real confirm headings are always set via showConfirmHeading with blurTitle=true)
+  var confirmStatesActive = [
+    'confirm-reset', 'confirm-quit', 'confirm-trophy',
+    'confirm-diff-change', 'confirm-kill-punctuation', 'confirm-start-over'
+  ].indexOf(gameState) !== -1;
+  if (confirmStatesActive) return;
+  hideConfirmHeading();
+}
+
 function openSettings(page) {
   // Block switching panels during any confirmation overlay or countdown
   var confirmStates = ['confirm-reset', 'confirm-quit', 'confirm-trophy', 'confirm-diff-change', 'confirm-kill-punctuation', 'confirm-start-over', 'counting'];
@@ -3834,6 +3941,13 @@ function openSettings(page) {
   // Pin tooltip only for the three true settings pages
   var isPinnableSettings = (page === 'panelKeyboard' || page === 'panelBrowser' || page === 'panelDifficulty');
   if (isPinnableSettings) _pinTooltip(page);
+
+  // Show a contextual ambient tip in the heading area (no confirm overlay active)
+  var confirmStatesActive = [
+    'confirm-reset', 'confirm-quit', 'confirm-trophy',
+    'confirm-diff-change', 'confirm-kill-punctuation', 'confirm-start-over'
+  ].indexOf(gameState) === -1;
+  if (confirmStatesActive) _showPanelTip(page);
 }
 
 function closeSettings() {
@@ -3841,6 +3955,9 @@ function closeSettings() {
   var closingPage = activeSettings;
   activeSettings = null;
   
+  // Clear any ambient panel tip
+  _clearPanelTip();
+
   // Closing the panel always cancels any active confirm overlay
   _exitScoreClearConfirm();
   _exitDiffConfirm();
@@ -8950,8 +9067,16 @@ var KB_POS = {
   edge:    { stage: 'translateY(118px)', panel: 'rotateX(82deg)' },
 };
 
+function _touchModalVisible() {
+  var gyro = document.getElementById('gyroModal');
+  var kb   = document.getElementById('keyboardRecommendModal');
+  return (gyro && gyro.classList.contains('visible')) ||
+         (kb   && kb.classList.contains('visible'));
+}
+
 function setKbPosition(pos) {
   if (pos === _kbPos) return;
+  if (_touchModalVisible()) { _kbPos = pos; _kbFlipped = (pos === 'edge'); return; }
   var prev = _kbPos;
   _kbPos     = pos;
   _kbFlipped = (pos === 'edge');

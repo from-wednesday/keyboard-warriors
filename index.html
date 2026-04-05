@@ -6,7 +6,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Keyboard Warriors</title>
+<title>beta</title>
 <script>
   const DefaultTitle = 'Keyboard Warriors';
   const VersionLabel   = '0015';
@@ -18,7 +18,7 @@
   (function() {
     var link = document.createElement('link');
     link.rel  = 'stylesheet';
-    link.href = document.title === 'beta'
+    link.href = dont.title === 'beta'
       ? '/keyboard-warriors/styles/beta.css'
       : '/keyboard-warriors/styles/main.css';
     window._StyleSheetLink = link;
@@ -27,21 +27,11 @@
 </script>
 <script>
   // Redirect iOS, iPad OS and Android tablet users to the optimised tablet build
-  (function() {
-    var ua = navigator.userAgent || '';
-    var isPhone = /iPhone|iPod/.test(ua) || (/Android/.test(ua) && /Mobile/.test(ua));
-    if (isPhone) {
-      document.addEventListener('DOMContentLoaded', function() {
-        var el = document.getElementById('phonePrompt');
-        if (el) el.style.display = 'flex';
-      });
-    }
-  })();
+ 
       /iPad/.test(ua) ||
       (/Macintosh/.test(ua) && navigator.maxTouchPoints > 1) ||
       (/Android/.test(ua) && !/Mobile/.test(ua)) ||
-      (navigator.maxTouchPoints > 1 && window.screen.width >= 768)
-    );
+      (navigator.maxTouchPoints > 1 && window.screen.width >= 768);
     if (isTablet && window.location.pathname.indexOf('tablet') === -1) {
       document.addEventListener('DOMContentLoaded', function() {
         var modal = document.createElement('div');
@@ -256,9 +246,7 @@ document.getElementById('_tabletDismissBtn').addEventListener('click', function(
       <div class="sp-col sp-col-left">
         <p class="sp-body" id="browserCompatHeading"></p>
         <p class="sp-body" id="browserCompatIntro"></p>
-        <p class="sp-body" id="browserCompatFooter"></p> <p class="sp-body sp-hint">If you encounter any other error, hold down
-          <span class="sp-key-chip">Esc</span>
-          to open the debug window and send a report.</p>
+        <p class="sp-body" id="browserCompatFooter"></p> <p class="sp-body sp-hint">Keyboard setting <strong><small>'Touch Enabled'</small></strong> avoids all these conflicts.</p>
       </div>
       <div class="sp-col sp-col-right">
         <ul id="browserCompatList" class="sp-conflict-list"></ul>
@@ -394,7 +382,7 @@ document.getElementById('_tabletDismissBtn').addEventListener('click', function(
         </div>
         <ul id="cheatSheetListRight" class="sp-report-list sp-report-weakness"></ul>
       </div>
-    </div>' 
+    </div>
 
 
     <!-- ── Returning User Landing ───────────────────────── -->
@@ -3230,8 +3218,8 @@ function matchesShortcut(event, str) {
   // ── CMD + special keys ───────────────────────────────────────────
   if (s === 'CMD+DEL')              return (k === 'Backspace' || k === 'Delete') && cmd && !opt && !sh;
   if (s === 'CMD+GRAVE')            return (k === "'" || k === '`' || e.code === 'Backquote') && cmd && !opt && !sh;
-  if (s === 'CMD+OPTION+GRAVE')     return (k === "'" || k === '`' || e.code === 'Backquote') && cmd && opt && !sh;
-  if (s === 'CMD+BACKSLASH')        return (k === '\\' || e.code === 'Backslash') && cmd && !opt && !sh;
+  if (s === 'CMD+OPTION+GRAVE')     return (k === "'" || k === '`' || event.code === 'Backquote') && cmd && opt && !sh;
+  if (s === 'CMD+BACKSLASH')        return (k === '\\' || event.code === 'Backslash') && cmd && !opt && !sh;
   if (s === 'CMD+SHIFT+BACKSLASH')  return (k === '\\' || e.code === 'Backslash') && cmd && sh && !opt;
   if (s === 'CMD+OPTION+BACKSLASH') return (k === '\\' || e.code === 'Backslash') && cmd && opt && !sh;
 
@@ -3447,6 +3435,7 @@ function setTouchEnabled(on) {
   touchEnabled = on;
   var radio = document.getElementById('touchRadio');
   if (radio) radio.classList.toggle('on', on);
+  if (activeSettings === 'panelBrowser') _refreshBrowserContent();
   if (on) {
     setKbSizeToggle(false);
     setSoundEnabled(true);   // audible on by default when touch activates
@@ -4106,7 +4095,8 @@ function _setConflictBlocked(canonicalKey, blocked, liEl) {
 
 function _makeConflictRadio(canonicalKey) {
   // Blocked (dismissed) = radio ON. Active = radio OFF.
-  var isBlocked = dismissedConflicts.has(canonicalKey);
+  // Touch mode bypasses all conflicts, so nothing is shown as blocked.
+  var isBlocked = !touchEnabled && dismissedConflicts.has(canonicalKey);
   var wrap = document.createElement('span');
   wrap.className = 'modal-radio' + (isBlocked ? ' on' : '');
   wrap.style.cssText = 'flex-shrink:0;margin-right:7px;cursor:pointer;';
@@ -4116,7 +4106,7 @@ function _makeConflictRadio(canonicalKey) {
     + '</svg>';
   wrap.addEventListener('click', function(e) {
     var li = wrap.closest('li');
-    var nowBlocked = !dismissedConflicts.has(canonicalKey); // toggling
+    var nowBlocked = !dismissedConflicts.has(canonicalKey);
     _setConflictBlocked(canonicalKey, nowBlocked, li);
     showToast(nowBlocked ? 'Shortcut blocked' : 'Shortcut working');
   });
@@ -4217,7 +4207,9 @@ function _refreshBrowserContent() {
 
   var intro = document.getElementById('browserCompatIntro');
   if (intro) {
-    if (d.labels.length > 0) {
+    if (touchEnabled) {
+      intro.textContent = 'Touch mode is active, so browser conflicts are bypassed and all shortcuts are available. Your saved settings here are preserved for when you switch back.';
+    } else if (d.labels.length > 0) {
       intro.textContent = 'But, your browser owns some shortcuts and may interrupt us. We will try not to ask you any questions that use those indicated here. You can also test them now. Any working ones will unblock automatically.';
     } else {
       intro.textContent = 'We haven\u2019t spotted any shortcut conflicts for your current setup \u2014 you\u2019re good to go.';
@@ -4226,19 +4218,7 @@ function _refreshBrowserContent() {
 
   // Clear overrides pill
   var ft = document.getElementById('browserCompatFooter');
-  if (ft) {
-    ft.innerHTML = '';
-    var HasOverrides = _hasBrowserOverrides();
-    var ClearPill = document.createElement('div');
-    ClearPill.className = 'score-clear-pill';
-    ClearPill.style.marginBottom = '4px';
-    var ClearBtn = document.createElement('button');
-    ClearBtn.className = 'score-pill-seg score-pill-full' + (HasOverrides ? '' : ' score-pill-inactive');
-    ClearBtn.onclick = HasOverrides ? _clearBrowserOverrides : null;
-    ClearBtn.innerHTML = '<span class="diff-btn-text">clear overrides</span>';
-    ClearPill.appendChild(ClearBtn);
-    ft.appendChild(ClearPill);
-  }
+  if (ft) ft.innerHTML = '';
 
   var ul = document.getElementById('browserCompatList');
   if (ul) {
@@ -4255,9 +4235,8 @@ function _refreshBrowserContent() {
 
     d.labels.forEach(function(RawLabel, i) {
       var canonicalKey = d.keys[i];
-      var isBlocked    = dismissedConflicts.has(canonicalKey);
+      var isBlocked    = !touchEnabled && dismissedConflicts.has(canonicalKey);
       var Parsed       = _BuildBrowserConflictLabel(RawLabel);
-
       var li = document.createElement('li');
       li.className = isBlocked ? 'conflict-dismissed' : '';
       li.dataset.conflictKey = canonicalKey;
@@ -4287,9 +4266,10 @@ function _refreshBrowserContent() {
       ul.appendChild(li);
     });
 
-    // Diagnostic-added entries
+    // Diagnostic-added entries (hidden when touch mode is active)
     var BrowserConflictKeys = new Set(d.keys);
     dismissedConflicts.forEach(function(BlockedKey) {
+      if (touchEnabled) return;
       if (BrowserConflictKeys.has(BlockedKey)) return;
       var li = document.createElement('li');
       li.className = 'conflict-dismissed';
@@ -4317,8 +4297,23 @@ function _refreshBrowserContent() {
   }
 
   _attachBrowserPanelKeypressVerifier();
-}
 
+  var rightCol = document.querySelector('#panelBrowser .sp-col-right');
+  if (rightCol) {
+    var HasOverrides = _hasBrowserOverrides();
+    var ClearPill = document.createElement('div');
+    ClearPill.className = 'score-clear-pill';
+    ClearPill.style.cssText = 'margin-top: 8px; flex-shrink: 0;';
+    var ClearBtn = document.createElement('button');
+    ClearBtn.className = 'score-pill-seg score-pill-full' + (HasOverrides ? '' : ' score-pill-inactive');
+    ClearBtn.onclick = HasOverrides ? _clearBrowserOverrides : null;
+    ClearBtn.innerHTML = '<span class="diff-btn-text">clear overrides</span>';
+    ClearPill.appendChild(ClearBtn);
+    rightCol.appendChild(ClearPill);
+  }
+  
+
+}
 // ── Unified icon click handlers ──────────────────────────────────────────────
 document.getElementById('kbIcon').addEventListener('click', function(e) {
   e.stopPropagation();
@@ -5854,8 +5849,8 @@ function buildPool() {
     if (currentOs === 'pc' && s.shortcut.toUpperCase().includes('OPTION')) return false;
     if (s.difficulty > maxDiff) return false;
     if ((touchEnabled || !hasFullKeyboard) && requiresExtKey(s.shortcut)) return false;
-    if (browserSkip.has(s.shortcut)) return false;
-    if (dismissedConflicts.has(s.shortcut)) return false;
+    if (!touchEnabled && browserSkip.has(s.shortcut)) return false;
+    if (!touchEnabled && dismissedConflicts.has(s.shortcut)) return false;
     if (killPunctuationOn && UNSTABLE_PUNCTUATION_TOKENS.has(s.shortcut)) return false;
     return true;
   });
@@ -8350,7 +8345,7 @@ function handleKeydown(e) {
     document.getElementById('dbgAnswer').textContent = 'answer: ' + currentAnswer;
     document.getElementById('dbgQuestion').textContent = questionPool[questionIndex]?.display || '';
     document.getElementById('dbgKey').textContent =
-      'key=' + JSON.stringify(e.key) + ' code=' + e.code +
+      'key=' + JSON.stringify(e.key) + ' code=' + || event.code === 'Backquote') && cmd && !opt && !sh; +
       ' cmd=' + (currentOs==='pc'?e.ctrlKey:e.metaKey) +
       ' sh=' + e.shiftKey + ' opt=' + e.altKey;
     const matchResult = matchesShortcut(e, currentAnswer);
@@ -8598,11 +8593,11 @@ function _blurDiagnosticFindQuestion() {
 function _blurDiagnosticBuildSymbolChips(ShortcutToken) {
   // Produces compact symbol-only chips from the shortcut token string,
   // e.g. "CMD+SHIFT+E" → ⌘ + ⇧ + E chips. Falls back gracefully for PC mode.
-  var MacSymbols = { 'CMD': '⌘', 'SHIFT': '⇧', 'OPTION': '⌥', 'CTRL': '⌃',
+  var MacSymbols = { 'CMD': '⌘', 'SHIFT': '⇧', 'OPTION': '⌥', 'CTRL': '⌃', 'BACKSLASH': '\',
                      'ARROWLEFT': '←', 'ARROWRIGHT': '→', 'ARROWUP': '↑', 'ARROWDOWN': '↓',
                      'RETURN': '↩', 'ENTER': '↩', 'SPACE': '␣', 'TAB': '⇥',
                      'DEL': '⌫', 'BACKSPACE': '⌫', 'ESCAPE': '⎋' };
-  var PcSymbols  = { 'CMD': 'Ctrl', 'SHIFT': '⇧', 'OPTION': 'Alt',
+  var PcSymbols  = { 'CMD': 'Ctrl', 'SHIFT': '⇧', 'OPTION': 'Alt', 'BACKSLASH': '\',
                      'ARROWLEFT': '←', 'ARROWRIGHT': '→', 'ARROWUP': '↑', 'ARROWDOWN': '↓',
                      'RETURN': '↵', 'ENTER': '↵', 'SPACE': '␣', 'TAB': '⇥',
                      'DEL': '⌫', 'BACKSPACE': '⌫', 'ESCAPE': 'Esc' };

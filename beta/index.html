@@ -4288,7 +4288,8 @@ function _refreshBrowserContent() {
 
       var label = document.createElement('span');
       label.className = 'conflict-label';
-      label.appendChild(_renderKeyChips(BlockedKey));
+      var ParsedDiagnosticLabel = _BuildBrowserConflictLabel(BlockedKey);
+      label.appendChild(_renderKeyChips(ParsedDiagnosticLabel.displayShortcut));
 
       var DescEl = document.createElement('span');
       DescEl.className = 'conflict-desc';
@@ -4307,8 +4308,9 @@ function _refreshBrowserContent() {
 
   _attachBrowserPanelKeypressVerifier();
 
-  var rightCol = document.querySelector('#panelBrowser .sp-col-right');
+   var rightCol = document.querySelector('#panelBrowser .sp-col-right');
   if (rightCol) {
+    rightCol.innerHTML = '';
     var HasOverrides = _hasBrowserOverrides();
     var ClearPill = document.createElement('div');
     ClearPill.className = 'score-clear-pill';

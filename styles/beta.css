@@ -1155,6 +1155,8 @@ li.conflict-dismissed .conflict-desc {
   font-family: system-ui, sans-serif;
   box-shadow: 0 1px 0 #8a9099, inset 0 -1px 0 rgba(0,0,0,0.08);
   user-select: none;
+  -webkit-touch-callout: none;
+  -webkit-user-select: none;
   position: relative;
   transition: background 0.07s;
   width: 40px;

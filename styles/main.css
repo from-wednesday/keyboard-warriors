@@ -10,6 +10,12 @@
 
 * { margin:0; padding:0; box-sizing:border-box; }
 
+.page-revealed {
+  visibility: visible;
+  opacity: 1;
+  transition: opacity 0.3s ease;
+}
+
 #phonePrompt {
   display: none;
   position: fixed;
@@ -1149,6 +1155,8 @@ li.conflict-dismissed .conflict-desc {
   font-family: system-ui, sans-serif;
   box-shadow: 0 1px 0 #8a9099, inset 0 -1px 0 rgba(0,0,0,0.08);
   user-select: none;
+  -webkit-touch-callout: none;
+  -webkit-user-select: none;
   position: relative;
   transition: background 0.07s;
   width: 40px;
@@ -1616,6 +1624,7 @@ li.conflict-dismissed .conflict-desc {
   z-index: 10;
 }
 #osMismatchPill.show { opacity: 1; }
+#osMismatchPill.show.clickable { pointer-events: auto; cursor: pointer; }
 /* ══════════════════════════════════════
    APP SELECTOR — in osRow, right-aligned
    "now training on:" label inline-left
@@ -2791,6 +2800,56 @@ body.returning-screen #diffIconWrap .icon-tip { display: none; }
   transition: background 0.3s ease;
 }
 
+/* Right column spacer: aligns upcoming questions below the header row in the left column.
+   The left column header (.sp-report-col-header) is roughly 30px tall (small-caps label
+   at ~11px + section title at ~14px + 5px margin-bottom). */
+.cheat-sheet-right-spacer {
+  height: 30px;
+  flex-shrink: 0;
+}
+
+/* Cheat sheet: left column list starts 30px lower to align with the right column list,
+   which is offset by the same height spacer. */
+#cheatSheetList {
+  padding-top: 30px;
+}
+
+/* Cheat sheet panel: full-width title row above the two columns */
+#panelPadlock.sp-page-padlock.sp-active {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  grid-template-rows: auto auto;
+  grid-template-areas:
+    "title title"
+    "left  right";
+}
+#panelPadlock.sp-page-padlock .sp-col-left  { grid-area: left; }
+#panelPadlock.sp-page-padlock .sp-col-right { grid-area: right; }
+#panelPadlock.sp-page-padlock.sp-active::after {
+  top: 16px;
+}
+.sp-padlock-title-row {
+  grid-area: title;
+  text-align: center;
+  padding-bottom: 10px;
+  border-bottom: 1px solid #e5e7eb;
+  margin-bottom: 10px;
+}
+.sp-padlock-main-heading {
+  font-size: 15px;
+  font-weight: 700;
+  color: #1e3a5f;
+  margin: 0 0 2px 0;
+  line-height: 1.2;
+}
+.sp-padlock-byline {
+  font-size: 11px;
+  font-style: italic;
+  color: #9ca3af;
+  margin: 0;
+  line-height: 1.4;
+}
+
 /* Chip wrapper lit state — only key chips, not the + separators between them */
 .sp-report-chips-lit .sp-report-chip-key {
   background: #10b981 !important;
@@ -2916,3 +2975,109 @@ body.returning-screen #diffIconWrap .icon-tip { display: none; }
 #panelPause.blur-pause-active #blurPauseDiagnostic {
   display: block !important;
 }
+/* ══════════════════════════════════════
+   TOUCH DEVICE MODALS
+   Gyro permission and keyboard recommendation.
+   Both are fixed, viewport-centred overlays.
+   Styled to match #gameContainer: blue fill,
+   white border, same radius and shadow.
+══════════════════════════════════════ */
+
+.touch-modal-backdrop {
+  display: none;
+  position: fixed;
+  inset: 0;
+  z-index: 1000;
+  background: rgba(0, 0, 0, 0.25);
+  backdrop-filter: blur(3px);
+  -webkit-backdrop-filter: blur(3px);
+}
+.touch-modal-backdrop.visible {
+  display: block;
+}
+
+.touch-modal-card {
+  position: fixed;
+  z-index: 1001;
+  background: #e0f2fe;
+  border-radius: 16px;
+  border: 1.5px solid white;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+  width: min(320px, calc(100vw - 48px));
+  padding: 28px 28px 22px;
+  box-sizing: border-box;
+  font-family: 'Lato', system-ui, sans-serif;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  display: none;
+}
+
+@keyframes TouchModalUnfurl {
+  from { opacity: 0; transform: translate(-50%, -50%) scale(0.94); }
+  to   { opacity: 1; transform: translate(-50%, -50%) scale(1);    }
+}
+.touch-modal-card.visible {
+  display: block;
+  animation: TouchModalUnfurl 0.32s cubic-bezier(0.22, 0.61, 0.36, 1) forwards;
+}
+
+.touch-modal-heading {
+  font-size: 17px;
+  font-weight: 700;
+  color: #1f2937;
+  margin: 0 0 10px;
+  line-height: 1.3;
+}
+
+.touch-modal-body {
+  font-size: 14px;
+  color: #1f2937;
+  line-height: 1.65;
+  margin: 0 0 8px;
+}
+.touch-modal-body:last-of-type {
+  margin-bottom: 20px;
+}
+
+.touch-modal-buttons {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.touch-modal-btn-primary {
+  width: 100%;
+  height: 36px;
+  border: none;
+  outline: none;
+  border-radius: 18px;
+  font-family: 'Lato', system-ui, sans-serif;
+  font-weight: 600;
+  font-size: 14px;
+  text-align: center;
+  cursor: pointer;
+  -webkit-appearance: none;
+  appearance: none;
+  background: #10b981;
+  color: white;
+}
+.touch-modal-btn-primary:active { background: #059669; }
+
+.touch-modal-btn-secondary {
+  width: 100%;
+  height: 36px;
+  border: none;
+  outline: none;
+  border-radius: 18px;
+  font-family: 'Lato', system-ui, sans-serif;
+  font-weight: 600;
+  font-size: 13px;
+  text-align: center;
+  cursor: pointer;
+  -webkit-appearance: none;
+  appearance: none;
+  background: #6b7280;
+  color: white;
+}
+.touch-modal-btn-secondary:active { background: #9ca3af; }

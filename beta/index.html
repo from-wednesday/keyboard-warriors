@@ -40,11 +40,11 @@
       document.addEventListener('DOMContentLoaded', function() {
         var modal = document.createElement('div');
         modal.style.cssText = 'position:fixed;inset:0;z-index:10001;background:rgba(0,0,0,0.45);display:flex;align-items:center;justify-content:center;padding:24px;';
-        modal.innerHTML = '<div style="background:white;border-radius:16px;padding:32px 28px;max-width:320px;width:100%;text-align:center;font-family:\\'Lato\\',system-ui,sans-serif;box-shadow:0 16px 48px rgba(0,0,0,0.18);">'
-          + '<p style="font-size:17px;font-weight:700;color:#1e3a5f;margin:0 0 10px;">Tablet support coming soon.</p>'
-          + '<p style="font-size:14px;color:#6b7280;line-height:1.6;margin:0 0 24px;">For now, tap below to continue with touch mode enabled.</p>'
-          + '<button style="width:100%;padding:12px;background:#10b981;color:white;border:none;border-radius:12px;font-size:15px;font-weight:600;cursor:pointer;" id="_tabletDismissBtn">Continue</button>'
-          + '</div>';
+modal.innerHTML = '<div style="background:white;border-radius:16px;padding:32px 28px;max-width:320px;width:100%;text-align:center;font-family:\'Lato\',system-ui,sans-serif;box-shadow:0 16px 48px rgba(0,0,0,0.18);">'
+  + '<p style="font-size:17px;font-weight:700;color:#1e3a5f;margin:0 0 10px;">Tablet support coming soon.</p>'
+  + '<p style="font-size:14px;color:#6b7280;line-height:1.6;margin:0 0 24px;">For now, tap below to continue with touch mode enabled.</p>'
+  + '<button style="width:100%;padding:12px;background:#10b981;color:white;border:none;border-radius:12px;font-size:15px;font-weight:600;cursor:pointer;" id="_tabletDismissBtn">Continue</button>'
+  + '</div>';
         document.body.appendChild(modal);
 
         document.getElementById('_tabletDismissBtn').addEventListener('click', function() {

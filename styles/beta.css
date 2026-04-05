@@ -1122,6 +1122,16 @@ li.conflict-dismissed .conflict-desc {
   color: #c0c5cc;
 }
 
+#panelBrowser .sp-col-right {
+  justify-content: flex-end;
+  overflow: visible;
+}
+
+#browserCompatList {
+  overflow: visible;
+}
+
+
 /* ══════════════════════════════════════
    KEYBOARD PANEL
    Outer: 14px → corner keys: 9px → base keys: 4px

@@ -30,12 +30,15 @@
   (function() {
     var ua = navigator.userAgent || '';
     var isPhone = /iPhone|iPod/.test(ua) || (/Android/.test(ua) && /Mobile/.test(ua));
-    if (isPhone) {
-      document.addEventListener('DOMContentLoaded', function() {
-        var el = document.getElementById('phonePrompt');
-        if (el) el.style.display = 'flex';
-      });
-    }
+    // DELETE THIS AFTER PHONE TESTING (or reinstate)
+    // if (isPhone) {
+    //   document.addEventListener('DOMContentLoaded', function() {
+    //     var el = document.getElementById('phonePrompt');
+    //     if (el) el.style.display = 'flex';
+    //   });
+    // }
+
+    
   })();
       /iPad/.test(ua) ||
       (/Macintosh/.test(ua) && navigator.maxTouchPoints > 1) ||

@@ -46,10 +46,10 @@
           + '<button style="width:100%;padding:12px;background:#10b981;color:white;border:none;border-radius:12px;font-size:15px;font-weight:600;cursor:pointer;" id="_tabletDismissBtn">Continue</button>'
           + '</div>';
         document.body.appendChild(modal);
-        document.getElementById('_tabletDismissBtn').addEventListener('click', function() {
-          document.body.removeChild(modal);
-          setTouchEnabled(true);
-        });
+document.getElementById('_tabletDismissBtn').addEventListener('click', function() {
+  document.body.removeChild(modal);
+  onTouchToggle();
+});
       });
     }
     if (isPhone) {

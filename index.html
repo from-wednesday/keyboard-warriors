@@ -18,44 +18,14 @@
   (function() {
     var link = document.createElement('link');
     link.rel  = 'stylesheet';
-    link.href = dont.title === 'beta'
+    link.href = document.title === 'beta'
       ? '/keyboard-warriors/styles/beta.css'
       : '/keyboard-warriors/styles/main.css';
     window._StyleSheetLink = link;
     document.head.appendChild(link);
   })();
 </script>
-<script>
-  // Redirect iOS, iPad OS and Android tablet users to the optimised tablet build
- 
-      /iPad/.test(ua) ||
-      (/Macintosh/.test(ua) && navigator.maxTouchPoints > 1) ||
-      (/Android/.test(ua) && !/Mobile/.test(ua)) ||
-      (navigator.maxTouchPoints > 1 && window.screen.width >= 768);
-    if (isTablet && window.location.pathname.indexOf('tablet') === -1) {
-      document.addEventListener('DOMContentLoaded', function() {
-        var modal = document.createElement('div');
-        modal.style.cssText = 'position:fixed;inset:0;z-index:10001;background:rgba(0,0,0,0.45);display:flex;align-items:center;justify-content:center;padding:24px;';
-        modal.innerHTML = '<div style="background:white;border-radius:16px;padding:32px 28px;max-width:320px;width:100%;text-align:center;font-family:\'Lato\',system-ui,sans-serif;box-shadow:0 16px 48px rgba(0,0,0,0.18);">'
-          + '<p style="font-size:17px;font-weight:700;color:#1e3a5f;margin:0 0 10px;">Tablet support coming soon.</p>'
-          + '<p style="font-size:14px;color:#6b7280;line-height:1.6;margin:0 0 24px;">For now, tap below to continue with touch mode enabled.</p>'
-          + '<button style="width:100%;padding:12px;background:#10b981;color:white;border:none;border-radius:12px;font-size:15px;font-weight:600;cursor:pointer;" id="_tabletDismissBtn">Continue</button>'
-          + '</div>';
-        document.body.appendChild(modal);
-document.getElementById('_tabletDismissBtn').addEventListener('click', function() {
-  document.body.removeChild(modal);
-  onTouchToggle();
-});
-      });
-    }
-    if (isPhone) {
-      document.addEventListener('DOMContentLoaded', function() {
-        var el = document.getElementById('phonePrompt');
-        if (el) el.style.display = 'flex';
-      });
-    }
-  })();
-</script>
+
 <style>
   @keyframes SkeletonGrow {
     from { width: 18px; border-radius: 9px; }
@@ -72,8 +42,8 @@ document.getElementById('_tabletDismissBtn').addEventListener('click', function(
      Shown once on iOS/iPadOS (localStorage persists the decision).
      iOS 13+ requires a user gesture before DeviceOrientationEvent.requestPermission.
 ══════════════════════════════════════ -->
-<div id="gyroBackdrop" class="touch-modal-backdrop"></div>
-<div id="gyroModal" class="touch-modal-card" role="dialog" aria-modal="true">
+<div id="gyroBackdrop" class="touch-modal-backdrop" style="display:none;"></div>
+<div id="gyroModal" class="touch-modal-card" role="dialog" aria-modal="true" style="display:none;">
   <p class="touch-modal-heading">One quick thing</p>
   <p class="touch-modal-body">When you earn a medal, tilting your device brings the shine to life.</p>
   <p class="touch-modal-body">May we use your device's motion sensor for this?</p>
@@ -88,8 +58,8 @@ document.getElementById('_tabletDismissBtn').addEventListener('click', function(
      Shown on every fresh session for touch devices.
      Sets touch/sticky defaults based on the player's answer.
 ══════════════════════════════════════ -->
-<div id="keyboardRecommendBackdrop" class="touch-modal-backdrop"></div>
-<div id="keyboardRecommendModal" class="touch-modal-card" role="dialog" aria-modal="true">
+<div id="keyboardRecommendBackdrop" class="touch-modal-backdrop" style="display:none;"></div>
+<div id="keyboardRecommendModal" class="touch-modal-card" role="dialog" aria-modal="true" style="display:none;">
   <p class="touch-modal-heading">Training tip</p>
   <p class="touch-modal-body">Keyboard Warriors is designed for use with a physical keyboard. Connecting one to your device will give you the most realistic training experience.</p>
   <p class="touch-modal-body">Are you using a physical keyboard right now?</p>
@@ -100,15 +70,7 @@ document.getElementById('_tabletDismissBtn').addEventListener('click', function(
 </div>
 
 <!-- OS toggle row: sits above the game panel -->
-<div id="phonePrompt" class="page-initially-hidden" style="display:none;">
-  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 60" width="72" height="90" fill="white">
-    <path d="M31.3,9h-14.6c-2.6,0-4.7,2.1-4.7,4.7v34.6c0,2.6,2.1,4.7,4.7,4.7h14.6c2.6,0,4.7-2.1,4.7-4.7V13.7c0-2.6-2.1-4.7-4.7-4.7ZM31.3,51h-14.6c-1.5,0-2.7-1.2-2.7-2.7v-16.9c.7,1,1.9,1.7,3.2,1.7,2.2,0,3.9-1.8,3.9-3.9s-1.8-3.9-3.9-3.9-2.5.7-3.2,1.7v-13.3c0-1.5,1.2-2.7,2.7-2.7h14.6c1.5,0,2.7,1.2,2.7,2.7v13.3c-.7-1-1.9-1.7-3.2-1.7-2.2,0-3.9,1.8-3.9,3.9s1.8,3.9,3.9,3.9,2.5-.7,3.2-1.7v16.9c0,1.5-1.2,2.7-2.7,2.7Z"/>
-    <path d="M28,14c0-.6-.4-1-1-1h-6c-.6,0-1,.4-1,1s.4,1,1,1h6c.6,0,1-.4,1-1Z"/>
-    <path d="M25.5,39.3c-2.9-1-6,.6-7.2,3.9-.3.8-.1,1.5.5,1.8.4.2,1.1,0,1.3-.7.7-1.8,2.1-2.9,3.8-2.9,1.7,0,3.1,1.1,3.8,2.9.2.7.9.9,1.3.7,1.6-.9-.4-4.8-3.4-5.8Z"/>
-  </svg>
-  <p class="prompt-sorry">Sorry, your screen is too small for Keyboard Warriors.</p>
-  <p class="prompt-info">For the best training experience, we recommend a device with a physical keyboard attached.</p>
-</div>
+
 
 <div id="osRow" class="page-initially-hidden">
   <div id="osToggleWrap">
@@ -3220,7 +3182,7 @@ function matchesShortcut(event, str) {
   if (s === 'CMD+GRAVE')            return (k === "'" || k === '`' || e.code === 'Backquote') && cmd && !opt && !sh;
   if (s === 'CMD+OPTION+GRAVE')     return (k === "'" || k === '`' || event.code === 'Backquote') && cmd && opt && !sh;
   if (s === 'CMD+BACKSLASH')        return (k === '\\' || event.code === 'Backslash') && cmd && !opt && !sh;
-  if (s === 'CMD+SHIFT+BACKSLASH')  return (k === '\\' || e.code === 'Backslash') && cmd && sh && !opt;
+  if (s === 'CMD+SHIFT+BACKSLASH')  return (k === '\\' || event.code === 'Backslash') && cmd && sh && !opt;
   if (s === 'CMD+OPTION+BACKSLASH') return (k === '\\' || e.code === 'Backslash') && cmd && opt && !sh;
 
   // ── CTRL+C (Fi Eyedropper legacy) ─────────────────────────────────
@@ -3803,6 +3765,113 @@ function _unpinTooltip() {
   }
 }
 
+// ── Contextual panel tips ─────────────────────────────────────────────────────
+// Shown in the confirmHeading element when no confirm overlay is active.
+// Each panel has its own pool; context-aware tips are filtered at call time.
+// Tips re-roll every time the panel is opened.
+
+var _PANEL_TIPS = {
+  panelPause: function() {
+    var pool = [
+      'we have suspended the timer',
+      'someone called a time-out',
+      'quit or continue?',
+      'you have time for coffee',
+      'have you tried the padlock key?',
+      'your progress is saved',
+      'the help button reveals the answer',
+      'wrong keys light up orange',
+      'accuracy penalties decay as you improve',
+    ];
+    if (playerLives === null) {
+      pool.push('skipping costs five seconds');
+    } else {
+      pool.push('skipping questions breaks hearts');
+    }
+    return pool;
+  },
+  panelBrowser: function() {
+    var pool = [
+      'manage conflicted keys here',
+      'holding ESC opens the debugger',
+      'Chrome has few conflicts',
+      'Safari has the most conflicts out of the box',
+      'conflicts vary by operating system too',
+      'plugins can add their own conflicts',
+      'you can test a shortcut right here',
+      'sticky keys help when modifier chords feel awkward',
+    ];
+    if (touchEnabled) {
+      pool.push('key conflicts aren\'t an issue for the onscreen keyboard');
+    }
+    return pool;
+  },
+  panelKeyboard: function() {
+    var pool = [
+      'have you tried ghost mode yet?',
+      'touch enabled is ideal for cross training',
+      'kill punctuation suits a few non-English keyboards',
+      'does your keyboard have a number pad?',
+      'sticky keys help when modifier chords feel awkward',
+      'ghost mode is great for testing your memory',
+      'the PC layout trains Ctrl muscle memory',
+    ];
+    return pool;
+  },
+  panelDifficulty: function() {
+    var pool = [
+      'take time to learn first, then push your speed second',
+      'the right balance of difficulty speeds your learning',
+      'the coach can help you balance your settings',
+      'one app\'s normal might be another\'s hardcore',
+      'medals get awarded based on your own past performance',
+      'listen to your coach',
+      'have you found the cheat sheet yet?',
+      'fundamentals focuses on the shortcuts worth knowing first',
+      'hardcore mixes in some obscure ones',
+      'your medal reflects your own past performance, not a global standard',
+    ];
+    if (!hasTrophy) {
+      // High probability — add it multiple times to weight it
+      pool.push('first focus on recording a perfect accuracy run');
+      pool.push('first focus on recording a perfect accuracy run');
+      pool.push('first focus on recording a perfect accuracy run');
+      pool.push('the advanced panel unlocks after your first perfect run');
+    } else {
+      pool.push('a shorter timer is harder than fewer lives');
+      pool.push('you can adjust lives and timer independently');
+    }
+    return pool;
+  },
+};
+
+function _showPanelTip(page) {
+  // Only show for the four panels with tip pools; others manage their own heading
+  var poolFn = _PANEL_TIPS[page];
+  if (!poolFn) return;
+  var pool = poolFn();
+  if (!pool.length) return;
+  var tip = pool[Math.floor(Math.random() * pool.length)];
+  // Use showConfirmHeading with blurTitle=false and showBracket=false
+  // so it displays ambient text without triggering confirm styling
+  var el = document.getElementById('confirmHeading');
+  if (!el) return;
+  el.textContent = tip;
+  el.style.display = 'block';
+  // Do NOT blur the title or show the bracket — this is ambient, not actionable
+}
+
+function _clearPanelTip() {
+  // Only clears if no real confirm heading is active
+  // (real confirm headings are always set via showConfirmHeading with blurTitle=true)
+  var confirmStatesActive = [
+    'confirm-reset', 'confirm-quit', 'confirm-trophy',
+    'confirm-diff-change', 'confirm-kill-punctuation', 'confirm-start-over'
+  ].indexOf(gameState) !== -1;
+  if (confirmStatesActive) return;
+  hideConfirmHeading();
+}
+
 function openSettings(page) {
   // Block switching panels during any confirmation overlay or countdown
   var confirmStates = ['confirm-reset', 'confirm-quit', 'confirm-trophy', 'confirm-diff-change', 'confirm-kill-punctuation', 'confirm-start-over', 'counting'];
@@ -3872,6 +3941,13 @@ function openSettings(page) {
   // Pin tooltip only for the three true settings pages
   var isPinnableSettings = (page === 'panelKeyboard' || page === 'panelBrowser' || page === 'panelDifficulty');
   if (isPinnableSettings) _pinTooltip(page);
+
+  // Show a contextual ambient tip in the heading area (no confirm overlay active)
+  var confirmStatesActive = [
+    'confirm-reset', 'confirm-quit', 'confirm-trophy',
+    'confirm-diff-change', 'confirm-kill-punctuation', 'confirm-start-over'
+  ].indexOf(gameState) === -1;
+  if (confirmStatesActive) _showPanelTip(page);
 }
 
 function closeSettings() {
@@ -3879,6 +3955,9 @@ function closeSettings() {
   var closingPage = activeSettings;
   activeSettings = null;
   
+  // Clear any ambient panel tip
+  _clearPanelTip();
+
   // Closing the panel always cancels any active confirm overlay
   _exitScoreClearConfirm();
   _exitDiffConfirm();
@@ -4279,7 +4358,8 @@ function _refreshBrowserContent() {
 
       var label = document.createElement('span');
       label.className = 'conflict-label';
-      label.appendChild(_renderKeyChips(BlockedKey));
+      var ParsedDiagnosticLabel = _BuildBrowserConflictLabel(BlockedKey);
+      label.appendChild(_renderKeyChips(ParsedDiagnosticLabel.displayShortcut));
 
       var DescEl = document.createElement('span');
       DescEl.className = 'conflict-desc';
@@ -4298,8 +4378,10 @@ function _refreshBrowserContent() {
 
   _attachBrowserPanelKeypressVerifier();
 
-  var rightCol = document.querySelector('#panelBrowser .sp-col-right');
+   var rightCol = document.querySelector('#panelBrowser .sp-col-right');
   if (rightCol) {
+    var ExistingPill = rightCol.querySelector('.score-clear-pill');
+    if (ExistingPill) rightCol.removeChild(ExistingPill);
     var HasOverrides = _hasBrowserOverrides();
     var ClearPill = document.createElement('div');
     ClearPill.className = 'score-clear-pill';
@@ -8345,7 +8427,7 @@ function handleKeydown(e) {
     document.getElementById('dbgAnswer').textContent = 'answer: ' + currentAnswer;
     document.getElementById('dbgQuestion').textContent = questionPool[questionIndex]?.display || '';
     document.getElementById('dbgKey').textContent =
-      'key=' + JSON.stringify(e.key) + ' code=' + || event.code === 'Backquote') && cmd && !opt && !sh; +
+      'key=' + JSON.stringify(e.key) + ' code=' + e.code +
       ' cmd=' + (currentOs==='pc'?e.ctrlKey:e.metaKey) +
       ' sh=' + e.shiftKey + ' opt=' + e.altKey;
     const matchResult = matchesShortcut(e, currentAnswer);
@@ -8593,11 +8675,11 @@ function _blurDiagnosticFindQuestion() {
 function _blurDiagnosticBuildSymbolChips(ShortcutToken) {
   // Produces compact symbol-only chips from the shortcut token string,
   // e.g. "CMD+SHIFT+E" → ⌘ + ⇧ + E chips. Falls back gracefully for PC mode.
-  var MacSymbols = { 'CMD': '⌘', 'SHIFT': '⇧', 'OPTION': '⌥', 'CTRL': '⌃', 'BACKSLASH': '\',
+  var MacSymbols = { 'CMD': '⌘', 'SHIFT': '⇧', 'OPTION': '⌥', 'CTRL': '⌃', 'BACKSLASH': '\\',
                      'ARROWLEFT': '←', 'ARROWRIGHT': '→', 'ARROWUP': '↑', 'ARROWDOWN': '↓',
                      'RETURN': '↩', 'ENTER': '↩', 'SPACE': '␣', 'TAB': '⇥',
                      'DEL': '⌫', 'BACKSPACE': '⌫', 'ESCAPE': '⎋' };
-  var PcSymbols  = { 'CMD': 'Ctrl', 'SHIFT': '⇧', 'OPTION': 'Alt', 'BACKSLASH': '\',
+  var PcSymbols  = { 'CMD': 'Ctrl', 'SHIFT': '⇧', 'OPTION': 'Alt', 'BACKSLASH': '\\',
                      'ARROWLEFT': '←', 'ARROWRIGHT': '→', 'ARROWUP': '↑', 'ARROWDOWN': '↓',
                      'RETURN': '↵', 'ENTER': '↵', 'SPACE': '␣', 'TAB': '⇥',
                      'DEL': '⌫', 'BACKSPACE': '⌫', 'ESCAPE': 'Esc' };
@@ -8985,8 +9067,16 @@ var KB_POS = {
   edge:    { stage: 'translateY(118px)', panel: 'rotateX(82deg)' },
 };
 
+function _touchModalVisible() {
+  var gyro = document.getElementById('gyroModal');
+  var kb   = document.getElementById('keyboardRecommendModal');
+  return (gyro && gyro.classList.contains('visible')) ||
+         (kb   && kb.classList.contains('visible'));
+}
+
 function setKbPosition(pos) {
   if (pos === _kbPos) return;
+  if (_touchModalVisible()) { _kbPos = pos; _kbFlipped = (pos === 'edge'); return; }
   var prev = _kbPos;
   _kbPos     = pos;
   _kbFlipped = (pos === 'edge');

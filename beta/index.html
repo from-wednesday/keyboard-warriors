@@ -7245,7 +7245,7 @@ function finalizeRunData(completedRun, currentPool, DefeatCount) {
             CalibrateMessageText = 'Your average answer time this round was ' + AverageAnswerTimeDisplay + ' seconds. If you want to challenge yourself, try setting the question timer to ' + NearestStop + ' seconds, and start with five lives.';
           } else if (IsChallenge) {
             // Suggested stop is faster than their average -- aspirational challenge
-            CalibrateMessageText = 'Your average answer time this round was ' + AverageAnswerTimeDisplay + ' seconds. If you want to challenge yourself, try setting the question timer to ' + NearestStop + ' second' + (NearestStop === 1 ? '' : 's') + ', and lives initially to ten.';
+            CalibrateMessageText = 'Your average answer time this round was ' + AverageAnswerTimeDisplay + ' seconds. If you want to challenge yourself, try setting the question timer to ' + NearestStop + ' second' + (NearestStop === 1 ? '' : 's') + ', and lives initially to five.';
           } else {
             // Suggested stop is slower than their average -- natural pace match
             CalibrateMessageText = 'Your average answer time this round was ' + AverageAnswerTimeDisplay + ' seconds. That is close to the ' + NearestStop + '-second question timer setting, which would match your natural pace well.';

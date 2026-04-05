@@ -18,7 +18,7 @@
   (function() {
     var link = document.createElement('link');
     link.rel  = 'stylesheet';
-    link.href = dont.title === 'beta'
+    link.href = document.title === 'beta'
       ? '/keyboard-warriors/styles/beta.css'
       : '/keyboard-warriors/styles/main.css';
     window._StyleSheetLink = link;
@@ -8345,7 +8345,7 @@ function handleKeydown(e) {
     document.getElementById('dbgAnswer').textContent = 'answer: ' + currentAnswer;
     document.getElementById('dbgQuestion').textContent = questionPool[questionIndex]?.display || '';
     document.getElementById('dbgKey').textContent =
-      'key=' + JSON.stringify(e.key) + ' code=' + || event.code === 'Backquote') && cmd && !opt && !sh; +
+      'key=' + JSON.stringify(e.key) + ' code=' + e.code +
       ' cmd=' + (currentOs==='pc'?e.ctrlKey:e.metaKey) +
       ' sh=' + e.shiftKey + ' opt=' + e.altKey;
     const matchResult = matchesShortcut(e, currentAnswer);
@@ -8593,11 +8593,11 @@ function _blurDiagnosticFindQuestion() {
 function _blurDiagnosticBuildSymbolChips(ShortcutToken) {
   // Produces compact symbol-only chips from the shortcut token string,
   // e.g. "CMD+SHIFT+E" → ⌘ + ⇧ + E chips. Falls back gracefully for PC mode.
-  var MacSymbols = { 'CMD': '⌘', 'SHIFT': '⇧', 'OPTION': '⌥', 'CTRL': '⌃',
+  var MacSymbols = { 'CMD': '⌘', 'SHIFT': '⇧', 'OPTION': '⌥', 'CTRL': '⌃', 'BACKSLASH': '\',
                      'ARROWLEFT': '←', 'ARROWRIGHT': '→', 'ARROWUP': '↑', 'ARROWDOWN': '↓',
                      'RETURN': '↩', 'ENTER': '↩', 'SPACE': '␣', 'TAB': '⇥',
                      'DEL': '⌫', 'BACKSPACE': '⌫', 'ESCAPE': '⎋' };
-  var PcSymbols  = { 'CMD': 'Ctrl', 'SHIFT': '⇧', 'OPTION': 'Alt',
+  var PcSymbols  = { 'CMD': 'Ctrl', 'SHIFT': '⇧', 'OPTION': 'Alt', 'BACKSLASH': '\',
                      'ARROWLEFT': '←', 'ARROWRIGHT': '→', 'ARROWUP': '↑', 'ARROWDOWN': '↓',
                      'RETURN': '↵', 'ENTER': '↵', 'SPACE': '␣', 'TAB': '⇥',
                      'DEL': '⌫', 'BACKSPACE': '⌫', 'ESCAPE': 'Esc' };

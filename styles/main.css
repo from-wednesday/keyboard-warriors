@@ -1923,6 +1923,13 @@ li.conflict-dismissed .conflict-desc {
   text-decoration: line-through;
   pointer-events: none;
 }
+
+/* Locked difficulty buttons stay clickable so the unlock toast fires */
+#difficultyPill .diff-btn.diff-btn-inactive,
+#welcomeDifficultyPill .diff-btn.diff-btn-inactive {
+  pointer-events: auto;
+  cursor: pointer;
+}
 .score-pill-inactive svg { stroke: #d1d5db; }
 .sp-clear-label-inactive {
   color: #d1d5db !important;

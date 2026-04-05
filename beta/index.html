@@ -1,5 +1,5 @@
 <!-- ═══════════════════════════════════════════════════
-    BUILD April 2026 
+    BUILD launched April 2026 
      ═══════════════════════════════════════════════════ -->
 <!DOCTYPE html>
 <html>
@@ -9,7 +9,7 @@
 <title>beta</title>
 <script>
   const DefaultTitle = 'Keyboard Warriors';
-  const VersionLabel   = '0013';
+  const VersionLabel   = '0014';
   const TitlePrefix  = document.title !== DefaultTitle ? document.title.trim() + '_' : '';
   const DBG_DEVICE   = TitlePrefix + VersionLabel;
 </script>
@@ -1452,6 +1452,10 @@ function shortcutToCodes(s) {
   // OPTION + bracket (AE layer in/out)
   if (u === 'OPTION+[') return [...OPT, 'BracketLeft'];
   if (u === 'OPTION+]') return [...OPT, 'BracketRight'];
+  if (u.startsWith('OPTION+')) {
+    const key = charToCode(u.slice(7));
+    return [...OPT, key].filter(Boolean);
+  }
 
   // SHIFT + OPTION + key (prefix variant)
   if (u.startsWith('SHIFT+OPTION+')) {
@@ -3196,7 +3200,10 @@ function matchesShortcut(event, str) {
   // ── OPTION + bracket ───────────────────────────────────────────────────────
   if (s === 'OPTION+[') return (k === '[' || codeChar === '[') && opt && nocmd && !sh;
   if (s === 'OPTION+]') return (k === ']' || codeChar === ']') && opt && nocmd && !sh;
-
+  if (s.startsWith('OPTION+') && !s.includes('SHIFT') && !s.includes('CMD') && !s.includes('ARROW')) {
+    const exp = s.slice(7);
+    return opt && nocmd && !sh && keyIs(exp);
+  }
   // ── OPTION + SHIFT + key ───────────────────────────────────────────────────
   if (s.startsWith('OPTION+SHIFT+')) {
     const exp = s.slice(13);
@@ -4448,7 +4455,10 @@ function dbgRefreshCtx() {
   if (!top) return;
   const appEntry = APPS.find(function(a) { return a.key === currentApp; });
   const appName  = appEntry ? appEntry.label : currentApp;
-  const osName   = currentOs === 'pc' ? 'PC/Windows' : 'Mac';
+  const _crossTraining = (detectedOs !== 'mobile' && detectedOs !== 'other' && detectedOs !== currentOs);
+  const osName   = currentOs === 'pc'
+    ? (_crossTraining ? 'PC/Windows (cross-training)' : 'PC/Windows')
+    : (_crossTraining ? 'Mac (cross-training)' : 'Mac');
   const device   = typeof DBG_DEVICE !== 'undefined' ? DBG_DEVICE : 'computer';
   const state    = gameState;
   const pool     = questionPool.length;
@@ -4526,10 +4536,10 @@ function getBrowserConflicts() {
     Chrome:  ['CMD+T','CMD+SHIFT+N'],
   };
   var pc = {
-    Edge:    ['CMD+T','CMD+SHIFT+I','CMD+SHIFT+C','CMD+SHIFT+J','CMD+SHIFT+H','CMD+SHIFT+D','CMD+SHIFT+N'],
-    Firefox: ['CMD+T','CMD+SHIFT+I','CMD+SHIFT+A','CMD+SHIFT+H','CMD+SHIFT+U','CMD+SHIFT+D','CMD+SHIFT+N'],
+    Edge:    ['CMD+T','CMD+SHIFT+N'],
+    Firefox: ['CMD+T','CMD+SHIFT+A','CMD+SHIFT+H','CMD+SHIFT+D','CMD+SHIFT+N'],
     Opera:   ['CMD+T','CMD+SHIFT+I','CMD+SHIFT+J','CMD+SHIFT+D','CMD+SHIFT+N'],
-    Chrome:  ['CMD+T','CMD+SHIFT+I','CMD+SHIFT+J','CMD+SHIFT+C','CMD+SHIFT+N'],
+    Chrome:  ['CMD+T','CMD+SHIFT+N'],
   };
 
   // Human-readable labels — Mac vs PC, browser-specific
@@ -4562,19 +4572,12 @@ function getBrowserConflicts() {
   var pcLabels = {
     Edge: [
       'Ctrl+T \u2014 opens new tab',
-      'Ctrl+Shift+I \u2014 opens DevTools',
-      'Ctrl+Shift+C \u2014 opens DevTools inspector',
-      'Ctrl+Shift+J \u2014 opens DevTools console',
-      'Ctrl+Shift+H \u2014 opens History',
-      'Ctrl+Shift+D \u2014 saves all tabs',
-      'Ctrl+Shift+N \u2014 opens InPrivate window',
+      'Ctrl+Shift+N \u2014 opens Private window',
     ],
     Firefox: [
       'Ctrl+T \u2014 opens new tab',
-      'Ctrl+Shift+I \u2014 opens DevTools',
       'Ctrl+Shift+A \u2014 opens Add-ons',
       'Ctrl+Shift+H \u2014 opens History',
-      'Ctrl+Shift+U \u2014 opens Page Source',
       'Ctrl+Shift+D \u2014 bookmarks page',
       'Ctrl+Shift+N \u2014 opens Private window',
     ],
@@ -4587,10 +4590,6 @@ function getBrowserConflicts() {
     ],
     Chrome: [
       'Ctrl+T \u2014 opens new tab',
-      'Ctrl+T \u2014 opens new tab',
-      'Ctrl+Shift+I \u2014 opens DevTools',
-      'Ctrl+Shift+J \u2014 opens DevTools console',
-      'Ctrl+Shift+C \u2014 opens DevTools inspector',
       'Ctrl+Shift+N \u2014 opens Incognito window',
     ],
   };

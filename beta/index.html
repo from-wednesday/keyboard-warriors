@@ -1262,8 +1262,14 @@ function applyOsMode(os) {
 
 function updateMismatchPill() {
   if (detectedOs === 'mobile') {
-    osMismatchEl.textContent = 'We recommend training with a real mechanical keyboard.';
-    osMismatchEl.classList.add('show');
+    var _pillHasExternalKeyboard = false;
+    try { _pillHasExternalKeyboard = localStorage.getItem('kw_has_keyboard') === '1'; } catch(StorageError) {}
+    if (!_pillHasExternalKeyboard) {
+      osMismatchEl.textContent = 'We recommend training with a real mechanical keyboard.';
+      osMismatchEl.classList.add('show');
+    } else {
+      osMismatchEl.classList.remove('show');
+    }
     return;
   }
   if (detectedOs === 'other') {
@@ -1302,11 +1308,15 @@ function onOsToggle() {
 
 // On mobile: auto-enable sticky + touch modes, show updated message
 if (detectedOs === 'mobile') {
-  setStickyKeys(true);
-  setTouchEnabled(true);
-  document.getElementById('stickyRow').classList.add('disabled');
-  osMismatchEl.textContent = 'We recommend training with a real mechanical keyboard.';
-  osMismatchEl.classList.add('show');
+  var _mobileHasExternalKeyboard = false;
+  try { _mobileHasExternalKeyboard = localStorage.getItem('kw_has_keyboard') === '1'; } catch(StorageError) {}
+  if (!_mobileHasExternalKeyboard) {
+    setStickyKeys(true);
+    setTouchEnabled(true);
+    document.getElementById('stickyRow').classList.add('disabled');
+    osMismatchEl.textContent = 'We recommend training with a real mechanical keyboard.';
+    osMismatchEl.classList.add('show');
+  }
 }
 
 // Set the initial toggle position to match the detected OS
@@ -1911,6 +1921,7 @@ let readyPromptTimer              = null;
 var _panelTipInTitle      = false;
 var _panelTipSavedText    = '';
 var _panelTipSavedBlurred = false;
+var _overridePanelTip     = null;  // set before openSettings to force a specific heading
 let bestRecord    = { time: null, accuracy: null };  // independent bests
 let hasTrophy = false;           // never cleared, gates Hardcore and trophy
 let greenHits       = 0;
@@ -2458,7 +2469,8 @@ function enterPause(instantBlur) {
       questionCountEl.classList.remove('blur-instant');
     });
   }
-  titleEl.classList.add('blurred');
+  // Do not blur the title if a panel tip is currently showing there.
+  if (!_panelTipInTitle) titleEl.classList.add('blurred');
   questionCountEl.classList.add('blurred');
   document.getElementById('livesRow').classList.add('blurred');
   titleEl.classList.remove('strike','hidden');
@@ -3856,11 +3868,20 @@ var _PANEL_TIPS = {
 };
 
 function _showPanelTip(page) {
-  var poolFn = _PANEL_TIPS[page];
-  if (!poolFn) return;
-  var pool = poolFn();
-  if (!pool.length) return;
-  var tip = pool[Math.floor(Math.random() * pool.length)];
+  // Trophy sequence writes its own title message — do not overwrite it.
+  if (_trophySequenceActive) return;
+  var tip;
+  // A forced tip overrides the random pool (used by the coach suggestion flow).
+  if (_overridePanelTip !== null) {
+    tip = _overridePanelTip;
+    _overridePanelTip = null;
+  } else {
+    var poolFn = _PANEL_TIPS[page];
+    if (!poolFn) return;
+    var pool = poolFn();
+    if (!pool.length) return;
+    tip = pool[Math.floor(Math.random() * pool.length)];
+  }
   // Save the original title state only the first time a tip is shown.
   // On subsequent panel switches the tip is simply replaced in place,
   // leaving the saved state intact so _clearPanelTip can restore correctly.
@@ -4065,6 +4086,7 @@ function _closeAllModals() {
 function _closeAllModalsInstant() {
   if (activeSettings === null) return;
   activeSettings = null;
+  _panelTipInTitle = false;  // clear any tip that was live in the title
   _exitScoreClearConfirm();
   _exitDiffConfirm();
   _exitQuitConfirm();
@@ -5664,6 +5686,7 @@ function confirmStartOverYes() {
       try { localStorage.removeItem('kw_lives'); }        catch(e) {}
       try { localStorage.removeItem('kw_coach_memory'); } catch(e) {}
       try { localStorage.removeItem('kw_dismissed_conflicts'); } catch(e) {}
+      try { localStorage.removeItem('kw_has_keyboard'); }        catch(e) {}
       try { sessionStorage.removeItem('kw_welcomed'); }   catch(e) {}
       bestRecord = { time: null, accuracy: null };
       hasTrophy = false;
@@ -8036,7 +8059,9 @@ function _refreshReportPanel() {
 function _applyCoachSuggestionsWithAnimation(SuggestionsArray) {
   if (!SuggestionsArray || SuggestionsArray.length === 0) return;
 
-  // Open the difficulty panel -- the animation plays inside it
+  // Open the difficulty panel -- the animation plays inside it.
+  // Override the heading so the user knows what is happening.
+  _overridePanelTip = 'Applying suggested settings.';
   openSettings('panelDifficulty');
 
   // Wait for the panel to fully open before starting (keyboard flip + panel fade-in)
@@ -9326,6 +9351,7 @@ function HideKeyboardRecommendModal() {
 
 function onKeyboardRecommendHaveOne() {
   HideKeyboardRecommendModal();
+  try { localStorage.setItem('kw_has_keyboard', '1'); } catch(StorageError) {}
   // Physical keyboard connected: behave like desktop mode
   setTouchEnabled(false);
   setStickyKeys(false);

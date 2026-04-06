@@ -9,7 +9,7 @@
 <title>Keyboard Warriors</title>
 <script>
   const DefaultTitle = 'Keyboard Warriors';
-  const VersionLabel   = '0015';
+  const VersionLabel   = '0016';
   const TitlePrefix  = document.title !== DefaultTitle ? document.title.trim() + '_' : '';
   const DBG_DEVICE   = TitlePrefix + VersionLabel;
 </script>
@@ -1260,10 +1260,49 @@ function applyOsMode(os) {
   }
 }
 
+// Session-level flag: once the "recommend a keyboard" pill has been visible
+// for a cumulative 60 seconds, it is permanently hidden for this session.
+var _pillDismissedThisSession = false;
+var _pillAutoHideTimer        = null;
+
+function _startPillAutoHideTimer() {
+  if (_pillDismissedThisSession || _pillAutoHideTimer) return;
+  _pillAutoHideTimer = setTimeout(function() {
+    _pillDismissedThisSession = true;
+    _pillAutoHideTimer = null;
+    osMismatchEl.classList.remove('show', 'clickable');
+  }, 60000);
+}
+
+function _cancelPillAutoHideTimer() {
+  if (_pillAutoHideTimer) { clearTimeout(_pillAutoHideTimer); _pillAutoHideTimer = null; }
+}
+
+function _setHasKeyboard() {
+  // Mark that a physical keyboard is present, suppress the mismatch pill,
+  // and persist the flag. Safe to call multiple times — exits early if
+  // already set so there is no redundant localStorage write.
+  _cancelPillAutoHideTimer();
+  _pillDismissedThisSession = true;
+  var already = false;
+  try { already = localStorage.getItem('kw_has_keyboard') === '1'; } catch(e) {}
+  if (already) return;
+  try { localStorage.setItem('kw_has_keyboard', '1'); } catch(e) {}
+  osMismatchEl.classList.remove('show', 'clickable');
+}
+
 function updateMismatchPill() {
   if (detectedOs === 'mobile') {
-    osMismatchEl.textContent = 'We recommend training with a real mechanical keyboard.';
-    osMismatchEl.classList.add('show');
+    var _pillHasExternalKeyboard = false;
+    try { _pillHasExternalKeyboard = localStorage.getItem('kw_has_keyboard') === '1'; } catch(StorageError) {}
+    if (!_pillHasExternalKeyboard && !_pillDismissedThisSession) {
+      osMismatchEl.textContent = 'We recommend training with a real mechanical keyboard.';
+      osMismatchEl.classList.add('show');
+      _startPillAutoHideTimer();
+    } else {
+      _cancelPillAutoHideTimer();
+      osMismatchEl.classList.remove('show');
+    }
     return;
   }
   if (detectedOs === 'other') {
@@ -1302,11 +1341,18 @@ function onOsToggle() {
 
 // On mobile: auto-enable sticky + touch modes, show updated message
 if (detectedOs === 'mobile') {
-  setStickyKeys(true);
-  setTouchEnabled(true);
-  document.getElementById('stickyRow').classList.add('disabled');
-  osMismatchEl.textContent = 'We recommend training with a real mechanical keyboard.';
-  osMismatchEl.classList.add('show');
+  var _mobileHasExternalKeyboard = false;
+  try { _mobileHasExternalKeyboard = localStorage.getItem('kw_has_keyboard') === '1'; } catch(StorageError) {}
+  if (!_mobileHasExternalKeyboard) {
+    setStickyKeys(true);
+    setTouchEnabled(true);
+    document.getElementById('stickyRow').classList.add('disabled');
+    if (!_pillDismissedThisSession) {
+      osMismatchEl.textContent = 'We recommend training with a real mechanical keyboard.';
+      osMismatchEl.classList.add('show');
+      _startPillAutoHideTimer();
+    }
+  }
 }
 
 // Set the initial toggle position to match the detected OS
@@ -1908,6 +1954,10 @@ let endScreenInactivityTimer      = null;
 let readyToUnpauseInactivityTimer = null;
 let pauseInactivityTimer          = null;
 let readyPromptTimer              = null;
+var _panelTipInTitle      = false;
+var _panelTipSavedText    = '';
+var _panelTipSavedBlurred = false;
+var _overridePanelTip     = null;  // set before openSettings to force a specific heading
 let bestRecord    = { time: null, accuracy: null };  // independent bests
 let hasTrophy = false;           // never cleared, gates Hardcore and trophy
 let greenHits       = 0;
@@ -2402,6 +2452,9 @@ function _clearReadyPromptFromTitle() {
   if (titleEl.textContent === 'Ready?') {
     titleEl.textContent = _readyPromptSavedText;
     if (_readyPromptSavedBlurred) titleEl.classList.add('blurred');
+    titleEl.classList.remove('title-wipe-in');
+    void titleEl.offsetWidth;
+    titleEl.classList.add('title-wipe-in');
   }
 }
 
@@ -2415,6 +2468,9 @@ function _startReadyPromptTimer() {
     _readyPromptSavedBlurred = titleEl.classList.contains('blurred');
     titleEl.classList.remove('blurred');
     titleEl.textContent = 'Ready?';
+    titleEl.classList.remove('title-wipe-in');
+    void titleEl.offsetWidth;
+    titleEl.classList.add('title-wipe-in');
     _readyPromptInTitle = true;
     readyPromptTimer = null;
   }, 20000);
@@ -2449,7 +2505,8 @@ function enterPause(instantBlur) {
       questionCountEl.classList.remove('blur-instant');
     });
   }
-  titleEl.classList.add('blurred');
+  // Do not blur the title if a panel tip is currently showing there.
+  if (!_panelTipInTitle) titleEl.classList.add('blurred');
   questionCountEl.classList.add('blurred');
   document.getElementById('livesRow').classList.add('blurred');
   titleEl.classList.remove('strike','hidden');
@@ -3568,11 +3625,10 @@ function onTouchToggle() {
     document.getElementById('stickyRow').classList.add('disabled');
     showModeToast('On-Screen Keyboard Active');
   } else {
+    _setHasKeyboard();
     setStickyKeys(false);
     document.getElementById('stickyRow').classList.remove('disabled');
     showModeToast('On-Screen Keyboard = Display Only');
-    // If the keyboard recommendation pill was showing, clear it now
-    // because the user has indicated they have a physical keyboard.
     osMismatchEl.classList.remove('show', 'clickable');
   }
 }
@@ -3847,30 +3903,50 @@ var _PANEL_TIPS = {
 };
 
 function _showPanelTip(page) {
-  // Only show for the four panels with tip pools; others manage their own heading
-  var poolFn = _PANEL_TIPS[page];
-  if (!poolFn) return;
-  var pool = poolFn();
-  if (!pool.length) return;
-  var tip = pool[Math.floor(Math.random() * pool.length)];
-  // Use showConfirmHeading with blurTitle=false and showBracket=false
-  // so it displays ambient text without triggering confirm styling
-  var el = document.getElementById('confirmHeading');
-  if (!el) return;
-  el.textContent = tip;
-  el.style.display = 'block';
-  // Do NOT blur the title or show the bracket — this is ambient, not actionable
+  // Trophy sequence writes its own title message — do not overwrite it.
+  if (_trophySequenceActive) return;
+  var tip;
+  // A forced tip overrides the random pool (used by the coach suggestion flow).
+  if (_overridePanelTip !== null) {
+    tip = _overridePanelTip;
+    _overridePanelTip = null;
+  } else {
+    var poolFn = _PANEL_TIPS[page];
+    if (!poolFn) return;
+    var pool = poolFn();
+    if (!pool.length) return;
+    tip = pool[Math.floor(Math.random() * pool.length)];
+  }
+  // Save the original title state only the first time a tip is shown.
+  // On subsequent panel switches the tip is simply replaced in place,
+  // leaving the saved state intact so _clearPanelTip can restore correctly.
+  if (!_panelTipInTitle) {
+    _panelTipSavedText    = titleEl.textContent;
+    _panelTipSavedBlurred = titleEl.classList.contains('blurred');
+    _panelTipInTitle = true;
+  }
+  titleEl.classList.remove('blurred');
+  titleEl.textContent = tip;
+  titleEl.classList.remove('title-wipe-in');
+  void titleEl.offsetWidth;
+  titleEl.classList.add('title-wipe-in');
 }
 
 function _clearPanelTip() {
-  // Only clears if no real confirm heading is active
-  // (real confirm headings are always set via showConfirmHeading with blurTitle=true)
   var confirmStatesActive = [
     'confirm-reset', 'confirm-quit', 'confirm-trophy',
     'confirm-diff-change', 'confirm-kill-punctuation', 'confirm-start-over'
   ].indexOf(gameState) !== -1;
   if (confirmStatesActive) return;
-  hideConfirmHeading();
+  if (!_panelTipInTitle) return;
+  _panelTipInTitle = false;
+  titleEl.textContent = _panelTipSavedText;
+  if (_panelTipSavedBlurred) titleEl.classList.add('blurred');
+  titleEl.classList.remove('title-wipe-in');
+  void titleEl.offsetWidth;
+  titleEl.classList.add('title-wipe-in');
+  _panelTipSavedText    = '';
+  _panelTipSavedBlurred = false;
 }
 
 function openSettings(page) {
@@ -3883,6 +3959,17 @@ function openSettings(page) {
   var wasOpen  = activeSettings !== null;
   var prevPage = activeSettings;
   activeSettings = page;
+
+  // If navigating away from the cheat sheet without going through
+  // closeSettings, clear the tagline it set so it doesn't bleed into
+  // the destination panel.
+  if (prevPage === 'panelPadlock' && page !== 'panelPadlock') {
+    var _csTagline = document.getElementById('welcomeTagline');
+    if (_csTagline) {
+      _csTagline.style.display = 'none';
+      _csTagline.innerHTML = '<em>Your keyboard shortcuts coach &amp; personal trainer.</em>';
+    }
+  }
 
   // Update kbPos — partial for most panels; edge for browser and pause
   var pos = (page === 'panelBrowser' || page === 'panelPause' || page === 'panelPadlock' || page === 'panelDifficulty' || page === 'panelReport') ? 'edge' : 'partial';
@@ -4045,6 +4132,7 @@ function _closeAllModals() {
 function _closeAllModalsInstant() {
   if (activeSettings === null) return;
   activeSettings = null;
+  _panelTipInTitle = false;  // clear any tip that was live in the title
   _exitScoreClearConfirm();
   _exitDiffConfirm();
   _exitQuitConfirm();
@@ -5644,6 +5732,7 @@ function confirmStartOverYes() {
       try { localStorage.removeItem('kw_lives'); }        catch(e) {}
       try { localStorage.removeItem('kw_coach_memory'); } catch(e) {}
       try { localStorage.removeItem('kw_dismissed_conflicts'); } catch(e) {}
+      try { localStorage.removeItem('kw_has_keyboard'); }        catch(e) {}
       try { sessionStorage.removeItem('kw_welcomed'); }   catch(e) {}
       bestRecord = { time: null, accuracy: null };
       hasTrophy = false;
@@ -6526,6 +6615,7 @@ function startGame() {
   endScreenInactivityTimer = null;
   totalTime = 0;
   transitioning = false;
+  CoachAdviceAccepted = false;
   const adaptivePool = getAdaptiveNextRoundPool();
 questionPool = adaptivePool || shuffleArray(buildPool());  if (currentApp === 'Ae' && !hasFullKeyboard) {
     showToast('After Effects uses many extended keyboard shortcuts. Switch to Full Keyboard for the best experience.');
@@ -8016,7 +8106,9 @@ function _refreshReportPanel() {
 function _applyCoachSuggestionsWithAnimation(SuggestionsArray) {
   if (!SuggestionsArray || SuggestionsArray.length === 0) return;
 
-  // Open the difficulty panel -- the animation plays inside it
+  // Open the difficulty panel -- the animation plays inside it.
+  // Override the heading so the user knows what is happening.
+  _overridePanelTip = 'Applying suggested settings.';
   openSettings('panelDifficulty');
 
   // Wait for the panel to fully open before starting (keyboard flip + panel fade-in)
@@ -8422,6 +8514,13 @@ function showTip(index) {
 }
 
 function handleKeydown(e) {
+  // FIX 1d: detect a physical keyboard on mobile via isTrusted.
+  // Real browser KeyboardEvents are trusted; the synthetic ones fired by
+  // handleKeyTouch() are not. First trusted keypress permanently flags
+  // that a physical keyboard is present and suppresses the mismatch pill.
+  if (detectedOs === 'mobile' && e.isTrusted) {
+    _setHasKeyboard();
+  }
   updateKeyboardLighting(e, true);
   // DEBUG
   const dbg = document.getElementById('debugOverlay');
@@ -8473,6 +8572,28 @@ function handleKeydown(e) {
   }
   if (gameState === 'idle') {
     if (e.key === 'Enter') { e.preventDefault(); _closeAllModals(); beginCountdown(); return; }
+  }
+  // Enter from the welcome / returning screens: delegate to mainButtonClick
+  // which already handles both cases correctly.
+  if (gameState === 'welcome') {
+    if (e.key === 'Enter') { e.preventDefault(); mainButtonClick(); return; }
+  }
+  // Enter while paused (and not in a confirm overlay) resumes the game.
+  if (gameState === 'paused' && activeSettings !== 'panelPadlock') {
+    if (e.key === 'Enter') {
+      e.preventDefault();
+      _closeAllModals();
+      beginResumeCountdown();
+      return;
+    }
+  }
+  if (gameState === 'readyToUnpause') {
+    if (e.key === 'Enter') {
+      e.preventDefault();
+      _enterReadyToUnpauseCleanup();
+      beginResumeCountdown();
+      return;
+    }
   }
   // Cheat sheet lighting when paused
   if (activeSettings === 'panelPadlock' && questionPool.length > 0) {
@@ -8589,7 +8710,7 @@ window.addEventListener('blur', function() {
         _activateBlurPauseScreen();
       });
     });
-  } else if (gameState === 'paused' && _blurPauseActive && _blurDiagnosticAnswerRevealed) {
+  } else if (!touchEnabled && gameState === 'paused' && _blurPauseActive && _blurDiagnosticAnswerRevealed) {
     _blurDiagnosticSecondBlur();
   }
 });
@@ -8636,7 +8757,11 @@ function _blurDiagnosticKeydownHandler(e) {
   // Flow resolved: player successfully pressed the shortcut. Block further blur diversions.
   _blurDiagnosticFlowComplete = true;
 
-  // Light dot green
+  // Clear any floating confirm heading before writing to the title area
+  hideConfirmHeading();
+  titleEl.classList.remove('blurred');
+  titleEl.className = '';
+  titleEl.textContent = "Let's keep training.";
   var DotEl = document.getElementById('blurDiagnosticDot');
   if (DotEl) { DotEl.style.background = '#10b981'; DotEl.style.transition = 'background 0.3s ease'; }
 
@@ -8657,9 +8782,6 @@ function _blurDiagnosticKeydownHandler(e) {
 
   // Replace question (no penalty, excluded from report card)
   _blurDiagnosticReplaceQuestion();
-
-  titleEl.className = '';
-  titleEl.textContent = "Let's keep training.";
 
   var RightTextEl = document.getElementById('blurDiagnosticRightText');
   if (RightTextEl) {
@@ -8726,10 +8848,21 @@ function _activateBlurPauseScreen() {
   // The guard is cleared when the player unpauses or resets to idle.
   if (_blurDiagnosticFlowComplete) return;
 
+  // Touch mode has no physical keyboard, so conflict diagnosis is meaningless.
+  // Show a simple neutral pause message and return.
+  if (touchEnabled) {
+    hideConfirmHeading();
+    titleEl.classList.remove('blurred');
+    titleEl.className = '';
+    titleEl.textContent = 'You went away for a bit,\nso we paused your game.';
+    return;
+  }
+
   _blurDiagnosticAnswerRevealed = false;
   _blurDiagnosticShortcutToken = currentAnswer;
 
-  // Title: stage 1
+  // Title: stage 1 — clear any floating confirm heading first
+  hideConfirmHeading();
   titleEl.classList.remove('blurred');
   titleEl.className = '';
   titleEl.textContent = 'You went away for a bit,\nso we paused your game.';
@@ -8801,7 +8934,9 @@ function _deactivateBlurPauseScreen() {
   var Question = _blurDiagnosticFindQuestion();
   if (!Question) return;
 
-  // Title: stage 2
+  // Title: stage 2 — clear any floating confirm heading first
+  hideConfirmHeading();
+  titleEl.classList.remove('blurred');
   titleEl.className = '';
   titleEl.textContent = 'Check if the shortcut is causing a problem.';
 
@@ -8875,6 +9010,8 @@ function _blurDiagnosticBlockAndReport() {
 }
 
 function _blurDiagnosticShowBlockedConfirmation() {
+  hideConfirmHeading();
+  titleEl.classList.remove('blurred');
   titleEl.className = '';
   titleEl.textContent = 'Do you want to block this?';
   var RightTextEl = document.getElementById('blurDiagnosticRightText');
@@ -8896,7 +9033,9 @@ function _blurDiagnosticSecondBlur() {
   // Block further blur diversions for the rest of this session.
   _blurDiagnosticFlowComplete = true;
 
-  // Title: stage 3
+  // Title: stage 3 — clear any floating confirm heading first
+  hideConfirmHeading();
+  titleEl.classList.remove('blurred');
   titleEl.className = '';
   titleEl.textContent = 'Do you want to block this?';
 
@@ -9288,6 +9427,7 @@ function HideKeyboardRecommendModal() {
 
 function onKeyboardRecommendHaveOne() {
   HideKeyboardRecommendModal();
+  _setHasKeyboard();
   // Physical keyboard connected: behave like desktop mode
   setTouchEnabled(false);
   setStickyKeys(false);

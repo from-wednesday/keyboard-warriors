@@ -9,7 +9,7 @@
 <title>beta</title>
 <script>
   const DefaultTitle = 'Keyboard Warriors';
-  const VersionLabel   = '0017';
+  const VersionLabel   = '0018';
   const TitlePrefix  = document.title !== DefaultTitle ? document.title.trim() + '_' : '';
   const DBG_DEVICE   = TitlePrefix + VersionLabel;
 </script>
@@ -2377,6 +2377,7 @@ function clearHelp() {
    PAUSE / EASTER EGG
 ══════════════════════════════════════ */
 function openPadlockPanel() {
+  if (gameState === 'counting') return;
   // If the padlock panel is already open, close it.
   if (activeSettings === 'panelPadlock') { closeSettings(); return; }
   // Save title text then show cheat sheet heading in the game div

@@ -3855,22 +3855,8 @@ var _PANEL_TIPS = {
   },
 };
 
-function _showPanelTip(page) {
-  var poolFn = _PANEL_TIPS[page];
-  if (!poolFn) return;
-  var pool = poolFn();
-  if (!pool.length) return;
-  var tip = pool[Math.floor(Math.random() * pool.length)];
-  if (_panelTipInTitle) return;
+var tip = pool[Math.floor(Math.random() * pool.length)];
   _panelTipSavedText    = titleEl.textContent;
-  _panelTipSavedBlurred = titleEl.classList.contains('blurred');
-  _panelTipInTitle = true;
-  titleEl.classList.remove('blurred');
-  titleEl.textContent = tip;
-  titleEl.classList.remove('title-wipe-in');
-  void titleEl.offsetWidth;
-  titleEl.classList.add('title-wipe-in');
-}
 
 function _clearPanelTip() {
   var confirmStatesActive = [

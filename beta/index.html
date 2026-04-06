@@ -7896,7 +7896,8 @@ function HighlightCheatSheetItems(ShortcutToken) {
   AllItems.forEach(function(ListItem) {
     if ((ListItem.dataset.shortcutToken || '').toUpperCase() !== ShortcutToken.toUpperCase()) return;
 
-    // Light up chips directly via inline style (bypasses any CSS specificity issues)
+    var IsInLeftColumn = !!ListItem.closest('#cheatSheetList');
+
     var Chips = ListItem.querySelectorAll('.sp-report-chip-key');
     Chips.forEach(function(Chip) {
       Chip.style.background    = '#10b981';
@@ -7911,9 +7912,10 @@ function HighlightCheatSheetItems(ShortcutToken) {
       }, 1400);
     });
 
-    // Turn dot green directly via inline style
-    var Dot = ListItem.querySelector('.sp-report-dot');
-    if (Dot) Dot.style.background = '#10b981';
+    if (!IsInLeftColumn) {
+      var Dot = ListItem.querySelector('.sp-report-dot');
+      if (Dot) Dot.style.background = '#10b981';
+    }
   });
 }
 

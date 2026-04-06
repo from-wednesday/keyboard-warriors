@@ -6569,6 +6569,7 @@ function startGame() {
   endScreenInactivityTimer = null;
   totalTime = 0;
   transitioning = false;
+  CoachAdviceAccepted = false;
   const adaptivePool = getAdaptiveNextRoundPool();
 questionPool = adaptivePool || shuffleArray(buildPool());  if (currentApp === 'Ae' && !hasFullKeyboard) {
     showToast('After Effects uses many extended keyboard shortcuts. Switch to Full Keyboard for the best experience.');
@@ -8518,6 +8519,28 @@ function handleKeydown(e) {
   }
   if (gameState === 'idle') {
     if (e.key === 'Enter') { e.preventDefault(); _closeAllModals(); beginCountdown(); return; }
+  }
+  // Enter from the welcome / returning screens: delegate to mainButtonClick
+  // which already handles both cases correctly.
+  if (gameState === 'welcome') {
+    if (e.key === 'Enter') { e.preventDefault(); mainButtonClick(); return; }
+  }
+  // Enter while paused (and not in a confirm overlay) resumes the game.
+  if (gameState === 'paused' && activeSettings !== 'panelPadlock') {
+    if (e.key === 'Enter') {
+      e.preventDefault();
+      _closeAllModals();
+      beginResumeCountdown();
+      return;
+    }
+  }
+  if (gameState === 'readyToUnpause') {
+    if (e.key === 'Enter') {
+      e.preventDefault();
+      _enterReadyToUnpauseCleanup();
+      beginResumeCountdown();
+      return;
+    }
   }
   // Cheat sheet lighting when paused
   if (activeSettings === 'panelPadlock' && questionPool.length > 0) {

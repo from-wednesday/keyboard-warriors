@@ -7777,41 +7777,40 @@ function _refreshCheatSheet() {
   // Build a map of shortcut token → dot colour based on runData outcomes.
   // This is computed fresh each time the panel opens and does not persist.
   var AnsweredOutcomeColourMap = {};
-  runData.forEach(function(Entry) {
-    var Question = questionPool[Entry.questionIndex];
-    if (!Question) return;
-    var Token = Question.shortcut;
+  runData.forEach(function(OutcomeEntry) {
+    var OutcomeQ = questionPool[OutcomeEntry.questionIndex];
+    if (!OutcomeQ) return;
+    var OutcomeToken = OutcomeQ.shortcut;
     var Colour;
-    if (Entry.endType === 'success' && Entry.wrongKeyCount === 0 && Entry.hintUsedAtMs === null) {
+    if (OutcomeEntry.endType === 'success' && OutcomeEntry.wrongKeyCount === 0 && OutcomeEntry.hintUsedAtMs === null) {
       Colour = '#10b981'; // green: clean success
-    } else if (Entry.endType === 'success') {
+    } else if (OutcomeEntry.endType === 'success') {
       Colour = '#f5c842'; // yellow: success but wrong keys or hint used
     } else {
       Colour = '#ef4444'; // red: skip or timeout
     }
-    // If a token appears multiple times, the most recent entry wins (runData is in order)
-    AnsweredOutcomeColourMap[Token] = Colour;
+    AnsweredOutcomeColourMap[OutcomeToken] = Colour;
   });
 
 var AnsweredTimingMap = {};
-  runData.forEach(function(Entry) {
-    var Question = questionPool[Entry.questionIndex];
-    if (!Question) return;
-    var Token = Question.shortcut;
+  runData.forEach(function(TimingEntry) {
+    var TimingQ = questionPool[TimingEntry.questionIndex];
+    if (!TimingQ) return;
+    var TimingToken = TimingQ.shortcut;
     var TimeDisplay;
     var TimeIsStrikethrough = false;
-    if (Entry.endType === 'skip') {
+    if (TimingEntry.endType === 'skip') {
       TimeDisplay = 'skip';
-    } else if (Entry.endType === 'timeout') {
+    } else if (TimingEntry.endType === 'timeout') {
       var TimerVal = questionTimer;
       TimeDisplay = TimerVal !== null ? String(TimerVal) + 's' : null;
       TimeIsStrikethrough = true;
-    } else if (Entry.timeToAnswerMs !== null) {
-      TimeDisplay = (Entry.timeToAnswerMs / 1000).toFixed(1) + 's';
+    } else if (TimingEntry.timeToAnswerMs !== null) {
+      TimeDisplay = (TimingEntry.timeToAnswerMs / 1000).toFixed(1) + 's';
     } else {
       TimeDisplay = null;
     }
-    AnsweredTimingMap[Token] = { text: TimeDisplay, strikethrough: TimeIsStrikethrough };
+    AnsweredTimingMap[TimingToken] = { text: TimeDisplay, strikethrough: TimeIsStrikethrough };
   });
   
 
@@ -7873,12 +7872,11 @@ var dot = document.createElement('span');
       label.textContent = (Question.display || '').replace(/\\\\/g, '\\');
 
       li.appendChild(dot);
-      var TimingEntry = AnsweredTimingMap[Question.shortcut] || null;
-      if (TimingEntry && TimingEntry.text) {
+      var TimeDisplay = AnsweredTimingMap[Question.shortcut] || null;
+      if (TimeDisplay) {
         var TimeElement = document.createElement('small');
-        TimeElement.textContent = TimingEntry.text;
-        var strikeStyle = TimingEntry.strikethrough ? 'text-decoration:line-through;' : '';
-        TimeElement.style.cssText = 'color:#9ca3af;flex-shrink:0;margin-right:4px;margin-top:2px;line-height:1.5;white-space:nowrap;' + strikeStyle;
+        TimeElement.textContent = TimeDisplay;
+        TimeElement.style.cssText = 'color:#9ca3af;flex-shrink:0;margin-right:4px;margin-top:2px;line-height:1.5;white-space:nowrap;';
         li.appendChild(TimeElement);
       }
 

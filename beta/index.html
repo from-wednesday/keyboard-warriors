@@ -4748,10 +4748,9 @@ function getBrowserConflicts() {
   if (detectedOs === 'mobile') {
     return {
       name:   'Safari on iOS/iPadOS',
-      keys:   ['CMD+T', 'CMD+SHIFT+H', 'CMD+SHIFT+N', 'CMD+1'],
+      keys:   ['CMD+T', 'CMD+SHIFT+N', 'CMD+1'],
       labels: [
         'Cmd+T \u2014 opens a new tab',
-        'Cmd+Shift+H \u2014 opens Bookmarks / History',
         'Cmd+Shift+N \u2014 opens a Private tab',
         'Cmd+1 \u2014 switches to the first tab',
       ],
@@ -6852,40 +6851,40 @@ function endGameMessage(time, accuracy, record, wasFirst) {
       "So close. You've shown you can do better.",
       'Right on the edge of a personal best.',
       'Nearly there. Keep the pressure on.',
-      'That was competitive./nGive it one more push.',
+      'That was competitive. Give it one more push.',
     ]);
   }
   if (accuracy > (record.accuracy ?? 0)) {
     return _pickEndGameFallback([
-      'Your Accuracy is improving./nKeep up the pace.',
-      'More accurate than last time./nThat shows progress.',
+      'Your Accuracy is improving. Keep up the pace.',
+      'More accurate than last time. That shows progress.',
       'Awesome. Your accuracy is trending up.',
     ]);
   }
   if (!hasTrophy && time < record.time + 15) {
     return _pickEndGameFallback([
       "Try again. You're almost there.",
-      'Close to your best./nAnother run might get you there.',
+      'Close to your best. Another run might get you there.',
     ]);
   }
   return _pickEndGameFallback([
     "'Failure' is just practice in disguise.",
     'Everyone starts as a beginner.',    
-    'Practice now,/nbrag at parties later.',
+    'Practice now, brag at parties later.',
     'One step closer to being a total wizard.',    
     'Leveling up looks good on you. Keep at it!',
     "Don't stop until you’re the one giving tips.",    
     'Mastering this is your destiny. No big deal.',
     'Never dig straight down.',
-    'Keep practising./nEvery rep counts.',
+    'Keep practising. Every rep counts.',
     'Sucking is the first step to being sorta good.',
-    'Practice several times per week./nGains are cumulative.',
+    'Practice several times per week. Gains are cumulative.',
     "Progress is happening even if it doesn't always feel like it.",
     'Repetition is how shortcuts become reflexes.',
     'Showing up is most of the battle. Well done.',
-    'Each round is training your hands,/nnot just your memory.',
+    'Each round is training your hands, not just your memory.',
     'The shortcut you hesitated on today will be automatic soon.',
-    'Consistent practice compounds./nKeep going.',
+    'Consistent practice compounds. Keep going.',
     'Push your current ability with harder difficulty settings.',
   ]);
 }

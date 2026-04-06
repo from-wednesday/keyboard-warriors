@@ -3067,3 +3067,10 @@ body.returning-screen #diffIconWrap .icon-tip { display: none; }
   color: white;
 }
 .touch-modal-btn-secondary:active { background: #9ca3af; }
+@keyframes TitleWipeIn {
+  from { clip-path: inset(0 100% 0 0); opacity: 0.4; }
+  to   { clip-path: inset(0 0% 0 0);   opacity: 1; }
+}
+.title-wipe-in {
+  animation: TitleWipeIn 0.4s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+}

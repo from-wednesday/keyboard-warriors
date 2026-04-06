@@ -1260,10 +1260,30 @@ function applyOsMode(os) {
   }
 }
 
+// Session-level flag: once the "recommend a keyboard" pill has been visible
+// for a cumulative 60 seconds, it is permanently hidden for this session.
+var _pillDismissedThisSession = false;
+var _pillAutoHideTimer        = null;
+
+function _startPillAutoHideTimer() {
+  if (_pillDismissedThisSession || _pillAutoHideTimer) return;
+  _pillAutoHideTimer = setTimeout(function() {
+    _pillDismissedThisSession = true;
+    _pillAutoHideTimer = null;
+    osMismatchEl.classList.remove('show', 'clickable');
+  }, 60000);
+}
+
+function _cancelPillAutoHideTimer() {
+  if (_pillAutoHideTimer) { clearTimeout(_pillAutoHideTimer); _pillAutoHideTimer = null; }
+}
+
 function _setHasKeyboard() {
   // Mark that a physical keyboard is present, suppress the mismatch pill,
   // and persist the flag. Safe to call multiple times — exits early if
   // already set so there is no redundant localStorage write.
+  _cancelPillAutoHideTimer();
+  _pillDismissedThisSession = true;
   var already = false;
   try { already = localStorage.getItem('kw_has_keyboard') === '1'; } catch(e) {}
   if (already) return;
@@ -1275,10 +1295,12 @@ function updateMismatchPill() {
   if (detectedOs === 'mobile') {
     var _pillHasExternalKeyboard = false;
     try { _pillHasExternalKeyboard = localStorage.getItem('kw_has_keyboard') === '1'; } catch(StorageError) {}
-    if (!_pillHasExternalKeyboard) {
+    if (!_pillHasExternalKeyboard && !_pillDismissedThisSession) {
       osMismatchEl.textContent = 'We recommend training with a real mechanical keyboard.';
       osMismatchEl.classList.add('show');
+      _startPillAutoHideTimer();
     } else {
+      _cancelPillAutoHideTimer();
       osMismatchEl.classList.remove('show');
     }
     return;
@@ -1325,8 +1347,11 @@ if (detectedOs === 'mobile') {
     setStickyKeys(true);
     setTouchEnabled(true);
     document.getElementById('stickyRow').classList.add('disabled');
-    osMismatchEl.textContent = 'We recommend training with a real mechanical keyboard.';
-    osMismatchEl.classList.add('show');
+    if (!_pillDismissedThisSession) {
+      osMismatchEl.textContent = 'We recommend training with a real mechanical keyboard.';
+      osMismatchEl.classList.add('show');
+      _startPillAutoHideTimer();
+    }
   }
 }
 
@@ -3934,6 +3959,17 @@ function openSettings(page) {
   var wasOpen  = activeSettings !== null;
   var prevPage = activeSettings;
   activeSettings = page;
+
+  // If navigating away from the cheat sheet without going through
+  // closeSettings, clear the tagline it set so it doesn't bleed into
+  // the destination panel.
+  if (prevPage === 'panelPadlock' && page !== 'panelPadlock') {
+    var _csTagline = document.getElementById('welcomeTagline');
+    if (_csTagline) {
+      _csTagline.style.display = 'none';
+      _csTagline.innerHTML = '<em>Your keyboard shortcuts coach &amp; personal trainer.</em>';
+    }
+  }
 
   // Update kbPos — partial for most panels; edge for browser and pause
   var pos = (page === 'panelBrowser' || page === 'panelPause' || page === 'panelPadlock' || page === 'panelDifficulty' || page === 'panelReport') ? 'edge' : 'partial';

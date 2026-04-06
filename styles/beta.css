@@ -3074,3 +3074,29 @@ body.returning-screen #diffIconWrap .icon-tip { display: none; }
 .title-wipe-in {
   animation: TitleWipeIn 0.4s cubic-bezier(0.4, 0, 0.2, 1) forwards;
 }
+
+/* ══════════════════════════════════════
+   TOUCH DEVICES — suppress hover effects
+   (hover: none) matches any device that
+   has no true hover pointer, e.g. phones
+   and tablets. This prevents the double-
+   tap problem where the first tap applies
+   the hover style and the second triggers
+   the action.
+══════════════════════════════════════ */
+@media (hover: none) {
+  #mainBtn:hover                              { background: #10b981; }
+  #helpBtn:hover                              { background: #6b7280; }
+  .kb-variant-option:hover                    { border-color: transparent; }
+  .app-option:hover                           { background: transparent; color: #9ca3af; }
+  .sp-settings-nudge:hover:not(.sp-nudge-inactive) { opacity: 1; }
+  #kbIcon:hover                               { transform: none; transition: fill 0.2s ease; }
+  #kbIcon.pulse:hover                         { transform: none; transition: none; }
+  #browserIcon:hover                          { transform: none; transition: fill 0.2s ease; }
+  #browserIcon.pulse:hover                    { transform: none; transition: none; }
+  #diffIcon:hover                             { transform: none; }
+  .key.lock-key:hover                         { background: #f5f5f7; }
+  #kbIconWrap:hover  .icon-tip                { opacity: 0; }
+  #brIconWrap:hover  .icon-tip                { opacity: 0; }
+  #diffIconWrap:hover .icon-tip               { opacity: 0; }
+}

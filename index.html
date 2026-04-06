@@ -9,7 +9,7 @@
 <title>Keyboard Warriors</title>
 <script>
   const DefaultTitle = 'Keyboard Warriors';
-  const VersionLabel   = '0016';
+  const VersionLabel   = '0017';
   const TitlePrefix  = document.title !== DefaultTitle ? document.title.trim() + '_' : '';
   const DBG_DEVICE   = TitlePrefix + VersionLabel;
 </script>
@@ -4748,11 +4748,11 @@ function getBrowserConflicts() {
   if (detectedOs === 'mobile') {
     return {
       name:   'Safari on iOS/iPadOS',
-      keys:   ['CMD+T', 'CMD+SHIFT+H', 'CMD+SHIFT+N'],
+      keys:   ['CMD+T', 'CMD+SHIFT+N', 'CMD+1'],
       labels: [
         'Cmd+T \u2014 opens a new tab',
-        'Cmd+Shift+H \u2014 opens Bookmarks / History',
         'Cmd+Shift+N \u2014 opens a Private tab',
+        'Cmd+1 \u2014 switches to the first tab',
       ],
     };
   }
@@ -6567,8 +6567,8 @@ function enterDefeat() {
   titleEl.className = '';
   if (NewDefeatCount >= 2) {
     var CoachTitleMessage = !hasTrophy
-      ? 'Complete all 10 questions to see your full report card. Use the Help button when you are stuck on a shortcut.'
-      : 'To reach your report card, you need to complete the round. Try adding more lives in difficulty settings.';
+      ? 'Complete more questions to see your full report card. Use the Help button when you are stuck on a shortcut.'
+      : 'To reach your report card, you need to progress further in the round.';
     titleEl.textContent = CoachTitleMessage;
   } else {
     titleEl.textContent = defeatMessage(answersLeft);
@@ -6834,8 +6834,8 @@ function endGameMessage(time, accuracy, record, wasFirst) {
   if (newBestAcc) {
     return _pickEndGameFallback([
       'Best accuracy yet!\nNow push that time down.',
-      'Highest accuracy so far. The speed will follow.',
-      'Accuracy record. Build on that.',
+      'Highest accuracy so far.\nYour speed will follow.',
+      'An accuracy record!\nKeep building on that.',
     ]);
   }
   if (accuracy >= 100) {
@@ -6851,20 +6851,20 @@ function endGameMessage(time, accuracy, record, wasFirst) {
       "So close. You've shown you can do better.",
       'Right on the edge of a personal best.',
       'Nearly there. Keep the pressure on.',
-      'That was competitive. One more push.',
+      'That was competitive. Give it one more push.',
     ]);
   }
   if (accuracy > (record.accuracy ?? 0)) {
     return _pickEndGameFallback([
-      'Accuracy improving. Keep the pace up.',
-      'More accurate than last time. Progress.',
-      'Your accuracy is trending up.',
+      'Your Accuracy is improving. Keep up the pace.',
+      'More accurate than last time. That shows progress.',
+      'Awesome. Your accuracy is trending up.',
     ]);
   }
   if (!hasTrophy && time < record.time + 15) {
     return _pickEndGameFallback([
       "Try again. You're almost there.",
-      'Close to your best. Another run will get you there.',
+      'Close to your best. Another run might get you there.',
     ]);
   }
   return _pickEndGameFallback([
@@ -6875,6 +6875,7 @@ function endGameMessage(time, accuracy, record, wasFirst) {
     'Leveling up looks good on you. Keep at it!',
     "Don't stop until you’re the one giving tips.",    
     'Mastering this is your destiny. No big deal.',
+    'Never dig straight down.',
     'Keep practising. Every rep counts.',
     'Sucking is the first step to being sorta good.',
     'Practice several times per week. Gains are cumulative.',
@@ -7294,7 +7295,8 @@ function finalizeRunData(completedRun, currentPool, DefeatCount) {
           'You tried a shorter timer last round and came through well. That is worth keeping.');
       } else if (acted && timeoutCount >= 3) {
         AddMessage(MemoryAwareMessages, 'mem_shorter_timer_struggling',
-          'That shorter timer is still causing pressure. No harm in stepping back up while you build the muscle memory.');
+          'That shorter timer is still causing pressure. No harm in stepping back up while you build muscle memory.',
+          { type: 'timer', fromValue: questionTimer, toValue: PreviousSuggestion.fromValue });
       }
     }
     if (PreviousSuggestion.type === 'difficulty' && PreviousSuggestion.toValue !== PreviousSuggestion.fromValue) {
@@ -7304,7 +7306,8 @@ function finalizeRunData(completedRun, currentPool, DefeatCount) {
           'You took the difficulty up and held your own. Good call.');
       } else if (acted && wentHarder && accuracyPercent < 60) {
         AddMessage(MemoryAwareMessages, 'mem_diff_up_struggling',
-          'That difficulty change was a step too far right now. No shame in stepping back.');
+          'That difficulty change was tough! No shame in stepping back if you need to.',
+          { type: 'difficulty', fromValue: currentDifficulty, toValue: PreviousSuggestion.fromValue });
       } else if (ignored) {
         // Check if the conditions that triggered the suggestion still apply
         var DifficultyRank      = { fundamentals: 0, normal: 1, hardcore: 2 };
@@ -7314,7 +7317,8 @@ function finalizeRunData(completedRun, currentPool, DefeatCount) {
           && accuracyPercent >= 95 && allFast && hintCount === 0 && wrongKeyTotal === 0 && skipCount === 0;
         if (StillWorthGoing) {
           AddMessage(MemoryAwareMessages, 'mem_diff_ignored',
-            'You ignored the suggestion to try a harder difficulty. That is your call, but the data still suggests you are ready.');
+            'You ignored the suggestion to try a harder difficulty. That is your call, but I still think you are ready.',
+            { type: 'difficulty', fromValue: currentDifficulty, toValue: PreviousSuggestion.toValue });
         }
       }
     }
@@ -7496,7 +7500,7 @@ function finalizeRunData(completedRun, currentPool, DefeatCount) {
         var MoreLivesValue = LivesStops[CurrentLivesIndex + 1];
         var MoreLivesLabel = MoreLivesValue === null ? 'unlimited' : String(MoreLivesValue);
         ForceAddMessage(TimerAndLivesMessages, 'cat4_lives_up',
-          'You are losing lives most rounds. Consider adding a few more to reduce the pressure while you build speed.',
+          'You are losing lives most rounds. Consider adding a few more to reduce the pressure while you build up speed.',
           { type: 'lives', fromValue: playerLives, toValue: MoreLivesValue });
       }
 
@@ -7545,6 +7549,9 @@ function finalizeRunData(completedRun, currentPool, DefeatCount) {
       condition: true },
     { key: 'gen_sessions',
       text: 'Short, regular sessions beat the occasional marathon. Even five minutes a day compounds.',
+      condition: true },
+    { key: 'gen_ghost',
+      text: 'Try ghost mode in the keyboard settings. It will zone out the keys to help you memorise the patterns.',
       condition: true },
     { key: 'gen_eyes',
       text: 'Eyes on the work, not the keyboard. Trust the muscle memory you are building.',
@@ -8854,7 +8861,7 @@ function _activateBlurPauseScreen() {
     hideConfirmHeading();
     titleEl.classList.remove('blurred');
     titleEl.className = '';
-    titleEl.textContent = 'You went away for a bit,\nso we paused your game.';
+    titleEl.textContent = 'Lost you for a moment,\nso I paused your game.';
     return;
   }
 
@@ -8943,7 +8950,7 @@ function _deactivateBlurPauseScreen() {
   // Replace right-column text for stage 2
   var RightTextEl = document.getElementById('blurDiagnosticRightText');
   if (RightTextEl) {
-    RightTextEl.innerHTML = '<em>Is <strong>this</strong> </em> what you pressed when the problem happened?<br><br><strong>Try it again now.</strong>';
+    RightTextEl.innerHTML = '<em>Is <strong>this</strong> </em>&nbsp;&nbsp;what you pressed when the problem happened?<br><br><strong>Try it again now.</strong>';
   }
 
   // Hide reveal button, show giant chips

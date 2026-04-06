@@ -1260,6 +1260,17 @@ function applyOsMode(os) {
   }
 }
 
+function _setHasKeyboard() {
+  // Mark that a physical keyboard is present, suppress the mismatch pill,
+  // and persist the flag. Safe to call multiple times — exits early if
+  // already set so there is no redundant localStorage write.
+  var already = false;
+  try { already = localStorage.getItem('kw_has_keyboard') === '1'; } catch(e) {}
+  if (already) return;
+  try { localStorage.setItem('kw_has_keyboard', '1'); } catch(e) {}
+  osMismatchEl.classList.remove('show', 'clickable');
+}
+
 function updateMismatchPill() {
   if (detectedOs === 'mobile') {
     var _pillHasExternalKeyboard = false;
@@ -3589,11 +3600,10 @@ function onTouchToggle() {
     document.getElementById('stickyRow').classList.add('disabled');
     showModeToast('On-Screen Keyboard Active');
   } else {
+    _setHasKeyboard();
     setStickyKeys(false);
     document.getElementById('stickyRow').classList.remove('disabled');
     showModeToast('On-Screen Keyboard = Display Only');
-    // If the keyboard recommendation pill was showing, clear it now
-    // because the user has indicated they have a physical keyboard.
     osMismatchEl.classList.remove('show', 'clickable');
   }
 }
@@ -8468,6 +8478,13 @@ function showTip(index) {
 }
 
 function handleKeydown(e) {
+  // FIX 1d: detect a physical keyboard on mobile via isTrusted.
+  // Real browser KeyboardEvents are trusted; the synthetic ones fired by
+  // handleKeyTouch() are not. First trusted keypress permanently flags
+  // that a physical keyboard is present and suppresses the mismatch pill.
+  if (detectedOs === 'mobile' && e.isTrusted) {
+    _setHasKeyboard();
+  }
   updateKeyboardLighting(e, true);
   // DEBUG
   const dbg = document.getElementById('debugOverlay');
@@ -9374,7 +9391,7 @@ function HideKeyboardRecommendModal() {
 
 function onKeyboardRecommendHaveOne() {
   HideKeyboardRecommendModal();
-  try { localStorage.setItem('kw_has_keyboard', '1'); } catch(StorageError) {}
+  _setHasKeyboard();
   // Physical keyboard connected: behave like desktop mode
   setTouchEnabled(false);
   setStickyKeys(false);

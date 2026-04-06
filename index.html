@@ -6,7 +6,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>beta</title>
+<title>Keyboard Warriors</title>
 <script>
   const DefaultTitle = 'Keyboard Warriors';
   const VersionLabel   = '0015';
@@ -3539,8 +3539,9 @@ function setKillPunctuation(on) {
   var radio = document.getElementById('killPunctuationRadio');
   if (radio) radio.classList.toggle('on', on);
   // Rebuild pool immediately so the change takes effect mid-session if needed
-  if (gameState === 'playing') {
+  if (gameState !== 'playing' && gameState !== 'paused' && gameState !== 'readyToUnpause') {
     questionPool = shuffleArray(buildPool());
+  // Rebuild pool at the start of the next round
   }
 }
 
@@ -4153,8 +4154,10 @@ function _setConflictBlocked(canonicalKey, blocked, liEl) {
   } else {
     dismissedConflicts.delete(canonicalKey);
   }
-  _saveCustomDismissedConflicts();
-  questionPool = shuffleArray(buildPool());
+_saveCustomDismissedConflicts();
+if (gameState !== 'playing' && gameState !== 'paused' && gameState !== 'readyToUnpause') {
+    questionPool = shuffleArray(buildPool());
+}
 
   // Refresh the clear overrides pill state
   var ClearBtn = document.querySelector('#browserCompatFooter .score-pill-seg');
@@ -4303,15 +4306,16 @@ function _refreshBrowserContent() {
   if (ul) {
     ul.innerHTML = '';
 
-    // Auto-block standard browser conflicts on first encounter
+   // Auto-block standard browser conflicts on first encounter
     d.keys.forEach(function(canonicalKey) {
       if (!dismissedConflicts.has(canonicalKey)) {
         dismissedConflicts.add(canonicalKey);
       }
     });
     _saveCustomDismissedConflicts();
-    questionPool = shuffleArray(buildPool());
-
+    if (gameState !== 'playing' && gameState !== 'paused' && gameState !== 'readyToUnpause') {
+        questionPool = shuffleArray(buildPool());
+    }
     d.labels.forEach(function(RawLabel, i) {
       var canonicalKey = d.keys[i];
       var isBlocked    = !touchEnabled && dismissedConflicts.has(canonicalKey);

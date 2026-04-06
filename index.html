@@ -2377,6 +2377,7 @@ function clearHelp() {
    PAUSE / EASTER EGG
 ══════════════════════════════════════ */
 function openPadlockPanel() {
+  if (gameState === 'counting') return;
   // If the padlock panel is already open, close it.
   if (activeSettings === 'panelPadlock') { closeSettings(); return; }
   // Save title text then show cheat sheet heading in the game div

@@ -1908,6 +1908,9 @@ let endScreenInactivityTimer      = null;
 let readyToUnpauseInactivityTimer = null;
 let pauseInactivityTimer          = null;
 let readyPromptTimer              = null;
+var _panelTipInTitle      = false;
+var _panelTipSavedText    = '';
+var _panelTipSavedBlurred = false;
 let bestRecord    = { time: null, accuracy: null };  // independent bests
 let hasTrophy = false;           // never cleared, gates Hardcore and trophy
 let greenHits       = 0;
@@ -2402,6 +2405,9 @@ function _clearReadyPromptFromTitle() {
   if (titleEl.textContent === 'Ready?') {
     titleEl.textContent = _readyPromptSavedText;
     if (_readyPromptSavedBlurred) titleEl.classList.add('blurred');
+    titleEl.classList.remove('title-wipe-in');
+    void titleEl.offsetWidth;
+    titleEl.classList.add('title-wipe-in');
   }
 }
 
@@ -2415,6 +2421,9 @@ function _startReadyPromptTimer() {
     _readyPromptSavedBlurred = titleEl.classList.contains('blurred');
     titleEl.classList.remove('blurred');
     titleEl.textContent = 'Ready?';
+    titleEl.classList.remove('title-wipe-in');
+    void titleEl.offsetWidth;
+    titleEl.classList.add('title-wipe-in');
     _readyPromptInTitle = true;
     readyPromptTimer = null;
   }, 20000);
@@ -3847,30 +3856,37 @@ var _PANEL_TIPS = {
 };
 
 function _showPanelTip(page) {
-  // Only show for the four panels with tip pools; others manage their own heading
   var poolFn = _PANEL_TIPS[page];
   if (!poolFn) return;
   var pool = poolFn();
   if (!pool.length) return;
   var tip = pool[Math.floor(Math.random() * pool.length)];
-  // Use showConfirmHeading with blurTitle=false and showBracket=false
-  // so it displays ambient text without triggering confirm styling
-  var el = document.getElementById('confirmHeading');
-  if (!el) return;
-  el.textContent = tip;
-  el.style.display = 'block';
-  // Do NOT blur the title or show the bracket — this is ambient, not actionable
+  if (_panelTipInTitle) return;
+  _panelTipSavedText    = titleEl.textContent;
+  _panelTipSavedBlurred = titleEl.classList.contains('blurred');
+  _panelTipInTitle = true;
+  titleEl.classList.remove('blurred');
+  titleEl.textContent = tip;
+  titleEl.classList.remove('title-wipe-in');
+  void titleEl.offsetWidth;
+  titleEl.classList.add('title-wipe-in');
 }
 
 function _clearPanelTip() {
-  // Only clears if no real confirm heading is active
-  // (real confirm headings are always set via showConfirmHeading with blurTitle=true)
   var confirmStatesActive = [
     'confirm-reset', 'confirm-quit', 'confirm-trophy',
     'confirm-diff-change', 'confirm-kill-punctuation', 'confirm-start-over'
   ].indexOf(gameState) !== -1;
   if (confirmStatesActive) return;
-  hideConfirmHeading();
+  if (!_panelTipInTitle) return;
+  _panelTipInTitle = false;
+  titleEl.textContent = _panelTipSavedText;
+  if (_panelTipSavedBlurred) titleEl.classList.add('blurred');
+  titleEl.classList.remove('title-wipe-in');
+  void titleEl.offsetWidth;
+  titleEl.classList.add('title-wipe-in');
+  _panelTipSavedText    = '';
+  _panelTipSavedBlurred = false;
 }
 
 function openSettings(page) {

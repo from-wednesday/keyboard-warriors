@@ -7799,16 +7799,19 @@ var AnsweredTimingMap = {};
     if (!Question) return;
     var Token = Question.shortcut;
     var TimeDisplay;
+    var TimeIsStrikethrough = false;
     if (Entry.endType === 'skip') {
-      TimeDisplay = '(skip)';
+      TimeDisplay = 'skip';
     } else if (Entry.endType === 'timeout') {
-      TimeDisplay = (questionTimer !== null ? String(questionTimer) : '') + 's';
+      var TimerVal = questionTimer;
+      TimeDisplay = TimerVal !== null ? String(TimerVal) + 's' : null;
+      TimeIsStrikethrough = true;
     } else if (Entry.timeToAnswerMs !== null) {
       TimeDisplay = (Entry.timeToAnswerMs / 1000).toFixed(1) + 's';
     } else {
       TimeDisplay = null;
     }
-    AnsweredTimingMap[Token] = TimeDisplay;
+    AnsweredTimingMap[Token] = { text: TimeDisplay, strikethrough: TimeIsStrikethrough };
   });
   
 
@@ -7870,11 +7873,12 @@ var dot = document.createElement('span');
       label.textContent = (Question.display || '').replace(/\\\\/g, '\\');
 
       li.appendChild(dot);
-      var TimeDisplay = AnsweredTimingMap[Question.shortcut] || null;
-      if (TimeDisplay) {
+      var TimingEntry = AnsweredTimingMap[Question.shortcut] || null;
+      if (TimingEntry && TimingEntry.text) {
         var TimeElement = document.createElement('small');
-        TimeElement.textContent = TimeDisplay;
-        TimeElement.style.cssText = 'color:#9ca3af;flex-shrink:0;margin-right:4px;margin-top:2px;line-height:1.5;white-space:nowrap;';
+        TimeElement.textContent = TimingEntry.text;
+        var strikeStyle = TimingEntry.strikethrough ? 'text-decoration:line-through;' : '';
+        TimeElement.style.cssText = 'color:#9ca3af;flex-shrink:0;margin-right:4px;margin-top:2px;line-height:1.5;white-space:nowrap;' + strikeStyle;
         li.appendChild(TimeElement);
       }
 

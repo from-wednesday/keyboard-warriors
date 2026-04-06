@@ -2573,7 +2573,9 @@ function confirmQuitNo() {
 
 function unpause() {
   gameState = 'playing';
-  // If diagnostic answer was revealed but player didn't re-test the shortcut,
+  transitioning = false;  // clear any skip/timeout animation interrupted by pausing
+  // If diagnostic answer was revealed
+
   // replace it now so the revealed answer isn't the first question on resumption.
   if (_blurPauseActive && _blurDiagnosticAnswerRevealed && _blurDiagnosticShortcutToken) {
     _blurDiagnosticReplaceQuestion();
@@ -7871,15 +7873,16 @@ var dot = document.createElement('span');
       label.className = 'sp-report-question-label';
       label.textContent = (Question.display || '').replace(/\\\\/g, '\\');
 
-      li.appendChild(dot);
-      var TimeDisplay = AnsweredTimingMap[Question.shortcut] || null;
-      if (TimeDisplay) {
+         li.appendChild(dot);
+      var TimingData = AnsweredTimingMap[Question.shortcut] || null;
+      if (TimingData && TimingData.text) {
         var TimeElement = document.createElement('small');
-        TimeElement.textContent = TimeDisplay;
-        TimeElement.style.cssText = 'color:#9ca3af;flex-shrink:0;margin-right:4px;margin-top:2px;line-height:1.5;white-space:nowrap;';
+        TimeElement.textContent = TimingData.text;
+        TimeElement.style.cssText = 'color:#9ca3af;flex-shrink:0;margin-left:-3px;margin-right:4px;margin-top:2px;line-height:1.5;white-space:nowrap;';
+        if (TimingData.strikethrough) TimeElement.style.textDecoration = 'line-through';
         li.appendChild(TimeElement);
       }
-
+        
       li.appendChild(label);
       li.appendChild(BuildShortcutKeyChips(ShortcutDisplay, true));
       List.appendChild(li);

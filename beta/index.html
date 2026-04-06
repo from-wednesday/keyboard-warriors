@@ -996,7 +996,7 @@ function buildKeyboard(isMini) {
    KEYBOARD TOAST
 ══════════════════════════════════════ */
 const kbToastEl = document.getElementById('kbToast');
-let toastTimer = null;
+
 
 var _kwToastTimer = null;
 
@@ -4152,11 +4152,7 @@ function _closeAllModalsInstant() {
 }
 
 // Legacy aliases — kept so remaining call sites compile
-function openKbModal()       { openSettings('panelKeyboard'); }
-function closeKbModal()      { closeSettings(); }
 function toggleKbModal()     { activeSettings === 'panelKeyboard' ? closeSettings() : openSettings('panelKeyboard'); }
-function openBrowserModal()  { openSettings('panelBrowser'); }
-function closeBrowserModal() { closeSettings(); }
 function toggleBrowserModal(){ activeSettings === 'panelBrowser'  ? closeSettings() : openSettings('panelBrowser');  }
 function _renderKeyChips(label) {
   var em      = '\u2014';
@@ -7797,6 +7793,24 @@ function _refreshCheatSheet() {
     AnsweredOutcomeColourMap[Token] = Colour;
   });
 
+var AnsweredTimingMap = {};
+  runData.forEach(function(Entry) {
+    var Question = questionPool[Entry.questionIndex];
+    if (!Question) return;
+    var Token = Question.shortcut;
+    var TimeDisplay;
+    if (Entry.endType === 'skip') {
+      TimeDisplay = '(skip)';
+    } else if (Entry.endType === 'timeout') {
+      TimeDisplay = (questionTimer !== null ? String(questionTimer) : '') + 's';
+    } else if (Entry.timeToAnswerMs !== null) {
+      TimeDisplay = (Entry.timeToAnswerMs / 1000).toFixed(1) + 's';
+    } else {
+      TimeDisplay = null;
+    }
+    AnsweredTimingMap[Token] = TimeDisplay;
+  });
+  
 
   if (OrderedPool.length === 0) {
     if (HeadingEl) HeadingEl.style.visibility = 'hidden';
@@ -7856,6 +7870,14 @@ var dot = document.createElement('span');
       label.textContent = (Question.display || '').replace(/\\\\/g, '\\');
 
       li.appendChild(dot);
+      var TimeDisplay = AnsweredTimingMap[Question.shortcut] || null;
+      if (TimeDisplay) {
+        var TimeElement = document.createElement('small');
+        TimeElement.textContent = TimeDisplay;
+        TimeElement.style.cssText = 'color:#9ca3af;flex-shrink:0;margin-right:4px;margin-top:2px;line-height:1.5;white-space:nowrap;';
+        li.appendChild(TimeElement);
+      }
+
       li.appendChild(label);
       li.appendChild(BuildShortcutKeyChips(ShortcutDisplay, true));
       List.appendChild(li);

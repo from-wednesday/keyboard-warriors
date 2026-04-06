@@ -7891,6 +7891,16 @@ var dot = document.createElement('span');
   }
 }
 
+function CheckAndHighlightCheatSheetFromKeyEvent(KeyboardEvent) {
+  var AllRenderedItems = document.querySelectorAll('#cheatSheetList li[data-shortcut-token], #cheatSheetListRight li[data-shortcut-token]');
+  AllRenderedItems.forEach(function(ListItem) {
+    var Token = ListItem.dataset.shortcutToken;
+    if (Token && matchesShortcut(KeyboardEvent, Token)) {
+      HighlightCheatSheetItems(Token);
+    }
+  });
+}
+
 function HighlightCheatSheetItems(ShortcutToken) {
   var AllItems = document.querySelectorAll('#cheatSheetList li, #cheatSheetListRight li');
   AllItems.forEach(function(ListItem) {
@@ -8618,13 +8628,8 @@ function handleKeydown(e) {
       if (ReportShortcutMatched) { e.preventDefault(); return; }
     }
     // Cheat sheet key lighting (runs alongside report card check)
-    if (activeSettings === 'panelPadlock' && questionPool.length > 0) {
-      var FinishedCheatPool = window._cheatSheetResolvedPool || questionPool;
-      FinishedCheatPool.slice(0, 10).forEach(function(Question) {
-        if (Question.shortcut && matchesShortcut(e, Question.shortcut)) {
-          HighlightCheatSheetItems(Question.shortcut);
-        }
-      });
+    if (activeSettings === 'panelPadlock') {
+      CheckAndHighlightCheatSheetFromKeyEvent(e);
     }
     // UI navigation — only reached if no report card shortcut consumed the key
     if (e.key === 'ArrowRight') { showTip(tipIndex + 1); e.preventDefault(); return; }
@@ -8657,13 +8662,8 @@ function handleKeydown(e) {
     }
   }
   // Cheat sheet lighting when paused
-  if (activeSettings === 'panelPadlock' && questionPool.length > 0) {
-    var PausedCheatPool = window._cheatSheetResolvedPool || questionPool;
-    PausedCheatPool.slice(0, 10).forEach(function(Question) {
-      if (Question.shortcut && matchesShortcut(e, Question.shortcut)) {
-        HighlightCheatSheetItems(Question.shortcut);
-      }
-    });
+  if (activeSettings === 'panelPadlock') {
+    CheckAndHighlightCheatSheetFromKeyEvent(e);
   }
      
   // Enter unpauses when the cheat sheet is open (mirrors the unpause button)

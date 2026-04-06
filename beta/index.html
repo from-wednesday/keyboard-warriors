@@ -4618,16 +4618,44 @@ function dbgToggle() {
 }
 
 function dbgBuildReport() {
-  var top = document.getElementById('dbgCtxTop');
-  var sub = document.getElementById('dbgCtxSub');
-  var lines = [
-    (sub ? sub.textContent + '  ' : '') + (top ? top.textContent : ''),
-    document.getElementById('dbgAnswer').textContent,
-    document.getElementById('dbgQuestion').textContent,
-    document.getElementById('dbgKey').textContent,
-    document.getElementById('dbgMatch').textContent,
+  var AppEntry = APPS.find(function(a) { return a.key === currentApp; });
+  var AppName  = AppEntry ? AppEntry.label : currentApp;
+  var ActualOsName = detectedOs === 'mac' ? 'Mac'
+    : detectedOs === 'pc' ? 'PC/Windows'
+    : detectedOs === 'mobile' ? 'iOS/iPadOS'
+    : 'Other/Linux';
+  var TrainingOsName = currentOs === 'pc' ? 'PC/Windows' : 'Mac';
+  var IsCrossTraining = (detectedOs !== 'mobile' && detectedOs !== 'other' && detectedOs !== currentOs);
+  var OsLine = IsCrossTraining
+    ? 'actualOS:' + ActualOsName + '  trainingAs:' + TrainingOsName + ' (cross-training)'
+    : 'actualOS:' + ActualOsName + '  trainingAs:' + TrainingOsName;
+  var Pool     = questionPool.length;
+  var QuestionIndex = Pool > 0 ? (questionIndex % Pool) + 1 : '—';
+  var QuestionString = (gameState === 'idle' || gameState === 'welcome') ? '—/0' : QuestionIndex + '/' + Pool;
+  var CurrentQuestion = questionPool[questionIndex];
+  var KeyboardFlags = [
+    touchEnabled      ? 'touch'         : null,
+    stickyKeysOn      ? 'sticky'        : null,
+    ghostModeOn       ? 'ghost'         : null,
+    killPunctuationOn ? 'killPunct'     : null,
+    !hasFullKeyboard  ? 'compact-kb'   : null,
+  ].filter(Boolean).join(', ') || 'none';
+  var TimerDisplay  = questionTimer === null ? '∞' : String(questionTimer) + 's';
+  var LivesDisplay  = playerLives   === null ? '∞' : String(playerLives);
+  var BuildDevice   = typeof DBG_DEVICE !== 'undefined' ? DBG_DEVICE : 'unknown';
+  var Lines = [
+    'build:'         + BuildDevice,
+    OsLine,
+    'app:'           + AppName,
+    'difficulty:'    + currentDifficulty + '  timer:' + TimerDisplay + '  lives:' + LivesDisplay,
+    'kbLayout:'      + (currentOs === 'pc' ? kbVariantPc : kbVariantMac),
+    'kbFlags:'       + KeyboardFlags,
+    'gameState:'     + gameState + '  Q:' + QuestionString,
+    CurrentQuestion  ? 'answer:'  + CurrentQuestion.shortcut  : '',
+    CurrentQuestion  ? 'display:' + CurrentQuestion.display    : '',
+    CurrentQuestion  ? 'difficulty:' + CurrentQuestion.difficulty : '',
   ];
-  return lines.filter(function(l) { return l.trim(); }).join('\n');
+  return Lines.filter(function(Line) { return Line.trim(); }).join('\n');
 }
 
 function dbgCopy() {
@@ -4715,22 +4743,24 @@ function dbgRefreshAccuracy() {
 
 // ── Debug navigation ──────────────────────────────────────────────────────
 function dbgPrevQuestion() {
-  if (gameState !== 'playing') return;
+  if (questionPool.length === 0) return;
   questionIndex = (questionIndex - 1 + questionPool.length) % questionPool.length;
   currentAnswer = questionPool[questionIndex].shortcut;
   titleEl.className = '';
   titleEl.textContent = (questionPool[questionIndex].display || '').replace(/\\\\/g, '\\');
   clearAllLit(); heldKeys.clear();
   clearHelp(); transitioning = false;
+  dbgRefreshCtx();
 }
 function dbgNextQuestion() {
-  if (gameState !== 'playing') return;
+  if (questionPool.length === 0) return;
   questionIndex = (questionIndex + 1) % questionPool.length;
   currentAnswer = questionPool[questionIndex].shortcut;
   titleEl.className = '';
   titleEl.textContent = (questionPool[questionIndex].display || '').replace(/\\\\/g, '\\');
   clearAllLit(); heldKeys.clear();
   clearHelp(); transitioning = false;
+  dbgRefreshCtx();
 }
 
 
@@ -5606,23 +5636,44 @@ function _reportImpossibleQuestion() {
   }
   // Build the same report dbgBuildReport() produces, but directly from live
   // state so it is always current regardless of debug overlay visibility.
-  var appEntry = APPS.find(function(a) { return a.key === currentApp; });
-  var appName  = appEntry ? appEntry.label : currentApp;
-  var osName   = currentOs === 'pc' ? 'PC/Windows' : 'Mac';
-  var device   = typeof DBG_DEVICE !== 'undefined' ? DBG_DEVICE : 'unknown';
-  var pool     = questionPool.length;
-  var qi       = pool > 0 ? (questionIndex % pool) + 1 : '—';
-  var qStr     = (gameState === 'idle' || gameState === 'welcome') ? '—/0' : qi + '/' + pool;
-  var question = questionPool[questionIndex] || null;
-
-  var lines = [
-    'build:' + device + '  os:' + osName,
-    'app:' + appName + '  state:' + gameState + '  Q:' + qStr,
-    question ? 'answer: ' + question.shortcut : '',
-    question ? 'display: ' + question.display : '',
-    question ? 'difficulty: ' + question.difficulty : '',
+  var AppEntry = APPS.find(function(a) { return a.key === currentApp; });
+  var AppName  = AppEntry ? AppEntry.label : currentApp;
+  var ActualOsName = detectedOs === 'mac' ? 'Mac'
+    : detectedOs === 'pc' ? 'PC/Windows'
+    : detectedOs === 'mobile' ? 'iOS/iPadOS'
+    : 'Other/Linux';
+  var TrainingOsName = currentOs === 'pc' ? 'PC/Windows' : 'Mac';
+  var IsCrossTraining = (detectedOs !== 'mobile' && detectedOs !== 'other' && detectedOs !== currentOs);
+  var OsLine = IsCrossTraining
+    ? 'actualOS:' + ActualOsName + '  trainingAs:' + TrainingOsName + ' (cross-training)'
+    : 'actualOS:' + ActualOsName + '  trainingAs:' + TrainingOsName;
+  var Pool     = questionPool.length;
+  var QuestionIndex = Pool > 0 ? (questionIndex % Pool) + 1 : '—';
+  var QuestionString = (gameState === 'idle' || gameState === 'welcome') ? '—/0' : QuestionIndex + '/' + Pool;
+  var CurrentQuestion = questionPool[questionIndex] || null;
+  var KeyboardFlags = [
+    touchEnabled      ? 'touch'       : null,
+    stickyKeysOn      ? 'sticky'      : null,
+    ghostModeOn       ? 'ghost'       : null,
+    killPunctuationOn ? 'killPunct'   : null,
+    !hasFullKeyboard  ? 'compact-kb'  : null,
+  ].filter(Boolean).join(', ') || 'none';
+  var TimerDisplay = questionTimer === null ? '∞' : String(questionTimer) + 's';
+  var LivesDisplay = playerLives   === null ? '∞' : String(playerLives);
+  var BuildDevice  = typeof DBG_DEVICE !== 'undefined' ? DBG_DEVICE : 'unknown';
+  var Lines = [
+    'build:'       + BuildDevice,
+    OsLine,
+    'app:'         + AppName,
+    'difficulty:'  + currentDifficulty + '  timer:' + TimerDisplay + '  lives:' + LivesDisplay,
+    'kbLayout:'    + (currentOs === 'pc' ? kbVariantPc : kbVariantMac),
+    'kbFlags:'     + KeyboardFlags,
+    'gameState:'   + gameState + '  Q:' + QuestionString,
+    CurrentQuestion ? 'answer:'     + CurrentQuestion.shortcut    : '',
+    CurrentQuestion ? 'display:'    + CurrentQuestion.display     : '',
+    CurrentQuestion ? 'difficulty:' + CurrentQuestion.difficulty  : '',
   ];
-  var report = lines.filter(function(l) { return l.trim(); }).join('\n');
+  var report = Lines.filter(function(Line) { return Line.trim(); }).join('\n');
 
   var body    = '\nImpossible question report from Keyboard Warriors:\n\n' + report + '\n\nPlease describe the question and the problem:\n';
   var subject = 'Keyboard Warriors — impossible question report';

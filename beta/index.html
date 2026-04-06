@@ -9,7 +9,7 @@
 <title>beta</title>
 <script>
   const DefaultTitle = 'Keyboard Warriors';
-  const VersionLabel   = '0015';
+  const VersionLabel   = '0017';
   const TitlePrefix  = document.title !== DefaultTitle ? document.title.trim() + '_' : '';
   const DBG_DEVICE   = TitlePrefix + VersionLabel;
 </script>
@@ -7294,7 +7294,8 @@ function finalizeRunData(completedRun, currentPool, DefeatCount) {
           'You tried a shorter timer last round and came through well. That is worth keeping.');
       } else if (acted && timeoutCount >= 3) {
         AddMessage(MemoryAwareMessages, 'mem_shorter_timer_struggling',
-          'That shorter timer is still causing pressure. No harm in stepping back up while you build the muscle memory.');
+          'That shorter timer is still causing pressure. No harm in stepping back up while you build the muscle memory.',
+          { type: 'timer', fromValue: questionTimer, toValue: PreviousSuggestion.fromValue });
       }
     }
     if (PreviousSuggestion.type === 'difficulty' && PreviousSuggestion.toValue !== PreviousSuggestion.fromValue) {
@@ -7304,7 +7305,8 @@ function finalizeRunData(completedRun, currentPool, DefeatCount) {
           'You took the difficulty up and held your own. Good call.');
       } else if (acted && wentHarder && accuracyPercent < 60) {
         AddMessage(MemoryAwareMessages, 'mem_diff_up_struggling',
-          'That difficulty change was a step too far right now. No shame in stepping back.');
+          'That difficulty change was a step too far right now. No shame in stepping back.',
+          { type: 'difficulty', fromValue: currentDifficulty, toValue: PreviousSuggestion.fromValue });
       } else if (ignored) {
         // Check if the conditions that triggered the suggestion still apply
         var DifficultyRank      = { fundamentals: 0, normal: 1, hardcore: 2 };
@@ -7314,7 +7316,8 @@ function finalizeRunData(completedRun, currentPool, DefeatCount) {
           && accuracyPercent >= 95 && allFast && hintCount === 0 && wrongKeyTotal === 0 && skipCount === 0;
         if (StillWorthGoing) {
           AddMessage(MemoryAwareMessages, 'mem_diff_ignored',
-            'You ignored the suggestion to try a harder difficulty. That is your call, but the data still suggests you are ready.');
+            'You ignored the suggestion to try a harder difficulty. That is your call, but the data still suggests you are ready.',
+            { type: 'difficulty', fromValue: currentDifficulty, toValue: PreviousSuggestion.toValue });
         }
       }
     }

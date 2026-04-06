@@ -3861,10 +3861,14 @@ function _showPanelTip(page) {
   var pool = poolFn();
   if (!pool.length) return;
   var tip = pool[Math.floor(Math.random() * pool.length)];
-  if (_panelTipInTitle) return;
-  _panelTipSavedText    = titleEl.textContent;
-  _panelTipSavedBlurred = titleEl.classList.contains('blurred');
-  _panelTipInTitle = true;
+  // Save the original title state only the first time a tip is shown.
+  // On subsequent panel switches the tip is simply replaced in place,
+  // leaving the saved state intact so _clearPanelTip can restore correctly.
+  if (!_panelTipInTitle) {
+    _panelTipSavedText    = titleEl.textContent;
+    _panelTipSavedBlurred = titleEl.classList.contains('blurred');
+    _panelTipInTitle = true;
+  }
   titleEl.classList.remove('blurred');
   titleEl.textContent = tip;
   titleEl.classList.remove('title-wipe-in');

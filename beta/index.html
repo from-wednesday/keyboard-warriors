@@ -8605,7 +8605,7 @@ window.addEventListener('blur', function() {
         _activateBlurPauseScreen();
       });
     });
-  } else if (gameState === 'paused' && _blurPauseActive && _blurDiagnosticAnswerRevealed) {
+  } else if (!touchEnabled && gameState === 'paused' && _blurPauseActive && _blurDiagnosticAnswerRevealed) {
     _blurDiagnosticSecondBlur();
   }
 });
@@ -8652,7 +8652,11 @@ function _blurDiagnosticKeydownHandler(e) {
   // Flow resolved: player successfully pressed the shortcut. Block further blur diversions.
   _blurDiagnosticFlowComplete = true;
 
-  // Light dot green
+  // Clear any floating confirm heading before writing to the title area
+  hideConfirmHeading();
+  titleEl.classList.remove('blurred');
+  titleEl.className = '';
+  titleEl.textContent = "Let's keep training.";
   var DotEl = document.getElementById('blurDiagnosticDot');
   if (DotEl) { DotEl.style.background = '#10b981'; DotEl.style.transition = 'background 0.3s ease'; }
 
@@ -8673,9 +8677,6 @@ function _blurDiagnosticKeydownHandler(e) {
 
   // Replace question (no penalty, excluded from report card)
   _blurDiagnosticReplaceQuestion();
-
-  titleEl.className = '';
-  titleEl.textContent = "Let's keep training.";
 
   var RightTextEl = document.getElementById('blurDiagnosticRightText');
   if (RightTextEl) {
@@ -8742,10 +8743,21 @@ function _activateBlurPauseScreen() {
   // The guard is cleared when the player unpauses or resets to idle.
   if (_blurDiagnosticFlowComplete) return;
 
+  // Touch mode has no physical keyboard, so conflict diagnosis is meaningless.
+  // Show a simple neutral pause message and return.
+  if (touchEnabled) {
+    hideConfirmHeading();
+    titleEl.classList.remove('blurred');
+    titleEl.className = '';
+    titleEl.textContent = 'You went away for a bit,\nso we paused your game.';
+    return;
+  }
+
   _blurDiagnosticAnswerRevealed = false;
   _blurDiagnosticShortcutToken = currentAnswer;
 
-  // Title: stage 1
+  // Title: stage 1 — clear any floating confirm heading first
+  hideConfirmHeading();
   titleEl.classList.remove('blurred');
   titleEl.className = '';
   titleEl.textContent = 'You went away for a bit,\nso we paused your game.';
@@ -8817,7 +8829,9 @@ function _deactivateBlurPauseScreen() {
   var Question = _blurDiagnosticFindQuestion();
   if (!Question) return;
 
-  // Title: stage 2
+  // Title: stage 2 — clear any floating confirm heading first
+  hideConfirmHeading();
+  titleEl.classList.remove('blurred');
   titleEl.className = '';
   titleEl.textContent = 'Check if the shortcut is causing a problem.';
 
@@ -8891,6 +8905,8 @@ function _blurDiagnosticBlockAndReport() {
 }
 
 function _blurDiagnosticShowBlockedConfirmation() {
+  hideConfirmHeading();
+  titleEl.classList.remove('blurred');
   titleEl.className = '';
   titleEl.textContent = 'Do you want to block this?';
   var RightTextEl = document.getElementById('blurDiagnosticRightText');
@@ -8912,7 +8928,9 @@ function _blurDiagnosticSecondBlur() {
   // Block further blur diversions for the rest of this session.
   _blurDiagnosticFlowComplete = true;
 
-  // Title: stage 3
+  // Title: stage 3 — clear any floating confirm heading first
+  hideConfirmHeading();
+  titleEl.classList.remove('blurred');
   titleEl.className = '';
   titleEl.textContent = 'Do you want to block this?';
 

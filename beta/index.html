@@ -2366,6 +2366,13 @@ function showAutoHintToast() {
     kbToastEl.classList.add('show');
     clearTimeout(_kwToastTimer);
 }
+function showSuccessHintToast() {
+    kbToastEl.innerHTML = buildHintHTML(currentAnswer.replace(/\\\\/g, '\\'), '#10b981');
+    kbToastEl.classList.add('show');
+    clearTimeout(_kwToastTimer);
+    _kwToastTimer = setTimeout(function() { kbToastEl.classList.remove('show'); }, 1200);
+}
+
 function clearHelp() {
   clearTimeout(helpFadeTimer);
   helpActive = false;
@@ -8706,12 +8713,13 @@ function handleKeydown(e) {
   if (isCorrect) {
     transitioning = true;
     clearHelp();
-    hideQuestionTimerArc();  // remove the arc for the answered question
+    showSuccessHintToast();
+    hideQuestionTimerArc();
     clearInterval(timerInterval);
     const AnswerTimestampMs = performance.now() - startTime;
     setTimerState('green', 'right');
     titleEl.style.color = '#10b981'; // instant green — directs attention before hiding
-    requestAnimationFrame(() => titleEl.classList.add('hidden'));
+    setTimeout(() => titleEl.classList.add('hidden'), 350);
     fillProgressDot(10 - answersLeft);
     setTimeout(() => {
       titleEl.style.color = '';

@@ -2327,7 +2327,7 @@ function toggleHelp() {
     // Show hint in the stats-row toast pill — below the game panel, always readable
     kbToastEl.innerHTML = buildHintHTML(currentAnswer.replace(/\\\\/g, '\\'), '#10b981');
     kbToastEl.classList.add('show');
-    clearTimeout(toastTimer);
+    clearTimeout(_kwToastTimer);
     // Suppress the "Ready?" prompt while the hint is on screen
     _stopReadyPromptTimer();
     // If "Ready?" is already showing, clear it so it doesn't overlap the hint
@@ -2364,7 +2364,7 @@ function toggleHelp() {
 function showAutoHintToast() {
     kbToastEl.innerHTML = buildHintHTML(currentAnswer.replace(/\\\\/g, '\\'), '#f97316');
     kbToastEl.classList.add('show');
-    clearTimeout(toastTimer);
+    clearTimeout(_kwToastTimer);
 }
 function clearHelp() {
   clearTimeout(helpFadeTimer);

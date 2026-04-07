@@ -6,7 +6,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>beta</title>
+<title>Keyboard Warriors</title>
 <script>
   const DefaultTitle = 'Keyboard Warriors';
   const VersionLabel   = '0018';
@@ -999,6 +999,8 @@ const kbToastEl = document.getElementById('kbToast');
 
 
 var _kwToastTimer = null;
+var _kbToastAutoHideTimer = null;
+
 
 function _kbPanelRect() {
   var p = document.getElementById('keyboardPanel');
@@ -2366,6 +2368,14 @@ function showAutoHintToast() {
     kbToastEl.classList.add('show');
     clearTimeout(_kwToastTimer);
 }
+function showSuccessHintToast() {
+    kbToastEl.innerHTML = buildHintHTML(currentAnswer.replace(/\\\\/g, '\\'), '#10b981');
+    kbToastEl.classList.add('show');
+    clearTimeout(_kbToastAutoHideTimer);
+    _kbToastAutoHideTimer = setTimeout(function() { kbToastEl.classList.remove('show'); }, 1200);
+}
+
+
 function clearHelp() {
   clearTimeout(helpFadeTimer);
   helpActive = false;
@@ -6663,6 +6673,8 @@ function startGame() {
   setAppSelectorGameActive(true);
   clearTimeout(endScreenInactivityTimer);
   endScreenInactivityTimer = null;
+  clearTimeout(_kwToastTimer);
+  document.getElementById('kwToast').classList.remove('visible');
   totalTime = 0;
   transitioning = false;
   CoachAdviceAccepted = false;
@@ -6684,7 +6696,9 @@ questionPool = adaptivePool || shuffleArray(buildPool());  if (currentApp === 'A
   var _sgTagline = document.getElementById('welcomeTagline');
   if (_sgTagline) { _sgTagline.style.display = 'none'; _sgTagline.innerHTML = '<em>Your keyboard shortcuts coach &amp; personal trainer.</em>'; }
   titleEl.className = '';
+  void titleEl.offsetWidth;
   titleEl.textContent = (questionPool[0].display || '').replace(/\\\\/g, '\\');
+  titleEl.classList.add('question-pop');
   questionCountEl.classList.remove('blurred', 'blur-instant');
   document.getElementById('livesRow').classList.remove('blurred', 'blur-instant');
   buildProgressDots();
@@ -8706,12 +8720,13 @@ function handleKeydown(e) {
   if (isCorrect) {
     transitioning = true;
     clearHelp();
-    hideQuestionTimerArc();  // remove the arc for the answered question
+    showSuccessHintToast();
+    hideQuestionTimerArc();
     clearInterval(timerInterval);
     const AnswerTimestampMs = performance.now() - startTime;
     setTimerState('green', 'right');
     titleEl.style.color = '#10b981'; // instant green — directs attention before hiding
-    requestAnimationFrame(() => titleEl.classList.add('hidden'));
+    setTimeout(() => titleEl.classList.add('hidden'), 350);
     fillProgressDot(10 - answersLeft);
     setTimeout(() => {
       titleEl.style.color = '';

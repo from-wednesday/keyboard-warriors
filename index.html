@@ -6,10 +6,10 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Keyboard Warriors</title>
+<title>beta</title>
 <script>
   const DefaultTitle = 'Keyboard Warriors';
-  const VersionLabel   = '0017';
+  const VersionLabel   = '0018';
   const TitlePrefix  = document.title !== DefaultTitle ? document.title.trim() + '_' : '';
   const DBG_DEVICE   = TitlePrefix + VersionLabel;
 </script>
@@ -996,7 +996,7 @@ function buildKeyboard(isMini) {
    KEYBOARD TOAST
 ══════════════════════════════════════ */
 const kbToastEl = document.getElementById('kbToast');
-let toastTimer = null;
+
 
 var _kwToastTimer = null;
 
@@ -2327,7 +2327,7 @@ function toggleHelp() {
     // Show hint in the stats-row toast pill — below the game panel, always readable
     kbToastEl.innerHTML = buildHintHTML(currentAnswer.replace(/\\\\/g, '\\'), '#10b981');
     kbToastEl.classList.add('show');
-    clearTimeout(toastTimer);
+    clearTimeout(_kwToastTimer);
     // Suppress the "Ready?" prompt while the hint is on screen
     _stopReadyPromptTimer();
     // If "Ready?" is already showing, clear it so it doesn't overlap the hint
@@ -2364,7 +2364,7 @@ function toggleHelp() {
 function showAutoHintToast() {
     kbToastEl.innerHTML = buildHintHTML(currentAnswer.replace(/\\\\/g, '\\'), '#f97316');
     kbToastEl.classList.add('show');
-    clearTimeout(toastTimer);
+    clearTimeout(_kwToastTimer);
 }
 function clearHelp() {
   clearTimeout(helpFadeTimer);
@@ -2573,7 +2573,9 @@ function confirmQuitNo() {
 
 function unpause() {
   gameState = 'playing';
-  // If diagnostic answer was revealed but player didn't re-test the shortcut,
+  transitioning = false;  // clear any skip/timeout animation interrupted by pausing
+  // If diagnostic answer was revealed
+
   // replace it now so the revealed answer isn't the first question on resumption.
   if (_blurPauseActive && _blurDiagnosticAnswerRevealed && _blurDiagnosticShortcutToken) {
     _blurDiagnosticReplaceQuestion();
@@ -4152,11 +4154,7 @@ function _closeAllModalsInstant() {
 }
 
 // Legacy aliases — kept so remaining call sites compile
-function openKbModal()       { openSettings('panelKeyboard'); }
-function closeKbModal()      { closeSettings(); }
 function toggleKbModal()     { activeSettings === 'panelKeyboard' ? closeSettings() : openSettings('panelKeyboard'); }
-function openBrowserModal()  { openSettings('panelBrowser'); }
-function closeBrowserModal() { closeSettings(); }
 function toggleBrowserModal(){ activeSettings === 'panelBrowser'  ? closeSettings() : openSettings('panelBrowser');  }
 function _renderKeyChips(label) {
   var em      = '\u2014';
@@ -7781,22 +7779,42 @@ function _refreshCheatSheet() {
   // Build a map of shortcut token → dot colour based on runData outcomes.
   // This is computed fresh each time the panel opens and does not persist.
   var AnsweredOutcomeColourMap = {};
-  runData.forEach(function(Entry) {
-    var Question = questionPool[Entry.questionIndex];
-    if (!Question) return;
-    var Token = Question.shortcut;
+  runData.forEach(function(OutcomeEntry) {
+    var OutcomeQ = questionPool[OutcomeEntry.questionIndex];
+    if (!OutcomeQ) return;
+    var OutcomeToken = OutcomeQ.shortcut;
     var Colour;
-    if (Entry.endType === 'success' && Entry.wrongKeyCount === 0 && Entry.hintUsedAtMs === null) {
+    if (OutcomeEntry.endType === 'success' && OutcomeEntry.wrongKeyCount === 0 && OutcomeEntry.hintUsedAtMs === null) {
       Colour = '#10b981'; // green: clean success
-    } else if (Entry.endType === 'success') {
+    } else if (OutcomeEntry.endType === 'success') {
       Colour = '#f5c842'; // yellow: success but wrong keys or hint used
     } else {
       Colour = '#ef4444'; // red: skip or timeout
     }
-    // If a token appears multiple times, the most recent entry wins (runData is in order)
-    AnsweredOutcomeColourMap[Token] = Colour;
+    AnsweredOutcomeColourMap[OutcomeToken] = Colour;
   });
 
+var AnsweredTimingMap = {};
+  runData.forEach(function(TimingEntry) {
+    var TimingQ = questionPool[TimingEntry.questionIndex];
+    if (!TimingQ) return;
+    var TimingToken = TimingQ.shortcut;
+    var TimeDisplay;
+    var TimeIsStrikethrough = false;
+    if (TimingEntry.endType === 'skip') {
+      TimeDisplay = 'skip';
+    } else if (TimingEntry.endType === 'timeout') {
+      var TimerVal = questionTimer;
+      TimeDisplay = TimerVal !== null ? String(TimerVal) + 's' : null;
+      TimeIsStrikethrough = true;
+    } else if (TimingEntry.timeToAnswerMs !== null) {
+      TimeDisplay = (TimingEntry.timeToAnswerMs / 1000).toFixed(1) + 's';
+    } else {
+      TimeDisplay = null;
+    }
+    AnsweredTimingMap[TimingToken] = { text: TimeDisplay, strikethrough: TimeIsStrikethrough };
+  });
+  
 
   if (OrderedPool.length === 0) {
     if (HeadingEl) HeadingEl.style.visibility = 'hidden';
@@ -7855,7 +7873,16 @@ var dot = document.createElement('span');
       label.className = 'sp-report-question-label';
       label.textContent = (Question.display || '').replace(/\\\\/g, '\\');
 
-      li.appendChild(dot);
+         li.appendChild(dot);
+      var TimingData = AnsweredTimingMap[Question.shortcut] || null;
+      if (TimingData && TimingData.text) {
+        var TimeElement = document.createElement('small');
+        TimeElement.textContent = TimingData.text;
+        TimeElement.style.cssText = 'color:#9ca3af;flex-shrink:0;margin-left:-3px;margin-right:4px;margin-top:2px;line-height:1.5;white-space:nowrap;';
+        if (TimingData.strikethrough) TimeElement.style.textDecoration = 'line-through';
+        li.appendChild(TimeElement);
+      }
+        
       li.appendChild(label);
       li.appendChild(BuildShortcutKeyChips(ShortcutDisplay, true));
       List.appendChild(li);

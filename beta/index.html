@@ -7829,10 +7829,8 @@ var AnsweredTimingMap = {};
     var TimeIsStrikethrough = false;
     if (TimingEntry.endType === 'skip') {
       TimeDisplay = 'skip';
-    } else if (TimingEntry.endType === 'timeout') {
-      var TimerVal = questionTimer;
-      TimeDisplay = TimerVal !== null ? String(TimerVal) + 's' : null;
-      TimeIsStrikethrough = true;
+     } else if (TimingEntry.endType === 'timeout') {
+      TimeDisplay = 'none';
     } else if (TimingEntry.timeToAnswerMs !== null) {
       TimeDisplay = (TimingEntry.timeToAnswerMs / 1000).toFixed(1) + 's';
     } else {
@@ -7905,7 +7903,7 @@ var dot = document.createElement('span');
         var TimeElement = document.createElement('small');
         TimeElement.textContent = TimingData.text;
         TimeElement.style.cssText = 'color:#9ca3af;flex-shrink:0;margin-left:-3px;margin-right:4px;margin-top:2px;line-height:1.5;white-space:nowrap;';
-        if (TimingData.strikethrough) TimeElement.style.textDecoration = 'line-through';
+
         li.appendChild(TimeElement);
       }
         

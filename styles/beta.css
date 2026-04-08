@@ -1,6 +1,6 @@
 /* ═══════════════════════════════════════════════════
-   beta.css — Keyboard Warriors
-   Externalised from index_beta.html, April 2026
+   Keyboard Warriors CSS
+   externalised from the HTML file
    Load order: @import → Block 1 → Block 3 → misc
    Do not reorder major sections.
    ═══════════════════════════════════════════════════ */
@@ -409,35 +409,7 @@ body {
 #title.strike  { text-decoration: line-through; opacity: 0.45; transition: opacity 0.5s ease; }
 #title.strike.fading { opacity: 0; }
 #title.blurred { filter: blur(6px); opacity: 0.6; user-select: none; }
-#confirmHeading {
-  font-size: 24px;
-  font-weight: 600;
-  text-align: center;
-  line-height: 1.3;
-  color: #1f2937;
-  white-space: pre-line;
-  position: absolute;
-  left: -12px; right: -12px;
-  top: 50%; transform: translateY(-50%);
-  z-index: 2;
-  pointer-events: none;
-  padding: 14px 20px;
-  border-radius: 10px;
-  background: transparent;
-  overflow: visible;
-}
-/* The frosted background is constrained to the gameContainer interior via
-   clip-path on #gameContainer. The pseudo-element uses absolute positioning
-   inset from the heading's own edges. */
-#confirmHeading:not(:empty)::before {
-  content: '';
-  position: absolute;
-  inset: 6px 0;
-  border-radius: 8px;
-  background: rgba(224, 242, 254, 0.33);
-  backdrop-filter: blur(2px);
-  z-index: -1;
-}
+
 #title.blur-instant,
 #questionRow.blur-instant { transition: none !important; }
 #questionRow.blurred { filter: blur(3px); opacity: 0.75; user-select: none; }

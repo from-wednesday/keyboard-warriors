@@ -114,7 +114,7 @@
     </div>
     <div class="middlePanel">
       <div style="position:relative;display:flex;flex-direction:column;align-items:center;justify-content:center;width:100%;">
-          <h2 id="confirmHeading" style="display:none;"></h2>
+          
           <h2 id="title">Play Keyboard Warriors</h2>
           <p id="welcomeTagline"><em>Your keyboard shortcuts coach &amp; personal trainer.</em></p>
           <div id="countdownOverlay"><span id="countdownNum"></span></div>
@@ -3048,20 +3048,47 @@ function hideConfirmHeading() {
   }
 }
 
-// Hint variant: shows HTML content (key pill badges) without blurring #title,
-// since the player needs to read the hint against the visible question.
-function showHintInHeading(htmlContent) {
-  var el = document.getElementById('confirmHeading');
-  if (!el) return;
-  el.innerHTML = htmlContent;
-  el.style.display = 'block';
-}
 
-function clearHintFromHeading() {
-  var el = document.getElementById('confirmHeading');
-  if (!el) return;
-  el.style.display = 'none';
-  el.innerHTML = '';
+
+function _resetToIdleSilently() {
+  gameState = 'idle';
+  _wasPlaying = false;
+  _exitScoreClearConfirm();
+  _exitDiffConfirm();
+  _exitQuitConfirm();
+  _stopPauseInactivityTimer();
+  _stopReadyPromptTimer();
+  hideConfirmHeading();
+  var _wTag = document.getElementById('welcomeTagline');
+  if (_wTag) _wTag.style.display = 'none';
+  setAppSelectorGameActive(false);
+  _closeAllModalsInstant();
+  setKbPosition('face');
+  clearInterval(timerInterval);
+  clearTimeout(penaltyTimeout);
+  hideQuestionTimerArc();
+  endScreenInactivityTimer = null;
+  _enterReadyToUnpauseCleanup();
+  clearHelp();
+  clearAllLit();
+  heldKeys.clear();
+  mainBtn.textContent = 'Start';
+  mainBtn.style.background = '';
+  helpBtn.textContent = 'Help';
+  helpBtn.style.background = '';
+  helpBtn.style.color = '';
+  if (lockKeyEl) lockKeyEl.classList.remove('active');
+  questionCountEl.classList.remove('blurred', 'blur-instant');
+  document.getElementById('livesRow').classList.remove('blurred', 'blur-instant');
+  questionCountEl.innerHTML = ''; dotEls = [];
+  clearLivesRow();
+  scoreDisc.style.background = '';
+  scoreDisc.style.removeProperty('--face-rot');
+  currentMedal = null;
+  scoreDisc.className = 'scoreDisc';
+  timerDiv.textContent = '0:00';
+  greenHits = 0; totalHits = 0; hintPenaltyPct = 0;
+  updateAccuracyDisplay(); dbgRefreshCtx(); dbgRefreshAccuracy();
 }
 
 function resetToIdle() {
@@ -5834,9 +5861,7 @@ function confirmStartOverYes() {
       _syncSliderToValue('timer', null);
       _syncSliderToValue('lives', null);
       if (panelInner) { panelInner.style.transition = ''; panelInner.style.opacity = ''; }
-      // Close settings and quit the game, then show the welcome screen
-      _closeAllModalsInstant();
-      resetToIdle();
+      _resetToIdleSilently();
       _showWelcomeScreen();
     }, 320);
   }, 500);
@@ -5919,20 +5944,7 @@ function _returningStartOver() {
       _syncSliderToValue('timer', null);
       _syncSliderToValue('lives', null);
       if (panelInner) { panelInner.style.transition = ''; panelInner.style.opacity = ''; }
-      closeSettings();
-      _showWelcomeScreen();
-      bestRecord = { time: null, accuracy: null };
-      hasTrophy = false;
-      questionTimer = null;
-      playerLives   = null;
-      currentDifficulty = 'fundamentals';
-      _diffFirst = true;
-      setDiffState(-1);
-      updateBestDisplay();
-      _syncSliderToValue('timer', null);
-      _syncSliderToValue('lives', null);
-      if (panelInner) { panelInner.style.transition = ''; panelInner.style.opacity = ''; }
-      closeSettings();
+      _resetToIdleSilently();
       _showWelcomeScreen();
     }, 320);
   }, 500); // hold after pop before fading

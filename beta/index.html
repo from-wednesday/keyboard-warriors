@@ -3845,24 +3845,33 @@ function _unpinTooltip() {
 
 var _PANEL_TIPS = {
   panelPause: function() {
-    var pool = [
-      'we have suspended the timer',
-      'someone called a time-out',
-      'quit or continue?',
-      'you have time for coffee',
-      'have you tried the padlock key?',
-      'your progress is saved',
-      'the help button reveals the answer',
-      'wrong keys light up orange',
-      'accuracy penalties decay as you improve',
+  if (gameState === 'idle' || gameState === 'finished') {
+    return [
+      'I\'m ready when you are.',
+      'Resetting your high scores after raising difficulty makes them meaningful again.',
+      'Playing a few rounds of this each night is sure to lift your skills.',
+      'Playing too many rounds in a row diminishes their benefit. Breaks are important.',
+      'Medals are awarded based on past performances, so clearing data will bring back the gold!',
     ];
-    if (playerLives === null) {
-      pool.push('skipping costs five seconds');
-    } else {
-      pool.push('skipping questions breaks hearts');
-    }
-    return pool;
-  },
+  }
+  var pool = [
+    'we have suspended the timer',
+    'someone called a time-out',
+    'quit or continue?',
+    'you have time for coffee',
+    'have you tried the padlock key?',
+    'your progress is saved',
+    'the help button reveals the answer',
+    'wrong keys light up orange',
+    'accuracy penalties decay as you improve',
+  ];
+  if (playerLives === null) {
+    pool.push('skipping costs five seconds');
+  } else {
+    pool.push('skipping questions breaks hearts');
+  }
+  return pool;
+},
   panelBrowser: function() {
     var pool = [
       'manage conflicted keys here',

@@ -142,7 +142,7 @@
   },
   {
     "shortcut": "SHIFT",
-    "display": "hold to Add to active selection",
+    "display": "hold to Add to the selection",
     "mac_sc": "⇧ Shift",
     "pc_sc": "⇧ Shift",
     "pc_safe": true,
@@ -208,7 +208,7 @@
   },
   {
     "shortcut": "CMD+SHIFT+G",
-    "display": "Ungroup selected objects",
+    "display": "Ungroup objects",
     "mac_sc": "⌘ ⇧ G",
     "pc_sc": "Ctrl ⇧ G",
     "pc_safe": true,
@@ -247,7 +247,7 @@
 },
   {
     "shortcut": "CMD+SHIFT+A",
-    "display": "Deselect all",
+    "display": "Deselect ALL",
     "mac_sc": "⌘ ⇧ A",
     "pc_sc": "Ctrl ⇧ A",
     "pc_safe": true,
@@ -319,7 +319,7 @@
   },
   {
     "shortcut": "ARROWLEFT",
-    "display": "Nudge selection 1px left",
+    "display": "nudge 1px Left",
     "mac_sc": "← ",
     "pc_sc": "← ",
     "pc_safe": true,
@@ -328,7 +328,7 @@
   },
   {
     "shortcut": "ARROWRIGHT",
-    "display": "Nudge selection 1px right",
+    "display": "nudge 1px Right",
     "mac_sc": "→ ",
     "pc_sc": "→ ",
     "pc_safe": true,
@@ -337,7 +337,7 @@
   },
   {
     "shortcut": "ARROWUP",
-    "display": "Nudge selection 1px up",
+    "display": "nudge 1px UP",
     "mac_sc": "↑ ",
     "pc_sc": "↑ ",
     "pc_safe": true,
@@ -346,7 +346,7 @@
   },
   {
     "shortcut": "ARROWDOWN",
-    "display": "Nudge selection 1px down",
+    "display": "nudge 1px Down",
     "mac_sc": "↓ ",
     "pc_sc": "↓ ",
     "pc_safe": true,
@@ -355,7 +355,7 @@
   },
   {
     "shortcut": "SHIFT+ARROWLEFT",
-    "display": "Nudge selection 10px left",
+    "display": "nudge 10px Left",
     "mac_sc": "⇧ ← ",
     "pc_sc": "⇧ ← ",
     "pc_safe": true,
@@ -364,7 +364,7 @@
   },
   {
     "shortcut": "SHIFT+ARROWRIGHT",
-    "display": "Nudge selection 10px right",
+    "display": "nudge 10px Right",
     "mac_sc": "⇧ → ",
     "pc_sc": "⇧ → ",
     "pc_safe": true,
@@ -373,7 +373,7 @@
   },
   {
     "shortcut": "SHIFT+ARROWUP",
-    "display": "Nudge selection 10px up",
+    "display": "nudge 10px UP",
     "mac_sc": "⇧ ↑ ",
     "pc_sc": "⇧ ↑ ",
     "pc_safe": true,
@@ -382,7 +382,7 @@
   },
   {
     "shortcut": "SHIFT+ARROWDOWN",
-    "display": "Nudge selection 10px down",
+    "display": "nudge 10px Down",
     "mac_sc": "⇧ ↓ ",
     "pc_sc": "⇧ ↓ ",
     "pc_safe": true,
@@ -697,7 +697,7 @@
   },
   {
     "shortcut": "CMD",
-    "display": "hold while resizing to override constraints",
+    "display": "hold while resizing to Override Constraints",
     "mac_sc": "⌘ ",
     "pc_sc": "Ctrl",
     "pc_safe": true,
@@ -904,7 +904,7 @@
   },
   {
     "shortcut": "CMD+X",
-    "display": "Cut the selection",
+    "display": "CUT!",
     "mac_sc": "⌘ X",
     "pc_sc": "Ctrl X",
     "pc_safe": true,
@@ -913,7 +913,7 @@
   },
   {
     "shortcut": "CMD+C",
-    "display": "Copy the selection",
+    "display": "Copy",
     "mac_sc": "⌘ C",
     "pc_sc": "Ctrl C",
     "pc_safe": true,

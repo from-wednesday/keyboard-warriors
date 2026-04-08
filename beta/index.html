@@ -2237,7 +2237,7 @@ function helpButtonClick() {
 
 /* CHANGE 5: clicking the ⏸ timer unpauses */
 function scoreDiscClick() {
-  if (transitioning) return;
+if (transitioning && gameState !== 'finished') return;
   if (gameState === 'counting')  { cancelCountdown(); return; }
   if (gameState === 'playing') { enterPause(); return; }
   if (gameState === 'readyToUnpause') { _enterReadyToUnpauseCleanup(); enterPause(); return; }
@@ -4504,14 +4504,14 @@ function _refreshBrowserContent() {
 document.getElementById('kbIconWrap').addEventListener('pointerdown', function(e) {
   e.stopPropagation();
   e.preventDefault();
-  if (transitioning) return;
+if (transitioning && gameState !== 'finished') return;
   resetEndScreenInactivityTimer();
   toggleKbModal();
 });
 document.getElementById('brIconWrap').addEventListener('pointerdown', function(e) {
   e.stopPropagation();
   e.preventDefault();
-  if (transitioning) return;
+if (transitioning && gameState !== 'finished') return;
   resetEndScreenInactivityTimer();
   toggleBrowserModal();
 
@@ -4520,7 +4520,7 @@ document.getElementById('brIconWrap').addEventListener('pointerdown', function(e
 document.getElementById('diffIconWrap').addEventListener('pointerdown', function(e) {
   e.stopPropagation();
   e.preventDefault();
-  if (transitioning) return;
+if (transitioning && gameState !== 'finished') return;
   diffIconClick();
 });
 

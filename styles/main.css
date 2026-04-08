@@ -1,6 +1,6 @@
 /* ═══════════════════════════════════════════════════
-   beta.css — Keyboard Warriors
-   Externalised from index_beta.html, April 2026
+   Keyboard Warriors CSS
+   externalised from the HTML file
    Load order: @import → Block 1 → Block 3 → misc
    Do not reorder major sections.
    ═══════════════════════════════════════════════════ */
@@ -3096,7 +3096,7 @@ body.returning-screen #diffIconWrap .icon-tip { display: none; }
   #browserIcon.pulse:hover                    { transform: none; transition: none; }
   #diffIcon:hover                             { transform: none; }
   .key.lock-key:hover                         { background: #f5f5f7; }
-  #kbIconWrap:hover  .icon-tip                { opacity: 0; }
-  #brIconWrap:hover  .icon-tip                { opacity: 0; }
-  #diffIconWrap:hover .icon-tip               { opacity: 0; }
+  #kbIconWrap:not(.sp-icon-active):hover  .icon-tip  { opacity: 0; }
+  #brIconWrap:not(.sp-icon-active):hover  .icon-tip  { opacity: 0; }
+  #diffIconWrap:not(.sp-icon-active):hover .icon-tip { opacity: 0; }
 }

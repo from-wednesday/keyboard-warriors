@@ -2235,6 +2235,7 @@ function helpButtonClick() {
 
 /* CHANGE 5: clicking the ⏸ timer unpauses */
 function scoreDiscClick() {
+  if (transitioning) return;
   if (gameState === 'counting')  { cancelCountdown(); return; }
   if (gameState === 'playing') { enterPause(); return; }
   if (gameState === 'readyToUnpause') { _enterReadyToUnpauseCleanup(); enterPause(); return; }
@@ -2385,8 +2386,8 @@ function clearHelp() {
 
 /* ══════════════════════════════════════
    PAUSE / EASTER EGG
-══════════════════════════════════════ */
-function openPadlockPanel() {
+══════════════════════════════════════ */function openPadlockPanel() {
+  if (transitioning) return;
   if (gameState === 'counting') return;
   // If the padlock panel is already open, close it.
   if (activeSettings === 'panelPadlock') { closeSettings(); return; }

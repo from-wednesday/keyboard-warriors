@@ -7913,7 +7913,7 @@ var dot = document.createElement('span');
       if (TimingData && TimingData.text) {
         var TimeElement = document.createElement('small');
         TimeElement.textContent = TimingData.text;
-        TimeElement.style.cssText = 'color:#9ca3af;flex-shrink:0;margin-left:-3px;margin-right:4px;margin-top:2px;line-height:1.5;white-space:nowrap;';
+        TimeElement.style.cssText = 'color:#9ca3af;flex-shrink:0;margin-left:-3px;margin-right:4px;margin-top:2px;line-height:1.5;white-space:nowrap;' + (TimingData.text === 'none' ? 'font-size:9px;letter-spacing:0.01em;' : '');
 
         li.appendChild(TimeElement);
       }

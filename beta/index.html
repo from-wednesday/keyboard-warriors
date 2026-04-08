@@ -7341,6 +7341,13 @@ function finalizeRunData(completedRun, currentPool, DefeatCount) {
   const accuracyPercent = calcAccuracy() ?? 0;
   const allFast         = successTimes.length > 0 && medianTime !== null && medianTime < 2500;
 
+  // Near-miss: a timeout where the player pressed the correct key AFTER the timer
+  // expired (timeToAnswerMs is set during the 2s window following expiry).
+  // This means the player knew the answer but ran out of time — they are close.
+  const nearMissCount = completedRun.filter(function(e) {
+    return e.endType === 'timeout' && e.timeToAnswerMs !== null;
+  }).length;
+
   // Hints are only viable when the timer is infinite or 10 seconds
   const hintsWereViable = (questionTimer === null || questionTimer === 10);
 
@@ -7426,7 +7433,28 @@ function finalizeRunData(completedRun, currentPool, DefeatCount) {
       }
     }
   }
-
+  // ── Near-miss messages (timer-specific encouragement) ────────────────────
+  // Fires when the player knew the answer but the clock beat them (2+ times).
+  // Takes priority over cat4_timer_down and difficulty-up suggestions.
+  var NearMissMessages = [];
+  if (nearMissCount >= 2 && questionTimer !== null) {
+    var NearMissPool = [
+      { key: 'near_miss_a', text: 'Hang in there — you\'re so close! You knew several of those answers, the timer just beat you to it. Keep going at this setting.' },
+      { key: 'near_miss_b', text: 'This timer is really testing you, but I can see you improving! Don\'t give up.' },
+      { key: 'near_miss_c', text: 'You are right on the edge of a breakthrough. You pressed the right key after the timer on several questions — that means the knowledge is there. A bit more speed and you will have it.' },
+      { key: 'near_miss_d', text: 'So close! You got the answer several times, just a fraction too late. That is not a knowledge problem, that is a speed problem — and speed comes with repetition. Stick with it.' },
+      { key: 'near_miss_e', text: 'The answers are clearly in there. The timer is just outrunning your recall right now. That gap closes fast — stay at this setting and keep building the reps.' },
+    ];
+    NearMissPool.forEach(function(m) {
+      if (RecentMessageKeys.indexOf(m.key) === -1) {
+        NearMissMessages.push({ key: m.key, text: m.text, settingSuggested: null });
+      }
+    });
+    // Fallback if all recent: always allow the first one through
+    if (NearMissMessages.length === 0) {
+      NearMissMessages.push({ key: 'near_miss_a', text: NearMissPool[0].text, settingSuggested: null });
+    }
+  }
   // ── Cat 3: Specific comments on what just happened ────────────────────────
   if (hasTrophy && playerLives !== null && livesRemaining === 1) {
     var OneLiveMessages = [
@@ -7762,22 +7790,36 @@ function finalizeRunData(completedRun, currentPool, DefeatCount) {
     if (pool.length === 0) return null;
     return pool[Math.floor(Math.random() * pool.length)];
   }
-
-  // Priority: memory-aware → timer/lives (primary growth levers for trophy holders)
+  // Priority: near-miss (overrides timer-down and difficulty-up) → memory-aware
+  // → timer/lives (primary growth levers for trophy holders)
   // → specific run commentary → literacy recovery → difficulty (secondary)
   // → general encouragement.
   // Timer/lives always beat difficulty suggestions so Normal mode stays the focus.
+  // When near-misses occurred, suppress cat4_timer_down and difficulty-up suggestions
+  // so we don't tell someone to push harder when they are already on the verge.
+  var HasNearMisses = nearMissCount >= 2 && questionTimer !== null;
+  if (HasNearMisses) {
+    TimerAndLivesMessages = TimerAndLivesMessages.filter(function(m) {
+      return m.key !== 'cat4_timer_down';
+    });
+    DifficultyMessages = DifficultyMessages.filter(function(m) {
+      return m.key !== 'cat4_diff_up';
+    });
+  }
+
   var HasFewWeaknessesThisRound = questionSummaries.filter(function(s) { return s.isWeakness; }).length <= 1;
   var SpecificOrTimerLives = HasFewWeaknessesThisRound
     ? PickRandom(SpecificMessages.concat(TimerAndLivesMessages))
     : PickRandom(SpecificMessages);
 
-  var PrimaryMessage = PickRandom(MemoryAwareMessages)
+  var PrimaryMessage = PickRandom(NearMissMessages)
+    || PickRandom(MemoryAwareMessages)
     || PickRandom(TimerAndLivesMessages)
     || SpecificOrTimerLives
     || PickRandom(LiteracyMessages)
     || PickRandom(DifficultyMessages)
     || PickRandom(GeneralMessages);
+
 
   if (PrimaryMessage) {
     var RawSuggestionForMemory = PrimaryMessage.settingSuggested || null;

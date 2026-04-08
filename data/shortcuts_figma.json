@@ -234,19 +234,17 @@
     "group": ""
   },
   {
-    "shortcut": "CMD+D",
-    "display": "Duplicate the selection",
-    "mac_sc": "⌘ D",
-    "pc_sc": "Ctrl D",
-    "pc_safe": true,
-    "difficulty": 1,
-    "group": "",
-    "alternates": [
-
-          "OPTION"
-
-        ]
-  },
+  "shortcut": "CMD+D",
+  "display": "Duplicate the selection",
+  "mac_sc": "⌘ D",
+  "pc_sc": "Ctrl D",
+  "pc_safe": true,
+  "difficulty": 1,
+  "group": "",
+  "alternates": [
+    "OPTION"
+  ]
+},
   {
     "shortcut": "CMD+SHIFT+A",
     "display": "Deselect all",

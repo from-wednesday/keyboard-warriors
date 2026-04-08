@@ -3012,34 +3012,39 @@ function confirmDiffChangeNo() {
   _startPauseInactivityTimer();
 }
 
+var _savedTitleTextForConfirm    = '';
+var _savedTitleBlurredForConfirm = false;
+var _confirmHeadingActive        = false;
+
 function showConfirmHeading(text, blurTitle, showBracket) {
-  var el = document.getElementById('confirmHeading');
-  if (!el) return;
-  el.textContent = text;
-  el.style.display = 'block';
-  if (blurTitle !== false) {
-    titleEl.classList.add('blurred');
-    questionCountEl.classList.add('blurred');
-    document.getElementById('livesRow').classList.add('blurred');
+  if (!_confirmHeadingActive) {
+    _savedTitleTextForConfirm    = titleEl.textContent;
+    _savedTitleBlurredForConfirm = titleEl.classList.contains('blurred');
+    _confirmHeadingActive        = true;
   }
+  titleEl.classList.remove('blurred');
+  titleEl.className = '';
+  titleEl.textContent = text;
+  questionCountEl.classList.add('blurred');
+  document.getElementById('livesRow').classList.add('blurred');
   var lp = document.querySelector('.leftPanel');
   if (lp) lp.classList.toggle('showing-confirm', showBracket === true);
 }
 
 function hideConfirmHeading() {
-  var el = document.getElementById('confirmHeading');
-  if (!el) return;
-  el.style.display = 'none';
-  el.innerHTML = '';
+  if (!_confirmHeadingActive) return;
+  _confirmHeadingActive = false;
+  titleEl.className = '';
+  titleEl.textContent = _savedTitleTextForConfirm;
+  if (_savedTitleBlurredForConfirm) titleEl.classList.add('blurred');
+  _savedTitleTextForConfirm    = '';
+  _savedTitleBlurredForConfirm = false;
   var lp = document.querySelector('.leftPanel');
   if (lp) lp.classList.remove('showing-confirm');
-  // Remove any lingering blur that was set by a confirm heading.
-  // Only safe to do in states where blur has no other purpose.
   var nonBlurStates = ['idle', 'finished', 'welcome'];
   if (nonBlurStates.indexOf(gameState) !== -1) {
-    titleEl.classList.remove('blurred');
     questionCountEl.classList.remove('blurred');
-  document.getElementById('livesRow').classList.remove('blurred');
+    document.getElementById('livesRow').classList.remove('blurred');
   }
 }
 
@@ -7914,7 +7919,7 @@ var dot = document.createElement('span');
       if (TimingData && TimingData.text) {
         var TimeElement = document.createElement('small');
         TimeElement.textContent = TimingData.text;
-TimeElement.style.cssText = 'color:#9ca3af;flex-shrink:0;margin-left:-3px;margin-right:4px;margin-top:2px;line-height:1.5;white-space:nowrap;' + (TimingData.text === 'none' ? 'font-size:9px;letter-spacing:0.01em;margin-right:2px;' : '');
+TimeElement.style.cssText = 'color:#9ca3af;flex-shrink:0;margin-left:-3px;margin-right:4px;margin-top:2px;line-height:1.5;white-space:nowrap;' + (TimingData.text === 'none' ? 'font-size:9px;letter-spacing:0.01em;margin-right:3px;' : '');
 
         li.appendChild(TimeElement);
       }

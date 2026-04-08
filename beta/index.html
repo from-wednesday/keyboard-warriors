@@ -1950,7 +1950,9 @@ let partialShortcutNudgeTimer    = null;
 let partialShortcutFollowUpTimer = null;
 let partialShortcutNudgeArmed    = false;
 let partialNudgeFiredThisQuestion = false;  // true once the nudge toast actually fires
-let partialCorrectKeyPressedThisQuestion = false; // true if a correct key was pressed then released without completing
+let partialCorrectKeyPressedThisQuestion = false;
+let nearMissEntry = null;   // timeout runData entry; timeToAnswerMs filled if player presses correct answer in the 2s window
+let nearMissAnswer = '';    // shortcut token active when the question timer expired // true if a correct key was pressed then released without completing
 let consecutiveExtraKeyCount     = 0;  // increments when correct keys + a wrong key are all present
 let endScreenInactivityTimer      = null;
 let readyToUnpauseInactivityTimer = null;
@@ -6339,6 +6341,16 @@ function resumeQuestionTimerArc() {
 function onQuestionTimerExpired() {
   if (gameState !== 'playing' || transitioning) return;
   transitioning = true;
+  nearMissAnswer = currentAnswer;
+  nearMissEntry = {
+    questionIndex,
+    timeToAnswerMs: null,
+    hintUsedAtMs,
+    wrongKeyCount,
+    partialNudgeFired: partialNudgeFiredThisQuestion,
+    partialCorrectKey: partialCorrectKeyPressedThisQuestion,
+    endType: 'timeout'
+  };
   clearHelp();
   showAutoHintToast();
 
@@ -6370,15 +6382,9 @@ function onQuestionTimerExpired() {
         enterDefeat();
         return;
       }
-      runData.push({
-  questionIndex,
-  timeToAnswerMs: null,
-  hintUsedAtMs,
-  wrongKeyCount,
-  partialNudgeFired: partialNudgeFiredThisQuestion,
-  partialCorrectKey: partialCorrectKeyPressedThisQuestion,
-  endType: 'timeout'
-});
+      runData.push(nearMissEntry);
+      nearMissEntry = null;
+      nearMissAnswer = '';
       advanceQuestion();
       if (gameState === 'playing') {
         resetscoreDisc();
@@ -6392,15 +6398,9 @@ function onQuestionTimerExpired() {
   setTimeout(function() { titleEl.classList.add('fading'); }, 800);
 
   setTimeout(function() {
-  runData.push({
-  questionIndex,
-  timeToAnswerMs: null,
-  hintUsedAtMs,
-  wrongKeyCount,
-  partialNudgeFired: partialNudgeFiredThisQuestion,
-  partialCorrectKey: partialCorrectKeyPressedThisQuestion,
-  endType: 'timeout'
-});
+    runData.push(nearMissEntry);
+    nearMissEntry = null;
+    nearMissAnswer = '';
     advanceQuestion();
     if (gameState === 'playing') {
       resetscoreDisc();
@@ -7830,7 +7830,9 @@ var AnsweredTimingMap = {};
     if (TimingEntry.endType === 'skip') {
       TimeDisplay = 'skip';
      } else if (TimingEntry.endType === 'timeout') {
-      TimeDisplay = 'none';
+      TimeDisplay = (TimingEntry.timeToAnswerMs !== null)
+        ? (TimingEntry.timeToAnswerMs / 1000).toFixed(1) + 's'
+        : 'none';
     } else if (TimingEntry.timeToAnswerMs !== null) {
       TimeDisplay = (TimingEntry.timeToAnswerMs / 1000).toFixed(1) + 's';
     } else {
@@ -8723,6 +8725,13 @@ function handleKeydown(e) {
     if (gameState === 'readyToUnpause') { e.preventDefault(); _enterReadyToUnpauseCleanup(); beginResumeCountdown(); return; }
   }
   if (gameState === 'paused' || gameState === 'readyToUnpause' || gameState === 'confirm-reset' || gameState === 'confirm-quit') { e.preventDefault(); return; }
+  if (transitioning && nearMissAnswer && nearMissEntry && nearMissEntry.timeToAnswerMs === null) {
+    if (matchesShortcut(e, nearMissAnswer)) {
+      nearMissEntry.timeToAnswerMs = performance.now() - startTime;
+      e.preventDefault();
+      return;
+    }
+  }
   if (gameState !== 'playing' || transitioning) { e.preventDefault(); return; }
 
   // Check correctness: sticky mode uses accumulated toggled keys; normal uses simultaneity

@@ -4501,20 +4501,23 @@ function _refreshBrowserContent() {
 document.getElementById('kbIconWrap').addEventListener('pointerdown', function(e) {
   e.stopPropagation();
   e.preventDefault();
+  if (transitioning) return;
   resetEndScreenInactivityTimer();
   toggleKbModal();
 });
-
 document.getElementById('brIconWrap').addEventListener('pointerdown', function(e) {
   e.stopPropagation();
   e.preventDefault();
+  if (transitioning) return;
   resetEndScreenInactivityTimer();
   toggleBrowserModal();
+
 });
 
 document.getElementById('diffIconWrap').addEventListener('pointerdown', function(e) {
   e.stopPropagation();
   e.preventDefault();
+  if (transitioning) return;
   diffIconClick();
 });
 

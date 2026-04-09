@@ -2366,7 +2366,7 @@ function toggleHelp() {
     _startReadyPromptTimer();
   }
 function showAutoHintToast() {
-    kbToastEl.innerHTML = buildHintHTML(currentAnswer.replace(/\/g, '\'), '#f97316');
+    kbToastEl.innerHTML = buildHintHTML(currentAnswer.replace(/\\\\/g, '\\'), '#f97316');
     kbToastEl.classList.add('show');
     clearTimeout(_kwToastTimer);
     clearTimeout(_kbToastAutoHideTimer);
@@ -2374,7 +2374,7 @@ function showAutoHintToast() {
 }
 
 function showSuccessHintToast() {
-    kbToastEl.innerHTML = buildHintHTML(currentAnswer.replace(/\\/g, '\'), '#10b981');
+    kbToastEl.innerHTML = buildHintHTML(currentAnswer.replace(/\\\\/g, '\\'), '#10b981');
     kbToastEl.classList.add('show');
     clearTimeout(_kbToastAutoHideTimer);
     _kbToastAutoHideTimer = setTimeout(function() { kbToastEl.classList.remove('show'); }, 1200);

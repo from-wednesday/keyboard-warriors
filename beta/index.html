@@ -312,7 +312,7 @@
     <div class="sp-report-col-header">
       <div class="sp-endgame-header-left" onclick="_toggleEndGameCheatSheet()" id="reportCardToggleTrigger">
         <p class="sp-small-card-title">REPORT CARD</p>
-        <svg class="sp-endgame-search-icon" viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <svg class="sp-endgame-search-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
           <circle cx="11" cy="11" r="7"/>
           <line x1="16.5" y1="16.5" x2="22" y2="22"/>
         </svg>
@@ -332,7 +332,10 @@
   </div>
 </div>
   <!-- ── EndGame CheatSheet ─────────────────────────────── -->
-    <div id="panelEndGameCheatSheet" class="sp-page">
+    <svg class="sp-endgame-search-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <circle cx="11" cy="11" r="7"/>
+          <line x1="16.5" y1="16.5" x2="22" y2="22"/>
+        </svg> id="panelEndGameCheatSheet" class="sp-page">
    <div class="sp-col sp-col-left">
         <div class="sp-report-col-header">
           <div class="sp-endgame-header-left" onclick="_toggleEndGameCheatSheet()">
@@ -7911,40 +7914,35 @@ function _refreshEndGameCheatSheet() {
 
   if (!lastCompletedReport) return;
 
+  // Dot colours and timing come from lastCompletedReport.questionSummaries,
+  // because runData has already been cleared by the time this function runs.
   var AnsweredOutcomeColourMap = {};
-  runData.forEach(function(OutcomeEntry) {
-    var OutcomeQuestion = questionPool[OutcomeEntry.questionIndex];
-    if (!OutcomeQuestion) return;
-    var OutcomeToken = OutcomeQuestion.shortcut;
+  var AnsweredTimingMap = {};
+  lastCompletedReport.questionSummaries.forEach(function(Summary) {
+    var Token = Summary.shortcutToken;
+    if (!Token) return;
     var DotColour;
-    if (OutcomeEntry.endType === 'success' && OutcomeEntry.wrongKeyCount === 0 && OutcomeEntry.hintUsedAtMs === null) {
+    if (Summary.endType === 'success' && Summary.wrongKeyCount === 0 && !Summary.hintUsed) {
       DotColour = '#10b981';
-    } else if (OutcomeEntry.endType === 'success') {
+    } else if (Summary.endType === 'success') {
       DotColour = '#f5c842';
     } else {
       DotColour = '#ef4444';
     }
-    AnsweredOutcomeColourMap[OutcomeToken] = DotColour;
-  });
-
-  var AnsweredTimingMap = {};
-  runData.forEach(function(TimingEntry) {
-    var TimingQuestion = questionPool[TimingEntry.questionIndex];
-    if (!TimingQuestion) return;
-    var TimingToken = TimingQuestion.shortcut;
+    AnsweredOutcomeColourMap[Token] = DotColour;
     var TimeDisplayText;
-    if (TimingEntry.endType === 'skip') {
+    if (Summary.endType === 'skip') {
       TimeDisplayText = 'skip';
-    } else if (TimingEntry.endType === 'timeout') {
-      TimeDisplayText = (TimingEntry.timeToAnswerMs !== null)
-        ? (TimingEntry.timeToAnswerMs / 1000).toFixed(1) + 's'
+    } else if (Summary.endType === 'timeout') {
+      TimeDisplayText = (Summary.timeToAnswerMs !== null)
+        ? (Summary.timeToAnswerMs / 1000).toFixed(1) + 's'
         : 'none';
-    } else if (TimingEntry.timeToAnswerMs !== null) {
-      TimeDisplayText = (TimingEntry.timeToAnswerMs / 1000).toFixed(1) + 's';
+    } else if (Summary.timeToAnswerMs !== null) {
+      TimeDisplayText = (Summary.timeToAnswerMs / 1000).toFixed(1) + 's';
     } else {
       TimeDisplayText = null;
     }
-    AnsweredTimingMap[TimingToken] = { text: TimeDisplayText };
+    AnsweredTimingMap[Token] = { text: TimeDisplayText };
   });
 
   var AllQuestions = lastCompletedReport.questionSummaries;
@@ -7972,6 +7970,7 @@ function _refreshEndGameCheatSheet() {
 
     var LabelElement = document.createElement('span');
     LabelElement.className = 'sp-report-question-label';
+    LabelElement.style.cssText = 'flex:1;min-width:0;display:block;';
     LabelElement.textContent = (SummaryItem.displayText || '').replace(/\\\\/g, '\\');
 
     ListItem.appendChild(DotElement);
@@ -7980,14 +7979,15 @@ function _refreshEndGameCheatSheet() {
     if (TimingData && TimingData.text) {
         var TimeElement = document.createElement('small');
         TimeElement.textContent = TimingData.text;
-        // Used the refined CSS from your second block
         TimeElement.style.cssText = 'color:#9ca3af;flex-shrink:0;margin-left:-3px;margin-right:4px;margin-top:2px;line-height:1.5;white-space:nowrap;'
             + (TimingData.text === 'none' ? 'font-size:9px;letter-spacing:0.01em;margin-right:3px;' : '');
         ListItem.appendChild(TimeElement);
     }
 
     ListItem.appendChild(LabelElement);
-    ListItem.appendChild(BuildShortcutKeyChips(ShortcutChipText, true));
+    var ChipsWrapper = BuildShortcutKeyChips(ShortcutChipText, true);
+    ChipsWrapper.style.flexShrink = '0';
+    ListItem.appendChild(ChipsWrapper);
     
     return ListItem;
 }

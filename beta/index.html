@@ -1973,6 +1973,8 @@ let helpActive    = false;
 // ── Adaptive training state ───────────────────────────────────────────────────
 let runData            = [];
 let startTime          = 0;
+let accumulatedPauseMs = 0;
+let pauseStartTime     = null;
 let hintUsedAtMs       = null;
 let wrongKeyCount      = 0;
 let lastCompletedReport = null;  // retained so report card remains visible until next game
@@ -2315,7 +2317,7 @@ if (transitioning && gameState !== 'finished') return;
    HELP — auto-fades after 3s
 ══════════════════════════════════════ */
 const KEY_DISPLAY_MAC = {
-  'CMD':        { sym: '⌘', name: 'Command' },
+  'CMD':        { sym: '⌘', name: '' },
   'SHIFT':      { sym: '⇧', name: 'Shift' },
   'OPTION':     { sym: '⌥', name: 'Option' },
   'RETURN':     { sym: '↩', name: 'Return' },
@@ -2366,8 +2368,9 @@ function toggleHelp() {
   if (!helpActive) {
     helpActive = true;
     if (hintUsedAtMs === null) {
-  hintUsedAtMs = performance.now() - startTime;
+  hintUsedAtMs = performance.now() - startTime - accumulatedPauseMs;
 }
+
     // Show hint in the stats-row toast pill — below the game panel, always readable
     kbToastEl.innerHTML = buildHintHTML(currentAnswer.replace(/\\\\/g, '\\'), '#10b981');
     kbToastEl.classList.add('show');
@@ -2541,6 +2544,7 @@ function _stopReadyPromptTimer() {
 
 function enterPause(instantBlur) {
   gameState = 'paused';
+  if (pauseStartTime === null) pauseStartTime = performance.now();
   clearInterval(timerInterval);
   clearTimeout(penaltyTimeout);
   pauseQuestionTimerArc();   // freeze arc at its current position
@@ -2629,6 +2633,7 @@ function confirmQuitNo() {
 
 function unpause() {
   gameState = 'playing';
+  if (pauseStartTime !== null) { accumulatedPauseMs += performance.now() - pauseStartTime; pauseStartTime = null; }
   transitioning = false;  // clear any skip/timeout animation interrupted by pausing
   // If diagnostic answer was revealed
 
@@ -6814,6 +6819,8 @@ questionPool = adaptivePool || shuffleArray(buildPool());  if (currentApp === 'A
   setTimeout(startQuestionTimerArc, 300);
   // Adaptive: reset per-question tracking
 startTime    = performance.now();
+accumulatedPauseMs = 0;
+pauseStartTime = null;
 hintUsedAtMs = null;
 wrongKeyCount = 0;
 partialNudgeFiredThisQuestion = false;
@@ -6921,6 +6928,8 @@ if (gameState === 'playing') mainBtn.textContent = 'Skip';
   heldKeys.clear();
   // Adaptive: reset per-question tracking
 startTime    = performance.now();
+accumulatedPauseMs = 0;
+pauseStartTime = null;
 hintUsedAtMs = null;
 wrongKeyCount = 0;
 partialNudgeFiredThisQuestion = false;
@@ -8984,7 +8993,7 @@ function handleKeydown(e) {
   if (gameState === 'paused' || gameState === 'readyToUnpause' || gameState === 'confirm-reset' || gameState === 'confirm-quit') { e.preventDefault(); return; }
   if (transitioning && nearMissAnswer && nearMissEntry && nearMissEntry.timeToAnswerMs === null) {
     if (matchesShortcut(e, nearMissAnswer)) {
-      nearMissEntry.timeToAnswerMs = performance.now() - startTime;
+      nearMissEntry.timeToAnswerMs = performance.now() - startTime - accumulatedPauseMs;
       e.preventDefault();
       return;
     }
@@ -8999,7 +9008,7 @@ function handleKeydown(e) {
     showSuccessHintToast();
     hideQuestionTimerArc();
     clearInterval(timerInterval);
-    const AnswerTimestampMs = performance.now() - startTime;
+    const AnswerTimestampMs = performance.now() - startTime - accumulatedPauseMs;
     setTimerState('green', 'right');
     titleEl.style.color = '#10b981'; // instant green — directs attention before hiding
     setTimeout(() => titleEl.classList.add('hidden'), 350);

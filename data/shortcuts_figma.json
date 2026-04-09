@@ -4,7 +4,6 @@
     "display": "view at 100% zoom",
     "mac_sc": "⌘ 1",
     "pc_sc": "Ctrl 1",
-    "pc_safe": true,
     "difficulty": 1,
     "group": ""
   },
@@ -13,7 +12,6 @@
     "display": "switch to the Selection tool",
     "mac_sc": "V",
     "pc_sc": "V",
-    "pc_safe": true,
     "difficulty": 1,
     "group": ""
   },
@@ -22,7 +20,6 @@
     "display": "pick up the Pen tool",
     "mac_sc": "P",
     "pc_sc": "P",
-    "pc_safe": true,
     "difficulty": 1,
     "group": ""
   },
@@ -31,7 +28,6 @@
     "display": "switch to the Type tool",
     "mac_sc": "T",
     "pc_sc": "T",
-    "pc_safe": true,
     "difficulty": 1,
     "group": ""
   },
@@ -40,7 +36,6 @@
     "display": "switch to the Line tool",
     "mac_sc": "L",
     "pc_sc": "L",
-    "pc_safe": true,
     "difficulty": 1,
     "group": ""
   },
@@ -49,7 +44,6 @@
     "display": "switch to the Ellipse tool",
     "mac_sc": "O",
     "pc_sc": "O",
-    "pc_safe": true,
     "difficulty": 1,
     "group": ""
   },
@@ -58,7 +52,6 @@
     "display": "switch to the Rectangle tool",
     "mac_sc": "M",
     "pc_sc": "M",
-    "pc_safe": true,
     "difficulty": 1,
     "group": ""
   },
@@ -67,7 +60,6 @@
     "display": "pick up the Eyedropper",
     "mac_sc": "I",
     "pc_sc": "I",
-    "pc_safe": true,
     "difficulty": 1,
     "group": "",
     "alternates": [
@@ -79,7 +71,6 @@
     "display": "pick up the Magnifying Glass",
     "mac_sc": "Z",
     "pc_sc": "Z",
-    "pc_safe": true,
     "difficulty": 1,
     "group": ""
   },
@@ -88,7 +79,6 @@
     "display": "select the Comment tool",
     "mac_sc": "C",
     "pc_sc": "C",
-    "pc_safe": true,
     "difficulty": 1,
     "group": ""
   },
@@ -97,7 +87,6 @@
     "display": "select the Hand tool",
     "mac_sc": "H",
     "pc_sc": "H",
-    "pc_safe": true,
     "difficulty": 1,
     "group": "",
     "alternates": [
@@ -109,7 +98,6 @@
     "display": "switch to the Frame tool",
     "mac_sc": "F",
     "pc_sc": "F",
-    "pc_safe": true,
     "difficulty": 1,
     "group": ""
   },
@@ -118,7 +106,6 @@
     "display": "swap Foreground & Background colours",
     "mac_sc": "X",
     "pc_sc": "X",
-    "pc_safe": true,
     "difficulty": 1,
     "group": ""
   },
@@ -127,7 +114,6 @@
     "display": "hold to quickly pan with Hand tool",
     "mac_sc": "Space",
     "pc_sc": "Space",
-    "pc_safe": true,
     "difficulty": 1,
     "group": ""
   },
@@ -136,7 +122,6 @@
     "display": "hold to Constrain Proportions while transforming",
     "mac_sc": "⇧ Shift",
     "pc_sc": "⇧ Shift",
-    "pc_safe": true,
     "difficulty": 1,
     "group": ""
   },
@@ -145,7 +130,6 @@
     "display": "hold to Add to the selection",
     "mac_sc": "⇧ Shift",
     "pc_sc": "⇧ Shift",
-    "pc_safe": true,
     "difficulty": 1,
     "group": ""
   },
@@ -154,7 +138,6 @@
     "display": "hold to transform from Centre",
     "mac_sc": "⌥ Option",
     "pc_sc": "Alt",
-    "pc_safe": true,
     "difficulty": 1,
     "group": ""
   },
@@ -163,7 +146,6 @@
     "display": "Zoom IN",
     "mac_sc": "⌘ =",
     "pc_sc": "Ctrl =",
-    "pc_safe": true,
     "difficulty": 1,
     "group": ""
   },
@@ -172,7 +154,6 @@
     "display": "Zoom OUT",
     "mac_sc": "⌘ -",
     "pc_sc": "Ctrl -",
-    "pc_safe": true,
     "difficulty": 1,
     "group": ""
   },
@@ -181,7 +162,6 @@
     "display": "show/hide Guides",
     "mac_sc": "⌘ ;",
     "pc_sc": "Ctrl ;",
-    "pc_safe": true,
     "difficulty": 1,
     "group": "",
     "alternates": [
@@ -193,7 +173,6 @@
     "display": "fit content to Screen",
     "mac_sc": "⌘ ⇧ H",
     "pc_sc": "Ctrl ⇧ H",
-    "pc_safe": true,
     "difficulty": 3,
     "group": ""
   },
@@ -202,7 +181,6 @@
     "display": "Group selected objects",
     "mac_sc": "⌘ G",
     "pc_sc": "Ctrl G",
-    "pc_safe": true,
     "difficulty": 1,
     "group": ""
   },
@@ -211,7 +189,6 @@
     "display": "Ungroup objects",
     "mac_sc": "⌘ ⇧ G",
     "pc_sc": "Ctrl ⇧ G",
-    "pc_safe": true,
     "difficulty": 3,
     "group": ""
   },
@@ -220,7 +197,6 @@
     "display": "Raise object one level in stack",
     "mac_sc": "⌘ ]",
     "pc_sc": "Ctrl ]",
-    "pc_safe": true,
     "difficulty": 1,
     "group": ""
   },
@@ -229,7 +205,6 @@
     "display": "Lower object one level in stack",
     "mac_sc": "⌘ [",
     "pc_sc": "Ctrl [",
-    "pc_safe": true,
     "difficulty": 1,
     "group": ""
   },
@@ -250,7 +225,6 @@
     "display": "Deselect ALL",
     "mac_sc": "⌘ ⇧ A",
     "pc_sc": "Ctrl ⇧ A",
-    "pc_safe": true,
     "difficulty": 3,
     "group": ""
   },
@@ -259,7 +233,6 @@
     "display": "Frame the selection",
     "mac_sc": "⌘ ⌥ G",
     "pc_sc": "Ctrl Alt G",
-    "pc_safe": true,
     "difficulty": 1,
     "group": ""
   },
@@ -268,7 +241,6 @@
     "display": "Flatten the selection",
     "mac_sc": "⌘ E",
     "pc_sc": "Ctrl E",
-    "pc_safe": true,
     "difficulty": 3,
     "group": ""
   },
@@ -277,7 +249,6 @@
     "display": "add Auto Layout",
     "mac_sc": "⇧ A",
     "pc_sc": "⇧ A",
-    "pc_safe": true,
     "difficulty": 1,
     "group": ""
   },
@@ -286,7 +257,6 @@
     "display": "Increase font size",
     "mac_sc": "⌘ ⇧ >",
     "pc_sc": "Ctrl ⇧ >",
-    "pc_safe": true,
     "difficulty": 3,
     "group": ""
   },
@@ -295,7 +265,6 @@
     "display": "Decrease font size",
     "mac_sc": "⌘ ⇧ <",
     "pc_sc": "Ctrl ⇧ <",
-    "pc_safe": true,
     "difficulty": 3,
     "group": ""
   },
@@ -304,7 +273,6 @@
     "display": "Align text left",
     "mac_sc": "⌘ ⇧ L",
     "pc_sc": "Ctrl ⇧ L",
-    "pc_safe": true,
     "difficulty": 3,
     "group": ""
   },
@@ -313,7 +281,6 @@
     "display": "Align text to centre",
     "mac_sc": "⌘ ⇧ C",
     "pc_sc": "Ctrl ⇧ C",
-    "pc_safe": true,
     "difficulty": 3,
     "group": ""
   },
@@ -322,7 +289,6 @@
     "display": "nudge 1px Left",
     "mac_sc": "← ",
     "pc_sc": "← ",
-    "pc_safe": true,
     "difficulty": 1,
     "group": "nudge"
   },
@@ -331,7 +297,6 @@
     "display": "nudge 1px Right",
     "mac_sc": "→ ",
     "pc_sc": "→ ",
-    "pc_safe": true,
     "difficulty": 1,
     "group": "nudge"
   },
@@ -340,7 +305,6 @@
     "display": "nudge 1px UP",
     "mac_sc": "↑ ",
     "pc_sc": "↑ ",
-    "pc_safe": true,
     "difficulty": 1,
     "group": "nudge"
   },
@@ -349,7 +313,6 @@
     "display": "nudge 1px Down",
     "mac_sc": "↓ ",
     "pc_sc": "↓ ",
-    "pc_safe": true,
     "difficulty": 1,
     "group": "nudge"
   },
@@ -358,7 +321,6 @@
     "display": "nudge 10px Left",
     "mac_sc": "⇧ ← ",
     "pc_sc": "⇧ ← ",
-    "pc_safe": true,
     "difficulty": 1,
     "group": "nudge"
   },
@@ -367,7 +329,6 @@
     "display": "nudge 10px Right",
     "mac_sc": "⇧ → ",
     "pc_sc": "⇧ → ",
-    "pc_safe": true,
     "difficulty": 1,
     "group": "nudge"
   },
@@ -376,7 +337,6 @@
     "display": "nudge 10px UP",
     "mac_sc": "⇧ ↑ ",
     "pc_sc": "⇧ ↑ ",
-    "pc_safe": true,
     "difficulty": 1,
     "group": "nudge"
   },
@@ -385,7 +345,6 @@
     "display": "nudge 10px Down",
     "mac_sc": "⇧ ↓ ",
     "pc_sc": "⇧ ↓ ",
-    "pc_safe": true,
     "difficulty": 1,
     "group": "nudge"
   },
@@ -394,7 +353,6 @@
     "display": "open Quick Actions search",
     "mac_sc": "⌘ /",
     "pc_sc": "Ctrl /",
-    "pc_safe": true,
     "difficulty": 3,
     "group": ""
   },
@@ -403,7 +361,6 @@
     "display": "create Component",
     "mac_sc": "⌘ ⌥ K",
     "pc_sc": "Ctrl Alt K",
-    "pc_safe": true,
     "difficulty": 1,
     "group": ""
   },
@@ -412,7 +369,6 @@
     "display": "Detach Instance",
     "mac_sc": "⌘ ⌥ B",
     "pc_sc": "Ctrl Alt B",
-    "pc_safe": true,
     "difficulty": 5,
     "group": ""
   },
@@ -421,7 +377,6 @@
     "display": "Swap Instance",
     "mac_sc": "⌘ ⌥ /",
     "pc_sc": "Ctrl Alt /",
-    "pc_safe": true,
     "difficulty": 5,
     "group": ""
   },
@@ -430,7 +385,6 @@
     "display": "Copy Properties",
     "mac_sc": "⌘ ⌥ C",
     "pc_sc": "Ctrl Alt C",
-    "pc_safe": true,
     "difficulty": 1,
     "group": ""
   },
@@ -439,7 +393,6 @@
     "display": "Paste Properties",
     "mac_sc": "⌘ ⌥ V",
     "pc_sc": "Ctrl Alt V",
-    "pc_safe": true,
     "difficulty": 1,
     "group": ""
   },
@@ -448,7 +401,6 @@
     "display": "zoom to Next frame",
     "mac_sc": "N",
     "pc_sc": "N",
-    "pc_safe": true,
     "difficulty": 1,
     "group": ""
   },
@@ -457,7 +409,6 @@
     "display": "zoom to Previous frame",
     "mac_sc": "⇧ N",
     "pc_sc": "⇧ N",
-    "pc_safe": true,
     "difficulty": 1,
     "group": ""
   },
@@ -466,7 +417,6 @@
     "display": "raise to Front",
     "mac_sc": "]",
     "pc_sc": "]",
-    "pc_safe": true,
     "difficulty": 1,
     "group": ""
   },
@@ -475,7 +425,6 @@
     "display": "lower to Back",
     "mac_sc": "[",
     "pc_sc": "[",
-    "pc_safe": true,
     "difficulty": 1,
     "group": ""
   },
@@ -484,7 +433,6 @@
     "display": "Dive into group (select Child)",
     "mac_sc": "⏎ Return",
     "pc_sc": "Enter",
-    "pc_safe": true,
     "difficulty": 1,
     "group": ""
   },
@@ -493,7 +441,6 @@
     "display": "select Parent Container",
     "mac_sc": "⇧ ⏎ ",
     "pc_sc": "⇧ Enter",
-    "pc_safe": true,
     "difficulty": 1,
     "group": ""
   },
@@ -502,7 +449,6 @@
     "display": "hold this while you drag to Duplicate",
     "mac_sc": "⌥ Option",
     "pc_sc": "Alt",
-    "pc_safe": true,
     "difficulty": 3,
     "group": ""
   },
@@ -511,7 +457,6 @@
     "display": "Paste in Place",
     "mac_sc": "⌘ ⇧ V",
     "pc_sc": "Ctrl ⇧ V",
-    "pc_safe": true,
     "difficulty": 3,
     "group": ""
   },
@@ -520,7 +465,6 @@
     "display": "open Resources (Components/Plugins) search bar",
     "mac_sc": "⇧ I",
     "pc_sc": "⇧ I",
-    "pc_safe": true,
     "difficulty": 5,
     "group": ""
   },
@@ -529,7 +473,6 @@
     "display": "Show/Hide UI",
     "mac_sc": "⌘ \\\\",
     "pc_sc": "Ctrl \\\\",
-    "pc_safe": true,
     "difficulty": 5,
     "group": ""
   },
@@ -538,7 +481,6 @@
     "display": "Flip Horizontal",
     "mac_sc": "⇧ H",
     "pc_sc": "⇧ H",
-    "pc_safe": true,
     "difficulty": 3,
     "group": ""
   },
@@ -547,7 +489,6 @@
     "display": "Flip Vertical",
     "mac_sc": "⇧ V",
     "pc_sc": "⇧ V",
-    "pc_safe": true,
     "difficulty": 3,
     "group": ""
   },
@@ -556,7 +497,6 @@
     "display": "toggle Rulers",
     "mac_sc": "⇧ R",
     "pc_sc": "⇧ R",
-    "pc_safe": true,
     "difficulty": 1,
     "group": ""
   },
@@ -565,7 +505,6 @@
     "display": "set Opacity to 10%",
     "mac_sc": "1",
     "pc_sc": "1",
-    "pc_safe": true,
     "difficulty": 1,
     "group": "opacity"
   },
@@ -574,7 +513,6 @@
     "display": "set Opacity to 20%",
     "mac_sc": "2",
     "pc_sc": "2",
-    "pc_safe": true,
     "difficulty": 1,
     "group": "opacity"
   },
@@ -583,7 +521,6 @@
     "display": "set Opacity to 30%",
     "mac_sc": "3",
     "pc_sc": "3",
-    "pc_safe": true,
     "difficulty": 1,
     "group": "opacity"
   },
@@ -592,7 +529,6 @@
     "display": "set Opacity to 40%",
     "mac_sc": "4",
     "pc_sc": "4",
-    "pc_safe": true,
     "difficulty": 1,
     "group": "opacity"
   },
@@ -601,7 +537,6 @@
     "display": "set Opacity to 50%",
     "mac_sc": "5",
     "pc_sc": "5",
-    "pc_safe": true,
     "difficulty": 1,
     "group": "opacity"
   },
@@ -610,7 +545,6 @@
     "display": "set Opacity to 60%",
     "mac_sc": "6",
     "pc_sc": "6",
-    "pc_safe": true,
     "difficulty": 1,
     "group": "opacity"
   },
@@ -619,7 +553,6 @@
     "display": "set Opacity to 70%",
     "mac_sc": "7",
     "pc_sc": "7",
-    "pc_safe": true,
     "difficulty": 1,
     "group": "opacity"
   },
@@ -628,7 +561,6 @@
     "display": "set Opacity to 80%",
     "mac_sc": "8",
     "pc_sc": "8",
-    "pc_safe": true,
     "difficulty": 1,
     "group": "opacity"
   },
@@ -637,7 +569,6 @@
     "display": "set Opacity to 90%",
     "mac_sc": "9",
     "pc_sc": "9",
-    "pc_safe": true,
     "difficulty": 1,
     "group": "opacity"
   },
@@ -646,7 +577,6 @@
     "display": "Save version history checkpoint with note",
     "mac_sc": "⌘ ⌥ S",
     "pc_sc": "Ctrl Alt S",
-    "pc_safe": true,
     "difficulty": 5,
     "group": ""
   },
@@ -655,7 +585,6 @@
     "display": "Align object to Top",
     "mac_sc": "⌥ W",
     "pc_sc": "Alt W",
-    "pc_safe": true,
     "difficulty": 3,
     "group": ""
   },
@@ -664,7 +593,6 @@
     "display": "Align object to Left",
     "mac_sc": "⌥ A",
     "pc_sc": "Alt A",
-    "pc_safe": true,
     "difficulty": 3,
     "group": ""
   },
@@ -673,7 +601,6 @@
     "display": "Align object to Bottom",
     "mac_sc": "⌥ S",
     "pc_sc": "Alt S",
-    "pc_safe": true,
     "difficulty": 3,
     "group": ""
   },
@@ -682,7 +609,6 @@
     "display": "Align object to Right",
     "mac_sc": "⌥ D",
     "pc_sc": "Alt D",
-    "pc_safe": true,
     "difficulty": 3,
     "group": ""
   },
@@ -691,7 +617,6 @@
     "display": "toggle Design/Prototype tabs",
     "mac_sc": "⇧ E",
     "pc_sc": "⇧ E",
-    "pc_safe": true,
     "difficulty": 3,
     "group": ""
   },
@@ -700,7 +625,6 @@
     "display": "hold while resizing to Override Constraints",
     "mac_sc": "⌘ ",
     "pc_sc": "Ctrl",
-    "pc_safe": true,
     "difficulty": 5,
     "group": ""
   },
@@ -709,7 +633,6 @@
     "display": "Tidy Up",
     "mac_sc": "⌘ ⌥ T",
     "pc_sc": "Ctrl Alt T",
-    "pc_safe": true,
     "difficulty": 5,
     "group": ""
   },
@@ -718,7 +641,6 @@
     "display": "zoom to Fit",
     "mac_sc": "⇧ 1",
     "pc_sc": "⇧ 1",
-    "pc_safe": true,
     "difficulty": 1,
     "group": ""
   },
@@ -727,7 +649,6 @@
     "display": "zoom to Selection",
     "mac_sc": "⇧ 2",
     "pc_sc": "⇧ 2",
-    "pc_safe": true,
     "difficulty": 1,
     "group": ""
   },
@@ -736,7 +657,6 @@
     "display": "toggle Lock",
     "mac_sc": "⌘ ⌥ L",
     "pc_sc": "Ctrl Alt L",
-    "pc_safe": true,
     "difficulty": 1,
     "group": ""
   },
@@ -745,7 +665,6 @@
     "display": "open Layers Panel",
     "mac_sc": "⌥ 1",
     "pc_sc": "Alt 1",
-    "pc_safe": true,
     "difficulty": 3,
     "group": ""
   },
@@ -754,7 +673,6 @@
     "display": "open Assets Panel",
     "mac_sc": "⌥ 2",
     "pc_sc": "Alt 2",
-    "pc_safe": true,
     "difficulty": 3,
     "group": ""
   },
@@ -763,7 +681,6 @@
     "display": "copy as a PNG",
     "mac_sc": "⌘ ⇧ ⌥ C",
     "pc_sc": "Ctrl ⇧ Alt C",
-    "pc_safe": true,
     "difficulty": 5,
     "group": ""
   },
@@ -772,7 +689,6 @@
     "display": "run last Plugin",
     "mac_sc": "⌘ ⌥ P",
     "pc_sc": "Ctrl Alt P",
-    "pc_safe": true,
     "difficulty": 5,
     "group": ""
   },
@@ -781,7 +697,6 @@
     "display": "toggle Multiplayer Cursor visibility",
     "mac_sc": "⌘ ⌥ \\\\",
     "pc_sc": "Ctrl Alt \\\\",
-    "pc_safe": true,
     "difficulty": 5,
     "group": ""
   },
@@ -790,7 +705,6 @@
     "display": "toggle Pixel Grid",
     "mac_sc": "⇧ '",
     "pc_sc": "⇧ '",
-    "pc_safe": true,
     "difficulty": 5,
     "group": ""
   },
@@ -799,7 +713,6 @@
     "display": "toggle Comments visibility",
     "mac_sc": "⇧ C",
     "pc_sc": "⇧ C",
-    "pc_safe": true,
     "difficulty": 3,
     "group": ""
   },
@@ -808,7 +721,6 @@
     "display": "toggle Annotations visibility",
     "mac_sc": "⇧ Y",
     "pc_sc": "⇧ Y",
-    "pc_safe": true,
     "difficulty": 5,
     "group": ""
   },
@@ -817,7 +729,6 @@
     "display": "toggle Pixel preview",
     "mac_sc": "⌘ ⇧ P",
     "pc_sc": "Ctrl ⇧ P",
-    "pc_safe": true,
     "difficulty": 5,
     "group": ""
   },
@@ -826,7 +737,6 @@
     "display": "Minimise UI",
     "mac_sc": "⌘ ⇧ \\\\",
     "pc_sc": "Ctrl ⇧ \\\\",
-    "pc_safe": true,
     "difficulty": 5,
     "group": ""
   },
@@ -835,7 +745,6 @@
     "display": "Delete & heal the selection",
     "mac_sc": "⌘ ⌫ ",
     "pc_sc": "Ctrl Backspace",
-    "pc_safe": true,
     "difficulty": 3,
     "group": ""
   },
@@ -844,7 +753,6 @@
     "display": "Flatten",
     "mac_sc": "⌘ ⇧ F",
     "pc_sc": "Ctrl ⇧ F",
-    "pc_safe": true,
     "difficulty": 3,
     "group": ""
   },
@@ -853,7 +761,6 @@
     "display": "Distribute Horizontally",
     "mac_sc": "⇧ ⌥ H",
     "pc_sc": "⇧ Alt H",
-    "pc_safe": true,
     "difficulty": 3,
     "group": ""
   },
@@ -862,7 +769,6 @@
     "display": "Dristribute Vertically",
     "mac_sc": "⇧ ⌥ V",
     "pc_sc": "⇧ Alt V",
-    "pc_safe": true,
     "difficulty": 3,
     "group": ""
   },
@@ -871,7 +777,6 @@
     "display": "Join vectors",
     "mac_sc": "⌘ J",
     "pc_sc": "Ctrl J",
-    "pc_safe": true,
     "difficulty": 3,
     "group": ""
   },
@@ -880,7 +785,6 @@
     "display": "Smooth vectors",
     "mac_sc": "⌘ ⇧ J",
     "pc_sc": "Ctrl ⇧ J",
-    "pc_safe": true,
     "difficulty": 5,
     "group": ""
   },
@@ -889,7 +793,6 @@
     "display": "select ALL",
     "mac_sc": "⌘ A",
     "pc_sc": "Ctrl A",
-    "pc_safe": true,
     "difficulty": 1,
     "group": ""
   },
@@ -898,7 +801,6 @@
     "display": "select Matching Layers",
     "mac_sc": "⌘ ⌥ A",
     "pc_sc": "Ctrl Alt A",
-    "pc_safe": true,
     "difficulty": 5,
     "group": ""
   },
@@ -907,7 +809,6 @@
     "display": "CUT!",
     "mac_sc": "⌘ X",
     "pc_sc": "Ctrl X",
-    "pc_safe": true,
     "difficulty": 1,
     "group": ""
   },
@@ -916,7 +817,6 @@
     "display": "Copy",
     "mac_sc": "⌘ C",
     "pc_sc": "Ctrl C",
-    "pc_safe": true,
     "difficulty": 1,
     "group": ""
   },
@@ -925,7 +825,6 @@
     "display": "Paste",
     "mac_sc": "⌘ V",
     "pc_sc": "Ctrl V",
-    "pc_safe": true,
     "difficulty": 1,
     "group": ""
   }

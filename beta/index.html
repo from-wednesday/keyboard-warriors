@@ -2365,6 +2365,7 @@ function toggleHelp() {
     kbToastEl.classList.remove('show');
     _startReadyPromptTimer();
   }
+}
 function showAutoHintToast() {
     kbToastEl.innerHTML = buildHintHTML(currentAnswer.replace(/\\\\/g, '\\'), '#f97316');
     kbToastEl.classList.add('show');

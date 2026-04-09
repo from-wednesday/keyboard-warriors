@@ -9,7 +9,7 @@
 <title>beta</title>
 <script>
   const DefaultTitle = 'Keyboard Warriors';
-  const VersionLabel   = '0019';
+  const VersionLabel   = '0020';
   const TitlePrefix  = document.title !== DefaultTitle ? document.title.trim() + '_' : '';
   const DBG_DEVICE   = TitlePrefix + VersionLabel;
 </script>
@@ -1049,6 +1049,12 @@ function showToast(msg, duration) {
 
 // Legacy alias — keeps existing internal calls working
 function showModeToast(msg) { showToast(msg); }
+
+function clearToast() {
+  clearTimeout(_kwToastTimer);
+  var el = document.getElementById('kwToast');
+  if (el) el.classList.remove('visible');
+}
 
 function pulseBtn(el) {
   if (!el) return;
@@ -6647,6 +6653,7 @@ function enterDefeat() {
   clearTimeout(penaltyTimeout);
   hideQuestionTimerArc();
   clearHelp();
+  clearToast();
   clearAllLit();
   heldKeys.clear();
   titleEl.classList.remove('blurred');
@@ -6654,6 +6661,7 @@ function enterDefeat() {
   document.getElementById('livesRow').classList.remove('blurred');
 
   // Scores are NOT updated
+
   mainBtn.textContent = 'Try again?';
   mainBtn.style.background = '';
   helpBtn.textContent = 'Help';
@@ -7021,14 +7029,16 @@ lastCompletedReport = finalizeRunData(completedRun, questionPool, 0);
   clearInterval(timerInterval);
   clearTimeout(penaltyTimeout);
   hideQuestionTimerArc();
-  clearHelp();
+ clearHelp();
+  clearToast();
   clearAllLit();
   heldKeys.clear();
   titleEl.classList.remove('blurred');
   questionCountEl.classList.remove('blurred');
   document.getElementById('livesRow').classList.remove('blurred');
 
-  const finalAccuracy = calcAccuracy() ?? 0;
+  const finalAccuracy
+ = calcAccuracy() ?? 0;
   const wasFirstRecord = bestRecord.time === null;
   const prevTime     = bestRecord.time;
   const prevAccuracy = bestRecord.accuracy;

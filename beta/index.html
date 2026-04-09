@@ -9,7 +9,7 @@
 <title>beta</title>
 <script>
   const DefaultTitle = 'Keyboard Warriors';
-  const VersionLabel   = '0020';
+  const VersionLabel   = '0021';
   const TitlePrefix  = document.title !== DefaultTitle ? document.title.trim() + '_' : '';
   const DBG_DEVICE   = TitlePrefix + VersionLabel;
 </script>
@@ -2327,6 +2327,8 @@ const KEY_DISPLAY_MAC = {
   'END':        { sym: '⇥', name: 'End' },
   'SPACE':      { sym: '␣', name: 'Space' },
   'TAB':        { sym: '⇥', name: 'Tab' },
+  'BACKSLASH':  { sym: '\', name: '' },
+  'GRAVE':      { sym: '`', name: '' },
 };
 const KEY_DISPLAY_PC = {
   'CMD':        { sym: 'Ctrl', name: '' },
@@ -2341,6 +2343,8 @@ const KEY_DISPLAY_PC = {
   'END':        { sym: '⇥', name: 'End' },
   'SPACE':      { sym: '␣', name: 'Space' },
   'TAB':        { sym: '⇥', name: 'Tab' },
+  'BACKSLASH':  { sym: '\', name: '' },
+  'GRAVE':      { sym: '`', name: '' },
 };
 
 function pillHTML(token, bg) {

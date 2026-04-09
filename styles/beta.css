@@ -904,12 +904,12 @@ body.pc-mode #extKeyPill {
 
 /* ── Page switch wipe animation ──────────────────── */
 @keyframes spWipeIn {
-  from { opacity: 0; transform: translateX(18px); }
-  to   { opacity: 1; transform: translateX(0);    }
+  from { opacity: 0; transform: translateY(12px); }
+  to   { opacity: 1; transform: translateY(0);    }
 }
 @keyframes spWipeInLeft {
-  from { opacity: 0; transform: translateX(-18px); }
-  to   { opacity: 1; transform: translateX(0);     }
+  from { opacity: 0; transform: translateY(-12px); }
+  to   { opacity: 1; transform: translateY(0);     }
 }
 @keyframes spWipeInUp {
   from { opacity: 0; transform: translateY(14px); }

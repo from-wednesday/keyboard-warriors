@@ -7952,51 +7952,21 @@ function _refreshEndGameCheatSheet() {
 
   function BuildEndGameListItem(SummaryItem) {
     var PoolQuestion = questionPool.find(function(PoolItem) {
-      return PoolItem.shortcut === SummaryItem.shortcutToken;
+        return PoolItem.shortcut === SummaryItem.shortcutToken;
     });
+
     var ShortcutChipText = PoolQuestion
-      ? (currentOs === 'pc' ? PoolQuestion.pc_sc : PoolQuestion.mac_sc)
-      : SummaryItem.shortcut;
+        ? (currentOs === 'pc' ? PoolQuestion.pc_sc : PoolQuestion.mac_sc)
+        : SummaryItem.shortcut;
 
     var ListItem = document.createElement('li');
+    // Added the flex-start style from your second block
+    ListItem.style.alignItems = 'flex-start'; 
     ListItem.dataset.shortcutToken = SummaryItem.shortcutToken || '';
 
     var DotElement = document.createElement('span');
     DotElement.className = 'sp-report-dot';
-    DotElement.style.background = AnsweredOutcomeColourMap[SummaryItem.shortcutToken] || '#b3bdc9';
-
-    var LabelElement = document.createElement('span');
-    LabelElement.className = 'sp-report-question-label';
-    LabelElement.textContent = (SummaryItem.displayText || '').replace(/\\\\/g, '\\');
-
-    ListItem.appendChild(DotElement);
-
-    var TimingData = AnsweredTimingMap[SummaryItem.shortcutToken] || null;
-    if (TimingData && TimingData.text) {
-      var TimeElement = document.createElement('small');
-      TimeElement.textContent = TimingData.text;
-      TimeElement.style.cssText = 'color:#9ca3af;flex-shrink:0;margin-left:-3px;margin-right:4px;line-height:1.5;white-space:nowrap;'
-        + (TimingData.text === 'none' ? 'font-size:9px;letter-spacing:0.01em;margin-right:3px;' : '');
-      ListItem.appendChild(TimeElement);
-    }
-
-    ListItem.appendChild(LabelElement);
-    ListItem.appendChild(BuildShortcutKeyChips(ShortcutChipText, true));
-    return ListItem;
-  } {
-    var PoolQuestion = questionPool.find(function(PoolItem) {
-      return PoolItem.shortcut === SummaryItem.shortcutToken;
-    });
-    var ShortcutChipText = PoolQuestion
-      ? (currentOs === 'pc' ? PoolQuestion.pc_sc : PoolQuestion.mac_sc)
-      : SummaryItem.shortcut;
-
-    var ListItem = document.createElement('li');
-    ListItem.style.alignItems = 'flex-start';
-    ListItem.dataset.shortcutToken = SummaryItem.shortcutToken || '';
-
-    var DotElement = document.createElement('span');
-    DotElement.className = 'sp-report-dot';
+    // Added the margin-top from your second block
     DotElement.style.marginTop = '5px';
     DotElement.style.background = AnsweredOutcomeColourMap[SummaryItem.shortcutToken] || '#b3bdc9';
 
@@ -8008,18 +7978,19 @@ function _refreshEndGameCheatSheet() {
 
     var TimingData = AnsweredTimingMap[SummaryItem.shortcutToken] || null;
     if (TimingData && TimingData.text) {
-      var TimeElement = document.createElement('small');
-      TimeElement.textContent = TimingData.text;
-      TimeElement.style.cssText = 'color:#9ca3af;flex-shrink:0;margin-left:-3px;margin-right:4px;margin-top:2px;line-height:1.5;white-space:nowrap;'
-        + (TimingData.text === 'none' ? 'font-size:9px;letter-spacing:0.01em;margin-right:3px;' : '');
-      ListItem.appendChild(TimeElement);
+        var TimeElement = document.createElement('small');
+        TimeElement.textContent = TimingData.text;
+        // Used the refined CSS from your second block
+        TimeElement.style.cssText = 'color:#9ca3af;flex-shrink:0;margin-left:-3px;margin-right:4px;margin-top:2px;line-height:1.5;white-space:nowrap;'
+            + (TimingData.text === 'none' ? 'font-size:9px;letter-spacing:0.01em;margin-right:3px;' : '');
+        ListItem.appendChild(TimeElement);
     }
 
     ListItem.appendChild(LabelElement);
     ListItem.appendChild(BuildShortcutKeyChips(ShortcutChipText, true));
+    
     return ListItem;
-  }
-
+}
   AllQuestions.forEach(function(SummaryItem, ItemIndex) {
     var ListItem = BuildEndGameListItem(SummaryItem);
     if (ItemIndex < HalfwayIndex) {

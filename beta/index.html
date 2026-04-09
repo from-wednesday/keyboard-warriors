@@ -312,7 +312,7 @@
     <div class="sp-report-col-header">
       <div class="sp-endgame-header-left" onclick="_toggleEndGameCheatSheet()" id="reportCardToggleTrigger">
         <p class="sp-small-card-title">REPORT CARD</p>
-        <svg class="sp-endgame-search-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <svg class="sp-endgame-search-icon" viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
           <circle cx="11" cy="11" r="7"/>
           <line x1="16.5" y1="16.5" x2="22" y2="22"/>
         </svg>
@@ -333,16 +333,16 @@
 </div>
   <!-- ── EndGame CheatSheet ─────────────────────────────── -->
     <div id="panelEndGameCheatSheet" class="sp-page">
-      <div class="sp-col sp-col-left">
+   <div class="sp-col sp-col-left">
         <div class="sp-report-col-header">
           <div class="sp-endgame-header-left" onclick="_toggleEndGameCheatSheet()">
             <p class="sp-small-card-title">REPORT CARD</p>
-            <svg class="sp-endgame-search-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <svg class="sp-endgame-search-icon" viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
               <circle cx="11" cy="11" r="7"/>
               <line x1="16.5" y1="16.5" x2="22" y2="22"/>
             </svg>
           </div>
-          <p class="sp-report-section-title" id="endGameCheatSheetMasteredHeading">Mastered</p>
+          <p class="sp-report-section-title" id="endGameCheatSheetMasteredHeading"></p>
         </div>
         <ul id="endGameCheatSheetListLeft" class="sp-endgame-list sp-report-weakness"></ul>
       </div>
@@ -7951,6 +7951,39 @@ function _refreshEndGameCheatSheet() {
   var HalfwayIndex = Math.ceil(AllQuestions.length / 2);
 
   function BuildEndGameListItem(SummaryItem) {
+    var PoolQuestion = questionPool.find(function(PoolItem) {
+      return PoolItem.shortcut === SummaryItem.shortcutToken;
+    });
+    var ShortcutChipText = PoolQuestion
+      ? (currentOs === 'pc' ? PoolQuestion.pc_sc : PoolQuestion.mac_sc)
+      : SummaryItem.shortcut;
+
+    var ListItem = document.createElement('li');
+    ListItem.dataset.shortcutToken = SummaryItem.shortcutToken || '';
+
+    var DotElement = document.createElement('span');
+    DotElement.className = 'sp-report-dot';
+    DotElement.style.background = AnsweredOutcomeColourMap[SummaryItem.shortcutToken] || '#b3bdc9';
+
+    var LabelElement = document.createElement('span');
+    LabelElement.className = 'sp-report-question-label';
+    LabelElement.textContent = (SummaryItem.displayText || '').replace(/\\\\/g, '\\');
+
+    ListItem.appendChild(DotElement);
+
+    var TimingData = AnsweredTimingMap[SummaryItem.shortcutToken] || null;
+    if (TimingData && TimingData.text) {
+      var TimeElement = document.createElement('small');
+      TimeElement.textContent = TimingData.text;
+      TimeElement.style.cssText = 'color:#9ca3af;flex-shrink:0;margin-left:-3px;margin-right:4px;line-height:1.5;white-space:nowrap;'
+        + (TimingData.text === 'none' ? 'font-size:9px;letter-spacing:0.01em;margin-right:3px;' : '');
+      ListItem.appendChild(TimeElement);
+    }
+
+    ListItem.appendChild(LabelElement);
+    ListItem.appendChild(BuildShortcutKeyChips(ShortcutChipText, true));
+    return ListItem;
+  } {
     var PoolQuestion = questionPool.find(function(PoolItem) {
       return PoolItem.shortcut === SummaryItem.shortcutToken;
     });

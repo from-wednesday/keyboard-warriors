@@ -3014,6 +3014,7 @@ function confirmDiffChangeYes() {
   _pendingDifficulty = null;
   _prevDifficulty    = null;
   try { localStorage.setItem('kw_difficulty', currentDifficulty); } catch(e) {}
+  syncDiffNeedle();
 
   var diffRank = { fundamentals: 0, normal: 1, hardcore: 2 };
   var isUpgrade = (diffRank[currentDifficulty] || 0) > (diffRank[prevDiff] || 0);
@@ -5906,6 +5907,7 @@ function confirmStartOverYes() {
       currentDifficulty = 'fundamentals';
       _diffFirst = true;
       setDiffState(-1);
+      syncDiffNeedle();
       updateBestDisplay();
       _syncSliderToValue('timer', null);
       _syncSliderToValue('lives', null);
@@ -5950,10 +5952,8 @@ function _returningContinue() {
   document.body.classList.remove('returning-screen');
   var tagline = document.getElementById('welcomeTagline');
   if (tagline) tagline.style.display = 'none';
-  var modeMap = { fundamentals: -1, normal: 0, hardcore: 1 };
-  _diffFirst = true;
-  setDiffState(modeMap[currentDifficulty] !== undefined ? modeMap[currentDifficulty] : 0);
   closeSettings();
+  syncDiffNeedle();
   resetToIdle();
   beginCountdown();
 }
@@ -5989,6 +5989,7 @@ function _returningStartOver() {
       currentDifficulty = 'fundamentals';
       _diffFirst = true;
       setDiffState(-1);
+      syncDiffNeedle();
       updateBestDisplay();
       _syncSliderToValue('timer', null);
       _syncSliderToValue('lives', null);
@@ -6000,8 +6001,6 @@ function _returningStartOver() {
 }
 
 function _dismissWelcome() {
-  // Pop the active label, then hold on the welcome screen for 1750ms
-  // so the player sees their choice before the keyboard moves.
   var activeBtn = document.querySelector('#welcomeDifficultyPill .diff-btn-active');
   if (activeBtn) _popDiffLabel(activeBtn);
   _welcomeIsReturning = false;
@@ -6009,6 +6008,7 @@ function _dismissWelcome() {
     var tagline = document.getElementById('welcomeTagline');
     if (tagline) tagline.style.display = 'none';
     closeSettings();
+    syncDiffNeedle();
     resetToIdle();
     // Pulse Start once the keyboard has fully risen (850ms), then every 5s
     setTimeout(function pulseAndReschedule() {
@@ -7184,6 +7184,7 @@ _refreshReportPanel()
       setTimeout(function() {
         currentDifficulty = 'normal';
         try { localStorage.setItem('kw_difficulty', 'normal'); } catch(e) {}
+        syncDiffNeedle();
         var pillBtns = document.querySelectorAll('#difficultyPill .diff-btn');
         pillBtns.forEach(function(b) { b.classList.add('diff-btn-transitioning'); });
         _diffFirst = true;
@@ -9743,6 +9744,14 @@ function setDiffState(newState) {
   var needle = document.querySelector('#diffIcon #Needle');
   if (needle) needle.style.transform = 'rotate(' + DIFF_ANGLES[String(newState)] + 'deg)';
   _diffFirst = false;
+}
+
+function syncDiffNeedle() {
+  var stateMap = { fundamentals: -1, normal: 0, hardcore: 1 };
+  var state = stateMap[currentDifficulty] !== undefined ? stateMap[currentDifficulty] : 0;
+  var needle = document.querySelector('#diffIcon #Needle');
+  if (needle) needle.style.transform = 'rotate(' + DIFF_ANGLES[String(state)] + 'deg)';
+  _diffState = state;
 }
 
 /* ── Active click handler — flip animation ───────────── */

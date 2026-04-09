@@ -332,18 +332,15 @@
   </div>
 </div>
   <!-- ── EndGame CheatSheet ─────────────────────────────── -->
-    <svg class="sp-endgame-search-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-          <circle cx="11" cy="11" r="7"/>
-          <line x1="16.5" y1="16.5" x2="22" y2="22"/>
-        </svg> id="panelEndGameCheatSheet" class="sp-page">
+    <div id="panelEndGameCheatSheet" class="sp-page">
    <div class="sp-col sp-col-left">
         <div class="sp-report-col-header">
           <div class="sp-endgame-header-left" onclick="_toggleEndGameCheatSheet()">
             <p class="sp-small-card-title">REPORT CARD</p>
-            <svg class="sp-endgame-search-icon" viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-              <circle cx="11" cy="11" r="7"/>
-              <line x1="16.5" y1="16.5" x2="22" y2="22"/>
-            </svg>
+           <svg class="sp-endgame-search-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <circle cx="11" cy="11" r="7"/>
+          <line x1="16.5" y1="16.5" x2="22" y2="22"/>
+        </svg>
           </div>
           <p class="sp-report-section-title" id="endGameCheatSheetMasteredHeading"></p>
         </div>
@@ -7968,7 +7965,7 @@ function _refreshEndGameCheatSheet() {
     DotElement.style.marginTop = '5px';
     DotElement.style.background = AnsweredOutcomeColourMap[SummaryItem.shortcutToken] || '#b3bdc9';
 
-    var LabelElement = document.createElement('span');
+var LabelElement = document.createElement('span');
     LabelElement.className = 'sp-report-question-label';
     LabelElement.style.cssText = 'flex:1;min-width:0;display:block;';
     LabelElement.textContent = (SummaryItem.displayText || '').replace(/\\\\/g, '\\');

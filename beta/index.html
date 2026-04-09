@@ -8197,7 +8197,7 @@ function _refreshReportPanel() {
           var isNearMiss = s.timeToAnswerMs !== null && questionTimer !== null;
           if (isNearMiss) {
             var overByMs = s.timeToAnswerMs - (questionTimer * 1000);
-            var overBySec = (overByMs / 1000).toFixed(1);
+            var overBySec = Math.max(0.1, overByMs / 1000).toFixed(1);
             detail.push(overBySec + 's too slow!');
           } else {
             detail.push('timed out');

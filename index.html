@@ -114,7 +114,7 @@
     </div>
     <div class="middlePanel">
       <div style="position:relative;display:flex;flex-direction:column;align-items:center;justify-content:center;width:100%;">
-          <h2 id="confirmHeading" style="display:none;"></h2>
+          
           <h2 id="title">Play Keyboard Warriors</h2>
           <p id="welcomeTagline"><em>Your keyboard shortcuts coach &amp; personal trainer.</em></p>
           <div id="countdownOverlay"><span id="countdownNum"></span></div>
@@ -2237,7 +2237,7 @@ function helpButtonClick() {
 
 /* CHANGE 5: clicking the ⏸ timer unpauses */
 function scoreDiscClick() {
-  if (transitioning) return;
+if (transitioning && gameState !== 'finished') return;
   if (gameState === 'counting')  { cancelCountdown(); return; }
   if (gameState === 'playing') { enterPause(); return; }
   if (gameState === 'readyToUnpause') { _enterReadyToUnpauseCleanup(); enterPause(); return; }
@@ -2370,7 +2370,10 @@ function showAutoHintToast() {
     kbToastEl.innerHTML = buildHintHTML(currentAnswer.replace(/\\\\/g, '\\'), '#f97316');
     kbToastEl.classList.add('show');
     clearTimeout(_kwToastTimer);
+    clearTimeout(_kbToastAutoHideTimer);
+    _kbToastAutoHideTimer = setTimeout(function() { kbToastEl.classList.remove('show'); }, 2000);
 }
+
 function showSuccessHintToast() {
     kbToastEl.innerHTML = buildHintHTML(currentAnswer.replace(/\\\\/g, '\\'), '#10b981');
     kbToastEl.classList.add('show');
@@ -2475,6 +2478,7 @@ function _clearReadyPromptFromTitle() {
 function _startReadyPromptTimer() {
   clearTimeout(readyPromptTimer);
   readyPromptTimer = setTimeout(function() {
+    if (activeSettings === 'panelPadlock') { readyPromptTimer = null; return; }
     var awaitingAction = (gameState === 'idle' || gameState === 'paused' ||
                           gameState === 'finished' || gameState === 'readyToUnpause');
     if (!awaitingAction) { readyPromptTimer = null; return; }
@@ -3011,51 +3015,83 @@ function confirmDiffChangeNo() {
   _startPauseInactivityTimer();
 }
 
+var _savedTitleTextForConfirm    = '';
+var _savedTitleBlurredForConfirm = false;
+var _confirmHeadingActive        = false;
+
 function showConfirmHeading(text, blurTitle, showBracket) {
-  var el = document.getElementById('confirmHeading');
-  if (!el) return;
-  el.textContent = text;
-  el.style.display = 'block';
-  if (blurTitle !== false) {
-    titleEl.classList.add('blurred');
-    questionCountEl.classList.add('blurred');
-    document.getElementById('livesRow').classList.add('blurred');
+  if (!_confirmHeadingActive) {
+    _savedTitleTextForConfirm    = titleEl.textContent;
+    _savedTitleBlurredForConfirm = titleEl.classList.contains('blurred');
+    _confirmHeadingActive        = true;
   }
+  titleEl.classList.remove('blurred');
+  titleEl.className = '';
+  titleEl.textContent = text;
+  questionCountEl.classList.add('blurred');
+  document.getElementById('livesRow').classList.add('blurred');
   var lp = document.querySelector('.leftPanel');
   if (lp) lp.classList.toggle('showing-confirm', showBracket === true);
 }
 
 function hideConfirmHeading() {
-  var el = document.getElementById('confirmHeading');
-  if (!el) return;
-  el.style.display = 'none';
-  el.innerHTML = '';
+  if (!_confirmHeadingActive) return;
+  _confirmHeadingActive = false;
+  titleEl.className = '';
+  titleEl.textContent = _savedTitleTextForConfirm;
+  if (_savedTitleBlurredForConfirm) titleEl.classList.add('blurred');
+  _savedTitleTextForConfirm    = '';
+  _savedTitleBlurredForConfirm = false;
   var lp = document.querySelector('.leftPanel');
   if (lp) lp.classList.remove('showing-confirm');
-  // Remove any lingering blur that was set by a confirm heading.
-  // Only safe to do in states where blur has no other purpose.
   var nonBlurStates = ['idle', 'finished', 'welcome'];
   if (nonBlurStates.indexOf(gameState) !== -1) {
-    titleEl.classList.remove('blurred');
     questionCountEl.classList.remove('blurred');
-  document.getElementById('livesRow').classList.remove('blurred');
+    document.getElementById('livesRow').classList.remove('blurred');
   }
 }
 
-// Hint variant: shows HTML content (key pill badges) without blurring #title,
-// since the player needs to read the hint against the visible question.
-function showHintInHeading(htmlContent) {
-  var el = document.getElementById('confirmHeading');
-  if (!el) return;
-  el.innerHTML = htmlContent;
-  el.style.display = 'block';
-}
 
-function clearHintFromHeading() {
-  var el = document.getElementById('confirmHeading');
-  if (!el) return;
-  el.style.display = 'none';
-  el.innerHTML = '';
+
+function _resetToIdleSilently() {
+  gameState = 'idle';
+  _wasPlaying = false;
+  _exitScoreClearConfirm();
+  _exitDiffConfirm();
+  _exitQuitConfirm();
+  _stopPauseInactivityTimer();
+  _stopReadyPromptTimer();
+  hideConfirmHeading();
+  var _wTag = document.getElementById('welcomeTagline');
+  if (_wTag) _wTag.style.display = 'none';
+  setAppSelectorGameActive(false);
+  _closeAllModalsInstant();
+  setKbPosition('face');
+  clearInterval(timerInterval);
+  clearTimeout(penaltyTimeout);
+  hideQuestionTimerArc();
+  endScreenInactivityTimer = null;
+  _enterReadyToUnpauseCleanup();
+  clearHelp();
+  clearAllLit();
+  heldKeys.clear();
+  mainBtn.textContent = 'Start';
+  mainBtn.style.background = '';
+  helpBtn.textContent = 'Help';
+  helpBtn.style.background = '';
+  helpBtn.style.color = '';
+  if (lockKeyEl) lockKeyEl.classList.remove('active');
+  questionCountEl.classList.remove('blurred', 'blur-instant');
+  document.getElementById('livesRow').classList.remove('blurred', 'blur-instant');
+  questionCountEl.innerHTML = ''; dotEls = [];
+  clearLivesRow();
+  scoreDisc.style.background = '';
+  scoreDisc.style.removeProperty('--face-rot');
+  currentMedal = null;
+  scoreDisc.className = 'scoreDisc';
+  timerDiv.textContent = '0:00';
+  greenHits = 0; totalHits = 0; hintPenaltyPct = 0;
+  updateAccuracyDisplay(); dbgRefreshCtx(); dbgRefreshAccuracy();
 }
 
 function resetToIdle() {
@@ -3845,24 +3881,33 @@ function _unpinTooltip() {
 
 var _PANEL_TIPS = {
   panelPause: function() {
-    var pool = [
-      'we have suspended the timer',
-      'someone called a time-out',
-      'quit or continue?',
-      'you have time for coffee',
-      'have you tried the padlock key?',
-      'your progress is saved',
-      'the help button reveals the answer',
-      'wrong keys light up orange',
-      'accuracy penalties decay as you improve',
+  if (gameState === 'idle' || gameState === 'finished') {
+    return [
+      'I\'m ready when you are.',
+      'Resetting your high scores after raising difficulty makes them meaningful again.',
+      'Playing a few rounds of this each night is sure to lift your skills.',
+      'Playing too many rounds in a row diminishes their benefit. Breaks are important.',
+      'Medals are awarded based on past performances, so clearing data will bring back the gold!',
     ];
-    if (playerLives === null) {
-      pool.push('skipping costs five seconds');
-    } else {
-      pool.push('skipping questions breaks hearts');
-    }
-    return pool;
-  },
+  }
+  var pool = [
+    'we have suspended the timer',
+    'someone called a time-out',
+    'quit or continue?',
+    'you have time for coffee',
+    'have you tried the padlock key?',
+    'your progress is saved',
+    'the help button reveals the answer',
+    'wrong keys light up orange',
+    'accuracy penalties decay as you improve',
+  ];
+  if (playerLives === null) {
+    pool.push('skipping costs five seconds');
+  } else {
+    pool.push('skipping questions breaks hearts');
+  }
+  return pool;
+},
   panelBrowser: function() {
     var pool = [
       'manage conflicted keys here',
@@ -4504,14 +4549,14 @@ function _refreshBrowserContent() {
 document.getElementById('kbIconWrap').addEventListener('pointerdown', function(e) {
   e.stopPropagation();
   e.preventDefault();
-  if (transitioning) return;
+if (transitioning && gameState !== 'finished') return;
   resetEndScreenInactivityTimer();
   toggleKbModal();
 });
 document.getElementById('brIconWrap').addEventListener('pointerdown', function(e) {
   e.stopPropagation();
   e.preventDefault();
-  if (transitioning) return;
+if (transitioning && gameState !== 'finished') return;
   resetEndScreenInactivityTimer();
   toggleBrowserModal();
 
@@ -4520,7 +4565,7 @@ document.getElementById('brIconWrap').addEventListener('pointerdown', function(e
 document.getElementById('diffIconWrap').addEventListener('pointerdown', function(e) {
   e.stopPropagation();
   e.preventDefault();
-  if (transitioning) return;
+if (transitioning && gameState !== 'finished') return;
   diffIconClick();
 });
 
@@ -5819,9 +5864,7 @@ function confirmStartOverYes() {
       _syncSliderToValue('timer', null);
       _syncSliderToValue('lives', null);
       if (panelInner) { panelInner.style.transition = ''; panelInner.style.opacity = ''; }
-      // Close settings and quit the game, then show the welcome screen
-      _closeAllModalsInstant();
-      resetToIdle();
+      _resetToIdleSilently();
       _showWelcomeScreen();
     }, 320);
   }, 500);
@@ -5904,20 +5947,7 @@ function _returningStartOver() {
       _syncSliderToValue('timer', null);
       _syncSliderToValue('lives', null);
       if (panelInner) { panelInner.style.transition = ''; panelInner.style.opacity = ''; }
-      closeSettings();
-      _showWelcomeScreen();
-      bestRecord = { time: null, accuracy: null };
-      hasTrophy = false;
-      questionTimer = null;
-      playerLives   = null;
-      currentDifficulty = 'fundamentals';
-      _diffFirst = true;
-      setDiffState(-1);
-      updateBestDisplay();
-      _syncSliderToValue('timer', null);
-      _syncSliderToValue('lives', null);
-      if (panelInner) { panelInner.style.transition = ''; panelInner.style.opacity = ''; }
-      closeSettings();
+      _resetToIdleSilently();
       _showWelcomeScreen();
     }, 320);
   }, 500); // hold after pop before fading
@@ -7314,6 +7344,13 @@ function finalizeRunData(completedRun, currentPool, DefeatCount) {
   const accuracyPercent = calcAccuracy() ?? 0;
   const allFast         = successTimes.length > 0 && medianTime !== null && medianTime < 2500;
 
+  // Near-miss: a timeout where the player pressed the correct key AFTER the timer
+  // expired (timeToAnswerMs is set during the 2s window following expiry).
+  // This means the player knew the answer but ran out of time — they are close.
+  const nearMissCount = completedRun.filter(function(e) {
+    return e.endType === 'timeout' && e.timeToAnswerMs !== null;
+  }).length;
+
   // Hints are only viable when the timer is infinite or 10 seconds
   const hintsWereViable = (questionTimer === null || questionTimer === 10);
 
@@ -7399,7 +7436,28 @@ function finalizeRunData(completedRun, currentPool, DefeatCount) {
       }
     }
   }
-
+  // ── Near-miss messages (timer-specific encouragement) ────────────────────
+  // Fires when the player knew the answer but the clock beat them (2+ times).
+  // Takes priority over cat4_timer_down and difficulty-up suggestions.
+  var NearMissMessages = [];
+  if (nearMissCount >= 2 && questionTimer !== null) {
+    var NearMissPool = [
+      { key: 'near_miss_a', text: 'Hang in there, you\'re so close! You knew several of those answers, the timer just beat you to it. Keep going at this setting.' },
+      { key: 'near_miss_b', text: 'This timer is really testing you, but I can see you improving! Don\'t give up.' },
+      { key: 'near_miss_c', text: 'You are right on the edge of a breakthrough. You pressed the right key after the timer on several questions, so the knowledge is there. A bit more speed and you will have it.' },
+      { key: 'near_miss_d', text: 'So close! You got the answer several times, just a fraction too late. That is not a knowledge problem, it is a speed problem. Speed comes with repetition. Stick with it.' },
+      { key: 'near_miss_e', text: 'The answers are clearly in there but the timer is outrunning your recall or fingers right now. That gap closes fast. Stay at this setting and keep trying.' },
+    ];
+    NearMissPool.forEach(function(m) {
+      if (RecentMessageKeys.indexOf(m.key) === -1) {
+        NearMissMessages.push({ key: m.key, text: m.text, settingSuggested: null });
+      }
+    });
+    // Fallback if all recent: always allow the first one through
+    if (NearMissMessages.length === 0) {
+      NearMissMessages.push({ key: 'near_miss_a', text: NearMissPool[0].text, settingSuggested: null });
+    }
+  }
   // ── Cat 3: Specific comments on what just happened ────────────────────────
   if (hasTrophy && playerLives !== null && livesRemaining === 1) {
     var OneLiveMessages = [
@@ -7735,22 +7793,36 @@ function finalizeRunData(completedRun, currentPool, DefeatCount) {
     if (pool.length === 0) return null;
     return pool[Math.floor(Math.random() * pool.length)];
   }
-
-  // Priority: memory-aware → timer/lives (primary growth levers for trophy holders)
+  // Priority: near-miss (overrides timer-down and difficulty-up) → memory-aware
+  // → timer/lives (primary growth levers for trophy holders)
   // → specific run commentary → literacy recovery → difficulty (secondary)
   // → general encouragement.
   // Timer/lives always beat difficulty suggestions so Normal mode stays the focus.
+  // When near-misses occurred, suppress cat4_timer_down and difficulty-up suggestions
+  // so we don't tell someone to push harder when they are already on the verge.
+  var HasNearMisses = nearMissCount >= 2 && questionTimer !== null;
+  if (HasNearMisses) {
+    TimerAndLivesMessages = TimerAndLivesMessages.filter(function(m) {
+      return m.key !== 'cat4_timer_down';
+    });
+    DifficultyMessages = DifficultyMessages.filter(function(m) {
+      return m.key !== 'cat4_diff_up';
+    });
+  }
+
   var HasFewWeaknessesThisRound = questionSummaries.filter(function(s) { return s.isWeakness; }).length <= 1;
   var SpecificOrTimerLives = HasFewWeaknessesThisRound
     ? PickRandom(SpecificMessages.concat(TimerAndLivesMessages))
     : PickRandom(SpecificMessages);
 
-  var PrimaryMessage = PickRandom(MemoryAwareMessages)
+  var PrimaryMessage = PickRandom(NearMissMessages)
+    || PickRandom(MemoryAwareMessages)
     || PickRandom(TimerAndLivesMessages)
     || SpecificOrTimerLives
     || PickRandom(LiteracyMessages)
     || PickRandom(DifficultyMessages)
     || PickRandom(GeneralMessages);
+
 
   if (PrimaryMessage) {
     var RawSuggestionForMemory = PrimaryMessage.settingSuggested || null;
@@ -7904,7 +7976,7 @@ var dot = document.createElement('span');
       if (TimingData && TimingData.text) {
         var TimeElement = document.createElement('small');
         TimeElement.textContent = TimingData.text;
-        TimeElement.style.cssText = 'color:#9ca3af;flex-shrink:0;margin-left:-3px;margin-right:4px;margin-top:2px;line-height:1.5;white-space:nowrap;';
+TimeElement.style.cssText = 'color:#9ca3af;flex-shrink:0;margin-left:-3px;margin-right:4px;margin-top:2px;line-height:1.5;white-space:nowrap;' + (TimingData.text === 'none' ? 'font-size:9px;letter-spacing:0.01em;margin-right:3px;' : '');
 
         li.appendChild(TimeElement);
       }
@@ -8123,9 +8195,21 @@ function _refreshReportPanel() {
     } else {
       weaknessItems.forEach(function(s) {
         var detail = [];
-        if (s.endType === 'timeout')    detail.push('timed out');
-        else if (s.endType === 'skip')  detail.push('skipped');
-        else if (s.isSlow && !(s.timeToAnswerMs !== null && s.timeToAnswerMs <= 1000)) detail.push('slower');
+        if (s.endType === 'timeout') {
+          // Near-miss: player pressed the correct key after the timer expired
+          var isNearMiss = s.timeToAnswerMs !== null && questionTimer !== null;
+          if (isNearMiss) {
+            var overByMs = s.timeToAnswerMs - (questionTimer * 1000);
+            var overBySec = Math.max(0.1, overByMs / 1000).toFixed(1);
+            detail.push(overBySec + 's too slow!');
+          } else {
+            detail.push('timed out');
+          }
+        } else if (s.endType === 'skip') {
+          detail.push('skipped');
+        } else if (s.isSlow && !(s.timeToAnswerMs !== null && s.timeToAnswerMs <= 1000)) {
+          detail.push('slower');
+        }
         if (s.partialNudgeFired || s.partialCorrectKey) detail.push('part way there');
         else if (s.hintUsed)                 detail.push('hint used');
         if (s.wrongKeyCount > 0)        detail.push(s.wrongKeyCount + ' wrong key' + (s.wrongKeyCount > 1 ? 's' : ''));

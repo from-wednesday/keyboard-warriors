@@ -7439,11 +7439,11 @@ function finalizeRunData(completedRun, currentPool, DefeatCount) {
   var NearMissMessages = [];
   if (nearMissCount >= 2 && questionTimer !== null) {
     var NearMissPool = [
-      { key: 'near_miss_a', text: 'Hang in there — you\'re so close! You knew several of those answers, the timer just beat you to it. Keep going at this setting.' },
+      { key: 'near_miss_a', text: 'Hang in there, you\'re so close! You knew several of those answers, the timer just beat you to it. Keep going at this setting.' },
       { key: 'near_miss_b', text: 'This timer is really testing you, but I can see you improving! Don\'t give up.' },
-      { key: 'near_miss_c', text: 'You are right on the edge of a breakthrough. You pressed the right key after the timer on several questions — that means the knowledge is there. A bit more speed and you will have it.' },
-      { key: 'near_miss_d', text: 'So close! You got the answer several times, just a fraction too late. That is not a knowledge problem, that is a speed problem — and speed comes with repetition. Stick with it.' },
-      { key: 'near_miss_e', text: 'The answers are clearly in there. The timer is just outrunning your recall right now. That gap closes fast — stay at this setting and keep building the reps.' },
+      { key: 'near_miss_c', text: 'You are right on the edge of a breakthrough. You pressed the right key after the timer on several questions, so the knowledge is there. A bit more speed and you will have it.' },
+      { key: 'near_miss_d', text: 'So close! You got the answer several times, just a fraction too late. That is not a knowledge problem, it is a speed problem. Speed comes with repetition. Stick with it.' },
+      { key: 'near_miss_e', text: 'The answers are clearly in there but the timer is outrunning your recall or fingers right now. That gap closes fast. Stay at this setting and keep trying.' },
     ];
     NearMissPool.forEach(function(m) {
       if (RecentMessageKeys.indexOf(m.key) === -1) {
@@ -8192,9 +8192,21 @@ function _refreshReportPanel() {
     } else {
       weaknessItems.forEach(function(s) {
         var detail = [];
-        if (s.endType === 'timeout')    detail.push('timed out');
-        else if (s.endType === 'skip')  detail.push('skipped');
-        else if (s.isSlow && !(s.timeToAnswerMs !== null && s.timeToAnswerMs <= 1000)) detail.push('slower');
+        if (s.endType === 'timeout') {
+          // Near-miss: player pressed the correct key after the timer expired
+          var isNearMiss = s.timeToAnswerMs !== null && questionTimer !== null;
+          if (isNearMiss) {
+            var overByMs = s.timeToAnswerMs - (questionTimer * 1000);
+            var overBySec = (overByMs / 1000).toFixed(1);
+            detail.push(overBySec + 's too slow!');
+          } else {
+            detail.push('timed out');
+          }
+        } else if (s.endType === 'skip') {
+          detail.push('skipped');
+        } else if (s.isSlow && !(s.timeToAnswerMs !== null && s.timeToAnswerMs <= 1000)) {
+          detail.push('slower');
+        }
         if (s.partialNudgeFired || s.partialCorrectKey) detail.push('part way there');
         else if (s.hintUsed)                 detail.push('hint used');
         if (s.wrongKeyCount > 0)        detail.push(s.wrongKeyCount + ' wrong key' + (s.wrongKeyCount > 1 ? 's' : ''));

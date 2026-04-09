@@ -2367,9 +2367,11 @@ function toggleHelp() {
   }
 }
 function showAutoHintToast() {
-    kbToastEl.innerHTML = buildHintHTML(currentAnswer.replace(/\\\\/g, '\\'), '#f97316');
+    kbToastEl.innerHTML = buildHintHTML(currentAnswer.replace(/\\/g, '\'), '#f97316');
     kbToastEl.classList.add('show');
     clearTimeout(_kwToastTimer);
+    clearTimeout(_kbToastAutoHideTimer);
+    _kbToastAutoHideTimer = setTimeout(function() { kbToastEl.classList.remove('show'); }, 2000);
 }
 function showSuccessHintToast() {
     kbToastEl.innerHTML = buildHintHTML(currentAnswer.replace(/\\\\/g, '\\'), '#10b981');

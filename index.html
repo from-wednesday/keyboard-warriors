@@ -9,7 +9,7 @@
 <title>Keyboard Warriors</title>
 <script>
   const DefaultTitle = 'Keyboard Warriors';
-  const VersionLabel   = '0019';
+  const VersionLabel   = '0020';
   const TitlePrefix  = document.title !== DefaultTitle ? document.title.trim() + '_' : '';
   const DBG_DEVICE   = TitlePrefix + VersionLabel;
 </script>
@@ -310,7 +310,13 @@
 <div id="panelReport" class="sp-page sp-page-report">
   <div class="sp-col sp-col-left">
     <div class="sp-report-col-header">
-      <p class="sp-small-card-title">REPORT CARD</p>
+      <div class="sp-endgame-header-left" onclick="_toggleEndGameCheatSheet()" id="reportCardToggleTrigger">
+        <p class="sp-small-card-title">REPORT CARD</p>
+        <svg class="sp-endgame-search-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <circle cx="11" cy="11" r="7"/>
+          <line x1="16.5" y1="16.5" x2="22" y2="22"/>
+        </svg>
+      </div>
       <p class="sp-report-section-title" id="reportMasteredHeading">Mastered</p>
     </div>
     <ul id="reportStrengths" class="sp-report-list sp-report-strength"></ul>
@@ -325,7 +331,30 @@
     <div class="sp-report-advice-box" id="reportTrainerAdvice"></div>
   </div>
 </div>
-  <!-- ── Cheat Sheet Panel ─────────────────────────────── -->
+  <!-- ── EndGame CheatSheet ─────────────────────────────── -->
+    <div id="panelEndGameCheatSheet" class="sp-page">
+   <div class="sp-col sp-col-left">
+        <div class="sp-report-col-header">
+          <div class="sp-endgame-header-left" onclick="_toggleEndGameCheatSheet()">
+            <p class="sp-small-card-title">REPORT CARD</p>
+           <svg class="sp-endgame-search-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <circle cx="11" cy="11" r="7"/>
+          <line x1="16.5" y1="16.5" x2="22" y2="22"/>
+        </svg>
+          </div>
+          <p class="sp-report-section-title" id="endGameCheatSheetMasteredHeading"></p>
+        </div>
+        <ul id="endGameCheatSheetListLeft" class="sp-endgame-list sp-report-weakness"></ul>
+      </div>
+      <div class="sp-col sp-col-right">
+        <div class="sp-report-col-header sp-report-col-header-right">
+          <p class="sp-endgame-context-label" id="endGameCheatSheetContextLabel"></p>
+        </div>
+        <ul id="endGameCheatSheetListRight" class="sp-endgame-list sp-report-weakness"></ul>
+      </div>
+    </div>
+
+<!-- ── Cheat Sheet Panel ─────────────────────────────── -->
     <div id="panelPadlock" class="sp-page sp-page-padlock">
       <div class="sp-padlock-title-row" style="display:none;">
         <p class="sp-padlock-main-heading">Cheat Sheet</p>
@@ -1049,6 +1078,12 @@ function showToast(msg, duration) {
 
 // Legacy alias — keeps existing internal calls working
 function showModeToast(msg) { showToast(msg); }
+
+function clearToast() {
+  clearTimeout(_kwToastTimer);
+  var el = document.getElementById('kwToast');
+  if (el) el.classList.remove('visible');
+}
 
 function pulseBtn(el) {
   if (!el) return;
@@ -3803,7 +3838,7 @@ function onModalFnToggle() {
 // activeSettings: null | 'panelKeyboard' | 'panelBrowser' | 'panelDifficulty' | 'panelPause' | 'panelReturning' | 'panelWelcome'
 var activeSettings = null;
 
-var SP_PAGE_ORDER = ['panelKeyboard', 'panelBrowser', 'panelDifficulty', 'panelPause', 'panelReport', 'panelPadlock', 'panelReturning', 'panelWelcome'];
+var SP_PAGE_ORDER = ['panelKeyboard', 'panelBrowser', 'panelDifficulty', 'panelPause', 'panelReport', 'panelEndGameCheatSheet', 'panelPadlock', 'panelReturning', 'panelWelcome'];
 
 function _spPageEl(page) {
   var ids = {
@@ -3811,6 +3846,7 @@ function _spPageEl(page) {
     panelBrowser:    'panelBrowser',
     panelDifficulty: 'panelDifficulty',
     panelPause:      'panelPause',
+    panelEndGameCheatSheet: 'panelEndGameCheatSheet',
     panelPadlock:    'panelPadlock',
     panelReturning:  'panelReturning',
     panelWelcome:    'panelWelcome',
@@ -6647,6 +6683,7 @@ function enterDefeat() {
   clearTimeout(penaltyTimeout);
   hideQuestionTimerArc();
   clearHelp();
+  clearToast();
   clearAllLit();
   heldKeys.clear();
   titleEl.classList.remove('blurred');
@@ -6654,6 +6691,7 @@ function enterDefeat() {
   document.getElementById('livesRow').classList.remove('blurred');
 
   // Scores are NOT updated
+
   mainBtn.textContent = 'Try again?';
   mainBtn.style.background = '';
   helpBtn.textContent = 'Help';
@@ -7021,14 +7059,16 @@ lastCompletedReport = finalizeRunData(completedRun, questionPool, 0);
   clearInterval(timerInterval);
   clearTimeout(penaltyTimeout);
   hideQuestionTimerArc();
-  clearHelp();
+ clearHelp();
+  clearToast();
   clearAllLit();
   heldKeys.clear();
   titleEl.classList.remove('blurred');
   questionCountEl.classList.remove('blurred');
   document.getElementById('livesRow').classList.remove('blurred');
 
-  const finalAccuracy = calcAccuracy() ?? 0;
+  const finalAccuracy
+ = calcAccuracy() ?? 0;
   const wasFirstRecord = bestRecord.time === null;
   const prevTime     = bestRecord.time;
   const prevAccuracy = bestRecord.accuracy;
@@ -7844,6 +7884,119 @@ function finalizeRunData(completedRun, currentPool, DefeatCount) {
   return { questionSummaries, trainerAdvice, trainerSettingSuggested };
 }
 
+
+function _toggleEndGameCheatSheet() {
+  if (activeSettings === 'panelEndGameCheatSheet') {
+    openSettings('panelReport');
+  } else {
+    _refreshEndGameCheatSheet();
+    openSettings('panelEndGameCheatSheet');
+  }
+}
+
+function _refreshEndGameCheatSheet() {
+  var AppEntry = APPS.find(function(AppItem) { return AppItem.key === currentApp; });
+  var ApplicationName = AppEntry ? AppEntry.label : currentApp;
+  var OperatingSystemName = currentOs === 'pc' ? 'PC' : 'Mac';
+  var ContextLabelElement = document.getElementById('endGameCheatSheetContextLabel');
+  if (ContextLabelElement) {
+    ContextLabelElement.textContent = ApplicationName + ' on ' + OperatingSystemName;
+  }
+
+  var LeftList  = document.getElementById('endGameCheatSheetListLeft');
+  var RightList = document.getElementById('endGameCheatSheetListRight');
+  if (!LeftList || !RightList) return;
+  LeftList.innerHTML  = '';
+  RightList.innerHTML = '';
+
+  if (!lastCompletedReport) return;
+
+  // Dot colours and timing come from lastCompletedReport.questionSummaries,
+  // because runData has already been cleared by the time this function runs.
+  var AnsweredOutcomeColourMap = {};
+  var AnsweredTimingMap = {};
+  lastCompletedReport.questionSummaries.forEach(function(Summary) {
+    var Token = Summary.shortcutToken;
+    if (!Token) return;
+    var DotColour;
+    if (Summary.endType === 'success' && Summary.wrongKeyCount === 0 && !Summary.hintUsed) {
+      DotColour = '#10b981';
+    } else if (Summary.endType === 'success') {
+      DotColour = '#f5c842';
+    } else {
+      DotColour = '#ef4444';
+    }
+    AnsweredOutcomeColourMap[Token] = DotColour;
+    var TimeDisplayText;
+    if (Summary.endType === 'skip') {
+      TimeDisplayText = 'skip';
+    } else if (Summary.endType === 'timeout') {
+      TimeDisplayText = (Summary.timeToAnswerMs !== null)
+        ? (Summary.timeToAnswerMs / 1000).toFixed(1) + 's'
+        : 'none';
+    } else if (Summary.timeToAnswerMs !== null) {
+      TimeDisplayText = (Summary.timeToAnswerMs / 1000).toFixed(1) + 's';
+    } else {
+      TimeDisplayText = null;
+    }
+    AnsweredTimingMap[Token] = { text: TimeDisplayText };
+  });
+
+  var AllQuestions = lastCompletedReport.questionSummaries;
+  var HalfwayIndex = Math.ceil(AllQuestions.length / 2);
+
+  function BuildEndGameListItem(SummaryItem) {
+    var PoolQuestion = questionPool.find(function(PoolItem) {
+        return PoolItem.shortcut === SummaryItem.shortcutToken;
+    });
+
+    var ShortcutChipText = PoolQuestion
+        ? (currentOs === 'pc' ? PoolQuestion.pc_sc : PoolQuestion.mac_sc)
+        : SummaryItem.shortcut;
+
+    var ListItem = document.createElement('li');
+    // Added the flex-start style from your second block
+    ListItem.style.alignItems = 'flex-start'; 
+    ListItem.dataset.shortcutToken = SummaryItem.shortcutToken || '';
+
+    var DotElement = document.createElement('span');
+    DotElement.className = 'sp-report-dot';
+    // Added the margin-top from your second block
+    DotElement.style.marginTop = '5px';
+    DotElement.style.background = AnsweredOutcomeColourMap[SummaryItem.shortcutToken] || '#b3bdc9';
+
+var LabelElement = document.createElement('span');
+    LabelElement.className = 'sp-report-question-label';
+    LabelElement.style.cssText = 'flex:1;min-width:0;display:block;';
+    LabelElement.textContent = (SummaryItem.displayText || '').replace(/\\\\/g, '\\');
+
+    ListItem.appendChild(DotElement);
+
+    var TimingData = AnsweredTimingMap[SummaryItem.shortcutToken] || null;
+    if (TimingData && TimingData.text) {
+        var TimeElement = document.createElement('small');
+        TimeElement.textContent = TimingData.text;
+        TimeElement.style.cssText = 'color:#9ca3af;flex-shrink:0;margin-left:-3px;margin-right:4px;margin-top:2px;line-height:1.5;white-space:nowrap;'
+            + (TimingData.text === 'none' ? 'font-size:9px;letter-spacing:0.01em;margin-right:3px;' : '');
+        ListItem.appendChild(TimeElement);
+    }
+
+    ListItem.appendChild(LabelElement);
+    var ChipsWrapper = BuildShortcutKeyChips(ShortcutChipText, true);
+    ChipsWrapper.style.flexShrink = '0';
+    ListItem.appendChild(ChipsWrapper);
+    
+    return ListItem;
+}
+  AllQuestions.forEach(function(SummaryItem, ItemIndex) {
+    var ListItem = BuildEndGameListItem(SummaryItem);
+    if (ItemIndex < HalfwayIndex) {
+      LeftList.appendChild(ListItem);
+    } else {
+      RightList.appendChild(ListItem);
+    }
+  });
+}
 
 function _refreshCheatSheet() {
   var List = document.getElementById('cheatSheetList');
@@ -8765,6 +8918,22 @@ function handleKeydown(e) {
       if (ReportShortcutMatched) { e.preventDefault(); return; }
     }
     // Cheat sheet key lighting (runs alongside report card check)
+    if (activeSettings === 'panelEndGameCheatSheet' && lastCompletedReport) {
+      lastCompletedReport.questionSummaries.forEach(function(Summary) {
+        if (Summary.shortcutToken && matchesShortcut(e, Summary.shortcutToken)) {
+          var AllEndGameItems = document.querySelectorAll('#endGameCheatSheetListLeft li, #endGameCheatSheetListRight li');
+          AllEndGameItems.forEach(function(ListItem) {
+            if ((ListItem.dataset.shortcutToken || '').toUpperCase() !== Summary.shortcutToken.toUpperCase()) return;
+            var ChipWrapper = ListItem.querySelector('[data-chips-wrapper]');
+            if (!ChipWrapper) return;
+            ChipWrapper.classList.add('sp-report-chips-lit');
+            setTimeout(function() { ChipWrapper.classList.remove('sp-report-chips-lit'); }, 1400);
+          });
+        }
+      });
+      e.preventDefault();
+      return;
+    }
     if (activeSettings === 'panelPadlock') {
       CheckAndHighlightCheatSheetFromKeyEvent(e);
     }

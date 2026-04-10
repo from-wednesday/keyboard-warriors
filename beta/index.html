@@ -42,6 +42,16 @@
      Shown once on iOS/iPadOS (localStorage persists the decision).
      iOS 13+ requires a user gesture before DeviceOrientationEvent.requestPermission.
 ══════════════════════════════════════ -->
+<div id="phoneWarningBackdrop" class="touch-modal-backdrop" style="display:none;"></div>
+<div id="phoneWarningModal" class="touch-modal-card" role="dialog" aria-modal="true" style="display:none;">
+  <p class="touch-modal-heading">Your screen is a little small</p>
+  <p class="touch-modal-body">To play you will need an external keyboard connected, and your phone in landscape orientation.</p>
+  <p class="touch-modal-body"><em>Your experience will be better on a tablet or computer.</em></p>
+  <div class="touch-modal-buttons">
+    <button class="touch-modal-btn-secondary" onclick="OnPhoneWarningDismiss()">Try anyway</button>
+  </div>
+</div>
+
 <div id="gyroBackdrop" class="touch-modal-backdrop" style="display:none;"></div>
 <div id="gyroModal" class="touch-modal-card" role="dialog" aria-modal="true" style="display:none;">
   <p class="touch-modal-heading">One quick thing</p>
@@ -1406,10 +1416,11 @@ updateToggleVisual(currentOs);
 ══════════════════════════════════════ */
 const keyboardWrap = document.getElementById('keyboardWrap');
 let currentKbMode = null;
+var ForceNoKeyboard = false;
 
 function updateKeyboardMode() {
   const w = window.innerWidth;
-  const mode = w < 600 ? 'none' : w < 820 ? 'mini' : 'full';
+  const mode = ForceNoKeyboard ? 'none' : w < 600 ? 'none' : w < 820 ? 'mini' : 'full';
   if (mode === currentKbMode) return;
   currentKbMode = mode;
   if (mode === 'none') {
@@ -5086,7 +5097,10 @@ function diffBtnClick(mode) {
   _popDiffLabel(activeBtn);
   try { localStorage.setItem('kw_difficulty', currentDifficulty); } catch(e) {}
 runData.length = 0; lastCompletedReport = null; CoachAdviceAccepted = false;
+  // Only apply timer/lives presets once the trophy has been earned.
+  // Before that the sliders are locked at ∞ and should not change.
   if (hasTrophy) {
+    _applyDifficultyPresets(mode);
     _updateTimerLivesPills();
   }
 
@@ -5153,14 +5167,6 @@ function _refreshDifficultyPanel() {
   var showAsInfinity = !hasTrophy;
   _syncSliderToValue('timer', showAsInfinity ? null : questionTimer);
   _syncSliderToValue('lives', showAsInfinity ? null : playerLives);
-  // Reset any coach message written into the footer during the animation.
-  // It is only relevant while the animation plays, not on subsequent visits.
-  if (!_trophySequenceActive) {
-    var footer = document.getElementById('diffAdvancedFooter');
-    if (footer && footer.classList.contains('diff-advanced-footer-visible')) {
-      footer.textContent = 'Changing \'Question Difficulty\' will suggest settings here, but you have complete control over these features.';
-    }
-  }
 }
 
 function _updateTimerLivesPills() {
@@ -9900,6 +9906,49 @@ function onKeyboardRecommendTouchOnly() {
    Keyboard recommendation: every fresh session (sessionStorage gates it).
 ══════════════════════════════════════ */
 
+/* ══════════════════════════════════════
+   PHONE WARNING MODAL
+   Shown on small touch screens (phones)
+   before any other modal.
+══════════════════════════════════════ */
+
+function IsPhoneScreen() {
+  return Math.min(screen.width, screen.height) < 480;
+}
+
+function ShowPhoneWarningModal() {
+  ShowTouchModal('phoneWarningBackdrop', 'phoneWarningModal');
+}
+
+function HidePhoneWarningModal() {
+  HideTouchModal('phoneWarningBackdrop', 'phoneWarningModal');
+}
+
+function OnPhoneWarningDismiss() {
+  HidePhoneWarningModal();
+  // Reverse the touch defaults set at startup -- phone plays without
+  // the graphical keyboard and without on-screen key input.
+  setTouchEnabled(false);
+  setStickyKeys(false);
+  var StickyRowElement = document.getElementById('stickyRow');
+  if (StickyRowElement) StickyRowElement.classList.remove('disabled');
+  // Force the keyboard panel permanently hidden regardless of screen width
+  ForceNoKeyboard = true;
+  updateKeyboardMode();
+  // Chain to gyro prompt on iOS if not yet decided; otherwise done
+  var IsIos = /iPad|iPhone|iPod/.test(navigator.userAgent) ||
+              (navigator.maxTouchPoints > 1 && /Mac/.test(navigator.userAgent));
+  var SavedGyroDecision = null;
+  try { SavedGyroDecision = localStorage.getItem('kw_gyro'); } catch(StorageError) {}
+  var RequiresExplicitGyroPrompt = IsIos &&
+    SavedGyroDecision === null &&
+    typeof DeviceOrientationEvent !== 'undefined' &&
+    typeof DeviceOrientationEvent.requestPermission === 'function';
+  if (RequiresExplicitGyroPrompt) {
+    setTimeout(ShowGyroModal, 300);
+  }
+}
+
 (function InitialiseTouchBootSequence() {
   if (detectedOs !== 'mobile') return;
 
@@ -9908,8 +9957,6 @@ function onKeyboardRecommendTouchOnly() {
 
   // If gyro was previously granted, re-wire the listener silently
   if (SavedGyroDecision === 'granted') {
-    // On iOS, permission persists within the same origin across page loads.
-    // Wiring the listener here works if the browser still honours the grant.
     InitialiseGyroOrientationListener();
   }
 
@@ -9921,12 +9968,16 @@ function onKeyboardRecommendTouchOnly() {
     typeof DeviceOrientationEvent !== 'undefined' &&
     typeof DeviceOrientationEvent.requestPermission === 'function';
 
+  // Phone screens get the size warning first; it handles all subsequent chaining
+  if (IsPhoneScreen()) {
+    setTimeout(ShowPhoneWarningModal, 400);
+    return;
+  }
+
+  // Tablet/large touch devices: gyro then keyboard recommendation as before
   if (RequiresExplicitGyroPrompt) {
-    // Show gyro first; its handlers chain to the keyboard modal
     setTimeout(ShowGyroModal, 600);
   } else {
-    // Non-iOS touch, or iOS that already answered the gyro prompt:
-    // go straight to the keyboard recommendation modal
     setTimeout(ShowKeyboardRecommendModal, 400);
   }
 })();

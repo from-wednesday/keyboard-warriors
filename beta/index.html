@@ -5088,10 +5088,14 @@ function diffBtnClick(mode) {
 runData.length = 0; lastCompletedReport = null; CoachAdviceAccepted = false;
   // Only apply timer/lives presets once the trophy has been earned.
   // Before that the sliders are locked at ∞ and should not change.
-  if (hasTrophy) {
+    if (hasTrophy && !CoachAdviceAccepted) {
     _applyDifficultyPresets(mode);
     _updateTimerLivesPills();
   }
+  if (hasTrophy && CoachAdviceAccepted) {
+    _updateTimerLivesPills();
+  }
+
 
   // If we are still on the welcome screen, dismiss it into idle
   if (gameState === 'welcome') {

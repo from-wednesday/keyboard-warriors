@@ -7,6 +7,7 @@ This digital toy was created by **Wednesday Dessauer** to help dedicated practit
 
 <p align="right">
   <a href="https://www.buymeacoffee.com/to.wednesday">
-    <img src="https://img.shields.io/badge/buy%20me%20a%20coffee-8F817C?style=flat&logo=buy-me-a-coffee&logoColor=white&labelColor=8F817C" />
+    <img src="https://img.shields.io/badge/-%20to.wednesday%20|%20buy%20me%20a%20coffee-8F817C?style=flat&logo=buy-me-a-coffee&logoColor=white&labelColor=8F817C" />
   </a>
+  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
 </p>

@@ -5085,13 +5085,7 @@ function diffBtnClick(mode) {
   var activeBtn = document.querySelector('#difficultyPill .diff-btn[data-mode="' + mode + '"], #welcomeDifficultyPill .diff-btn[data-mode="' + mode + '"]');
   _popDiffLabel(activeBtn);
   try { localStorage.setItem('kw_difficulty', currentDifficulty); } catch(e) {}
-runData.length = 0; lastCompletedReport = null;
-  // Only apply timer/lives presets once the trophy has been earned.
-  // Skip presets if the coach has already set the sliders this session.
-  if (hasTrophy && !CoachAdviceAccepted) {
-    _applyDifficultyPresets(mode);
-  }
-  CoachAdviceAccepted = false;
+runData.length = 0; lastCompletedReport = null; CoachAdviceAccepted = false;
   if (hasTrophy) {
     _updateTimerLivesPills();
   }
@@ -5159,6 +5153,14 @@ function _refreshDifficultyPanel() {
   var showAsInfinity = !hasTrophy;
   _syncSliderToValue('timer', showAsInfinity ? null : questionTimer);
   _syncSliderToValue('lives', showAsInfinity ? null : playerLives);
+  // Reset any coach message written into the footer during the animation.
+  // It is only relevant while the animation plays, not on subsequent visits.
+  if (!_trophySequenceActive) {
+    var footer = document.getElementById('diffAdvancedFooter');
+    if (footer && footer.classList.contains('diff-advanced-footer-visible')) {
+      footer.textContent = 'Changing \'Question Difficulty\' will suggest settings here, but you have complete control over these features.';
+    }
+  }
 }
 
 function _updateTimerLivesPills() {

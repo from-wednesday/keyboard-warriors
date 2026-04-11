@@ -1756,15 +1756,14 @@ li.conflict-dismissed .conflict-desc {
 
 /* ── More info popover pattern ────────────────────────────────────────────────
    Reusable: .more-info-wrap contains .sp-title + .more-info-trigger.
-   The trigger holds the icon and the absolutely-positioned popup.
-   Popup floats to the right of the icon, centred on it vertically.          */
+   The popup uses position:fixed so overflow:hidden ancestors cannot clip it.
+   JS reads getBoundingClientRect() on open to set left/top precisely.        */
 
 .more-info-wrap {
   display: flex;
   align-items: center;
   gap: 6px;
   margin: 4px 0 5px 0;
-  position: relative;
 }
 
 .more-info-wrap .sp-title {
@@ -1792,11 +1791,8 @@ li.conflict-dismissed .conflict-desc {
 }
 
 .more-info-popup {
-  position: absolute;
-  left: calc(100% + 8px);
-  top: 50%;
-  transform: translateY(-50%);
-  z-index: 200;
+  position: fixed;
+  z-index: 1000;
   background: white;
   border: 1.5px solid #d1d5db;
   border-radius: 10px;
@@ -1806,7 +1802,6 @@ li.conflict-dismissed .conflict-desc {
   pointer-events: none;
   opacity: 0;
   transform: translateY(-50%) scale(0.96);
-  transform-origin: left center;
   transition: opacity 0.15s ease, transform 0.15s ease;
 }
 

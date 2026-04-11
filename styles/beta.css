@@ -1801,14 +1801,14 @@ li.conflict-dismissed .conflict-desc {
   width: 200px;
   pointer-events: none;
   opacity: 0;
-  transform: translateY(-50%) scale(0.96);
+  transform: scale(0.96);
   transition: opacity 0.15s ease, transform 0.15s ease;
 }
 
 .more-info-popup.more-info-popup-visible {
   opacity: 1;
   pointer-events: auto;
-  transform: translateY(-50%) scale(1);
+  transform: scale(1);
 }
 
 .more-info-body {

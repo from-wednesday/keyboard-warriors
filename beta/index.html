@@ -3675,6 +3675,9 @@ var LIVES_VALUES = [1, 3, 5, 10, null];
 var _openMoreInfoId = null;
 var _moreInfoOutsideListener = null;
 
+var PopupOriginalParent = PopupElement.parentNode;
+  _infoPopupOriginalParent = PopupOriginalParent;
+  document.body.appendChild(PopupElement);
 function onGhostModeToggle() {
   var ghostRow = document.getElementById('ghostRow');
   if (ghostRow && ghostRow.classList.contains('disabled')) {
@@ -4956,23 +4959,32 @@ document.addEventListener('click', function(e) {
 });
 
 function positionIcons() {
-  var panel = document.getElementById('keyboardPanel');
-  var wrap  = document.getElementById('keyboardWrap');
+  var panel  = document.getElementById('keyboardPanel');
+  var stage  = document.getElementById('kbFlipStage');
+  var wrap   = document.getElementById('keyboardWrap');
   var kbWrap = document.getElementById('kbIconWrap');
   var brWrap = document.getElementById('brIconWrap');
-  var kb = document.getElementById('kbIcon');
-  var br = document.getElementById('browserIcon');
+  var kb     = document.getElementById('kbIcon');
+  var br     = document.getElementById('browserIcon');
   if (!panel || !wrap) return;
-  var pRect = panel.getBoundingClientRect();
-  var wRect = wrap.getBoundingClientRect();
+  // Use the stage rect — it only translates vertically so its left/right are stable.
+  // panel.getBoundingClientRect() returns the visually-rotated rect when rotateX is
+  // applied, which shifts the reported left/right and breaks icon placement.
+  var sRect  = stage ? stage.getBoundingClientRect() : panel.getBoundingClientRect();
+  var wRect  = wrap.getBoundingClientRect();
+  // panel.offsetWidth is unaffected by CSS transforms — use it for true panel width.
+  var panelW       = panel.offsetWidth;
+  var stageCenterX = (sRect.left + sRect.width / 2) - wRect.left;
+  var panelLeft    = stageCenterX - panelW / 2;
+  var panelRight   = stageCenterX + panelW / 2;
   var KB_GAP = 36;
   var BR_GAP = 36;
-  var kbLeft = Math.round(pRect.left - wRect.left - (kbWrap ? kbWrap.offsetWidth : 44) - KB_GAP);
-  var brLeft = Math.round(pRect.right - wRect.left + BR_GAP);
+  var kbLeft = Math.round(panelLeft  - (kbWrap ? kbWrap.offsetWidth : 44) - KB_GAP);
+  var brLeft = Math.round(panelRight + BR_GAP);
   if (kbWrap) { kbWrap.style.left = kbLeft + 'px'; kbWrap.style.right = 'auto'; }
-  else if (kb) kb.style.left = kbLeft + 'px';
+  else if (kb)  kb.style.left = kbLeft + 'px';
   if (brWrap) { brWrap.style.left = brLeft + 'px'; brWrap.style.right = 'auto'; }
-  else if (br) br.style.left = brLeft + 'px';
+  else if (br)  br.style.left = brLeft + 'px';
 }
 
 // ── Game-area click pulses the contextually useful button ────────────────────

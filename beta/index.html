@@ -611,11 +611,11 @@
             <span class="more-info-trigger" id="kbSizeMoreInfoTrigger" onclick="toggleMoreInfo('kbSizeMoreInfo')">
            <svg class="more-info-icon" viewBox="0 0 20 20" width="14" height="14" fill="none" stroke="currentColor" stroke-width="1.25" stroke-linecap="round">
   <circle cx="10" cy="10" r="8.5"/>
-  <text x="12" y="12" text-anchor="middle" font-size="13" font-weight="800" font-family="system-ui,sans-serif" fill="currentColor" stroke="none">?</text>
+  <text x="11" y="14" text-anchor="middle" font-size="13" font-weight="800" font-family="system-ui,sans-serif" fill="currentColor" stroke="none">?</text>
 </svg>
               <div class="more-info-popup" id="kbSizeMoreInfo">
-                <p class="more-info-body">The on-screen display shows a compact keyboard, but the game also accepts input from full-sized keyboards with their extended keys.</p>
-                <p class="more-info-body">Don&#8217;t have a full-sized keyboard? Let us know so we won&#8217;t ask you any impossible questions:</p>
+                <p class="more-info-body">While the on-screen display shows a compact keyboard, the game accepts input from full-sized keyboards&#8217; extended keys.</p>
+                <p class="more-info-body">Don&#8217;t have a full-sized keyboard? That&#8217;s ok. Just let us know with this switch and we won&#8217;t ask you any impossible questions.</p>
               </div>
             </span>
           </div>
@@ -3703,18 +3703,11 @@ function toggleMoreInfo(PopupId) {
 
   if (IsCurrentlyOpen) return;
 
-  // Centre in the viewport so it is never clipped regardless of where the trigger sits
-  var PopupWidth   = 200;
-  var PopupHeight  = 120;
-  var LeftPosition = Math.round((window.innerWidth  - PopupWidth)  / 2);
-  var TopPosition  = Math.round((window.innerHeight - PopupHeight) / 2);
-
-  PopupElement.style.transformOrigin = 'center center';
-  // Move popup to body so CSS transforms on ancestor elements cannot trap it
+ // Move popup to body so CSS transforms on ancestor elements cannot trap it
   var PopupOriginalParent = PopupElement.parentNode;
   document.body.appendChild(PopupElement);
 
-  var PopupWidth   = 200;
+  var PopupWidth   = 260;
   var PopupHeight  = 120;
   var LeftPosition = Math.round((window.innerWidth  - PopupWidth)  / 2);
   var TopPosition  = Math.round(window.scrollY + (window.innerHeight - PopupHeight) / 2);
@@ -3723,7 +3716,6 @@ function toggleMoreInfo(PopupId) {
   PopupElement.style.left      = LeftPosition + 'px';
   PopupElement.style.top       = TopPosition  + 'px';
   PopupElement.style.transform = '';
-
   PopupElement.classList.add('more-info-popup-visible');
   _openMoreInfoId = PopupId;
 

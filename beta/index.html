@@ -4211,9 +4211,19 @@ function _phoneCloseSettings() {
 
 function _spAlignPanel() {
   if (ForceNoKeyboard) return;
+  if (_openMoreInfoId) {
+    var StalePopup = document.getElementById(_openMoreInfoId);
+    if (StalePopup) {
+      StalePopup.classList.remove('more-info-popup-visible');
+      var KbSizeTrigger = document.querySelector('.more-info-trigger');
+      if (KbSizeTrigger && StalePopup.parentNode === document.body) {
+        KbSizeTrigger.appendChild(StalePopup);
+      }
+    }
+    _openMoreInfoId = null;
+  }
   if (_moreInfoOutsideListener) {
     document.removeEventListener('click', _moreInfoOutsideListener, true);
-    _moreInfoOutsideListener();
     _moreInfoOutsideListener = null;
   }
   var panel = document.getElementById('keyboardPanel');

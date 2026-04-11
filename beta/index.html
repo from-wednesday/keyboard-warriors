@@ -609,10 +609,10 @@
           <div class="more-info-wrap">
             <p class="sp-title" onclick="toggleMoreInfo('kbSizeMoreInfo')">Keyboard size</p>
             <span class="more-info-trigger" id="kbSizeMoreInfoTrigger" onclick="toggleMoreInfo('kbSizeMoreInfo')">
-              <svg class="more-info-icon" viewBox="0 0 20 20" width="14" height="14" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round">
-                <circle cx="10" cy="10" r="8.5"/>
-                <text x="10" y="14.5" text-anchor="middle" font-size="11" font-weight="700" font-family="system-ui,sans-serif" fill="currentColor" stroke="none">?</text>
-              </svg>
+           <svg class="more-info-icon" viewBox="0 0 20 20" width="14" height="14" fill="none" stroke="currentColor" stroke-width="1.25" stroke-linecap="round">
+  <circle cx="10" cy="10" r="8.5"/>
+  <text x="10" y="15" text-anchor="middle" font-size="13" font-weight="800" font-family="system-ui,sans-serif" fill="currentColor" stroke="none">?</text>
+</svg>
               <div class="more-info-popup" id="kbSizeMoreInfo">
                 <p class="more-info-body">The on-screen display shows a compact keyboard, but the game also accepts input from full-sized keyboards with their extended keys.</p>
                 <p class="more-info-body">Don&#8217;t have a full-sized keyboard? Let us know so we won&#8217;t ask you any impossible questions:</p>
@@ -3703,27 +3703,16 @@ function toggleMoreInfo(PopupId) {
 
   if (IsCurrentlyOpen) return;
 
-  // Position via fixed coords so overflow:hidden ancestors cannot clip it
-  var TriggerRect   = TriggerElement.getBoundingClientRect();
-  var PopupWidth    = 200;
-  var PopupHeight   = 120; // approximate; fine-tuned after render if needed
-  var GapFromIcon   = 8;
-  var LeftPosition  = TriggerRect.right + GapFromIcon;
-  // Centre vertically on the trigger, then clamp to viewport
-  var TopPosition   = TriggerRect.top + (TriggerRect.height / 2) - (PopupHeight / 2);
-  TopPosition = Math.max(8, Math.min(TopPosition, window.innerHeight - PopupHeight - 8));
+  // Centre in the viewport so it is never clipped regardless of where the trigger sits
+  var PopupWidth   = 200;
+  var PopupHeight  = 120;
+  var LeftPosition = Math.round((window.innerWidth  - PopupWidth)  / 2);
+  var TopPosition  = Math.round((window.innerHeight - PopupHeight) / 2);
 
-  // Flip left if the popup would overflow the viewport right edge
-  if (LeftPosition + PopupWidth > window.innerWidth - 8) {
-    LeftPosition = TriggerRect.left - PopupWidth - GapFromIcon;
-    PopupElement.style.transformOrigin = 'right center';
-  } else {
-    PopupElement.style.transformOrigin = 'left center';
-  }
-
-  PopupElement.style.left      = Math.round(LeftPosition) + 'px';
-  PopupElement.style.top       = Math.round(TopPosition) + 'px';
-  PopupElement.style.transform = '';  // leave transform to CSS for scale animation
+  PopupElement.style.transformOrigin = 'center center';
+  PopupElement.style.left      = LeftPosition + 'px';
+  PopupElement.style.top       = TopPosition  + 'px';
+  PopupElement.style.transform = '';
 
   PopupElement.classList.add('more-info-popup-visible');
   _openMoreInfoId = PopupId;

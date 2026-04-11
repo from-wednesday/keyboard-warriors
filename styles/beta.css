@@ -3157,6 +3157,145 @@ body.returning-screen #diffIconWrap .icon-tip { display: none; }
   color: white;
 }
 .touch-modal-btn-secondary:active { background: #9ca3af; }
+.touch-modal-btn-secondary:active { background: #9ca3af; }
+
+/* ══════════════════════════════════════
+   PHONE TOOLBAR
+   Replaces the keyboard area on small
+   touch screens. Contains the three
+   settings icons in a roundrect pill,
+   with the panel area expanding below.
+══════════════════════════════════════ */
+
+#phoneToolbar {
+  display: none;
+  flex-direction: column;
+  align-items: stretch;
+  width: 100%;
+  gap: 0;
+}
+
+#phoneToolbarIcons {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0;
+  background: #e0f2fe;
+  border-radius: 16px;
+  border: 1.5px solid white;
+  box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+  padding: 10px 20px;
+}
+
+.phone-icon-btn {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 5px;
+  padding: 10px 20px;
+  cursor: pointer;
+  border-radius: 10px;
+  transition: opacity 0.15s ease;
+  user-select: none;
+  -webkit-user-select: none;
+}
+
+.phone-icon-btn + .phone-icon-btn {
+  border-left: 1px solid rgba(0,0,0,0.07);
+}
+
+.phone-icon-label {
+  font-family: 'Lato', system-ui, sans-serif;
+  font-size: 10px;
+  color: #9ca3af;
+  text-align: center;
+  line-height: 1.3;
+  pointer-events: none;
+}
+
+.phone-icon-btn.sp-icon-active .phone-icon-label {
+  color: #374151;
+}
+
+.phone-icon-btn.sp-icon-active svg {
+  fill: #374151;
+}
+
+.phone-gauge-stroke {
+  fill: none;
+  stroke: #9ca3af;
+  stroke-width: 2px;
+  stroke-linecap: round;
+  stroke-miterlimit: 10;
+}
+
+.phone-icon-btn.sp-icon-active .phone-gauge-stroke {
+  stroke: #374151;
+}
+
+#phonePanelArea {
+  overflow: hidden;
+  max-height: 0;
+  opacity: 0;
+  transition:
+    max-height 0.35s cubic-bezier(0.4, 0, 0.2, 1),
+    opacity    0.25s ease;
+  padding: 0 16px;
+  box-sizing: border-box;
+  width: 100%;
+}
+
+#phonePanelArea.phone-panel-open {
+  max-height: 1200px;
+  opacity: 1;
+  padding: 16px 16px 8px;
+}
+
+/* Panels inside phonePanelArea: reset the absolute positioning used
+   in the desktop layout and render as normal block content */
+#phonePanelArea .sp-page.sp-active {
+  position: static;
+  width: 100%;
+}
+
+/* The column divider line is meaningless in single-column phone flow */
+#phonePanelArea .sp-page.sp-active::after {
+  display: none;
+}
+
+/* Both columns stack vertically on phone */
+#phonePanelArea .sp-col-left,
+#phonePanelArea .sp-col-right {
+  padding-left: 0;
+  padding-right: 0;
+}
+
+/* Panels that are normally two-column grids become single-column stacks */
+#phonePanelArea .sp-page.sp-active:not(#panelDifficulty):not(#panelReturning):not(#panelWelcome) {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+/* Report card: remove the report bottom grid area hack, just stack */
+#phonePanelArea #panelReport.sp-page-report.sp-active {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+/* Left column divider line in report card panel */
+#phonePanelArea #panelReport .sp-col-left::after {
+  display: none;
+}
+
+/* Padlock panel */
+#phonePanelArea #panelPadlock.sp-page-padlock.sp-active {
+  display: flex;
+  flex-direction: column;
+}
+
 @keyframes TitleWipeIn {
   from { clip-path: inset(0 100% 0 0); opacity: 0.4; }
   to   { clip-path: inset(0 0% 0 0);   opacity: 1; }

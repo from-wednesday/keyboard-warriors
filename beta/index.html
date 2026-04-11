@@ -3703,18 +3703,11 @@ function toggleMoreInfo(PopupId) {
 
   if (IsCurrentlyOpen) return;
 
-  // Centre in the viewport so it is never clipped regardless of where the trigger sits
-  var PopupWidth   = 200;
-  var PopupHeight  = 120;
-  var LeftPosition = Math.round((window.innerWidth  - PopupWidth)  / 2);
-  var TopPosition  = Math.round((window.innerHeight - PopupHeight) / 2);
-
-  PopupElement.style.transformOrigin = 'center center';
   // Move popup to body so CSS transforms on ancestor elements cannot trap it
   var PopupOriginalParent = PopupElement.parentNode;
   document.body.appendChild(PopupElement);
 
-  var PopupWidth   = 200;
+  var PopupWidth   = 260;
   var PopupHeight  = 120;
   var LeftPosition = Math.round((window.innerWidth  - PopupWidth)  / 2);
   var TopPosition  = Math.round(window.scrollY + (window.innerHeight - PopupHeight) / 2);

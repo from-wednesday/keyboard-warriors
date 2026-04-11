@@ -4209,15 +4209,11 @@ function _phoneCloseSettings() {
 
 function _spAlignPanel() {
   if (ForceNoKeyboard) return;
-  if (_openMoreInfoId) {
-  var StalePopup = document.getElementById(_openMoreInfoId);
-  if (StalePopup) StalePopup.classList.remove('more-info-popup-visible');
-  _openMoreInfoId = null;
-}
-if (_moreInfoOutsideListener) {
-  document.removeEventListener('click', _moreInfoOutsideListener, true);
-  _moreInfoOutsideListener = null;
-}
+  if (_moreInfoOutsideListener) {
+    document.removeEventListener('click', _moreInfoOutsideListener, true);
+    _moreInfoOutsideListener();
+    _moreInfoOutsideListener = null;
+  }
   var panel = document.getElementById('keyboardPanel');
   var stage = document.getElementById('kbFlipStage');
   var inner = document.getElementById('settingsPanelInner');

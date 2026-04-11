@@ -1754,6 +1754,74 @@ li.conflict-dismissed .conflict-desc {
    Must appear after Block 1. Do not reorder.
    ═══════════════════════════════════════════════════ */
 
+/* ── More info popover pattern ────────────────────────────────────────────────
+   Reusable: .more-info-wrap contains .sp-title + .more-info-trigger.
+   The popup uses position:fixed so overflow:hidden ancestors cannot clip it.
+   JS reads getBoundingClientRect() on open to set left/top precisely.        */
+
+.more-info-wrap {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin: 4px 0 5px 0;
+}
+
+.more-info-wrap .sp-title {
+  margin: 0;
+  cursor: pointer;
+  user-select: none;
+}
+
+.more-info-trigger {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  cursor: pointer;
+  flex-shrink: 0;
+}
+
+.more-info-icon {
+  color: #9ca3af;
+  display: block;
+  transition: color 0.15s ease;
+}
+
+.more-info-trigger:hover .more-info-icon {
+  color: #6b7280;
+}
+
+.more-info-popup {
+  position: fixed;
+  z-index: 1000;
+  background: white;
+  border: 1.5px solid #d1d5db;
+  border-radius: 10px;
+  box-shadow: 0 4px 16px rgba(0,0,0,0.12);
+  padding: 10px 12px;
+  width: 200px;
+  pointer-events: none;
+  opacity: 0;
+  transform: scale(0.96);
+  transition: opacity 0.15s ease, transform 0.15s ease;
+}
+
+.more-info-popup.more-info-popup-visible {
+  opacity: 1;
+  pointer-events: auto;
+  transform: scale(1);
+}
+
+.more-info-body {
+  font-size: 11px;
+  color: #6b7280;
+  line-height: 1.6;
+  margin: 0 0 6px 0;
+}
+
+.more-info-body:last-child {
+  margin-bottom: 0;
+}
+
 #modalKbSizeSection {
   margin-top: 2px;
 }
@@ -3170,7 +3238,7 @@ body.returning-screen #diffIconWrap .icon-tip { display: none; }
 #phoneToolbar {
   display: none;
   flex-direction: column;
-  align-items: stretch;
+  align-items: center;
   width: 100%;
   gap: 0;
 }
@@ -3180,20 +3248,20 @@ body.returning-screen #diffIconWrap .icon-tip { display: none; }
   align-items: center;
   justify-content: center;
   gap: 0;
-  background: #e0f2fe;
-  border-radius: 16px;
-  border: 1.5px solid white;
-  box-shadow: 0 10px 30px rgba(0,0,0,0.1);
-  padding: 10px 20px;
+  background: #f7f9fb;
+  border-radius: 14px;
+  border: 1.5px solid #c8cdd4;
+  box-shadow: inset 0 3px 0 rgba(0,0,0,0.04), inset 0 -3px 0 rgba(255,255,255,0.70);
+  padding: 6px 12px;
 }
 
 .phone-icon-btn {
   display: flex;
-  flex-direction: column;
+  flex-direction: row;
   align-items: center;
   justify-content: center;
-  gap: 5px;
-  padding: 10px 20px;
+  gap: 8px;
+  padding: 8px 16px;
   cursor: pointer;
   border-radius: 10px;
   transition: opacity 0.15s ease;
@@ -3209,8 +3277,9 @@ body.returning-screen #diffIconWrap .icon-tip { display: none; }
   font-family: 'Lato', system-ui, sans-serif;
   font-size: 10px;
   color: #9ca3af;
-  text-align: center;
+  text-align: left;
   line-height: 1.3;
+  white-space: nowrap;
   pointer-events: none;
 }
 

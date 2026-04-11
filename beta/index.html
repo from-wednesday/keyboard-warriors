@@ -611,7 +611,7 @@
             <span class="more-info-trigger" id="kbSizeMoreInfoTrigger" onclick="toggleMoreInfo('kbSizeMoreInfo')">
            <svg class="more-info-icon" viewBox="0 0 20 20" width="14" height="14" fill="none" stroke="currentColor" stroke-width="1.25" stroke-linecap="round">
   <circle cx="10" cy="10" r="8.5"/>
-  <text x="10" y="15" text-anchor="middle" font-size="13" font-weight="800" font-family="system-ui,sans-serif" fill="currentColor" stroke="none">?</text>
+  <text x="12" y="12" text-anchor="middle" font-size="13" font-weight="800" font-family="system-ui,sans-serif" fill="currentColor" stroke="none">?</text>
 </svg>
               <div class="more-info-popup" id="kbSizeMoreInfo">
                 <p class="more-info-body">The on-screen display shows a compact keyboard, but the game also accepts input from full-sized keyboards with their extended keys.</p>
@@ -3710,7 +3710,19 @@ function toggleMoreInfo(PopupId) {
   var TopPosition  = Math.round((window.innerHeight - PopupHeight) / 2);
 
   PopupElement.style.transformOrigin = 'center center';
+  // Move popup to body so CSS transforms on ancestor elements cannot trap it
+  var PopupOriginalParent = PopupElement.parentNode;
+  document.body.appendChild(PopupElement);
+
+  var PopupWidth   = 200;
+  var PopupHeight  = 120;
+  var LeftPosition = Math.round((window.innerWidth  - PopupWidth)  / 2);
+  var TopPosition  = Math.round(window.scrollY + (window.innerHeight - PopupHeight) / 2);
+
+  PopupElement.style.transformOrigin = 'center center';
   PopupElement.style.left      = LeftPosition + 'px';
+  PopupElement.style.top       = TopPosition  + 'px';
+  PopupElement.style.transform = '';      = LeftPosition + 'px';
   PopupElement.style.top       = TopPosition  + 'px';
   PopupElement.style.transform = '';
 
@@ -3720,6 +3732,9 @@ function toggleMoreInfo(PopupId) {
   _moreInfoOutsideListener = function(ClickEvent) {
     if (TriggerElement.contains(ClickEvent.target)) return;
     PopupElement.classList.remove('more-info-popup-visible');
+    if (PopupOriginalParent && PopupElement.parentNode !== PopupOriginalParent) {
+      PopupOriginalParent.appendChild(PopupElement);
+    }
     _openMoreInfoId = null;
     document.removeEventListener('click', _moreInfoOutsideListener, true);
     _moreInfoOutsideListener = null;

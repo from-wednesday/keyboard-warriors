@@ -3675,9 +3675,7 @@ var LIVES_VALUES = [1, 3, 5, 10, null];
 var _openMoreInfoId = null;
 var _moreInfoOutsideListener = null;
 
-var PopupOriginalParent = PopupElement.parentNode;
-  _infoPopupOriginalParent = PopupOriginalParent;
-  document.body.appendChild(PopupElement);
+
 function onGhostModeToggle() {
   var ghostRow = document.getElementById('ghostRow');
   if (ghostRow && ghostRow.classList.contains('disabled')) {

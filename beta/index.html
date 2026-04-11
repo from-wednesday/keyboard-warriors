@@ -636,7 +636,7 @@
                 <circle class="modal-radio-fill" cx="9.5" cy="9.5" r="3.5" fill="#374151"/>
               </svg>
             </span>
-            <span class="modal-toggle-label">Kill Punctuation</span>
+            <span class="modal-toggle-label" style="font-size:12px;">Kill Punctuation</span>
           </label>
         </div>
         </div>
@@ -3688,7 +3688,26 @@ var LIVES_VALUES = [1, 3, 5, 10, null];
    positioning to its trigger element, escaping any overflow:hidden ancestors.
    Closes any other open popup before opening a new one.                       */
 var _openMoreInfoId = null;
+var _openMoreInfoOriginalParent = null;
 var _moreInfoOutsideListener = null;
+
+function _closeMoreInfoPopup() {
+  if (_moreInfoOutsideListener) {
+    document.removeEventListener('click', _moreInfoOutsideListener, true);
+    _moreInfoOutsideListener = null;
+  }
+  if (_openMoreInfoId) {
+    var PopupElement = document.getElementById(_openMoreInfoId);
+    if (PopupElement) {
+      PopupElement.classList.remove('more-info-popup-visible');
+      if (_openMoreInfoOriginalParent && PopupElement.parentNode !== _openMoreInfoOriginalParent) {
+        _openMoreInfoOriginalParent.appendChild(PopupElement);
+      }
+    }
+    _openMoreInfoId = null;
+    _openMoreInfoOriginalParent = null;
+  }
+}
 
 function toggleMoreInfo(PopupId) {
   var PopupElement   = document.getElementById(PopupId);
@@ -3697,21 +3716,12 @@ function toggleMoreInfo(PopupId) {
 
   var IsCurrentlyOpen = PopupElement.classList.contains('more-info-popup-visible');
 
-  // Close any open popup first
-  if (_openMoreInfoId) {
-    var PreviousPopup = document.getElementById(_openMoreInfoId);
-    if (PreviousPopup) PreviousPopup.classList.remove('more-info-popup-visible');
-    _openMoreInfoId = null;
-  }
-  if (_moreInfoOutsideListener) {
-    document.removeEventListener('click', _moreInfoOutsideListener, true);
-    _moreInfoOutsideListener = null;
-  }
+  _closeMoreInfoPopup();
 
   if (IsCurrentlyOpen) return;
 
   // Move popup to body so CSS transforms on ancestor elements cannot trap it
-  var PopupOriginalParent = PopupElement.parentNode;
+  _openMoreInfoOriginalParent = PopupElement.parentNode;
   document.body.appendChild(PopupElement);
 
   var PopupWidth   = 260;
@@ -3729,13 +3739,7 @@ function toggleMoreInfo(PopupId) {
 
   _moreInfoOutsideListener = function(ClickEvent) {
     if (TriggerElement.contains(ClickEvent.target)) return;
-    PopupElement.classList.remove('more-info-popup-visible');
-    if (PopupOriginalParent && PopupElement.parentNode !== PopupOriginalParent) {
-      PopupOriginalParent.appendChild(PopupElement);
-    }
-    _openMoreInfoId = null;
-    document.removeEventListener('click', _moreInfoOutsideListener, true);
-    _moreInfoOutsideListener = null;
+    _closeMoreInfoPopup();
   };
   requestAnimationFrame(function() {
     document.addEventListener('click', _moreInfoOutsideListener, true);
@@ -4213,21 +4217,7 @@ function _spAlignPanel() {
   if (ForceNoKeyboard) return;
   var wrap = document.getElementById('keyboardWrap');
   if (wrap) wrap.style.minHeight = '';
-  if (_openMoreInfoId) {
-    var StalePopup = document.getElementById(_openMoreInfoId);
-    if (StalePopup) {
-      StalePopup.classList.remove('more-info-popup-visible');
-      var KbSizeTrigger = document.querySelector('.more-info-trigger');
-      if (KbSizeTrigger && StalePopup.parentNode === document.body) {
-        KbSizeTrigger.appendChild(StalePopup);
-      }
-    }
-    _openMoreInfoId = null;
-  }
-  if (_moreInfoOutsideListener) {
-    document.removeEventListener('click', _moreInfoOutsideListener, true);
-    _moreInfoOutsideListener = null;
-  }
+  _closeMoreInfoPopup();
   var panel = document.getElementById('keyboardPanel');
   var stage = document.getElementById('kbFlipStage');
   var inner = document.getElementById('settingsPanelInner');

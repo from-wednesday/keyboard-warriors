@@ -502,10 +502,60 @@
       <p class="sp-returning-privacy" style="text-align:center;"><strong>Skill-set loaded:</strong><br>You are currently training with <strong>Graphic Design</strong> applications.<br><em class="sp-returning-tagline">Other skill-sets coming soon.</em></p>
     </div>
 
-    <!-- ── Keyboard Settings ────────────────────────────── -->
+ <!-- ── Keyboard Settings ────────────────────────────── -->
     <div id="panelKeyboard" class="sp-page">
       <div class="sp-col sp-col-left">
-        <p class="sp-title">Keyboard Behaviour <small style="color:#9ca3af;font-weight:400;">QWERTY</small></p>
+        <p class="sp-title">Keyboard Visibility</p>
+
+        <div class="modal-toggle-row" id="ghostRow">
+          <label onclick="onGhostModeToggle()">
+            <span class="modal-radio" id="ghostRadio">
+              <svg class="modal-radio-dot" width="19" height="19" viewBox="0 0 19 19" xmlns="http://www.w3.org/2000/svg">
+                <circle cx="9.5" cy="9.5" r="6.5" stroke="#374151" stroke-width="1.5" fill="none"/>
+                <circle class="modal-radio-fill" cx="9.5" cy="9.5" r="3.5" fill="#374151"/>
+              </svg>
+            </span>
+            <span class="modal-toggle-label">Ghost Mode</span>
+          </label>
+        </div>
+
+        <div class="modal-section-gap"></div>
+        <p class="sp-title">Keyboard Layout <small style="color:#9ca3af;font-weight:400;">QWERTY</small></p>
+
+        <div class="modal-layout-rows">
+          <div class="modal-inline-row">
+            <div class="modal-left-label"><span>3</span></div>
+            <div class="modal-switch-wrap">
+              <label class="os-switch" title="Keys left of space" style="cursor:pointer;">
+                <input type="checkbox" id="modalOsToggle" onchange="onModalOsToggle()">
+                <svg class="os-track" width="36" height="14" viewBox="0 0 36 14" fill="none" xmlns="http://www.w3.org/2000/svg">
+                  <rect id="modalOsTrackRect" x="1" y="1" width="34" height="12" rx="6" stroke="#374151" stroke-width="1.25" fill="none"/>
+                  <circle id="modalOsKnobEl" cx="7" cy="7" r="3.5" stroke="#374151" stroke-width="1.25" fill="white"
+                          style="transition:transform 0.18s ease,fill 0.18s ease;transform-origin:7px 7px;transform-box:fill-box;"/>
+                </svg>
+              </label>
+            </div>
+            <div class="modal-right-label"><span class="modal-inline-val">4</span>&ensp;<span class="modal-inline-label">keys to the left of spacebar</span></div>
+          </div>
+          <div class="modal-inline-row" id="modalFnRow">
+            <div class="modal-left-label"><span id="modalFnLabelLeft"></span></div>
+            <div class="modal-switch-wrap">
+              <label class="os-switch" title="Leftmost key" style="cursor:pointer;">
+                <input type="checkbox" id="modalFnToggle" onchange="onModalFnToggle()">
+                <svg class="os-track" width="36" height="14" viewBox="0 0 36 14" fill="none" xmlns="http://www.w3.org/2000/svg">
+                  <rect x="1" y="1" width="34" height="12" rx="6" stroke="#374151" stroke-width="1.25" fill="none"/>
+                  <circle id="modalFnKnobEl" cx="7" cy="7" r="3.5" stroke="#374151" stroke-width="1.25" fill="white"
+                          style="transition:transform 0.18s ease,fill 0.18s ease;transform-origin:7px 7px;transform-box:fill-box;"/>
+                </svg>
+              </label>
+            </div>
+            <div class="modal-right-label"><span id="modalFnLabelRight" class="modal-inline-val"></span>&ensp;<span class="modal-inline-label">is the leftmost key</span></div>
+          </div>
+        </div>
+      </div><!-- /.sp-col-left -->
+
+      <div class="sp-col sp-col-right">
+        <p class="sp-title">Keyboard Behaviour</p>
 
         <div class="modal-toggle-row" id="touchRow">
           <label onclick="onTouchToggle()">
@@ -545,74 +595,14 @@
         </div>
 
         <div class="modal-section-gap"></div>
-        <p class="sp-title">Keyboard Layout</p>
-
-        <div class="modal-layout-rows">
-          <div class="modal-inline-row">
-            <div class="modal-left-label"><span>3</span></div>
-            <div class="modal-switch-wrap">
-              <label class="os-switch" title="Keys left of space" style="cursor:pointer;">
-                <input type="checkbox" id="modalOsToggle" onchange="onModalOsToggle()">
-                <svg class="os-track" width="36" height="14" viewBox="0 0 36 14" fill="none" xmlns="http://www.w3.org/2000/svg">
-                  <rect id="modalOsTrackRect" x="1" y="1" width="34" height="12" rx="6" stroke="#374151" stroke-width="1.25" fill="none"/>
-                  <circle id="modalOsKnobEl" cx="7" cy="7" r="3.5" stroke="#374151" stroke-width="1.25" fill="white"
-                          style="transition:transform 0.18s ease,fill 0.18s ease;transform-origin:7px 7px;transform-box:fill-box;"/>
-                </svg>
-              </label>
-            </div>
-            <div class="modal-right-label"><span class="modal-inline-val">4</span>&ensp;<span class="modal-inline-label">keys to the left of spacebar</span></div>
-          </div>
-          <div class="modal-inline-row" id="modalFnRow">
-            <div class="modal-left-label"><span id="modalFnLabelLeft"></span></div>
-            <div class="modal-switch-wrap">
-              <label class="os-switch" title="Leftmost key" style="cursor:pointer;">
-                <input type="checkbox" id="modalFnToggle" onchange="onModalFnToggle()">
-                <svg class="os-track" width="36" height="14" viewBox="0 0 36 14" fill="none" xmlns="http://www.w3.org/2000/svg">
-                  <rect x="1" y="1" width="34" height="12" rx="6" stroke="#374151" stroke-width="1.25" fill="none"/>
-                  <circle id="modalFnKnobEl" cx="7" cy="7" r="3.5" stroke="#374151" stroke-width="1.25" fill="white"
-                          style="transition:transform 0.18s ease,fill 0.18s ease;transform-origin:7px 7px;transform-box:fill-box;"/>
-                </svg>
-              </label>
-            </div>
-            <div class="modal-right-label"><span id="modalFnLabelRight" class="modal-inline-val"></span>&ensp;<span class="modal-inline-label">is the leftmost key</span></div>
-          </div>
-        </div>
-      </div><!-- /.sp-col-left -->
-
-      <div class="sp-col sp-col-right">
-        <div style="display:flex;align-items:center;gap:14px;margin-bottom:0;">
-          <div class="modal-toggle-row" id="ghostRow" style="margin-bottom:0;">
-            <label onclick="onGhostModeToggle()">
-              <span class="modal-radio" id="ghostRadio">
-                <svg class="modal-radio-dot" width="19" height="19" viewBox="0 0 19 19" xmlns="http://www.w3.org/2000/svg">
-                  <circle cx="9.5" cy="9.5" r="6.5" stroke="#374151" stroke-width="1.5" fill="none"/>
-                  <circle class="modal-radio-fill" cx="9.5" cy="9.5" r="3.5" fill="#374151"/>
-                </svg>
-              </span>
-              <span class="modal-toggle-label">Ghost Mode</span>
-            </label>
-          </div>
-          <div class="modal-toggle-row" id="killPunctuationRow" style="margin-bottom:0;">
-            <label onclick="onKillPunctuationToggle()">
-              <span class="modal-radio" id="killPunctuationRadio">
-                <svg class="modal-radio-dot" width="19" height="19" viewBox="0 0 19 19" xmlns="http://www.w3.org/2000/svg">
-                  <circle cx="9.5" cy="9.5" r="6.5" stroke="#374151" stroke-width="1.5" fill="none"/>
-                  <circle class="modal-radio-fill" cx="9.5" cy="9.5" r="3.5" fill="#374151"/>
-                </svg>
-              </span>
-              <span class="modal-toggle-label">Kill Punctuation</span>
-            </label>
-          </div>
-        </div>
-        <div class="modal-section-gap"></div>
         <div id="modalKbSizeSection">
           <div class="more-info-wrap">
-            <p class="sp-title" onclick="toggleMoreInfo('kbSizeMoreInfo')">Keyboard size</p>
+            <p class="sp-title" onclick="toggleMoreInfo('kbSizeMoreInfo')">Keyboard Size</p>
             <span class="more-info-trigger" id="kbSizeMoreInfoTrigger" onclick="toggleMoreInfo('kbSizeMoreInfo')">
-           <svg class="more-info-icon" viewBox="0 0 20 20" width="14" height="14" fill="none" stroke="currentColor" stroke-width="1.25" stroke-linecap="round">
-  <circle cx="10" cy="10" r="8.5"/>
-  <text x="10" y="15" text-anchor="middle" font-size="14" font-weight="720" font-family="system-ui,sans-serif" fill="currentColor" stroke="none">?</text>
-</svg>
+              <svg class="more-info-icon" viewBox="0 0 20 20" width="14" height="14" fill="none" stroke="currentColor" stroke-width="1.25" stroke-linecap="round">
+                <circle cx="10" cy="10" r="8.5"/>
+                <text x="10" y="15" text-anchor="middle" font-size="14" font-weight="720" font-family="system-ui,sans-serif" fill="currentColor" stroke="none">?</text>
+              </svg>
               <div class="more-info-popup" id="kbSizeMoreInfo">
                 <p class="more-info-body">While the on-screen display only shows a compact keyboard, the game also accepts input from full-sized keyboard&#8217;s extended keys.</p>
                 <p class="more-info-body">If you don&#8217;t have a full-sized keyboard you should let us know here. Then we won&#8217;t ask you any impossible questions.</p>
@@ -634,6 +624,21 @@
             <div id="kbSizeCompactSide" class="modal-right-label" style="display:flex;flex-direction:row;align-items:center;gap:5px;"><svg id="kbSizeCompactIcon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 110 101.8" style="width:44px;height:auto;"><path d="M98.6,32.4H11.4c-2.1,0-3.9,1.7-3.9,3.9v29.6c0,2.1,1.7,3.9,3.9,3.9h87.2c2.1,0,3.9-1.7,3.9-3.9v-29.6c0-2.1-1.7-3.9-3.9-3.9ZM99.9,65.9c0,.7-.6,1.3-1.3,1.3H11.4c-.7,0-1.3-.6-1.3-1.3v-29.6c0-.7.6-1.3,1.3-1.3h87.2c.7,0,1.3.6,1.3,1.3v29.6ZM15.2,42.1v-2.6c0-.5.4-.9.9-.9h5.9c.5,0,.9.4.9.9v2.6c0,.5-.4.9-.9.9h-5.9c-.5,0-.9-.4-.9-.9ZM15.2,48.9v-2.6c0-.5.4-.9.9-.9h7.4c.5,0,.9.4.9.9v2.6c0,.5-.4.9-.9.9h-7.4c-.5,0-.9-.4-.9-.9ZM95.9,46.4v2.6c0,.5-.4.9-.9.9h-7.4c-.5,0-.9-.4-.9-.9v-2.6c0-.5.4-.9.9-.9h7.4c.5,0,.9.4.9.9ZM15.2,55.7v-2.6c0-.5.4-.9.9-.9h10.8c.5,0,.9.4.9.9v2.6c0,.5-.4.9-.9.9h-10.8c-.5,0-.9-.4-.9-.9ZM65.8,59.9v2.6c0,.5-.4.9-.9.9h-26.9c-.5,0-.9-.4-.9-.9v-2.6c0-.5.4-.9.9-.9h26.9c.5,0,.9.4.9.9ZM95.9,53.2v2.6c0,.5-.4.9-.9.9h-10.8c-.5,0-.9-.4-.9-.9v-2.6c0-.5.4-.9.9-.9h10.8c.5,0,.9.4.9.9h0ZM24.8,42.2v-2.8c0-.4.3-.8.8-.8h4.4c.4,0,.8.3.8.8v2.8c0,.4-.3.8-.8.8h-4.4c-.4,0-.8-.3-.8-.8ZM33,42.2v-2.8c0-.4.3-.8.8-.8h4.4c.4,0,.8.3.8.8v2.8c0,.4-.3.8-.8.8h-4.4c-.4,0-.8-.3-.8-.8ZM41.1,42.2v-2.8c0-.4.3-.8.8-.8h4.4c.4,0,.8.3.8.8v2.8c0,.4-.3.8-.8.8h-4.4c-.4,0-.8-.3-.8-.8ZM49.3,42.2v-2.8c0-.4.3-.8.8-.8h4.4c.4,0,.8.3.8.8v2.8c0,.4-.3.8-.8.8h-4.4c-.4,0-.8-.3-.8-.8ZM57.4,42.2v-2.8c0-.4.3-.8.8-.8h4.4c.4,0,.8.3.8.8v2.8c0,.4-.3.8-.8.8h-4.4c-.4,0-.8-.3-.8-.8ZM65.5,42.2v-2.8c0-.4.3-.8.8-.8h4.4c.4,0,.8.3.8.8v2.8c0,.4-.3.8-.8.8h-4.4c-.4,0-.8-.3-.8-.8ZM73.7,42.2v-2.8c0-.4.3-.8.8-.8h4.4c.4,0,.8.3.8.8v2.8c0,.4-.3.8-.8.8h-4.4c-.4,0-.8-.3-.8-.8ZM27.8,45.5h4.4c.4,0,.8.3.8.8v2.8c0,.4-.3.8-.8.8h-4.4c-.4,0-.8-.3-.8-.8v-2.8c0-.4.3-.8.8-.8ZM40.7,49.8h-4.4c-.4,0-.8-.3-.8-.8v-2.8c0-.4.3-.8.8-.8h4.4c.4,0,.8.3.8.8v2.8c0,.4-.3.8-.8.8ZM44.8,45.5h4.4c.4,0,.8.3.8.8v2.8c0,.4-.3.8-.8.8h-4.4c-.4,0-.8-.3-.8-.8v-2.8c0-.4.3-.8.8-.8ZM57.7,49.8h-4.4c-.4,0-.8-.3-.8-.8v-2.8c0-.4.3-.8.8-.8h4.4c.4,0,.8.3.8.8v2.8c0,.4-.3.8-.8.8ZM66.2,49.8h-4.4c-.4,0-.8-.3-.8-.8v-2.8c0-.4.3-.8.8-.8h4.4c.4,0,.8.3.8.8v2.8c0,.4-.3.8-.8.8ZM74.7,45.5c.4,0,.8.3.8.8v2.8c0,.4-.3.8-.8.8h-4.4c-.4,0-.8-.3-.8-.8v-2.8c0-.4.3-.8.8-.8h4.4ZM83.2,45.5c.4,0,.8.3.8.8v2.8c0,.4-.3.8-.8.8h-4.4c-.4,0-.8-.3-.8-.8v-2.8c0-.4.3-.8.8-.8h4.4ZM36.3,53.1v2.8c0,.4-.3.8-.8.8h-4.4c-.4,0-.8-.3-.8-.8v-2.8c0-.4.3-.8.8-.8h4.4c.4,0,.8.3.8.8ZM44.3,52.3c.4,0,.8.3.8.8v2.8c0,.4-.3.8-.8.8h-4.4c-.4,0-.8-.3-.8-.8v-2.8c0-.4.3-.8.8-.8h4.4ZM53.1,52.3c.4,0,.8.3.8.8v2.8c0,.4-.3.8-.8.8h-4.4c-.4,0-.8-.3-.8-.8v-2.8c0-.4.3-.8.8-.8h4.4ZM56.7,55.9v-2.8c0-.4.3-.8.8-.8h4.4c.4,0,.8.3.8.8v2.8c0,.4-.3.8-.8.8h-4.4c-.4,0-.8-.3-.8-.8ZM70.7,56.6h-4.4c-.4,0-.8-.3-.8-.8v-2.8c0-.4.3-.8.8-.8h4.4c.4,0,.8.3.8.8v2.8c0,.4-.3.8-.8.8ZM79.5,56.6h-4.4c-.4,0-.8-.3-.8-.8v-2.8c0-.4.3-.8.8-.8h4.4c.4,0,.8.3.8.8v2.8c0,.4-.3.8-.8.8ZM81.8,42.2v-2.8c0-.4.3-.8.8-.8h4.4c.4,0,.8.3.8.8v2.8c0,.4-.3.8-.8.8h-4.4c-.4,0-.8-.3-.8-.8ZM95.9,39.5v2.8c0,.4-.3.8-.8.8h-4.4c-.4,0-.8-.3-.8-.8v-2.8c0-.4.3-.8.8-.8h4.4c.4,0,.8.3.8.8ZM35.4,59.8v2.8c0,.4-.3.8-.8.8h-4.4c-.4,0-.8-.3-.8-.8v-2.8c0-.4.3-.8.8-.8h4.4c.4,0,.8.3.8.8ZM28.3,59.8v2.8c0,.4-.3.8-.8.8h-4.4c-.4,0-.8-.3-.8-.8v-2.8c0-.4.3-.8.8-.8h4.4c.4,0,.8.3.8.8ZM21.2,59.8v2.8c0,.4-.3.8-.8.8h-4.4c-.4,0-.8-.3-.8-.8v-2.8c0-.4.3-.8.8-.8h4.4c.4,0,.8.3.8.8ZM73.5,59.8v2.8c0,.4-.3.8-.8.8h-4.3c-.4,0-.8-.3-.8-.8v-2.8c0-.4.3-.8.8-.8h4.3c.4,0,.8.3.8.8ZM81,59.8v2.8c0,.4-.3.8-.8.8h-4.3c-.4,0-.8-.3-.8-.8v-2.8c0-.4.3-.8.8-.8h4.3c.4,0,.8.3.8.8ZM88.5,59.8v2.8c0,.4-.3.8-.8.8h-4.3c-.4,0-.8-.3-.8-.8v-2.8c0-.4.3-.8.8-.8h4.3c.4,0,.8.3.8.8ZM95.9,59.8v2.8c0,.4-.3.8-.8.8h-4.3c-.4,0-.8-.3-.8-.8v-2.8c0-.4.3-.8.8-.8h4.3c.4,0,.8.3.8.8Z"/></svg><small id="kbSizeCompactLabel" class="kb-size-word-label">compact</small></div>
           </div>
         </div><!-- /#modalKbSizeSection -->
+
+        <div class="modal-section-gap"></div>
+        <p class="sp-title">Non-English Keyboards</p>
+        <div class="modal-toggle-row" id="killPunctuationRow">
+          <label onclick="onKillPunctuationToggle()">
+            <span class="modal-radio" id="killPunctuationRadio">
+              <svg class="modal-radio-dot" width="19" height="19" viewBox="0 0 19 19" xmlns="http://www.w3.org/2000/svg">
+                <circle cx="9.5" cy="9.5" r="6.5" stroke="#374151" stroke-width="1.5" fill="none"/>
+                <circle class="modal-radio-fill" cx="9.5" cy="9.5" r="3.5" fill="#374151"/>
+              </svg>
+            </span>
+            <span class="modal-toggle-label">Kill Punctuation</span>
+          </label>
+        </div>
+
       </div><!-- /.sp-col-right -->
     </div><!-- /#panelKeyboard -->
 
@@ -4204,6 +4209,15 @@ function _phoneCloseSettings() {
 
 function _spAlignPanel() {
   if (ForceNoKeyboard) return;
+  if (_openMoreInfoId) {
+  var StalePopup = document.getElementById(_openMoreInfoId);
+  if (StalePopup) StalePopup.classList.remove('more-info-popup-visible');
+  _openMoreInfoId = null;
+}
+if (_moreInfoOutsideListener) {
+  document.removeEventListener('click', _moreInfoOutsideListener, true);
+  _moreInfoOutsideListener = null;
+}
   var panel = document.getElementById('keyboardPanel');
   var stage = document.getElementById('kbFlipStage');
   var inner = document.getElementById('settingsPanelInner');
@@ -5530,7 +5544,7 @@ function _refreshDifficultyPanel() {
   if (!_trophySequenceActive) {
     var footer = document.getElementById('diffAdvancedFooter');
     if (footer && footer.classList.contains('diff-advanced-footer-visible')) {
-      footer.textContent = 'Changing the question difficulty, time to answer, and player lives are all in your control now.';
+      footer.textContent = 'Changing \'Question Difficulty\' will suggest settings here, but you have complete control over these features.';
 }
   }
 }

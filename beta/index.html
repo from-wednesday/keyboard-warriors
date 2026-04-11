@@ -4211,6 +4211,8 @@ function _phoneCloseSettings() {
 
 function _spAlignPanel() {
   if (ForceNoKeyboard) return;
+  var wrap = document.getElementById('keyboardWrap');
+  if (wrap) wrap.style.minHeight = '';
   if (_openMoreInfoId) {
     var StalePopup = document.getElementById(_openMoreInfoId);
     if (StalePopup) {
@@ -4231,6 +4233,7 @@ function _spAlignPanel() {
   var inner = document.getElementById('settingsPanelInner');
   var wrap  = document.getElementById('keyboardWrap');
   if (!panel || !stage || !inner || !wrap) return;
+  wrap.style.minHeight = '';
   var left  = stage.offsetLeft + panel.offsetLeft;
   var width = panel.offsetWidth;
   inner.style.left  = left + 'px';

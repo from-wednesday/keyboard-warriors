@@ -4235,6 +4235,7 @@ function _spAlignPanel() {
     requestAnimationFrame(function() {
       var contentH = inner.scrollHeight;
       var stageH   = stage.offsetHeight;
+      console.log('[spAlign] activeSettings:', activeSettings, 'contentH:', contentH, 'stageH:', stageH, 'inner.offsetHeight:', inner.offsetHeight, 'popup on body:', !!document.getElementById('kbSizeMoreInfo') && document.getElementById('kbSizeMoreInfo').parentNode === document.body);
       // Edge-position panels (report, cheat sheet, pause, browser, difficulty) sit
       // above a fully folded keyboard. Only the content height matters; the stage
       // height is already accounted for by the fold. Add a small buffer only.

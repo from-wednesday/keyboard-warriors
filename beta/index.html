@@ -3700,6 +3700,9 @@ function _closeMoreInfoPopup() {
     var PopupElement = document.getElementById(_openMoreInfoId);
     if (PopupElement) {
       PopupElement.classList.remove('more-info-popup-visible');
+      PopupElement.style.left      = '';
+      PopupElement.style.top       = '';
+      PopupElement.style.transform = '';
       if (_openMoreInfoOriginalParent && PopupElement.parentNode !== _openMoreInfoOriginalParent) {
         _openMoreInfoOriginalParent.appendChild(PopupElement);
       }

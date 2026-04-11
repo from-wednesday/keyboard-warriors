@@ -3675,6 +3675,57 @@ var LIVES_VALUES = [1, 3, 5, 10, null];
 var _openMoreInfoId = null;
 var _moreInfoOutsideListener = null;
 
+function toggleMoreInfo(PopupId) {
+  var PopupElement   = document.getElementById(PopupId);
+  var TriggerElement = PopupElement ? PopupElement.closest('.more-info-trigger') : null;
+  if (!PopupElement || !TriggerElement) return;
+
+  var IsCurrentlyOpen = PopupElement.classList.contains('more-info-popup-visible');
+
+  // Close any open popup first
+  if (_openMoreInfoId) {
+    var PreviousPopup = document.getElementById(_openMoreInfoId);
+    if (PreviousPopup) PreviousPopup.classList.remove('more-info-popup-visible');
+    _openMoreInfoId = null;
+  }
+  if (_moreInfoOutsideListener) {
+    document.removeEventListener('click', _moreInfoOutsideListener, true);
+    _moreInfoOutsideListener = null;
+  }
+
+  if (IsCurrentlyOpen) return;
+
+ // Move popup to body so CSS transforms on ancestor elements cannot trap it
+  var PopupOriginalParent = PopupElement.parentNode;
+  document.body.appendChild(PopupElement);
+
+  var PopupWidth   = 260;
+  var PopupHeight  = 120;
+  var LeftPosition = Math.round((window.innerWidth  - PopupWidth)  / 2);
+  var TopPosition  = Math.round(window.scrollY + (window.innerHeight - PopupHeight) / 2);
+
+  PopupElement.style.transformOrigin = 'center center';
+  PopupElement.style.left      = LeftPosition + 'px';
+  PopupElement.style.top       = TopPosition  + 'px';
+  PopupElement.style.transform = '';
+  PopupElement.classList.add('more-info-popup-visible');
+  _openMoreInfoId = PopupId;
+
+  _moreInfoOutsideListener = function(ClickEvent) {
+    if (TriggerElement.contains(ClickEvent.target)) return;
+    PopupElement.classList.remove('more-info-popup-visible');
+    if (PopupOriginalParent && PopupElement.parentNode !== PopupOriginalParent) {
+      PopupOriginalParent.appendChild(PopupElement);
+    }
+    _openMoreInfoId = null;
+    document.removeEventListener('click', _moreInfoOutsideListener, true);
+    _moreInfoOutsideListener = null;
+  };
+  requestAnimationFrame(function() {
+    document.addEventListener('click', _moreInfoOutsideListener, true);
+  });
+}
+
 
 function onGhostModeToggle() {
   var ghostRow = document.getElementById('ghostRow');

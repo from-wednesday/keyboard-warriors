@@ -2610,6 +2610,8 @@ function enterPause(instantBlur) {
   resetPartialShortcutNudgeTimers();
   _exitScoreClearConfirm();
   _exitDiffConfirm();
+  // Show the phone toolbar before opening any panel inside it
+  _syncPhoneToolbarVisibility();
   // Settings panel sets its own position before calling enterPause; only move
   // to edge if no settings screen is already driving a different position.
   if (activeSettings === null) {
@@ -2636,7 +2638,6 @@ function enterPause(instantBlur) {
   helpBtn.style.color = 'white';
   if (lockKeyEl) lockKeyEl.classList.add('active');
   _modalWasOpenOnPause = (activeSettings !== null);
-  _syncPhoneToolbarVisibility();
   _startPauseInactivityTimer();
 }
 
@@ -3938,6 +3939,9 @@ function _syncPhoneToolbarVisibility() {
   var ToolbarElement = document.getElementById('phoneToolbar');
   if (!ToolbarElement) return;
   if (!ForceNoKeyboard) { ToolbarElement.style.display = 'none'; return; }
+  // Hide desktop-only elements that have no role on phone
+  var DiffIconWrap = document.getElementById('diffIconWrap');
+  if (DiffIconWrap) DiffIconWrap.style.display = 'none';
   var IsActivePlay = (gameState === 'playing' || gameState === 'counting');
   ToolbarElement.style.display = IsActivePlay ? 'none' : 'flex';
 }
@@ -4033,6 +4037,9 @@ function _phoneOpenSettings(Page) {
     return;
   }
 
+  // Toolbar must be visible before we try to expand the panel area inside it
+  _syncPhoneToolbarVisibility();
+
   var WasAlreadyOpen = activeSettings !== null;
   var PreviousPage   = activeSettings;
   activeSettings     = Page;
@@ -4121,6 +4128,7 @@ function _phoneCloseSettings() {
 
 function _spAlignPanel() {
   if (ForceNoKeyboard) return;
+  var panel = document.getElementById('keyboardPanel');
   var stage = document.getElementById('kbFlipStage');
   var inner = document.getElementById('settingsPanelInner');
   var wrap  = document.getElementById('keyboardWrap');

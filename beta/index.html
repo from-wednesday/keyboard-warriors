@@ -3524,17 +3524,11 @@ function toggleAppDropdown() {
 }
 
 function openAppPill() {
-  var rect      = appPillEl.getBoundingClientRect();
-  var spaceBelow = window.innerHeight - rect.bottom - 8;
-  var needsDrop  = spaceBelow < 123;  // not enough room to expand upward
-  appPillEl.style.maxHeight = '';     // let CSS control it
-  appPillEl.classList.toggle('drop-down', needsDrop);
-  if (needsDrop) {
-    // Cap height to available space below
-    var cap = Math.min(123, Math.max(48, spaceBelow));
-    appPillEl.style.maxHeight = cap + 'px';
-  }
-  appPillEl.classList.add('open');
+  var rect       = appPillEl.getBoundingClientRect();
+  var spaceBelow = window.innerHeight - rect.top - 8;
+  var cap        = Math.min(123, Math.max(48, spaceBelow));
+  appPillEl.style.maxHeight = cap + 'px';
+  appPillEl.classList.add('open', 'drop-down');
   appPillEl.scrollTop = 0;
 }
 

@@ -1627,7 +1627,7 @@ li.conflict-dismissed .conflict-desc {
    so the pill drops down as an overlay instead */
 #appPill.open.drop-down {
   position: absolute;
-  top: 0;
+  top: -20;
   right: 0;
   z-index: 500;
   width: max-content;

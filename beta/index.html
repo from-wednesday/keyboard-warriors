@@ -6509,7 +6509,8 @@ let loadSequenceNumber = 0;
 // Called once Keyboard Warriors Apps json has been fetched and parsed.
 function _onAppsLoaded(appsData) {
   // Populate the two structures the rest of the code uses
- APPS = appsData.map(function(a) {\n  return { label: a.label };\n});
+ APPS = appsData.map(function(a) {
+     return { label: a.label };\n});
   appsData.forEach(function(a) {
     APP_JSON_FILE_PATH[a.key] = a.path;
   });

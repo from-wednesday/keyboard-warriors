@@ -3521,15 +3521,14 @@ function toggleAppDropdown() {
 }
 
 function openAppPill() {
-  var natural     = APPS.length * ROW_H;
-  var upwardNudge = ROW_H;
+  var natural = APPS.length * ROW_H;
   appPillEl.style.maxHeight = natural + 'px';
-  appPillEl.style.transform = 'translateY(-' + upwardNudge + 'px)';
-  appPillEl.classList.add('open');
+  appPillEl.style.transform = '';
+  appPillEl.classList.add('open', 'drop-down');
   appPillEl.scrollTop = 0;
 }
 function closeAppPill() {
-  appPillEl.classList.remove('open');
+  appPillEl.classList.remove('open', 'drop-down');
   appPillEl.style.maxHeight = '';
   appPillEl.style.transform = '';
   setTimeout(scrollPillToSelected, 230);

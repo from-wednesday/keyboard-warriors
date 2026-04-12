@@ -3524,17 +3524,15 @@ function openAppPill() {
   var MaxUpwardCreep = ROW_H * 2;
   var natural        = APPS.length * ROW_H;
   var upwardOffset   = Math.min(MaxUpwardCreep, natural - ROW_H);
-  appPillEl.style.top           = -upwardOffset + 'px';
-  appPillEl.style.position      = 'absolute';
-  appPillEl.style.maxHeight     = (natural + upwardOffset) + 'px';
+  appPillEl.style.maxHeight = natural + 'px';
+  appPillEl.style.transform = 'translateY(-' + upwardOffset + 'px)';
   appPillEl.classList.add('open');
   appPillEl.scrollTop = 0;
 }
 function closeAppPill() {
   appPillEl.classList.remove('open');
   appPillEl.style.maxHeight = '';
-  appPillEl.style.top       = '';
-  appPillEl.style.position  = '';
+  appPillEl.style.transform = '';
   setTimeout(scrollPillToSelected, 230);
 }
 

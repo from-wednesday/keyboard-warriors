@@ -507,16 +507,10 @@
       <div class="sp-col sp-col-left">
         <p class="sp-title">Keyboard Visibility <small style="color:#9ca3af;font-weight:400;">QWERTY</small></p>
 
-        <div class="modal-toggle-row" id="ghostRow">
-          <label onclick="onGhostModeToggle()">
-            <span class="modal-radio" id="ghostRadio">
-              <svg class="modal-radio-dot" width="19" height="19" viewBox="0 0 19 19" xmlns="http://www.w3.org/2000/svg">
-                <circle cx="9.5" cy="9.5" r="6.5" stroke="#374151" stroke-width="1.5" fill="none"/>
-                <circle class="modal-radio-fill" cx="9.5" cy="9.5" r="3.5" fill="#374151"/>
-              </svg>
-            </span>
-            <span class="modal-toggle-label">Ghost Mode</span>
-          </label>
+    <div class="sp-seg-pill" id="kbDisplayPill" style="margin-bottom:6px;">
+          <button class="sp-seg-btn" id="kbDisplayNoneBtn" onclick="setKeyboardDisplayMode('none')"><span class="diff-btn-text">none</span></button>
+          <button class="sp-seg-btn" id="kbDisplayGhostBtn" onclick="setKeyboardDisplayMode('ghost')"><span class="diff-btn-text">ghost</span></button>
+          <button class="sp-seg-btn diff-btn-active" id="kbDisplayGraphicalBtn" onclick="setKeyboardDisplayMode('graphical')"><span class="diff-btn-text">graphical</span></button>
         </div>
 
         <div class="modal-section-gap"></div>
@@ -3639,9 +3633,10 @@ function setTouchEnabled(on) {
   // Audible row: enabled only when touch is on
   var audibleRow = document.getElementById('audibleRow');
   if (audibleRow) audibleRow.classList.toggle('disabled', !on);
-  // Ghost mode requires a physical keyboard -- disable it when touch is on
-  var ghostRow = document.getElementById('ghostRow');
-  if (ghostRow) ghostRow.classList.toggle('disabled', on);
+  // Ghost and none modes require a physical keyboard -- disable the pill when touch is on
+  var KbDisplayPill = document.getElementById('kbDisplayPill');
+  if (KbDisplayPill) KbDisplayPill.classList.toggle('disabled', on);
+  if (on && keyboardDisplayMode !== 'graphical') setKeyboardDisplayMode('graphical');
 }
 
 function setSoundEnabled(on) {
@@ -3656,7 +3651,7 @@ function onAudibleToggle() {
   setSoundEnabled(!soundEnabled);
 }
 
-var ghostModeOn = false;
+var keyboardDisplayMode = 'graphical'; // 'graphical' | 'ghost' | 'none'
 var killPunctuationOn = false;
 
 // Question Timer and Player Lives — default to infinity (null = no limit).
@@ -3747,17 +3742,76 @@ function toggleMoreInfo(PopupId) {
   });
 }
 
-function onGhostModeToggle() {
-  var ghostRow = document.getElementById('ghostRow');
-  if (ghostRow && ghostRow.classList.contains('disabled')) {
-    showToast('Ghost Mode requires a physical keyboard.');
-    return;
+function setKeyboardDisplayMode(mode) {
+  var previous = keyboardDisplayMode;
+  keyboardDisplayMode = mode;
+
+  // Update pill button active states
+  var NoneBtn      = document.getElementById('kbDisplayNoneBtn');
+  var GhostBtn     = document.getElementById('kbDisplayGhostBtn');
+  var GraphicalBtn = document.getElementById('kbDisplayGraphicalBtn');
+  if (NoneBtn)      NoneBtn.classList.toggle('diff-btn-active',      mode === 'none');
+  if (GhostBtn)     GhostBtn.classList.toggle('diff-btn-active',     mode === 'ghost');
+  if (GraphicalBtn) GraphicalBtn.classList.toggle('diff-btn-active', mode === 'graphical');
+
+  // Ghost class on keyboard panel
+  var KeyboardPanelElement = document.getElementById('keyboardPanel');
+  if (KeyboardPanelElement) KeyboardPanelElement.classList.toggle('ghost-mode', mode === 'ghost');
+
+  // Touch and sticky: only available in graphical mode
+  var TouchRowElement  = document.getElementById('touchRow');
+  var StickyRowElement = document.getElementById('stickyRow');
+  var IsGraphical = (mode === 'graphical');
+  if (TouchRowElement)  TouchRowElement.classList.toggle('disabled',  !IsGraphical);
+  if (StickyRowElement) StickyRowElement.classList.toggle('disabled', !IsGraphical);
+
+  // If switching away from graphical, turn off touch and sticky
+  if (!IsGraphical && touchEnabled)  { setTouchEnabled(false); }
+  if (!IsGraphical && stickyKeysOn)  { setStickyKeys(false); }
+
+  // None mode: show/hide keyboard and toolbar with animation
+  var GoingToNone    = (mode === 'none');
+  var LeavingNone    = (previous === 'none' && mode !== 'none');
+
+  if (GoingToNone) {
+    ForceNoKeyboard = true;
+    // Fold the keyboard away before hiding it
+    setKbPosition('edge');
+    setTimeout(function() {
+      updateKeyboardMode();
+      _syncPhoneToolbarVisibility();
+      if (activeSettings !== null) _spAlignPanel();
+    }, 600);
+  } else if (LeavingNone) {
+    ForceNoKeyboard = false;
+    updateKeyboardMode();
+    _syncPhoneToolbarVisibility();
+    // Give the keyboard a frame to appear before animating to face
+    setTimeout(function() {
+      setKbPosition('partial');
+      if (activeSettings !== null) _spAlignPanel();
+    }, 50);
   }
-  ghostModeOn = !ghostModeOn;
-  var radio = document.getElementById('ghostRadio');
-  if (radio) radio.classList.toggle('on', ghostModeOn);
-  document.getElementById('keyboardPanel').classList.toggle('ghost-mode', ghostModeOn);
-  showModeToast(ghostModeOn ? 'Ghost Mode on' : 'Ghost Mode off');
+
+  // Toast
+  var ToastMessages = { none: 'Keyboard hidden', ghost: 'Ghost Mode on', graphical: 'Keyboard visible' };
+  showModeToast(ToastMessages[mode]);
+}
+
+function onTouchToggle() {
+  setTouchEnabled(!touchEnabled);
+  if (touchEnabled) {
+    if (keyboardDisplayMode !== 'graphical') setKeyboardDisplayMode('graphical');
+    setStickyKeys(true);
+    document.getElementById('stickyRow').classList.add('disabled');
+    showModeToast('On-Screen Keyboard Active');
+  } else {
+    _setHasKeyboard();
+    setStickyKeys(false);
+    document.getElementById('stickyRow').classList.remove('disabled');
+    showModeToast('On-Screen Keyboard = Display Only');
+    osMismatchEl.classList.remove('show', 'clickable');
+  }
 }
 
 function onKillPunctuationToggle() {
@@ -3782,7 +3836,7 @@ function onKillPunctuationToggle() {
   showConfirmHeading('Use no-punctuation mitigation only if needed.', true, true);
   mainBtn.textContent = 'Remove';
   mainBtn.style.background = '#10b981';
-  helpBtn.textContent = 'Keep';
+  helpBtn.textContent = 'No, Keep';
   helpBtn.style.background = '#6b7280';
   helpBtn.style.color = 'white';
   if (lockKeyEl) lockKeyEl.classList.add('active');
@@ -3852,26 +3906,7 @@ function onStickyKeysToggle() {
   }
 }
 
-function onTouchToggle() {
-  setTouchEnabled(!touchEnabled);
-  if (touchEnabled) {
-    if (ghostModeOn) {
-      ghostModeOn = false;
-      var ghostRadio = document.getElementById('ghostRadio');
-      if (ghostRadio) ghostRadio.classList.remove('on');
-      document.getElementById('keyboardPanel').classList.remove('ghost-mode');
-    }
-    setStickyKeys(true);
-    document.getElementById('stickyRow').classList.add('disabled');
-    showModeToast('On-Screen Keyboard Active');
-  } else {
-    _setHasKeyboard();
-    setStickyKeys(false);
-    document.getElementById('stickyRow').classList.remove('disabled');
-    showModeToast('On-Screen Keyboard = Display Only');
-    osMismatchEl.classList.remove('show', 'clickable');
-  }
-}
+keyboardDisplayMode === 'ghost' ? 'ghost' : null,
 
 
 // ── Keyboard variant picker ───────────────────────────────────────────────────
@@ -5138,7 +5173,7 @@ function dbgBuildReport() {
   var KeyboardFlags = [
     touchEnabled      ? 'touch'         : null,
     stickyKeysOn      ? 'sticky'        : null,
-    ghostModeOn       ? 'ghost'         : null,
+    keyboardDisplayMode === 'ghost' ? 'ghost' : null,
     killPunctuationOn ? 'killPunct'     : null,
     !hasFullKeyboard  ? 'compact-kb'   : null,
   ].filter(Boolean).join(', ') || 'none';

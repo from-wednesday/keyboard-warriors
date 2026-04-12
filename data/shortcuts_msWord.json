@@ -709,7 +709,7 @@
     "display": "insert endnote",
     "mac_sc": "⌘ ⌥ ⇧ E",
     "pc_sc": "Ctrl Alt D",
-    "difficulty": 3,
+    "difficulty": 5,
     "group": ""
   },
   {
@@ -722,7 +722,7 @@
   },
   {
     "shortcut": "ARROWLEFT",
-    "display": "nudge 1 character left",
+    "display": "move 1 character Left",
     "mac_sc": "←",
     "pc_sc": "←",
     "difficulty": 1,
@@ -730,7 +730,7 @@
   },
   {
     "shortcut": "ARROWRIGHT",
-    "display": "nudge 1 character right",
+    "display": "move 1 character Right",
     "mac_sc": "→",
     "pc_sc": "→",
     "difficulty": 1,
@@ -738,7 +738,7 @@
   },
   {
     "shortcut": "ARROWUP",
-    "display": "nudge 1 line up",
+    "display": "move Up 1 line",
     "mac_sc": "↑",
     "pc_sc": "↑",
     "difficulty": 1,
@@ -746,7 +746,7 @@
   },
   {
     "shortcut": "ARROWDOWN",
-    "display": "nudge 1 line down",
+    "display": "move Down 1 line",
     "mac_sc": "↓",
     "pc_sc": "↓",
     "difficulty": 1,
@@ -754,7 +754,7 @@
   },
   {
     "shortcut": "OPTION+ARROWLEFT",
-    "display": "nudge 1 word left",
+    "display": "move 1 word Left",
     "mac_sc": "⌥ ←",
     "pc_sc": "Ctrl ←",
     "difficulty": 3,
@@ -762,7 +762,7 @@
   },
   {
     "shortcut": "OPTION+ARROWRIGHT",
-    "display": "nudge 1 word right",
+    "display": "move 1 word Right",
     "mac_sc": "⌥ →",
     "pc_sc": "Ctrl →",
     "difficulty": 3,
@@ -770,7 +770,7 @@
   },
   {
     "shortcut": "OPTION+ARROWUP",
-    "display": "nudge 1 paragraph up",
+    "display": "move to previous paragraph",
     "mac_sc": "⌥ ↑",
     "pc_sc": "Ctrl ↑",
     "difficulty": 3,
@@ -778,7 +778,7 @@
   },
   {
     "shortcut": "OPTION+ARROWDOWN",
-    "display": "nudge 1 paragraph down",
+    "display": "move to next paragraph",
     "mac_sc": "⌥ ↓",
     "pc_sc": "Ctrl ↓",
     "difficulty": 3,
@@ -786,23 +786,23 @@
   },
   {
     "shortcut": "SHIFT+ARROWLEFT",
-    "display": "extend selection left",
+    "display": "extend selection Left",
     "mac_sc": "⇧ ←",
     "pc_sc": "⇧ ←",
-    "difficulty": 1,
+    "difficulty": 3,
     "group": "nudge"
   },
   {
     "shortcut": "SHIFT+ARROWRIGHT",
-    "display": "extend selection right",
+    "display": "extend selection Right",
     "mac_sc": "⇧ →",
     "pc_sc": "⇧ →",
-    "difficulty": 1,
+    "difficulty": 3,
     "group": "nudge"
   },
   {
     "shortcut": "SHIFT+ARROWUP",
-    "display": "extend selection up",
+    "display": "extend selection Up",
     "mac_sc": "⇧ ↑",
     "pc_sc": "⇧ ↑",
     "difficulty": 1,
@@ -810,7 +810,7 @@
   },
   {
     "shortcut": "SHIFT+ARROWDOWN",
-    "display": "extend selection down",
+    "display": "extend selection Down",
     "mac_sc": "⇧ ↓",
     "pc_sc": "⇧ ↓",
     "difficulty": 1,
@@ -818,7 +818,7 @@
   },
   {
     "shortcut": "CMD+ARROWLEFT",
-    "display": "go to line start",
+    "display": "go to Line Start",
     "mac_sc": "⌘ ←",
     "pc_sc": "Home",
     "difficulty": 1,
@@ -826,7 +826,7 @@
   },
   {
     "shortcut": "CMD+ARROWRIGHT",
-    "display": "go to line end",
+    "display": "go to Line End",
     "mac_sc": "⌘ →",
     "pc_sc": "End",
     "difficulty": 1,
@@ -834,7 +834,7 @@
   },
   {
     "shortcut": "CMD+ARROWUP",
-    "display": "go to document start",
+    "display": "go to Document Start",
     "mac_sc": "⌘ ↑",
     "pc_sc": "Ctrl Home",
     "difficulty": 3,
@@ -842,7 +842,7 @@
   },
   {
     "shortcut": "CMD+ARROWDOWN",
-    "display": "go to document end",
+    "display": "go to Document End",
     "mac_sc": "⌘ ↓",
     "pc_sc": "Ctrl End",
     "difficulty": 3,
@@ -850,7 +850,7 @@
   },
   {
     "shortcut": "PAGEUP",
-    "display": "scroll up one screen",
+    "display": "scroll Up one screen",
     "mac_sc": "Page Up",
     "pc_sc": "Page Up",
     "difficulty": 1,
@@ -858,7 +858,7 @@
   },
   {
     "shortcut": "PAGEDOWN",
-    "display": "scroll down one screen",
+    "display": "scroll Down one screen",
     "mac_sc": "Page Down",
     "pc_sc": "Page Down",
     "difficulty": 1,
@@ -881,24 +881,8 @@
     "group": "pages"
   },
   {
-    "shortcut": "CMD+TAB",
-    "display": "switch to next app",
-    "mac_sc": "⌘ Tab",
-    "pc_sc": "Alt Tab",
-    "difficulty": 1,
-    "group": ""
-  },
-  {
-    "shortcut": "CTRL+TAB",
-    "display": "switch to next document",
-    "mac_sc": "Ctrl Tab",
-    "pc_sc": "Ctrl Tab",
-    "difficulty": 3,
-    "group": ""
-  },
-  {
     "shortcut": "CTRL+SHIFT+TAB",
-    "display": "switch to previous document",
+    "display": "switch to previous Document",
     "mac_sc": "⌃ ⇧ Tab",
     "pc_sc": "Ctrl ⇧ Tab",
     "difficulty": 3,
@@ -914,7 +898,7 @@
   },
   {
     "shortcut": "CMD+SHIFT+N",
-    "display": "create new style",
+    "display": "create new Style",
     "mac_sc": "⌘ ⇧ N",
     "pc_sc": "Ctrl ⇧ Alt S",
     "difficulty": 5,
@@ -997,7 +981,7 @@
     "display": "open Word Count dialog",
     "mac_sc": "⌘ ⌥ ⇧ G",
     "pc_sc": "Ctrl ⇧ G",
-    "difficulty": 3,
+    "difficulty": 4,
     "group": ""
   },
   {

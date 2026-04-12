@@ -1621,7 +1621,7 @@ li.conflict-dismissed .conflict-desc {
 }
 #appPill.open {
   height: auto;
-  max-height: 123px;
+  
 }
 /* Flip class: used when there is not enough room above to expand upward,
    so the pill drops down as an overlay instead */

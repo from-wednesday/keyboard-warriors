@@ -1627,12 +1627,12 @@ li.conflict-dismissed .conflict-desc {
    so the pill drops down as an overlay instead */
 #appPill.open.drop-down {
   position: absolute;
-  top: 100%;
+  top: 0;
   right: 0;
   z-index: 500;
   width: max-content;
   min-width: 100%;
-  border-radius: 0 0 10px 10px;
+  border-radius: 10px;
 }
 /* During game: border and background vanish — looks like plain text.
    JS blocks interaction via gameState check. Pill stays in layout. */

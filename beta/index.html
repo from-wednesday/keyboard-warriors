@@ -3490,17 +3490,14 @@ const appPillEl = document.getElementById('appPill');
 
 function buildAppPill() {
   appPillEl.innerHTML = '';
-  APPS.forEach((app, idx) => {
+  APPS.forEach((app) => {
     const row = document.createElement('div');
-    row.className = 'app-option' + (app.key === currentApp ? ' selected' : '');
-    row.dataset.key = app.label;
-
-    // Caret only on selected row
-    row.innerHTML = `<span class="app-caret">${app.key === currentApp ? '▶' : '  '}</span><span class="app-label">${app.label}</span>`;
+    row.className = 'app-option' + (app.label === currentApp ? ' selected' : '');
+    row.innerHTML = `<span class="app-caret">${app.label === currentApp ? '▶' : '  '}</span><span class="app-label">${app.label}</span>`;
     row.addEventListener('click', e => {
-      e.stopPropagation();     // stop bubbling to pill's own onclick
+      e.stopPropagation();
       if (gameState === 'playing' || gameState === 'paused' || gameState === 'confirm-reset' || gameState === 'confirm-quit') return;
-      currentApp = app.key;
+      currentApp = app.label;
       try { localStorage.setItem('kw_app', currentApp); } catch(e) {}
       buildAppPill();
       closeAppPill();
@@ -3508,7 +3505,6 @@ function buildAppPill() {
     });
     appPillEl.appendChild(row);
   });
-  // Scroll pill so selected row is visible when closed
   scrollPillToSelected();
 }
 
@@ -6508,12 +6504,13 @@ let loadSequenceNumber = 0;
 
 // Called once Keyboard Warriors Apps json has been fetched and parsed.
 function _onAppsLoaded(appsData) {
-  APPS = appsData.map(function(a) {
-    return { label: a.label };
-  });
+  // Populate the two structures the rest of the code uses
+ APPS = appsData.map(function(a) {\n  return { label: a.label };\n});
   appsData.forEach(function(a) {
-    APP_JSON_FILE_PATH[a.label] = a.path;
+    APP_JSON_FILE_PATH[a.key] = a.path;
   });
+
+  // Restore saved app choice, falling back to the first entry
   var defaultKey = APPS.length ? APPS[0].label : 'Photoshop (Ps)';
 
   try {

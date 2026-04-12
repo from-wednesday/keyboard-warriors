@@ -3508,11 +3508,7 @@ function buildAppPill() {
   scrollPillToSelected();
 }
 
-function scrollPillToSelected() {
-  const idx = APPS.findIndex(a => a.key === currentApp);
-  // scrollTop positions the selected row at the top of the 22px window
-  appPillEl.scrollTop = idx * ROW_H;
-}
+const idx = APPS.findIndex(a => a.label === currentApp);
 
 function toggleAppDropdown() {
   if (gameState === 'playing' || gameState === 'confirm-reset' || gameState === 'confirm-quit') return;
@@ -3526,7 +3522,7 @@ function openAppPill() {
   var natural    = APPS.length * ROW_H;
   var cap        = Math.min(natural, Math.max(48, spaceBelow));
   appPillEl.style.maxHeight = cap + 'px';
-  appPillEl.classList.add('open', 'drop-down');
+  appPillEl.classList.add('open');
   appPillEl.scrollTop = 0;
 }
 function closeAppPill() {

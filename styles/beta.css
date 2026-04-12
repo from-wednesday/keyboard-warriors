@@ -3240,6 +3240,9 @@ body.returning-screen #diffIconWrap .icon-tip { display: none; }
   flex-direction: column;
   align-items: center;
   width: 100%;
+  max-width: 600px;
+  margin-left: auto;
+  margin-right: auto;
   gap: 0;
 }
 

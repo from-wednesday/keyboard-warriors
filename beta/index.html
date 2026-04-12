@@ -3493,7 +3493,8 @@ function buildAppPill() {
   APPS.forEach((app, idx) => {
     const row = document.createElement('div');
     row.className = 'app-option' + (app.key === currentApp ? ' selected' : '');
-    row.dataset.key = app.key;
+    row.dataset.key = app.label;
+
     // Caret only on selected row
     row.innerHTML = `<span class="app-caret">${app.key === currentApp ? '▶' : '  '}</span><span class="app-label">${app.label}</span>`;
     row.addEventListener('click', e => {
@@ -3526,12 +3527,12 @@ function toggleAppDropdown() {
 function openAppPill() {
   var rect       = appPillEl.getBoundingClientRect();
   var spaceBelow = window.innerHeight - rect.top - 8;
-  var cap        = Math.min(123, Math.max(48, spaceBelow));
+  var natural    = APPS.length * ROW_H;
+  var cap        = Math.min(natural, Math.max(48, spaceBelow));
   appPillEl.style.maxHeight = cap + 'px';
   appPillEl.classList.add('open', 'drop-down');
   appPillEl.scrollTop = 0;
 }
-
 function closeAppPill() {
   appPillEl.classList.remove('open', 'drop-down');
   appPillEl.style.maxHeight = '';
@@ -5154,7 +5155,7 @@ function dbgToggle() {
 }
 
 function dbgBuildReport() {
-  var AppEntry = APPS.find(function(a) { return a.key === currentApp; });
+  var AppEntry = APPS.find(function(a) { return a.label === currentApp; });
   var AppName  = AppEntry ? AppEntry.label : currentApp;
   var ActualOsName = detectedOs === 'mac' ? 'Mac'
     : detectedOs === 'pc' ? 'PC/Windows'
@@ -6177,7 +6178,7 @@ function _reportImpossibleQuestion() {
   }
   // Build the same report dbgBuildReport() produces, but directly from live
   // state so it is always current regardless of debug overlay visibility.
-  var AppEntry = APPS.find(function(a) { return a.key === currentApp; });
+  var AppEntry = APPS.find(function(a) { return a.label === currentApp; });
   var AppName  = AppEntry ? AppEntry.label : currentApp;
   var ActualOsName = detectedOs === 'mac' ? 'Mac'
     : detectedOs === 'pc' ? 'PC/Windows'
@@ -6508,18 +6509,18 @@ let loadSequenceNumber = 0;
 // Called once Keyboard Warriors Apps json has been fetched and parsed.
 function _onAppsLoaded(appsData) {
   // Populate the two structures the rest of the code uses
-  APPS = appsData.map(function(a) {
-    return { key: a.key, label: a.label };
-  });
+ APPS = appsData.map(function(a) {\n  return { label: a.label };\n});
   appsData.forEach(function(a) {
     APP_JSON_FILE_PATH[a.key] = a.path;
   });
 
   // Restore saved app choice, falling back to the first entry
-  var defaultKey = APPS.length ? APPS[0].key : 'Ps';
+  var defaultKey = APPS.length ? APPS[0].label : 'Photoshop (Ps)';
+
   try {
     var saved = localStorage.getItem('kw_app');
-    currentApp = (saved && APPS.find(function(a) { return a.key === saved; })) ? saved : defaultKey;
+    currentApp = (saved && APPS.find(function(a) { return a.label === saved; })) ? saved : defaultKey;
+
   } catch(e) {
     currentApp = defaultKey;
   }

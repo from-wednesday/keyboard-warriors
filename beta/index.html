@@ -3552,8 +3552,14 @@ function setAppSelectorGameActive(active) {
 var stickyKeysOn = false;
 var touchEnabled     = false;
 var soundEnabled     = false; // enabled automatically when touch turns on
-var hasFullKeyboard  = true;  // false = tenkeyless/compact — skip extended key questions
-(function() {
+var hasFullKeyboard  = true;  // ffunction openAppPill() {
+  var natural      = APPS.length * ROW_H;
+  var upwardNudge  = ROW_H; // shift up by exactly one row
+  appPillEl.style.maxHeight = natural + 'px';
+  appPillEl.style.transform = 'translateY(-' + upwardNudge + 'px)';
+  appPillEl.classList.add('open');
+  appPillEl.scrollTop = 0;
+}
   try {
     var savedFull = localStorage.getItem('kw_kb_full');
     if (savedFull !== null) hasFullKeyboard = (savedFull === 'true');

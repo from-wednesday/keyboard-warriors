@@ -1578,7 +1578,7 @@ li.conflict-dismissed .conflict-desc {
 #osMismatchPill.show.clickable { pointer-events: auto; cursor: pointer; }
 #appPill.open.drop-down {
   position: absolute;
-  top: -24px;
+  top: -48px;
   right: 0;
   z-index: 500;
   width: max-content;

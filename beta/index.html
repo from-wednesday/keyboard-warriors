@@ -3774,23 +3774,28 @@ function setKeyboardDisplayMode(mode) {
   var LeavingNone    = (previous === 'none' && mode !== 'none');
 
   if (GoingToNone) {
-    ForceNoKeyboard = true;
-    // Fold the keyboard away before hiding it
+    var SettingsPageToReopen = activeSettings;
+    if (SettingsPageToReopen !== null) _closeAllModalsInstant();
     setKbPosition('edge');
     setTimeout(function() {
+      ForceNoKeyboard = true;
       updateKeyboardMode();
       _syncPhoneToolbarVisibility();
-      if (activeSettings !== null) _spAlignPanel();
-    }, 600);
+      if (SettingsPageToReopen !== null) openSettings(SettingsPageToReopen);
+    }, 650);
   } else if (LeavingNone) {
+    var SettingsPageToReopen = activeSettings;
+    if (SettingsPageToReopen !== null) _closeAllModalsInstant();
     ForceNoKeyboard = false;
     updateKeyboardMode();
     _syncPhoneToolbarVisibility();
-    // Give the keyboard a frame to appear before animating to face
     setTimeout(function() {
       setKbPosition('partial');
-      if (activeSettings !== null) _spAlignPanel();
-    }, 50);
+      if (SettingsPageToReopen !== null) openSettings(SettingsPageToReopen);
+    }, 100);
+  } else if (mode === 'ghost' || previous === 'ghost') {
+    // Ghost ↔ graphical: keyboard stays present, just re-align the panel
+    if (activeSettings !== null) _spAlignPanel();
   }
 
   // Toast

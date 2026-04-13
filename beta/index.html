@@ -517,7 +517,7 @@
         <p class="sp-title">Keyboard Layout</p>
 
         <div class="modal-layout-rows">
-          <div class="modal-inline-row">
+          <div class="modal-inline-row" id="modalKeyCountRow">
             <div class="modal-left-label"><span>3</span></div>
             <div class="modal-switch-wrap">
               <label class="os-switch" title="Keys left of space" style="cursor:pointer;">
@@ -1010,8 +1010,15 @@ var kbFnLeft    = true; // true = Fn at far left, false = Fn right of Alt (PC on
     var savedPc  = localStorage.getItem('kw_kb_variant_pc');
     if (savedPc  && VALID_PC.indexOf(savedPc)   !== -1) kbVariantPc  = savedPc;
   } catch(e) {}
-  // Derive kbLeftCount / kbFnLeft from the restored variants so toggles render correctly
-  var v = kbVariantMac; // mac is the primary variant read by _syncKbCountFromVariant
+  // Derive kbLeftCount / kbFnLeft from the restored variants so toggles render correctly.
+  // Use the variant for the detected OS, not always kbVariantMac.
+  var detectedOsForInit = (function() {
+    var ua = navigator.userAgent || '';
+    var platform = (navigator.platform || '').toLowerCase();
+    if (/win/i.test(platform) || /windows/i.test(ua)) return 'pc';
+    return 'mac';
+  })();
+  var v = (detectedOsForInit === 'pc') ? kbVariantPc : kbVariantMac;
   if (v === 'mac-3key' || v === 'pc-no-fn') { kbLeftCount = 3; kbFnLeft = true; }
   else if (v === 'mac-4key' || v === 'pc-fn-left') { kbLeftCount = 4; kbFnLeft = true; }
   else if (v === 'mac-4key-ctrl-left' || v === 'pc-fn-right') { kbLeftCount = 4; kbFnLeft = false; }
@@ -3747,16 +3754,17 @@ function setKeyboardDisplayMode(mode) {
   var KeyboardPanelElement = document.getElementById('keyboardPanel');
   if (KeyboardPanelElement) KeyboardPanelElement.classList.toggle('ghost-mode', mode === 'ghost');
 
-  // Touch and sticky: only available in graphical mode
+  // Touch: only available in graphical mode. Sticky: available in graphical and ghost modes.
   var TouchRowElement  = document.getElementById('touchRow');
   var StickyRowElement = document.getElementById('stickyRow');
   var IsGraphical = (mode === 'graphical');
   if (TouchRowElement)  TouchRowElement.classList.toggle('disabled',  !IsGraphical);
-  if (StickyRowElement) StickyRowElement.classList.toggle('disabled', !IsGraphical);
+  if (StickyRowElement) StickyRowElement.classList.toggle('disabled', mode === 'none');
 
-  // If switching away from graphical, turn off touch and sticky
+  // If switching away from graphical, turn off touch
   if (!IsGraphical && touchEnabled)  { setTouchEnabled(false); }
-  if (!IsGraphical && stickyKeysOn)  { setStickyKeys(false); }
+  // Only clear sticky keys when hiding the keyboard entirely
+  if (mode === 'none' && stickyKeysOn) { setStickyKeys(false); }
 
   // None mode: show/hide keyboard and toolbar with animation
   var GoingToNone    = (mode === 'none');
@@ -3786,6 +3794,12 @@ function setKeyboardDisplayMode(mode) {
     // Ghost ↔ graphical: keyboard stays present, just re-align the panel
     if (activeSettings !== null) _spAlignPanel();
   }
+
+  // Keyboard layout toggles: pointless when there is no keyboard to show
+  var KeyCountRowElement = document.getElementById('modalKeyCountRow');
+  if (KeyCountRowElement) KeyCountRowElement.classList.toggle('disabled', mode === 'none');
+  // When leaving none mode, restore the fn row to its correct state via updateModalToggles
+  if (activeSettings === 'panelKeyboard') updateModalToggles();
 
   // Toast
   var ToastMessages = { none: 'Keyboard hidden', ghost: 'Ghost Mode on', graphical: 'Keyboard visible' };

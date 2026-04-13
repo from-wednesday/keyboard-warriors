@@ -42,6 +42,16 @@
      Shown once on iOS/iPadOS (localStorage persists the decision).
      iOS 13+ requires a user gesture before DeviceOrientationEvent.requestPermission.
 ══════════════════════════════════════ -->
+<div id="phoneWarningBackdrop" class="touch-modal-backdrop" style="display:none;"></div>
+<div id="phoneWarningModal" class="touch-modal-card" role="dialog" aria-modal="true" style="display:none;">
+  <p class="touch-modal-heading">Your screen is a little small</p>
+  <p class="touch-modal-body">To play you will need an external keyboard connected, and your phone in landscape orientation.</p>
+  <p class="touch-modal-body"><em>Your experience will be better on a tablet or computer.</em></p>
+  <div class="touch-modal-buttons">
+    <button class="touch-modal-btn-secondary" onclick="OnPhoneWarningDismiss()">Try anyway</button>
+  </div>
+</div>
+
 <div id="gyroBackdrop" class="touch-modal-backdrop" style="display:none;"></div>
 <div id="gyroModal" class="touch-modal-card" role="dialog" aria-modal="true" style="display:none;">
   <p class="touch-modal-heading">One quick thing</p>
@@ -191,6 +201,48 @@
   <div id="kbToast">This keyboard is for display only. Play with an actual Mac keyboard.</div>
   <div id="extKeyPill"></div>
   <span id="statRight"></span>
+</div>
+
+<div id="phoneToolbar" style="display:none;">
+  <div id="phoneToolbarIcons">
+    <div class="phone-icon-btn" id="phoneKbIconWrap">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 110 101.8" style="width:36px;height:auto;fill:#9ca3af;">
+        <path d="M98.6,32.4H11.4c-2.1,0-3.9,1.7-3.9,3.9v29.6c0,2.1,1.7,3.9,3.9,3.9h87.2c2.1,0,3.9-1.7,3.9-3.9v-29.6c0-2.1-1.7-3.9-3.9-3.9ZM99.9,65.9c0,.7-.6,1.3-1.3,1.3H11.4c-.7,0-1.3-.6-1.3-1.3v-29.6c0-.7.6-1.3,1.3-1.3h87.2c.7,0,1.3.6,1.3,1.3v29.6ZM15.2,42.1v-2.6c0-.5.4-.9.9-.9h5.9c.5,0,.9.4.9.9v2.6c0,.5-.4.9-.9.9h-5.9c-.5,0-.9-.4-.9-.9ZM15.2,48.9v-2.6c0-.5.4-.9.9-.9h7.4c.5,0,.9.4.9.9v2.6c0,.5-.4.9-.9.9h-7.4c-.5,0-.9-.4-.9-.9ZM95.9,46.4v2.6c0,.5-.4.9-.9.9h-7.4c-.5,0-.9-.4-.9-.9v-2.6c0-.5.4-.9.9-.9h7.4c.5,0,.9.4.9.9ZM15.2,55.7v-2.6c0-.5.4-.9.9-.9h10.8c.5,0,.9.4.9.9v2.6c0,.5-.4.9-.9.9h-10.8c-.5,0-.9-.4-.9-.9ZM65.8,59.9v2.6c0,.5-.4.9-.9.9h-26.9c-.5,0-.9-.4-.9-.9v-2.6c0-.5.4-.9.9-.9h26.9c.5,0,.9.4.9.9ZM95.9,53.2v2.6c0,.5-.4.9-.9.9h-10.8c-.5,0-.9-.4-.9-.9v-2.6c0-.5.4-.9.9-.9h10.8c.5,0,.9.4.9.9h0ZM24.8,42.2v-2.8c0-.4.3-.8.8-.8h4.4c.4,0,.8.3.8.8v2.8c0,.4-.3.8-.8.8h-4.4c-.4,0-.8-.3-.8-.8ZM33,42.2v-2.8c0-.4.3-.8.8-.8h4.4c.4,0,.8.3.8.8v2.8c0,.4-.3.8-.8.8h-4.4c-.4,0-.8-.3-.8-.8ZM41.1,42.2v-2.8c0-.4.3-.8.8-.8h4.4c.4,0,.8.3.8.8v2.8c0,.4-.3.8-.8.8h-4.4c-.4,0-.8-.3-.8-.8ZM49.3,42.2v-2.8c0-.4.3-.8.8-.8h4.4c.4,0,.8.3.8.8v2.8c0,.4-.3.8-.8.8h-4.4c-.4,0-.8-.3-.8-.8ZM57.4,42.2v-2.8c0-.4.3-.8.8-.8h4.4c.4,0,.8.3.8.8v2.8c0,.4-.3.8-.8.8h-4.4c-.4,0-.8-.3-.8-.8ZM65.5,42.2v-2.8c0-.4.3-.8.8-.8h4.4c.4,0,.8.3.8.8v2.8c0,.4-.3.8-.8.8h-4.4c-.4,0-.8-.3-.8-.8ZM73.7,42.2v-2.8c0-.4.3-.8.8-.8h4.4c.4,0,.8.3.8.8v2.8c0,.4-.3.8-.8.8h-4.4c-.4,0-.8-.3-.8-.8ZM27.8,45.5h4.4c.4,0,.8.3.8.8v2.8c0,.4-.3.8-.8.8h-4.4c-.4,0-.8-.3-.8-.8v-2.8c0-.4.3-.8.8-.8ZM40.7,49.8h-4.4c-.4,0-.8-.3-.8-.8v-2.8c0-.4.3-.8.8-.8h4.4c.4,0,.8.3.8.8v2.8c0,.4-.3.8-.8.8ZM44.8,45.5h4.4c.4,0,.8.3.8.8v2.8c0,.4-.3.8-.8.8h-4.4c-.4,0-.8-.3-.8-.8v-2.8c0-.4.3-.8.8-.8ZM57.7,49.8h-4.4c-.4,0-.8-.3-.8-.8v-2.8c0-.4.3-.8.8-.8h4.4c.4,0,.8.3.8.8v2.8c0,.4-.3.8-.8.8ZM66.2,49.8h-4.4c-.4,0-.8-.3-.8-.8v-2.8c0-.4.3-.8.8-.8h4.4c.4,0,.8.3.8.8v2.8c0,.4-.3.8-.8.8ZM74.7,45.5c.4,0,.8.3.8.8v2.8c0,.4-.3.8-.8.8h-4.4c-.4,0-.8-.3-.8-.8v-2.8c0-.4.3-.8.8-.8h4.4ZM83.2,45.5c.4,0,.8.3.8.8v2.8c0,.4-.3.8-.8.8h-4.4c-.4,0-.8-.3-.8-.8v-2.8c0-.4.3-.8.8-.8h4.4ZM36.3,53.1v2.8c0,.4-.3.8-.8.8h-4.4c-.4,0-.8-.3-.8-.8v-2.8c0-.4.3-.8.8-.8h4.4c.4,0,.8.3.8.8ZM44.3,52.3c.4,0,.8.3.8.8v2.8c0,.4-.3.8-.8.8h-4.4c-.4,0-.8-.3-.8-.8v-2.8c0-.4.3-.8.8-.8h4.4ZM53.1,52.3c.4,0,.8.3.8.8v2.8c0,.4-.3.8-.8.8h-4.4c-.4,0-.8-.3-.8-.8v-2.8c0-.4.3-.8.8-.8h4.4ZM56.7,55.9v-2.8c0-.4.3-.8.8-.8h4.4c.4,0,.8.3.8.8v2.8c0,.4-.3.8-.8.8h-4.4c-.4,0-.8-.3-.8-.8ZM70.7,56.6h-4.4c-.4,0-.8-.3-.8-.8v-2.8c0-.4.3-.8.8-.8h4.4c.4,0,.8.3.8.8v2.8c0,.4-.3.8-.8.8ZM79.5,56.6h-4.4c-.4,0-.8-.3-.8-.8v-2.8c0-.4.3-.8.8-.8h4.4c.4,0,.8.3.8.8v2.8c0,.4-.3.8-.8.8ZM81.8,42.2v-2.8c0-.4.3-.8.8-.8h4.4c.4,0,.8.3.8.8v2.8c0,.4-.3.8-.8.8h-4.4c-.4,0-.8-.3-.8-.8ZM95.9,39.5v2.8c0,.4-.3.8-.8.8h-4.4c-.4,0-.8-.3-.8-.8v-2.8c0-.4.3-.8.8-.8h4.4c.4,0,.8.3.8.8ZM35.4,59.8v2.8c0,.4-.3.8-.8.8h-4.4c-.4,0-.8-.3-.8-.8v-2.8c0-.4.3-.8.8-.8h4.4c.4,0,.8.3.8.8ZM28.3,59.8v2.8c0,.4-.3.8-.8.8h-4.4c-.4,0-.8-.3-.8-.8v-2.8c0-.4.3-.8.8-.8h4.4c.4,0,.8.3.8.8ZM21.2,59.8v2.8c0,.4-.3.8-.8.8h-4.4c-.4,0-.8-.3-.8-.8v-2.8c0-.4.3-.8.8-.8h4.4c.4,0,.8.3.8.8ZM73.5,59.8v2.8c0,.4-.3.8-.8.8h-4.3c-.4,0-.8-.3-.8-.8v-2.8c0-.4.3-.8.8-.8h4.3c.4,0,.8.3.8.8ZM81,59.8v2.8c0,.4-.3.8-.8.8h-4.3c-.4,0-.8-.3-.8-.8v-2.8c0-.4.3-.8.8-.8h4.3c.4,0,.8.3.8.8ZM88.5,59.8v2.8c0,.4-.3.8-.8.8h-4.3c-.4,0-.8-.3-.8-.8v-2.8c0-.4.3-.8.8-.8h4.3c.4,0,.8.3.8.8ZM95.9,59.8v2.8c0,.4-.3.8-.8.8h-4.3c-.4,0-.8-.3-.8-.8v-2.8c0-.4.3-.8.8-.8h4.3c.4,0,.8.3.8.8Z"/>
+      </svg>
+      <span class="phone-icon-label">Keyboard</span>
+    </div>
+    <div class="phone-icon-btn" id="phoneDiffIconWrap">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 90 90" style="width:36px;height:auto;">
+        <g>
+          <line class="phone-gauge-stroke" x1="44.7" y1="24.1" x2="44.7" y2="19.8"/>
+          <line class="phone-gauge-stroke" x1="25.9" y1="32.1" x2="22.8" y2="29.1"/>
+          <line class="phone-gauge-stroke" x1="18.2" y1="51.1" x2="13.9" y2="51.1"/>
+          <line class="phone-gauge-stroke" x1="71.7" y1="50.6" x2="76.1" y2="50.6"/>
+          <line class="phone-gauge-stroke" x1="63.7" y1="31.8" x2="66.8" y2="28.7"/>
+          <path class="phone-gauge-stroke" d="M11.9,59.9c-.8-2.9-1.2-5.9-1.2-9,0-18.9,15.3-34.3,34.3-34.3s34.3,15.3,34.3,34.3-.4,5.9-1.1,8.6"/>
+        </g>
+        <g id="phoneDiffNeedle" style="transform:rotate(-60deg);transform-origin:45px 50.9px;transition:transform 0.35s cubic-bezier(0.34,1.56,0.64,1);">
+          <path class="phone-gauge-stroke" d="M50.1,40.4c3.9,1.9,6.5,5.9,6.5,10.5s-5.2,11.7-11.7,11.7-11.7-5.2-11.7-11.7,2.6-8.5,6.5-10.5"/>
+          <path fill="#9ca3af" d="M46.9,45.1l-1.1-16.9c0-1.2-1.8-1.2-1.9,0l-1.1,17c0,.8-.4,1.6-1,2.1-1.1,1-1.8,2.6-1.4,4.4s1.8,3.3,3.6,3.6c3,.6,5.7-1.7,5.7-4.6s-.7-2.8-1.8-3.7-.9-1.2-1-2Z"/>
+          <circle fill="#9ca3af" cx="45" cy="50.9" r="2.7"/>
+        </g>
+      </svg>
+      <span class="phone-icon-label">Difficulty</span>
+    </div>
+    <div class="phone-icon-btn" id="phoneBrIconWrap">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 86 64.1" style="width:36px;height:auto;fill:#9ca3af;">
+        <g>
+          <path d="M7,11.7v42c0,2.2,1.8,4,4,4h63c2.2,0,4-1.8,4-4V11.7c0-2.2-1.8-4-4-4H11c-2.2,0-4,1.8-4,4ZM9,19.7h67v34c0,1.1-.9,2-2,2H11c-1.1,0-2-.9-2-2V19.7ZM9,11.7c0-1.1.9-2,2-2h63c1.1,0,2,.9,2,2v6H9v-6Z"/>
+          <circle cx="19.3" cy="13.7" r="2"/>
+          <circle cx="13.3" cy="13.7" r="2"/>
+          <circle cx="25.3" cy="13.7" r="2"/>
+        </g>
+        <path d="M42.5,23.4c-6,0-11.4,2.1-14.9,5.4h0c0,0-.1.1-.2.2-2.4,2.3-3.8,5.2-3.8,8.4s1.4,6,3.8,8.4c0,0,0,.1.2.2,3.4,3.3,8.8,5.4,14.9,5.4s11.4-2.1,14.9-5.4h0c0,0,.1-.1.2-.2,0,0,0,0,0,0,2.4-2.3,3.8-5.2,3.8-8.4s-1.4-6-3.8-8.4c0,0-.1-.1-.2-.2-3.4-3.3-8.8-5.4-14.9-5.4h0ZM41.3,25.3v5.4c-1.9,0-3.7-.2-5.4-.4.3-.6.7-1.2,1-1.7,1.3-1.7,2.8-2.8,4.4-3.2h0ZM43.7,25.3c1.6.4,3.1,1.5,4.4,3.2.4.5.7,1.1,1.1,1.7-1.7.2-3.5.4-5.4.4v-5.3ZM49,26.2c2.1.7,4,1.7,5.5,2.9-.9.3-1.9.5-2.9.8-.4-.8-.8-1.5-1.3-2.2-.4-.5-.8-1-1.3-1.5h0ZM36,26.2c-.5.4-.9.9-1.2,1.5-.5.7-.9,1.4-1.3,2.2-1.1-.2-2.1-.5-2.9-.8,1.5-1.2,3.4-2.2,5.5-2.9h0ZM28.9,30.6c1.1.4,2.4.8,3.8,1-.5,1.5-.8,3.1-.9,4.8h-5.6c.2-2.1,1.2-4.1,2.7-5.8h0ZM56.1,30.6c1.5,1.7,2.5,3.7,2.7,5.8h-5.6c0-1.7-.4-3.3-.9-4.8,1.4-.3,2.7-.6,3.8-1h0ZM35.1,32c1.9.3,4,.4,6.1.5v3.9h-7c0-1.5.4-3,.8-4.3h0ZM49.9,32c.4,1.3.7,2.8.8,4.3h-7v-3.9c2.2,0,4.2-.2,6.1-.5h0ZM26.2,38.2h5.6c0,1.7.4,3.3.9,4.8-1.4.3-2.7.6-3.8,1-1.5-1.7-2.5-3.7-2.7-5.8h0ZM34.3,38.2h7v3.9c-2.2,0-4.2.2-6.1.5-.4-1.3-.7-2.8-.8-4.3h0ZM43.7,38.2h7c0,1.5-.4,3-.8,4.3-1.9-.3-4-.4-6.1-.5v-3.9ZM53.2,38.2h5.6c-.2,2.1-1.2,4.1-2.7,5.8-1.1-.4-2.4-.8-3.8-1,.5-1.5.8-3.1.9-4.8h0ZM41.3,43.9v5.4c-1.6-.4-3.1-1.4-4.4-3.2-.4-.5-.7-1.1-1.1-1.7,1.7-.2,3.5-.4,5.4-.4h0ZM43.7,43.9c1.9,0,3.7.2,5.4.4-.3.6-.7,1.2-1.1,1.7-1.3,1.7-2.8,2.8-4.4,3.2v-5.3ZM33.4,44.7c.4.8.8,1.5,1.3,2.2.4.5.8,1,1.2,1.5-2.1-.7-4-1.7-5.5-2.9.9-.3,1.9-.5,2.9-.8h0ZM51.6,44.7c1.1.2,2.1.5,2.9.8-1.5,1.2-3.4,2.2-5.5,2.9.5-.4.9-.9,1.3-1.5.5-.7.9-1.4,1.3-2.2h0Z"/>
+      </svg>
+      <span class="phone-icon-label">Browser</span>
+    </div>
+  </div>
+  <div id="phonePanelArea"></div>
 </div>
 
 <div id="keyboardWrap" class="page-initially-hidden">
@@ -450,10 +502,54 @@
       <p class="sp-returning-privacy" style="text-align:center;"><strong>Skill-set loaded:</strong><br>You are currently training with <strong>Graphic Design</strong> applications.<br><em class="sp-returning-tagline">Other skill-sets coming soon.</em></p>
     </div>
 
-    <!-- ── Keyboard Settings ────────────────────────────── -->
+ <!-- ── Keyboard Settings ────────────────────────────── -->
     <div id="panelKeyboard" class="sp-page">
       <div class="sp-col sp-col-left">
-        <p class="sp-title">Keyboard Behaviour <small style="color:#9ca3af;font-weight:400;">QWERTY</small></p>
+        <p class="sp-title">Keyboard Visibility <small style="color:#9ca3af;font-weight:400;">QWERTY</small></p>
+
+    <div class="sp-seg-pill" id="kbDisplayPill" style="margin-bottom:6px;">
+          <button class="sp-seg-btn" id="kbDisplayNoneBtn" onclick="setKeyboardDisplayMode('none')"><span class="diff-btn-text">none</span></button>
+          <button class="sp-seg-btn" id="kbDisplayGhostBtn" onclick="setKeyboardDisplayMode('ghost')"><span class="diff-btn-text">ghost</span></button>
+          <button class="sp-seg-btn diff-btn-active" id="kbDisplayGraphicalBtn" onclick="setKeyboardDisplayMode('graphical')"><span class="diff-btn-text">graphical</span></button>
+        </div>
+
+        <div class="modal-section-gap"></div>
+        <p class="sp-title">Keyboard Layout</p>
+
+        <div class="modal-layout-rows">
+          <div class="modal-inline-row">
+            <div class="modal-left-label"><span>3</span></div>
+            <div class="modal-switch-wrap">
+              <label class="os-switch" title="Keys left of space" style="cursor:pointer;">
+                <input type="checkbox" id="modalOsToggle" onchange="onModalOsToggle()">
+                <svg class="os-track" width="36" height="14" viewBox="0 0 36 14" fill="none" xmlns="http://www.w3.org/2000/svg">
+                  <rect id="modalOsTrackRect" x="1" y="1" width="34" height="12" rx="6" stroke="#374151" stroke-width="1.25" fill="none"/>
+                  <circle id="modalOsKnobEl" cx="7" cy="7" r="3.5" stroke="#374151" stroke-width="1.25" fill="white"
+                          style="transition:transform 0.18s ease,fill 0.18s ease;transform-origin:7px 7px;transform-box:fill-box;"/>
+                </svg>
+              </label>
+            </div>
+            <div class="modal-right-label"><span class="modal-inline-val">4</span>&ensp;<span class="modal-inline-label">keys to the left of spacebar</span></div>
+          </div>
+          <div class="modal-inline-row" id="modalFnRow">
+            <div class="modal-left-label"><span id="modalFnLabelLeft"></span></div>
+            <div class="modal-switch-wrap">
+              <label class="os-switch" title="Leftmost key" style="cursor:pointer;">
+                <input type="checkbox" id="modalFnToggle" onchange="onModalFnToggle()">
+                <svg class="os-track" width="36" height="14" viewBox="0 0 36 14" fill="none" xmlns="http://www.w3.org/2000/svg">
+                  <rect x="1" y="1" width="34" height="12" rx="6" stroke="#374151" stroke-width="1.25" fill="none"/>
+                  <circle id="modalFnKnobEl" cx="7" cy="7" r="3.5" stroke="#374151" stroke-width="1.25" fill="white"
+                          style="transition:transform 0.18s ease,fill 0.18s ease;transform-origin:7px 7px;transform-box:fill-box;"/>
+                </svg>
+              </label>
+            </div>
+            <div class="modal-right-label"><span id="modalFnLabelRight" class="modal-inline-val"></span>&ensp;<span class="modal-inline-label">is the leftmost key</span></div>
+          </div>
+        </div>
+      </div><!-- /.sp-col-left -->
+
+      <div class="sp-col sp-col-right">
+        <p class="sp-title" style="font-size:12px;">Keyboard Behaviour</p>
 
         <div class="modal-toggle-row" id="touchRow">
           <label onclick="onTouchToggle()">
@@ -493,69 +589,20 @@
         </div>
 
         <div class="modal-section-gap"></div>
-        <p class="sp-title">Keyboard Layout</p>
-
-        <div class="modal-layout-rows">
-          <div class="modal-inline-row">
-            <div class="modal-left-label"><span>3</span></div>
-            <div class="modal-switch-wrap">
-              <label class="os-switch" title="Keys left of space" style="cursor:pointer;">
-                <input type="checkbox" id="modalOsToggle" onchange="onModalOsToggle()">
-                <svg class="os-track" width="36" height="14" viewBox="0 0 36 14" fill="none" xmlns="http://www.w3.org/2000/svg">
-                  <rect id="modalOsTrackRect" x="1" y="1" width="34" height="12" rx="6" stroke="#374151" stroke-width="1.25" fill="none"/>
-                  <circle id="modalOsKnobEl" cx="7" cy="7" r="3.5" stroke="#374151" stroke-width="1.25" fill="white"
-                          style="transition:transform 0.18s ease,fill 0.18s ease;transform-origin:7px 7px;transform-box:fill-box;"/>
-                </svg>
-              </label>
-            </div>
-            <div class="modal-right-label"><span class="modal-inline-val">4</span>&ensp;<span class="modal-inline-label">keys to the left of spacebar</span></div>
-          </div>
-          <div class="modal-inline-row" id="modalFnRow">
-            <div class="modal-left-label"><span id="modalFnLabelLeft"></span></div>
-            <div class="modal-switch-wrap">
-              <label class="os-switch" title="Leftmost key" style="cursor:pointer;">
-                <input type="checkbox" id="modalFnToggle" onchange="onModalFnToggle()">
-                <svg class="os-track" width="36" height="14" viewBox="0 0 36 14" fill="none" xmlns="http://www.w3.org/2000/svg">
-                  <rect x="1" y="1" width="34" height="12" rx="6" stroke="#374151" stroke-width="1.25" fill="none"/>
-                  <circle id="modalFnKnobEl" cx="7" cy="7" r="3.5" stroke="#374151" stroke-width="1.25" fill="white"
-                          style="transition:transform 0.18s ease,fill 0.18s ease;transform-origin:7px 7px;transform-box:fill-box;"/>
-                </svg>
-              </label>
-            </div>
-            <div class="modal-right-label"><span id="modalFnLabelRight" class="modal-inline-val"></span>&ensp;<span class="modal-inline-label">is the leftmost key</span></div>
-          </div>
-        </div>
-      </div><!-- /.sp-col-left -->
-
-      <div class="sp-col sp-col-right">
-        <div style="display:flex;align-items:center;gap:14px;margin-bottom:0;">
-          <div class="modal-toggle-row" id="ghostRow" style="margin-bottom:0;">
-            <label onclick="onGhostModeToggle()">
-              <span class="modal-radio" id="ghostRadio">
-                <svg class="modal-radio-dot" width="19" height="19" viewBox="0 0 19 19" xmlns="http://www.w3.org/2000/svg">
-                  <circle cx="9.5" cy="9.5" r="6.5" stroke="#374151" stroke-width="1.5" fill="none"/>
-                  <circle class="modal-radio-fill" cx="9.5" cy="9.5" r="3.5" fill="#374151"/>
-                </svg>
-              </span>
-              <span class="modal-toggle-label">Ghost Mode</span>
-            </label>
-          </div>
-          <div class="modal-toggle-row" id="killPunctuationRow" style="margin-bottom:0;">
-            <label onclick="onKillPunctuationToggle()">
-              <span class="modal-radio" id="killPunctuationRadio">
-                <svg class="modal-radio-dot" width="19" height="19" viewBox="0 0 19 19" xmlns="http://www.w3.org/2000/svg">
-                  <circle cx="9.5" cy="9.5" r="6.5" stroke="#374151" stroke-width="1.5" fill="none"/>
-                  <circle class="modal-radio-fill" cx="9.5" cy="9.5" r="3.5" fill="#374151"/>
-                </svg>
-              </span>
-              <span class="modal-toggle-label">Kill Punctuation</span>
-            </label>
-          </div>
-        </div>
-        <div class="modal-section-gap"></div>
         <div id="modalKbSizeSection">
-          <p class="sp-body">The on-screen display shows a compact keyboard, but the game also accepts input from full-sized keyboards with their extended keys.</p>
-          <p class="sp-body">Don&#8217;t have a full-sized keyboard? Let us know so we won&#8217;t ask you any impossible questions:</p>
+          <div class="more-info-wrap">
+            <p class="sp-title" onclick="toggleMoreInfo('kbSizeMoreInfo')" style="font-size:12px;">Keyboard Size</p>
+            <span class="more-info-trigger" id="kbSizeMoreInfoTrigger" onclick="toggleMoreInfo('kbSizeMoreInfo')">
+              <svg class="more-info-icon" viewBox="0 0 20 20" width="14" height="14" fill="none" stroke="currentColor" stroke-width="1.25" stroke-linecap="round">
+                <circle cx="10" cy="10" r="8.5"/>
+                <text x="10" y="15" text-anchor="middle" font-size="14" font-weight="720" font-family="system-ui,sans-serif" fill="currentColor" stroke="none">?</text>
+              </svg>
+              <div class="more-info-popup" id="kbSizeMoreInfo">
+                <p class="more-info-body">While the on-screen display only shows a compact keyboard, the game also accepts input from full-sized keyboard&#8217;s extended keys.</p>
+                <p class="more-info-body">If you don&#8217;t have a full-sized keyboard you should let us know here. Then we won&#8217;t ask you any impossible questions.</p>
+              </div>
+            </span>
+          </div>
           <div class="modal-kbsize-row" id="modalKbSizeRow">
             <div id="kbSizeExtendedSide" class="modal-left-label" style="display:flex;flex-direction:row;align-items:center;gap:5px;justify-content:flex-end;"><small id="kbSizeExtendedLabel" class="kb-size-word-label">extended</small><svg id="kbSizeExtendedIcon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 167 101.8" style="width:66px;height:auto;flex-shrink:0;"><path d="M142.1,32.4H24.9c-2.1,0-3.9,1.7-3.9,3.9v29.6c0,2.1,1.7,3.9,3.9,3.9h117.2c2.1,0,3.9-1.7,3.9-3.9v-29.6c0-2.1-1.7-3.9-3.9-3.9ZM143.4,65.9c0,.7-.6,1.3-1.3,1.3H24.9c-.7,0-1.3-.6-1.3-1.3v-29.6c0-.7.6-1.3,1.3-1.3h117.2c.7,0,1.3.6,1.3,1.3v29.6ZM28.7,42.1v-2.6c0-.5.4-.9.9-.9h5.9c.5,0,.9.4.9.9v2.6c0,.5-.4.9-.9.9h-5.9c-.5,0-.9-.4-.9-.9ZM28.7,48.9v-2.6c0-.5.4-.9.9-.9h7.4c.5,0,.9.4.9.9v2.6c0,.5-.4.9-.9.9h-7.4c-.5,0-.9-.4-.9-.9ZM109.4,46.4v2.6c0,.5-.4.9-.9.9h-7.4c-.5,0-.9-.4-.9-.9v-2.6c0-.5.4-.9.9-.9h7.4c.5,0,.9.4.9.9ZM28.7,55.7v-2.6c0-.5.4-.9.9-.9h10.8c.5,0,.9.4.9.9v2.6c0,.5-.4.9-.9.9h-10.8c-.5,0-.9-.4-.9-.9ZM79.3,59.9v2.6c0,.5-.4.9-.9.9h-26.9c-.5,0-.9-.4-.9-.9v-2.6c0-.5.4-.9.9-.9h26.9c.5,0,.9.4.9.9ZM109.4,53.2v2.6c0,.5-.4.9-.9.9h-10.8c-.5,0-.9-.4-.9-.9v-2.6c0-.5.4-.9.9-.9h10.8c.5,0,.9.4.9.9h0ZM38.3,42.2v-2.8c0-.4.3-.8.8-.8h4.4c.4,0,.8.3.8.8v2.8c0,.4-.3.8-.8.8h-4.4c-.4,0-.8-.3-.8-.8ZM46.5,42.2v-2.8c0-.4.3-.8.8-.8h4.4c.4,0,.8.3.8.8v2.8c0,.4-.3.8-.8.8h-4.4c-.4,0-.8-.3-.8-.8ZM54.6,42.2v-2.8c0-.4.3-.8.8-.8h4.4c.4,0,.8.3.8.8v2.8c0,.4-.3.8-.8.8h-4.4c-.4,0-.8-.3-.8-.8ZM62.8,42.2v-2.8c0-.4.3-.8.8-.8h4.4c.4,0,.8.3.8.8v2.8c0,.4-.3.8-.8.8h-4.4c-.4,0-.8-.3-.8-.8ZM70.9,42.2v-2.8c0-.4.3-.8.8-.8h4.4c.4,0,.8.3.8.8v2.8c0,.4-.3.8-.8.8h-4.4c-.4,0-.8-.3-.8-.8ZM79,42.2v-2.8c0-.4.3-.8.8-.8h4.4c.4,0,.8.3.8.8v2.8c0,.4-.3.8-.8.8h-4.4c-.4,0-.8-.3-.8-.8ZM87.2,42.2v-2.8c0-.4.3-.8.8-.8h4.4c.4,0,.8.3.8.8v2.8c0,.4-.3.8-.8.8h-4.4c-.4,0-.8-.3-.8-.8ZM41.3,45.5h4.4c.4,0,.8.3.8.8v2.8c0,.4-.3.8-.8.8h-4.4c-.4,0-.8-.3-.8-.8v-2.8c0-.4.3-.8.8-.8ZM54.2,49.8h-4.4c-.4,0-.8-.3-.8-.8v-2.8c0-.4.3-.8.8-.8h4.4c.4,0,.8.3.8.8v2.8c0,.4-.3.8-.8.8ZM58.3,45.5h4.4c.4,0,.8.3.8.8v2.8c0,.4-.3.8-.8.8h-4.4c-.4,0-.8-.3-.8-.8v-2.8c0-.4.3-.8.8-.8ZM71.2,49.8h-4.4c-.4,0-.8-.3-.8-.8v-2.8c0-.4.3-.8.8-.8h4.4c.4,0,.8.3.8.8v2.8c0,.4-.3.8-.8.8ZM79.7,49.8h-4.4c-.4,0-.8-.3-.8-.8v-2.8c0-.4.3-.8.8-.8h4.4c.4,0,.8.3.8.8v2.8c0,.4-.3.8-.8.8ZM88.2,45.5c.4,0,.8.3.8.8v2.8c0,.4-.3.8-.8.8h-4.4c-.4,0-.8-.3-.8-.8v-2.8c0-.4.3-.8.8-.8h4.4ZM96.7,45.5c.4,0,.8.3.8.8v2.8c0,.4-.3.8-.8.8h-4.4c-.4,0-.8-.3-.8-.8v-2.8c0-.4.3-.8.8-.8h4.4ZM49.8,53.1v2.8c0,.4-.3.8-.8.8h-4.4c-.4,0-.8-.3-.8-.8v-2.8c0-.4.3-.8.8-.8h4.4c.4,0,.8.3.8.8ZM57.8,52.3c.4,0,.8.3.8.8v2.8c0,.4-.3.8-.8.8h-4.4c-.4,0-.8-.3-.8-.8v-2.8c0-.4.3-.8.8-.8h4.4ZM66.6,52.3c.4,0,.8.3.8.8v2.8c0,.4-.3.8-.8.8h-4.4c-.4,0-.8-.3-.8-.8v-2.8c0-.4.3-.8.8-.8h4.4ZM70.2,55.9v-2.8c0-.4.3-.8.8-.8h4.4c.4,0,.8.3.8.8v2.8c0,.4-.3.8-.8.8h-4.4c-.4,0-.8-.3-.8-.8ZM84.2,56.6h-4.4c-.4,0-.8-.3-.8-.8v-2.8c0-.4.3-.8.8-.8h4.4c.4,0,.8.3.8.8v2.8c0,.4-.3.8-.8.8ZM93,56.6h-4.4c-.4,0-.8-.3-.8-.8v-2.8c0-.4.3-.8.8-.8h4.4c.4,0,.8.3.8.8v2.8c0,.4-.3.8-.8.8ZM118.2,55.9v-2.8c0-.4.3-.8.8-.8h4.4c.4,0,.8.3.8.8v2.8c0,.4-.3.8-.8.8h-4.4c-.4,0-.8-.3-.8-.8ZM95.3,42.2v-2.8c0-.4.3-.8.8-.8h4.4c.4,0,.8.3.8.8v2.8c0,.4-.3.8-.8.8h-4.4c-.4,0-.8-.3-.8-.8ZM109.4,39.5v2.8c0,.4-.3.8-.8.8h-4.4c-.4,0-.8-.3-.8-.8v-2.8c0-.4.3-.8.8-.8h4.4c.4,0,.8.3.8.8ZM118.2,42.2v-2.8c0-.4.3-.8.8-.8h4.4c.4,0,.8.3.8.8v2.8c0,.4-.3.8-.8.8h-4.4c-.4,0-.8-.3-.8-.8ZM118.2,49.2v-2.8c0-.4.3-.8.8-.8h4.4c.4,0,.8.3.8.8v2.8c0,.4-.3.8-.8.8h-4.4c-.4,0-.8-.3-.8-.8ZM118.2,62.2v-2.8c0-.4.3-.8.8-.8h4.4c.4,0,.8.3.8.8v2.8c0,.4-.3.8-.8.8h-4.4c-.4,0-.8-.3-.8-.8ZM126.2,55.9v-2.8c0-.4.3-.8.8-.8h4.4c.4,0,.8.3.8.8v2.8c0,.4-.3.8-.8.8h-4.4c-.4,0-.8-.3-.8-.8ZM126.2,42.2v-2.8c0-.4.3-.8.8-.8h4.4c.4,0,.8.3.8.8v2.8c0,.4-.3.8-.8.8h-4.4c-.4,0-.8-.3-.8-.8ZM126.2,49.2v-2.8c0-.4.3-.8.8-.8h4.4c.4,0,.8.3.8.8v2.8c0,.4-.3.8-.8.8h-4.4c-.4,0-.8-.3-.8-.8ZM126.2,62.2v-2.8c0-.4.3-.8.8-.8h4.4c.4,0,.8.3.8.8v2.8c0,.4-.3.8-.8.8h-4.4c-.4,0-.8-.3-.8-.8ZM134.2,55.9v-2.8c0-.4.3-.8.8-.8h4.4c.4,0,.8.3.8.8v2.8c0,.4-.3.8-.8.8h-4.4c-.4,0-.8-.3-.8-.8ZM134.2,42.2v-2.8c0-.4.3-.8.8-.8h4.4c.4,0,.8.3.8.8v2.8c0,.4-.3.8-.8.8h-4.4c-.4,0-.8-.3-.8-.8ZM134.2,49.2v-2.8c0-.4.3-.8.8-.8h4.4c.4,0,.8.3.8.8v2.8c0,.4-.3.8-.8.8h-4.4c-.4,0-.8-.3-.8-.8ZM134.2,62.2v-2.8c0-.4.3-.8.8-.8h4.4c.4,0,.8.3.8.8v2.8c0,.4-.3.8-.8.8h-4.4c-.4,0-.8-.3-.8-.8ZM48.9,59.8v2.8c0,.4-.3.8-.8.8h-4.4c-.4,0-.8-.3-.8-.8v-2.8c0-.4.3-.8.8-.8h4.4c.4,0,.8.3.8.8ZM41.8,59.8v2.8c0,.4-.3.8-.8.8h-4.4c-.4,0-.8-.3-.8-.8v-2.8c0-.4.3-.8.8-.8h4.4c.4,0,.8.3.8.8ZM34.7,59.8v2.8c0,.4-.3.8-.8.8h-4.4c-.4,0-.8-.3-.8-.8v-2.8c0-.4.3-.8.8-.8h4.4c.4,0,.8.3.8.8ZM87,59.8v2.8c0,.4-.3.8-.8.8h-4.3c-.4,0-.8-.3-.8-.8v-2.8c0-.4.3-.8.8-.8h4.3c.4,0,.8.3.8.8ZM94.5,59.8v2.8c0,.4-.3.8-.8.8h-4.3c-.4,0-.8-.3-.8-.8v-2.8c0-.4.3-.8.8-.8h4.3c.4,0,.8.3.8.8ZM102,59.8v2.8c0,.4-.3.8-.8.8h-4.3c-.4,0-.8-.3-.8-.8v-2.8c0-.4.3-.8.8-.8h4.3c.4,0,.8.3.8.8ZM109.4,59.8v2.8c0,.4-.3.8-.8.8h-4.3c-.4,0-.8-.3-.8-.8v-2.8c0-.4.3-.8.8-.8h4.3c.4,0,.8.3.8.8Z"/></svg></div>
             <div class="modal-switch-wrap">
@@ -571,6 +618,21 @@
             <div id="kbSizeCompactSide" class="modal-right-label" style="display:flex;flex-direction:row;align-items:center;gap:5px;"><svg id="kbSizeCompactIcon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 110 101.8" style="width:44px;height:auto;"><path d="M98.6,32.4H11.4c-2.1,0-3.9,1.7-3.9,3.9v29.6c0,2.1,1.7,3.9,3.9,3.9h87.2c2.1,0,3.9-1.7,3.9-3.9v-29.6c0-2.1-1.7-3.9-3.9-3.9ZM99.9,65.9c0,.7-.6,1.3-1.3,1.3H11.4c-.7,0-1.3-.6-1.3-1.3v-29.6c0-.7.6-1.3,1.3-1.3h87.2c.7,0,1.3.6,1.3,1.3v29.6ZM15.2,42.1v-2.6c0-.5.4-.9.9-.9h5.9c.5,0,.9.4.9.9v2.6c0,.5-.4.9-.9.9h-5.9c-.5,0-.9-.4-.9-.9ZM15.2,48.9v-2.6c0-.5.4-.9.9-.9h7.4c.5,0,.9.4.9.9v2.6c0,.5-.4.9-.9.9h-7.4c-.5,0-.9-.4-.9-.9ZM95.9,46.4v2.6c0,.5-.4.9-.9.9h-7.4c-.5,0-.9-.4-.9-.9v-2.6c0-.5.4-.9.9-.9h7.4c.5,0,.9.4.9.9ZM15.2,55.7v-2.6c0-.5.4-.9.9-.9h10.8c.5,0,.9.4.9.9v2.6c0,.5-.4.9-.9.9h-10.8c-.5,0-.9-.4-.9-.9ZM65.8,59.9v2.6c0,.5-.4.9-.9.9h-26.9c-.5,0-.9-.4-.9-.9v-2.6c0-.5.4-.9.9-.9h26.9c.5,0,.9.4.9.9ZM95.9,53.2v2.6c0,.5-.4.9-.9.9h-10.8c-.5,0-.9-.4-.9-.9v-2.6c0-.5.4-.9.9-.9h10.8c.5,0,.9.4.9.9h0ZM24.8,42.2v-2.8c0-.4.3-.8.8-.8h4.4c.4,0,.8.3.8.8v2.8c0,.4-.3.8-.8.8h-4.4c-.4,0-.8-.3-.8-.8ZM33,42.2v-2.8c0-.4.3-.8.8-.8h4.4c.4,0,.8.3.8.8v2.8c0,.4-.3.8-.8.8h-4.4c-.4,0-.8-.3-.8-.8ZM41.1,42.2v-2.8c0-.4.3-.8.8-.8h4.4c.4,0,.8.3.8.8v2.8c0,.4-.3.8-.8.8h-4.4c-.4,0-.8-.3-.8-.8ZM49.3,42.2v-2.8c0-.4.3-.8.8-.8h4.4c.4,0,.8.3.8.8v2.8c0,.4-.3.8-.8.8h-4.4c-.4,0-.8-.3-.8-.8ZM57.4,42.2v-2.8c0-.4.3-.8.8-.8h4.4c.4,0,.8.3.8.8v2.8c0,.4-.3.8-.8.8h-4.4c-.4,0-.8-.3-.8-.8ZM65.5,42.2v-2.8c0-.4.3-.8.8-.8h4.4c.4,0,.8.3.8.8v2.8c0,.4-.3.8-.8.8h-4.4c-.4,0-.8-.3-.8-.8ZM73.7,42.2v-2.8c0-.4.3-.8.8-.8h4.4c.4,0,.8.3.8.8v2.8c0,.4-.3.8-.8.8h-4.4c-.4,0-.8-.3-.8-.8ZM27.8,45.5h4.4c.4,0,.8.3.8.8v2.8c0,.4-.3.8-.8.8h-4.4c-.4,0-.8-.3-.8-.8v-2.8c0-.4.3-.8.8-.8ZM40.7,49.8h-4.4c-.4,0-.8-.3-.8-.8v-2.8c0-.4.3-.8.8-.8h4.4c.4,0,.8.3.8.8v2.8c0,.4-.3.8-.8.8ZM44.8,45.5h4.4c.4,0,.8.3.8.8v2.8c0,.4-.3.8-.8.8h-4.4c-.4,0-.8-.3-.8-.8v-2.8c0-.4.3-.8.8-.8ZM57.7,49.8h-4.4c-.4,0-.8-.3-.8-.8v-2.8c0-.4.3-.8.8-.8h4.4c.4,0,.8.3.8.8v2.8c0,.4-.3.8-.8.8ZM66.2,49.8h-4.4c-.4,0-.8-.3-.8-.8v-2.8c0-.4.3-.8.8-.8h4.4c.4,0,.8.3.8.8v2.8c0,.4-.3.8-.8.8ZM74.7,45.5c.4,0,.8.3.8.8v2.8c0,.4-.3.8-.8.8h-4.4c-.4,0-.8-.3-.8-.8v-2.8c0-.4.3-.8.8-.8h4.4ZM83.2,45.5c.4,0,.8.3.8.8v2.8c0,.4-.3.8-.8.8h-4.4c-.4,0-.8-.3-.8-.8v-2.8c0-.4.3-.8.8-.8h4.4ZM36.3,53.1v2.8c0,.4-.3.8-.8.8h-4.4c-.4,0-.8-.3-.8-.8v-2.8c0-.4.3-.8.8-.8h4.4c.4,0,.8.3.8.8ZM44.3,52.3c.4,0,.8.3.8.8v2.8c0,.4-.3.8-.8.8h-4.4c-.4,0-.8-.3-.8-.8v-2.8c0-.4.3-.8.8-.8h4.4ZM53.1,52.3c.4,0,.8.3.8.8v2.8c0,.4-.3.8-.8.8h-4.4c-.4,0-.8-.3-.8-.8v-2.8c0-.4.3-.8.8-.8h4.4ZM56.7,55.9v-2.8c0-.4.3-.8.8-.8h4.4c.4,0,.8.3.8.8v2.8c0,.4-.3.8-.8.8h-4.4c-.4,0-.8-.3-.8-.8ZM70.7,56.6h-4.4c-.4,0-.8-.3-.8-.8v-2.8c0-.4.3-.8.8-.8h4.4c.4,0,.8.3.8.8v2.8c0,.4-.3.8-.8.8ZM79.5,56.6h-4.4c-.4,0-.8-.3-.8-.8v-2.8c0-.4.3-.8.8-.8h4.4c.4,0,.8.3.8.8v2.8c0,.4-.3.8-.8.8ZM81.8,42.2v-2.8c0-.4.3-.8.8-.8h4.4c.4,0,.8.3.8.8v2.8c0,.4-.3.8-.8.8h-4.4c-.4,0-.8-.3-.8-.8ZM95.9,39.5v2.8c0,.4-.3.8-.8.8h-4.4c-.4,0-.8-.3-.8-.8v-2.8c0-.4.3-.8.8-.8h4.4c.4,0,.8.3.8.8ZM35.4,59.8v2.8c0,.4-.3.8-.8.8h-4.4c-.4,0-.8-.3-.8-.8v-2.8c0-.4.3-.8.8-.8h4.4c.4,0,.8.3.8.8ZM28.3,59.8v2.8c0,.4-.3.8-.8.8h-4.4c-.4,0-.8-.3-.8-.8v-2.8c0-.4.3-.8.8-.8h4.4c.4,0,.8.3.8.8ZM21.2,59.8v2.8c0,.4-.3.8-.8.8h-4.4c-.4,0-.8-.3-.8-.8v-2.8c0-.4.3-.8.8-.8h4.4c.4,0,.8.3.8.8ZM73.5,59.8v2.8c0,.4-.3.8-.8.8h-4.3c-.4,0-.8-.3-.8-.8v-2.8c0-.4.3-.8.8-.8h4.3c.4,0,.8.3.8.8ZM81,59.8v2.8c0,.4-.3.8-.8.8h-4.3c-.4,0-.8-.3-.8-.8v-2.8c0-.4.3-.8.8-.8h4.3c.4,0,.8.3.8.8ZM88.5,59.8v2.8c0,.4-.3.8-.8.8h-4.3c-.4,0-.8-.3-.8-.8v-2.8c0-.4.3-.8.8-.8h4.3c.4,0,.8.3.8.8ZM95.9,59.8v2.8c0,.4-.3.8-.8.8h-4.3c-.4,0-.8-.3-.8-.8v-2.8c0-.4.3-.8.8-.8h4.3c.4,0,.8.3.8.8Z"/></svg><small id="kbSizeCompactLabel" class="kb-size-word-label">compact</small></div>
           </div>
         </div><!-- /#modalKbSizeSection -->
+
+     <div class="modal-section-gap"></div>
+        <div class="modal-toggle-row" id="killPunctuationRow" style="margin-bottom:0;">
+          <label onclick="onKillPunctuationToggle()" style="display:flex;align-items:center;gap:10px;">
+            <span class="sp-title" style="font-size:12px;margin:0;white-space:nowrap;cursor:pointer;">Non-English Keyboard</span>
+            <span class="modal-radio" id="killPunctuationRadio">
+              <svg class="modal-radio-dot" width="19" height="19" viewBox="0 0 19 19" xmlns="http://www.w3.org/2000/svg">
+                <circle cx="9.5" cy="9.5" r="6.5" stroke="#374151" stroke-width="1.5" fill="none"/>
+                <circle class="modal-radio-fill" cx="9.5" cy="9.5" r="3.5" fill="#374151"/>
+              </svg>
+            </span>
+            <span class="modal-toggle-label" style="font-size:12px;">Kill Punctuation</span>
+          </label>
+        </div>
+
       </div><!-- /.sp-col-right -->
     </div><!-- /#panelKeyboard -->
 
@@ -1406,10 +1468,11 @@ updateToggleVisual(currentOs);
 ══════════════════════════════════════ */
 const keyboardWrap = document.getElementById('keyboardWrap');
 let currentKbMode = null;
+var ForceNoKeyboard = false;
 
 function updateKeyboardMode() {
   const w = window.innerWidth;
-  const mode = w < 600 ? 'none' : w < 820 ? 'mini' : 'full';
+  const mode = ForceNoKeyboard ? 'none' : w < 600 ? 'none' : w < 820 ? 'mini' : 'full';
   if (mode === currentKbMode) return;
   currentKbMode = mode;
   if (mode === 'none') {
@@ -1459,6 +1522,9 @@ function _revealPageContent() {
     Element.classList.remove('page-initially-hidden');
     Element.classList.add('page-revealed');
   });
+  // Show phone toolbar if applicable (not hidden by .page-initially-hidden
+  // since it must also respond to game state)
+  if (ForceNoKeyboard) _syncPhoneToolbarVisibility();
 }
 
 var DomReady = new Promise(function(resolve) {
@@ -2554,6 +2620,8 @@ function enterPause(instantBlur) {
   resetPartialShortcutNudgeTimers();
   _exitScoreClearConfirm();
   _exitDiffConfirm();
+  // Show the phone toolbar before opening any panel inside it
+  _syncPhoneToolbarVisibility();
   // Settings panel sets its own position before calling enterPause; only move
   // to edge if no settings screen is already driving a different position.
   if (activeSettings === null) {
@@ -2664,6 +2732,7 @@ function unpause() {
   helpBtn.textContent = 'Help';
   if (lockKeyEl) lockKeyEl.classList.remove('active');
   timerInterval = setInterval(updateTimer, 100);
+  _syncPhoneToolbarVisibility();
   resumeQuestionTimerArc();  // restart arc with 0.2s grace subtracted
 }
 
@@ -3421,16 +3490,14 @@ const appPillEl = document.getElementById('appPill');
 
 function buildAppPill() {
   appPillEl.innerHTML = '';
-  APPS.forEach((app, idx) => {
+  APPS.forEach((app) => {
     const row = document.createElement('div');
-    row.className = 'app-option' + (app.key === currentApp ? ' selected' : '');
-    row.dataset.key = app.key;
-    // Caret only on selected row
-    row.innerHTML = `<span class="app-caret">${app.key === currentApp ? '▶' : '  '}</span><span class="app-label">${app.label}</span>`;
+    row.className = 'app-option' + (app.label === currentApp ? ' selected' : '');
+    row.innerHTML = `<span class="app-caret">${app.label === currentApp ? '▶' : '  '}</span><span class="app-label">${app.label}</span>`;
     row.addEventListener('click', e => {
-      e.stopPropagation();     // stop bubbling to pill's own onclick
+      e.stopPropagation();
       if (gameState === 'playing' || gameState === 'paused' || gameState === 'confirm-reset' || gameState === 'confirm-quit') return;
-      currentApp = app.key;
+      currentApp = app.label;
       try { localStorage.setItem('kw_app', currentApp); } catch(e) {}
       buildAppPill();
       closeAppPill();
@@ -3438,12 +3505,11 @@ function buildAppPill() {
     });
     appPillEl.appendChild(row);
   });
-  // Scroll pill so selected row is visible when closed
   scrollPillToSelected();
 }
 
 function scrollPillToSelected() {
-  const idx = APPS.findIndex(a => a.key === currentApp);
+  const idx = APPS.findIndex(a => a.label === currentApp);
   // scrollTop positions the selected row at the top of the 22px window
   appPillEl.scrollTop = idx * ROW_H;
 }
@@ -3455,24 +3521,16 @@ function toggleAppDropdown() {
 }
 
 function openAppPill() {
-  var rect      = appPillEl.getBoundingClientRect();
-  var spaceBelow = window.innerHeight - rect.bottom - 8;
-  var needsDrop  = spaceBelow < 123;  // not enough room to expand upward
-  appPillEl.style.maxHeight = '';     // let CSS control it
-  appPillEl.classList.toggle('drop-down', needsDrop);
-  if (needsDrop) {
-    // Cap height to available space below
-    var cap = Math.min(123, Math.max(48, spaceBelow));
-    appPillEl.style.maxHeight = cap + 'px';
-  }
-  appPillEl.classList.add('open');
+  var natural = APPS.length * ROW_H;
+  appPillEl.style.maxHeight = natural + 'px';
+  appPillEl.style.transform = '';
+  appPillEl.classList.add('open', 'drop-down');
   appPillEl.scrollTop = 0;
 }
-
 function closeAppPill() {
   appPillEl.classList.remove('open', 'drop-down');
   appPillEl.style.maxHeight = '';
-  // After transition, scroll to selected row
+  appPillEl.style.transform = '';
   setTimeout(scrollPillToSelected, 230);
 }
 
@@ -3484,6 +3542,7 @@ document.addEventListener('click', e => {
 function setAppSelectorGameActive(active) {
   appPillEl.classList.toggle('game-active', active);
   if (active) closeAppPill();
+  _syncPhoneToolbarVisibility();
 }
 
 
@@ -3563,9 +3622,10 @@ function setTouchEnabled(on) {
   // Audible row: enabled only when touch is on
   var audibleRow = document.getElementById('audibleRow');
   if (audibleRow) audibleRow.classList.toggle('disabled', !on);
-  // Ghost mode requires a physical keyboard -- disable it when touch is on
-  var ghostRow = document.getElementById('ghostRow');
-  if (ghostRow) ghostRow.classList.toggle('disabled', on);
+  // Ghost and none modes require a physical keyboard -- disable the pill when touch is on
+  var KbDisplayPill = document.getElementById('kbDisplayPill');
+  if (KbDisplayPill) KbDisplayPill.classList.toggle('disabled', on);
+  if (on && keyboardDisplayMode !== 'graphical') setKeyboardDisplayMode('graphical');
 }
 
 function setSoundEnabled(on) {
@@ -3580,7 +3640,7 @@ function onAudibleToggle() {
   setSoundEnabled(!soundEnabled);
 }
 
-var ghostModeOn = false;
+var keyboardDisplayMode = 'graphical'; // 'graphical' | 'ghost' | 'none'
 var killPunctuationOn = false;
 
 // Question Timer and Player Lives — default to infinity (null = no limit).
@@ -3605,17 +3665,147 @@ var LIVES_VALUES = [1, 3, 5, 10, null];
   } catch(e) {}
 })();
 
-function onGhostModeToggle() {
-  var ghostRow = document.getElementById('ghostRow');
-  if (ghostRow && ghostRow.classList.contains('disabled')) {
-    showToast('Ghost Mode requires a physical keyboard.');
-    return;
+/* ── More info popover ───────────────────────────────────────────────────────
+   Reusable pattern: toggles a floating info popup anchored via fixed
+   positioning to its trigger element, escaping any overflow:hidden ancestors.
+   Closes any other open popup before opening a new one.                       */
+var _openMoreInfoId = null;
+var _openMoreInfoOriginalParent = null;
+var _moreInfoOutsideListener = null;
+
+function _closeMoreInfoPopup() {
+  if (_moreInfoOutsideListener) {
+    document.removeEventListener('click', _moreInfoOutsideListener, true);
+    _moreInfoOutsideListener = null;
   }
-  ghostModeOn = !ghostModeOn;
-  var radio = document.getElementById('ghostRadio');
-  if (radio) radio.classList.toggle('on', ghostModeOn);
-  document.getElementById('keyboardPanel').classList.toggle('ghost-mode', ghostModeOn);
-  showModeToast(ghostModeOn ? 'Ghost Mode on' : 'Ghost Mode off');
+  if (_openMoreInfoId) {
+    var PopupElement = document.getElementById(_openMoreInfoId);
+    if (PopupElement) {
+      PopupElement.classList.remove('more-info-popup-visible');
+      PopupElement.style.left      = '';
+      PopupElement.style.top       = '';
+      PopupElement.style.transform = '';
+      if (_openMoreInfoOriginalParent && PopupElement.parentNode !== _openMoreInfoOriginalParent) {
+        _openMoreInfoOriginalParent.appendChild(PopupElement);
+      }
+    }
+    _openMoreInfoId = null;
+    _openMoreInfoOriginalParent = null;
+  }
+}
+
+function toggleMoreInfo(PopupId) {
+  var PopupElement   = document.getElementById(PopupId);
+  var TriggerElement = PopupElement ? PopupElement.closest('.more-info-trigger') : null;
+  if (!PopupElement || !TriggerElement) return;
+
+  var IsCurrentlyOpen = PopupElement.classList.contains('more-info-popup-visible');
+
+  _closeMoreInfoPopup();
+
+  if (IsCurrentlyOpen) return;
+
+  // Move popup to body so CSS transforms on ancestor elements cannot trap it
+  _openMoreInfoOriginalParent = PopupElement.parentNode;
+  document.body.appendChild(PopupElement);
+
+  var PopupWidth   = 260;
+  var PopupHeight  = 120;
+  var LeftPosition = Math.round((window.innerWidth  - PopupWidth)  / 2);
+  var TopPosition  = Math.round(window.scrollY + (window.innerHeight - PopupHeight) / 2);
+
+  PopupElement.style.transformOrigin = 'center center';
+  PopupElement.style.left      = LeftPosition + 'px';
+  PopupElement.style.top       = TopPosition  + 'px';
+  PopupElement.style.transform = '';
+
+  PopupElement.classList.add('more-info-popup-visible');
+  _openMoreInfoId = PopupId;
+
+  _moreInfoOutsideListener = function(ClickEvent) {
+    if (TriggerElement.contains(ClickEvent.target)) return;
+    _closeMoreInfoPopup();
+  };
+  requestAnimationFrame(function() {
+    document.addEventListener('click', _moreInfoOutsideListener, true);
+  });
+}
+
+function setKeyboardDisplayMode(mode) {
+  var previous = keyboardDisplayMode;
+  keyboardDisplayMode = mode;
+
+  // Update pill button active states
+  var NoneBtn      = document.getElementById('kbDisplayNoneBtn');
+  var GhostBtn     = document.getElementById('kbDisplayGhostBtn');
+  var GraphicalBtn = document.getElementById('kbDisplayGraphicalBtn');
+  if (NoneBtn)      NoneBtn.classList.toggle('diff-btn-active',      mode === 'none');
+  if (GhostBtn)     GhostBtn.classList.toggle('diff-btn-active',     mode === 'ghost');
+  if (GraphicalBtn) GraphicalBtn.classList.toggle('diff-btn-active', mode === 'graphical');
+
+  // Ghost class on keyboard panel
+  var KeyboardPanelElement = document.getElementById('keyboardPanel');
+  if (KeyboardPanelElement) KeyboardPanelElement.classList.toggle('ghost-mode', mode === 'ghost');
+
+  // Touch and sticky: only available in graphical mode
+  var TouchRowElement  = document.getElementById('touchRow');
+  var StickyRowElement = document.getElementById('stickyRow');
+  var IsGraphical = (mode === 'graphical');
+  if (TouchRowElement)  TouchRowElement.classList.toggle('disabled',  !IsGraphical);
+  if (StickyRowElement) StickyRowElement.classList.toggle('disabled', !IsGraphical);
+
+  // If switching away from graphical, turn off touch and sticky
+  if (!IsGraphical && touchEnabled)  { setTouchEnabled(false); }
+  if (!IsGraphical && stickyKeysOn)  { setStickyKeys(false); }
+
+  // None mode: show/hide keyboard and toolbar with animation
+  var GoingToNone    = (mode === 'none');
+  var LeavingNone    = (previous === 'none' && mode !== 'none');
+
+  if (GoingToNone) {
+    var SettingsPageToReopen = activeSettings;
+    if (SettingsPageToReopen !== null) _closeAllModalsInstant();
+    setKbPosition('edge');
+    setTimeout(function() {
+      ForceNoKeyboard = true;
+      updateKeyboardMode();
+      _syncPhoneToolbarVisibility();
+      if (SettingsPageToReopen !== null) openSettings(SettingsPageToReopen);
+    }, 650);
+  } else if (LeavingNone) {
+    var SettingsPageToReopen = activeSettings;
+    if (SettingsPageToReopen !== null) _closeAllModalsInstant();
+    ForceNoKeyboard = false;
+    updateKeyboardMode();
+    _syncPhoneToolbarVisibility();
+    setTimeout(function() {
+      setKbPosition('partial');
+      if (SettingsPageToReopen !== null) openSettings(SettingsPageToReopen);
+    }, 100);
+  } else if (mode === 'ghost' || previous === 'ghost') {
+    // Ghost ↔ graphical: keyboard stays present, just re-align the panel
+    if (activeSettings !== null) _spAlignPanel();
+  }
+
+  // Toast
+  var ToastMessages = { none: 'Keyboard hidden', ghost: 'Ghost Mode on', graphical: 'Keyboard visible' };
+  showModeToast(ToastMessages[mode]);
+}
+
+function onTouchToggle() {
+  setTouchEnabled(!touchEnabled);
+  if (touchEnabled) {
+    if (keyboardDisplayMode !== 'graphical') setKeyboardDisplayMode('graphical');
+    setStickyKeys(true);
+    document.getElementById('stickyRow').classList.add('disabled');
+    showModeToast('On-Screen Keyboard Active');
+  } else {
+    _setHasKeyboard();
+    setStickyKeys(false);
+    document.getElementById('stickyRow').classList.remove('disabled');
+    showModeToast('On-Screen Keyboard = Display Only');
+    osMismatchEl.classList.remove('show', 'clickable');
+  }
 }
 
 function onKillPunctuationToggle() {
@@ -3640,7 +3830,7 @@ function onKillPunctuationToggle() {
   showConfirmHeading('Use no-punctuation mitigation only if needed.', true, true);
   mainBtn.textContent = 'Remove';
   mainBtn.style.background = '#10b981';
-  helpBtn.textContent = 'Keep';
+  helpBtn.textContent = 'No, Keep';
   helpBtn.style.background = '#6b7280';
   helpBtn.style.color = 'white';
   if (lockKeyEl) lockKeyEl.classList.add('active');
@@ -3710,26 +3900,7 @@ function onStickyKeysToggle() {
   }
 }
 
-function onTouchToggle() {
-  setTouchEnabled(!touchEnabled);
-  if (touchEnabled) {
-    if (ghostModeOn) {
-      ghostModeOn = false;
-      var ghostRadio = document.getElementById('ghostRadio');
-      if (ghostRadio) ghostRadio.classList.remove('on');
-      document.getElementById('keyboardPanel').classList.remove('ghost-mode');
-    }
-    setStickyKeys(true);
-    document.getElementById('stickyRow').classList.add('disabled');
-    showModeToast('On-Screen Keyboard Active');
-  } else {
-    _setHasKeyboard();
-    setStickyKeys(false);
-    document.getElementById('stickyRow').classList.remove('disabled');
-    showModeToast('On-Screen Keyboard = Display Only');
-    osMismatchEl.classList.remove('show', 'clickable');
-  }
-}
+keyboardDisplayMode === 'ghost' ? 'ghost' : null,
 
 
 // ── Keyboard variant picker ───────────────────────────────────────────────────
@@ -3866,12 +4037,223 @@ function _spPageEl(page) {
   return document.getElementById(ids[page]);
 }
 
+/* ══════════════════════════════════════
+   PHONE LAYOUT -- panel portal system
+   When ForceNoKeyboard is true, panels
+   are physically moved into #phonePanelArea
+   rather than rendered above the keyboard.
+   The same panel DOM nodes serve both
+   layouts; only their parent changes.
+══════════════════════════════════════ */
+
+function _syncPhoneToolbarVisibility() {
+  var ToolbarElement = document.getElementById('phoneToolbar');
+  if (!ToolbarElement) return;
+  if (!ForceNoKeyboard) { ToolbarElement.style.display = 'none'; return; }
+  // Hide desktop-only elements that have no role on phone
+  var DiffIconWrap = document.getElementById('diffIconWrap');
+  if (DiffIconWrap) DiffIconWrap.style.display = 'none';
+  var IsActivePlay = (gameState === 'playing' || gameState === 'counting');
+  ToolbarElement.style.display = IsActivePlay ? 'none' : 'flex';
+}
+
+function _syncPhoneToolbarActiveState(ActivePage) {
+  var PhoneIconMap = {
+    panelKeyboard:   'phoneKbIconWrap',
+    panelDifficulty: 'phoneDiffIconWrap',
+    panelBrowser:    'phoneBrIconWrap',
+  };
+  Object.values(PhoneIconMap).forEach(function(IconId) {
+    var IconElement = document.getElementById(IconId);
+    if (IconElement) IconElement.classList.remove('sp-icon-active');
+  });
+  if (ActivePage && PhoneIconMap[ActivePage]) {
+    var ActiveElement = document.getElementById(PhoneIconMap[ActivePage]);
+    if (ActiveElement) ActiveElement.classList.add('sp-icon-active');
+  }
+  // Mirror needle angle from the main diff icon to the phone diff icon
+  _syncPhoneDiffNeedle();
+}
+
+function _syncPhoneDiffNeedle() {
+  var MainNeedle  = document.querySelector('#diffIcon #Needle');
+  var PhoneNeedle = document.getElementById('phoneDiffNeedle');
+  if (!MainNeedle || !PhoneNeedle) return;
+  PhoneNeedle.style.transform = MainNeedle.style.transform;
+}
+
+function _phoneReturnAllPanels() {
+  var SettingsPanelInner = document.getElementById('settingsPanelInner');
+  var PhonePanelArea     = document.getElementById('phonePanelArea');
+  if (!SettingsPanelInner || !PhonePanelArea) return;
+  SP_PAGE_ORDER.forEach(function(PageName) {
+    var PanelElement = _spPageEl(PageName);
+    if (PanelElement && PanelElement.parentNode === PhonePanelArea) {
+      PanelElement.classList.remove('sp-active', 'sp-wipe-in', 'sp-wipe-in-left', 'sp-wipe-in-up');
+      SettingsPanelInner.appendChild(PanelElement);
+    }
+  });
+}
+
+function _phoneOpenPanel(Page, WasAlreadyOpen, PreviousPage) {
+  var PanelElement       = _spPageEl(Page);
+  var PhonePanelArea     = document.getElementById('phonePanelArea');
+  var SettingsPanelInner = document.getElementById('settingsPanelInner');
+  if (!PanelElement || !PhonePanelArea || !SettingsPanelInner) return;
+
+  // Return any currently hosted panel to its neutral home
+  _phoneReturnAllPanels();
+
+  // Move the new panel into the phone area and activate it
+  PhonePanelArea.appendChild(PanelElement);
+  PanelElement.classList.add('sp-active');
+
+  // Wipe animation when switching between panels
+  if (WasAlreadyOpen && PreviousPage && PreviousPage !== Page) {
+    var PreviousIndex = SP_PAGE_ORDER.indexOf(PreviousPage);
+    var NextIndex     = SP_PAGE_ORDER.indexOf(Page);
+    var IsRisingPage  = (Page === 'panelDifficulty' || Page === 'panelWelcome');
+    var WasRisingPage = (PreviousPage === 'panelDifficulty' || PreviousPage === 'panelWelcome');
+    if (IsRisingPage || WasRisingPage) {
+      PanelElement.classList.add('sp-wipe-in-up');
+    } else {
+      PanelElement.classList.add(NextIndex > PreviousIndex ? 'sp-wipe-in' : 'sp-wipe-in-left');
+    }
+  }
+
+  // Expand the container
+  PhonePanelArea.classList.add('phone-panel-open');
+
+  // Scroll the panel area smoothly into view
+  requestAnimationFrame(function() {
+    requestAnimationFrame(function() {
+      var ToolbarElement = document.getElementById('phoneToolbar');
+      if (ToolbarElement) {
+        var ToolbarTop = ToolbarElement.getBoundingClientRect().top + window.scrollY;
+        window.scrollTo({ top: ToolbarTop, behavior: 'smooth' });
+      } else {
+        PhonePanelArea.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+      }
+    });
+  });
+}
+
+function _phoneCollapsePanel() {
+  var PhonePanelArea = document.getElementById('phonePanelArea');
+  if (!PhonePanelArea) return;
+  PhonePanelArea.classList.remove('phone-panel-open');
+  // Return panels after the collapse animation settles
+  setTimeout(_phoneReturnAllPanels, 380);
+}
+
+function _phoneOpenSettings(Page) {
+  var ConfirmStates = ['confirm-reset', 'confirm-quit', 'confirm-trophy',
+    'confirm-diff-change', 'confirm-kill-punctuation', 'confirm-start-over', 'counting'];
+  if (ConfirmStates.indexOf(gameState) !== -1 && Page !== 'panelPause') {
+    showToast('Resolve the current prompt first.');
+    return;
+  }
+
+  // Toolbar must be visible before we try to expand the panel area inside it
+  _syncPhoneToolbarVisibility();
+
+  var WasAlreadyOpen = activeSettings !== null;
+  var PreviousPage   = activeSettings;
+  activeSettings     = Page;
+
+  // Clean up padlock tagline if navigating away from it
+  if (PreviousPage === 'panelPadlock' && Page !== 'panelPadlock') {
+    var TaglineElement = document.getElementById('welcomeTagline');
+    if (TaglineElement) {
+      TaglineElement.style.display = 'none';
+      TaglineElement.innerHTML = '<em>Your keyboard shortcuts coach &amp; personal trainer.</em>';
+    }
+  }
+
+  // Pause game if needed
+  if (Page !== 'panelPause' && gameState !== 'welcome') {
+    if (gameState === 'playing')           { enterPause(true); }
+    else if (gameState === 'counting')     { cancelCountdown(); _modalWasOpenOnPause = true; }
+    else if (gameState === 'paused' && !WasAlreadyOpen) { _modalWasOpenOnPause = true; }
+  }
+
+  // Populate content
+  if (Page === 'panelBrowser')    _refreshBrowserContent();
+  if (Page === 'panelKeyboard')   { updateModalToggles(); updateKbSizeToggle(); }
+  if (Page === 'panelDifficulty') _refreshDifficultyPanel();
+  if (Page === 'panelPause')      _refreshPausePanel();
+  if (Page === 'panelReport')     _refreshReportPanel();
+  if (Page === 'panelPadlock')    _refreshCheatSheet();
+
+  // Clear active animation classes on all panels before moving
+  SP_PAGE_ORDER.forEach(function(P) {
+    var El = _spPageEl(P);
+    if (El) El.classList.remove('sp-active', 'sp-wipe-in', 'sp-wipe-in-left', 'sp-wipe-in-up');
+  });
+
+  _phoneOpenPanel(Page, WasAlreadyOpen, PreviousPage);
+  _syncPhoneToolbarActiveState(Page);
+
+  var NoConfirmOverlayActive = ['confirm-reset', 'confirm-quit', 'confirm-trophy',
+    'confirm-diff-change', 'confirm-kill-punctuation', 'confirm-start-over'].indexOf(gameState) === -1;
+  if (NoConfirmOverlayActive) _showPanelTip(Page);
+}
+
+function _phoneCloseSettings() {
+  if (activeSettings === null) return;
+  var ClosingPage = activeSettings;
+  activeSettings  = null;
+
+  _clearPanelTip();
+  _exitScoreClearConfirm();
+  _exitDiffConfirm();
+  _exitQuitConfirm();
+
+  _phoneCollapsePanel();
+  _syncPhoneToolbarActiveState(null);
+
+  // Clean up padlock tagline
+  if (ClosingPage === 'panelPadlock') {
+    var TaglineElement = document.getElementById('welcomeTagline');
+    if (TaglineElement) {
+      TaglineElement.style.display = 'none';
+      TaglineElement.innerHTML = '<em>Your keyboard shortcuts coach &amp; personal trainer.</em>';
+    }
+  }
+
+  // Game state routing -- mirrors desktop closeSettings without keyboard movement
+  if (gameState === 'finished') {
+    if (ClosingPage !== 'panelReport') { openSettings('panelReport'); return; }
+    return;
+  }
+  if (gameState === 'paused') {
+    if (ClosingPage === 'panelPadlock' || ClosingPage === 'panelKeyboard' ||
+        ClosingPage === 'panelBrowser' || ClosingPage === 'panelDifficulty') {
+      if (ClosingPage === 'panelPadlock') titleEl.textContent = _padlockSavedTitle;
+      openSettings('panelPause');
+      return;
+    }
+    _enterReadyToUnpause();
+    return;
+  }
+  if (gameState === 'welcome') {
+    var WelcomePage = _welcomeIsReturning ? 'panelReturning' : 'panelWelcome';
+    if (ClosingPage !== WelcomePage) { openSettings(WelcomePage); return; }
+  }
+  // Phone has no keyboard to snap to face -- nothing more to do
+}
+
 function _spAlignPanel() {
+  if (ForceNoKeyboard) return;
+  var wrap = document.getElementById('keyboardWrap');
+  if (wrap) wrap.style.minHeight = '';
+  _closeMoreInfoPopup();
   var panel = document.getElementById('keyboardPanel');
   var stage = document.getElementById('kbFlipStage');
   var inner = document.getElementById('settingsPanelInner');
   var wrap  = document.getElementById('keyboardWrap');
   if (!panel || !stage || !inner || !wrap) return;
+  wrap.style.minHeight = '';
   var left  = stage.offsetLeft + panel.offsetLeft;
   var width = panel.offsetWidth;
   inner.style.left  = left + 'px';
@@ -4058,6 +4440,7 @@ function _clearPanelTip() {
 }
 
 function openSettings(page) {
+  if (ForceNoKeyboard) { _phoneOpenSettings(page); return; }
   // Block switching panels during any confirmation overlay or countdown
   var confirmStates = ['confirm-reset', 'confirm-quit', 'confirm-trophy', 'confirm-diff-change', 'confirm-kill-punctuation', 'confirm-start-over', 'counting'];
   if (confirmStates.indexOf(gameState) !== -1 && page !== 'panelPause') {
@@ -4147,6 +4530,7 @@ function openSettings(page) {
 }
 
 function closeSettings() {
+  if (ForceNoKeyboard) { _phoneCloseSettings(); return; }
   if (activeSettings === null) return;
   var closingPage = activeSettings;
   activeSettings = null;
@@ -4239,6 +4623,16 @@ function _closeAllModals() {
 
 function _closeAllModalsInstant() {
   if (activeSettings === null) return;
+  if (ForceNoKeyboard) {
+    activeSettings = null;
+    _panelTipInTitle = false;
+    _exitScoreClearConfirm();
+    _exitDiffConfirm();
+    _exitQuitConfirm();
+    _phoneCollapsePanel();
+    _syncPhoneToolbarActiveState(null);
+    return;
+  }
   activeSettings = null;
   _panelTipInTitle = false;  // clear any tip that was live in the title
   _exitScoreClearConfirm();
@@ -4616,6 +5010,29 @@ if (transitioning && gameState !== 'finished') return;
   diffIconClick();
 });
 
+// ── Phone toolbar icon listeners ─────────────────────────────────────────────
+document.getElementById('phoneKbIconWrap').addEventListener('pointerdown', function(e) {
+  e.stopPropagation();
+  e.preventDefault();
+  if (transitioning && gameState !== 'finished') return;
+  if (activeSettings === 'panelKeyboard') { closeSettings(); return; }
+  openSettings('panelKeyboard');
+});
+document.getElementById('phoneDiffIconWrap').addEventListener('pointerdown', function(e) {
+  e.stopPropagation();
+  e.preventDefault();
+  if (transitioning && gameState !== 'finished') return;
+  if (activeSettings === 'panelDifficulty') { closeSettings(); return; }
+  openSettings('panelDifficulty');
+});
+document.getElementById('phoneBrIconWrap').addEventListener('pointerdown', function(e) {
+  e.stopPropagation();
+  e.preventDefault();
+  if (transitioning && gameState !== 'finished') return;
+  if (activeSettings === 'panelBrowser') { closeSettings(); return; }
+  openSettings('panelBrowser');
+});
+
 // ── Outside-click: app pill blocked during play, settings unaffected ─────────
 document.addEventListener('click', function(e) {
   if (activeSettings === null) return;
@@ -4732,7 +5149,7 @@ function dbgToggle() {
 }
 
 function dbgBuildReport() {
-  var AppEntry = APPS.find(function(a) { return a.key === currentApp; });
+  var AppEntry = APPS.find(function(a) { return a.label === currentApp; });
   var AppName  = AppEntry ? AppEntry.label : currentApp;
   var ActualOsName = detectedOs === 'mac' ? 'Mac'
     : detectedOs === 'pc' ? 'PC/Windows'
@@ -4750,7 +5167,7 @@ function dbgBuildReport() {
   var KeyboardFlags = [
     touchEnabled      ? 'touch'         : null,
     stickyKeysOn      ? 'sticky'        : null,
-    ghostModeOn       ? 'ghost'         : null,
+    keyboardDisplayMode === 'ghost' ? 'ghost' : null,
     killPunctuationOn ? 'killPunct'     : null,
     !hasFullKeyboard  ? 'compact-kb'   : null,
   ].filter(Boolean).join(', ') || 'none';
@@ -5086,10 +5503,7 @@ function diffBtnClick(mode) {
   _popDiffLabel(activeBtn);
   try { localStorage.setItem('kw_difficulty', currentDifficulty); } catch(e) {}
 runData.length = 0; lastCompletedReport = null; CoachAdviceAccepted = false;
-  // Only apply timer/lives presets once the trophy has been earned.
-  // Before that the sliders are locked at ∞ and should not change.
   if (hasTrophy) {
-    _applyDifficultyPresets(mode);
     _updateTimerLivesPills();
   }
 
@@ -5156,6 +5570,14 @@ function _refreshDifficultyPanel() {
   var showAsInfinity = !hasTrophy;
   _syncSliderToValue('timer', showAsInfinity ? null : questionTimer);
   _syncSliderToValue('lives', showAsInfinity ? null : playerLives);
+  // Reset any coach message written into the footer during the animation.
+  // It is only relevant while the animation plays, not on subsequent visits.
+  if (!_trophySequenceActive) {
+    var footer = document.getElementById('diffAdvancedFooter');
+    if (footer && footer.classList.contains('diff-advanced-footer-visible')) {
+      footer.textContent = 'Changing \'Question Difficulty\' will suggest settings here, but you have complete control over these features.';
+}
+  }
 }
 
 function _updateTimerLivesPills() {
@@ -5750,7 +6172,7 @@ function _reportImpossibleQuestion() {
   }
   // Build the same report dbgBuildReport() produces, but directly from live
   // state so it is always current regardless of debug overlay visibility.
-  var AppEntry = APPS.find(function(a) { return a.key === currentApp; });
+  var AppEntry = APPS.find(function(a) { return a.label === currentApp; });
   var AppName  = AppEntry ? AppEntry.label : currentApp;
   var ActualOsName = detectedOs === 'mac' ? 'Mac'
     : detectedOs === 'pc' ? 'PC/Windows'
@@ -6082,17 +6504,19 @@ let loadSequenceNumber = 0;
 function _onAppsLoaded(appsData) {
   // Populate the two structures the rest of the code uses
   APPS = appsData.map(function(a) {
-    return { key: a.key, label: a.label };
+    return { label: a.label };
   });
   appsData.forEach(function(a) {
-    APP_JSON_FILE_PATH[a.key] = a.path;
+    APP_JSON_FILE_PATH[a.label] = a.path;
   });
 
   // Restore saved app choice, falling back to the first entry
-  var defaultKey = APPS.length ? APPS[0].key : 'Ps';
+  var defaultKey = APPS.length ? APPS[0].label : 'Photoshop (Ps)';
+
   try {
     var saved = localStorage.getItem('kw_app');
-    currentApp = (saved && APPS.find(function(a) { return a.key === saved; })) ? saved : defaultKey;
+    currentApp = (saved && APPS.find(function(a) { return a.label === saved; })) ? saved : defaultKey;
+
   } catch(e) {
     currentApp = defaultKey;
   }
@@ -6111,7 +6535,11 @@ function _onAppsLoaded(appsData) {
       return r.json();
     })
     .then(function(data) {
-      _onAppsLoaded(data);
+      const IsBeta = document.title !== 'Keyboard Warriors';
+      const FilteredApps = data.filter(function(app) {
+        return IsBeta || !app.beta;
+      });
+      _onAppsLoaded(FilteredApps);
     })
     .catch(function(err) {
       console.warn('[Apps] Could not load keyboard-warriors-apps.json:', err, '— using built-in fallback.');
@@ -9655,7 +10083,7 @@ function _touchModalVisible() {
 }
 
 function setKbPosition(pos) {
-  if (pos === _kbPos) return;
+  if (ForceNoKeyboard) return;
   if (_touchModalVisible()) { _kbPos = pos; _kbFlipped = (pos === 'edge'); return; }
   var prev = _kbPos;
   _kbPos     = pos;
@@ -9895,6 +10323,49 @@ function onKeyboardRecommendTouchOnly() {
    Keyboard recommendation: every fresh session (sessionStorage gates it).
 ══════════════════════════════════════ */
 
+/* ══════════════════════════════════════
+   PHONE WARNING MODAL
+   Shown on small touch screens (phones)
+   before any other modal.
+══════════════════════════════════════ */
+
+function IsPhoneScreen() {
+  return Math.min(screen.width, screen.height) < 480;
+}
+
+function ShowPhoneWarningModal() {
+  ShowTouchModal('phoneWarningBackdrop', 'phoneWarningModal');
+}
+
+function HidePhoneWarningModal() {
+  HideTouchModal('phoneWarningBackdrop', 'phoneWarningModal');
+}
+
+function OnPhoneWarningDismiss() {
+  HidePhoneWarningModal();
+  // Reverse the touch defaults set at startup -- phone plays without
+  // the graphical keyboard and without on-screen key input.
+  setTouchEnabled(false);
+  setStickyKeys(false);
+  var StickyRowElement = document.getElementById('stickyRow');
+  if (StickyRowElement) StickyRowElement.classList.remove('disabled');
+  // Force the keyboard panel permanently hidden regardless of screen width
+  ForceNoKeyboard = true;
+  updateKeyboardMode();
+  // Chain to gyro prompt on iOS if not yet decided; otherwise done
+  var IsIos = /iPad|iPhone|iPod/.test(navigator.userAgent) ||
+              (navigator.maxTouchPoints > 1 && /Mac/.test(navigator.userAgent));
+  var SavedGyroDecision = null;
+  try { SavedGyroDecision = localStorage.getItem('kw_gyro'); } catch(StorageError) {}
+  var RequiresExplicitGyroPrompt = IsIos &&
+    SavedGyroDecision === null &&
+    typeof DeviceOrientationEvent !== 'undefined' &&
+    typeof DeviceOrientationEvent.requestPermission === 'function';
+  if (RequiresExplicitGyroPrompt) {
+    setTimeout(ShowGyroModal, 300);
+  }
+}
+
 (function InitialiseTouchBootSequence() {
   if (detectedOs !== 'mobile') return;
 
@@ -9903,8 +10374,6 @@ function onKeyboardRecommendTouchOnly() {
 
   // If gyro was previously granted, re-wire the listener silently
   if (SavedGyroDecision === 'granted') {
-    // On iOS, permission persists within the same origin across page loads.
-    // Wiring the listener here works if the browser still honours the grant.
     InitialiseGyroOrientationListener();
   }
 
@@ -9916,12 +10385,16 @@ function onKeyboardRecommendTouchOnly() {
     typeof DeviceOrientationEvent !== 'undefined' &&
     typeof DeviceOrientationEvent.requestPermission === 'function';
 
+  // Phone screens get the size warning first; it handles all subsequent chaining
+  if (IsPhoneScreen()) {
+    setTimeout(ShowPhoneWarningModal, 400);
+    return;
+  }
+
+  // Tablet/large touch devices: gyro then keyboard recommendation as before
   if (RequiresExplicitGyroPrompt) {
-    // Show gyro first; its handlers chain to the keyboard modal
     setTimeout(ShowGyroModal, 600);
   } else {
-    // Non-iOS touch, or iOS that already answered the gyro prompt:
-    // go straight to the keyboard recommendation modal
     setTimeout(ShowKeyboardRecommendModal, 400);
   }
 })();

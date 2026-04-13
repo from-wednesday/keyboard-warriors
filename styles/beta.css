@@ -1623,6 +1623,12 @@ li.conflict-dismissed .conflict-desc {
   box-sizing: border-box;
   overscroll-behavior: none;
 }
+.app-option-wrench {
+  border-top: 1px solid rgba(0,0,0,0.08);
+  opacity: 0.6;
+  justify-content: center;  
+}
+.app-option-wrench:hover { opacity: 1; }
 #appPill.open {
   height: auto;
   max-height: 123px;

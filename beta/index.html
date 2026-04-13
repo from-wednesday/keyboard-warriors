@@ -3486,6 +3486,8 @@ function matchesShortcut(event, str) {
 // APPS and APP_JSON_FILE_PATH are populated at runtime from KeyboardWarriors Apps json.
 // Until the fetch resolves these remain empty; init is deferred to _onAppsLoaded().
 var APPS = [];
+var appsLongList  = [];
+var appsShortList = [];
 var APP_JSON_FILE_PATH = {};
 
 // Each row is 22px. Closed: scroll to show selected row.
@@ -3495,70 +3497,185 @@ var currentApp = 'Photoshop (Ps)'; // placeholder; overwritten by _onAppsLoaded 
 
 const appPillEl = document.getElementById('appPill');
 
+var AppPillWrenchOpen = false;
+
+function _saveAppsShortList() {
+  try { localStorage.setItem('kw_apps_short_list', JSON.stringify(appsShortList)); } catch (StorageError) {}
+}
+
 function buildAppPill() {
   appPillEl.innerHTML = '';
-  APPS.forEach((app) => {
-    const row = document.createElement('div');
-    row.className = 'app-option' + (app.label === currentApp ? ' selected' : '');
-    row.innerHTML = `<span class="app-caret">${app.label === currentApp ? '▶' : '  '}</span><span class="app-label">${app.label}</span>`;
-    row.addEventListener('click', e => {
-      e.stopPropagation();
-      if (gameState === 'playing' || gameState === 'paused' || gameState === 'confirm-reset' || gameState === 'confirm-quit') return;
-      currentApp = app.label;
-      try { localStorage.setItem('kw_app', currentApp); } catch(e) {}
+
+  if (AppPillWrenchOpen) {
+    _buildWrenchPickerRows();
+    return;
+  }
+
+  appsShortList.forEach(function(AppLabel) {
+    var AppEntry = appsLongList.find(function(App) { return App.label === AppLabel; });
+    if (!AppEntry) return;
+
+    var Row = document.createElement('div');
+    Row.className = 'app-option' + (AppLabel === currentApp ? ' selected' : '');
+    Row.innerHTML = '<span class="app-caret">' + (AppLabel === currentApp ? '▶' : '  ') + '</span>'
+      + '<span class="app-label">' + AppLabel + '</span>';
+
+    Row.addEventListener('click', function(ClickEvent) {
+      ClickEvent.stopPropagation();
+      if (gameState === 'playing' || gameState === 'paused'
+          || gameState === 'confirm-reset' || gameState === 'confirm-quit') return;
+      currentApp = AppLabel;
+      try { localStorage.setItem('kw_app', currentApp); } catch (StorageError) {}
       buildAppPill();
       closeAppPill();
       runData.length = 0; lastCompletedReport = null; CoachAdviceAccepted = false;
     });
-    appPillEl.appendChild(row);
+
+    appPillEl.appendChild(Row);
   });
 
-  // ── Wrench / settings row at the bottom of the dropdown ──
-  const wrenchRow = document.createElement('div');
-  wrenchRow.className = 'app-option app-option-wrench';
-  wrenchRow.innerHTML = `<span class="app-caret">  </span><img src="/keyboard-warriors/images/wrench.svg" height="14" alt="Settings">`;
-
-  wrenchRow.addEventListener('click', e => {
-    e.stopPropagation();
-    closeAppPill();
-    // TODO: open settings / manage apps
+  var WrenchRow = document.createElement('div');
+  WrenchRow.className = 'app-option app-option-wrench';
+  WrenchRow.innerHTML = '<span class="app-caret">  </span>'
+    + '<img src="/keyboard-warriors/images/wrench.svg" height="14" alt="Customise apps">';
+  WrenchRow.addEventListener('click', function(ClickEvent) {
+    ClickEvent.stopPropagation();
+    _openWrenchPicker();
   });
-  appPillEl.appendChild(wrenchRow);
 
+  appPillEl.appendChild(WrenchRow);
   scrollPillToSelected();
+}
+
+function _buildWrenchPickerRows() {
+  appPillEl.innerHTML = '';
+
+  appsLongList.forEach(function(AppEntry) {
+    var IsInShortList = appsShortList.includes(AppEntry.label);
+    var IsBetaApp     = !!AppEntry.beta;
+
+    var Row = document.createElement('div');
+    Row.className = 'app-option app-option-wrench-picker'
+      + (IsInShortList ? ' wrench-picker-active' : ' wrench-picker-inactive');
+    Row.dataset.appLabel = AppEntry.label;
+    Row.style.cssText = 'display:flex;align-items:center;height:24px;padding:0 10px 0 7px;cursor:pointer;';
+
+    var RadioSpan = document.createElement('span');
+    RadioSpan.className = 'modal-radio' + (IsInShortList ? ' on' : '');
+    RadioSpan.style.cssText = 'flex-shrink:0;margin-right:6px;width:16px;height:16px;display:inline-flex;align-items:center;justify-content:center;';
+    RadioSpan.innerHTML = '<svg class="modal-radio-dot" width="16" height="16" viewBox="0 0 19 19" xmlns="http://www.w3.org/2000/svg">'
+      + '<circle cx="9.5" cy="9.5" r="6.5" stroke="#374151" stroke-width="1.5" fill="none"/>'
+      + '<circle class="modal-radio-fill" cx="9.5" cy="9.5" r="3.5" fill="#374151"/>'
+      + '</svg>';
+
+    var LabelSpan = document.createElement('span');
+    LabelSpan.className = 'app-label';
+    LabelSpan.style.cssText = 'flex:1;font-size:12px;white-space:nowrap;'
+      + (IsInShortList ? 'color:#374151;' : 'color:#9ca3af;')
+      + (IsBetaApp ? 'font-style:italic;' : '');
+    LabelSpan.textContent = AppEntry.label + (IsBetaApp ? ' (beta)' : '');
+
+    Row.appendChild(RadioSpan);
+    Row.appendChild(LabelSpan);
+
+    Row.addEventListener('click', function(ClickEvent) {
+      ClickEvent.stopPropagation();
+      _toggleWrenchPickerApp(AppEntry.label, Row, RadioSpan, LabelSpan);
+    });
+
+    appPillEl.appendChild(Row);
+  });
+
+  var WrenchRow = document.createElement('div');
+  WrenchRow.className = 'app-option app-option-wrench';
+  WrenchRow.style.borderTop = '1px solid rgba(0,0,0,0.08)';
+  WrenchRow.innerHTML = '<span class="app-caret">  </span>'
+    + '<img src="/keyboard-warriors/images/wrench.svg" height="14" alt="Close customiser">';
+  WrenchRow.addEventListener('click', function(ClickEvent) {
+    ClickEvent.stopPropagation();
+    _closeWrenchPicker();
+  });
+  appPillEl.appendChild(WrenchRow);
+}
+
+function _toggleWrenchPickerApp(AppLabel, RowElement, RadioSpanElement, LabelSpanElement) {
+  var IsCurrentlyActive = appsShortList.includes(AppLabel);
+  if (IsCurrentlyActive) {
+    if (appsShortList.length <= 1) { showToast('You need at least one app in your list.'); return; }
+    appsShortList = appsShortList.filter(function(Label) { return Label !== AppLabel; });
+    RadioSpanElement.classList.remove('on');
+    LabelSpanElement.style.color = '#9ca3af';
+    RowElement.classList.remove('wrench-picker-active');
+    RowElement.classList.add('wrench-picker-inactive');
+  } else {
+    appsShortList.push(AppLabel);
+    RadioSpanElement.classList.add('on');
+    LabelSpanElement.style.color = '#374151';
+    RowElement.classList.remove('wrench-picker-inactive');
+    RowElement.classList.add('wrench-picker-active');
+  }
+}
+
+function _openWrenchPicker() {
+  AppPillWrenchOpen = true;
+  appPillEl.style.maxHeight = ((appsLongList.length + 1) * ROW_H) + 'px';
+  appPillEl.style.transform = '';
+  appPillEl.classList.add('open', 'drop-down');
+  appPillEl.scrollTop = 0;
+  buildAppPill();
+}
+
+function _closeWrenchPicker() {
+  AppPillWrenchOpen = false;
+  if (!appsShortList.includes(currentApp)) {
+    currentApp = appsShortList[0];
+    try { localStorage.setItem('kw_app', currentApp); } catch (StorageError) {}
+    runData.length = 0; lastCompletedReport = null; CoachAdviceAccepted = false;
+  }
+  _saveAppsShortList();
+  closeAppPill();
+  buildAppPill();
 }
 
 
 function scrollPillToSelected() {
-  const idx = APPS.findIndex(a => a.label === currentApp);
-  // scrollTop positions the selected row at the top of the 22px window
-  appPillEl.scrollTop = idx * ROW_H;
+  var SelectedIndex = appsShortList.indexOf(currentApp);
+  if (SelectedIndex < 0) SelectedIndex = 0;
+  appPillEl.scrollTop = SelectedIndex * ROW_H;
 }
 
 function toggleAppDropdown() {
   if (gameState === 'playing' || gameState === 'confirm-reset' || gameState === 'confirm-quit') return;
   if (gameState === 'paused') { showToast('Change the app between games.'); return; }
-  appPillEl.classList.contains('open') ? closeAppPill() : openAppPill();
+  if (appPillEl.classList.contains('open')) {
+    if (AppPillWrenchOpen) { _closeWrenchPicker(); } else { closeAppPill(); }
+  } else {
+    openAppPill();
+  }
 }
 
 function openAppPill() {
-  var natural = (APPS.length + 1) * ROW_H;   // +1 for the wrench row
-  appPillEl.style.maxHeight = natural + 'px';
+  AppPillWrenchOpen = false;
+  var NaturalHeight = (appsShortList.length + 1) * ROW_H;
+  appPillEl.style.maxHeight = NaturalHeight + 'px';
   appPillEl.style.transform = '';
   appPillEl.classList.add('open', 'drop-down');
   appPillEl.scrollTop = 0;
 }
 
 function closeAppPill() {
+  AppPillWrenchOpen = false;
   appPillEl.classList.remove('open', 'drop-down');
   appPillEl.style.maxHeight = '';
   appPillEl.style.transform = '';
   setTimeout(scrollPillToSelected, 230);
 }
 
-// Close on outside click
-document.addEventListener('click', e => {
-  if (!appPillEl.contains(e.target)) closeAppPill();
+// Close on outside click -- also commits wrench picker if open
+document.addEventListener('click', function(ClickEvent) {
+  if (!appPillEl.contains(ClickEvent.target)) {
+    if (AppPillWrenchOpen) { _closeWrenchPicker(); } else { closeAppPill(); }
+  }
 });
 
 function setAppSelectorGameActive(active) {
@@ -6528,6 +6645,47 @@ let loadedAppShortcuts = [];
 let loadSequenceNumber = 0;
 
 // Called once Keyboard Warriors Apps json has been fetched and parsed.
+function _onAppsLoaded(AllAppsFromJson) {
+  appsLongList = AllAppsFromJson;
+
+  AllAppsFromJson.forEach(function(App) {
+    APP_JSON_FILE_PATH[App.label] = App.path;
+  });
+
+  const IsBetaBuild = document.title !== 'Keyboard Warriors';
+
+  const DefaultShortListLabels = IsBetaBuild
+    ? AllAppsFromJson.map(function(App) { return App.label; })
+    : AllAppsFromJson.filter(function(App) { return !App.beta; }).map(function(App) { return App.label; });
+
+  var PersistedLabels = null;
+  try {
+    var RawSaved = localStorage.getItem('kw_apps_short_list');
+    if (RawSaved) {
+      var ParsedSaved = JSON.parse(RawSaved);
+      if (Array.isArray(ParsedSaved) && ParsedSaved.length > 0) {
+        var ValidatedSaved = ParsedSaved.filter(function(SavedLabel) {
+          return AllAppsFromJson.some(function(App) { return App.label === SavedLabel; });
+        });
+        if (ValidatedSaved.length > 0) PersistedLabels = ValidatedSaved;
+      }
+    }
+  } catch (StorageError) {}
+
+  appsShortList = PersistedLabels || DefaultShortListLabels;
+  APPS = appsLongList;
+
+  var FallbackApp = appsShortList[0] || (appsLongList[0] ? appsLongList[0].label : 'Photoshop (Ps)');
+  try {
+    var SavedApp = localStorage.getItem('kw_app');
+    currentApp = (SavedApp && appsShortList.includes(SavedApp)) ? SavedApp : FallbackApp;
+  } catch (StorageError) {
+    currentApp = FallbackApp;
+  }
+
+  buildAppPill();
+  positionIcons();
+} has been fetched and parsed.
 function _onAppsLoaded(appsData) {
   // Populate the two structures the rest of the code uses
   APPS = appsData.map(function(a) {
@@ -6562,11 +6720,7 @@ function _onAppsLoaded(appsData) {
       return r.json();
     })
     .then(function(data) {
-      const IsBeta = document.title !== 'Keyboard Warriors';
-      const FilteredApps = data.filter(function(app) {
-        return IsBeta || !app.beta;
-      });
-      _onAppsLoaded(FilteredApps);
+      _onAppsLoaded(data);
     })
     .catch(function(err) {
       console.warn('[Apps] Could not load keyboard-warriors-apps.json:', err, '— using built-in fallback.');

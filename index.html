@@ -3484,7 +3484,7 @@ var APP_JSON_FILE_PATH = {};
 // Each row is 22px. Closed: scroll to show selected row.
 const ROW_H = 24; // px — must match CSS height: 24px on .app-option
 
-var currentApp = 'Ps'; // placeholder; overwritten by _onAppsLoaded once APPS is known
+var currentApp = 'Photoshop (Ps)'; // placeholder; overwritten by _onAppsLoaded once APPS is known
 
 const appPillEl = document.getElementById('appPill');
 
@@ -6544,7 +6544,7 @@ function _onAppsLoaded(appsData) {
     .catch(function(err) {
       console.warn('[Apps] Could not load keyboard-warriors-apps.json:', err, '— using built-in fallback.');
       _onAppsLoaded([
-        { key: 'Ps', label: 'Photoshop (Ps)',    path: '/keyboard-warriors/data/shortcuts_photoshop.json'    },
+        { label: 'Photoshop (Ps)', path: '/keyboard-warriors/data/shortcuts_photoshop.json' },
 
 
       ]);

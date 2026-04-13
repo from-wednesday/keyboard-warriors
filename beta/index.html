@@ -3944,7 +3944,17 @@ function flashKeys(codes) {
   });
 }
 
-function applyVariant(flashCodes) {
+function function activeVariantKey() {
+  if (currentOs === 'mac') {
+    if (kbLeftCount === 3) return 'mac-3key';
+    return kbFnLeft ? 'mac-4key' : 'mac-4key-ctrl-left';
+  } else {
+    if (kbLeftCount === 3) return 'pc-no-fn';
+    return kbFnLeft ? 'pc-fn-left' : 'pc-fn-right';
+  }
+}
+
+function applyVariant(flashCodes) {(flashCodes) {
   if (currentOs === 'mac') kbVariantMac = activeVariantKey();
   else                     kbVariantPc  = activeVariantKey();
   try { localStorage.setItem('kw_kb_variant_mac', kbVariantMac); } catch(e) {}

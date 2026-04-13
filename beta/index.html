@@ -4000,6 +4000,9 @@ function updateModalToggles() {
     knobFn.setAttribute('fill', fnAtLeft ? '#374151' : 'white');
     if (togFn) togFn.checked = fnAtLeft;
   }
+  // Re-enable the key count row (it may have been disabled when keyboard display was 'none')
+  var KeyCountRow = document.getElementById('modalKeyCountRow');
+  if (KeyCountRow) KeyCountRow.classList.remove('disabled');
   // Show the Fn-position row only when 4 keys is selected (both Mac and PC).
   var fnRow = document.getElementById('modalFnRow');
   if (fnRow) {

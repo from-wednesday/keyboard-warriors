@@ -6686,30 +6686,6 @@ function _onAppsLoaded(AllAppsFromJson) {
   buildAppPill();
   positionIcons();
 } 
-function _onAppsLoaded(appsData) {
-  // Populate the two structures the rest of the code uses
-  APPS = appsData.map(function(a) {
-    return { label: a.label };
-  });
-  appsData.forEach(function(a) {
-    APP_JSON_FILE_PATH[a.label] = a.path;
-  });
-
-  // Restore saved app choice, falling back to the first entry
-  var defaultKey = APPS.length ? APPS[0].label : 'Photoshop (Ps)';
-
-  try {
-    var saved = localStorage.getItem('kw_app');
-    currentApp = (saved && APPS.find(function(a) { return a.label === saved; })) ? saved : defaultKey;
-
-  } catch(e) {
-    currentApp = defaultKey;
-  }
-
-  // Now it's safe to build the UI
-  buildAppPill();
-  positionIcons();
-}
 
 // Fetch the apps manifest on startup. Falls back to a minimal built-in list if the
 // file cannot be reached (e.g. running the HTML file locally without a server).

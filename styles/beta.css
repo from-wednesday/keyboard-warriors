@@ -1624,23 +1624,23 @@ li.conflict-dismissed .conflict-desc {
   overscroll-behavior: none;
 }
 .app-option-wrench {
-    border-top: 1px solid rgba(0,0,0,0.08);
-    opacity: 0.6;
-    justify-content: center;
-  }
-  .app-option-wrench img {
-    width: 28px;
-    height: 28px;
-    margin-left: -6px;
-    margin-top: -3px;
-    opacity: 0.65;
-  }
-  .app-option-wrench:hover { opacity: 1; }
-
+  border-top: 1px solid rgba(0,0,0,0.08);
+  opacity: 0.6;
+  justify-content: center;  
+}
+.app-option-wrench:hover { opacity: 1; }
 #appPill.open {
   height: auto;
   max-height: 123px;
 }
+.app-option-wrench-picker {
+    height: 24px;
+    padding: 0 10px 0 7px;
+    display: flex;
+    align-items: center;
+    cursor: pointer;
+}
+.app-option-wrench-picker:hover { background: #f0f9ff; }
 /* Flip class: used when there is not enough room above to expand upward,
    so the pill drops down as an overlay instead */
 #appPill.open.drop-down {

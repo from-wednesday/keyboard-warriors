@@ -1624,11 +1624,19 @@ li.conflict-dismissed .conflict-desc {
   overscroll-behavior: none;
 }
 .app-option-wrench {
-  border-top: 1px solid rgba(0,0,0,0.08);
-  opacity: 0.6;
-  justify-content: center;  
-}
-.app-option-wrench:hover { opacity: 1; }
+    border-top: 1px solid rgba(0,0,0,0.08);
+    opacity: 0.6;
+    justify-content: center;
+  }
+  .app-option-wrench img {
+    width: 28px;
+    height: 28px;
+    margin-left: -6px;
+    margin-top: -3px;
+    filter: invert(0);
+  }
+  .app-option-wrench:hover { opacity: 1; }
+
 #appPill.open {
   height: auto;
   max-height: 123px;

@@ -1235,7 +1235,7 @@ li.conflict-dismissed .conflict-desc {
 .key.lock-key { cursor: pointer; }
 .key.lock-key:hover  { background: #e8e8ea; }
 .key.lock-key.active { background: #f5f5f7; }
-.key .lock-svg { width: 14px; height: 14px; opacity: 0.55; }
+.key .lock-svg { width: 14px; height: 14px; opacity: 0.55; stroke: #555; }
 
 /* Spacebar */
 .key.space-key { width: 180px; }

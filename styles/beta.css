@@ -1633,7 +1633,7 @@ li.conflict-dismissed .conflict-desc {
     height: 28px;
     margin-left: -6px;
     margin-top: -3px;
-    filter: invert(0);
+    opacity: 0.65;
   }
   .app-option-wrench:hover { opacity: 1; }
 

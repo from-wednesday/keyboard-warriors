@@ -597,13 +597,16 @@ body.pc-mode #extKeyPill {
   display: table-cell;
   text-align: right;
   vertical-align: middle;
-  padding-right: 5px;
+  padding-right: 0px;
+  line-height: 1;
   white-space: nowrap;
   font-size: 12px;
   color: #374151;
 }
 /* Column 2: the toggle switch itself */
 .modal-switch-wrap {
+  padding: 0 5px;
+  line-height: 1;
   display: table-cell;
   vertical-align: middle;
   white-space: nowrap;
@@ -612,7 +615,8 @@ body.pc-mode #extKeyPill {
 .modal-right-label {
   display: table-cell;
   vertical-align: middle;
-  padding-left: 5px;
+  padding-left: 0px;
+  line-height: 1;
   white-space: nowrap;
   font-size: 12px;
   color: #374151;

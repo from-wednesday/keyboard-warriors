@@ -5,9 +5,7 @@
     "mac_sc": "⌘ X",
     "pc_sc": "Ctrl X",
     "difficulty": 1,
-    "group": "",
-    "alternates": [
-      "SHIFT+DEL"
+    "group": ""
     ]
   },
   {
@@ -27,9 +25,7 @@
     "mac_sc": "⌘ V",
     "pc_sc": "Ctrl V",
     "difficulty": 1,
-    "group": "",
-    "alternates": [
-      "SHIFT+INSERT"
+    "group": ""
     ]
   },
   {
@@ -78,7 +74,8 @@
     "mac_sc": "⌘ W",
     "pc_sc": "Ctrl W",
     "difficulty": 1,
-    "group": ""
+    "group": "",
+    "keyboard_conflict": true
   },
   {
     "shortcut": "CMD+Q",
@@ -86,7 +83,8 @@
     "mac_sc": "⌘ Q",
     "pc_sc": "Alt F4",
     "difficulty": 3,
-    "group": ""
+    "group": "",
+    "keyboard_conflict": true
   },
   {
     "shortcut": "CMD+A",
@@ -222,7 +220,8 @@
     "mac_sc": "⌘ T",
     "pc_sc": "Ctrl T",
     "difficulty": 3,
-    "group": ""
+    "group": "",
+    "keyboard_conflict": true
   },
   {
     "shortcut": "CMD+SHIFT+T",
@@ -230,7 +229,8 @@
     "mac_sc": "⌘ ⇧ T",
     "pc_sc": "Ctrl ⇧ T",
     "difficulty": 3,
-    "group": ""
+    "group": "",
+    "keyboard_conflict": true
   },
   {
     "shortcut": "CMD+E",
@@ -278,7 +278,8 @@
     "mac_sc": "⌘ ⇧ N",
     "pc_sc": "Ctrl ⇧ N",
     "difficulty": 3,
-    "group": ""
+    "group": "",
+    "keyboard_conflict": true
   },
   {
     "shortcut": "CMD+ALT+1",
@@ -949,8 +950,9 @@
     "display": "insert current time field",
     "mac_sc": "⌘ ⌥ ⇧ T",
     "pc_sc": "Alt ⇧ T",
-    "difficulty": 3,
-    "group": ""
+    "difficulty": 5,
+    "group": "",
+    "keyboard_conflict": true
   },
   {
     "shortcut": "CMD+ALT+SHIFT+D",

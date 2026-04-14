@@ -6752,9 +6752,13 @@ function buildPool() {
   var maxDiff = DIFF_MAX[currentDifficulty] || 3;
   const browserSkip   = getBrowserConflictSet();
   const allShortcuts  = UNIVERSAL_SHORTCUTS.concat(loadedAppShortcuts);
-  return allShortcuts.filter(s => {
+return allShortcuts.filter(s => {
     // Ctrl+Alt combinations on Windows trigger AltGr / system dialogs — exclude all CMD+OPTION shortcuts on PC
     if (currentOs === 'pc' && s.shortcut.toUpperCase().includes('OPTION')) return false;
+    // OS-specific exclusion: pc_sc or mac_sc set to "none" signals this shortcut
+    // does not exist on that OS and should be excluded from the pool entirely.
+    if (currentOs === 'pc'  && s.pc_sc  === 'none') return false;
+    if (currentOs === 'mac' && s.mac_sc === 'none') return false;
     if (s.difficulty > maxDiff) return false;
     if ((touchEnabled || !hasFullKeyboard) && requiresExtKey(s.shortcut)) return false;
     if (!touchEnabled && browserSkip.has(s.shortcut)) return false;

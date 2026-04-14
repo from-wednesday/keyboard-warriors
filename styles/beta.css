@@ -1624,8 +1624,8 @@ li.conflict-dismissed .conflict-desc {
   overscroll-behavior: none;
 }
 .app-option-wrench {
-  border-top: 1px solid rgba(0,0,0,0.08);
-  opacity: 0.5;
+  border-top: 1px solid rgba(0,0,0,0.05);
+  opacity: 0.3;
   justify-content: left;  
 }
 .app-option-wrench:hover { opacity: 1; }
@@ -1635,7 +1635,7 @@ li.conflict-dismissed .conflict-desc {
 }
 .app-option-wrench-picker {
     height: 24px;
-    padding: 0 10px 2px 7px;
+    padding: 0 0 5px -10px;
     display: flex;
     align-items: left;
     cursor: pointer;

@@ -1616,22 +1616,24 @@ li.conflict-dismissed .conflict-desc {
   overflow: hidden;
   cursor: pointer;
   user-select: none;
-  /* closed: fixed height so border transparency never shifts content */
+  /* Width set by JS at runtime from widest label. Height animated by JS spring. */
   height: 27px;
-  max-height: 27px;
-  transition: max-height 0.22s ease, height 0.22s ease, border-color 0.15s, background-color 0.15s;
   box-sizing: border-box;
   overscroll-behavior: none;
+  transition: border-color 0.15s, background-color 0.15s;
+  /* No CSS height/max-height transition -- JS spring handles it */
 }
 .app-option-wrench {
   border-top: 1px solid rgba(0,0,0,0.05);
   opacity: 0.3;
-  justify-content: left;  
+  height: 28px; /* slightly taller for more space below the wrench */
+  align-items: flex-start;
+  padding-top: 5px;
+  padding-left: 0;
 }
 .app-option-wrench:hover { opacity: 1; }
 #appPill.open {
-  height: auto;
-  max-height: 123px;
+  /* Height driven by JS spring animator -- no CSS override needed */
 }
 .app-option-wrench-picker {
     height: 24px;
@@ -1648,8 +1650,7 @@ li.conflict-dismissed .conflict-desc {
   top: -48px;
   right: 0;
   z-index: 500;
-  width: max-content;
-  min-width: 100%;
+  /* Width fixed by JS -- no max-content override */
   border-radius: 10px;
 }
 /* During game: border and background vanish — looks like plain text.
@@ -1667,10 +1668,9 @@ li.conflict-dismissed .conflict-desc {
 .app-option {
   display: flex;
   align-items: center;
-  gap: 5px;
   height: 24px;
   line-height: 1;
-  padding: 0 10px 0 7px;
+  padding: 0 10px 0 0;
   font-family: 'Lato', system-ui, sans-serif;
   font-size: 12px;
   color: #9ca3af;
@@ -1680,6 +1680,19 @@ li.conflict-dismissed .conflict-desc {
   transition: opacity 0.18s ease, background 0.1s;
   cursor: pointer;
   pointer-events: none;
+}
+/* Left icon column: fixed width, centres caret/dot */
+.app-option-icon-col {
+  flex-shrink: 0;
+  width: 22px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+/* Right label column: left-aligned, fills remaining width */
+.app-option-label-col {
+  flex: 1;
+  text-align: left;
 }
 #appPill.open .app-option {
   opacity: 1;
@@ -1700,22 +1713,19 @@ li.conflict-dismissed .conflict-desc {
   pointer-events: auto;
 }
 /* Caret — sits left of the app name, rotates when open */
-.app-caret {
-  font-size: 7px;
+.app-caret-svg {
+  display: block;
+  width: 7px;
+  height: 7px;
+  transition: transform 0.2s ease, opacity 0.15s ease;
   color: #9ca3af;
-  line-height: 1;
   flex-shrink: 0;
-  width: 8px;                /* fixed width so name column is stable */
-  display: inline-block;
-  transition: transform 0.2s ease;
-  text-align: center;
 }
-/* Non-selected rows: caret invisible (space reserved) */
-.app-option:not(.selected) .app-caret {
+.app-option:not(.selected) .app-caret-svg {
   opacity: 0;
 }
-#appPill.open .app-option.selected .app-caret {
-  transform: rotate(90deg);   /* points down ▼ when open */
+#appPill.open .app-option.selected .app-caret-svg {
+  transform: rotate(90deg);
 }
 
 /* Countdown overlay inside #title area */
@@ -2621,6 +2631,27 @@ li.conflict-dismissed .conflict-desc {
   color: #374151;
   pointer-events: auto;
   cursor: pointer;
+}
+
+/* ── Wrench picker hex radio dot animations ──────────────────────────────── */
+@keyframes AppPillHexFadeIn {
+  from { opacity: 0; transform: rotate(0deg);   }
+  to   { opacity: 1; transform: rotate(180deg); }
+}
+@keyframes AppPillHexFadeOut {
+  from { opacity: 1; transform: rotate(0deg);    }
+  to   { opacity: 0; transform: rotate(-180deg); }
+}
+.app-pill-hex-dot {
+  /* The hexagonal centre fill inside the wrench picker radio circles */
+  transform-origin: center center;
+  transform-box: fill-box;
+}
+.app-pill-hex-dot.animating-in {
+  animation: AppPillHexFadeIn 0.5s cubic-bezier(0.0, 0.0, 0.2, 1) forwards;
+}
+.app-pill-hex-dot.animating-out {
+  animation: AppPillHexFadeOut 0.5s cubic-bezier(0.8, 0.0, 1.0, 1) forwards;
 }
 
 /* Returning screen: all settings icons passive, no hover, no interaction */

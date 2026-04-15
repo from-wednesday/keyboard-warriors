@@ -2636,13 +2636,13 @@ li.conflict-dismissed .conflict-desc {
 }
 
 /* ── Wrench picker hex radio dot animations ──────────────────────────────── */
-@keyframes AppPillHexFadeIn {
-  from { opacity: 0; transform: rotate(0deg); }
-  to   { opacity: 1; transform: rotate(180deg); }
+@keyframes AppPillHexRotateIn {
+  from { transform: rotate(0deg); }
+  to   { transform: rotate(180deg); }
 }
-@keyframes AppPillHexFadeOut {
-  from { opacity: 1; transform: rotate(0deg); }
-  to   { opacity: 0; transform: rotate(-180deg); }
+@keyframes AppPillHexRotateOut {
+  from { transform: rotate(0deg); }
+  to   { transform: rotate(-180deg); }
 }
 
 .app-pill-hex-dot,
@@ -2651,14 +2651,19 @@ li.conflict-dismissed .conflict-desc {
   transform-box: fill-box;
 }
 
-.app-pill-hex-dot.animating-in,
-.app-pill-hex-ring.animating-in {
+/* Inner Dot: Fades AND moves */
+.app-pill-hex-dot.animating-in {
   animation: AppPillHexFadeIn 0.6s cubic-bezier(0.33, 1, 0.68, 1) forwards;
 }
+.app-pill-hex-dot.animating-out {
+  animation: AppPillHexFadeOut 0.6s cubic-bezier(0.33, 1, 0.68, 1) forwards;
+}
 
-.app-pill-hex-dot.animating-out,
+.app-pill-hex-ring.animating-in {
+  animation: AppPillHexRotateIn 0.6s cubic-bezier(0.33, 1, 0.68, 1) forwards;
+}
 .app-pill-hex-ring.animating-out {
-  animation: AppPillHexFadeOut 0.6s cubic-bezier(0.32, 0, 0.67, 0) forwards;
+  animation: AppPillHexRotateOut 0.6s cubic-bezier(0.33, 1, 0.68, 1) forwards;
 }
 
 /* Returning screen: all settings icons passive, no hover, no interaction */

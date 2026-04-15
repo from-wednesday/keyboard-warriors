@@ -1,14 +1,13 @@
 [
   {
     "shortcut": "CMD+SPACE",
-    "display": "test ⌘/ctrl SPACE",
+    "display": "do not press ⌘/ctrl SPACE",
     "mac_sc": "⌘ SPACE",
     "pc_sc": "Ctrl SPACE",
     "difficulty": 1,
-    "alternates": [],
     "keyboard_conflict": true,
     "alternates": [
-      "+"
+      "END"
     ]
   },
    {
@@ -16,116 +15,109 @@
     "display": "can you press Ctrl ⇧ ? ?",
     "mac_sc": "none",
     "pc_sc": "Ctrl ⇧ ?",
-    "difficulty": 5
+    "difficulty": 5,
+    "alternates": [
+      "END"]
   },
    {
     "shortcut": "CONTROL+SHIFT+/",
     "display": "can you press ⌃ ⇧ ? ?",
     "mac_sc": "⌃ ⇧ ?",
     "pc_sc": "none",
-    "difficulty": 5
-  },
-  {
-    "shortcut": "CMD+,",
-    "display": "test ⌘/ctrl ,",
-    "mac_sc": "⌘ ,",
-    "pc_sc": "Ctrl ,",
-    "difficulty": 1,
-    "alternates": [],
-    "keyboard_conflict": true,
+    "difficulty": 5,
     "alternates": [
-      "+"
-    ]
+      "END"]
   },
+
     {
     "shortcut": "GRAVE",
-    "display": "does the GRAVE key work?",
+    "display": "the GRAVE key works fine!",
     "mac_sc": "`'`",
     "pc_sc": "`'`",
     "difficulty": 1,
-    "keyboard_conflict": true
+    "alternates": [
+      "END"]
   },
   {
     "shortcut": "CMD+L",
-    "display": "test ⌘/ctrl L",
+    "display": "Mac is fine with ⌘/ctrl L",
     "mac_sc": "⌘ L",
     "pc_sc": "Ctrl L",
     "difficulty": 1,
-    "alternates": [],
     "keyboard_conflict": true,
     "alternates": [
-      "+"
+      "END"
     ]
   },
     {
     "shortcut": "CMD+D",
-    "display": "test ⌘/ctrl D",
+    "display": "Mac is fine with ⌘/ctrl D",
     "mac_sc": "⌘ D",
     "pc_sc": "Ctrl D",
     "difficulty": 1,
     "alternates": [],
     "keyboard_conflict": true,
     "alternates": [
-      "+"
+      "END"
     ]
   },
     {
     "shortcut": "CMD+F",
-    "display": "test ⌘/ctrl F",
+    "display": "Mac is fine with ⌘/ctrl F",
     "mac_sc": "⌘ F",
     "pc_sc": "Ctrl F",
     "difficulty": 1,
     "alternates": [],
     "keyboard_conflict": true,
     "alternates": [
-      "+"
+      "END"
     ]
   },
     {
     "shortcut": "CMD+P",
-    "display": "test ⌘/ctrl P",
+    "display": "Mac is fine with ⌘/ctrl P",
     "mac_sc": "⌘ P",
     "pc_sc": "Ctrl P",
     "difficulty": 1,
     "alternates": [],
     "keyboard_conflict": true,
     "alternates": [
-      "+"
+      "END"
     ]
   },
   {
     "shortcut": "CMD+R",
-    "display": "test ⌘/ctrl R",
+    "display": "Mac is fine with ⌘/ctrl R",
     "mac_sc": "⌘ R",
     "pc_sc": "Ctrl R",
     "difficulty": 1,
     "alternates": [],
     "keyboard_conflict": true,
     "alternates": [
-      "+"
+      "END"
     ]
   },
   {
     "shortcut": "CMD+SHIFT+R",
-    "display": "test ⌘/ctrl shift R",
+    "display": "Mac is fine with ⌘/ctrl shift R",
     "mac_sc": "⌘ ⇧ R",
     "pc_sc": "Ctrl ⇧ R",
     "difficulty": 3,
     "alternates": [],
     "keyboard_conflict": true,
     "alternates": [
-      "+"
+      "END"
     ]
   },{
     "shortcut": "CMD+SHIFT+W",
-    "display": "test ⌘/ctrl shift W",
+    "display": "DO NOT press ⌘/ctrl shift W",
     "mac_sc": "⌘ ⇧ W",
     "pc_sc": "Ctrl ⇧ W",
     "difficulty": 3,
     "alternates": [],
     "keyboard_conflict": true,
     "alternates": [
-      "+"
+      "END"
     ]
   },
   {
@@ -137,7 +129,7 @@
     "alternates": [],
     "keyboard_conflict": true,
     "alternates": [
-      "+"
+      "END"
     ]
   },
   {
@@ -149,7 +141,7 @@
     "alternates": [],
     "keyboard_conflict": true,
     "alternates": [
-      "+"
+      "END"
     ]
   },
   {
@@ -161,7 +153,7 @@
     "alternates": [],
     "keyboard_conflict": true,
     "alternates": [
-      "+"
+      "END"
     ]
   },
     {
@@ -173,7 +165,7 @@
     "alternates": [],
     "keyboard_conflict": true,
     "alternates": [
-      "+"
+      "END"
     ]
   },
   {
@@ -185,11 +177,11 @@
     "alternates": [],
     "keyboard_conflict": true,
     "alternates": [
-      "+"
+      "END"
     ]
   },
   {
-    "shortcut": "CTRL+TAB",
+    "shortcut": "CMD+TAB",
     "display": "do not press ctrl Tab on PC",
     "mac_sc": "⌘ Tab",
     "pc_sc": "Ctrl Tab",
@@ -197,7 +189,7 @@
     "alternates": [],
     "keyboard_conflict": true,
     "alternates": [
-      "+"
+      "END"
     ]
   },
   {

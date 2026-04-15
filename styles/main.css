@@ -597,13 +597,16 @@ body.pc-mode #extKeyPill {
   display: table-cell;
   text-align: right;
   vertical-align: middle;
-  padding-right: 5px;
+  padding-right: 0px;
+  line-height: 1;
   white-space: nowrap;
   font-size: 12px;
   color: #374151;
 }
 /* Column 2: the toggle switch itself */
 .modal-switch-wrap {
+  padding: 0 5px;
+  line-height: 1;
   display: table-cell;
   vertical-align: middle;
   white-space: nowrap;
@@ -612,7 +615,8 @@ body.pc-mode #extKeyPill {
 .modal-right-label {
   display: table-cell;
   vertical-align: middle;
-  padding-left: 5px;
+  padding-left: 0px;
+  line-height: 1;
   white-space: nowrap;
   font-size: 12px;
   color: #374151;
@@ -1117,8 +1121,8 @@ li.conflict-dismissed .conflict-desc {
 }
 .key.corner-tl { border-top-left-radius: 9px; }
 .key.corner-tr { border-top-right-radius: 9px; }
-.key.corner-bl { border-bottom-left-radius: 9px; }
-.key.corner-br { border-bottom-right-radius: 9px; }
+.key.corner-bl { border-bottom-left-radius: 5px; }
+.key.corner-br { border-bottom-right-radius: 5px; }
 
 /* Keys that sit one step in from a panel corner get a mid-level radius.
    Panel = 14px, true corner keys = 9px, these edge-adjacent keys = 6px. */
@@ -1235,7 +1239,7 @@ li.conflict-dismissed .conflict-desc {
 .key.lock-key { cursor: pointer; }
 .key.lock-key:hover  { background: #e8e8ea; }
 .key.lock-key.active { background: #f5f5f7; }
-.key .lock-svg { width: 14px; height: 14px; opacity: 0.55; }
+.key .lock-svg { width: 14px; height: 14px; opacity: 0.55; stroke: #555; }
 
 /* Spacebar */
 .key.space-key { width: 180px; }
@@ -1612,17 +1616,33 @@ li.conflict-dismissed .conflict-desc {
   overflow: hidden;
   cursor: pointer;
   user-select: none;
-  /* closed: fixed height so border transparency never shifts content */
+  /* Width set by JS at runtime from widest label. Height animated by JS spring. */
   height: 27px;
-  max-height: 27px;
-  transition: max-height 0.22s ease, height 0.22s ease, border-color 0.15s, background-color 0.15s;
   box-sizing: border-box;
   overscroll-behavior: none;
+  transition: border-color 0.15s, background-color 0.15s;
+  /* No CSS height/max-height transition -- JS spring handles it */
 }
+.app-option-wrench {
+  border-top: 1px solid rgba(0,0,0,0.05);
+  opacity: 0.3;
+  height: 28px; /* slightly taller for more space below the wrench */
+  align-items: flex-start;
+  padding-top: 5px;
+  padding-left: 0;
+}
+.app-option-wrench:hover { opacity: 1; }
 #appPill.open {
-  height: auto;
-  max-height: 123px;
+  /* Height driven by JS spring animator -- no CSS override needed */
 }
+.app-option-wrench-picker {
+    height: 24px;
+    padding: 4;
+    display: flex;
+    align-items: left;
+    cursor: pointer;
+}
+.app-option-wrench-picker:hover { background: #f0f9ff; }
 /* Flip class: used when there is not enough room above to expand upward,
    so the pill drops down as an overlay instead */
 #appPill.open.drop-down {
@@ -1630,8 +1650,7 @@ li.conflict-dismissed .conflict-desc {
   top: -48px;
   right: 0;
   z-index: 500;
-  width: max-content;
-  min-width: 100%;
+  /* Width fixed by JS -- no max-content override */
   border-radius: 10px;
 }
 /* During game: border and background vanish — looks like plain text.
@@ -1649,10 +1668,9 @@ li.conflict-dismissed .conflict-desc {
 .app-option {
   display: flex;
   align-items: center;
-  gap: 5px;
   height: 24px;
   line-height: 1;
-  padding: 0 10px 0 7px;
+  padding: 0 10px 0 0;
   font-family: 'Lato', system-ui, sans-serif;
   font-size: 12px;
   color: #9ca3af;
@@ -1662,6 +1680,19 @@ li.conflict-dismissed .conflict-desc {
   transition: opacity 0.18s ease, background 0.1s;
   cursor: pointer;
   pointer-events: none;
+}
+/* Left icon column: fixed width, centres caret/dot */
+.app-option-icon-col {
+  flex-shrink: 0;
+  width: 22px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+/* Right label column: left-aligned, fills remaining width */
+.app-option-label-col {
+  flex: 1;
+  text-align: left;
 }
 #appPill.open .app-option {
   opacity: 1;
@@ -1682,22 +1713,19 @@ li.conflict-dismissed .conflict-desc {
   pointer-events: auto;
 }
 /* Caret — sits left of the app name, rotates when open */
-.app-caret {
-  font-size: 7px;
+.app-caret-svg {
+  display: block;
+  width: 7px;
+  height: 7px;
+  transition: transform 0.2s ease, opacity 0.15s ease;
   color: #9ca3af;
-  line-height: 1;
   flex-shrink: 0;
-  width: 8px;                /* fixed width so name column is stable */
-  display: inline-block;
-  transition: transform 0.2s ease;
-  text-align: center;
 }
-/* Non-selected rows: caret invisible (space reserved) */
-.app-option:not(.selected) .app-caret {
+.app-option:not(.selected) .app-caret-svg {
   opacity: 0;
 }
-#appPill.open .app-option.selected .app-caret {
-  transform: rotate(90deg);   /* points down ▼ when open */
+#appPill.open .app-option.selected .app-caret-svg {
+  transform: rotate(90deg);
 }
 
 /* Countdown overlay inside #title area */
@@ -2401,15 +2429,22 @@ li.conflict-dismissed .conflict-desc {
    panel's 14px curve.                                 */
 
 #kb-wall-top, #kb-wall-bottom {
-  position:       absolute;
+  position: absolute;
   pointer-events: none;
-  opacity:        0;
-  transition:     opacity 0.3s ease 0.1s;
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity 0.3s ease 0.1s, visibility 0s linear 0.3s;
 }
+
+/* And add visibility: visible to the edged state: */
 #keyboardPanel.kb-edged #kb-wall-top,
 #keyboardPanel.kb-edged #kb-wall-bottom {
   opacity: 1;
+  display: block; 
+  visibility: visible;
+  transition: opacity 0.3s ease 0.1s, visibility 0s linear 0s;
 }
+
 
 /* Bottom wall corner radius: capped at half wall height (3px) at partial so the
    arc never exceeds the foreshortened strip height at any viewing angle. At full
@@ -2449,6 +2484,7 @@ li.conflict-dismissed .conflict-desc {
   z-index:          1;
   transform-origin: center bottom;
   transform:        rotateX(90deg);
+  display: none;  
   background:
     linear-gradient(to bottom,
       rgba(0,0,0,0.30)       0px,
@@ -2477,8 +2513,10 @@ li.conflict-dismissed .conflict-desc {
   border-radius:  14px;
   pointer-events: none;
   transform:      translateZ(-7px);
-  background:     transparent;
+  background:     #b2b8c0;
   z-index:        0;
+  box-shadow: 0 0 0 20px #b2b8c0;
+  clip-path: inset(0 round 14px);
 }
 
 /* ─── DROP SHADOW ─────────────────────────────────────
@@ -2597,6 +2635,32 @@ li.conflict-dismissed .conflict-desc {
   color: #374151;
   pointer-events: auto;
   cursor: pointer;
+}
+
+/* ── Wrench picker hex radio dot animations ──────────────────────────────── */
+@keyframes AppPillHexFadeIn {
+  from { opacity: 0; transform: rotate(0deg); }
+  to   { opacity: 1; transform: rotate(180deg); }
+}
+@keyframes AppPillHexFadeOut {
+  from { opacity: 1; transform: rotate(0deg); }
+  to   { opacity: 0; transform: rotate(-180deg); }
+}
+
+.app-pill-hex-dot,
+.app-pill-hex-ring {
+  transform-origin: center center;
+  transform-box: fill-box;
+}
+
+.app-pill-hex-dot.animating-in,
+.app-pill-hex-ring.animating-in {
+  animation: AppPillHexFadeIn 0.6s cubic-bezier(0.33, 1, 0.68, 1) forwards;
+}
+
+.app-pill-hex-dot.animating-out,
+.app-pill-hex-ring.animating-out {
+  animation: AppPillHexFadeOut 0.6s cubic-bezier(0.33, 1, 0.68, 1) forwards;
 }
 
 /* Returning screen: all settings icons passive, no hover, no interaction */

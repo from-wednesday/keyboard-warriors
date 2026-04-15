@@ -1479,11 +1479,15 @@ var ForceNoKeyboard = false;
 
 function updateKeyboardMode() {
   const w = window.innerWidth;
-  const mode = ForceNoKeyboard ? 'none' : w < 600 ? 'none' : w < 820 ? 'mini' : 'full';
+  if (w < 600) {
+    ForceNoKeyboard = true;
+  }
+  const mode = ForceNoKeyboard ? 'none' : w < 820 ? 'mini' : 'full';
   if (mode === currentKbMode) return;
   currentKbMode = mode;
   if (mode === 'none') {
     keyboardWrap.style.display = 'none';
+    _syncPhoneToolbarVisibility();
   } else {
     keyboardWrap.style.display = 'flex';
     buildKeyboard(mode === 'mini');

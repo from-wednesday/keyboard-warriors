@@ -2639,23 +2639,28 @@ li.conflict-dismissed .conflict-desc {
 
 /* ── Wrench picker hex radio dot animations ──────────────────────────────── */
 @keyframes AppPillHexFadeIn {
-  from { opacity: 0; transform: rotate(0deg);   }
-  to   { opacity: 1; transform: rotate(180deg); }
+  from { opacity: 0; transform: rotate(0deg); }
+  to   { opacity: 1; transform: rotate(90deg); }
 }
 @keyframes AppPillHexFadeOut {
-  from { opacity: 1; transform: rotate(0deg);    }
-  to   { opacity: 0; transform: rotate(-180deg); }
+  from { opacity: 1; transform: rotate(0deg); }
+  to   { opacity: 0; transform: rotate(-90deg); }
 }
-.app-pill-hex-dot {
-  /* The hexagonal centre fill inside the wrench picker radio circles */
+
+.app-pill-hex-dot,
+.app-pill-hex-ring {
   transform-origin: center center;
   transform-box: fill-box;
 }
-.app-pill-hex-dot.animating-in {
-  animation: AppPillHexFadeIn 0.5s cubic-bezier(0.0, 0.0, 0.2, 1) forwards;
+
+.app-pill-hex-dot.animating-in,
+.app-pill-hex-ring.animating-in {
+  animation: AppPillHexFadeIn 0.6s cubic-bezier(0.0, 0.0, 0.2, 1) forwards;
 }
-.app-pill-hex-dot.animating-out {
-  animation: AppPillHexFadeOut 0.5s cubic-bezier(0.8, 0.0, 1.0, 1) forwards;
+
+.app-pill-hex-dot.animating-out,
+.app-pill-hex-ring.animating-out {
+  animation: AppPillHexFadeOut 0.6s cubic-bezier(0.8, 0.0, 1.0, 1) forwards;
 }
 
 /* Returning screen: all settings icons passive, no hover, no interaction */

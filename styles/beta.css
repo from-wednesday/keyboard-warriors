@@ -2637,18 +2637,18 @@ li.conflict-dismissed .conflict-desc {
 
 /* ── Wrench picker hex radio dot animations ──────────────────────────────── */
 @keyframes AppPillHexFadeIn {
-  from { opacity: 0; transform: rotate(0deg); }
-  to   { opacity: 1; transform: rotate(180deg); }
+  from { opacity: 0; transform: rotate(-180deg); }
+  to   { opacity: 1; transform: rotate(0deg); }
 }
 @keyframes AppPillHexFadeOut {
   from { opacity: 1; transform: rotate(0deg); }
-  to   { opacity: 0; transform: rotate(-180deg); }
+  to   { opacity: 0; transform: rotate(180deg); }
 }
 
 .app-pill-hex-dot,
 .app-pill-hex-ring {
   transform-origin: 9.5px 9.5px;
-  transform-box: view-box;
+  transform-box: fill-box;
 }
 
 /* Inner Dot: Fades AND moves */

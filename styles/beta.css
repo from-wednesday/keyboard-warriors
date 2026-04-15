@@ -1121,8 +1121,8 @@ li.conflict-dismissed .conflict-desc {
 }
 .key.corner-tl { border-top-left-radius: 9px; }
 .key.corner-tr { border-top-right-radius: 9px; }
-.key.corner-bl { border-bottom-left-radius: 9px; }
-.key.corner-br { border-bottom-right-radius: 9px; }
+.key.corner-bl { border-bottom-left-radius: 5px; }
+.key.corner-br { border-bottom-right-radius: 5px; }
 
 /* Keys that sit one step in from a panel corner get a mid-level radius.
    Panel = 14px, true corner keys = 9px, these edge-adjacent keys = 6px. */
@@ -2513,8 +2513,10 @@ li.conflict-dismissed .conflict-desc {
   border-radius:  14px;
   pointer-events: none;
   transform:      translateZ(-7px);
-  background:     transparent;
+  background:     #b2b8c0;
   z-index:        0;
+  box-shadow: 0 0 0 20px #b2b8c0;
+  clip-path: inset(0 round 14px);
 }
 
 /* ─── DROP SHADOW ─────────────────────────────────────
@@ -2637,33 +2639,28 @@ li.conflict-dismissed .conflict-desc {
 
 /* ── Wrench picker hex radio dot animations ──────────────────────────────── */
 @keyframes AppPillHexFadeIn {
-  from { opacity: 0; transform: rotate(-180deg); }
-  to   { opacity: 1; transform: rotate(0deg); }
+  from { opacity: 0; transform: rotate(0deg); }
+  to   { opacity: 1; transform: rotate(180deg); }
 }
 @keyframes AppPillHexFadeOut {
   from { opacity: 1; transform: rotate(0deg); }
-  to   { opacity: 0; transform: rotate(180deg); }
+  to   { opacity: 0; transform: rotate(-180deg); }
 }
 
 .app-pill-hex-dot,
 .app-pill-hex-ring {
-  transform-origin: 9.5px 9.5px;
+  transform-origin: center center;
   transform-box: fill-box;
 }
 
-/* Inner Dot: Fades AND moves */
-.app-pill-hex-dot.animating-in {
-  animation: AppPillHexFadeIn 0.6s cubic-bezier(0.33, 1, 0.68, 1) forwards;
-}
-.app-pill-hex-dot.animating-out {
-  animation: AppPillHexFadeOut 0.6s cubic-bezier(0.33, 1, 0.68, 1) forwards;
+.app-pill-hex-dot.animating-in,
+.app-pill-hex-ring.animating-in {
+  animation: AppPillHexFadeIn 0.6s cubic-bezier(0.0, 0.0, 0.2, 1) forwards;
 }
 
-.app-pill-hex-ring.animating-in {
-  animation: AppPillHexRotateIn 0.6s cubic-bezier(0.33, 1, 0.68, 1) forwards;
-}
+.app-pill-hex-dot.animating-out,
 .app-pill-hex-ring.animating-out {
-  animation: AppPillHexRotateOut 0.6s cubic-bezier(0.33, 1, 0.68, 1) forwards;
+  animation: AppPillHexFadeOut 0.6s cubic-bezier(0.8, 0.0, 1.0, 1) forwards;
 }
 
 /* Returning screen: all settings icons passive, no hover, no interaction */

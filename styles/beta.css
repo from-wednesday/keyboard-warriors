@@ -2483,8 +2483,10 @@ li.conflict-dismissed .conflict-desc {
   height:           7px;
   z-index:          1;
   transform-origin: center bottom;
-  transform:        rotateX(90deg);
-  display: none;  
+  backface-visibility: hidden;
+  -webkit-backface-visibility: hidden;
+  transform: rotateX(89.9deg);
+  opacity: 0;
   background:
     linear-gradient(to bottom,
       rgba(0,0,0,0.30)       0px,

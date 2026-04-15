@@ -3507,6 +3507,20 @@ function _saveAppsShortList() {
   try { localStorage.setItem('kw_apps_short_list', JSON.stringify(appsShortList)); } catch (StorageError) {}
 }
 
+function _MakeAppPillCaretSvg() {
+  var SvgNamespace = 'http://www.w3.org/2000/svg';
+  var SvgElement = document.createElementNS(SvgNamespace, 'svg');
+  SvgElement.setAttribute('viewBox', '0 0 7 7');
+  SvgElement.setAttribute('width', '7');
+  SvgElement.setAttribute('height', '7');
+  SvgElement.setAttribute('fill', 'currentColor');
+  SvgElement.classList.add('app-caret-svg');
+  var PathElement = document.createElementNS(SvgNamespace, 'path');
+  PathElement.setAttribute('d', 'M1.5 1 L6 3.5 L1.5 6 Z');
+  SvgElement.appendChild(PathElement);
+  return SvgElement;
+}
+
 function buildAppPill() {
   appPillEl.innerHTML = '';
 
@@ -3519,10 +3533,20 @@ function buildAppPill() {
     var AppEntry = appsLongList.find(function(App) { return App.label === AppLabel; });
     if (!AppEntry) return;
 
+    var IsSelected = (AppLabel === currentApp);
     var Row = document.createElement('div');
-    Row.className = 'app-option' + (AppLabel === currentApp ? ' selected' : '');
-    Row.innerHTML = '<span class="app-caret">' + (AppLabel === currentApp ? '▶' : '  ') + '</span>'
-      + '<span class="app-label">' + AppLabel + '</span>';
+    Row.className = 'app-option' + (IsSelected ? ' selected' : '');
+
+    var IconColumn = document.createElement('span');
+    IconColumn.className = 'app-option-icon-col';
+    IconColumn.appendChild(_MakeAppPillCaretSvg());
+
+    var LabelColumn = document.createElement('span');
+    LabelColumn.className = 'app-option-label-col';
+    LabelColumn.textContent = AppLabel;
+
+    Row.appendChild(IconColumn);
+    Row.appendChild(LabelColumn);
 
     Row.addEventListener('click', function(ClickEvent) {
       ClickEvent.stopPropagation();
@@ -3540,8 +3564,13 @@ function buildAppPill() {
 
   var WrenchRow = document.createElement('div');
   WrenchRow.className = 'app-option app-option-wrench';
-  WrenchRow.innerHTML = '<span class="app-caret">  </span>'
-    + '<img src="/keyboard-warriors/images/wrench.svg" height="14" alt="Customise apps">';
+
+  var WrenchIconColumn = document.createElement('span');
+  WrenchIconColumn.className = 'app-option-icon-col';
+  WrenchIconColumn.style.justifyContent = 'flex-start';
+  WrenchIconColumn.innerHTML = '<img src="/keyboard-warriors/images/wrench.svg" height="14" alt="Customise apps" style="display:block;">';
+
+  WrenchRow.appendChild(WrenchIconColumn);
   WrenchRow.addEventListener('click', function(ClickEvent) {
     ClickEvent.stopPropagation();
     _openWrenchPicker();
@@ -3549,6 +3578,77 @@ function buildAppPill() {
 
   appPillEl.appendChild(WrenchRow);
   scrollPillToSelected();
+}
+
+function _MakeWrenchPickerRadioDot(IsActive) {
+  // Builds the SVG radio dot used exclusively in the wrench picker rows.
+  // Uses a hexagonal centre fill (not circular) to distinguish from modal-radio dots.
+  var SvgNamespace = 'http://www.w3.org/2000/svg';
+  var SvgElement = document.createElementNS(SvgNamespace, 'svg');
+  SvgElement.setAttribute('width', '16');
+  SvgElement.setAttribute('height', '16');
+  SvgElement.setAttribute('viewBox', '0 0 19 19');
+  SvgElement.setAttribute('class', 'app-pill-radio-svg');
+
+  // Outer circle ring (always present)
+  var OuterRing = document.createElementNS(SvgNamespace, 'circle');
+  OuterRing.setAttribute('cx', '9.5');
+  OuterRing.setAttribute('cy', '9.5');
+  OuterRing.setAttribute('r', '6.5');
+  OuterRing.setAttribute('stroke', '#374151');
+  OuterRing.setAttribute('stroke-width', '1.5');
+  OuterRing.setAttribute('fill', 'none');
+
+  // Hexagonal centre fill (visible when active)
+  // A regular hexagon centred at 9.5,9.5 with circumradius ~3.5
+  var HexPath = document.createElementNS(SvgNamespace, 'path');
+  var CentreX = 9.5, CentreY = 9.5, HexRadius = 3.5;
+  var HexPoints = [];
+  for (var PointIndex = 0; PointIndex < 6; PointIndex++) {
+    var AngleRadians = (Math.PI / 180) * (60 * PointIndex - 30);
+    HexPoints.push(
+      (CentreX + HexRadius * Math.cos(AngleRadians)).toFixed(2) + ',' +
+      (CentreY + HexRadius * Math.sin(AngleRadians)).toFixed(2)
+    );
+  }
+  HexPath.setAttribute('d', 'M' + HexPoints.join(' L') + ' Z');
+  HexPath.setAttribute('fill', '#374151');
+  HexPath.setAttribute('class', 'app-pill-hex-dot');
+  HexPath.style.opacity = IsActive ? '1' : '0';
+  if (IsActive) {
+    HexPath.style.transform = 'rotate(180deg)';
+  }
+
+  SvgElement.appendChild(OuterRing);
+  SvgElement.appendChild(HexPath);
+  return SvgElement;
+}
+
+function _AnimateWrenchDot(RadioSpanElement, GoingActive) {
+  var HexPathElement = RadioSpanElement.querySelector('.app-pill-hex-dot');
+  if (!HexPathElement) return;
+  HexPathElement.classList.remove('animating-in', 'animating-out');
+  void HexPathElement.offsetWidth; // force reflow to restart animation
+  if (GoingActive) {
+    HexPathElement.style.opacity = '0';
+    HexPathElement.style.transform = 'rotate(0deg)';
+    HexPathElement.classList.add('animating-in');
+    HexPathElement.addEventListener('animationend', function Handler() {
+      HexPathElement.removeEventListener('animationend', Handler);
+      HexPathElement.classList.remove('animating-in');
+      HexPathElement.style.opacity = '1';
+      HexPathElement.style.transform = 'rotate(180deg)';
+    }, { once: true });
+  } else {
+    HexPathElement.style.opacity = '1';
+    HexPathElement.style.transform = 'rotate(0deg)';
+    HexPathElement.classList.add('animating-out');
+    HexPathElement.addEventListener('animationend', function Handler() {
+      HexPathElement.removeEventListener('animationend', Handler);
+      HexPathElement.classList.remove('animating-out');
+      HexPathElement.style.opacity = '0';
+    }, { once: true });
+  }
 }
 
 function _buildWrenchPickerRows() {
@@ -3562,29 +3662,25 @@ function _buildWrenchPickerRows() {
     Row.className = 'app-option app-option-wrench-picker'
       + (IsInShortList ? ' wrench-picker-active' : ' wrench-picker-inactive');
     Row.dataset.appLabel = AppEntry.label;
-    Row.style.cssText = 'display:flex;align-items:center;height:24px;padding:0 10px 0 7px;cursor:pointer;';
+    Row.style.cssText = 'display:flex;align-items:center;height:24px;padding:0 10px 0 0;cursor:pointer;';
 
-    var RadioSpan = document.createElement('span');
-    RadioSpan.className = 'modal-radio' + (IsInShortList ? ' on' : '');
-    RadioSpan.style.cssText = 'flex-shrink:0;margin-right:6px;width:16px;height:16px;display:inline-flex;align-items:center;justify-content:center;';
-    RadioSpan.innerHTML = '<svg class="modal-radio-dot" width="16" height="16" viewBox="0 0 19 19" xmlns="http://www.w3.org/2000/svg">'
-      + '<circle cx="9.5" cy="9.5" r="6.5" stroke="#374151" stroke-width="1.5" fill="none"/>'
-      + '<circle class="modal-radio-fill" cx="9.5" cy="9.5" r="3.5" fill="#374151"/>'
-      + '</svg>';
+    var IconColumn = document.createElement('span');
+    IconColumn.className = 'app-option-icon-col';
+    IconColumn.appendChild(_MakeWrenchPickerRadioDot(IsInShortList));
 
     var LabelSpan = document.createElement('span');
-    LabelSpan.className = 'app-label';
-    LabelSpan.style.cssText = 'flex:1;font-size:12px;white-space:nowrap;'
+    LabelSpan.className = 'app-option-label-col';
+    LabelSpan.style.cssText = 'flex:1;font-size:12px;white-space:nowrap;text-align:left;'
       + (IsInShortList ? 'color:#374151;' : 'color:#9ca3af;')
       + (IsBetaApp ? 'font-style:italic;' : '');
     LabelSpan.textContent = AppEntry.label + (IsBetaApp ? ' (beta)' : '');
 
-    Row.appendChild(RadioSpan);
+    Row.appendChild(IconColumn);
     Row.appendChild(LabelSpan);
 
     Row.addEventListener('click', function(ClickEvent) {
       ClickEvent.stopPropagation();
-      _toggleWrenchPickerApp(AppEntry.label, Row, RadioSpan, LabelSpan);
+      _toggleWrenchPickerApp(AppEntry.label, Row, IconColumn, LabelSpan);
     });
 
     appPillEl.appendChild(Row);
@@ -3593,8 +3689,13 @@ function _buildWrenchPickerRows() {
   var WrenchRow = document.createElement('div');
   WrenchRow.className = 'app-option app-option-wrench';
   WrenchRow.style.borderTop = '1px solid rgba(0,0,0,0.08)';
-  WrenchRow.innerHTML = '<span class="app-caret">  </span>'
-    + '<img src="/keyboard-warriors/images/wrench.svg" height="14" alt="Close customiser">';
+
+  var WrenchIconColumn = document.createElement('span');
+  WrenchIconColumn.className = 'app-option-icon-col';
+  WrenchIconColumn.style.justifyContent = 'flex-start';
+  WrenchIconColumn.innerHTML = '<img src="/keyboard-warriors/images/wrench.svg" height="14" alt="Close customiser" style="display:block;">';
+
+  WrenchRow.appendChild(WrenchIconColumn);
   WrenchRow.addEventListener('click', function(ClickEvent) {
     ClickEvent.stopPropagation();
     _closeWrenchPicker();
@@ -3602,18 +3703,18 @@ function _buildWrenchPickerRows() {
   appPillEl.appendChild(WrenchRow);
 }
 
-function _toggleWrenchPickerApp(AppLabel, RowElement, RadioSpanElement, LabelSpanElement) {
+function _toggleWrenchPickerApp(AppLabel, RowElement, IconColumnElement, LabelSpanElement) {
   var IsCurrentlyActive = appsShortList.includes(AppLabel);
   if (IsCurrentlyActive) {
     if (appsShortList.length <= 1) { showToast('You need at least one app in your list.'); return; }
     appsShortList = appsShortList.filter(function(Label) { return Label !== AppLabel; });
-    RadioSpanElement.classList.remove('on');
+    _AnimateWrenchDot(IconColumnElement, false);
     LabelSpanElement.style.color = '#9ca3af';
     RowElement.classList.remove('wrench-picker-active');
     RowElement.classList.add('wrench-picker-inactive');
   } else {
     appsShortList.push(AppLabel);
-    RadioSpanElement.classList.add('on');
+    _AnimateWrenchDot(IconColumnElement, true);
     LabelSpanElement.style.color = '#374151';
     RowElement.classList.remove('wrench-picker-inactive');
     RowElement.classList.add('wrench-picker-active');
@@ -3622,11 +3723,11 @@ function _toggleWrenchPickerApp(AppLabel, RowElement, RadioSpanElement, LabelSpa
 
 function _openWrenchPicker() {
   AppPillWrenchOpen = true;
-  appPillEl.style.maxHeight = ((appsLongList.length + 1) * ROW_H) + 'px';
-  appPillEl.style.transform = '';
   appPillEl.classList.add('open', 'drop-down');
   appPillEl.scrollTop = 0;
   buildAppPill();
+  var NaturalHeight = _AppPillMeasureNaturalHeight();
+  _AppPillAnimateTo(NaturalHeight);
 }
 
 function _closeWrenchPicker() {
@@ -3637,8 +3738,14 @@ function _closeWrenchPicker() {
     runData.length = 0; lastCompletedReport = null; CoachAdviceAccepted = false;
   }
   _saveAppsShortList();
-  closeAppPill();
   buildAppPill();
+  var NaturalHeight = _AppPillMeasureNaturalHeight();
+  _AppPillAnimateTo(NaturalHeight);
+  setTimeout(function() {
+    appPillEl.classList.remove('open', 'drop-down');
+    _AppPillAnimateTo(27);
+    setTimeout(scrollPillToSelected, 280);
+  }, 0);
 }
 
 
@@ -3646,6 +3753,65 @@ function scrollPillToSelected() {
   var SelectedIndex = appsShortList.indexOf(currentApp);
   if (SelectedIndex < 0) SelectedIndex = 0;
   appPillEl.scrollTop = SelectedIndex * ROW_H;
+}
+
+// ── App pill spring height animator ──────────────────────────────────────────
+// Drives smooth, spring-based height transitions on the app pill.
+// Growing: slight overshoot (3-4%) then settles. Shrinking: ease-in-slow then ease-out-fast.
+var _AppPillSpring = {
+  CurrentHeight:  27,
+  TargetHeight:   27,
+  Velocity:       0,
+  AnimationFrame: null,
+};
+
+function _AppPillSpringTick() {
+  var Spring = _AppPillSpring;
+  var Difference = Spring.TargetHeight - Spring.CurrentHeight;
+
+  if (Spring.CurrentHeight < Spring.TargetHeight) {
+    // Growing: spring physics with slight overshoot
+    var Stiffness = 0.18;
+    var Damping   = 0.72;
+    Spring.Velocity = Spring.Velocity * Damping + Difference * Stiffness;
+    Spring.CurrentHeight += Spring.Velocity;
+  } else {
+    // Shrinking: asymmetric easing (slow ease-in, fast ease-out)
+    var ShrinkProgress = Math.abs(Difference) / (Spring.TargetHeight > 0 ? Spring.TargetHeight : 27);
+    var ShrinkSpeed = 0.08 + ShrinkProgress * 0.22; // accelerates as it gets closer
+    Spring.CurrentHeight += Difference * ShrinkSpeed;
+    Spring.Velocity = 0;
+  }
+
+  var Settled = Math.abs(Spring.CurrentHeight - Spring.TargetHeight) < 0.15
+             && Math.abs(Spring.Velocity) < 0.1;
+
+  if (Settled) {
+    Spring.CurrentHeight = Spring.TargetHeight;
+    Spring.Velocity = 0;
+    Spring.AnimationFrame = null;
+    appPillEl.style.height = Spring.TargetHeight + 'px';
+    return;
+  }
+
+  appPillEl.style.height = Math.round(Spring.CurrentHeight * 10) / 10 + 'px';
+  Spring.AnimationFrame = requestAnimationFrame(_AppPillSpringTick);
+}
+
+function _AppPillAnimateTo(TargetHeightPixels) {
+  var Spring = _AppPillSpring;
+  Spring.TargetHeight = TargetHeightPixels;
+  if (Spring.AnimationFrame) return; // already running
+  Spring.AnimationFrame = requestAnimationFrame(_AppPillSpringTick);
+}
+
+function _AppPillMeasureNaturalHeight() {
+  // Temporarily lift overflow clip to read scrollHeight
+  var PreviousOverflow = appPillEl.style.overflow;
+  appPillEl.style.overflow = 'visible';
+  var NaturalHeight = appPillEl.scrollHeight;
+  appPillEl.style.overflow = PreviousOverflow;
+  return NaturalHeight;
 }
 
 function toggleAppDropdown() {
@@ -3660,19 +3826,17 @@ function toggleAppDropdown() {
 
 function openAppPill() {
   AppPillWrenchOpen = false;
-  var NaturalHeight = (appsShortList.length + 1) * ROW_H;
-  appPillEl.style.maxHeight = NaturalHeight + 'px';
-  appPillEl.style.transform = '';
   appPillEl.classList.add('open', 'drop-down');
   appPillEl.scrollTop = 0;
+  var NaturalHeight = _AppPillMeasureNaturalHeight();
+  _AppPillAnimateTo(NaturalHeight);
 }
 
 function closeAppPill() {
   AppPillWrenchOpen = false;
   appPillEl.classList.remove('open', 'drop-down');
-  appPillEl.style.maxHeight = '';
-  appPillEl.style.transform = '';
-  setTimeout(scrollPillToSelected, 230);
+  _AppPillAnimateTo(27);
+  setTimeout(scrollPillToSelected, 280);
 }
 
 // Close on outside click -- also commits wrench picker if open
@@ -6687,8 +6851,35 @@ function _onAppsLoaded(AllAppsFromJson) {
     currentApp = FallbackApp;
   }
 
+  _measureAndFixAppPillWidth();
   buildAppPill();
   positionIcons();
+}
+
+function _measureAndFixAppPillWidth() {
+  // Measure the widest app label at runtime using a hidden probe element,
+  // then set the pill to that width and never change it again this session.
+  var ProbeElement = document.createElement('span');
+  ProbeElement.style.cssText = 'position:absolute;visibility:hidden;white-space:nowrap;font-family:Lato,system-ui,sans-serif;font-size:12px;font-weight:500;padding:0;margin:0;';
+  document.body.appendChild(ProbeElement);
+
+  var WidestLabelPixels = 0;
+  appsLongList.forEach(function(AppEntry) {
+    ProbeElement.textContent = AppEntry.label + (AppEntry.beta ? ' (beta)' : '');
+    var LabelWidth = ProbeElement.offsetWidth;
+    if (LabelWidth > WidestLabelPixels) WidestLabelPixels = LabelWidth;
+  });
+  document.body.removeChild(ProbeElement);
+
+  // 22px icon column + label width + 10px right padding + 3px spare = total inner width.
+  // Add 3px each side for border (1.5px * 2) compensated via box-sizing.
+  var PillInnerWidth = 22 + WidestLabelPixels + 10 + 3;
+  var PillElement = document.getElementById('appPill');
+  if (PillElement) {
+    PillElement.style.width = PillInnerWidth + 'px';
+    PillElement.style.minWidth = PillInnerWidth + 'px';
+  }
+  window._AppPillFixedWidth = PillInnerWidth;
 } 
 
 // Fetch the apps manifest on startup. Falls back to a minimal built-in list if the

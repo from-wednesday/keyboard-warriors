@@ -1121,8 +1121,8 @@ li.conflict-dismissed .conflict-desc {
 }
 .key.corner-tl { border-top-left-radius: 9px; }
 .key.corner-tr { border-top-right-radius: 9px; }
-.key.corner-bl { border-bottom-left-radius: 5px; }
-.key.corner-br { border-bottom-right-radius: 5px; }
+.key.corner-bl { border-bottom-left-radius: 9px; }
+.key.corner-br { border-bottom-right-radius: 9px; }
 
 /* Keys that sit one step in from a panel corner get a mid-level radius.
    Panel = 14px, true corner keys = 9px, these edge-adjacent keys = 6px. */
@@ -2513,10 +2513,8 @@ li.conflict-dismissed .conflict-desc {
   border-radius:  14px;
   pointer-events: none;
   transform:      translateZ(-7px);
-  background:     #b2b8c0;
+  background:     transparent;
   z-index:        0;
-  box-shadow: 0 0 0 20px #b2b8c0;
-  clip-path: inset(0 round 14px);
 }
 
 /* ─── DROP SHADOW ─────────────────────────────────────

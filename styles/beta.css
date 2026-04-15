@@ -1638,7 +1638,6 @@ li.conflict-dismissed .conflict-desc {
 .app-option-wrench-picker {
     height: 24px;
     padding: 4px 4px 4px 9px;
-    display: flex;
     align-items: left;
     cursor: pointer;
 }

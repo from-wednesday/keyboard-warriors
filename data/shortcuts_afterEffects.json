@@ -734,9 +734,10 @@
   {
     "shortcut": "GRAVE",
     "display": "Toggle Safe Zone visibility",
-    "mac_sc": "'",
-    "pc_sc": "'",
-    "difficulty": 1
+    "mac_sc": "`'`",
+    "pc_sc": "`'`",
+    "difficulty": 1,
+    "keyboard_conflict": true
   },
   {
     "shortcut": "CMD+DEL",
@@ -786,5 +787,21 @@
     "mac_sc": "⌘ V",
     "pc_sc": "Ctrl V",
     "difficulty": 1
+  },
+  {
+    "shortcut": "CMD+Q",
+    "display": "Quit the application",
+    "mac_sc": "⌘ Q",
+    "pc_sc": "none",
+    "difficulty": 2,
+    "keyboard_conflict": true
+  },
+ {
+    "shortcut": "OPTION+F4",
+    "display": "Quit the application",
+    "mac_sc": "none",
+    "pc_sc": "Alt F4",
+    "difficulty": 4,
+    "keyboard_conflict": true
   }
 ]

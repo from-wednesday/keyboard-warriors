@@ -1,4 +1,18 @@
 [
+ {
+    "shortcut": "CMD+SHIFT+/",
+    "display": "open keyboard shortcuts",
+    "mac_sc": "none",
+    "pc_sc": "Ctrl ⇧ ?",
+    "difficulty": 5
+  },
+   {
+    "shortcut": "CONTROL+SHIFT+/",
+    "display": "open keyboard shortcuts",
+    "mac_sc": "⌃ ⇧ ?",
+    "pc_sc": "none",
+    "difficulty": 5
+  },
   {
     "shortcut": "CMD+1",
     "display": "view at 100% zoom",
@@ -743,5 +757,21 @@
     "mac_sc": "⌘ V",
     "pc_sc": "Ctrl V",
     "difficulty": 1
+  },
+  {
+    "shortcut": "CMD+Q",
+    "display": "Quit the application",
+    "mac_sc": "⌘ Q",
+    "pc_sc": "none",
+    "difficulty": 2,
+    "keyboard_conflict": true
+  },
+      {
+    "shortcut": "OPTION+F4",
+    "display": "Quit the application",
+    "mac_sc": "none",
+    "pc_sc": "Alt F4",
+    "difficulty": 4,
+    "keyboard_conflict": true
   }
 ]

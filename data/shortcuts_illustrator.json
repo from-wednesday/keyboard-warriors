@@ -631,7 +631,8 @@
     "display": "Wrap with Top Object (Envelope Distort)",
     "mac_sc": "⌘ ⇧ ⌥ W",
     "pc_sc": "Ctrl ⇧ Alt W",
-    "difficulty": 5
+    "difficulty": 5,
+    "keyboard_conflict": true
   },
   {
     "shortcut": "CMD+7",
@@ -765,5 +766,21 @@
     "mac_sc": "⌘ V",
     "pc_sc": "Ctrl V",
     "difficulty": 1
+  },
+  {
+    "shortcut": "CMD+Q",
+    "display": "Quit the application",
+    "mac_sc": "⌘ Q",
+    "pc_sc": "none",
+    "difficulty": 2,
+    "keyboard_conflict": true
+  },
+      {
+    "shortcut": "OPTION+F4",
+    "display": "Quit the application",
+    "mac_sc": "none",
+    "pc_sc": "Alt F4",
+    "difficulty": 4,
+    "keyboard_conflict": true
   }
 ]

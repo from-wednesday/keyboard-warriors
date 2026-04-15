@@ -8,8 +8,22 @@
     "alternates": [],
     "keyboard_conflict": true,
     "alternates": [
-      "SPACE"
+      "+"
     ]
+  },
+   {
+    "shortcut": "CMD+SHIFT+/",
+    "display": "can you press Ctrl ⇧ ? ?",
+    "mac_sc": "none",
+    "pc_sc": "Ctrl ⇧ ?",
+    "difficulty": 5
+  },
+   {
+    "shortcut": "CONTROL+SHIFT+/",
+    "display": "can you press ⌃ ⇧ ? ?",
+    "mac_sc": "⌃ ⇧ ?",
+    "pc_sc": "none",
+    "difficulty": 5
   },
   {
     "shortcut": "CMD+,",
@@ -20,8 +34,16 @@
     "alternates": [],
     "keyboard_conflict": true,
     "alternates": [
-      "SPACE"
+      "+"
     ]
+  },
+    {
+    "shortcut": "GRAVE",
+    "display": "does the GRAVE key work?",
+    "mac_sc": "`'`",
+    "pc_sc": "`'`",
+    "difficulty": 1,
+    "keyboard_conflict": true
   },
   {
     "shortcut": "CMD+L",
@@ -32,7 +54,7 @@
     "alternates": [],
     "keyboard_conflict": true,
     "alternates": [
-      "SPACE"
+      "+"
     ]
   },
     {
@@ -44,7 +66,7 @@
     "alternates": [],
     "keyboard_conflict": true,
     "alternates": [
-      "SPACE"
+      "+"
     ]
   },
     {
@@ -56,7 +78,7 @@
     "alternates": [],
     "keyboard_conflict": true,
     "alternates": [
-      "SPACE"
+      "+"
     ]
   },
     {
@@ -68,7 +90,7 @@
     "alternates": [],
     "keyboard_conflict": true,
     "alternates": [
-      "SPACE"
+      "+"
     ]
   },
   {
@@ -80,7 +102,7 @@
     "alternates": [],
     "keyboard_conflict": true,
     "alternates": [
-      "SPACE"
+      "+"
     ]
   },
   {
@@ -92,7 +114,7 @@
     "alternates": [],
     "keyboard_conflict": true,
     "alternates": [
-      "SPACE"
+      "+"
     ]
   },{
     "shortcut": "CMD+SHIFT+W",
@@ -103,7 +125,7 @@
     "alternates": [],
     "keyboard_conflict": true,
     "alternates": [
-      "SPACE"
+      "+"
     ]
   },
   {
@@ -115,7 +137,7 @@
     "alternates": [],
     "keyboard_conflict": true,
     "alternates": [
-      "SPACE"
+      "+"
     ]
   },
   {
@@ -127,7 +149,7 @@
     "alternates": [],
     "keyboard_conflict": true,
     "alternates": [
-      "SPACE"
+      "+"
     ]
   },
   {
@@ -139,7 +161,7 @@
     "alternates": [],
     "keyboard_conflict": true,
     "alternates": [
-      "SPACE"
+      "+"
     ]
   },
     {
@@ -151,7 +173,7 @@
     "alternates": [],
     "keyboard_conflict": true,
     "alternates": [
-      "SPACE"
+      "+"
     ]
   },
   {
@@ -163,7 +185,7 @@
     "alternates": [],
     "keyboard_conflict": true,
     "alternates": [
-      "SPACE"
+      "+"
     ]
   },
   {
@@ -175,7 +197,23 @@
     "alternates": [],
     "keyboard_conflict": true,
     "alternates": [
-      "SPACE"
+      "+"
     ]
+  },
+  {
+    "shortcut": "CMD+Q",
+    "display": "Quit the application",
+    "mac_sc": "⌘ Q",
+    "pc_sc": "none",
+    "difficulty": 2,
+    "keyboard_conflict": true
+  },
+      {
+    "shortcut": "OPTION+F4",
+    "display": "Quit the application",
+    "mac_sc": "none",
+    "pc_sc": "Alt F4",
+    "difficulty": 4,
+    "keyboard_conflict": true
   }
 ]

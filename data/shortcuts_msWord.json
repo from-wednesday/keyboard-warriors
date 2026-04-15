@@ -32,7 +32,8 @@
     "display": "create a new document",
     "mac_sc": "⌘ N",
     "pc_sc": "Ctrl N",
-    "difficulty": 1
+    "difficulty": 1,
+    "keyboard_conflict": true
   },
   {
     "shortcut": "CMD+O",
@@ -80,7 +81,7 @@
   },
   {
     "shortcut": "CMD+F",
-    "display": "open Find",
+    "display": "Find",
     "mac_sc": "⌘ F",
     "pc_sc": "Ctrl F",
     "difficulty": 1
@@ -167,13 +168,6 @@
     "display": "toggle all caps",
     "mac_sc": "⌘ ⇧ A",
     "pc_sc": "Ctrl ⇧ A",
-    "difficulty": 3
-  },
-  {
-    "shortcut": "CMD+SHIFT+L",
-    "display": "apply bullet list",
-    "mac_sc": "⌘ ⇧ L",
-    "pc_sc": "Ctrl ⇧ L",
     "difficulty": 3
   },
   {
@@ -441,23 +435,30 @@
   {
     "shortcut": "F7",
     "display": "run Spelling and Grammar",
-    "mac_sc": "F7",
+    "mac_sc": "none",
     "pc_sc": "F7",
     "difficulty": 1
+  },
+    {
+    "shortcut": "CMD+OPTION+L",
+    "display": "run Spelling and Grammar",
+    "mac_sc": "⌘ ⌥ L",
+    "pc_sc": "none",
+    "difficulty": 3
   },
   {
     "shortcut": "SHIFT+F7",
     "display": "open Thesaurus",
-    "mac_sc": "⇧ F7",
+    "mac_sc": "none",
     "pc_sc": "⇧ F7",
     "difficulty": 3
   },
   {
-    "shortcut": "CMD+OPTION+L",
-    "display": "rebuild list numbering",
-    "mac_sc": "⌘ ⌥ L",
-    "pc_sc": "Ctrl Alt L",
-    "difficulty": 5
+    "shortcut": "CMD+SHIFT+L",
+    "display": "turn into bullet list",
+    "mac_sc": "⌘ ⇧ L",
+    "pc_sc": "Ctrl ⇧ L",
+    "difficulty": 3
   },
   {
     "shortcut": "CMD+SHIFT+F",
@@ -485,14 +486,14 @@
     "display": "promote list level",
     "mac_sc": "⌥ ⇧ →",
     "pc_sc": "Alt ⇧ →",
-    "difficulty": 3
+    "difficulty": 4
   },
   {
     "shortcut": "OPTION+SHIFT+ARROWLEFT",
     "display": "demote list level",
     "mac_sc": "⌥ ⇧ ←",
     "pc_sc": "Alt ⇧ ←",
-    "difficulty": 3
+    "difficulty": 4
   },
   {
     "shortcut": "OPTION+SHIFT+ARROWUP",
@@ -632,7 +633,8 @@
     "display": "insert footnote",
     "mac_sc": "⌘ ⌥ ⇧ N",
     "pc_sc": "Ctrl Alt F",
-    "difficulty": 3
+    "difficulty": 3,
+    "keyboard_conflict": true
   },
   {
     "shortcut": "CMD+OPTION+SHIFT+E",
@@ -865,11 +867,13 @@
     "difficulty": 5
   },
   {
-    "shortcut": "CMD+SHIFT+Y",
+    "shortcut": "CMD+Y",
     "display": "repeat last formatting",
-    "mac_sc": "⌘ ⇧ Y",
-    "pc_sc": "F4",
-    "difficulty": 3
+    "mac_sc": "⌘ Y",
+    "pc_sc": "Ctrl Y",
+    "difficulty": 3,
+    "alternates": [
+      "F4"]
   },
   {
     "shortcut": "CMD+SHIFT+SPACE",
@@ -941,5 +945,21 @@
     "mac_sc": "⌘ ⌥ ⇧ H",
     "pc_sc": "Alt Ctrl W",
     "difficulty": 5
+  },
+  {
+    "shortcut": "CMD+Q",
+    "display": "Quit the application",
+    "mac_sc": "⌘ Q",
+    "pc_sc": "none",
+    "difficulty": 2,
+    "keyboard_conflict": true
+  },
+      {
+    "shortcut": "OPTION+F4",
+    "display": "Quit the application",
+    "mac_sc": "none",
+    "pc_sc": "Alt F4",
+    "difficulty": 4,
+    "keyboard_conflict": true
   }
 ]

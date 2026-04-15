@@ -3771,14 +3771,14 @@ function _AppPillSpringTick() {
 
   if (Spring.CurrentHeight < Spring.TargetHeight) {
     // Growing: spring physics with slight overshoot
-    var Stiffness = 0.18;
-    var Damping   = 0.72;
+    var Stiffness = 0.08;
+    var Damping   = 0.82;
     Spring.Velocity = Spring.Velocity * Damping + Difference * Stiffness;
     Spring.CurrentHeight += Spring.Velocity;
   } else {
     // Shrinking: asymmetric easing (slow ease-in, fast ease-out)
     var ShrinkProgress = Math.abs(Difference) / (Spring.TargetHeight > 0 ? Spring.TargetHeight : 27);
-    var ShrinkSpeed = 0.08 + ShrinkProgress * 0.22; // accelerates as it gets closer
+    var ShrinkSpeed = 0.03 + ShrinkProgress * 0.12; // accelerates as it gets closer
     Spring.CurrentHeight += Difference * ShrinkSpeed;
     Spring.Velocity = 0;
   }

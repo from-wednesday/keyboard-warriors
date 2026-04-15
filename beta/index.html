@@ -3788,7 +3788,7 @@ function _AppPillSpringTick() {
   // Because the animation is slower, we might want a tighter "Settled" 
   // check so it doesn't spend too long on tiny sub-pixel movements.
   var Settled = Math.abs(Spring.CurrentHeight - Spring.TargetHeight) < 0.05
-               && Math.abs(Spring.Velocity) < 0.05;
+               && Math.abs(Spring.Velocity) < 0.2;
 
   if (Settled) {
     Spring.CurrentHeight = Spring.TargetHeight;

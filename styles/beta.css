@@ -1629,7 +1629,7 @@ li.conflict-dismissed .conflict-desc {
   height: 28px; /* slightly taller for more space below the wrench */
   align-items: flex-start;
   padding-top: 5px;
-  padding-left: 0;
+  padding-left: 6px;
 }
 .app-option-wrench:hover { opacity: 1; }
 #appPill.open {

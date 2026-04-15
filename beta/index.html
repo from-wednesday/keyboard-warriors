@@ -3770,21 +3770,25 @@ function _AppPillSpringTick() {
   var Difference = Spring.TargetHeight - Spring.CurrentHeight;
 
   if (Spring.CurrentHeight < Spring.TargetHeight) {
-    // Growing: spring physics with slight overshoot
-    var Stiffness = 0.08;
-    var Damping   = 0.82;
+    // --- SLOWER GROWING ---
+    var Stiffness = 0.07; // Much slower tension
+    var Damping   = 0.80; // High damping to keep it smooth
     Spring.Velocity = Spring.Velocity * Damping + Difference * Stiffness;
     Spring.CurrentHeight += Spring.Velocity;
   } else {
-    // Shrinking: asymmetric easing (slow ease-in, fast ease-out)
+    // --- SLOWER SHRINKING ---
     var ShrinkProgress = Math.abs(Difference) / (Spring.TargetHeight > 0 ? Spring.TargetHeight : 27);
-    var ShrinkSpeed = 0.03 + ShrinkProgress * 0.12; // accelerates as it gets closer
+    // Reduced coefficients significantly to slow the exit
+    var ShrinkSpeed = 0.04 + ShrinkProgress * 0.1; 
     Spring.CurrentHeight += Difference * ShrinkSpeed;
     Spring.Velocity = 0;
   }
 
-  var Settled = Math.abs(Spring.CurrentHeight - Spring.TargetHeight) < 0.15
-             && Math.abs(Spring.Velocity) < 0.1;
+  // Adjusted Threshold: 
+  // Because the animation is slower, we might want a tighter "Settled" 
+  // check so it doesn't spend too long on tiny sub-pixel movements.
+  var Settled = Math.abs(Spring.CurrentHeight - Spring.TargetHeight) < 0.05
+               && Math.abs(Spring.Velocity) < 0.05;
 
   if (Settled) {
     Spring.CurrentHeight = Spring.TargetHeight;

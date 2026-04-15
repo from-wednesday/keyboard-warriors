@@ -1479,8 +1479,8 @@ var ForceNoKeyboard = false;
 
 function updateKeyboardMode() {
   const w = window.innerWidth;
-  if (w < 600) {
-    ForceNoKeyboard = true;
+  if (keyboardDisplayMode !== 'none') {
+    ForceNoKeyboard = w < 600;
   }
   const mode = ForceNoKeyboard ? 'none' : w < 820 ? 'mini' : 'full';
   if (mode === currentKbMode) return;

@@ -2440,6 +2440,7 @@ li.conflict-dismissed .conflict-desc {
 #keyboardPanel.kb-edged #kb-wall-top,
 #keyboardPanel.kb-edged #kb-wall-bottom {
   opacity: 1;
+  display: block; 
   visibility: visible;
   transition: opacity 0.3s ease 0.1s, visibility 0s linear 0s;
 }
@@ -2483,6 +2484,7 @@ li.conflict-dismissed .conflict-desc {
   z-index:          1;
   transform-origin: center bottom;
   transform:        rotateX(90deg);
+  display: none;  
   background:
     linear-gradient(to bottom,
       rgba(0,0,0,0.30)       0px,

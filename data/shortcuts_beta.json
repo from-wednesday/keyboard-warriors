@@ -194,11 +194,14 @@
   },
   {
     "shortcut": "CMD+Q",
-    "display": "Quit the application",
+    "display": "Do Not press ⌘ Q",
     "mac_sc": "⌘ Q",
     "pc_sc": "none",
     "difficulty": 2,
-    "keyboard_conflict": true
+    "keyboard_conflict": true,
+    "alternates": [
+      "END"
+    ]
   },
       {
     "shortcut": "OPTION+F4",

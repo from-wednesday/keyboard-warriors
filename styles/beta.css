@@ -1624,12 +1624,14 @@ li.conflict-dismissed .conflict-desc {
   /* No CSS height/max-height transition -- JS spring handles it */
 }
 .app-option-wrench {
+  display: flex; /* Required for align-items to work */
+  flex-direction: row;
   border-top: 1px solid rgba(0,0,0,0.05);
   opacity: 0.3;
   height: 28px; /* slightly taller for more space below the wrench */
   align-items: flex-start;
   padding-top: 5px;
-  padding-left: 6px;
+  padding-left: 20px;
 }
 .app-option-wrench:hover { opacity: 1; }
 #appPill.open {
@@ -1639,7 +1641,7 @@ li.conflict-dismissed .conflict-desc {
     height: 24px;
     padding: 4;
     display: flex;
-    align-items: left;
+    align-items: centre;
     cursor: pointer;
 }
 .app-option-wrench-picker:hover { background: #f0f9ff; }

@@ -3618,8 +3618,8 @@ function _MakeWrenchPickerRadioDot(IsActive) {
   InnerHex.setAttribute('class', 'app-pill-hex-dot');
 
   if (IsActive) {
-    OuterHex.style.transform = 'rotate(90deg)';
-    InnerHex.style.transform = 'rotate(90deg)';
+    OuterHex.style.transform = 'rotate(180deg)';
+    InnerHex.style.transform = 'rotate(180deg)';
     InnerHex.style.opacity = '1';
   } else {
     OuterHex.style.transform = 'rotate(0deg)';
@@ -3655,8 +3655,8 @@ function _AnimateWrenchDot(RadioSpanElement, GoingActive) {
       HexPathElement.classList.remove('animating-in');
       HexRingElement.classList.remove('animating-in');
       HexPathElement.style.opacity = '1';
-      HexPathElement.style.transform = 'rotate(90deg)';
-      HexRingElement.style.transform = 'rotate(90deg)';
+      HexPathElement.style.transform = 'rotate(180deg)';
+      HexRingElement.style.transform = 'rotate(180deg)';
     }, { once: true });
   } else {
     HexPathElement.style.opacity = '1';
@@ -3671,8 +3671,8 @@ function _AnimateWrenchDot(RadioSpanElement, GoingActive) {
       HexPathElement.classList.remove('animating-out');
       HexRingElement.classList.remove('animating-out');
       HexPathElement.style.opacity = '0';
-      HexPathElement.style.transform = 'rotate(-90deg)';
-      HexRingElement.style.transform = 'rotate(-90deg)';
+      HexPathElement.style.transform = 'rotate(-180deg)';
+      HexRingElement.style.transform = 'rotate(-180deg)';
     }, { once: true });
   }
 }

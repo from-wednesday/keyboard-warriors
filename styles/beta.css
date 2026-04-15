@@ -2517,7 +2517,7 @@ li.conflict-dismissed .conflict-desc {
   z-index:        0;
 }
 
-/* ─── DROP SHADOW ─────────────────────────────────────
+/* ─── DROP SHADOW ────────────────────────────────────
    Blurred translucent blob at negative Z — floats the
    keyboard just above the surface, shadow falls on
    whatever is below (credit line etc).               */

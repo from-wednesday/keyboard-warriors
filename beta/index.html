@@ -9,7 +9,7 @@
 <title>beta</title>
 <script>
   const DefaultTitle = 'Keyboard Warriors';
-  const VersionLabel   = '0023';
+  const VersionLabel   = '0022';
   const TitlePrefix  = document.title !== DefaultTitle ? document.title.trim() + '_' : '';
   const DBG_DEVICE   = TitlePrefix + VersionLabel;
 </script>
@@ -3634,30 +3634,48 @@ function _MakeWrenchPickerRadioDot(IsActive) {
 
 function _AnimateWrenchDot(RadioSpanElement, GoingActive) {
   var HexPathElement = RadioSpanElement.querySelector('.app-pill-hex-dot');
-  if (!HexPathElement) return;
+  var HexRingElement = RadioSpanElement.querySelector('.app-pill-hex-ring');
+  if (!HexPathElement || !HexRingElement) return;
+
   HexPathElement.classList.remove('animating-in', 'animating-out');
-  HexPathElement.style.opacity = '';
-  HexPathElement.style.transform = '';
+  HexRingElement.classList.remove('animating-in', 'animating-out');
+
   void HexPathElement.offsetWidth;
+
   if (GoingActive) {
+    HexPathElement.style.opacity = '0';
+    HexPathElement.style.transform = 'rotate(0deg)';
+    HexRingElement.style.transform = 'rotate(0deg)';
+
     HexPathElement.classList.add('animating-in');
+    HexRingElement.classList.add('animating-in');
+
     HexPathElement.addEventListener('animationend', function Handler() {
       HexPathElement.removeEventListener('animationend', Handler);
       HexPathElement.classList.remove('animating-in');
+      HexRingElement.classList.remove('animating-in');
       HexPathElement.style.opacity = '1';
       HexPathElement.style.transform = 'rotate(180deg)';
+      HexRingElement.style.transform = 'rotate(180deg)';
     }, { once: true });
   } else {
+    HexPathElement.style.opacity = '1';
+    HexPathElement.style.transform = 'rotate(0deg)';
+    HexRingElement.style.transform = 'rotate(0deg)';
+
     HexPathElement.classList.add('animating-out');
+    HexRingElement.classList.add('animating-out');
+
     HexPathElement.addEventListener('animationend', function Handler() {
       HexPathElement.removeEventListener('animationend', Handler);
       HexPathElement.classList.remove('animating-out');
+      HexRingElement.classList.remove('animating-out');
       HexPathElement.style.opacity = '0';
-      HexPathElement.style.transform = '';
+      HexPathElement.style.transform = 'rotate(-180deg)';
+      HexRingElement.style.transform = 'rotate(-180deg)';
     }, { once: true });
   }
 }
-
 
 function _buildWrenchPickerRows() {
   appPillEl.innerHTML = '';

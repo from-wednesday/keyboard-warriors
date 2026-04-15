@@ -2517,7 +2517,7 @@ li.conflict-dismissed .conflict-desc {
   z-index:        0;
 }
 
-/* ─── DROP SHADOW ────────────────────────────────────
+/* ─── DROP SHADOW ─────────────────────────────────────
    Blurred translucent blob at negative Z — floats the
    keyboard just above the surface, shadow falls on
    whatever is below (credit line etc).               */
@@ -2653,10 +2653,10 @@ li.conflict-dismissed .conflict-desc {
 
 /* Inner Dot: Fades AND moves */
 .app-pill-hex-dot.animating-in {
-  animation: AppPillHexFadeIn 0.6s cubic-bezier(0.0, 0.0, 0.2, 1) forwards;
+  animation: AppPillHexFadeIn 0.6s cubic-bezier(0.33, 1, 0.68, 1) forwards;
 }
 .app-pill-hex-dot.animating-out {
-  animation: AppPillHexFadeOut 0.6s cubic-bezier(0.8, 0.0, 1.0, 1) forwards;
+  animation: AppPillHexFadeOut 0.6s cubic-bezier(0.33, 1, 0.68, 1) forwards;
 }
 
 .app-pill-hex-ring.animating-in {

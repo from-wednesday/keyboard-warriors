@@ -1121,8 +1121,8 @@ li.conflict-dismissed .conflict-desc {
 }
 .key.corner-tl { border-top-left-radius: 9px; }
 .key.corner-tr { border-top-right-radius: 9px; }
-.key.corner-bl { border-bottom-left-radius: 9px; }
-.key.corner-br { border-bottom-right-radius: 9px; }
+.key.corner-bl { border-bottom-left-radius: 5px; }
+.key.corner-br { border-bottom-right-radius: 5px; }
 
 /* Keys that sit one step in from a panel corner get a mid-level radius.
    Panel = 14px, true corner keys = 9px, these edge-adjacent keys = 6px. */
@@ -2419,15 +2419,21 @@ li.conflict-dismissed .conflict-desc {
    panel's 14px curve.                                 */
 
 #kb-wall-top, #kb-wall-bottom {
-  position:       absolute;
+  position: absolute;
   pointer-events: none;
-  opacity:        0;
-  transition:     opacity 0.3s ease 0.1s;
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity 0.3s ease 0.1s, visibility 0s linear 0.3s;
 }
+
+/* And add visibility: visible to the edged state: */
 #keyboardPanel.kb-edged #kb-wall-top,
 #keyboardPanel.kb-edged #kb-wall-bottom {
   opacity: 1;
+  visibility: visible;
+  transition: opacity 0.3s ease 0.1s, visibility 0s linear 0s;
 }
+
 
 /* Bottom wall corner radius: capped at half wall height (3px) at partial so the
    arc never exceeds the foreshortened strip height at any viewing angle. At full

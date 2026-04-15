@@ -1628,8 +1628,8 @@ li.conflict-dismissed .conflict-desc {
   opacity: 0.3;
   height: 28px; /* slightly taller for more space below the wrench */
   align-items: flex-start;
-  padding-top: 5px;
-  padding-left: 0;
+  padding-top: 3px;
+  padding-left: 5px;
 }
 .app-option-wrench:hover { opacity: 1; }
 #appPill.open {

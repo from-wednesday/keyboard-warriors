@@ -3279,11 +3279,12 @@ function resetToIdle() {
 ══════════════════════════════════════ */
 // Alternate accepted answers: pressing any of these counts as correct
 // for questions whose shortcut token matches the key.
-const SHORTCUT_ALTERNATES = {
+let SHORTCUT_ALTERNATES = {
   'H':       ['SPACE'],     // Hand tool — Space bar temporarily activates it
   'SHIFT++': ['SHIFT+-'],   // Ps blend mode cycle — both + and - work
   'I':       ['CTRL+C'],    // Fi Eyedropper — legacy Ctrl+C shortcut also works
 };
+
 
 function matchesShortcut(event, str) {
   const s    = str.toUpperCase();
@@ -6954,6 +6955,8 @@ function buildPool() {
 return allShortcuts.filter(s => {
     // Ctrl+Alt combinations on Windows trigger AltGr / system dialogs — exclude all CMD+OPTION shortcuts on PC
     if (currentOs === 'pc' && s.shortcut.toUpperCase().includes('OPTION')) return false;
+    // keyboard_conflict: true means the shortcut only appears when touch mode bypasses browser/OS conflicts
+    if (s.keyboard_conflict && !touchEnabled) return false;
     // OS-specific exclusion: pc_sc or mac_sc set to "none" signals this shortcut
     // does not exist on that OS and should be excluded from the pool entirely.
     if (currentOs === 'pc'  && s.pc_sc  === 'none') return false;
@@ -6992,10 +6995,17 @@ function loadAppShortcutsIfNeeded(appKey, onReady) {
     .then(function(shortcuts) {
       console.log('[Shortcuts] Loaded', shortcuts.length, 'shortcuts for', appKey);
       if (thisLoadSequence === loadSequenceNumber) {
-        loadedAppShortcuts = shortcuts;
+         loadedAppShortcuts = shortcuts;
         loadedAppName      = appKey;
-        onReady();
-      } else {
+        // Rebuild SHORTCUT_ALTERNATES from all currently loaded shortcuts
+        // (UNIVERSAL_SHORTCUTS + newly loaded app shortcuts)
+        var allLoaded = UNIVERSAL_SHORTCUTS.concat(shortcuts);
+        allLoaded.forEach(function(s) {
+          if (s.alternates && Array.isArray(s.alternates) && s.alternates.length > 0) {
+            SHORTCUT_ALTERNATES[s.shortcut.toUpperCase()] = s.alternates.map(function(a) { return a.toUpperCase(); });
+          }
+        });
+        onReady();      } else {
         console.log('[Shortcuts] Stale response ignored (sequence mismatch)');
       }
     })

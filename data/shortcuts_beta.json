@@ -1,13 +1,122 @@
 [
   {
+    "shortcut": "CMD+SPACE",
+    "display": "test ⌘/ctrl SPACE",
+    "mac_sc": "⌘ SPACE",
+    "pc_sc": "Ctrl SPACE",
+    "difficulty": 1,
+    "alternates": [],
+    "keyboard_conflict": true,
+    "alternates": [
+      "SPACE"
+    ]
+  },
+  {
+    "shortcut": "CMD+,",
+    "display": "test ⌘/ctrl ,",
+    "mac_sc": "⌘ ,",
+    "pc_sc": "Ctrl ,",
+    "difficulty": 1,
+    "alternates": [],
+    "keyboard_conflict": true,
+    "alternates": [
+      "SPACE"
+    ]
+  },
+  {
+    "shortcut": "CMD+L",
+    "display": "test ⌘/ctrl L",
+    "mac_sc": "⌘ L",
+    "pc_sc": "Ctrl L",
+    "difficulty": 1,
+    "alternates": [],
+    "keyboard_conflict": true,
+    "alternates": [
+      "SPACE"
+    ]
+  },
+    {
+    "shortcut": "CMD+D",
+    "display": "test ⌘/ctrl D",
+    "mac_sc": "⌘ D",
+    "pc_sc": "Ctrl D",
+    "difficulty": 1,
+    "alternates": [],
+    "keyboard_conflict": true,
+    "alternates": [
+      "SPACE"
+    ]
+  },
+    {
+    "shortcut": "CMD+F",
+    "display": "test ⌘/ctrl F",
+    "mac_sc": "⌘ F",
+    "pc_sc": "Ctrl F",
+    "difficulty": 1,
+    "alternates": [],
+    "keyboard_conflict": true,
+    "alternates": [
+      "SPACE"
+    ]
+  },
+    {
+    "shortcut": "CMD+P",
+    "display": "test ⌘/ctrl P",
+    "mac_sc": "⌘ P",
+    "pc_sc": "Ctrl P",
+    "difficulty": 1,
+    "alternates": [],
+    "keyboard_conflict": true,
+    "alternates": [
+      "SPACE"
+    ]
+  },
+  {
+    "shortcut": "CMD+R",
+    "display": "test ⌘/ctrl R",
+    "mac_sc": "⌘ R",
+    "pc_sc": "Ctrl R",
+    "difficulty": 1,
+    "alternates": [],
+    "keyboard_conflict": true,
+    "alternates": [
+      "SPACE"
+    ]
+  },
+  {
+    "shortcut": "CMD+SHIFT+R",
+    "display": "test ⌘/ctrl shift R",
+    "mac_sc": "⌘ ⇧ R",
+    "pc_sc": "Ctrl ⇧ R",
+    "difficulty": 3,
+    "alternates": [],
+    "keyboard_conflict": true,
+    "alternates": [
+      "SPACE"
+    ]
+  },{
+    "shortcut": "CMD+SHIFT+W",
+    "display": "test ⌘/ctrl shift W",
+    "mac_sc": "⌘ ⇧ W",
+    "pc_sc": "Ctrl ⇧ W",
+    "difficulty": 3,
+    "alternates": [],
+    "keyboard_conflict": true,
+    "alternates": [
+      "SPACE"
+    ]
+  },
+  {
     "shortcut": "CMD+W",
     "display": "do not press ⌘/ctrl W",
     "mac_sc": "⌘ W",
     "pc_sc": "Ctrl W",
     "difficulty": 1,
-    "group": "",
     "alternates": [],
-    "keyboard_conflict": true
+    "keyboard_conflict": true,
+    "alternates": [
+      "SPACE"
+    ]
   },
   {
     "shortcut": "CMD+N",
@@ -15,9 +124,11 @@
     "mac_sc": "⌘ N",
     "pc_sc": "Ctrl N",
     "difficulty": 1,
-    "group": "",
     "alternates": [],
-    "keyboard_conflict": true
+    "keyboard_conflict": true,
+    "alternates": [
+      "SPACE"
+    ]
   },
   {
     "shortcut": "CMD+SHIFT+N",
@@ -25,9 +136,23 @@
     "mac_sc": "⌘ ⇧ N",
     "pc_sc": "Ctrl ⇧ N",
     "difficulty": 3,
-    "group": "",
     "alternates": [],
-    "keyboard_conflict": true
+    "keyboard_conflict": true,
+    "alternates": [
+      "SPACE"
+    ]
+  },
+    {
+    "shortcut": "CMD+T",
+    "display": "do not press ⌘/ctrl T",
+    "mac_sc": "⌘ T",
+    "pc_sc": "Ctrl T",
+    "difficulty": 1,
+    "alternates": [],
+    "keyboard_conflict": true,
+    "alternates": [
+      "SPACE"
+    ]
   },
   {
     "shortcut": "CMD+SHIFT+T",
@@ -35,9 +160,11 @@
     "mac_sc": "⌘ ⇧ T",
     "pc_sc": "Ctrl ⇧ T",
     "difficulty": 3,
-    "group": "",
     "alternates": [],
-    "keyboard_conflict": true
+    "keyboard_conflict": true,
+    "alternates": [
+      "SPACE"
+    ]
   },
   {
     "shortcut": "CTRL+TAB",
@@ -45,8 +172,10 @@
     "mac_sc": "⌘ Tab",
     "pc_sc": "Ctrl Tab",
     "difficulty": 3,
-    "group": "",
     "alternates": [],
-    "keyboard_conflict": true
+    "keyboard_conflict": true,
+    "alternates": [
+      "SPACE"
+    ]
   }
 ]

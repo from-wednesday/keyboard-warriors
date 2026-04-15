@@ -3715,11 +3715,14 @@ function _buildWrenchPickerRows() {
   var WrenchRow = document.createElement('div');
   WrenchRow.className = 'app-option app-option-wrench';
   WrenchRow.style.display = 'flex';
+  WrenchRow.style.alignItems = 'center';
   WrenchRow.style.borderTop = '1px solid rgba(0,0,0,0.08)';
 
   var WrenchIconColumn = document.createElement('span');
   WrenchIconColumn.className = 'app-option-icon-col';
-  WrenchIconColumn.style.justifyContent = 'flex-start';
+  WrenchIconColumn.style.display = 'inline-block';
+  WrenchIconColumn.style.paddingLeft = '6px'; // This "un-sticks" the icon from the left edge
+
   WrenchIconColumn.innerHTML = '<img src="/keyboard-warriors/images/wrench.svg" height="14" alt="Close customiser" style="display:block;">';
 
   WrenchRow.appendChild(WrenchIconColumn);

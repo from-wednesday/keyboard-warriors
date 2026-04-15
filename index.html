@@ -1479,11 +1479,15 @@ var ForceNoKeyboard = false;
 
 function updateKeyboardMode() {
   const w = window.innerWidth;
-  const mode = ForceNoKeyboard ? 'none' : w < 600 ? 'none' : w < 820 ? 'mini' : 'full';
+  if (keyboardDisplayMode !== 'none') {
+    ForceNoKeyboard = w < 600;
+  }
+  const mode = ForceNoKeyboard ? 'none' : w < 820 ? 'mini' : 'full';
   if (mode === currentKbMode) return;
   currentKbMode = mode;
   if (mode === 'none') {
     keyboardWrap.style.display = 'none';
+    _syncPhoneToolbarVisibility();
   } else {
     keyboardWrap.style.display = 'flex';
     buildKeyboard(mode === 'mini');
@@ -3275,11 +3279,12 @@ function resetToIdle() {
 ══════════════════════════════════════ */
 // Alternate accepted answers: pressing any of these counts as correct
 // for questions whose shortcut token matches the key.
-const SHORTCUT_ALTERNATES = {
+let SHORTCUT_ALTERNATES = {
   'H':       ['SPACE'],     // Hand tool — Space bar temporarily activates it
   'SHIFT++': ['SHIFT+-'],   // Ps blend mode cycle — both + and - work
   'I':       ['CTRL+C'],    // Fi Eyedropper — legacy Ctrl+C shortcut also works
 };
+
 
 function matchesShortcut(event, str) {
   const s    = str.toUpperCase();
@@ -3486,6 +3491,8 @@ function matchesShortcut(event, str) {
 // APPS and APP_JSON_FILE_PATH are populated at runtime from KeyboardWarriors Apps json.
 // Until the fetch resolves these remain empty; init is deferred to _onAppsLoaded().
 var APPS = [];
+var appsLongList  = [];
+var appsShortList = [];
 var APP_JSON_FILE_PATH = {};
 
 // Each row is 22px. Closed: scroll to show selected row.
@@ -3495,55 +3502,378 @@ var currentApp = 'Photoshop (Ps)'; // placeholder; overwritten by _onAppsLoaded 
 
 const appPillEl = document.getElementById('appPill');
 
+var AppPillWrenchOpen = false;
+
+function _saveAppsShortList() {
+  try { localStorage.setItem('kw_apps_short_list', JSON.stringify(appsShortList)); } catch (StorageError) {}
+}
+
+function _MakeAppPillCaretSvg() {
+  var SvgNamespace = 'http://www.w3.org/2000/svg';
+  var SvgElement = document.createElementNS(SvgNamespace, 'svg');
+  SvgElement.setAttribute('viewBox', '0 0 7 7');
+  SvgElement.setAttribute('width', '7');
+  SvgElement.setAttribute('height', '7');
+  SvgElement.setAttribute('fill', 'currentColor');
+  SvgElement.classList.add('app-caret-svg');
+  var PathElement = document.createElementNS(SvgNamespace, 'path');
+  PathElement.setAttribute('d', 'M1.5 1 L6 3.5 L1.5 6 Z');
+  SvgElement.appendChild(PathElement);
+  return SvgElement;
+}
+
 function buildAppPill() {
   appPillEl.innerHTML = '';
-  APPS.forEach((app) => {
-    const row = document.createElement('div');
-    row.className = 'app-option' + (app.label === currentApp ? ' selected' : '');
-    row.innerHTML = `<span class="app-caret">${app.label === currentApp ? '▶' : '  '}</span><span class="app-label">${app.label}</span>`;
-    row.addEventListener('click', e => {
-      e.stopPropagation();
-      if (gameState === 'playing' || gameState === 'paused' || gameState === 'confirm-reset' || gameState === 'confirm-quit') return;
-      currentApp = app.label;
-      try { localStorage.setItem('kw_app', currentApp); } catch(e) {}
+
+  if (AppPillWrenchOpen) {
+    _buildWrenchPickerRows();
+    return;
+  }
+
+  appsShortList.forEach(function(AppLabel) {
+    var AppEntry = appsLongList.find(function(App) { return App.label === AppLabel; });
+    if (!AppEntry) return;
+
+    var IsSelected = (AppLabel === currentApp);
+    var Row = document.createElement('div');
+    Row.className = 'app-option' + (IsSelected ? ' selected' : '');
+
+    var IconColumn = document.createElement('span');
+    IconColumn.className = 'app-option-icon-col';
+    IconColumn.appendChild(_MakeAppPillCaretSvg());
+
+    var LabelColumn = document.createElement('span');
+    LabelColumn.className = 'app-option-label-col';
+    LabelColumn.textContent = AppLabel;
+
+    Row.appendChild(IconColumn);
+    Row.appendChild(LabelColumn);
+
+    Row.addEventListener('click', function(ClickEvent) {
+      ClickEvent.stopPropagation();
+      if (gameState === 'playing' || gameState === 'paused'
+          || gameState === 'confirm-reset' || gameState === 'confirm-quit') return;
+      currentApp = AppLabel;
+      try { localStorage.setItem('kw_app', currentApp); } catch (StorageError) {}
       buildAppPill();
       closeAppPill();
       runData.length = 0; lastCompletedReport = null; CoachAdviceAccepted = false;
     });
-    appPillEl.appendChild(row);
+
+    appPillEl.appendChild(Row);
   });
+
+  var WrenchRow = document.createElement('div');
+  WrenchRow.className = 'app-option app-option-wrench';
+
+  var WrenchIconColumn = document.createElement('span');
+  WrenchIconColumn.className = 'app-option-icon-col';
+  WrenchIconColumn.style.justifyContent = 'flex-start';
+  WrenchIconColumn.innerHTML = '<img src="/keyboard-warriors/images/wrench.svg" height="14" alt="Customise apps" style="display:block;">';
+
+  WrenchRow.appendChild(WrenchIconColumn);
+  WrenchRow.addEventListener('click', function(ClickEvent) {
+    ClickEvent.stopPropagation();
+    _openWrenchPicker();
+  });
+
+  appPillEl.appendChild(WrenchRow);
   scrollPillToSelected();
 }
 
+function _MakeWrenchPickerRadioDot(IsActive) {
+  var SvgNamespace = 'http://www.w3.org/2000/svg';
+  var SvgElement = document.createElementNS(SvgNamespace, 'svg');
+  SvgElement.setAttribute('width', '16');
+  SvgElement.setAttribute('height', '16');
+  SvgElement.setAttribute('viewBox', '0 0 19 19');
+  SvgElement.setAttribute('class', 'app-pill-radio-svg');
+
+  var CentreX = 9.5;
+  var CentreY = 9.5;
+
+  function BuildHexPath(Radius) {
+    var HexPoints = [];
+    for (var PointIndex = 0; PointIndex < 6; PointIndex++) {
+      var AngleRadians = (Math.PI / 180) * (60 * PointIndex - 30);
+      HexPoints.push(
+        (CentreX + Radius * Math.cos(AngleRadians)).toFixed(2) + ',' +
+        (CentreY + Radius * Math.sin(AngleRadians)).toFixed(2)
+      );
+    }
+    return 'M' + HexPoints.join(' L') + ' Z';
+  }
+
+  var OuterHex = document.createElementNS(SvgNamespace, 'path');
+  OuterHex.setAttribute('d', BuildHexPath(6.2));
+  OuterHex.setAttribute('stroke', '#374151');
+  OuterHex.setAttribute('stroke-width', '1.5');
+  OuterHex.setAttribute('fill', 'none');
+  OuterHex.setAttribute('stroke-linejoin', 'round');
+  OuterHex.setAttribute('class', 'app-pill-hex-ring');
+
+  var InnerHex = document.createElementNS(SvgNamespace, 'path');
+  InnerHex.setAttribute('d', BuildHexPath(3.5));
+  InnerHex.setAttribute('fill', '#374151');
+  InnerHex.setAttribute('class', 'app-pill-hex-dot');
+
+  if (IsActive) {
+    OuterHex.style.transform = 'rotate(180deg)';
+    InnerHex.style.transform = 'rotate(180deg)';
+    InnerHex.style.opacity = '1';
+  } else {
+    OuterHex.style.transform = 'rotate(0deg)';
+    InnerHex.style.transform = 'rotate(0deg)';
+    InnerHex.style.opacity = '0';
+  }
+
+  SvgElement.appendChild(OuterHex);
+  SvgElement.appendChild(InnerHex);
+  return SvgElement;
+}
+
+function _AnimateWrenchDot(RadioSpanElement, GoingActive) {
+  var HexPathElement = RadioSpanElement.querySelector('.app-pill-hex-dot');
+  var HexRingElement = RadioSpanElement.querySelector('.app-pill-hex-ring');
+  if (!HexPathElement || !HexRingElement) return;
+
+  HexPathElement.classList.remove('animating-in', 'animating-out');
+  HexRingElement.classList.remove('animating-in', 'animating-out');
+
+  void HexPathElement.offsetWidth;
+
+  if (GoingActive) {
+    HexPathElement.style.opacity = '0';
+    HexPathElement.style.transform = 'rotate(0deg)';
+    HexRingElement.style.transform = 'rotate(0deg)';
+
+    HexPathElement.classList.add('animating-in');
+    HexRingElement.classList.add('animating-in');
+
+    HexPathElement.addEventListener('animationend', function Handler() {
+      HexPathElement.removeEventListener('animationend', Handler);
+      HexPathElement.classList.remove('animating-in');
+      HexRingElement.classList.remove('animating-in');
+      HexPathElement.style.opacity = '1';
+      HexPathElement.style.transform = 'rotate(180deg)';
+      HexRingElement.style.transform = 'rotate(180deg)';
+    }, { once: true });
+  } else {
+    HexPathElement.style.opacity = '1';
+    HexPathElement.style.transform = 'rotate(0deg)';
+    HexRingElement.style.transform = 'rotate(0deg)';
+
+    HexPathElement.classList.add('animating-out');
+    HexRingElement.classList.add('animating-out');
+
+    HexPathElement.addEventListener('animationend', function Handler() {
+      HexPathElement.removeEventListener('animationend', Handler);
+      HexPathElement.classList.remove('animating-out');
+      HexRingElement.classList.remove('animating-out');
+      HexPathElement.style.opacity = '0';
+      HexPathElement.style.transform = 'rotate(-180deg)';
+      HexRingElement.style.transform = 'rotate(-180deg)';
+    }, { once: true });
+  }
+}
+
+function _buildWrenchPickerRows() {
+  appPillEl.innerHTML = '';
+
+  appsLongList.forEach(function(AppEntry) {
+    var IsInShortList = appsShortList.includes(AppEntry.label);
+    var IsBetaApp     = !!AppEntry.beta;
+
+    var Row = document.createElement('div');
+    Row.className = 'app-option app-option-wrench-picker'
+      + (IsInShortList ? ' wrench-picker-active' : ' wrench-picker-inactive');
+    Row.dataset.appLabel = AppEntry.label;
+    Row.style.cssText = 'display:flex;align-items:center;height:24px;padding:0 10px 0 0;cursor:pointer;';
+
+    var IconColumn = document.createElement('span');
+    IconColumn.className = 'app-option-icon-col';
+    IconColumn.appendChild(_MakeWrenchPickerRadioDot(IsInShortList));
+
+    var LabelSpan = document.createElement('span');
+    LabelSpan.className = 'app-option-label-col';
+    LabelSpan.style.cssText = 'flex:1;font-size:12px;white-space:nowrap;text-align:left;'
+      + (IsInShortList ? 'color:#374151;' : 'color:#9ca3af;')
+      + (IsBetaApp ? 'font-style:italic;' : '');
+    LabelSpan.textContent = AppEntry.label + (IsBetaApp ? ' (beta)' : '');
+
+    Row.appendChild(IconColumn);
+    Row.appendChild(LabelSpan);
+
+    Row.addEventListener('click', function(ClickEvent) {
+      ClickEvent.stopPropagation();
+      _toggleWrenchPickerApp(AppEntry.label, Row, IconColumn, LabelSpan);
+    });
+
+    appPillEl.appendChild(Row);
+  });
+
+  var WrenchRow = document.createElement('div');
+  WrenchRow.className = 'app-option app-option-wrench';
+  WrenchRow.style.borderTop = '1px solid rgba(0,0,0,0.08)';
+
+  var WrenchIconColumn = document.createElement('span');
+  WrenchIconColumn.className = 'app-option-icon-col';
+  WrenchIconColumn.style.justifyContent = 'flex-start';
+  WrenchIconColumn.innerHTML = '<img src="/keyboard-warriors/images/wrench.svg" height="14" alt="Close customiser" style="display:block;">';
+
+  WrenchRow.appendChild(WrenchIconColumn);
+  WrenchRow.addEventListener('click', function(ClickEvent) {
+    ClickEvent.stopPropagation();
+    _closeWrenchPicker();
+  });
+  appPillEl.appendChild(WrenchRow);
+}
+
+function _toggleWrenchPickerApp(AppLabel, RowElement, IconColumnElement, LabelSpanElement) {
+  var IsCurrentlyActive = appsShortList.includes(AppLabel);
+  if (IsCurrentlyActive) {
+    if (appsShortList.length <= 1) { showToast('You need at least one app in your list.'); return; }
+    appsShortList = appsShortList.filter(function(Label) { return Label !== AppLabel; });
+    _AnimateWrenchDot(IconColumnElement, false);
+    LabelSpanElement.style.color = '#9ca3af';
+    RowElement.classList.remove('wrench-picker-active');
+    RowElement.classList.add('wrench-picker-inactive');
+  } else {
+    appsShortList.push(AppLabel);
+    _AnimateWrenchDot(IconColumnElement, true);
+    LabelSpanElement.style.color = '#374151';
+    RowElement.classList.remove('wrench-picker-inactive');
+    RowElement.classList.add('wrench-picker-active');
+  }
+}
+
+function _openWrenchPicker() {
+  AppPillWrenchOpen = true;
+  appPillEl.classList.add('open', 'drop-down');
+  appPillEl.scrollTop = 0;
+  buildAppPill();
+  var NaturalHeight = _AppPillMeasureNaturalHeight();
+  _AppPillAnimateTo(NaturalHeight);
+}
+
+function _closeWrenchPicker() {
+  AppPillWrenchOpen = false;
+  if (!appsShortList.includes(currentApp)) {
+    currentApp = appsShortList[0];
+    try { localStorage.setItem('kw_app', currentApp); } catch (StorageError) {}
+    runData.length = 0; lastCompletedReport = null; CoachAdviceAccepted = false;
+  }
+  _saveAppsShortList();
+  buildAppPill();
+  var NaturalHeight = _AppPillMeasureNaturalHeight();
+  _AppPillAnimateTo(NaturalHeight);
+  setTimeout(function() {
+    appPillEl.classList.remove('open', 'drop-down');
+    _AppPillAnimateTo(27);
+    setTimeout(scrollPillToSelected, 280);
+  }, 0);
+}
+
+
 function scrollPillToSelected() {
-  const idx = APPS.findIndex(a => a.label === currentApp);
-  // scrollTop positions the selected row at the top of the 22px window
-  appPillEl.scrollTop = idx * ROW_H;
+  var SelectedIndex = appsShortList.indexOf(currentApp);
+  if (SelectedIndex < 0) SelectedIndex = 0;
+  appPillEl.scrollTop = SelectedIndex * ROW_H;
+}
+
+// ── App pill spring height animator ──────────────────────────────────────────
+// Drives smooth, spring-based height transitions on the app pill.
+// Growing: slight overshoot (3-4%) then settles. Shrinking: ease-in-slow then ease-out-fast.
+var _AppPillSpring = {
+  CurrentHeight:  27,
+  TargetHeight:   27,
+  Velocity:       0,
+  AnimationFrame: null,
+};
+
+function _AppPillSpringTick() {
+  var Spring = _AppPillSpring;
+  var Difference = Spring.TargetHeight - Spring.CurrentHeight;
+
+  if (Spring.CurrentHeight < Spring.TargetHeight) {
+    // --- SLOWER GROWING ---
+    var Stiffness = 0.07; // Much slower tension
+    var Damping   = 0.80; // High damping to keep it smooth
+    Spring.Velocity = Spring.Velocity * Damping + Difference * Stiffness;
+    Spring.CurrentHeight += Spring.Velocity;
+  } else {
+    // --- SLOWER SHRINKING ---
+    var ShrinkProgress = Math.abs(Difference) / (Spring.TargetHeight > 0 ? Spring.TargetHeight : 27);
+    // Reduced coefficients significantly to slow the exit
+    var ShrinkSpeed = 0.04 + ShrinkProgress * 0.1; 
+    Spring.CurrentHeight += Difference * ShrinkSpeed;
+    Spring.Velocity = 0;
+  }
+
+  // Adjusted Threshold: 
+  // Because the animation is slower, we might want a tighter "Settled" 
+  // check so it doesn't spend too long on tiny sub-pixel movements.
+  var Settled = Math.abs(Spring.CurrentHeight - Spring.TargetHeight) < 0.05
+               && Math.abs(Spring.Velocity) < 0.2;
+
+  if (Settled) {
+    Spring.CurrentHeight = Spring.TargetHeight;
+    Spring.Velocity = 0;
+    Spring.AnimationFrame = null;
+    appPillEl.style.height = Spring.TargetHeight + 'px';
+    return;
+  }
+
+  appPillEl.style.height = Math.round(Spring.CurrentHeight * 10) / 10 + 'px';
+  Spring.AnimationFrame = requestAnimationFrame(_AppPillSpringTick);
+}
+
+function _AppPillAnimateTo(TargetHeightPixels) {
+  var Spring = _AppPillSpring;
+  Spring.TargetHeight = TargetHeightPixels;
+  if (Spring.AnimationFrame) return; // already running
+  Spring.AnimationFrame = requestAnimationFrame(_AppPillSpringTick);
+}
+
+function _AppPillMeasureNaturalHeight() {
+  // Temporarily lift overflow clip to read scrollHeight
+  var PreviousOverflow = appPillEl.style.overflow;
+  appPillEl.style.overflow = 'visible';
+  var NaturalHeight = appPillEl.scrollHeight;
+  appPillEl.style.overflow = PreviousOverflow;
+  return NaturalHeight;
 }
 
 function toggleAppDropdown() {
   if (gameState === 'playing' || gameState === 'confirm-reset' || gameState === 'confirm-quit') return;
   if (gameState === 'paused') { showToast('Change the app between games.'); return; }
-  appPillEl.classList.contains('open') ? closeAppPill() : openAppPill();
+  if (appPillEl.classList.contains('open')) {
+    if (AppPillWrenchOpen) { _closeWrenchPicker(); } else { closeAppPill(); }
+  } else {
+    openAppPill();
+  }
 }
 
 function openAppPill() {
-  var natural = APPS.length * ROW_H;
-  appPillEl.style.maxHeight = natural + 'px';
-  appPillEl.style.transform = '';
+  AppPillWrenchOpen = false;
   appPillEl.classList.add('open', 'drop-down');
   appPillEl.scrollTop = 0;
-}
-function closeAppPill() {
-  appPillEl.classList.remove('open', 'drop-down');
-  appPillEl.style.maxHeight = '';
-  appPillEl.style.transform = '';
-  setTimeout(scrollPillToSelected, 230);
+  var NaturalHeight = _AppPillMeasureNaturalHeight();
+  _AppPillAnimateTo(NaturalHeight);
 }
 
-// Close on outside click
-document.addEventListener('click', e => {
-  if (!appPillEl.contains(e.target)) closeAppPill();
+function closeAppPill() {
+  AppPillWrenchOpen = false;
+  appPillEl.classList.remove('open', 'drop-down');
+  _AppPillAnimateTo(27);
+  setTimeout(scrollPillToSelected, 280);
+}
+
+// Close on outside click -- also commits wrench picker if open
+document.addEventListener('click', function(ClickEvent) {
+  if (!appPillEl.contains(ClickEvent.target)) {
+    if (AppPillWrenchOpen) { _closeWrenchPicker(); } else { closeAppPill(); }
+  }
 });
 
 function setAppSelectorGameActive(active) {
@@ -6513,30 +6843,74 @@ let loadedAppShortcuts = [];
 let loadSequenceNumber = 0;
 
 // Called once Keyboard Warriors Apps json has been fetched and parsed.
-function _onAppsLoaded(appsData) {
-  // Populate the two structures the rest of the code uses
-  APPS = appsData.map(function(a) {
-    return { label: a.label };
-  });
-  appsData.forEach(function(a) {
-    APP_JSON_FILE_PATH[a.label] = a.path;
+function _onAppsLoaded(AllAppsFromJson) {
+  appsLongList = AllAppsFromJson;
+
+  AllAppsFromJson.forEach(function(App) {
+    APP_JSON_FILE_PATH[App.label] = App.path;
   });
 
-  // Restore saved app choice, falling back to the first entry
-  var defaultKey = APPS.length ? APPS[0].label : 'Photoshop (Ps)';
+  const IsBetaBuild = document.title !== 'Keyboard Warriors';
 
+  const DefaultShortListLabels = IsBetaBuild
+    ? AllAppsFromJson.map(function(App) { return App.label; })
+    : AllAppsFromJson.filter(function(App) { return !App.beta; }).map(function(App) { return App.label; });
+
+  var PersistedLabels = null;
   try {
-    var saved = localStorage.getItem('kw_app');
-    currentApp = (saved && APPS.find(function(a) { return a.label === saved; })) ? saved : defaultKey;
+    var RawSaved = localStorage.getItem('kw_apps_short_list');
+    if (RawSaved) {
+      var ParsedSaved = JSON.parse(RawSaved);
+      if (Array.isArray(ParsedSaved) && ParsedSaved.length > 0) {
+        var ValidatedSaved = ParsedSaved.filter(function(SavedLabel) {
+          return AllAppsFromJson.some(function(App) { return App.label === SavedLabel; });
+        });
+        if (ValidatedSaved.length > 0) PersistedLabels = ValidatedSaved;
+      }
+    }
+  } catch (StorageError) {}
 
-  } catch(e) {
-    currentApp = defaultKey;
+  appsShortList = PersistedLabels || DefaultShortListLabels;
+  APPS = appsLongList;
+
+  var FallbackApp = appsShortList[0] || (appsLongList[0] ? appsLongList[0].label : 'Photoshop (Ps)');
+  try {
+    var SavedApp = localStorage.getItem('kw_app');
+    currentApp = (SavedApp && appsShortList.includes(SavedApp)) ? SavedApp : FallbackApp;
+  } catch (StorageError) {
+    currentApp = FallbackApp;
   }
 
-  // Now it's safe to build the UI
+  _measureAndFixAppPillWidth();
   buildAppPill();
   positionIcons();
 }
+
+function _measureAndFixAppPillWidth() {
+  // Measure the widest app label at runtime using a hidden probe element,
+  // then set the pill to that width and never change it again this session.
+  var ProbeElement = document.createElement('span');
+  ProbeElement.style.cssText = 'position:absolute;visibility:hidden;white-space:nowrap;font-family:Lato,system-ui,sans-serif;font-size:12px;font-weight:500;padding:0;margin:0;';
+  document.body.appendChild(ProbeElement);
+
+  var WidestLabelPixels = 0;
+  appsLongList.forEach(function(AppEntry) {
+    ProbeElement.textContent = AppEntry.label + (AppEntry.beta ? ' (beta)' : '');
+    var LabelWidth = ProbeElement.offsetWidth;
+    if (LabelWidth > WidestLabelPixels) WidestLabelPixels = LabelWidth;
+  });
+  document.body.removeChild(ProbeElement);
+
+  // 22px icon column + label width + 10px right padding + 3px spare = total inner width.
+  // Add 3px each side for border (1.5px * 2) compensated via box-sizing.
+  var PillInnerWidth = 22 + WidestLabelPixels + 10 + 3;
+  var PillElement = document.getElementById('appPill');
+  if (PillElement) {
+    PillElement.style.width = PillInnerWidth + 'px';
+    PillElement.style.minWidth = PillInnerWidth + 'px';
+  }
+  window._AppPillFixedWidth = PillInnerWidth;
+} 
 
 // Fetch the apps manifest on startup. Falls back to a minimal built-in list if the
 // file cannot be reached (e.g. running the HTML file locally without a server).
@@ -6547,11 +6921,7 @@ function _onAppsLoaded(appsData) {
       return r.json();
     })
     .then(function(data) {
-      const IsBeta = document.title !== 'Keyboard Warriors';
-      const FilteredApps = data.filter(function(app) {
-        return IsBeta || !app.beta;
-      });
-      _onAppsLoaded(FilteredApps);
+      _onAppsLoaded(data);
     })
     .catch(function(err) {
       console.warn('[Apps] Could not load keyboard-warriors-apps.json:', err, '— using built-in fallback.');
@@ -6607,9 +6977,15 @@ function buildPool() {
   var maxDiff = DIFF_MAX[currentDifficulty] || 3;
   const browserSkip   = getBrowserConflictSet();
   const allShortcuts  = UNIVERSAL_SHORTCUTS.concat(loadedAppShortcuts);
-  return allShortcuts.filter(s => {
+return allShortcuts.filter(s => {
     // Ctrl+Alt combinations on Windows trigger AltGr / system dialogs — exclude all CMD+OPTION shortcuts on PC
     if (currentOs === 'pc' && s.shortcut.toUpperCase().includes('OPTION')) return false;
+    // keyboard_conflict: true means the shortcut only appears when touch mode bypasses browser/OS conflicts
+    if (s.keyboard_conflict && !touchEnabled) return false;
+    // OS-specific exclusion: pc_sc or mac_sc set to "none" signals this shortcut
+    // does not exist on that OS and should be excluded from the pool entirely.
+    if (currentOs === 'pc'  && s.pc_sc  === 'none') return false;
+    if (currentOs === 'mac' && s.mac_sc === 'none') return false;
     if (s.difficulty > maxDiff) return false;
     if ((touchEnabled || !hasFullKeyboard) && requiresExtKey(s.shortcut)) return false;
     if (!touchEnabled && browserSkip.has(s.shortcut)) return false;
@@ -6644,10 +7020,17 @@ function loadAppShortcutsIfNeeded(appKey, onReady) {
     .then(function(shortcuts) {
       console.log('[Shortcuts] Loaded', shortcuts.length, 'shortcuts for', appKey);
       if (thisLoadSequence === loadSequenceNumber) {
-        loadedAppShortcuts = shortcuts;
+         loadedAppShortcuts = shortcuts;
         loadedAppName      = appKey;
-        onReady();
-      } else {
+        // Rebuild SHORTCUT_ALTERNATES from all currently loaded shortcuts
+        // (UNIVERSAL_SHORTCUTS + newly loaded app shortcuts)
+        var allLoaded = UNIVERSAL_SHORTCUTS.concat(shortcuts);
+        allLoaded.forEach(function(s) {
+          if (s.alternates && Array.isArray(s.alternates) && s.alternates.length > 0) {
+            SHORTCUT_ALTERNATES[s.shortcut.toUpperCase()] = s.alternates.map(function(a) { return a.toUpperCase(); });
+          }
+        });
+        onReady();      } else {
         console.log('[Shortcuts] Stale response ignored (sequence mismatch)');
       }
     })

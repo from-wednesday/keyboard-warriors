@@ -3582,8 +3582,6 @@ function buildAppPill() {
 }
 
 function _MakeWrenchPickerRadioDot(IsActive) {
-  // Builds the SVG radio dot used exclusively in the wrench picker rows.
-  // Uses a hexagonal centre fill (not circular) to distinguish from modal-radio dots.
   var SvgNamespace = 'http://www.w3.org/2000/svg';
   var SvgElement = document.createElementNS(SvgNamespace, 'svg');
   SvgElement.setAttribute('width', '16');
@@ -3591,63 +3589,90 @@ function _MakeWrenchPickerRadioDot(IsActive) {
   SvgElement.setAttribute('viewBox', '0 0 19 19');
   SvgElement.setAttribute('class', 'app-pill-radio-svg');
 
-  // Outer circle ring (always present)
-  var OuterRing = document.createElementNS(SvgNamespace, 'circle');
-  OuterRing.setAttribute('cx', '9.5');
-  OuterRing.setAttribute('cy', '9.5');
-  OuterRing.setAttribute('r', '6.5');
-  OuterRing.setAttribute('stroke', '#374151');
-  OuterRing.setAttribute('stroke-width', '1.5');
-  OuterRing.setAttribute('fill', 'none');
+  var CentreX = 9.5;
+  var CentreY = 9.5;
 
-  // Hexagonal centre fill (visible when active)
-  // A regular hexagon centred at 9.5,9.5 with circumradius ~3.5
-  var HexPath = document.createElementNS(SvgNamespace, 'path');
-  var CentreX = 9.5, CentreY = 9.5, HexRadius = 3.5;
-  var HexPoints = [];
-  for (var PointIndex = 0; PointIndex < 6; PointIndex++) {
-    var AngleRadians = (Math.PI / 180) * (60 * PointIndex - 30);
-    HexPoints.push(
-      (CentreX + HexRadius * Math.cos(AngleRadians)).toFixed(2) + ',' +
-      (CentreY + HexRadius * Math.sin(AngleRadians)).toFixed(2)
-    );
+  function BuildHexPath(Radius) {
+    var HexPoints = [];
+    for (var PointIndex = 0; PointIndex < 6; PointIndex++) {
+      var AngleRadians = (Math.PI / 180) * (60 * PointIndex - 30);
+      HexPoints.push(
+        (CentreX + Radius * Math.cos(AngleRadians)).toFixed(2) + ',' +
+        (CentreY + Radius * Math.sin(AngleRadians)).toFixed(2)
+      );
+    }
+    return 'M' + HexPoints.join(' L') + ' Z';
   }
-  HexPath.setAttribute('d', 'M' + HexPoints.join(' L') + ' Z');
-  HexPath.setAttribute('fill', '#374151');
-  HexPath.setAttribute('class', 'app-pill-hex-dot');
-  HexPath.style.opacity = IsActive ? '1' : '0';
+
+  var OuterHex = document.createElementNS(SvgNamespace, 'path');
+  OuterHex.setAttribute('d', BuildHexPath(6.2));
+  OuterHex.setAttribute('stroke', '#374151');
+  OuterHex.setAttribute('stroke-width', '1.5');
+  OuterHex.setAttribute('fill', 'none');
+  OuterHex.setAttribute('stroke-linejoin', 'round');
+  OuterHex.setAttribute('class', 'app-pill-hex-ring');
+
+  var InnerHex = document.createElementNS(SvgNamespace, 'path');
+  InnerHex.setAttribute('d', BuildHexPath(3.5));
+  InnerHex.setAttribute('fill', '#374151');
+  InnerHex.setAttribute('class', 'app-pill-hex-dot');
+
   if (IsActive) {
-    HexPath.style.transform = 'rotate(180deg)';
+    OuterHex.style.transform = 'rotate(90deg)';
+    InnerHex.style.transform = 'rotate(90deg)';
+    InnerHex.style.opacity = '1';
+  } else {
+    OuterHex.style.transform = 'rotate(0deg)';
+    InnerHex.style.transform = 'rotate(0deg)';
+    InnerHex.style.opacity = '0';
   }
 
-  SvgElement.appendChild(OuterRing);
-  SvgElement.appendChild(HexPath);
+  SvgElement.appendChild(OuterHex);
+  SvgElement.appendChild(InnerHex);
   return SvgElement;
 }
 
 function _AnimateWrenchDot(RadioSpanElement, GoingActive) {
   var HexPathElement = RadioSpanElement.querySelector('.app-pill-hex-dot');
-  if (!HexPathElement) return;
+  var HexRingElement = RadioSpanElement.querySelector('.app-pill-hex-ring');
+  if (!HexPathElement || !HexRingElement) return;
+
   HexPathElement.classList.remove('animating-in', 'animating-out');
-  void HexPathElement.offsetWidth; // force reflow to restart animation
+  HexRingElement.classList.remove('animating-in', 'animating-out');
+
+  void HexPathElement.offsetWidth;
+
   if (GoingActive) {
     HexPathElement.style.opacity = '0';
     HexPathElement.style.transform = 'rotate(0deg)';
+    HexRingElement.style.transform = 'rotate(0deg)';
+
     HexPathElement.classList.add('animating-in');
+    HexRingElement.classList.add('animating-in');
+
     HexPathElement.addEventListener('animationend', function Handler() {
       HexPathElement.removeEventListener('animationend', Handler);
       HexPathElement.classList.remove('animating-in');
+      HexRingElement.classList.remove('animating-in');
       HexPathElement.style.opacity = '1';
-      HexPathElement.style.transform = 'rotate(180deg)';
+      HexPathElement.style.transform = 'rotate(90deg)';
+      HexRingElement.style.transform = 'rotate(90deg)';
     }, { once: true });
   } else {
     HexPathElement.style.opacity = '1';
     HexPathElement.style.transform = 'rotate(0deg)';
+    HexRingElement.style.transform = 'rotate(0deg)';
+
     HexPathElement.classList.add('animating-out');
+    HexRingElement.classList.add('animating-out');
+
     HexPathElement.addEventListener('animationend', function Handler() {
       HexPathElement.removeEventListener('animationend', Handler);
       HexPathElement.classList.remove('animating-out');
+      HexRingElement.classList.remove('animating-out');
       HexPathElement.style.opacity = '0';
+      HexPathElement.style.transform = 'rotate(-90deg)';
+      HexRingElement.style.transform = 'rotate(-90deg)';
     }, { once: true });
   }
 }

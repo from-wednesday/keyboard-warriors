@@ -2515,9 +2515,9 @@ li.conflict-dismissed .conflict-desc {
   border-radius:  14px;
   pointer-events: none;
   transform:      translateZ(-7px);
-  background:     #b2b8c0;
+  background:     #ff00ff; /*#b2b8c0;
   z-index:        0;
-  box-shadow: 0 0 0 20px #b2b8c0;
+  box-shadow: 0 0 0 20px #9900ff /*#b2b8c0;
   clip-path: inset(0 round 14px);
 }
 
@@ -2539,7 +2539,7 @@ li.conflict-dismissed .conflict-desc {
   z-index:        0;
 }
 #keyboardPanel.kb-edged #kb-shadow {
-  background: rgba(0,0,0,0.6);
+  background: rgba(50,168,82,0.6); /* (0,0,0,0.6);
   transform:  translateZ(-10px) translateY(42px);
 }
 

@@ -3606,7 +3606,7 @@ function _MakeWrenchPickerRadioDot(IsActive) {
 
   var OuterHex = document.createElementNS(SvgNamespace, 'path');
   OuterHex.setAttribute('d', BuildHexPath(6.2));
-  OuterHex.setAttribute('stroke', '#374151');
+  OuterHex.setAttribute('stroke', IsActive ? '#374151' : '#d1d5db');
   OuterHex.setAttribute('stroke-width', '1.5');
   OuterHex.setAttribute('fill', 'none');
   OuterHex.setAttribute('stroke-linejoin', 'round');
@@ -3657,6 +3657,7 @@ function _AnimateWrenchDot(RadioSpanElement, GoingActive) {
       HexPathElement.style.opacity = '1';
       HexPathElement.style.transform = 'rotate(180deg)';
       HexRingElement.style.transform = 'rotate(180deg)';
+      HexRingElement.setAttribute('stroke', '#374151');
     }, { once: true });
   } else {
     HexPathElement.style.opacity = '1';
@@ -3697,8 +3698,9 @@ function _buildWrenchPickerRows() {
     var LabelSpan = document.createElement('span');
     LabelSpan.className = 'app-option-label-col';
     LabelSpan.style.cssText = 'flex:1;font-size:12px;white-space:nowrap;text-align:left;'
-      + (IsInShortList ? 'color:#374151;' : 'color:#9ca3af;')
+      + (IsInShortList ? 'color:#374151;' : 'color:#d1d5db;text-decoration:line-through;')
       + (IsBetaApp ? 'font-style:italic;' : '');
+
     LabelSpan.textContent = AppEntry.label + (IsBetaApp ? ' (beta)' : '');
 
     Row.appendChild(IconColumn);
@@ -3735,13 +3737,15 @@ function _toggleWrenchPickerApp(AppLabel, RowElement, IconColumnElement, LabelSp
     if (appsShortList.length <= 1) { showToast('You need at least one app in your list.'); return; }
     appsShortList = appsShortList.filter(function(Label) { return Label !== AppLabel; });
     _AnimateWrenchDot(IconColumnElement, false);
-    LabelSpanElement.style.color = '#9ca3af';
+    LabelSpanElement.style.color = '#d1d5db';
+    LabelSpanElement.style.textDecoration = 'line-through';
     RowElement.classList.remove('wrench-picker-active');
     RowElement.classList.add('wrench-picker-inactive');
   } else {
     appsShortList.push(AppLabel);
     _AnimateWrenchDot(IconColumnElement, true);
     LabelSpanElement.style.color = '#374151';
+    LabelSpanElement.style.textDecoration = '';
     RowElement.classList.remove('wrench-picker-inactive');
     RowElement.classList.add('wrench-picker-active');
   }

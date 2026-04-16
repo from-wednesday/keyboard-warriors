@@ -3685,7 +3685,9 @@ function _AnimateWrenchDot(RadioSpanElement, GoingActive) {
       HexDotElement.style.opacity = '0';
     }, { once: true });
   }
-}  var SvgNamespace = 'http://www.w3.org/2000/svg';
+} 
+function _MakeWrenchPickerRadioDot(IsActive) {
+  var SvgNamespace = 'http://www.w3.org/2000/svg';
   var SvgElement = document.createElementNS(SvgNamespace, 'svg');
   SvgElement.setAttribute('width', '16');
   SvgElement.setAttribute('height', '16');
@@ -3707,6 +3709,11 @@ function _AnimateWrenchDot(RadioSpanElement, GoingActive) {
     return 'M' + HexPoints.join(' L') + ' Z';
   }
 
+  // Both paths live inside a <g> that rotates as one rigid unit
+  var Group = document.createElementNS(SvgNamespace, 'g');
+  Group.setAttribute('class', 'app-pill-hex-group');
+  Group.style.transform = IsActive ? 'rotate(180deg)' : 'rotate(0deg)';
+
   var OuterHex = document.createElementNS(SvgNamespace, 'path');
   OuterHex.setAttribute('d', BuildHexPath(6.2));
   OuterHex.setAttribute('stroke', IsActive ? '#374151' : '#d1d5db');
@@ -3719,64 +3726,68 @@ function _AnimateWrenchDot(RadioSpanElement, GoingActive) {
   InnerHex.setAttribute('d', BuildHexPath(3.5));
   InnerHex.setAttribute('fill', '#374151');
   InnerHex.setAttribute('class', 'app-pill-hex-dot');
+  InnerHex.style.opacity = IsActive ? '1' : '0';
 
-  if (IsActive) {
-    OuterHex.style.transform = 'rotate(180deg)';
-    InnerHex.style.transform = 'rotate(180deg)';
-    InnerHex.style.opacity = '1';
-  } else {
-    OuterHex.style.transform = 'rotate(0deg)';
-    InnerHex.style.transform = 'rotate(0deg)';
-    InnerHex.style.opacity = '0';
-  }
-
-  SvgElement.appendChild(OuterHex);
-  SvgElement.appendChild(InnerHex);
+  Group.appendChild(OuterHex);
+  Group.appendChild(InnerHex);
+  SvgElement.appendChild(Group);
   return SvgElement;
 }
 
 function _AnimateWrenchDot(RadioSpanElement, GoingActive) {
-  var HexPathElement = RadioSpanElement.querySelector('.app-pill-hex-dot');
+  var GroupElement   = RadioSpanElement.querySelector('.app-pill-hex-group');
+  var HexDotElement  = RadioSpanElement.querySelector('.app-pill-hex-dot');
   var HexRingElement = RadioSpanElement.querySelector('.app-pill-hex-ring');
-  if (!HexPathElement || !HexRingElement) return;
+  if (!GroupElement || !HexDotElement || !HexRingElement) return;
 
-  HexPathElement.classList.remove('animating-in', 'animating-out');
-  HexRingElement.classList.remove('animating-in', 'animating-out');
-
-  void HexPathElement.offsetWidth;
+  // Clear any in-progress animation classes
+  GroupElement.classList.remove('animating-in', 'animating-out');
+  HexDotElement.classList.remove('animating-in', 'animating-out');
+  void GroupElement.offsetWidth;
 
   if (GoingActive) {
-    HexPathElement.style.opacity = '0';
-    HexPathElement.style.transform = 'rotate(0deg)';
-    HexRingElement.style.transform = 'rotate(0deg)';
+    // Start position: unspun, ring light, dot invisible
+    GroupElement.style.transform = 'rotate(0deg)';
+    HexRingElement.setAttribute('stroke', '#d1d5db');
+    HexDotElement.style.opacity = '0';
 
-    HexPathElement.classList.add('animating-in');
-    HexRingElement.classList.add('animating-in');
-
-    HexPathElement.addEventListener('animationend', function Handler() {
-      HexPathElement.removeEventListener('animationend', Handler);
-      HexPathElement.classList.remove('animating-in');
-      HexRingElement.classList.remove('animating-in');
-      HexPathElement.style.opacity = '1';
-      HexPathElement.style.transform = 'rotate(180deg)';
-      HexRingElement.style.transform = 'rotate(180deg)';
+    // Kick off: group spins CW, dot fades in, ring darkens via CSS transition
+    requestAnimationFrame(function() {
+      GroupElement.classList.add('animating-in');
+      HexDotElement.classList.add('animating-in');
+      // Ring colour transitions independently via CSS transition on stroke
       HexRingElement.setAttribute('stroke', '#374151');
+    });
+
+    GroupElement.addEventListener('animationend', function Handler() {
+      GroupElement.removeEventListener('animationend', Handler);
+      GroupElement.classList.remove('animating-in');
+      HexDotElement.classList.remove('animating-in');
+      // Settle to resting active state
+      GroupElement.style.transform = 'rotate(180deg)';
+      HexDotElement.style.opacity = '1';
     }, { once: true });
+
   } else {
-    HexPathElement.style.opacity = '1';
-    HexPathElement.style.transform = 'rotate(0deg)';
-    HexRingElement.style.transform = 'rotate(0deg)';
+    // Start position: spun, ring dark, dot visible
+    GroupElement.style.transform = 'rotate(0deg)';
+    HexRingElement.setAttribute('stroke', '#374151');
+    HexDotElement.style.opacity = '1';
 
-    HexPathElement.classList.add('animating-out');
-    HexRingElement.classList.add('animating-out');
+    requestAnimationFrame(function() {
+      GroupElement.classList.add('animating-out');
+      HexDotElement.classList.add('animating-out');
+      // Ring lightens during the spin
+      HexRingElement.setAttribute('stroke', '#d1d5db');
+    });
 
-    HexPathElement.addEventListener('animationend', function Handler() {
-      HexPathElement.removeEventListener('animationend', Handler);
-      HexPathElement.classList.remove('animating-out');
-      HexRingElement.classList.remove('animating-out');
-      HexPathElement.style.opacity = '0';
-      HexPathElement.style.transform = 'rotate(-180deg)';
-      HexRingElement.style.transform = 'rotate(-180deg)';
+    GroupElement.addEventListener('animationend', function Handler() {
+      GroupElement.removeEventListener('animationend', Handler);
+      GroupElement.classList.remove('animating-out');
+      HexDotElement.classList.remove('animating-out');
+      // Settle to resting inactive state
+      GroupElement.style.transform = 'rotate(-180deg)';
+      HexDotElement.style.opacity = '0';
     }, { once: true });
   }
 }

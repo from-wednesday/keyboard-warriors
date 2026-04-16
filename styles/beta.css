@@ -1,5 +1,6 @@
 /* ═══════════════════════════════════════════════════
    Keyboard Warriors CSS
+   externalised from the HTML file
    Load order: @import → Block 1 → Block 3 → misc
    Do not reorder major sections.
    ═══════════════════════════════════════════════════ */
@@ -1625,11 +1626,11 @@ li.conflict-dismissed .conflict-desc {
   transition: border-color 0.15s, background-color 0.15s;
 }
 .app-option-wrench {
-  border-top: 1px solid rgba(0,0,0,0.04);
+  border-top: 1px solid rgba(0,0,0,0.05);
   opacity: 0.3;
-  height: 30px; /* slightly taller for more space below the wrench */
+  height: 28px; /* slightly taller for more space below the wrench */
   align-items: flex-start;
-  padding-top: 4px;
+  padding-top: 5px;
   padding-left: 0;
 }
 .app-option-wrench:hover { opacity: 1; }
@@ -2514,9 +2515,9 @@ li.conflict-dismissed .conflict-desc {
   border-radius:  14px;
   pointer-events: none;
   transform:      translateZ(-7px);
-  background:     #ff00ff; /*#b2b8c0;
+  background:     #b2b8c0;
   z-index:        0;
-  box-shadow: 0 0 0 20px #9900ff /*#b2b8c0;
+  box-shadow: 0 0 0 20px #b2b8c0;
   clip-path: inset(0 round 14px);
 }
 

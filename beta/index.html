@@ -3569,7 +3569,7 @@ function buildAppPill() {
   var WrenchIconColumn = document.createElement('span');
   WrenchIconColumn.className = 'app-option-icon-col';
   WrenchIconColumn.style.justifyContent = 'flex-start';
-  WrenchIconColumn.innerHTML = '<img src="/keyboard-warriors/images/wrench.svg" height="14" alt="Customise apps" style="display:block;">';
+  WrenchIconColumn.innerHTML = '<img src="/keyboard-warriors/images/wrench.svg" height="15" alt="Customise apps" style="display:block;">';
 
   WrenchRow.appendChild(WrenchIconColumn);
   WrenchRow.addEventListener('click', function(ClickEvent) {
@@ -3707,13 +3707,32 @@ function _buildWrenchPickerRows() {
   });
 
   var WrenchRow = document.createElement('div');
-  WrenchRow.className = 'app-option app-option-wrench';
+  WrenchRow.className = 'app-option function _AppPillSpringTick() {
+  var Spring = _AppPillSpring;
+  var Difference = Spring.TargetHeight - Spring.CurrentHeight;
+
+  if (Spring.CurrentHeight < Spring.TargetHeight) {
+    // Opening: gentle spring with slight overshoot character
+    var Stiffness = 0.052;
+    var Damping   = 0.74;
+    Spring.Velocity = Spring.Velocity * Damping + Difference * Stiffness;
+    Spring.CurrentHeight += Spring.Velocity;
+  } else {
+    // Closing: ease in, then snap cleanly once within 2px
+    var ShrinkProgress = Math.abs(Difference) / (Spring.TargetHeight > 0 ? Spring.TargetHeight : 27);
+    var ShrinkSpeed = 0.055 + ShrinkProgress * 0.11;
+    Spring.CurrentHeight += Difference * ShrinkSpeed;
+    Spring.Velocity = 0;
+  }
+
+  var Settled = Math.abs(Spring.CurrentHeight - Spring.TargetHeight) < 2
+               && Math.abs(Spring.Velocity) < 0.3;';
   WrenchRow.style.borderTop = '1px solid rgba(0,0,0,0.08)';
 
   var WrenchIconColumn = document.createElement('span');
   WrenchIconColumn.className = 'app-option-icon-col';
   WrenchIconColumn.style.justifyContent = 'flex-start';
-  WrenchIconColumn.innerHTML = '<img src="/keyboard-warriors/images/wrench.svg" height="20" alt="Close customiser" style="display:block;">';
+  WrenchIconColumn.innerHTML = '<img src="/keyboard-warriors/images/wrench.svg" height="18" alt="Close customiser" style="display:block;">';
 
   WrenchRow.appendChild(WrenchIconColumn);
   WrenchRow.addEventListener('click', function(ClickEvent) {
@@ -3788,25 +3807,21 @@ function _AppPillSpringTick() {
   var Difference = Spring.TargetHeight - Spring.CurrentHeight;
 
   if (Spring.CurrentHeight < Spring.TargetHeight) {
-    // --- SLOWER GROWING ---
-    var Stiffness = 0.07; // Much slower tension
-    var Damping   = 0.80; // High damping to keep it smooth
+    // Opening: gentle spring with slight overshoot character
+    var Stiffness = 0.052;
+    var Damping   = 0.74;
     Spring.Velocity = Spring.Velocity * Damping + Difference * Stiffness;
     Spring.CurrentHeight += Spring.Velocity;
   } else {
-    // --- SLOWER SHRINKING ---
+    // Closing: ease in, then snap cleanly once within 2px
     var ShrinkProgress = Math.abs(Difference) / (Spring.TargetHeight > 0 ? Spring.TargetHeight : 27);
-    // Reduced coefficients significantly to slow the exit
-    var ShrinkSpeed = 0.04 + ShrinkProgress * 0.1; 
+    var ShrinkSpeed = 0.055 + ShrinkProgress * 0.11;
     Spring.CurrentHeight += Difference * ShrinkSpeed;
     Spring.Velocity = 0;
   }
 
-  // Adjusted Threshold: 
-  // Because the animation is slower, we might want a tighter "Settled" 
-  // check so it doesn't spend too long on tiny sub-pixel movements.
-  var Settled = Math.abs(Spring.CurrentHeight - Spring.TargetHeight) < 0.05
-               && Math.abs(Spring.Velocity) < 0.2;
+  var Settled = Math.abs(Spring.CurrentHeight - Spring.TargetHeight) < 2
+               && Math.abs(Spring.Velocity) < 0.3;
 
   if (Settled) {
     Spring.CurrentHeight = Spring.TargetHeight;

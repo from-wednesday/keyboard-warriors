@@ -2555,7 +2555,7 @@ li.conflict-dismissed .conflict-desc {
   z-index:        5;
   opacity:        0;
   transition:     height 0.3s ease, opacity 0.3s ease;
-  background:     rgba(255,255,255,0.55);
+  background:     rgba(255,0,255,0.55);
 }
 #kbFlipStage.kb-show-base #kb-base-edge {
   height:  3px;

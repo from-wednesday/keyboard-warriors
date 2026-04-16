@@ -3586,11 +3586,11 @@ function _MakeWrenchPickerRadioDot(IsActive) {
   var SvgElement = document.createElementNS(SvgNamespace, 'svg');
   SvgElement.setAttribute('width', '16');
   SvgElement.setAttribute('height', '16');
-  SvgElement.setAttribute('viewBox', '0 0 19 19');
+  SvgElement.setAttribute('viewBox', '0 0 16 16'); // Standardized to 16 not 19
   SvgElement.setAttribute('class', 'app-pill-radio-svg');
 
-  var CentreX = 9.5;
-  var CentreY = 9.5;
+ // Centered exactly at 8,8 (half of 16)
+  var CentreX = 8, CentreY = 8;
 
   function BuildHexPath(Radius) {
     var HexPoints = [];
@@ -3605,18 +3605,20 @@ function _MakeWrenchPickerRadioDot(IsActive) {
   }
 
   var OuterHex = document.createElementNS(SvgNamespace, 'path');
-  OuterHex.setAttribute('d', BuildHexPath(6.2));
+  OuterHex.setAttribute('d', BuildHexPath(6.5));
   OuterHex.setAttribute('stroke', IsActive ? '#374151' : '#d1d5db');
   OuterHex.setAttribute('stroke-width', '1.5');
   OuterHex.setAttribute('fill', 'none');
   OuterHex.setAttribute('stroke-linejoin', 'round');
   OuterHex.setAttribute('class', 'app-pill-hex-ring');
+  OuterHex.style.transformOrigin = 'center'; // Fixes rotation axis
 
   var InnerHex = document.createElementNS(SvgNamespace, 'path');
   InnerHex.setAttribute('d', BuildHexPath(3.5));
   InnerHex.setAttribute('fill', '#374151');
   InnerHex.setAttribute('class', 'app-pill-hex-dot');
-
+  InnerHex.style.transformOrigin = 'center'; // Fixes rotation axis
+  
   if (IsActive) {
     OuterHex.style.transform = 'rotate(180deg)';
     InnerHex.style.transform = 'rotate(180deg)';

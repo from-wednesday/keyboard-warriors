@@ -3633,51 +3633,41 @@ function _MakeWrenchPickerRadioDot(IsActive) {
 }
 
 function _AnimateWrenchDot(RadioSpanElement, GoingActive) {
-  var HexPathElement = RadioSpanElement.querySelector('.app-pill-hex-dot');
-  var HexRingElement = RadioSpanElement.querySelector('.app-pill-hex-ring');
-  if (!HexPathElement || !HexRingElement) return;
+  var DotEl  = RadioSpanElement.querySelector('.app-pill-hex-dot');
+  var RingEl = RadioSpanElement.querySelector('.app-pill-hex-ring');
+  if (!DotEl || !RingEl) return;
 
-  HexPathElement.classList.remove('animating-in', 'animating-out');
-  HexRingElement.classList.remove('animating-in', 'animating-out');
-
-  void HexPathElement.offsetWidth;
+  // Remove any running animation
+  DotEl.classList.remove('animating-in', 'animating-out');
+  RingEl.classList.remove('animating-in', 'animating-out');
+  void DotEl.offsetWidth; // force reflow
 
   if (GoingActive) {
-    HexPathElement.style.opacity = '0';
-    HexPathElement.style.transform = 'rotate(0deg)';
-    HexRingElement.style.transform = 'rotate(0deg)';
-
-    HexPathElement.classList.add('animating-in');
-    HexRingElement.classList.add('animating-in');
-
-    HexPathElement.addEventListener('animationend', function Handler() {
-      HexPathElement.removeEventListener('animationend', Handler);
-      HexPathElement.classList.remove('animating-in');
-      HexRingElement.classList.remove('animating-in');
-      HexPathElement.style.opacity = '1';
-      HexPathElement.style.transform = 'rotate(180deg)';
-      HexRingElement.style.transform = 'rotate(180deg)';
-      HexRingElement.setAttribute('stroke', '#374151');
+    // OFF → ON: clockwise, inner fades in, ring goes dark
+    RingEl.setAttribute('stroke', '#374151');
+    DotEl.style.opacity = '0';
+    DotEl.classList.add('animating-in');
+    RingEl.classList.add('animating-in');
+    DotEl.addEventListener('animationend', function Handler() {
+      DotEl.removeEventListener('animationend', Handler);
+      DotEl.classList.remove('animating-in');
+      RingEl.classList.remove('animating-in');
+      DotEl.style.opacity = '1';
     }, { once: true });
   } else {
-    HexPathElement.style.opacity = '1';
-    HexPathElement.style.transform = 'rotate(0deg)';
-    HexRingElement.style.transform = 'rotate(0deg)';
-
-    HexPathElement.classList.add('animating-out');
-    HexRingElement.classList.add('animating-out');
-
-    HexPathElement.addEventListener('animationend', function Handler() {
-      HexPathElement.removeEventListener('animationend', Handler);
-      HexPathElement.classList.remove('animating-out');
-      HexRingElement.classList.remove('animating-out');
-      HexPathElement.style.opacity = '0';
-      HexPathElement.style.transform = 'rotate(-180deg)';
-      HexRingElement.style.transform = 'rotate(-180deg)';
+    // ON → OFF: anticlockwise, inner fades out, ring goes light
+    DotEl.style.opacity = '1';
+    DotEl.classList.add('animating-out');
+    RingEl.classList.add('animating-out');
+    DotEl.addEventListener('animationend', function Handler() {
+      DotEl.removeEventListener('animationend', Handler);
+      DotEl.classList.remove('animating-out');
+      RingEl.classList.remove('animating-out');
+      DotEl.style.opacity = '0';
+      RingEl.setAttribute('stroke', '#d1d5db');
     }, { once: true });
   }
 }
-
 function _buildWrenchPickerRows() {
   appPillEl.innerHTML = '';
 
@@ -3739,15 +3729,11 @@ function _toggleWrenchPickerApp(AppLabel, RowElement, IconColumnElement, LabelSp
     _AnimateWrenchDot(IconColumnElement, false);
     LabelSpanElement.style.color = '#d1d5db';
     LabelSpanElement.style.textDecoration = 'line-through';
-    RowElement.classList.remove('wrench-picker-active');
-    RowElement.classList.add('wrench-picker-inactive');
   } else {
     appsShortList.push(AppLabel);
     _AnimateWrenchDot(IconColumnElement, true);
     LabelSpanElement.style.color = '#374151';
     LabelSpanElement.style.textDecoration = '';
-    RowElement.classList.remove('wrench-picker-inactive');
-    RowElement.classList.add('wrench-picker-active');
   }
 }
 

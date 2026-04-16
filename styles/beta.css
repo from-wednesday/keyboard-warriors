@@ -2515,11 +2515,11 @@ li.conflict-dismissed .conflict-desc {
   border-radius:  14px;
   pointer-events: none;
   transform:      translateZ(-7px);
-  background:     #b2b8c0;
+  background:     transparent;
   z-index:        0;
-  box-shadow: 0 0 0 20px #b2b8c0;
-  clip-path: inset(0 round 14px);
+  display:        none;
 }
+
 
 /* ─── DROP SHADOW ─────────────────────────────────────
    Blurred translucent blob at negative Z — floats the

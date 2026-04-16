@@ -3707,7 +3707,80 @@ function _buildWrenchPickerRows() {
   });
 
   var WrenchRow = document.createElement('div');
-  WrenchRow.className = 'app-option function _AppPillSpringTick() {
+  WrenchRow.className = 'app-option-icon-col';
+  WrenchIconColumn.style.justifyContent = 'flex-start';
+  WrenchIconColumn.innerHTML = '<img src="/keyboard-warriors/images/wrench.svg" height="20" alt="Close customiser" style="display:block;">';
+
+  WrenchRow.appendChild(WrenchIconColumn);
+  WrenchRow.addEventListener('click', function(ClickEvent) {
+    ClickEvent.stopPropagation();
+    _closeWrenchPicker();
+  });
+  appPillEl.appendChild(WrenchRow);
+}
+
+function _toggleWrenchPickerApp(AppLabel, RowElement, IconColumnElement, LabelSpanElement) {
+  var IsCurrentlyActive = appsShortList.includes(AppLabel);
+  if (IsCurrentlyActive) {
+    if (appsShortList.length <= 1) { showToast('You need at least one app in your list.'); return; }
+    appsShortList = appsShortList.filter(function(Label) { return Label !== AppLabel; });
+    _AnimateWrenchDot(IconColumnElement, false);
+    LabelSpanElement.style.color = '#d1d5db';
+    LabelSpanElement.style.textDecoration = 'line-through';
+  } else {
+    appsShortList.push(AppLabel);
+    _AnimateWrenchDot(IconColumnElement, true);
+    LabelSpanElement.style.color = '#374151';
+    LabelSpanElement.style.textDecoration = '';
+  }
+}
+
+function _openWrenchPicker() {
+  AppPillWrenchOpen = true;
+  appPillEl.classList.add('open', 'drop-down');
+  appPillEl.scrollTop = 0;
+  buildAppPill();
+  var NaturalHeight = _AppPillMeasureNaturalHeight();
+  _AppPillAnimateTo(NaturalHeight);
+}
+
+function _closeWrenchPicker() {
+  AppPillWrenchOpen = false;
+  if (!appsShortList.includes(currentApp)) {
+    currentApp = appsShortList[0];
+    try { localStorage.setItem('kw_app', currentApp); } catch (StorageError) {}
+    runData.length = 0; lastCompletedReport = null; CoachAdviceAccepted = false;
+  }
+  _saveAppsShortList();
+  buildAppPill();
+  var NaturalHeight = _AppPillMeasureNaturalHeight();
+  _AppPillAnimateTo(NaturalHeight);
+  setTimeout(function() {
+    appPillEl.classList.remove('open', 'drop-down');
+    _AppPillAnimateTo(27);
+    setTimeout(scrollPillToSelected, 280);
+  }, 0);
+}
+
+
+function scrollPillToSelected() {
+  var SelectedIndex = appsShortList.indexOf(currentApp);
+  if (SelectedIndex < 0) SelectedIndex = 0;
+  appPillEl.scrollTop = SelectedIndex * ROW_H;
+}
+
+// ── App pill spring height animator ──────────────────────────────────────────
+// Drives smooth, spring-based height transitions on the app pill.
+// Growing: slight overshoot (3-4%) then settles. Shrinking: ease-in-slow then ease-out-fast.
+var _AppPillSpring = {
+  CurrentHeight:  27,
+  TargetHeight:   27,
+  Velocity:       0,
+  AnimationFrame: null,
+};
+
+  
+function _AppPillSpringTick() {
   var Spring = _AppPillSpring;
   var Difference = Spring.TargetHeight - Spring.CurrentHeight;
 

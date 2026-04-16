@@ -6885,36 +6885,10 @@ function _onAppsLoaded(AllAppsFromJson) {
     currentApp = FallbackApp;
   }
 
-  _measureAndFixAppPillWidth();
-  buildAppPill();
+   buildAppPill();
   positionIcons();
 }
 
-function _measureAndFixAppPillWidth() {
-  // Measure the widest app label at runtime using a hidden probe element,
-  // then set the pill to that width and never change it again this session.
-  var ProbeElement = document.createElement('span');
-  ProbeElement.style.cssText = 'position:absolute;visibility:hidden;white-space:nowrap;font-family:Lato,system-ui,sans-serif;font-size:12px;font-weight:500;padding:0;margin:0;';
-  document.body.appendChild(ProbeElement);
-
-  var WidestLabelPixels = 0;
-  appsLongList.forEach(function(AppEntry) {
-    ProbeElement.textContent = AppEntry.label + (AppEntry.beta ? ' (beta)' : '');
-    var LabelWidth = ProbeElement.offsetWidth;
-    if (LabelWidth > WidestLabelPixels) WidestLabelPixels = LabelWidth;
-  });
-  document.body.removeChild(ProbeElement);
-
-  // 22px icon column + label width + 10px right padding + 3px spare = total inner width.
-  // Add 3px each side for border (1.5px * 2) compensated via box-sizing.
-  var PillInnerWidth = 22 + WidestLabelPixels + 10 + 3;
-  var PillElement = document.getElementById('appPill');
-  if (PillElement) {
-    PillElement.style.width = PillInnerWidth + 'px';
-    PillElement.style.minWidth = PillInnerWidth + 'px';
-  }
-  window._AppPillFixedWidth = PillInnerWidth;
-} 
 
 // Fetch the apps manifest on startup. Falls back to a minimal built-in list if the
 // file cannot be reached (e.g. running the HTML file locally without a server).

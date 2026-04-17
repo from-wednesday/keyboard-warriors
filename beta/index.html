@@ -3685,6 +3685,8 @@ function _buildWrenchPickerRows() {
       + (IsInShortList ? ' wrench-picker-active' : ' wrench-picker-inactive');
     Row.dataset.appLabel = AppEntry.label;
     Row.style.cssText = 'display:flex;align-items:center;height:24px;padding:0 10px 0 0;cursor:pointer;';
+    Row.draggable = true;
+    _attachWrenchRowDragListeners(Row);
 
     var IconColumn = document.createElement('span');
     IconColumn.className = 'app-option-icon-col';
@@ -3698,8 +3700,13 @@ function _buildWrenchPickerRows() {
 
     LabelSpan.textContent = AppEntry.label + (IsBetaApp ? ' (beta)' : '');
 
+    var DragHandle = document.createElement('span');
+    DragHandle.style.cssText = 'display:flex;align-items:center;padding:0 6px 0 2px;opacity:0.25;flex-shrink:0;cursor:grab;touch-action:none;';
+    DragHandle.innerHTML = '<svg width="8" height="12" viewBox="0 0 8 12" fill="currentColor"><circle cx="2" cy="2" r="1.2"/><circle cx="6" cy="2" r="1.2"/><circle cx="2" cy="6" r="1.2"/><circle cx="6" cy="6" r="1.2"/><circle cx="2" cy="10" r="1.2"/><circle cx="6" cy="10" r="1.2"/></svg>';
+
     Row.appendChild(IconColumn);
     Row.appendChild(LabelSpan);
+    Row.appendChild(DragHandle);
 
     Row.addEventListener('click', function(ClickEvent) {
       ClickEvent.stopPropagation();
@@ -3742,6 +3749,164 @@ function _toggleWrenchPickerApp(AppLabel, RowElement, IconColumnElement, LabelSp
   }
 }
 
+var _WrenchDragSourceRow      = null;
+var _WrenchDragGapRow         = null;
+var _WrenchDragGapIndex       = -1;
+var _WrenchDragPointerOffsetY = 0;
+var _WrenchDragRowHeight      = 24;
+
+function _attachWrenchRowDragListeners(RowElement) {
+  // Mouse drag
+  RowElement.addEventListener('dragstart', _onWrenchDragStart);
+  RowElement.addEventListener('dragend',   _onWrenchDragEnd);
+  RowElement.addEventListener('dragover',  _onWrenchDragOver);
+  RowElement.addEventListener('drop',      _onWrenchDrop);
+
+  // Touch drag
+  RowElement.addEventListener('touchstart', _onWrenchTouchStart, { passive: false });
+  RowElement.addEventListener('touchmove',  _onWrenchTouchMove,  { passive: false });
+  RowElement.addEventListener('touchend',   _onWrenchTouchEnd,   { passive: false });
+}
+
+function _getWrenchContentRows() {
+  // All rows except the wrench close button at the bottom
+  var AllRows = Array.from(appPillEl.querySelectorAll('.app-option-wrench-picker'));
+  return AllRows;
+}
+
+function _wrenchRowIndexAtY(ClientY) {
+  var ContentRows = _getWrenchContentRows();
+  for (var Index = 0; Index < ContentRows.length; Index++) {
+    var Rect = ContentRows[Index].getBoundingClientRect();
+    if (ClientY < Rect.bottom) return Index;
+  }
+  return ContentRows.length - 1;
+}
+
+function _insertWrenchGapAt(TargetIndex) {
+  if (_WrenchDragGapIndex === TargetIndex) return;
+  _removeWrenchGap();
+  _WrenchDragGapIndex = TargetIndex;
+  var ContentRows = _getWrenchContentRows();
+  var GapRow = document.createElement('div');
+  GapRow.style.cssText = 'height:24px;background:rgba(16,185,129,0.08);border-radius:4px;margin:1px 0;pointer-events:none;transition:height 0.12s ease;flex-shrink:0;';
+  _WrenchDragGapRow = GapRow;
+  if (TargetIndex >= ContentRows.length) {
+    var CloseBtn = appPillEl.querySelector('.app-option-wrench:last-child');
+    if (CloseBtn) {
+      appPillEl.insertBefore(GapRow, CloseBtn);
+    } else {
+      appPillEl.appendChild(GapRow);
+    }
+  } else {
+    appPillEl.insertBefore(GapRow, ContentRows[TargetIndex]);
+  }
+}
+
+function _removeWrenchGap() {
+  if (_WrenchDragGapRow && _WrenchDragGapRow.parentNode) {
+    _WrenchDragGapRow.parentNode.removeChild(_WrenchDragGapRow);
+  }
+  _WrenchDragGapRow  = null;
+  _WrenchDragGapIndex = -1;
+}
+
+function _commitWrenchDrop(DroppedAtIndex) {
+  if (!_WrenchDragSourceRow) return;
+  var ContentRows  = _getWrenchContentRows();
+  var SourceIndex  = ContentRows.indexOf(_WrenchDragSourceRow);
+  if (SourceIndex === -1) return;
+
+  // Rebuild appsLongList order to match the new visual order
+  var NewOrder = ContentRows.slice();
+  NewOrder.splice(SourceIndex, 1);
+  if (DroppedAtIndex > SourceIndex) DroppedAtIndex--;
+  NewOrder.splice(DroppedAtIndex, 0, _WrenchDragSourceRow);
+
+  var NewLongList = NewOrder.map(function(RowElement) {
+    return appsLongList.find(function(AppEntry) {
+      return AppEntry.label === RowElement.dataset.appLabel;
+    });
+  }).filter(Boolean);
+
+  appsLongList = NewLongList;
+
+  // Rebuild the visual list to match
+  _removeWrenchGap();
+  _WrenchDragSourceRow.style.opacity = '';
+  _WrenchDragSourceRow.style.transform = '';
+  _WrenchDragSourceRow = null;
+  _buildWrenchPickerRows();
+}
+
+// Mouse drag handlers
+function _onWrenchDragStart(Event) {
+  _WrenchDragSourceRow = Event.currentTarget;
+  _WrenchDragSourceRow.style.opacity = '0.4';
+  Event.dataTransfer.effectAllowed = 'move';
+}
+
+function _onWrenchDragEnd(Event) {
+  _removeWrenchGap();
+  if (_WrenchDragSourceRow) {
+    _WrenchDragSourceRow.style.opacity = '';
+    _WrenchDragSourceRow = null;
+  }
+}
+
+function _onWrenchDragOver(Event) {
+  Event.preventDefault();
+  Event.dataTransfer.dropEffect = 'move';
+  var TargetIndex = _wrenchRowIndexAtY(Event.clientY);
+  _insertWrenchGapAt(TargetIndex);
+}
+
+function _onWrenchDrop(Event) {
+  Event.preventDefault();
+  var DropIndex = _WrenchDragGapIndex >= 0 ? _WrenchDragGapIndex : _wrenchRowIndexAtY(Event.clientY);
+  _commitWrenchDrop(DropIndex);
+}
+
+// Touch drag handlers
+var _WrenchTouchDragClone    = null;
+var _WrenchTouchScrollOffset = 0;
+
+function _onWrenchTouchStart(Event) {
+  if (Event.touches.length !== 1) return;
+  var Touch = Event.touches[0];
+  _WrenchDragSourceRow = Event.currentTarget;
+  var Rect = _WrenchDragSourceRow.getBoundingClientRect();
+  _WrenchDragPointerOffsetY = Touch.clientY - Rect.top;
+
+  // Create a floating clone for visual feedback
+  var Clone = _WrenchDragSourceRow.cloneNode(true);
+  Clone.style.cssText = 'position:fixed;left:' + Rect.left + 'px;top:' + Rect.top + 'px;width:' + Rect.width + 'px;height:' + Rect.height + 'px;opacity:0.85;background:white;border-radius:6px;box-shadow:0 4px 16px rgba(0,0,0,0.18);pointer-events:none;z-index:9999;transition:none;';
+  document.body.appendChild(Clone);
+  _WrenchTouchDragClone = Clone;
+  _WrenchDragSourceRow.style.opacity = '0.3';
+  Event.preventDefault();
+}
+
+function _onWrenchTouchMove(Event) {
+  if (!_WrenchDragSourceRow || !_WrenchTouchDragClone) return;
+  Event.preventDefault();
+  var Touch = Event.touches[0];
+  var NewTop = Touch.clientY - _WrenchDragPointerOffsetY;
+  _WrenchTouchDragClone.style.top = NewTop + 'px';
+  var TargetIndex = _wrenchRowIndexAtY(Touch.clientY);
+  _insertWrenchGapAt(TargetIndex);
+}
+
+function _onWrenchTouchEnd(Event) {
+  if (!_WrenchDragSourceRow) return;
+  var DropIndex = _WrenchDragGapIndex >= 0 ? _WrenchDragGapIndex : 0;
+  if (_WrenchTouchDragClone && _WrenchTouchDragClone.parentNode) {
+    _WrenchTouchDragClone.parentNode.removeChild(_WrenchTouchDragClone);
+  }
+  _WrenchTouchDragClone = null;
+  _commitWrenchDrop(DropIndex);
+}
+
 function _openWrenchPicker() {
   AppPillWrenchOpen = true;
   appPillEl.classList.add('open', 'drop-down');
@@ -3753,6 +3918,15 @@ function _openWrenchPicker() {
 
 function _closeWrenchPicker() {
   AppPillWrenchOpen = false;
+
+  // Partition appsLongList: active apps float to top in drag order, inactive sink to bottom
+  var ActiveApps   = appsLongList.filter(function(AppEntry) { return appsShortList.includes(AppEntry.label); });
+  var InactiveApps = appsLongList.filter(function(AppEntry) { return !appsShortList.includes(AppEntry.label); });
+  appsLongList = ActiveApps.concat(InactiveApps);
+
+  // Rebuild appsShortList to reflect the new active order
+  appsShortList = ActiveApps.map(function(AppEntry) { return AppEntry.label; });
+
   if (!appsShortList.includes(currentApp)) {
     currentApp = appsShortList[0];
     try { localStorage.setItem('kw_app', currentApp); } catch (StorageError) {}

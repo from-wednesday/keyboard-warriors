@@ -2712,15 +2712,6 @@ body.returning-screen #diffIconWrap .icon-tip { display: none; }
   font-weight: 400;
   margin: 0;
   line-height: 1;
-} {
-  font-size: 10px;
-  font-variant: small;
-  letter-spacing: 0.06em;
-  color: #9ca3af;
-  font-weight: 400;
-  margin: 0;
-  line-height: 1;
-  flex-shrink: 0;
 }
 
 /* Column header row: "Report Card" + "Strengths" on left; "Needs Work" on right */

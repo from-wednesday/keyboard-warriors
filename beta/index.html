@@ -3856,8 +3856,8 @@ function openAppPill() {
 function closeAppPill() {
   AppPillWrenchOpen = false;
   appPillEl.classList.remove('open', 'drop-down');
+  scrollPillToSelected();
   _AppPillAnimateTo(27);
-  setTimeout(scrollPillToSelected, 280);
 }
 
 // Close on outside click -- also commits wrench picker if open

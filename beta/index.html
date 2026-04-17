@@ -3856,8 +3856,19 @@ function openAppPill() {
 function closeAppPill() {
   AppPillWrenchOpen = false;
   appPillEl.classList.remove('open', 'drop-down');
-  scrollPillToSelected();
+  // Cancel any running animation and snap CurrentHeight to actual rendered
+  // height before animating back to closed — prevents the shrink-speed
+  // calculation dividing by TargetHeight=27 from a large CurrentHeight,
+  // which caused the pill to shoot past 27 toward 0.
+  var Spring = _AppPillSpring;
+  if (Spring.AnimationFrame) {
+    cancelAnimationFrame(Spring.AnimationFrame);
+    Spring.AnimationFrame = null;
+  }
+  Spring.CurrentHeight = parseFloat(appPillEl.style.height) || Spring.CurrentHeight;
+  Spring.Velocity = 0;
   _AppPillAnimateTo(27);
+  setTimeout(scrollPillToSelected, 500);
 }
 
 // Close on outside click -- also commits wrench picker if open

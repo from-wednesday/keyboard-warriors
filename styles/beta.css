@@ -2510,14 +2510,7 @@ li.conflict-dismissed .conflict-desc {
 
 /* ─── SLAB BACK — closes the box, invisible ─────────*/
 #kb-slab-back {
-  position:       absolute;
-  inset:          0;
-  border-radius:  14px;
-  pointer-events: none;
-  transform:      translateZ(-7px);
-  background:     transparent;
-  z-index:        0;
-  display:        none;
+  display: none;
 }
 
 
@@ -2542,6 +2535,7 @@ li.conflict-dismissed .conflict-desc {
   background: rgba(0,0,0,0.6);
   transform:  translateZ(-10px) translateY(42px);
 }
+
 
 /* ─── BASE EDGE HIGHLIGHT ─────────────────────────────*/
 #kb-base-edge {

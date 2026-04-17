@@ -1648,6 +1648,11 @@ li.conflict-dismissed .conflict-desc {
 /* Flip class: used when there is not enough room above to expand upward,
    so the pill drops down as an overlay instead */
 #appPill.open.drop-down {
+  position: absolute;
+  top: -24px;
+  right: 0;
+  z-index: 500;
+  /* Width fixed by JS -- no max-content override */
   border-radius: 10px;
 }
 /* During game: border and background vanish — looks like plain text.

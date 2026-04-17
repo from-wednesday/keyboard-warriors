@@ -1504,6 +1504,21 @@ function _initialiseLayout() {
   updateMismatchPill();
   document.getElementById('keyboardPanel').classList.toggle('pc-keys', currentOs === 'pc');
 
+  // Force a silent flip cycle to establish the 3D stacking context correctly,
+  // preventing wall elements from bleeding through rounded corners on first render.
+  requestAnimationFrame(function() {
+    var Panel = document.getElementById('keyboardPanel');
+    var Stage = document.getElementById('kbFlipStage');
+    Panel.style.transition = 'none';
+    Stage.style.transition = 'none';
+    Panel.classList.add('kb-edged');
+    requestAnimationFrame(function() {
+      Panel.classList.remove('kb-edged');
+      Panel.style.transition = '';
+      Stage.style.transition = '';
+    });
+  });
+
 var KeyboardPanelResizeObserver = new ResizeObserver(function(ObservedEntries) {
   var Entry = ObservedEntries[0];
   if (Entry && Entry.contentRect.width > 0) {

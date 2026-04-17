@@ -2430,7 +2430,7 @@ li.conflict-dismissed .conflict-desc {
    border-radius on the correct corners follows the
    panel's 14px curve.                                 */
 
-#kb-wall-top, #kb-wall-bottom {
+#kb-wall-bottom {
   position: absolute;
   pointer-events: none;
   opacity: 0;
@@ -2439,7 +2439,6 @@ li.conflict-dismissed .conflict-desc {
 }
 
 /* And add visibility: visible to the edged state: */
-#keyboardPanel.kb-edged #kb-wall-top,
 #keyboardPanel.kb-edged #kb-wall-bottom {
   opacity: 1;
   display: block; 
@@ -2457,23 +2456,6 @@ li.conflict-dismissed .conflict-desc {
 /* PC panel has 22px radius — bottom wall corners match */
 #keyboardPanel.pc-keys #kb-wall-bottom {
   border-radius: 22px 22px 0 0;
-}
-#keyboardPanel.pc-keys #kb-wall-top {
-  border-radius: 0 0 6px 6px;
-}
-
-/* Top wall — full width, hinges backward from top edge */
-#kb-wall-top {
-  top:              0;
-  left:             0;
-  right:            0;
-  height:           7px;
-  z-index:          -1;
-  transform-origin: center top;
-  transform:        rotateX(-90deg);
-  background:       linear-gradient(to bottom, #a8aeb8, #989eb0);
-  border-radius:    0 0 4px 4px;
-  display:          none;
 }
 
 /* Bottom wall — full width, hinges backward from bottom edge.
@@ -2507,11 +2489,6 @@ li.conflict-dismissed .conflict-desc {
   border-radius:    14px 14px 0 0;
 }
 
-
-/* ─── SLAB BACK — closes the box, invisible ─────────*/
-#kb-slab-back {
-  display: none;
-}
 
 
 /* ─── DROP SHADOW ─────────────────────────────────────
@@ -3099,9 +3076,7 @@ body.returning-screen #diffIconWrap .icon-tip { display: none; }
 #keyboardPanel.ghost-mode .key .util-sym-only,
 #keyboardPanel.ghost-mode .key .lock-svg,
 #keyboardPanel.ghost-mode .key .win-svg { opacity: 0; }
-#keyboardPanel.ghost-mode #kb-wall-top,
 #keyboardPanel.ghost-mode #kb-wall-bottom,
-#keyboardPanel.ghost-mode #kb-slab-back,
 #keyboardPanel.ghost-mode #kb-shadow,
 #keyboardPanel.ghost-mode #kb-base-edge { display: none; }
 /* Lit states remain fully visible in ghost mode */

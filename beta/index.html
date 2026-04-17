@@ -3709,14 +3709,14 @@ function _buildWrenchPickerRows() {
 
     var LabelSpan = document.createElement('span');
     LabelSpan.className = 'app-option-label-col';
-    LabelSpan.style.cssText = 'flex:1;font-size:12px;white-space:nowrap;text-align:left;'
+    LabelSpan.style.cssText = 'flex:1;font-size:12px;white-space:nowrap;text-align:left;overflow:hidden;text-overflow:ellipsis;min-width:0;'
       + (IsInShortList ? 'color:#374151;' : 'color:#d1d5db;text-decoration:line-through;')
       + (IsBetaApp ? 'font-style:italic;' : '');
 
     LabelSpan.textContent = AppEntry.label + (IsBetaApp ? ' (beta)' : '');
 
     var DragHandle = document.createElement('span');
-    DragHandle.style.cssText = 'display:flex;align-items:center;padding:0 6px 0 2px;opacity:0.25;flex-shrink:0;cursor:grab;touch-action:none;';
+    DragHandle.style.cssText = 'display:flex;align-items:center;padding:0 2px 0 4px;opacity:0.25;flex-shrink:0;cursor:grab;touch-action:none;margin-left:auto;';
     DragHandle.innerHTML = '<svg width="8" height="12" viewBox="0 0 8 12" fill="currentColor"><circle cx="2" cy="2" r="1.2"/><circle cx="6" cy="2" r="1.2"/><circle cx="2" cy="6" r="1.2"/><circle cx="6" cy="6" r="1.2"/><circle cx="2" cy="10" r="1.2"/><circle cx="6" cy="10" r="1.2"/></svg>';
 
     Row.appendChild(IconColumn);
@@ -3771,11 +3771,9 @@ var _WrenchDragPointerOffsetY = 0;
 var _WrenchDragRowHeight      = 24;
 
 function _attachWrenchRowDragListeners(RowElement) {
-  // Mouse drag
+  // Mouse drag (dragover and drop are on the container, not individual rows)
   RowElement.addEventListener('dragstart', _onWrenchDragStart);
   RowElement.addEventListener('dragend',   _onWrenchDragEnd);
-  RowElement.addEventListener('dragover',  _onWrenchDragOver);
-  RowElement.addEventListener('drop',      _onWrenchDrop);
 
   // Touch drag
   RowElement.addEventListener('touchstart', _onWrenchTouchStart, { passive: false });
@@ -3923,16 +3921,20 @@ function _onWrenchTouchEnd(Event) {
 }
 
 function _openWrenchPicker() {
- AppPillWrenchOpen = true;
-  appPillEl.classList.add('open');
+  AppPillWrenchOpen = true;
+  appPillEl.classList.add('open', 'drop-down');
   appPillEl.scrollTop = 0;
   buildAppPill();
   var NaturalHeight = _AppPillMeasureNaturalHeight();
   _AppPillAnimateTo(NaturalHeight);
+  appPillEl.addEventListener('dragover', _onWrenchDragOver);
+  appPillEl.addEventListener('drop',     _onWrenchDrop);
 }
 
 function _closeWrenchPicker() {
   AppPillWrenchOpen = false;
+  appPillEl.removeEventListener('dragover', _onWrenchDragOver);
+  appPillEl.removeEventListener('drop',     _onWrenchDrop);
 
   // Partition appsLongList: active apps float to top in drag order, inactive sink to bottom
   var ActiveApps   = appsLongList.filter(function(AppEntry) { return appsShortList.includes(AppEntry.label); });

@@ -3923,8 +3923,8 @@ function _onWrenchTouchEnd(Event) {
 }
 
 function _openWrenchPicker() {
-  AppPillWrenchOpen = true;
-  appPillEl.classList.add('open', 'drop-down');
+ AppPillWrenchOpen = true;
+  appPillEl.classList.add('open');
   appPillEl.scrollTop = 0;
   buildAppPill();
   var NaturalHeight = _AppPillMeasureNaturalHeight();
@@ -3952,7 +3952,7 @@ function _closeWrenchPicker() {
   var NaturalHeight = _AppPillMeasureNaturalHeight();
   _AppPillAnimateTo(NaturalHeight);
   setTimeout(function() {
-    appPillEl.classList.remove('open', 'drop-down');
+    appPillEl.classList.remove('open');
     _AppPillAnimateTo(27);
     setTimeout(scrollPillToSelected, 280);
   }, 0);
@@ -4036,7 +4036,7 @@ function toggleAppDropdown() {
 
 function openAppPill() {
   AppPillWrenchOpen = false;
-  appPillEl.classList.add('open', 'drop-down');
+  appPillEl.classList.add('open');
   appPillEl.scrollTop = 0;
   var NaturalHeight = _AppPillMeasureNaturalHeight();
   _AppPillAnimateTo(NaturalHeight);
@@ -4044,7 +4044,7 @@ function openAppPill() {
 
 function closeAppPill() {
   AppPillWrenchOpen = false;
-  appPillEl.classList.remove('open', 'drop-down');
+  appPillEl.classList.remove('open');
   // Cancel any running animation and snap CurrentHeight to actual rendered
   // height before animating back to closed — prevents the shrink-speed
   // calculation dividing by TargetHeight=27 from a large CurrentHeight,

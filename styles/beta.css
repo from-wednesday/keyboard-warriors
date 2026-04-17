@@ -2644,6 +2644,7 @@ li.conflict-dismissed .conflict-desc {
   from { opacity: 0; transform: rotate(-180deg); }
   to   { opacity: 1; transform: rotate(0deg); }
 }
+
 @keyframes AppPillHexFadeOut {
   from { opacity: 1; transform: rotate(0deg); }
   to   { opacity: 0; transform: rotate(180deg); }
@@ -2651,19 +2652,34 @@ li.conflict-dismissed .conflict-desc {
 
 .app-pill-hex-dot,
 .app-pill-hex-ring {
-  transform-origin: center center;
+  transform-origin: 9.5px 9.5px;
   transform-box: fill-box;
 }
 
 .app-pill-hex-dot.animating-in,
 .app-pill-hex-ring.animating-in {
-  animation: AppPillHexFadeIn 0.8s cubic-bezier(0.33, 1, 0.68, 1) forwards;
+  animation: AppPillHexFadeIn 0.6s cubic-bezier(0.33, 1, 0.68, 1) forwards;
 }
 
-.app-pill-hex-dot.animating-out,
-.app-pill-hex-ring.animating-out {
-  animation: AppPillHexFadeOut 0.7s cubic-bezier(0.33, 1, 0.68, 1) forwards;
+.app-pill-hex-dot.animating-out {
+  animation: AppPillHexFadeOut 0.6s cubic-bezier(0.33, 1, 0.68, 1) forwards;
 }
+
+.app-pill-hex-ring.animating-out {
+  animation: AppPillHexFadeOut 0.6s cubic-bezier(0.33, 1, 0.68, 1) forwards;
+}
+
+/* Ring colour transition: travels from dark to light during the spin */
+.app-pill-hex-ring.ring-to-light {
+  transition: stroke 0.6s ease;
+  stroke: #d1d5db !important;
+}
+
+.app-pill-hex-ring.ring-to-dark {
+  transition: stroke 0.2s ease;
+  stroke: #374151 !important;
+}
+
 
 /* Returning screen: all settings icons passive, no hover, no interaction */
 body.returning-screen #kbIconWrap,

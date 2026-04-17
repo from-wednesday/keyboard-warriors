@@ -3922,7 +3922,9 @@ function _onWrenchTouchEnd(Event) {
 
 function _openWrenchPicker() {
   AppPillWrenchOpen = true;
-  appPillEl.classList.add('open', 'drop-down');
+  appPillEl.classList.add('open');
+  appPillEl.classList.remove('drop-down');
+  appPillEl.style.top = '';
   appPillEl.scrollTop = 0;
   buildAppPill();
   var NaturalHeight = _AppPillMeasureNaturalHeight();

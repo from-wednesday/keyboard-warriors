@@ -6,10 +6,10 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>beta</title>
+<title>Keyboard Warriors</title>
 <script>
   const DefaultTitle = 'Keyboard Warriors';
-  const VersionLabel   = '0023';
+  const VersionLabel   = '0022';
   const TitlePrefix  = document.title !== DefaultTitle ? document.title.trim() + '_' : '';
   const DBG_DEVICE   = TitlePrefix + VersionLabel;
 </script>
@@ -3586,11 +3586,11 @@ function _MakeWrenchPickerRadioDot(IsActive) {
   var SvgElement = document.createElementNS(SvgNamespace, 'svg');
   SvgElement.setAttribute('width', '16');
   SvgElement.setAttribute('height', '16');
-  SvgElement.setAttribute('viewBox', '0 0 16 16'); // Standardized to 16 not 19
+  SvgElement.setAttribute('viewBox', '0 0 19 19');
   SvgElement.setAttribute('class', 'app-pill-radio-svg');
 
- // Centered exactly at 8,8 (half of 16)
-  var CentreX = 8, CentreY = 8;
+  var CentreX = 9.5;
+  var CentreY = 9.5;
 
   function BuildHexPath(Radius) {
     var HexPoints = [];
@@ -3605,20 +3605,18 @@ function _MakeWrenchPickerRadioDot(IsActive) {
   }
 
   var OuterHex = document.createElementNS(SvgNamespace, 'path');
-  OuterHex.setAttribute('d', BuildHexPath(6.5));
-  OuterHex.setAttribute('stroke', IsActive ? '#374151' : '#d1d5db');
+  OuterHex.setAttribute('d', BuildHexPath(6.2));
+  OuterHex.setAttribute('stroke', '#374151');
   OuterHex.setAttribute('stroke-width', '1.5');
   OuterHex.setAttribute('fill', 'none');
   OuterHex.setAttribute('stroke-linejoin', 'round');
   OuterHex.setAttribute('class', 'app-pill-hex-ring');
-  OuterHex.style.transformOrigin = 'center'; // Fixes rotation axis
 
   var InnerHex = document.createElementNS(SvgNamespace, 'path');
   InnerHex.setAttribute('d', BuildHexPath(3.5));
   InnerHex.setAttribute('fill', '#374151');
   InnerHex.setAttribute('class', 'app-pill-hex-dot');
-  InnerHex.style.transformOrigin = 'center'; // Fixes rotation axis
-  
+
   if (IsActive) {
     OuterHex.style.transform = 'rotate(180deg)';
     InnerHex.style.transform = 'rotate(180deg)';
@@ -3635,40 +3633,46 @@ function _MakeWrenchPickerRadioDot(IsActive) {
 }
 
 function _AnimateWrenchDot(RadioSpanElement, GoingActive) {
-  var DotEl  = RadioSpanElement.querySelector('.app-pill-hex-dot');
-  var RingEl = RadioSpanElement.querySelector('.app-pill-hex-ring');
-  if (!DotEl || !RingEl) return;
+  var HexPathElement = RadioSpanElement.querySelector('.app-pill-hex-dot');
+  var HexRingElement = RadioSpanElement.querySelector('.app-pill-hex-ring');
+  if (!HexPathElement || !HexRingElement) return;
 
-  DotEl.classList.remove('animating-in', 'animating-out');
-  RingEl.classList.remove('animating-in', 'animating-out', 'ring-to-light', 'ring-to-dark');
-  void DotEl.offsetWidth;
+  HexPathElement.classList.remove('animating-in', 'animating-out');
+  HexRingElement.classList.remove('animating-in', 'animating-out');
+
+  void HexPathElement.offsetWidth;
 
   if (GoingActive) {
-    // OFF → ON: ring goes dark immediately, both spin clockwise, dot fades in
-    RingEl.setAttribute('stroke', '#374151');
-    DotEl.style.opacity = '0';
-    DotEl.classList.add('animating-in');
-    RingEl.classList.add('animating-in');
-    DotEl.addEventListener('animationend', function Handler() {
-      DotEl.removeEventListener('animationend', Handler);
-      DotEl.classList.remove('animating-in');
-      RingEl.classList.remove('animating-in');
-      DotEl.style.opacity = '1';
+    HexPathElement.style.opacity = '0';
+    HexPathElement.style.transform = 'rotate(0deg)';
+    HexRingElement.style.transform = 'rotate(0deg)';
+
+    HexPathElement.classList.add('animating-in');
+    HexRingElement.classList.add('animating-in');
+
+    HexPathElement.addEventListener('animationend', function Handler() {
+      HexPathElement.removeEventListener('animationend', Handler);
+      HexPathElement.classList.remove('animating-in');
+      HexRingElement.classList.remove('animating-in');
+      HexPathElement.style.opacity = '1';
+      HexPathElement.style.transform = 'rotate(180deg)';
+      HexRingElement.style.transform = 'rotate(180deg)';
     }, { once: true });
   } else {
-    // ON → OFF: both spin anticlockwise together, ring colour transitions to
-    // light grey during the spin, dot fades to invisible at the end
-    DotEl.style.opacity = '1';
-    DotEl.style.fill = '#374151';
-    DotEl.classList.add('animating-out');
-    RingEl.classList.add('animating-out', 'ring-to-light');
-    DotEl.addEventListener('animationend', function Handler() {
-      DotEl.removeEventListener('animationend', Handler);
-      DotEl.classList.remove('animating-out');
-      RingEl.classList.remove('animating-out', 'ring-to-light');
-      DotEl.style.opacity = '0';
-      DotEl.style.fill = '#374151'; // keep fill ready for next activation
-      RingEl.setAttribute('stroke', '#d1d5db');
+    HexPathElement.style.opacity = '1';
+    HexPathElement.style.transform = 'rotate(0deg)';
+    HexRingElement.style.transform = 'rotate(0deg)';
+
+    HexPathElement.classList.add('animating-out');
+    HexRingElement.classList.add('animating-out');
+
+    HexPathElement.addEventListener('animationend', function Handler() {
+      HexPathElement.removeEventListener('animationend', Handler);
+      HexPathElement.classList.remove('animating-out');
+      HexRingElement.classList.remove('animating-out');
+      HexPathElement.style.opacity = '0';
+      HexPathElement.style.transform = 'rotate(-180deg)';
+      HexRingElement.style.transform = 'rotate(-180deg)';
     }, { once: true });
   }
 }
@@ -3693,9 +3697,8 @@ function _buildWrenchPickerRows() {
     var LabelSpan = document.createElement('span');
     LabelSpan.className = 'app-option-label-col';
     LabelSpan.style.cssText = 'flex:1;font-size:12px;white-space:nowrap;text-align:left;'
-      + (IsInShortList ? 'color:#374151;' : 'color:#d1d5db;text-decoration:line-through;')
+      + (IsInShortList ? 'color:#374151;' : 'color:#9ca3af;')
       + (IsBetaApp ? 'font-style:italic;' : '');
-
     LabelSpan.textContent = AppEntry.label + (IsBetaApp ? ' (beta)' : '');
 
     Row.appendChild(IconColumn);
@@ -3732,13 +3735,15 @@ function _toggleWrenchPickerApp(AppLabel, RowElement, IconColumnElement, LabelSp
     if (appsShortList.length <= 1) { showToast('You need at least one app in your list.'); return; }
     appsShortList = appsShortList.filter(function(Label) { return Label !== AppLabel; });
     _AnimateWrenchDot(IconColumnElement, false);
-    LabelSpanElement.style.color = '#d1d5db';
-    LabelSpanElement.style.textDecoration = 'line-through';
+    LabelSpanElement.style.color = '#9ca3af';
+    RowElement.classList.remove('wrench-picker-active');
+    RowElement.classList.add('wrench-picker-inactive');
   } else {
     appsShortList.push(AppLabel);
     _AnimateWrenchDot(IconColumnElement, true);
     LabelSpanElement.style.color = '#374151';
-    LabelSpanElement.style.textDecoration = '';
+    RowElement.classList.remove('wrench-picker-inactive');
+    RowElement.classList.add('wrench-picker-active');
   }
 }
 
@@ -3791,21 +3796,25 @@ function _AppPillSpringTick() {
   var Difference = Spring.TargetHeight - Spring.CurrentHeight;
 
   if (Spring.CurrentHeight < Spring.TargetHeight) {
-    // Opening: gentle spring with slight overshoot character
-    var Stiffness = 0.052;
-    var Damping   = 0.74;
+    // --- SLOWER GROWING ---
+    var Stiffness = 0.07; // Much slower tension
+    var Damping   = 0.80; // High damping to keep it smooth
     Spring.Velocity = Spring.Velocity * Damping + Difference * Stiffness;
     Spring.CurrentHeight += Spring.Velocity;
   } else {
-    // Closing: ease in, then snap cleanly once within 2px
+    // --- SLOWER SHRINKING ---
     var ShrinkProgress = Math.abs(Difference) / (Spring.TargetHeight > 0 ? Spring.TargetHeight : 27);
-    var ShrinkSpeed = 0.055 + ShrinkProgress * 0.11;
+    // Reduced coefficients significantly to slow the exit
+    var ShrinkSpeed = 0.04 + ShrinkProgress * 0.1; 
     Spring.CurrentHeight += Difference * ShrinkSpeed;
     Spring.Velocity = 0;
   }
 
-  var Settled = Math.abs(Spring.CurrentHeight - Spring.TargetHeight) < 2
-               && Math.abs(Spring.Velocity) < 0.3;
+  // Adjusted Threshold: 
+  // Because the animation is slower, we might want a tighter "Settled" 
+  // check so it doesn't spend too long on tiny sub-pixel movements.
+  var Settled = Math.abs(Spring.CurrentHeight - Spring.TargetHeight) < 0.05
+               && Math.abs(Spring.Velocity) < 0.2;
 
   if (Settled) {
     Spring.CurrentHeight = Spring.TargetHeight;
@@ -3856,8 +3865,8 @@ function openAppPill() {
 function closeAppPill() {
   AppPillWrenchOpen = false;
   appPillEl.classList.remove('open', 'drop-down');
-  scrollPillToSelected();
   _AppPillAnimateTo(27);
+  setTimeout(scrollPillToSelected, 280);
 }
 
 // Close on outside click -- also commits wrench picker if open
@@ -6872,10 +6881,36 @@ function _onAppsLoaded(AllAppsFromJson) {
     currentApp = FallbackApp;
   }
 
-   buildAppPill();
+  _measureAndFixAppPillWidth();
+  buildAppPill();
   positionIcons();
 }
 
+function _measureAndFixAppPillWidth() {
+  // Measure the widest app label at runtime using a hidden probe element,
+  // then set the pill to that width and never change it again this session.
+  var ProbeElement = document.createElement('span');
+  ProbeElement.style.cssText = 'position:absolute;visibility:hidden;white-space:nowrap;font-family:Lato,system-ui,sans-serif;font-size:12px;font-weight:500;padding:0;margin:0;';
+  document.body.appendChild(ProbeElement);
+
+  var WidestLabelPixels = 0;
+  appsLongList.forEach(function(AppEntry) {
+    ProbeElement.textContent = AppEntry.label + (AppEntry.beta ? ' (beta)' : '');
+    var LabelWidth = ProbeElement.offsetWidth;
+    if (LabelWidth > WidestLabelPixels) WidestLabelPixels = LabelWidth;
+  });
+  document.body.removeChild(ProbeElement);
+
+  // 22px icon column + label width + 10px right padding + 3px spare = total inner width.
+  // Add 3px each side for border (1.5px * 2) compensated via box-sizing.
+  var PillInnerWidth = 22 + WidestLabelPixels + 10 + 3;
+  var PillElement = document.getElementById('appPill');
+  if (PillElement) {
+    PillElement.style.width = PillInnerWidth + 'px';
+    PillElement.style.minWidth = PillInnerWidth + 'px';
+  }
+  window._AppPillFixedWidth = PillInnerWidth;
+} 
 
 // Fetch the apps manifest on startup. Falls back to a minimal built-in list if the
 // file cannot be reached (e.g. running the HTML file locally without a server).

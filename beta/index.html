@@ -4040,7 +4040,7 @@ function toggleAppDropdown() {
 
 function openAppPill() {
   AppPillWrenchOpen = false;
-  appPillEl.classList.add('open');
+  appPillEl.classList.add('open', 'drop-down');
   appPillEl.scrollTop = 0;
   var NaturalHeight = _AppPillMeasureNaturalHeight();
   _AppPillAnimateTo(NaturalHeight);
@@ -4048,7 +4048,7 @@ function openAppPill() {
 
 function closeAppPill() {
   AppPillWrenchOpen = false;
-  appPillEl.classList.remove('open');
+  appPillEl.classList.remove('open', 'drop-down');
   // Cancel any running animation and snap CurrentHeight to actual rendered
   // height before animating back to closed — prevents the shrink-speed
   // calculation dividing by TargetHeight=27 from a large CurrentHeight,

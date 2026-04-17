@@ -2468,7 +2468,7 @@ li.conflict-dismissed .conflict-desc {
   left:             0;
   right:            0;
   height:           7px;
-  z-index:          1;
+  z-index:          -1;
   transform-origin: center top;
   transform:        rotateX(-90deg);
   background:       linear-gradient(to bottom, #a8aeb8, #989eb0);
@@ -2483,7 +2483,7 @@ li.conflict-dismissed .conflict-desc {
   left:             0;
   right:            0;
   height:           7px;
-  z-index:          1;
+  z-index:          -1;
   transform-origin: center bottom;
   transform:        rotateX(90deg);
   display: none;  

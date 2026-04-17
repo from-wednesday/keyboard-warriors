@@ -3639,13 +3639,12 @@ function _AnimateWrenchDot(RadioSpanElement, GoingActive) {
   var RingEl = RadioSpanElement.querySelector('.app-pill-hex-ring');
   if (!DotEl || !RingEl) return;
 
-  // Remove any running animation
   DotEl.classList.remove('animating-in', 'animating-out');
-  RingEl.classList.remove('animating-in', 'animating-out');
-  void DotEl.offsetWidth; // force reflow
+  RingEl.classList.remove('animating-in', 'animating-out', 'ring-to-light', 'ring-to-dark');
+  void DotEl.offsetWidth;
 
   if (GoingActive) {
-    // OFF → ON: clockwise, inner fades in, ring goes dark
+    // OFF → ON: ring goes dark immediately, both spin clockwise, dot fades in
     RingEl.setAttribute('stroke', '#374151');
     DotEl.style.opacity = '0';
     DotEl.classList.add('animating-in');
@@ -3657,19 +3656,23 @@ function _AnimateWrenchDot(RadioSpanElement, GoingActive) {
       DotEl.style.opacity = '1';
     }, { once: true });
   } else {
-    // ON → OFF: anticlockwise, inner fades out, ring goes light
+    // ON → OFF: both spin anticlockwise together, ring colour transitions to
+    // light grey during the spin, dot fades to invisible at the end
     DotEl.style.opacity = '1';
+    DotEl.style.fill = '#374151';
     DotEl.classList.add('animating-out');
-    RingEl.classList.add('animating-out');
+    RingEl.classList.add('animating-out', 'ring-to-light');
     DotEl.addEventListener('animationend', function Handler() {
       DotEl.removeEventListener('animationend', Handler);
       DotEl.classList.remove('animating-out');
-      RingEl.classList.remove('animating-out');
+      RingEl.classList.remove('animating-out', 'ring-to-light');
       DotEl.style.opacity = '0';
+      DotEl.style.fill = '#374151'; // keep fill ready for next activation
       RingEl.setAttribute('stroke', '#d1d5db');
     }, { once: true });
   }
 }
+
 function _buildWrenchPickerRows() {
   appPillEl.innerHTML = '';
 

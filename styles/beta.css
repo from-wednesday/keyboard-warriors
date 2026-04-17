@@ -2430,37 +2430,11 @@ li.conflict-dismissed .conflict-desc {
    border-radius on the correct corners follows the
    panel's 14px curve.                                 */
 
-#kb-wall-bottom {
-  position: absolute;
-  pointer-events: none;
-  opacity: 0;
-  visibility: hidden;
-  transition: opacity 0.3s ease 0.1s, visibility 0s linear 0.3s;
-}
-
-/* And add visibility: visible to the edged state: */
-#keyboardPanel.kb-edged #kb-wall-bottom {
-  opacity: 1;
-  display: block; 
-  visibility: visible;
-  transition: opacity 0.3s ease 0.1s, visibility 0s linear 0s;
-}
-
-
-/* Bottom wall corner radius: capped at half wall height (3px) at partial so the
-   arc never exceeds the foreshortened strip height at any viewing angle. At full
-   edge (82deg) the strip is nearly perpendicular so 14px/22px reads correctly. */
-#keyboardPanel.kb-partial #kb-wall-bottom          { border-radius: 3px 3px 0 0; }
-#keyboardPanel.pc-keys.kb-partial #kb-wall-bottom  { border-radius: 3px 3px 0 0; }
-
-/* PC panel has 22px radius — bottom wall corners match */
-#keyboardPanel.pc-keys #kb-wall-bottom {
-  border-radius: 22px 22px 0 0;
-}
-
 /* Bottom wall — full width, hinges backward from bottom edge.
-   Most visible face when tilting top-away.             */
+   Hidden by default; only appears when keyboard is folded to edge position.
+   Uses opacity+visibility (not display) so the transition works correctly. */
 #kb-wall-bottom {
+  position:         absolute;
   bottom:           0;
   left:             0;
   right:            0;
@@ -2468,7 +2442,10 @@ li.conflict-dismissed .conflict-desc {
   z-index:          -1;
   transform-origin: center bottom;
   transform:        rotateX(90deg);
-  display: none;  
+  pointer-events:   none;
+  opacity:          0;
+  visibility:       hidden;
+  transition:       opacity 0.25s ease 0.35s, visibility 0s linear 0.6s;
   background:
     linear-gradient(to bottom,
       rgba(0,0,0,0.30)       0px,
@@ -2488,6 +2465,17 @@ li.conflict-dismissed .conflict-desc {
       #6e7480 100%);
   border-radius:    14px 14px 0 0;
 }
+
+#keyboardPanel.kb-edged #kb-wall-bottom {
+  opacity:    1;
+  visibility: visible;
+  transition: opacity 0.25s ease 0.35s, visibility 0s linear 0s;
+}
+
+/* Corner radii */
+#keyboardPanel.kb-partial #kb-wall-bottom,
+#keyboardPanel.pc-keys.kb-partial #kb-wall-bottom { border-radius: 3px 3px 0 0; }
+#keyboardPanel.pc-keys #kb-wall-bottom             { border-radius: 22px 22px 0 0; }
 
 
 

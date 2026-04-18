@@ -3923,53 +3923,58 @@ function _onWrenchTouchEnd(Event) {
 }
 
 function _openWrenchPicker() {
-  AppPillWrenchOpen = true;
-  appPillEl.classList.add('open');
-  appPillEl.classList.remove('drop-down');
-  appPillEl.style.position = '';
-  appPillEl.style.top = '';
-  appPillEl.style.right = '';
-  appPillEl.style.zIndex = '';
-  appPillEl.scrollTop = 0;
-  AppPillWrenchOpen = true;
-  appPillEl.classList.add('open');
-  appPillEl.classList.remove('drop-down');
-  appPillEl.style.top = '';
-  appPillEl.scrollTop = 0;
-  buildAppPill();
-  var NaturalHeight = _AppPillMeasureNaturalHeight();
-  _AppPillAnimateTo(NaturalHeight);
-  appPillEl.addEventListener('dragover', _onWrenchDragOver);
-  appPillEl.addEventListener('drop',     _onWrenchDrop);
+    _EnsureAppPillSpacer();
+    AppPillWrenchOpen = true;
+    appPillEl.classList.add('open');
+    appPillEl.classList.remove('drop-down');
+    appPillEl.scrollTop = 0;
+    buildAppPill();
+
+    var OpenHeight = _AppPillMeasureNaturalHeight();
+
+    // Wrench menu always grows downward from the current pill top edge.
+    // Calculate how much spacer is needed to keep the pill top in place
+    // (same logic as openAppPill but TranslateY is always 0 for wrench).
+    var PillRect = appPillEl.getBoundingClientRect();
+    var ViewportMargin = 12;
+    var SpacerHeight = 0;
+    if (PillRect.top < ViewportMargin) {
+        SpacerHeight = ViewportMargin - PillRect.top;
+    }
+
+    _AppPillAnimateTo(OpenHeight, 0, SpacerHeight);
+
+    appPillEl.addEventListener('dragover', _onWrenchDragOver);
+    appPillEl.addEventListener('drop',     _onWrenchDrop);
 }
 
 function _closeWrenchPicker() {
-  AppPillWrenchOpen = false;
-  appPillEl.removeEventListener('dragover', _onWrenchDragOver);
-  appPillEl.removeEventListener('drop',     _onWrenchDrop);
+    AppPillWrenchOpen = false;
+    appPillEl.removeEventListener('dragover', _onWrenchDragOver);
+    appPillEl.removeEventListener('drop',     _onWrenchDrop);
 
-  // Partition appsLongList: active apps float to top in drag order, inactive sink to bottom
-  var ActiveApps   = appsLongList.filter(function(AppEntry) { return appsShortList.includes(AppEntry.label); });
-  var InactiveApps = appsLongList.filter(function(AppEntry) { return !appsShortList.includes(AppEntry.label); });
-  appsLongList = ActiveApps.concat(InactiveApps);
+    var ActiveApps   = appsLongList.filter(function(AppEntry) { return appsShortList.includes(AppEntry.label); });
+    var InactiveApps = appsLongList.filter(function(AppEntry) { return !appsShortList.includes(AppEntry.label); });
+    appsLongList = ActiveApps.concat(InactiveApps);
+    appsShortList = ActiveApps.map(function(AppEntry) { return AppEntry.label; });
 
-  // Rebuild appsShortList to reflect the new active order
-  appsShortList = ActiveApps.map(function(AppEntry) { return AppEntry.label; });
+    if (!appsShortList.includes(currentApp)) {
+        currentApp = appsShortList[0];
+        try { localStorage.setItem('kw_app', currentApp); } catch (StorageError) {}
+        runData.length = 0; lastCompletedReport = null; CoachAdviceAccepted = false;
+    }
+    _saveAppsShortList();
+    buildAppPill();
 
-  if (!appsShortList.includes(currentApp)) {
-    currentApp = appsShortList[0];
-    try { localStorage.setItem('kw_app', currentApp); } catch (StorageError) {}
-    runData.length = 0; lastCompletedReport = null; CoachAdviceAccepted = false;
-  }
-  _saveAppsShortList();
-  buildAppPill();
-  var NaturalHeight = _AppPillMeasureNaturalHeight();
-  _AppPillAnimateTo(NaturalHeight);
-  setTimeout(function() {
-    appPillEl.classList.remove('open');
-    _AppPillAnimateTo(27);
-    setTimeout(scrollPillToSelected, 280);
-  }, 0);
+    var OpenHeight = _AppPillMeasureNaturalHeight();
+    var Geometry   = _AppPillCalculateOpenGeometry(OpenHeight);
+    _AppPillAnimateTo(OpenHeight, Geometry.TranslateY, Geometry.SpacerHeight);
+
+    setTimeout(function() {
+        appPillEl.classList.remove('open');
+        _AppPillAnimateTo(27, 0, 0);
+        setTimeout(scrollPillToSelected, 280);
+    }, 0);
 }
 
 
@@ -3979,99 +3984,194 @@ function scrollPillToSelected() {
   appPillEl.scrollTop = SelectedIndex * ROW_H;
 }
 
-// ── App pill spring height animator ──────────────────────────────────────────
-// Drives smooth, spring-based height transitions on the app pill.
-// Growing: slight overshoot (3-4%) then settles. Shrinking: ease-in-slow then ease-out-fast.
+// ── App pill spring animator ──────────────────────────────────────────────
+// Drives height, translateY (to pin selected row), and spacer height.
+// All three run in one loop for a unified, physical feel.
+
+var _AppPillSpacer = null;
+
+function _EnsureAppPillSpacer() {
+    if (_AppPillSpacer) return;
+    _AppPillSpacer = document.createElement('div');
+    _AppPillSpacer.id = 'appPillSpacer';
+    _AppPillSpacer.style.cssText = 'width:100%;height:0;overflow:hidden;flex-shrink:0;';
+    var OsRow = document.getElementById('osRow');
+    if (OsRow && OsRow.parentNode) {
+        OsRow.parentNode.insertBefore(_AppPillSpacer, OsRow);
+    }
+}
+
 var _AppPillSpring = {
-  CurrentHeight:  27,
-  TargetHeight:   27,
-  Velocity:       0,
-  AnimationFrame: null,
+    // Pill height
+    CurrentHeight:  27,
+    TargetHeight:   27,
+    HeightVelocity: 0,
+    // Pill translateY (negative = moved up)
+    CurrentTranslateY:  0,
+    TargetTranslateY:   0,
+    TranslateVelocity:  0,
+    // Spacer height
+    CurrentSpacerHeight:  0,
+    TargetSpacerHeight:   0,
+    SpacerVelocity:       0,
+    AnimationFrame: null,
 };
 
 function _AppPillSpringTick() {
-  var Spring = _AppPillSpring;
-  var Difference = Spring.TargetHeight - Spring.CurrentHeight;
+    var Spring = _AppPillSpring;
+    var Settled = true;
 
-  if (Spring.CurrentHeight < Spring.TargetHeight) {
-    // Opening: gentle spring with slight overshoot character
-    var Stiffness = 0.052;
-    var Damping   = 0.74;
-    Spring.Velocity = Spring.Velocity * Damping + Difference * Stiffness;
-    Spring.CurrentHeight += Spring.Velocity;
-  } else {
-    // Closing: ease in, then snap cleanly once within 2px
-    var ShrinkProgress = Math.abs(Difference) / (Spring.TargetHeight > 0 ? Spring.TargetHeight : 27);
-    var ShrinkSpeed = 0.055 + ShrinkProgress * 0.11;
-    Spring.CurrentHeight += Difference * ShrinkSpeed;
-    Spring.Velocity = 0;
-  }
+    // ── Height ──────────────────────────────────────────────────────────
+    var HeightDifference = Spring.TargetHeight - Spring.CurrentHeight;
+    if (Spring.CurrentHeight < Spring.TargetHeight) {
+        // Opening: spring with slight overshoot
+        Spring.HeightVelocity = Spring.HeightVelocity * 0.74 + HeightDifference * 0.052;
+        Spring.CurrentHeight += Spring.HeightVelocity;
+    } else {
+        // Closing: ease out
+        var ShrinkProgress = Math.abs(HeightDifference) / Math.max(Spring.TargetHeight, 27);
+        Spring.CurrentHeight += HeightDifference * (0.055 + ShrinkProgress * 0.11);
+        Spring.HeightVelocity = 0;
+    }
+    if (Math.abs(Spring.CurrentHeight - Spring.TargetHeight) > 0.5 || Math.abs(Spring.HeightVelocity) > 0.3) {
+        Settled = false;
+    } else {
+        Spring.CurrentHeight = Spring.TargetHeight;
+        Spring.HeightVelocity = 0;
+    }
 
-  var Settled = Math.abs(Spring.CurrentHeight - Spring.TargetHeight) < 2
-               && Math.abs(Spring.Velocity) < 0.3;
+    // ── TranslateY ──────────────────────────────────────────────────────
+    var TranslateDifference = Spring.TargetTranslateY - Spring.CurrentTranslateY;
+    Spring.TranslateVelocity = Spring.TranslateVelocity * 0.74 + TranslateDifference * 0.052;
+    Spring.CurrentTranslateY += Spring.TranslateVelocity;
+    if (Math.abs(Spring.CurrentTranslateY - Spring.TargetTranslateY) > 0.3 || Math.abs(Spring.TranslateVelocity) > 0.2) {
+        Settled = false;
+    } else {
+        Spring.CurrentTranslateY = Spring.TargetTranslateY;
+        Spring.TranslateVelocity = 0;
+    }
 
-  if (Settled) {
-    Spring.CurrentHeight = Spring.TargetHeight;
-    Spring.Velocity = 0;
-    Spring.AnimationFrame = null;
-    appPillEl.style.height = Spring.TargetHeight + 'px';
-    return;
-  }
+    // ── Spacer height ────────────────────────────────────────────────────
+    var SpacerDifference = Spring.TargetSpacerHeight - Spring.CurrentSpacerHeight;
+    if (Spring.CurrentSpacerHeight < Spring.TargetSpacerHeight) {
+        Spring.SpacerVelocity = Spring.SpacerVelocity * 0.74 + SpacerDifference * 0.052;
+        Spring.CurrentSpacerHeight += Spring.SpacerVelocity;
+    } else {
+        var SpacerShrinkProgress = Math.abs(SpacerDifference) / Math.max(Spring.TargetSpacerHeight, 1);
+        Spring.CurrentSpacerHeight += SpacerDifference * (0.055 + SpacerShrinkProgress * 0.11);
+        Spring.SpacerVelocity = 0;
+    }
+    if (Math.abs(Spring.CurrentSpacerHeight - Spring.TargetSpacerHeight) > 0.5 || Math.abs(Spring.SpacerVelocity) > 0.3) {
+        Settled = false;
+    } else {
+        Spring.CurrentSpacerHeight = Spring.TargetSpacerHeight;
+        Spring.SpacerVelocity = 0;
+    }
 
-  appPillEl.style.height = Math.round(Spring.CurrentHeight * 10) / 10 + 'px';
-  Spring.AnimationFrame = requestAnimationFrame(_AppPillSpringTick);
+    // ── Apply ────────────────────────────────────────────────────────────
+    appPillEl.style.height = Math.round(Spring.CurrentHeight * 10) / 10 + 'px';
+    appPillEl.style.transform = Spring.CurrentTranslateY !== 0
+        ? 'translateY(' + (Math.round(Spring.CurrentTranslateY * 10) / 10) + 'px)'
+        : '';
+    if (_AppPillSpacer) {
+        _AppPillSpacer.style.height = Math.round(Spring.CurrentSpacerHeight * 10) / 10 + 'px';
+    }
+
+    if (Settled) {
+        Spring.AnimationFrame = null;
+        return;
+    }
+    Spring.AnimationFrame = requestAnimationFrame(_AppPillSpringTick);
 }
 
-function _AppPillAnimateTo(TargetHeightPixels) {
-  var Spring = _AppPillSpring;
-  Spring.TargetHeight = TargetHeightPixels;
-  if (Spring.AnimationFrame) return; // already running
-  Spring.AnimationFrame = requestAnimationFrame(_AppPillSpringTick);
+function _AppPillAnimateTo(TargetHeightPixels, TargetTranslateY, TargetSpacerHeight) {
+    var Spring = _AppPillSpring;
+    Spring.TargetHeight = TargetHeightPixels;
+    Spring.TargetTranslateY = TargetTranslateY || 0;
+    Spring.TargetSpacerHeight = TargetSpacerHeight || 0;
+    if (Spring.AnimationFrame) return;
+    Spring.AnimationFrame = requestAnimationFrame(_AppPillSpringTick);
 }
 
 function _AppPillMeasureNaturalHeight() {
-  // Temporarily lift overflow clip to read scrollHeight
-  var PreviousOverflow = appPillEl.style.overflow;
-  appPillEl.style.overflow = 'visible';
-  var NaturalHeight = appPillEl.scrollHeight;
-  appPillEl.style.overflow = PreviousOverflow;
-  return NaturalHeight;
+    var PreviousOverflow = appPillEl.style.overflow;
+    var PreviousHeight   = appPillEl.style.height;
+    var PreviousTransform = appPillEl.style.transform;
+    appPillEl.style.overflow  = 'visible';
+    appPillEl.style.height    = 'auto';
+    appPillEl.style.transform = '';
+    var NaturalHeight = appPillEl.scrollHeight;
+    appPillEl.style.overflow  = PreviousOverflow;
+    appPillEl.style.height    = PreviousHeight;
+    appPillEl.style.transform = PreviousTransform;
+    return NaturalHeight;
 }
 
-function toggleAppDropdown() {
-  if (gameState === 'playing' || gameState === 'confirm-reset' || gameState === 'confirm-quit') return;
-  if (gameState === 'paused') { showToast('Change the app between games.'); return; }
-  if (appPillEl.classList.contains('open')) {
-    if (AppPillWrenchOpen) { _closeWrenchPicker(); } else { closeAppPill(); }
-  } else {
-    openAppPill();
-  }
+// Calculates how far upward the pill needs to translate so the selected
+// row stays pinned at its natural position in the OS row.
+// Returns { TranslateY (negative = up), SpacerHeight }.
+function _AppPillCalculateOpenGeometry(OpenHeight) {
+    var SelectedIndex = appsShortList.indexOf(currentApp);
+    if (SelectedIndex < 0) SelectedIndex = 0;
+
+    // How many rows sit above the selected row (each row is ROW_H px)
+    var RowsAboveSelected = SelectedIndex;
+    var UpwardGrowth = RowsAboveSelected * ROW_H;
+
+    // The wrench row at the bottom adds ROW_H but is always below, so
+    // downward growth = OpenHeight - 27 - UpwardGrowth (clamped to 0)
+
+    // How far up does the top of the pill need to move?
+    var DesiredTranslateY = -UpwardGrowth;
+
+    // Check if the pill top would go above the viewport
+    var PillRect = appPillEl.getBoundingClientRect();
+    var PillTopAfterTranslate = PillRect.top + DesiredTranslateY;
+    var ViewportMargin = 12; // px clearance from top of viewport
+
+    var SpacerHeight = 0;
+    if (PillTopAfterTranslate < ViewportMargin) {
+        SpacerHeight = ViewportMargin - PillTopAfterTranslate;
+        // No translateY needed -- spacer pushes everything down instead
+        DesiredTranslateY = 0;
+    }
+
+    return { TranslateY: DesiredTranslateY, SpacerHeight: SpacerHeight };
+}
+
+function scrollPillToSelected() {
+    var SelectedIndex = appsShortList.indexOf(currentApp);
+    if (SelectedIndex < 0) SelectedIndex = 0;
+    appPillEl.scrollTop = SelectedIndex * ROW_H;
 }
 
 function openAppPill() {
-  AppPillWrenchOpen = false;
-  appPillEl.classList.add('open', 'drop-down');
-  appPillEl.scrollTop = 0;
-  var NaturalHeight = _AppPillMeasureNaturalHeight();
-  _AppPillAnimateTo(NaturalHeight);
+    _EnsureAppPillSpacer();
+    AppPillWrenchOpen = false;
+    appPillEl.classList.add('open', 'drop-down');
+    appPillEl.scrollTop = 0; // start from top so natural height is accurate
+
+    var OpenHeight = _AppPillMeasureNaturalHeight();
+    var Geometry   = _AppPillCalculateOpenGeometry(OpenHeight);
+
+    _AppPillAnimateTo(OpenHeight, Geometry.TranslateY, Geometry.SpacerHeight);
 }
 
 function closeAppPill() {
-  AppPillWrenchOpen = false;
-  appPillEl.classList.remove('open', 'drop-down');
-  // Cancel any running animation and snap CurrentHeight to actual rendered
-  // height before animating back to closed — prevents the shrink-speed
-  // calculation dividing by TargetHeight=27 from a large CurrentHeight,
-  // which caused the pill to shoot past 27 toward 0.
-  var Spring = _AppPillSpring;
-  if (Spring.AnimationFrame) {
-    cancelAnimationFrame(Spring.AnimationFrame);
-    Spring.AnimationFrame = null;
-  }
-  Spring.CurrentHeight = parseFloat(appPillEl.style.height) || Spring.CurrentHeight;
-  Spring.Velocity = 0;
-  _AppPillAnimateTo(27);
-  setTimeout(scrollPillToSelected, 500);
+    AppPillWrenchOpen = false;
+    appPillEl.classList.remove('open', 'drop-down');
+
+    var Spring = _AppPillSpring;
+    if (Spring.AnimationFrame) {
+        cancelAnimationFrame(Spring.AnimationFrame);
+        Spring.AnimationFrame = null;
+    }
+    Spring.CurrentHeight = parseFloat(appPillEl.style.height) || Spring.CurrentHeight;
+    Spring.HeightVelocity = 0;
+
+    _AppPillAnimateTo(27, 0, 0);
+
+    setTimeout(scrollPillToSelected, 500);
 }
 
 // Close on outside click -- also commits wrench picker if open

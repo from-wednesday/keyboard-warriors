@@ -4078,6 +4078,11 @@ function _AppPillSpringTick() {
     var TranslateDifference = Spring.TargetTranslateY - Spring.CurrentTranslateY;
     Spring.TranslateVelocity = Spring.TranslateVelocity * 0.74 + TranslateDifference * 0.052;
     Spring.CurrentTranslateY += Spring.TranslateVelocity;
+    // Never overshoot past zero — prevents pill drifting above its resting position
+    if (Spring.TargetTranslateY === 0 && Spring.CurrentTranslateY < 0) {
+        Spring.CurrentTranslateY = 0;
+        Spring.TranslateVelocity = 0;
+    }
     if (Math.abs(Spring.CurrentTranslateY - Spring.TargetTranslateY) > 0.3 || Math.abs(Spring.TranslateVelocity) > 0.2) {
         Settled = false;
     } else {

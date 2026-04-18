@@ -3885,29 +3885,54 @@ function _onWrenchDrop(Event) {
 }
 
 // Touch drag handlers
-var _WrenchTouchDragClone    = null;
-var _WrenchTouchScrollOffset = 0;
+// A touch is only treated as a drag once the finger moves more than
+// DRAG_THRESHOLD pixels. Until then it is a tap (toggle radio).
+var _WrenchTouchDragClone      = null;
+var _WrenchTouchScrollOffset   = 0;
+var _WrenchTouchPendingRow     = null;   // row touched but not yet confirmed as drag
+var _WrenchTouchStartY         = 0;
+var _WrenchTouchStartX         = 0;
+var _WrenchTouchDragActive     = false;  // true once threshold exceeded
+var WRENCH_DRAG_THRESHOLD      = 8;     // px of movement before drag starts
 
 function _onWrenchTouchStart(Event) {
   if (Event.touches.length !== 1) return;
   var Touch = Event.touches[0];
-  _WrenchDragSourceRow = Event.currentTarget;
-  var Rect = _WrenchDragSourceRow.getBoundingClientRect();
-  _WrenchDragPointerOffsetY = Touch.clientY - Rect.top;
-
-  // Create a floating clone for visual feedback
-  var Clone = _WrenchDragSourceRow.cloneNode(true);
-  Clone.style.cssText = 'position:fixed;left:' + Rect.left + 'px;top:' + Rect.top + 'px;width:' + Rect.width + 'px;height:' + Rect.height + 'px;opacity:0.85;background:white;border-radius:6px;box-shadow:0 4px 16px rgba(0,0,0,0.18);pointer-events:none;z-index:9999;transition:none;';
-  document.body.appendChild(Clone);
-  _WrenchTouchDragClone = Clone;
-  _WrenchDragSourceRow.style.opacity = '0.3';
-  Event.preventDefault();
+  _WrenchTouchPendingRow     = Event.currentTarget;
+  _WrenchTouchStartY         = Touch.clientY;
+  _WrenchTouchStartX         = Touch.clientX;
+  _WrenchTouchDragActive     = false;
+  _WrenchDragSourceRow       = null;
+  // Record offset for if/when drag starts
+  var Rect = _WrenchTouchPendingRow.getBoundingClientRect();
+  _WrenchDragPointerOffsetY  = Touch.clientY - Rect.top;
+  // Do NOT preventDefault here — let the tap/click propagate normally
 }
 
 function _onWrenchTouchMove(Event) {
-  if (!_WrenchDragSourceRow || !_WrenchTouchDragClone) return;
-  Event.preventDefault();
+  if (!_WrenchTouchPendingRow) return;
   var Touch = Event.touches[0];
+  var DeltaY = Math.abs(Touch.clientY - _WrenchTouchStartY);
+  var DeltaX = Math.abs(Touch.clientX - _WrenchTouchStartX);
+
+  if (!_WrenchTouchDragActive) {
+    // Only promote to drag if vertical movement exceeds threshold
+    if (DeltaY < WRENCH_DRAG_THRESHOLD) return;
+    // Diagonal or mostly horizontal swipe = scroll, not drag
+    if (DeltaX > DeltaY) { _WrenchTouchPendingRow = null; return; }
+    // Threshold exceeded — start the drag now
+    _WrenchTouchDragActive = true;
+    _WrenchDragSourceRow   = _WrenchTouchPendingRow;
+    var Rect = _WrenchDragSourceRow.getBoundingClientRect();
+    // Create floating clone
+    var Clone = _WrenchDragSourceRow.cloneNode(true);
+    Clone.style.cssText = 'position:fixed;left:' + Rect.left + 'px;top:' + Rect.top + 'px;width:' + Rect.width + 'px;height:' + Rect.height + 'px;opacity:0.85;background:white;border-radius:6px;box-shadow:0 4px 16px rgba(0,0,0,0.18);pointer-events:none;z-index:9999;transition:none;';
+    document.body.appendChild(Clone);
+    _WrenchTouchDragClone = Clone;
+    _WrenchDragSourceRow.style.opacity = '0.3';
+  }
+
+  Event.preventDefault();
   var NewTop = Touch.clientY - _WrenchDragPointerOffsetY;
   _WrenchTouchDragClone.style.top = NewTop + 'px';
   var TargetIndex = _wrenchRowIndexAtY(Touch.clientY);
@@ -3915,13 +3940,25 @@ function _onWrenchTouchMove(Event) {
 }
 
 function _onWrenchTouchEnd(Event) {
-  if (!_WrenchDragSourceRow) return;
-  var DropIndex = _WrenchDragGapIndex >= 0 ? _WrenchDragGapIndex : 0;
-  if (_WrenchTouchDragClone && _WrenchTouchDragClone.parentNode) {
-    _WrenchTouchDragClone.parentNode.removeChild(_WrenchTouchDragClone);
+  if (!_WrenchTouchPendingRow) return;
+
+  if (_WrenchTouchDragActive && _WrenchDragSourceRow) {
+    // Commit the drag
+    var DropIndex = _WrenchDragGapIndex >= 0 ? _WrenchDragGapIndex : 0;
+    if (_WrenchTouchDragClone && _WrenchTouchDragClone.parentNode) {
+      _WrenchTouchDragClone.parentNode.removeChild(_WrenchTouchDragClone);
+    }
+    _WrenchTouchDragClone  = null;
+    _WrenchTouchDragActive = false;
+    _WrenchTouchPendingRow = null;
+    _commitWrenchDrop(DropIndex);
+  } else {
+    // It was a tap — let the click event handle toggle, just clean up state
+    _WrenchTouchDragActive = false;
+    _WrenchDragSourceRow   = null;
+    _WrenchTouchPendingRow = null;
+    _removeWrenchGap();
   }
-  _WrenchTouchDragClone = null;
-  _commitWrenchDrop(DropIndex);
 }
 
 function _openWrenchPicker() {
@@ -4147,7 +4184,27 @@ function openAppPill() {
     AppPillWrenchOpen = false;
     _EnsureAppPillSpacer();
 
-    // Read position BEFORE any DOM changes so the rect is the true resting position
+    // Cancel any running spring animation so its RAF doesn't fight us
+    var Spring = _AppPillSpring;
+    if (Spring.AnimationFrame) {
+        cancelAnimationFrame(Spring.AnimationFrame);
+        Spring.AnimationFrame = null;
+    }
+
+    // Clear any stale transform and spacer so getBoundingClientRect()
+    // returns the pill's true resting position in the document flow.
+    appPillEl.style.transform = '';
+    appPillEl.style.height    = '27px';
+    if (_AppPillSpacer) _AppPillSpacer.style.height = '0px';
+    // Reset spring state to match
+    Spring.CurrentHeight      = 27;
+    Spring.CurrentTranslateY  = 0;
+    Spring.CurrentSpacerHeight = 0;
+    Spring.HeightVelocity     = 0;
+    Spring.TranslateVelocity  = 0;
+    Spring.SpacerVelocity     = 0;
+
+    // Now read the true position — pill is 27px, no transform, no spacer
     var PillRect = appPillEl.getBoundingClientRect();
 
     appPillEl.classList.add('open');

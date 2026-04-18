@@ -101,8 +101,8 @@
   <!-- App selector: right-aligned in the same osRow -->
   <div id="appSelectorWrap">
     <p id="appSelectorLabel">now training on</p>
-    <div id="appPill" onclick="toggleAppDropdown()">
-      <!-- Options rendered by JS so selected item can be reordered to top -->
+    <div id="appPill">
+    <!-- Options rendered by JS so selected item can be reordered to top -->
     </div>
   </div>
 </div>
@@ -3518,6 +3518,7 @@ const ROW_H = 24; // px — must match CSS height: 24px on .app-option
 var currentApp = 'Photoshop (Ps)'; // placeholder; overwritten by _onAppsLoaded once APPS is known
 
 const appPillEl = document.getElementById('appPill');
+appPillEl.addEventListener('click', toggleAppDropdown);
 
 var AppPillWrenchOpen = false;
 

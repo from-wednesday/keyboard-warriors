@@ -9,7 +9,7 @@
 <title>Keyboard Warriors</title>
 <script>
   const DefaultTitle = 'Keyboard Warriors';
-  const VersionLabel   = '0022';
+  const VersionLabel   = '0023';
   const TitlePrefix  = document.title !== DefaultTitle ? document.title.trim() + '_' : '';
   const DBG_DEVICE   = TitlePrefix + VersionLabel;
 </script>
@@ -101,7 +101,8 @@
   <!-- App selector: right-aligned in the same osRow -->
   <div id="appSelectorWrap">
     <p id="appSelectorLabel">now training on</p>
-    <div id="appPill" onclick="toggleAppDropdown()">
+<div id="appPill" onclick="if(appPillEl.classList.contains('open'))closeAppPill();else openAppPill();">
+      
       <!-- Options rendered by JS so selected item can be reordered to top -->
     </div>
   </div>
@@ -640,9 +641,7 @@
   </div><!-- /#settingsPanel -->
   <div id="kbFlipStage">
   <div id="keyboardPanel">
-    <div id="kb-slab-back"></div>
     <div id="kb-shadow"></div>
-    <div id="kb-wall-top"></div>
     <div id="kb-wall-bottom"></div>
     <div id="kb-base-edge"></div>
     <div class="kb-row" id="row-fn"></div>
@@ -1503,6 +1502,25 @@ function _initialiseLayout() {
   updateKeyboardMode();
   updateMismatchPill();
   document.getElementById('keyboardPanel').classList.toggle('pc-keys', currentOs === 'pc');
+
+  // Force a silent flip cycle to establish the 3D stacking context correctly,
+  // preventing wall elements from bleeding through rounded corners on first render.
+requestAnimationFrame(function() {
+  var Panel = document.getElementById('keyboardPanel');
+  var Stage = document.getElementById('kbFlipStage');
+  var Wall  = document.getElementById('kb-wall-bottom');
+  Panel.style.transition = 'none';
+  Stage.style.transition = 'none';
+  if (Wall) Wall.style.display = 'none';
+  Panel.classList.add('kb-edged');
+  requestAnimationFrame(function() {
+    Panel.classList.remove('kb-edged');
+    Panel.style.transition = '';
+    Stage.style.transition = '';
+    if (Wall) Wall.style.display = '';
+  });
+});
+
 
 var KeyboardPanelResizeObserver = new ResizeObserver(function(ObservedEntries) {
   var Entry = ObservedEntries[0];
@@ -3522,6 +3540,7 @@ function _MakeAppPillCaretSvg() {
   return SvgElement;
 }
 
+
 function buildAppPill() {
   appPillEl.innerHTML = '';
 
@@ -3586,11 +3605,11 @@ function _MakeWrenchPickerRadioDot(IsActive) {
   var SvgElement = document.createElementNS(SvgNamespace, 'svg');
   SvgElement.setAttribute('width', '16');
   SvgElement.setAttribute('height', '16');
-  SvgElement.setAttribute('viewBox', '0 0 19 19');
+  SvgElement.setAttribute('viewBox', '0 0 16 16'); // Standardized to 16 not 19
   SvgElement.setAttribute('class', 'app-pill-radio-svg');
 
-  var CentreX = 9.5;
-  var CentreY = 9.5;
+ // Centered exactly at 8,8 (half of 16)
+  var CentreX = 8, CentreY = 8;
 
   function BuildHexPath(Radius) {
     var HexPoints = [];
@@ -3605,18 +3624,20 @@ function _MakeWrenchPickerRadioDot(IsActive) {
   }
 
   var OuterHex = document.createElementNS(SvgNamespace, 'path');
-  OuterHex.setAttribute('d', BuildHexPath(6.2));
-  OuterHex.setAttribute('stroke', '#374151');
+  OuterHex.setAttribute('d', BuildHexPath(6.5));
+  OuterHex.setAttribute('stroke', IsActive ? '#374151' : '#d1d5db');
   OuterHex.setAttribute('stroke-width', '1.5');
   OuterHex.setAttribute('fill', 'none');
   OuterHex.setAttribute('stroke-linejoin', 'round');
   OuterHex.setAttribute('class', 'app-pill-hex-ring');
+  OuterHex.style.transformOrigin = 'center'; // Fixes rotation axis
 
   var InnerHex = document.createElementNS(SvgNamespace, 'path');
   InnerHex.setAttribute('d', BuildHexPath(3.5));
   InnerHex.setAttribute('fill', '#374151');
   InnerHex.setAttribute('class', 'app-pill-hex-dot');
-
+  InnerHex.style.transformOrigin = 'center'; // Fixes rotation axis
+  
   if (IsActive) {
     OuterHex.style.transform = 'rotate(180deg)';
     InnerHex.style.transform = 'rotate(180deg)';
@@ -3633,46 +3654,41 @@ function _MakeWrenchPickerRadioDot(IsActive) {
 }
 
 function _AnimateWrenchDot(RadioSpanElement, GoingActive) {
-  var HexPathElement = RadioSpanElement.querySelector('.app-pill-hex-dot');
-  var HexRingElement = RadioSpanElement.querySelector('.app-pill-hex-ring');
-  if (!HexPathElement || !HexRingElement) return;
+  var DotEl  = RadioSpanElement.querySelector('.app-pill-hex-dot');
+  var RingEl = RadioSpanElement.querySelector('.app-pill-hex-ring');
+  if (!DotEl || !RingEl) return;
 
-  HexPathElement.classList.remove('animating-in', 'animating-out');
-  HexRingElement.classList.remove('animating-in', 'animating-out');
-
-  void HexPathElement.offsetWidth;
+  DotEl.classList.remove('animating-in', 'animating-out');
+  RingEl.classList.remove('animating-in', 'animating-out', 'ring-to-light', 'ring-to-dark');
+  void DotEl.offsetWidth;
 
   if (GoingActive) {
-    HexPathElement.style.opacity = '0';
-    HexPathElement.style.transform = 'rotate(0deg)';
-    HexRingElement.style.transform = 'rotate(0deg)';
-
-    HexPathElement.classList.add('animating-in');
-    HexRingElement.classList.add('animating-in');
-
-    HexPathElement.addEventListener('animationend', function Handler() {
-      HexPathElement.removeEventListener('animationend', Handler);
-      HexPathElement.classList.remove('animating-in');
-      HexRingElement.classList.remove('animating-in');
-      HexPathElement.style.opacity = '1';
-      HexPathElement.style.transform = 'rotate(180deg)';
-      HexRingElement.style.transform = 'rotate(180deg)';
+    // OFF → ON: ring goes dark immediately, both spin clockwise, dot fades in
+    RingEl.setAttribute('stroke', '#374151');
+    DotEl.style.opacity = '0';
+    DotEl.classList.add('animating-in');
+    RingEl.classList.add('animating-in');
+    DotEl.addEventListener('animationend', function Handler() {
+      DotEl.removeEventListener('animationend', Handler);
+      DotEl.classList.remove('animating-in');
+      RingEl.classList.remove('animating-in');
+      DotEl.style.opacity = '1';
     }, { once: true });
   } else {
-    HexPathElement.style.opacity = '1';
-    HexPathElement.style.transform = 'rotate(0deg)';
-    HexRingElement.style.transform = 'rotate(0deg)';
-
-    HexPathElement.classList.add('animating-out');
-    HexRingElement.classList.add('animating-out');
-
-    HexPathElement.addEventListener('animationend', function Handler() {
-      HexPathElement.removeEventListener('animationend', Handler);
-      HexPathElement.classList.remove('animating-out');
-      HexRingElement.classList.remove('animating-out');
-      HexPathElement.style.opacity = '0';
-      HexPathElement.style.transform = 'rotate(-180deg)';
-      HexRingElement.style.transform = 'rotate(-180deg)';
+    // ON → OFF: ring stroke goes grey immediately (before spin starts so there
+    // is no colour pop at the end), dot fades out, both spin anticlockwise
+    DotEl.style.opacity = '1';
+    DotEl.style.fill = '#374151';
+    RingEl.setAttribute('stroke', '#d1d5db');
+    void RingEl.getBoundingClientRect(); // flush so stroke change commits before animation
+    DotEl.classList.add('animating-out');
+    RingEl.classList.add('animating-out');
+    DotEl.addEventListener('animationend', function Handler() {
+      DotEl.removeEventListener('animationend', Handler);
+      DotEl.classList.remove('animating-out');
+      RingEl.classList.remove('animating-out');
+      DotEl.style.opacity = '0';
+      DotEl.style.fill = '#374151'; // keep fill ready for next activation
     }, { once: true });
   }
 }
@@ -3689,6 +3705,8 @@ function _buildWrenchPickerRows() {
       + (IsInShortList ? ' wrench-picker-active' : ' wrench-picker-inactive');
     Row.dataset.appLabel = AppEntry.label;
     Row.style.cssText = 'display:flex;align-items:center;height:24px;padding:0 10px 0 0;cursor:pointer;';
+    Row.draggable = true;
+    _attachWrenchRowDragListeners(Row);
 
     var IconColumn = document.createElement('span');
     IconColumn.className = 'app-option-icon-col';
@@ -3696,13 +3714,19 @@ function _buildWrenchPickerRows() {
 
     var LabelSpan = document.createElement('span');
     LabelSpan.className = 'app-option-label-col';
-    LabelSpan.style.cssText = 'flex:1;font-size:12px;white-space:nowrap;text-align:left;'
-      + (IsInShortList ? 'color:#374151;' : 'color:#9ca3af;')
+    LabelSpan.style.cssText = 'flex:1;font-size:12px;white-space:nowrap;text-align:left;overflow:hidden;text-overflow:ellipsis;min-width:0;'
+      + (IsInShortList ? 'color:#374151;' : 'color:#d1d5db;text-decoration:line-through;')
       + (IsBetaApp ? 'font-style:italic;' : '');
+
     LabelSpan.textContent = AppEntry.label + (IsBetaApp ? ' (beta)' : '');
+
+    var DragHandle = document.createElement('span');
+    DragHandle.style.cssText = 'display:flex;align-items:center;padding:0 2px 0 4px;opacity:0.25;flex-shrink:0;cursor:grab;touch-action:none;margin-left:auto;';
+    DragHandle.innerHTML = '<svg width="8" height="12" viewBox="0 0 8 12" fill="currentColor"><circle cx="2" cy="2" r="1.2"/><circle cx="6" cy="2" r="1.2"/><circle cx="2" cy="6" r="1.2"/><circle cx="6" cy="6" r="1.2"/><circle cx="2" cy="10" r="1.2"/><circle cx="6" cy="10" r="1.2"/></svg>';
 
     Row.appendChild(IconColumn);
     Row.appendChild(LabelSpan);
+    Row.appendChild(DragHandle);
 
     Row.addEventListener('click', function(ClickEvent) {
       ClickEvent.stopPropagation();
@@ -3735,45 +3759,260 @@ function _toggleWrenchPickerApp(AppLabel, RowElement, IconColumnElement, LabelSp
     if (appsShortList.length <= 1) { showToast('You need at least one app in your list.'); return; }
     appsShortList = appsShortList.filter(function(Label) { return Label !== AppLabel; });
     _AnimateWrenchDot(IconColumnElement, false);
-    LabelSpanElement.style.color = '#9ca3af';
-    RowElement.classList.remove('wrench-picker-active');
-    RowElement.classList.add('wrench-picker-inactive');
+    LabelSpanElement.style.color = '#d1d5db';
+    LabelSpanElement.style.textDecoration = 'line-through';
   } else {
     appsShortList.push(AppLabel);
     _AnimateWrenchDot(IconColumnElement, true);
     LabelSpanElement.style.color = '#374151';
-    RowElement.classList.remove('wrench-picker-inactive');
-    RowElement.classList.add('wrench-picker-active');
+    LabelSpanElement.style.textDecoration = '';
+  }
+}
+
+var _WrenchDragSourceRow      = null;
+var _WrenchDragGapRow         = null;
+var _WrenchDragGapIndex       = -1;
+var _WrenchDragPointerOffsetY = 0;
+var _WrenchDragRowHeight      = 24;
+
+function _attachWrenchRowDragListeners(RowElement) {
+  // Mouse drag (dragover and drop are on the container, not individual rows)
+  RowElement.addEventListener('dragstart', _onWrenchDragStart);
+  RowElement.addEventListener('dragend',   _onWrenchDragEnd);
+
+  // Touch drag
+  RowElement.addEventListener('touchstart', _onWrenchTouchStart, { passive: false });
+  RowElement.addEventListener('touchmove',  _onWrenchTouchMove,  { passive: false });
+  RowElement.addEventListener('touchend',   _onWrenchTouchEnd,   { passive: false });
+}
+
+function _getWrenchContentRows() {
+  // All rows except the wrench close button at the bottom
+  var AllRows = Array.from(appPillEl.querySelectorAll('.app-option-wrench-picker'));
+  return AllRows;
+}
+
+function _wrenchRowIndexAtY(ClientY) {
+  var ContentRows = _getWrenchContentRows();
+  for (var Index = 0; Index < ContentRows.length; Index++) {
+    var Rect = ContentRows[Index].getBoundingClientRect();
+    if (ClientY < Rect.bottom) return Index;
+  }
+  return ContentRows.length - 1;
+}
+
+function _insertWrenchGapAt(TargetIndex) {
+  if (_WrenchDragGapIndex === TargetIndex) return;
+  _removeWrenchGap();
+  _WrenchDragGapIndex = TargetIndex;
+  var ContentRows = _getWrenchContentRows();
+  var GapRow = document.createElement('div');
+  GapRow.style.cssText = 'height:24px;background:rgba(16,185,129,0.08);border-radius:4px;margin:1px 0;pointer-events:none;transition:height 0.12s ease;flex-shrink:0;';
+  _WrenchDragGapRow = GapRow;
+  if (TargetIndex >= ContentRows.length) {
+    var CloseBtn = appPillEl.querySelector('.app-option-wrench:last-child');
+    if (CloseBtn) {
+      appPillEl.insertBefore(GapRow, CloseBtn);
+    } else {
+      appPillEl.appendChild(GapRow);
+    }
+  } else {
+    appPillEl.insertBefore(GapRow, ContentRows[TargetIndex]);
+  }
+}
+
+function _removeWrenchGap() {
+  if (_WrenchDragGapRow && _WrenchDragGapRow.parentNode) {
+    _WrenchDragGapRow.parentNode.removeChild(_WrenchDragGapRow);
+  }
+  _WrenchDragGapRow  = null;
+  _WrenchDragGapIndex = -1;
+}
+
+function _commitWrenchDrop(DroppedAtIndex) {
+  if (!_WrenchDragSourceRow) return;
+  var ContentRows  = _getWrenchContentRows();
+  var SourceIndex  = ContentRows.indexOf(_WrenchDragSourceRow);
+  if (SourceIndex === -1) return;
+
+  // Rebuild appsLongList order to match the new visual order
+  var NewOrder = ContentRows.slice();
+  NewOrder.splice(SourceIndex, 1);
+  if (DroppedAtIndex > SourceIndex) DroppedAtIndex--;
+  NewOrder.splice(DroppedAtIndex, 0, _WrenchDragSourceRow);
+
+  var NewLongList = NewOrder.map(function(RowElement) {
+    return appsLongList.find(function(AppEntry) {
+      return AppEntry.label === RowElement.dataset.appLabel;
+    });
+  }).filter(Boolean);
+
+  appsLongList = NewLongList;
+
+  // Rebuild the visual list to match
+  _removeWrenchGap();
+  _WrenchDragSourceRow.style.opacity = '';
+  _WrenchDragSourceRow.style.transform = '';
+  _WrenchDragSourceRow = null;
+  _buildWrenchPickerRows();
+}
+
+// Mouse drag handlers
+function _onWrenchDragStart(Event) {
+  _WrenchDragSourceRow = Event.currentTarget;
+  _WrenchDragSourceRow.style.opacity = '0.4';
+  Event.dataTransfer.effectAllowed = 'move';
+}
+
+function _onWrenchDragEnd(Event) {
+  _removeWrenchGap();
+  if (_WrenchDragSourceRow) {
+    _WrenchDragSourceRow.style.opacity = '';
+    _WrenchDragSourceRow = null;
+  }
+}
+
+function _onWrenchDragOver(Event) {
+  Event.preventDefault();
+  Event.dataTransfer.dropEffect = 'move';
+  var TargetIndex = _wrenchRowIndexAtY(Event.clientY);
+  _insertWrenchGapAt(TargetIndex);
+}
+
+function _onWrenchDrop(Event) {
+  Event.preventDefault();
+  var DropIndex = _WrenchDragGapIndex >= 0 ? _WrenchDragGapIndex : _wrenchRowIndexAtY(Event.clientY);
+  _commitWrenchDrop(DropIndex);
+}
+
+// Touch drag handlers
+// A touch is only treated as a drag once the finger moves more than
+// DRAG_THRESHOLD pixels. Until then it is a tap (toggle radio).
+var _WrenchTouchDragClone      = null;
+var _WrenchTouchScrollOffset   = 0;
+var _WrenchTouchPendingRow     = null;   // row touched but not yet confirmed as drag
+var _WrenchTouchStartY         = 0;
+var _WrenchTouchStartX         = 0;
+var _WrenchTouchDragActive     = false;  // true once threshold exceeded
+var WRENCH_DRAG_THRESHOLD      = 8;     // px of movement before drag starts
+
+function _onWrenchTouchStart(Event) {
+  if (Event.touches.length !== 1) return;
+  var Touch = Event.touches[0];
+  _WrenchTouchPendingRow     = Event.currentTarget;
+  _WrenchTouchStartY         = Touch.clientY;
+  _WrenchTouchStartX         = Touch.clientX;
+  _WrenchTouchDragActive     = false;
+  _WrenchDragSourceRow       = null;
+  // Record offset for if/when drag starts
+  var Rect = _WrenchTouchPendingRow.getBoundingClientRect();
+  _WrenchDragPointerOffsetY  = Touch.clientY - Rect.top;
+  // Do NOT preventDefault here — let the tap/click propagate normally
+}
+
+function _onWrenchTouchMove(Event) {
+  if (!_WrenchTouchPendingRow) return;
+  var Touch = Event.touches[0];
+  var DeltaY = Math.abs(Touch.clientY - _WrenchTouchStartY);
+  var DeltaX = Math.abs(Touch.clientX - _WrenchTouchStartX);
+
+  if (!_WrenchTouchDragActive) {
+    // Only promote to drag if vertical movement exceeds threshold
+    if (DeltaY < WRENCH_DRAG_THRESHOLD) return;
+    // Diagonal or mostly horizontal swipe = scroll, not drag
+    if (DeltaX > DeltaY) { _WrenchTouchPendingRow = null; return; }
+    // Threshold exceeded — start the drag now
+    _WrenchTouchDragActive = true;
+    _WrenchDragSourceRow   = _WrenchTouchPendingRow;
+    var Rect = _WrenchDragSourceRow.getBoundingClientRect();
+    // Create floating clone
+    var Clone = _WrenchDragSourceRow.cloneNode(true);
+    Clone.style.cssText = 'position:fixed;left:' + Rect.left + 'px;top:' + Rect.top + 'px;width:' + Rect.width + 'px;height:' + Rect.height + 'px;opacity:0.85;background:white;border-radius:6px;box-shadow:0 4px 16px rgba(0,0,0,0.18);pointer-events:none;z-index:9999;transition:none;';
+    document.body.appendChild(Clone);
+    _WrenchTouchDragClone = Clone;
+    _WrenchDragSourceRow.style.opacity = '0.3';
+  }
+
+  Event.preventDefault();
+  var NewTop = Touch.clientY - _WrenchDragPointerOffsetY;
+  _WrenchTouchDragClone.style.top = NewTop + 'px';
+  var TargetIndex = _wrenchRowIndexAtY(Touch.clientY);
+  _insertWrenchGapAt(TargetIndex);
+}
+
+function _onWrenchTouchEnd(Event) {
+  if (!_WrenchTouchPendingRow) return;
+
+  if (_WrenchTouchDragActive && _WrenchDragSourceRow) {
+    // Commit the drag
+    var DropIndex = _WrenchDragGapIndex >= 0 ? _WrenchDragGapIndex : 0;
+    if (_WrenchTouchDragClone && _WrenchTouchDragClone.parentNode) {
+      _WrenchTouchDragClone.parentNode.removeChild(_WrenchTouchDragClone);
+    }
+    _WrenchTouchDragClone  = null;
+    _WrenchTouchDragActive = false;
+    _WrenchTouchPendingRow = null;
+    _commitWrenchDrop(DropIndex);
+  } else {
+    // It was a tap — let the click event handle toggle, just clean up state
+    _WrenchTouchDragActive = false;
+    _WrenchDragSourceRow   = null;
+    _WrenchTouchPendingRow = null;
+    _removeWrenchGap();
   }
 }
 
 function _openWrenchPicker() {
-  AppPillWrenchOpen = true;
-  appPillEl.classList.add('open', 'drop-down');
-  appPillEl.scrollTop = 0;
-  buildAppPill();
-  var NaturalHeight = _AppPillMeasureNaturalHeight();
-  _AppPillAnimateTo(NaturalHeight);
+    var selectorLabel = document.getElementById('appSelectorLabel');
+    if (selectorLabel) selectorLabel.textContent = 'edit and sort your app list';
+    _EnsureAppPillSpacer();    AppPillWrenchOpen = true;
+    appPillEl.classList.add('open');
+    appPillEl.classList.remove('drop-down');
+    appPillEl.scrollTop = 0;
+    buildAppPill();
+
+    var OpenHeight = _AppPillMeasureNaturalHeight();
+
+    // Wrench menu always grows downward from the current pill top edge.
+    // Calculate how much spacer is needed to keep the pill top in place
+    // (same logic as openAppPill but TranslateY is always 0 for wrench).
+    var PillRect = appPillEl.getBoundingClientRect();
+    var ViewportMargin = 12;
+    var SpacerHeight = 0;
+    if (PillRect.top < ViewportMargin) {
+        SpacerHeight = ViewportMargin - PillRect.top;
+    }
+
+    _AppPillAnimateTo(OpenHeight, 0, SpacerHeight);
+
+    appPillEl.addEventListener('dragover', _onWrenchDragOver);
+    appPillEl.addEventListener('drop',     _onWrenchDrop);
 }
 
 function _closeWrenchPicker() {
-  AppPillWrenchOpen = false;
-  if (!appsShortList.includes(currentApp)) {
-    currentApp = appsShortList[0];
-    try { localStorage.setItem('kw_app', currentApp); } catch (StorageError) {}
-    runData.length = 0; lastCompletedReport = null; CoachAdviceAccepted = false;
-  }
-  _saveAppsShortList();
-  buildAppPill();
-  var NaturalHeight = _AppPillMeasureNaturalHeight();
-  _AppPillAnimateTo(NaturalHeight);
-  setTimeout(function() {
-    appPillEl.classList.remove('open', 'drop-down');
-    _AppPillAnimateTo(27);
-    setTimeout(scrollPillToSelected, 280);
-  }, 0);
-}
+    AppPillWrenchOpen = false;
+    var selectorLabel = document.getElementById('appSelectorLabel');
+    if (selectorLabel) selectorLabel.textContent = 'now training on';    appPillEl.removeEventListener('dragover', _onWrenchDragOver);
+    appPillEl.removeEventListener('drop',     _onWrenchDrop);
 
+    var ActiveApps   = appsLongList.filter(function(AppEntry) { return appsShortList.includes(AppEntry.label); });
+    var InactiveApps = appsLongList.filter(function(AppEntry) { return !appsShortList.includes(AppEntry.label); });
+    appsLongList = ActiveApps.concat(InactiveApps);
+    appsShortList = ActiveApps.map(function(AppEntry) { return AppEntry.label; });
+
+    if (!appsShortList.includes(currentApp)) {
+        currentApp = appsShortList[0];
+        try { localStorage.setItem('kw_app', currentApp); } catch (StorageError) {}
+        runData.length = 0; lastCompletedReport = null; CoachAdviceAccepted = false;
+    }
+    _saveAppsShortList();
+
+    // Close immediately — rebuild and collapse
+    appPillEl.classList.remove('open');
+    buildAppPill();
+    _AppPillAnimateTo(27, 0, 0);
+    setTimeout(scrollPillToSelected, 280);
+}
 
 function scrollPillToSelected() {
   var SelectedIndex = appsShortList.indexOf(currentApp);
@@ -3781,92 +4020,235 @@ function scrollPillToSelected() {
   appPillEl.scrollTop = SelectedIndex * ROW_H;
 }
 
-// ── App pill spring height animator ──────────────────────────────────────────
-// Drives smooth, spring-based height transitions on the app pill.
-// Growing: slight overshoot (3-4%) then settles. Shrinking: ease-in-slow then ease-out-fast.
+// ── App pill spring animator ──────────────────────────────────────────────
+// Drives height, translateY (to pin selected row), and spacer height.
+// All three run in one loop for a unified, physical feel.
+
+var _AppPillSpacer = null;
+
+function _EnsureAppPillSpacer() {
+    if (_AppPillSpacer) return;
+    _AppPillSpacer = document.createElement('div');
+    _AppPillSpacer.id = 'appPillSpacer';
+    _AppPillSpacer.style.cssText = 'width:100%;height:0;overflow:hidden;flex-shrink:0;';
+    var OsRow = document.getElementById('osRow');
+    if (OsRow && OsRow.parentNode) {
+        OsRow.parentNode.insertBefore(_AppPillSpacer, OsRow);
+    }
+}
+
 var _AppPillSpring = {
-  CurrentHeight:  27,
-  TargetHeight:   27,
-  Velocity:       0,
-  AnimationFrame: null,
+    // Pill height
+    CurrentHeight:  27,
+    TargetHeight:   27,
+    HeightVelocity: 0,
+    // Pill translateY (negative = moved up)
+    CurrentTranslateY:  0,
+    TargetTranslateY:   0,
+    TranslateVelocity:  0,
+    // Spacer height
+    CurrentSpacerHeight:  0,
+    TargetSpacerHeight:   0,
+    SpacerVelocity:       0,
+    AnimationFrame: null,
 };
 
 function _AppPillSpringTick() {
-  var Spring = _AppPillSpring;
-  var Difference = Spring.TargetHeight - Spring.CurrentHeight;
+    var Spring = _AppPillSpring;
+    var Settled = true;
 
-  if (Spring.CurrentHeight < Spring.TargetHeight) {
-    // --- SLOWER GROWING ---
-    var Stiffness = 0.07; // Much slower tension
-    var Damping   = 0.80; // High damping to keep it smooth
-    Spring.Velocity = Spring.Velocity * Damping + Difference * Stiffness;
-    Spring.CurrentHeight += Spring.Velocity;
-  } else {
-    // --- SLOWER SHRINKING ---
-    var ShrinkProgress = Math.abs(Difference) / (Spring.TargetHeight > 0 ? Spring.TargetHeight : 27);
-    // Reduced coefficients significantly to slow the exit
-    var ShrinkSpeed = 0.04 + ShrinkProgress * 0.1; 
-    Spring.CurrentHeight += Difference * ShrinkSpeed;
-    Spring.Velocity = 0;
-  }
+    // ── Height ──────────────────────────────────────────────────────────
+    var HeightDifference = Spring.TargetHeight - Spring.CurrentHeight;
+    if (Spring.CurrentHeight < Spring.TargetHeight) {
+        // Opening: spring with slight overshoot
+        Spring.HeightVelocity = Spring.HeightVelocity * 0.74 + HeightDifference * 0.052;
+        Spring.CurrentHeight += Spring.HeightVelocity;
+    } else {
+        // Closing: ease out
+        var ShrinkProgress = Math.abs(HeightDifference) / Math.max(Spring.TargetHeight, 27);
+        Spring.CurrentHeight += HeightDifference * (0.055 + ShrinkProgress * 0.11);
+        Spring.HeightVelocity = 0;
+    }
+    if (Math.abs(Spring.CurrentHeight - Spring.TargetHeight) > 0.5 || Math.abs(Spring.HeightVelocity) > 0.3) {
+        Settled = false;
+    } else {
+        Spring.CurrentHeight = Spring.TargetHeight;
+        Spring.HeightVelocity = 0;
+    }
 
-  // Adjusted Threshold: 
-  // Because the animation is slower, we might want a tighter "Settled" 
-  // check so it doesn't spend too long on tiny sub-pixel movements.
-  var Settled = Math.abs(Spring.CurrentHeight - Spring.TargetHeight) < 0.05
-               && Math.abs(Spring.Velocity) < 0.2;
+    // ── TranslateY ──────────────────────────────────────────────────────
+    var TranslateDifference = Spring.TargetTranslateY - Spring.CurrentTranslateY;
+    Spring.TranslateVelocity = Spring.TranslateVelocity * 0.74 + TranslateDifference * 0.052;
+    Spring.CurrentTranslateY += Spring.TranslateVelocity;
+    // Never overshoot past zero — prevents pill drifting above its resting position
+    if (Spring.TargetTranslateY === 0 && Spring.CurrentTranslateY < 0) {
+        Spring.CurrentTranslateY = 0;
+        Spring.TranslateVelocity = 0;
+    }
+    if (Math.abs(Spring.CurrentTranslateY - Spring.TargetTranslateY) > 0.3 || Math.abs(Spring.TranslateVelocity) > 0.2) {
+        Settled = false;
+    } else {
+        Spring.CurrentTranslateY = Spring.TargetTranslateY;
+        Spring.TranslateVelocity = 0;
+    }
 
-  if (Settled) {
-    Spring.CurrentHeight = Spring.TargetHeight;
-    Spring.Velocity = 0;
-    Spring.AnimationFrame = null;
-    appPillEl.style.height = Spring.TargetHeight + 'px';
-    return;
-  }
+    // ── Spacer height ────────────────────────────────────────────────────
+    var SpacerDifference = Spring.TargetSpacerHeight - Spring.CurrentSpacerHeight;
+    if (Spring.CurrentSpacerHeight < Spring.TargetSpacerHeight) {
+        Spring.SpacerVelocity = Spring.SpacerVelocity * 0.74 + SpacerDifference * 0.052;
+        Spring.CurrentSpacerHeight += Spring.SpacerVelocity;
+    } else {
+        var SpacerShrinkProgress = Math.abs(SpacerDifference) / Math.max(Spring.TargetSpacerHeight, 1);
+        Spring.CurrentSpacerHeight += SpacerDifference * (0.055 + SpacerShrinkProgress * 0.11);
+        Spring.SpacerVelocity = 0;
+    }
+    if (Math.abs(Spring.CurrentSpacerHeight - Spring.TargetSpacerHeight) > 0.5 || Math.abs(Spring.SpacerVelocity) > 0.3) {
+        Settled = false;
+    } else {
+        Spring.CurrentSpacerHeight = Spring.TargetSpacerHeight;
+        Spring.SpacerVelocity = 0;
+    }
 
-  appPillEl.style.height = Math.round(Spring.CurrentHeight * 10) / 10 + 'px';
-  Spring.AnimationFrame = requestAnimationFrame(_AppPillSpringTick);
+    // ── Apply ────────────────────────────────────────────────────────────
+    appPillEl.style.height = Math.round(Spring.CurrentHeight * 10) / 10 + 'px';
+    appPillEl.style.transform = Spring.CurrentTranslateY !== 0
+        ? 'translateY(' + (Math.round(Spring.CurrentTranslateY * 10) / 10) + 'px)'
+        : '';
+    if (_AppPillSpacer) {
+        _AppPillSpacer.style.height = Math.round(Spring.CurrentSpacerHeight * 10) / 10 + 'px';
+    }
+
+    if (Settled) {
+        Spring.AnimationFrame = null;
+        if (Spring.TargetTranslateY === 0 && Math.abs(Spring.CurrentTranslateY) < 0.1) {
+            appPillEl.style.transform = '';
+        }
+        return;
+    }
+    Spring.AnimationFrame = requestAnimationFrame(_AppPillSpringTick);
 }
 
-function _AppPillAnimateTo(TargetHeightPixels) {
-  var Spring = _AppPillSpring;
-  Spring.TargetHeight = TargetHeightPixels;
-  if (Spring.AnimationFrame) return; // already running
-  Spring.AnimationFrame = requestAnimationFrame(_AppPillSpringTick);
+function _AppPillAnimateTo(TargetHeightPixels, TargetTranslateY, TargetSpacerHeight) {
+    var Spring = _AppPillSpring;
+    Spring.TargetHeight = TargetHeightPixels;
+    Spring.TargetTranslateY = TargetTranslateY || 0;
+    Spring.TargetSpacerHeight = TargetSpacerHeight || 0;
+    if (Spring.AnimationFrame) return;
+    Spring.AnimationFrame = requestAnimationFrame(_AppPillSpringTick);
 }
 
 function _AppPillMeasureNaturalHeight() {
-  // Temporarily lift overflow clip to read scrollHeight
-  var PreviousOverflow = appPillEl.style.overflow;
-  appPillEl.style.overflow = 'visible';
-  var NaturalHeight = appPillEl.scrollHeight;
-  appPillEl.style.overflow = PreviousOverflow;
-  return NaturalHeight;
+    var PreviousOverflow = appPillEl.style.overflow;
+    var PreviousHeight   = appPillEl.style.height;
+    var PreviousTransform = appPillEl.style.transform;
+    appPillEl.style.overflow  = 'visible';
+    appPillEl.style.height    = 'auto';
+    appPillEl.style.transform = '';
+    var NaturalHeight = appPillEl.scrollHeight;
+    appPillEl.style.overflow  = PreviousOverflow;
+    appPillEl.style.height    = PreviousHeight;
+    appPillEl.style.transform = PreviousTransform;
+    return NaturalHeight;
 }
 
-function toggleAppDropdown() {
-  if (gameState === 'playing' || gameState === 'confirm-reset' || gameState === 'confirm-quit') return;
-  if (gameState === 'paused') { showToast('Change the app between games.'); return; }
-  if (appPillEl.classList.contains('open')) {
-    if (AppPillWrenchOpen) { _closeWrenchPicker(); } else { closeAppPill(); }
-  } else {
-    openAppPill();
-  }
+
+function _AppPillCalculateOpenGeometry(OpenHeight, PillRect) {
+    var ViewportMargin = 12;
+    var SelectedIndex = Math.max(0, appsShortList.indexOf(currentApp));
+
+    var SelectedIndex = Math.max(0, appsShortList.indexOf(currentApp));
+    var SpacerHeight = 0;
+
+    // The closed pill always shows the selected row at PillRect.top (via scrollTop).
+    // On open, the selected row is at offset SelectedIndex*ROW_H from the pill top.
+    // To keep the selected row at PillRect.top we must shift pill UP by that amount.
+    // But "up" means the pill top moves to PillRect.top - SelectedIndex*ROW_H,
+    // which requires a NEGATIVE translateY... except translateY moves the element
+    // in screen space, so moving the pill UP (smaller Y) = negative translateY.
+    // However if SelectedIndex is 0 we want TranslateY = 0 (no movement).
+    // If SelectedIndex is 1 we want the pill to move UP by ROW_H so the second
+    // row sits where the first row was = TranslateY = -ROW_H... 
+    // BUT: that would hide the first row above the osRow.
+    var SpacerHeight = 0;
+    var TranslateY = 0;
+
+    // Expand downward from current position.
+    // If the bottom would go off screen, shift pill upward just enough to fit.
+    var PillTopOnScreen = PillRect.top;
+    var PillBottomOnScreen = PillTopOnScreen + OpenHeight;
+    var BottomOvershoot = PillBottomOnScreen - (window.innerHeight - ViewportMargin);
+    if (BottomOvershoot > 0) {
+        // Shift up, but never past the top margin
+        TranslateY = -Math.min(BottomOvershoot, PillTopOnScreen - ViewportMargin);
+    }
+
+    return { TranslateY: TranslateY, SpacerHeight: SpacerHeight };
+
 }
 
 function openAppPill() {
-  AppPillWrenchOpen = false;
-  appPillEl.classList.add('open', 'drop-down');
-  appPillEl.scrollTop = 0;
-  var NaturalHeight = _AppPillMeasureNaturalHeight();
-  _AppPillAnimateTo(NaturalHeight);
+    AppPillWrenchOpen = false;
+     var selectorLabel = document.getElementById('appSelectorLabel');
+     if (selectorLabel) selectorLabel.textContent = 'choose app to train in next';
+    _EnsureAppPillSpacer();
+
+    // Cancel any running spring animation so its RAF doesn't fight us
+    var Spring = _AppPillSpring;
+    if (Spring.AnimationFrame) {
+        cancelAnimationFrame(Spring.AnimationFrame);
+        Spring.AnimationFrame = null;
+    }
+
+    // Hard-reset pill and spacer to closed state before reading position
+    appPillEl.style.transition = 'none';
+    appPillEl.style.transform  = '';
+    appPillEl.style.height     = '27px';
+    appPillEl.style.overflow   = 'hidden';
+    if (_AppPillSpacer) _AppPillSpacer.style.height = '0px';
+
+    // Reset spring state to match
+    Spring.CurrentHeight       = 27;
+    Spring.TargetHeight        = 27;
+    Spring.CurrentTranslateY   = 0;
+    Spring.TargetTranslateY    = 0;
+    Spring.CurrentSpacerHeight = 0;
+    Spring.TargetSpacerHeight  = 0;
+    Spring.HeightVelocity      = 0;
+    Spring.TranslateVelocity   = 0;
+    Spring.SpacerVelocity      = 0;
+
+    // Force a reflow so the browser commits the above before we read position
+    void appPillEl.offsetHeight;
+
+    // Now read the true position — pill is 27px, no transform, no spacer
+    var PillRect = appPillEl.getBoundingClientRect();
+
+    appPillEl.classList.add('open');
+    var OpenHeight = _AppPillMeasureNaturalHeight();
+    var PillRect = appPillEl.getBoundingClientRect();
+    var Geometry = _AppPillCalculateOpenGeometry(OpenHeight, PillRect);
+
+    appPillEl.scrollTop = 0;
+    _AppPillAnimateTo(OpenHeight, Geometry.TranslateY, Geometry.SpacerHeight);
 }
 
 function closeAppPill() {
-  AppPillWrenchOpen = false;
-  appPillEl.classList.remove('open', 'drop-down');
-  _AppPillAnimateTo(27);
-  setTimeout(scrollPillToSelected, 280);
+    AppPillWrenchOpen = false;
+     var selectorLabel = document.getElementById('appSelectorLabel');
+     if (selectorLabel) selectorLabel.textContent = 'now training on';
+    appPillEl.classList.remove('open');
+
+    var Spring = _AppPillSpring;
+    if (Spring.AnimationFrame) {
+        cancelAnimationFrame(Spring.AnimationFrame);
+        Spring.AnimationFrame = null;
+    }
+    Spring.CurrentHeight = parseFloat(appPillEl.style.height) || Spring.CurrentHeight;
+    Spring.HeightVelocity = 0;
+
+    _AppPillAnimateTo(27, 0, 0);
+
+    setTimeout(scrollPillToSelected, 500);
 }
 
 // Close on outside click -- also commits wrench picker if open
@@ -6881,36 +7263,11 @@ function _onAppsLoaded(AllAppsFromJson) {
     currentApp = FallbackApp;
   }
 
-  _measureAndFixAppPillWidth();
-  buildAppPill();
-  positionIcons();
+
+buildAppPill();
+positionIcons();
 }
 
-function _measureAndFixAppPillWidth() {
-  // Measure the widest app label at runtime using a hidden probe element,
-  // then set the pill to that width and never change it again this session.
-  var ProbeElement = document.createElement('span');
-  ProbeElement.style.cssText = 'position:absolute;visibility:hidden;white-space:nowrap;font-family:Lato,system-ui,sans-serif;font-size:12px;font-weight:500;padding:0;margin:0;';
-  document.body.appendChild(ProbeElement);
-
-  var WidestLabelPixels = 0;
-  appsLongList.forEach(function(AppEntry) {
-    ProbeElement.textContent = AppEntry.label + (AppEntry.beta ? ' (beta)' : '');
-    var LabelWidth = ProbeElement.offsetWidth;
-    if (LabelWidth > WidestLabelPixels) WidestLabelPixels = LabelWidth;
-  });
-  document.body.removeChild(ProbeElement);
-
-  // 22px icon column + label width + 10px right padding + 3px spare = total inner width.
-  // Add 3px each side for border (1.5px * 2) compensated via box-sizing.
-  var PillInnerWidth = 22 + WidestLabelPixels + 10 + 3;
-  var PillElement = document.getElementById('appPill');
-  if (PillElement) {
-    PillElement.style.width = PillInnerWidth + 'px';
-    PillElement.style.minWidth = PillInnerWidth + 'px';
-  }
-  window._AppPillFixedWidth = PillInnerWidth;
-} 
 
 // Fetch the apps manifest on startup. Falls back to a minimal built-in list if the
 // file cannot be reached (e.g. running the HTML file locally without a server).
@@ -10480,50 +10837,53 @@ function _touchModalVisible() {
 function setKbPosition(pos) {
   if (ForceNoKeyboard) return;
   if (_touchModalVisible()) { _kbPos = pos; _kbFlipped = (pos === 'edge'); return; }
-  var prev = _kbPos;
+  var seq = ++_flipSeq;
   _kbPos     = pos;
   _kbFlipped = (pos === 'edge');
-  var seq = ++_flipSeq;
 
   var panel = document.getElementById('keyboardPanel');
   var stage = document.getElementById('kbFlipStage');
   var wrap  = document.getElementById('keyboardWrap');
 
-  // Going away from face — hide icons, show 3D edges
-  if (prev === 'face') {
-    wrap.classList.add('kb-flipping');
-    setTimeout(function() {
-      if (_flipSeq !== seq) return;
-      panel.classList.add('kb-edged');
-    }, 200);
+  // ── Apply the CSS transforms immediately so the transition starts right away ──
+  stage.style.transform = KB_POS[pos].stage;
+  panel.style.transform = KB_POS[pos].panel;
+
+  // ── kb-edged controls wall and shadow visibility via CSS.
+  //    It must be set immediately and unconditionally so those elements are
+  //    never in the wrong state regardless of how quickly positions change. ──
+  if (pos === 'face') {
+    // Snap key colours back instantly before removing the edged class
+    panel.classList.add('no-key-transition');
+    panel.classList.remove('kb-edged', 'kb-edges-visible', 'kb-partial');
+    stage.classList.remove('kb-show-base');
+    requestAnimationFrame(function() { panel.classList.remove('no-key-transition'); });
+  } else {
+    // Both partial and edge need the edged appearance immediately
+    panel.classList.add('kb-edged');
+    panel.classList.toggle('kb-partial', pos === 'partial');
   }
 
-  // Going to face — remove 3D edges, reveal icons after transition
+  // ── kb-flipping hides the icon tooltips while the keyboard is away from face ──
   if (pos === 'face') {
-    stage.classList.remove('kb-show-base');
-    // Snap keys back to their normal colours instantly (no slow fade from grey)
-    panel.classList.add('no-key-transition');
-    panel.classList.remove('kb-edges-visible', 'kb-edged');
-    requestAnimationFrame(function() { panel.classList.remove('no-key-transition'); });
+    wrap.classList.add('kb-at-face');
+    // Restore pointer-events and flipping class only after the transition settles
     setTimeout(function() {
       if (_flipSeq !== seq) return;
       wrap.classList.remove('kb-flipping');
-      // Restore keyboard stage pointer-events now that it is flat and not obscuring icons
       stage.style.pointerEvents = '';
     }, 900);
+  } else {
+    wrap.classList.remove('kb-at-face');
+    wrap.classList.add('kb-flipping');
   }
 
-  // Arriving at edge — show edge details
+  // ── Edge-only decorations: base highlight and edge detail reveal.
+  //    These are purely additive cosmetic details so no seq guard needed. ──
   if (pos === 'edge') {
-    setTimeout(function() {
-      if (_flipSeq !== seq) return;
-      panel.classList.add('kb-edges-visible');
-    }, 400);
-    setTimeout(function() {
-      if (_flipSeq !== seq) return;
-      stage.classList.add('kb-show-base');
-    }, 650);
-    // Clear sticky keys once the keyboard has fully settled at the edge
+    setTimeout(function() { panel.classList.add('kb-edges-visible'); }, 400);
+    setTimeout(function() { stage.classList.add('kb-show-base'); },    650);
+    // Clear stuck keys once fully settled
     setTimeout(function() {
       if (_flipSeq !== seq) return;
       clearAllLit();
@@ -10534,13 +10894,6 @@ function setKbPosition(pos) {
     panel.classList.remove('kb-edges-visible');
     stage.classList.remove('kb-show-base');
   }
-
-  // Apply the CSS transform — transition handles smooth interpolation from any position
-  stage.style.transform = KB_POS[pos].stage;
-  panel.style.transform = KB_POS[pos].panel;
-  panel.classList.toggle('kb-partial', pos === 'partial');
-  // Drive credit/diffIcon nudge — class applied immediately so CSS transition runs in sync
-  wrap.classList.toggle('kb-at-face', pos === 'face');
 }
 
 function _resetFlipState() {

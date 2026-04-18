@@ -4109,7 +4109,7 @@ function _AppPillMeasureNaturalHeight() {
 }
 
 // Calculates how far upward the pill needs to translate so the selected
-<div id="appPill" onclick="if(!appPillEl.classList.contains('open'))openAppPill()"> its natural position in the OS row.
+// row stays pinned at its natural position in the OS row.
 // Returns { TranslateY (negative = up), SpacerHeight }.
 function _AppPillCalculateOpenGeometry(OpenHeight) {
     var SelectedIndex = appsShortList.indexOf(currentApp);

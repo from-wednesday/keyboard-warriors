@@ -4148,41 +4148,25 @@ function _AppPillCalculateOpenGeometry(OpenHeight, PillRect) {
     var ViewportMargin = 12;
     var SelectedIndex = Math.max(0, appsShortList.indexOf(currentApp));
 
-    // The selected row must stay at PillRect.top after opening.
-    // The selected row sits at SelectedIndex*ROW_H from the pill top.
-    // So we need the pill top at: PillRect.top - SelectedIndex*ROW_H
-    // But the pill top is PillRect.top + SpacerHeight + TranslateY.
-    // Solving: TranslateY = -(SelectedIndex*ROW_H) - SpacerHeight
-    //
-    // We work out SpacerHeight first, then derive TranslateY from it.
-
     var SelectedIndex = Math.max(0, appsShortList.indexOf(currentApp));
     var SpacerHeight = 0;
 
-    // Where would the pill top land with no spacer and ideal translate?
-    var IdealPillTop = PillRect.top - SelectedIndex * ROW_H;
-    if (IdealPillTop < ViewportMargin) {
-        SpacerHeight = ViewportMargin - IdealPillTop;
+    // Ideal: move pill up so selected row stays at PillRect.top
+    var TranslateY = -(SelectedIndex * ROW_H);
+
+    // Clamp so pill top never goes above viewport
+    var PillTopOnScreen = PillRect.top + TranslateY;
+    if (PillTopOnScreen < ViewportMargin) {
+        TranslateY = TranslateY + (ViewportMargin - PillTopOnScreen);
+        PillTopOnScreen = ViewportMargin;
     }
 
-    // With spacer, PillRect.top shifts down by SpacerHeight.
-    // TranslateY positions the pill so selected row is at original PillRect.top.
-    // (PillRect.top + SpacerHeight) + TranslateY + SelectedIndex*ROW_H = PillRect.top
-    // => TranslateY = -(SelectedIndex*ROW_H) - SpacerHeight
-    var TranslateY = -(SelectedIndex * ROW_H) - SpacerHeight;
-
-    // Pill top on screen = PillRect.top + SpacerHeight + TranslateY
-    var PillTopOnScreen = PillRect.top + SpacerHeight + TranslateY;
-    // = PillRect.top + SpacerHeight - SelectedIndex*ROW_H - SpacerHeight
-    // = PillRect.top - SelectedIndex*ROW_H  (= IdealPillTop, clamped to ViewportMargin)
-
-    // Check bottom overflow
+    // Clamp so pill bottom never goes below viewport
     var PillBottomOnScreen = PillTopOnScreen + OpenHeight;
     var BottomOvershoot = PillBottomOnScreen - (window.innerHeight - ViewportMargin);
     if (BottomOvershoot > 0) {
         var MaxUpshift = PillTopOnScreen - ViewportMargin;
-        var ActualUpshift = Math.min(BottomOvershoot, Math.max(0, MaxUpshift));
-        TranslateY -= ActualUpshift;
+        TranslateY -= Math.min(BottomOvershoot, MaxUpshift);
     }
 
     return { TranslateY: TranslateY, SpacerHeight: SpacerHeight };

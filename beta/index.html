@@ -4111,27 +4111,25 @@ function _AppPillMeasureNaturalHeight() {
 // Calculates how far upward the pill needs to translate so the selected
 // row stays pinned at its natural position in the OS row.
 // Returns { TranslateY (negative = up), SpacerHeight }.
-function _AppPillCalculateOpenGeometry(OpenHeight) {
+function _AppPillCalculateOpenGeometry(OpenHeight, RestingRect) {
     var SelectedIndex = appsShortList.indexOf(currentApp);
     if (SelectedIndex < 0) SelectedIndex = 0;
 
     // How far the pill needs to move upward so the selected row
-    // stays pinned at its current screen position.
+    // stays pinned at its resting screen position.
     var UpwardGrowth = SelectedIndex * ROW_H;
     var DesiredTranslateY = -UpwardGrowth;
 
     // Where would the pill top land after that translate?
-    // getBoundingClientRect() gives us the resting position before any transform.
-    var PillRect = appPillEl.getBoundingClientRect();
-    var PillTopAfterTranslate = PillRect.top + DesiredTranslateY;
+    // We use the rect captured before any DOM change.
+    var PillTopAfterTranslate = RestingRect.top + DesiredTranslateY;
     var ViewportMargin = 12;
 
     var SpacerHeight = 0;
     if (PillTopAfterTranslate < ViewportMargin) {
         // The pill would clip the viewport top.
-        // A spacer pushes #osRow downward, which moves the pill's resting
-        // position down by the same amount. That means we need LESS upward
-        // translate -- not more -- to keep the selected row pinned.
+        // A spacer pushes #osRow downward, so we need less upward
+        // translate to keep the selected row pinned.
         SpacerHeight = ViewportMargin - PillTopAfterTranslate;
         DesiredTranslateY = DesiredTranslateY + SpacerHeight;
     }
@@ -4148,12 +4146,14 @@ function scrollPillToSelected() {
 function openAppPill() {
     _EnsureAppPillSpacer();
     AppPillWrenchOpen = false;
+
+    // Capture the pill's resting position BEFORE anything changes the DOM.
+    var RestingRect = appPillEl.getBoundingClientRect();
+
     appPillEl.classList.add('open', 'drop-down');
 
-    // Measure open height, then calculate geometry using the pill's
-    // current resting rect (captured before any transform or resize).
     var OpenHeight = _AppPillMeasureNaturalHeight();
-    var Geometry   = _AppPillCalculateOpenGeometry(OpenHeight);
+    var Geometry   = _AppPillCalculateOpenGeometry(OpenHeight, RestingRect);
 
     _AppPillAnimateTo(OpenHeight, Geometry.TranslateY, Geometry.SpacerHeight);
 }

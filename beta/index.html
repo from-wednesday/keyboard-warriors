@@ -101,7 +101,7 @@
   <!-- App selector: right-aligned in the same osRow -->
   <div id="appSelectorWrap">
     <p id="appSelectorLabel">now training on</p>
-<div id="appPill" onclick="toggleAppDropdown()">
+<div id="appPill" onclick="if(typeof toggleAppDropdown==='function')toggleAppDropdown()">
       
       <!-- Options rendered by JS so selected item can be reordered to top -->
     </div>
@@ -3979,6 +3979,12 @@ function _closeWrenchPicker() {
 }
 
 
+function scrollPillToSelected() {
+  var SelectedIndex = appsShortList.indexOf(currentApp);
+  if (SelectedIndex < 0) SelectedIndex = 0;
+  appPillEl.scrollTop = SelectedIndex * ROW_H;
+}
+
 // ── App pill spring animator ──────────────────────────────────────────────
 // Drives height, translateY (to pin selected row), and spacer height.
 // All three run in one loop for a unified, physical feel.
@@ -4109,29 +4115,28 @@ function _AppPillCalculateOpenGeometry(OpenHeight) {
     var SelectedIndex = appsShortList.indexOf(currentApp);
     if (SelectedIndex < 0) SelectedIndex = 0;
 
-    // How many rows sit above the selected row (each row is ROW_H px)
+    // How many rows sit above the selected row in the short list.
     var RowsAboveSelected = SelectedIndex;
     var UpwardGrowth = RowsAboveSelected * ROW_H;
 
-    // The wrench row at the bottom adds ROW_H but is always below, so
-    // downward growth = OpenHeight - 27 - UpwardGrowth (clamped to 0)
-
-    // How far up does the top of the pill need to move to pin the selected row?
+    // The pill needs to translate upward so the selected row stays pinned.
     var DesiredTranslateY = -UpwardGrowth;
 
-    // Check if the pill top would go above the viewport after translating.
-    // PillRect.top is the current resting position before any transform.
+    // Read the pill's current resting position before any transform.
     var PillRect = appPillEl.getBoundingClientRect();
+    var ViewportMargin = 12;
+
+    // Where would the pill top end up after translating?
     var PillTopAfterTranslate = PillRect.top + DesiredTranslateY;
-    var ViewportMargin = 12; // px clearance from top of viewport
 
     var SpacerHeight = 0;
     if (PillTopAfterTranslate < ViewportMargin) {
-        // The pill would clip. Add a spacer to push the whole row down by
-        // exactly the clip amount. The translateY is reduced by the same
-        // amount so the selected row still ends up in its original position.
+        // The pill would clip the viewport top.
+        // Spacer pushes the pill's resting position DOWN by SpacerHeight,
+        // so translateY must go further UP by the same amount to keep
+        // the selected row pinned at its original screen position.
         SpacerHeight = ViewportMargin - PillTopAfterTranslate;
-        DesiredTranslateY = DesiredTranslateY + SpacerHeight;
+        DesiredTranslateY = DesiredTranslateY - SpacerHeight;
     }
 
     return { TranslateY: DesiredTranslateY, SpacerHeight: SpacerHeight };
@@ -4147,8 +4152,9 @@ function openAppPill() {
     _EnsureAppPillSpacer();
     AppPillWrenchOpen = false;
     appPillEl.classList.add('open', 'drop-down');
-    appPillEl.scrollTop = 0; // start from top so natural height is accurate
 
+    // Measure open height, then calculate geometry using the pill's
+    // current resting rect (captured before any transform or resize).
     var OpenHeight = _AppPillMeasureNaturalHeight();
     var Geometry   = _AppPillCalculateOpenGeometry(OpenHeight);
 
@@ -4178,16 +4184,6 @@ document.addEventListener('click', function(ClickEvent) {
     if (AppPillWrenchOpen) { _closeWrenchPicker(); } else { closeAppPill(); }
   }
 });
-
-function toggleAppDropdown() {
-  if (gameState === 'playing' || gameState === 'confirm-reset' || gameState === 'confirm-quit') return;
-  if (gameState === 'paused') { showToast('Change the app between games.'); return; }
-  if (appPillEl.classList.contains('open')) {
-    if (AppPillWrenchOpen) { _closeWrenchPicker(); } else { closeAppPill(); }
-  } else {
-    openAppPill();
-  }
-}
 
 function setAppSelectorGameActive(active) {
   appPillEl.classList.toggle('game-active', active);

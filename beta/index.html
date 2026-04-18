@@ -4115,24 +4115,22 @@ function scrollPillToSelected() {
 }
 
 function openAppPill() {
-    _EnsureAppPillSpacer();
     AppPillWrenchOpen = false;
     appPillEl.classList.add('open');
 
     var OpenHeight = _AppPillMeasureNaturalHeight();
 
-    // Set scrollTop immediately so the selected row sits at the top of the
-    // pill -- that is its original screen position. The pill expands downward
-    // from there. No translateY needed.
+    // scrollTop pins the selected row at the top of the pill window,
+    // which is exactly its resting screen position. The pill then grows
+    // downward. No translateY or spacer needed.
     var SelectedIndex = Math.max(0, appsShortList.indexOf(currentApp));
     appPillEl.scrollTop = SelectedIndex * ROW_H;
 
     _AppPillAnimateTo(OpenHeight, 0, 0);
 }
-
 function closeAppPill() {
     AppPillWrenchOpen = false;
-    appPillEl.classList.remove('open', 'drop-down');
+    appPillEl.classList.remove('open');
 
     var Spring = _AppPillSpring;
     if (Spring.AnimationFrame) {

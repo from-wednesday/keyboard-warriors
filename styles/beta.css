@@ -2604,6 +2604,12 @@ li.conflict-dismissed .conflict-desc {
   to   { opacity: 0; transform: rotate(-180deg); }
 }
 
+/* Ring-only out: same anticlockwise spin but stays fully opaque — no fade */
+@keyframes AppPillHexRingOut {
+  from { transform: rotate(0deg); }
+  to   { transform: rotate(-180deg); }
+}
+
 .app-pill-hex-dot,
 .app-pill-hex-ring {
   transform-origin: 9.5px 9.5px;
@@ -2619,11 +2625,13 @@ li.conflict-dismissed .conflict-desc {
   animation: AppPillHexFadeOut 0.6s cubic-bezier(0.33, 1, 0.68, 1) forwards;
 }
 
+/* Ring uses its own keyframe so it never becomes invisible */
 .app-pill-hex-ring.animating-out {
-  animation: AppPillHexFadeOut 0.6s cubic-bezier(0.33, 1, 0.68, 1) forwards;
+  animation: AppPillHexRingOut 0.6s cubic-bezier(0.33, 1, 0.68, 1) forwards;
 }
 
-/* Ring colour transition: travels from dark to light during the spin */
+/* ring-to-light / ring-to-dark kept for any legacy callers but no longer used
+   by _AnimateWrenchDot — stroke is set directly before animation starts */
 .app-pill-hex-ring.ring-to-light {
   transition: stroke 0.6s ease;
   stroke: #d1d5db !important;

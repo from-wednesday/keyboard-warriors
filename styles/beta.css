@@ -1647,11 +1647,11 @@ li.conflict-dismissed .conflict-desc {
 .app-option-wrench-picker:hover { background: #f0f9ff; }
 /* Flip class: used when there is not enough room above to expand upward,
    so the pill drops down as an overlay instead */
-#appPill.open.drop-down {
-  position: absolute;
-  top: -24px;
-  right: 0;
-  z-index: 500;
+#appPill.open.drop-down { 
+  /* position: absolute; TEMPORARY EXPERIMENT SAT PM 18/04/26
+ /*  top: -24px;
+ /*  right: 0;
+ /*  z-index: 500;
   /* Width fixed by JS -- no max-content override */
   border-radius: 10px;
 }

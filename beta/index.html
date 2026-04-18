@@ -4190,18 +4190,26 @@ function openAppPill() {
         Spring.AnimationFrame = null;
     }
 
-    // Clear any stale transform and spacer so getBoundingClientRect()
-    // returns the pill's true resting position in the document flow.
-    appPillEl.style.transform = '';
-    appPillEl.style.height    = '27px';
+    // Hard-reset pill and spacer to closed state before reading position
+    appPillEl.style.transition = 'none';
+    appPillEl.style.transform  = '';
+    appPillEl.style.height     = '27px';
+    appPillEl.style.overflow   = 'hidden';
     if (_AppPillSpacer) _AppPillSpacer.style.height = '0px';
+
     // Reset spring state to match
-    Spring.CurrentHeight      = 27;
-    Spring.CurrentTranslateY  = 0;
+    Spring.CurrentHeight       = 27;
+    Spring.TargetHeight        = 27;
+    Spring.CurrentTranslateY   = 0;
+    Spring.TargetTranslateY    = 0;
     Spring.CurrentSpacerHeight = 0;
-    Spring.HeightVelocity     = 0;
-    Spring.TranslateVelocity  = 0;
-    Spring.SpacerVelocity     = 0;
+    Spring.TargetSpacerHeight  = 0;
+    Spring.HeightVelocity      = 0;
+    Spring.TranslateVelocity   = 0;
+    Spring.SpacerVelocity      = 0;
+
+    // Force a reflow so the browser commits the above before we read position
+    void appPillEl.offsetHeight;
 
     // Now read the true position — pill is 27px, no transform, no spacer
     var PillRect = appPillEl.getBoundingClientRect();

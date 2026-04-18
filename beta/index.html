@@ -3540,47 +3540,6 @@ function _MakeAppPillCaretSvg() {
   return SvgElement;
 }
 
-function _AppPillCalculateOpenGeometry(OpenHeight, PillRect) {
-    var ViewportMargin = 12;
-    var SelectedIndex = Math.max(0, appsShortList.indexOf(currentApp));
-
-    var IdealTranslateY = -(SelectedIndex * ROW_H);
-    var IdealNewPillTop = PillRect.top + IdealTranslateY;
-    var Overshoot = ViewportMargin - IdealNewPillTop;
-
-    var SpacerHeight = 0;
-    var TranslateY = IdealTranslateY;
-
-    if (Overshoot > 0) {
-        SpacerHeight = Overshoot;
-        TranslateY = IdealTranslateY + Overshoot;
-    }
-
-    var PillOpenBottom = PillRect.top + SpacerHeight + TranslateY + OpenHeight;
-    var BottomOvershoot = PillOpenBottom - (window.innerHeight - ViewportMargin);
-    if (BottomOvershoot > 0) {
-        var HeadroomAbove = (PillRect.top + SpacerHeight + TranslateY) - ViewportMargin;
-        var BottomCorrection = Math.min(BottomOvershoot, HeadroomAbove);
-        TranslateY -= BottomCorrection;
-    }
-
-    return { TranslateY: TranslateY, SpacerHeight: SpacerHeight };
-}
-
-function openAppPill() {
-    AppPillWrenchOpen = false;
-    _EnsureAppPillSpacer();
-
-    // Read position BEFORE any DOM changes
-    var PillRect = appPillEl.getBoundingClientRect();
-
-    appPillEl.classList.add('open');
-    var OpenHeight = _AppPillMeasureNaturalHeight();
-    var Geometry = _AppPillCalculateOpenGeometry(OpenHeight, PillRect);
-
-    appPillEl.scrollTop = 0;
-    _AppPillAnimateTo(OpenHeight, Geometry.TranslateY, Geometry.SpacerHeight);
-}
 
 function buildAppPill() {
   appPillEl.innerHTML = '';
@@ -4145,23 +4104,56 @@ function _AppPillMeasureNaturalHeight() {
 }
 
 
-function scrollPillToSelected() {
-    var SelectedIndex = appsShortList.indexOf(currentApp);
-    if (SelectedIndex < 0) SelectedIndex = 0;
-    appPillEl.scrollTop = SelectedIndex * ROW_H;
+function _AppPillCalculateOpenGeometry(OpenHeight, PillRect) {
+    // PillRect: getBoundingClientRect() read BEFORE any DOM/transform changes.
+    // Goal: selected row stays pinned at its current screen position.
+    // The pill expands upward by (SelectedIndex * ROW_H) and downward by the rest.
+    // TranslateY is negative (upward shift). SpacerHeight pushes #osRow down when
+    // the upward expansion would otherwise go off the top of the viewport.
+
+    var ViewportMargin = 12;
+    var SelectedIndex = Math.max(0, appsShortList.indexOf(currentApp));
+
+    // How far the pill must translate upward so the selected row stays put
+    var IdealTranslateY = -(SelectedIndex * ROW_H);
+
+    // Where the pill's top edge would land after that translate
+    var IdealPillTop = PillRect.top + IdealTranslateY;
+
+    var SpacerHeight = 0;
+    var TranslateY = IdealTranslateY;
+
+    // If the top would go above the viewport margin, push the whole row down
+    // by that amount via the spacer, and reduce the upward translate equally
+    // so the selected row stays visually pinned.
+    if (IdealPillTop < ViewportMargin) {
+        SpacerHeight = ViewportMargin - IdealPillTop;
+        TranslateY = IdealTranslateY + SpacerHeight;
+    }
+
+    // Guard bottom edge
+    var PillBottom = PillRect.top + SpacerHeight + TranslateY + OpenHeight;
+    var BottomOvershoot = PillBottom - (window.innerHeight - ViewportMargin);
+    if (BottomOvershoot > 0) {
+        var Headroom = (PillRect.top + SpacerHeight + TranslateY) - ViewportMargin;
+        var BottomCorrection = Math.min(BottomOvershoot, Math.max(0, Headroom));
+        TranslateY -= BottomCorrection;
+    }
+
+    return { TranslateY: TranslateY, SpacerHeight: SpacerHeight };
 }
 
 function openAppPill() {
     AppPillWrenchOpen = false;
     _EnsureAppPillSpacer();
 
-    // Measure geometry BEFORE adding open class (pill is still 27px tall, untransformed)
-    var PillRectBefore = appPillEl.getBoundingClientRect();
+    // Read position BEFORE any DOM changes so the rect is the true resting position
+    var PillRect = appPillEl.getBoundingClientRect();
 
     appPillEl.classList.add('open');
     var OpenHeight = _AppPillMeasureNaturalHeight();
 
-    var Geometry = _AppPillCalculateOpenGeometry(OpenHeight);
+    var Geometry = _AppPillCalculateOpenGeometry(OpenHeight, PillRect);
 
     appPillEl.scrollTop = 0;
     _AppPillAnimateTo(OpenHeight, Geometry.TranslateY, Geometry.SpacerHeight);

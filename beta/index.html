@@ -4116,19 +4116,22 @@ function _AppPillCalculateOpenGeometry(OpenHeight) {
     // The wrench row at the bottom adds ROW_H but is always below, so
     // downward growth = OpenHeight - 27 - UpwardGrowth (clamped to 0)
 
-    // How far up does the top of the pill need to move?
+    // How far up does the top of the pill need to move to pin the selected row?
     var DesiredTranslateY = -UpwardGrowth;
 
-    // Check if the pill top would go above the viewport
+    // Check if the pill top would go above the viewport after translating.
+    // PillRect.top is the current resting position before any transform.
     var PillRect = appPillEl.getBoundingClientRect();
     var PillTopAfterTranslate = PillRect.top + DesiredTranslateY;
     var ViewportMargin = 12; // px clearance from top of viewport
 
     var SpacerHeight = 0;
     if (PillTopAfterTranslate < ViewportMargin) {
+        // The pill would clip. Add a spacer to push the whole row down by
+        // exactly the clip amount. The translateY is reduced by the same
+        // amount so the selected row still ends up in its original position.
         SpacerHeight = ViewportMargin - PillTopAfterTranslate;
-        // No translateY needed -- spacer pushes everything down instead
-        DesiredTranslateY = 0;
+        DesiredTranslateY = DesiredTranslateY + SpacerHeight;
     }
 
     return { TranslateY: DesiredTranslateY, SpacerHeight: SpacerHeight };

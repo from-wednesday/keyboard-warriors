@@ -1504,18 +1504,22 @@ function _initialiseLayout() {
 
   // Force a silent flip cycle to establish the 3D stacking context correctly,
   // preventing wall elements from bleeding through rounded corners on first render.
+requestAnimationFrame(function() {
+  var Panel = document.getElementById('keyboardPanel');
+  var Stage = document.getElementById('kbFlipStage');
+  var Wall  = document.getElementById('kb-wall-bottom');
+  Panel.style.transition = 'none';
+  Stage.style.transition = 'none';
+  if (Wall) Wall.style.display = 'none';
+  Panel.classList.add('kb-edged');
   requestAnimationFrame(function() {
-    var Panel = document.getElementById('keyboardPanel');
-    var Stage = document.getElementById('kbFlipStage');
-    Panel.style.transition = 'none';
-    Stage.style.transition = 'none';
-    Panel.classList.add('kb-edged');
-    requestAnimationFrame(function() {
-      Panel.classList.remove('kb-edged');
-      Panel.style.transition = '';
-      Stage.style.transition = '';
-    });
+    Panel.classList.remove('kb-edged');
+    Panel.style.transition = '';
+    Stage.style.transition = '';
+    if (Wall) Wall.style.display = '';
   });
+});
+
 
 var KeyboardPanelResizeObserver = new ResizeObserver(function(ObservedEntries) {
   var Entry = ObservedEntries[0];

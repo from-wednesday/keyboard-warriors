@@ -4161,15 +4161,16 @@ function _AppPillCalculateOpenGeometry(OpenHeight, PillRect) {
     // If SelectedIndex is 1 we want the pill to move UP by ROW_H so the second
     // row sits where the first row was = TranslateY = -ROW_H... 
     // BUT: that would hide the first row above the osRow.
-    // CORRECT GOAL: expand downward only. TranslateY = 0 always.
-    // The pill simply grows downward from its current position.
+    var SpacerHeight = 0;
     var TranslateY = 0;
-    var PillTopOnScreen = PillRect.top;
 
-    // Clamp so pill bottom never goes below viewport
+    // Expand downward from current position.
+    // If the bottom would go off screen, shift pill upward just enough to fit.
+    var PillTopOnScreen = PillRect.top;
     var PillBottomOnScreen = PillTopOnScreen + OpenHeight;
     var BottomOvershoot = PillBottomOnScreen - (window.innerHeight - ViewportMargin);
     if (BottomOvershoot > 0) {
+        // Shift up, but never past the top margin
         TranslateY = -Math.min(BottomOvershoot, PillTopOnScreen - ViewportMargin);
     }
 

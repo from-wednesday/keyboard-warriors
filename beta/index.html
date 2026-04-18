@@ -101,7 +101,7 @@
   <!-- App selector: right-aligned in the same osRow -->
   <div id="appSelectorWrap">
     <p id="appSelectorLabel">now training on</p>
-<div id="appPill" onclick="if(typeof toggleAppDropdown==='function')toggleAppDropdown()">
+<div id="appPill" onclick="toggleAppDropdown()">
       
       <!-- Options rendered by JS so selected item can be reordered to top -->
     </div>
@@ -4181,6 +4181,16 @@ document.addEventListener('click', function(ClickEvent) {
     if (AppPillWrenchOpen) { _closeWrenchPicker(); } else { closeAppPill(); }
   }
 });
+
+function toggleAppDropdown() {
+  if (gameState === 'playing' || gameState === 'confirm-reset' || gameState === 'confirm-quit') return;
+  if (gameState === 'paused') { showToast('Change the app between games.'); return; }
+  if (appPillEl.classList.contains('open')) {
+    if (AppPillWrenchOpen) { _closeWrenchPicker(); } else { closeAppPill(); }
+  } else {
+    openAppPill();
+  }
+}
 
 function setAppSelectorGameActive(active) {
   appPillEl.classList.toggle('game-active', active);

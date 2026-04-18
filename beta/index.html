@@ -4112,6 +4112,9 @@ function _AppPillSpringTick() {
 
     if (Settled) {
         Spring.AnimationFrame = null;
+        if (Spring.TargetTranslateY === 0 && Math.abs(Spring.CurrentTranslateY) < 0.1) {
+            appPillEl.style.transform = '';
+        }
         return;
     }
     Spring.AnimationFrame = requestAnimationFrame(_AppPillSpringTick);
@@ -4144,22 +4147,33 @@ function _AppPillMeasureNaturalHeight() {
 function _AppPillCalculateOpenGeometry(OpenHeight, PillRect) {
     var ViewportMargin = 12;
     var SelectedIndex = Math.max(0, appsShortList.indexOf(currentApp));
-    var IdealTranslateY = -(SelectedIndex * ROW_H);
-    var IdealPillTop = PillRect.top + IdealTranslateY;
+
+    // Move pill up so the selected row aligns with where the closed pill top was.
+    // Closed pill top = PillRect.top (no transform, no spacer at read time).
+    // After translate: PillRect.top + TranslateY + SelectedIndex*ROW_H = PillRect.top
+    // => TranslateY = -(SelectedIndex * ROW_H)
+    var TranslateY = -(SelectedIndex * ROW_H);
     var SpacerHeight = 0;
-    var TranslateY = IdealTranslateY;
-    if (IdealPillTop < ViewportMargin) {
-        SpacerHeight = ViewportMargin - IdealPillTop;
-        TranslateY = IdealTranslateY + SpacerHeight;
+
+    // Pill top on screen after translate
+    var PillTopOnScreen = PillRect.top + TranslateY;
+
+    // If pill top would go above viewport, use spacer to push osRow down
+    if (PillTopOnScreen < ViewportMargin) {
+        SpacerHeight = ViewportMargin - PillTopOnScreen;
+        PillTopOnScreen = ViewportMargin;
     }
-    var PillBottom = PillRect.top + SpacerHeight + TranslateY + OpenHeight;
-    var BottomOvershoot = PillBottom - (window.innerHeight - ViewportMargin);
+
+    // Check bottom overflow
+    var PillBottomOnScreen = PillTopOnScreen + OpenHeight;
+    var BottomOvershoot = PillBottomOnScreen - (window.innerHeight - ViewportMargin);
     if (BottomOvershoot > 0) {
-        var Headroom = (PillRect.top + SpacerHeight + TranslateY) - ViewportMargin;
-        var BottomCorrection = Math.min(BottomOvershoot, Math.max(0, Headroom));
-        TranslateY -= BottomCorrection;
+        var MaxUpshift = PillTopOnScreen - ViewportMargin;
+        var ActualUpshift = Math.min(BottomOvershoot, Math.max(0, MaxUpshift));
+        TranslateY -= ActualUpshift;
+        SpacerHeight = Math.max(0, SpacerHeight - ActualUpshift);
     }
-    console.log('[AppPill] currentApp='+currentApp+' idx='+SelectedIndex+' ROW_H='+ROW_H+' PillRect.top='+PillRect.top+' OpenHeight='+OpenHeight+' IdealTranslateY='+IdealTranslateY+' SpacerHeight='+SpacerHeight+' FinalTranslateY='+TranslateY+' vh='+window.innerHeight);
+
     return { TranslateY: TranslateY, SpacerHeight: SpacerHeight };
 }
 

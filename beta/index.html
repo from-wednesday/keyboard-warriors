@@ -4216,6 +4216,8 @@ function openAppPill() {
 
     appPillEl.classList.add('open');
     var OpenHeight = _AppPillMeasureNaturalHeight();
+var PillRect = appPillEl.getBoundingClientRect();
+    console.log('PillRect.top='+PillRect.top+' OpenHeight='+OpenHeight+' vh='+window.innerHeight); 
 
     var Geometry = _AppPillCalculateOpenGeometry(OpenHeight, PillRect);
 

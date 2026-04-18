@@ -3968,7 +3968,6 @@ function _closeWrenchPicker() {
     buildAppPill();
 
     var OpenHeight = _AppPillMeasureNaturalHeight();
-    var Geometry   = _AppPillCalculateOpenGeometry(OpenHeight);
     _AppPillAnimateTo(OpenHeight, Geometry.TranslateY, Geometry.SpacerHeight);
 
     setTimeout(function() {
@@ -4108,34 +4107,6 @@ function _AppPillMeasureNaturalHeight() {
     return NaturalHeight;
 }
 
-// Calculates how far upward the pill needs to translate so the selected
-// row stays pinned at its natural position in the OS row.
-// Returns { TranslateY (negative = up), SpacerHeight }.
-function _AppPillCalculateOpenGeometry(OpenHeight, RestingRect) {
-    var SelectedIndex = appsShortList.indexOf(currentApp);
-    if (SelectedIndex < 0) SelectedIndex = 0;
-
-    // How far the pill needs to move upward so the selected row
-    // stays pinned at its resting screen position.
-    var UpwardGrowth = SelectedIndex * ROW_H;
-    var DesiredTranslateY = -UpwardGrowth;
-
-    // Where would the pill top land after that translate?
-    // We use the rect captured before any DOM change.
-    var PillTopAfterTranslate = RestingRect.top + DesiredTranslateY;
-    var ViewportMargin = 12;
-
-    var SpacerHeight = 0;
-    if (PillTopAfterTranslate < ViewportMargin) {
-        // The pill would clip the viewport top.
-        // A spacer pushes #osRow downward, so we need less upward
-        // translate to keep the selected row pinned.
-        SpacerHeight = ViewportMargin - PillTopAfterTranslate;
-        DesiredTranslateY = DesiredTranslateY + SpacerHeight;
-    }
-
-    return { TranslateY: DesiredTranslateY, SpacerHeight: SpacerHeight };
-}
 
 function scrollPillToSelected() {
     var SelectedIndex = appsShortList.indexOf(currentApp);
@@ -4146,16 +4117,17 @@ function scrollPillToSelected() {
 function openAppPill() {
     _EnsureAppPillSpacer();
     AppPillWrenchOpen = false;
-
-    // Capture the pill's resting position BEFORE anything changes the DOM.
-    var RestingRect = appPillEl.getBoundingClientRect();
-
-    appPillEl.classList.add('open', 'drop-down');
+    appPillEl.classList.add('open');
 
     var OpenHeight = _AppPillMeasureNaturalHeight();
-    var Geometry   = _AppPillCalculateOpenGeometry(OpenHeight, RestingRect);
 
-    _AppPillAnimateTo(OpenHeight, Geometry.TranslateY, Geometry.SpacerHeight);
+    // Set scrollTop immediately so the selected row sits at the top of the
+    // pill -- that is its original screen position. The pill expands downward
+    // from there. No translateY needed.
+    var SelectedIndex = Math.max(0, appsShortList.indexOf(currentApp));
+    appPillEl.scrollTop = SelectedIndex * ROW_H;
+
+    _AppPillAnimateTo(OpenHeight, 0, 0);
 }
 
 function closeAppPill() {

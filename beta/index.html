@@ -3518,7 +3518,6 @@ const ROW_H = 24; // px — must match CSS height: 24px on .app-option
 var currentApp = 'Photoshop (Ps)'; // placeholder; overwritten by _onAppsLoaded once APPS is known
 
 const appPillEl = document.getElementById('appPill');
-appPillEl.addEventListener('click', toggleAppDropdown);
 
 var AppPillWrenchOpen = false;
 
@@ -7187,8 +7186,9 @@ function _onAppsLoaded(AllAppsFromJson) {
     currentApp = FallbackApp;
   }
 
-   buildAppPill();
-  positionIcons();
+appPillEl.addEventListener('click', toggleAppDropdown);
+buildAppPill();
+positionIcons();
 }
 
 

@@ -3963,8 +3963,9 @@ function _onWrenchTouchEnd(Event) {
 }
 
 function _openWrenchPicker() {
-    _EnsureAppPillSpacer();
-    AppPillWrenchOpen = true;
+    var selectorLabel = document.getElementById('appSelectorLabel');
+    if (selectorLabel) selectorLabel.textContent = 'edit and sort your app list';
+    _EnsureAppPillSpacer();    AppPillWrenchOpen = true;
     appPillEl.classList.add('open');
     appPillEl.classList.remove('drop-down');
     appPillEl.scrollTop = 0;
@@ -3990,7 +3991,8 @@ function _openWrenchPicker() {
 
 function _closeWrenchPicker() {
     AppPillWrenchOpen = false;
-    appPillEl.removeEventListener('dragover', _onWrenchDragOver);
+    var selectorLabel = document.getElementById('appSelectorLabel');
+    if (selectorLabel) selectorLabel.textContent = 'now training on';    appPillEl.removeEventListener('dragover', _onWrenchDragOver);
     appPillEl.removeEventListener('drop',     _onWrenchDrop);
 
     var ActiveApps   = appsLongList.filter(function(AppEntry) { return appsShortList.includes(AppEntry.label); });
@@ -4186,6 +4188,8 @@ function _AppPillCalculateOpenGeometry(OpenHeight, PillRect) {
 
 function openAppPill() {
     AppPillWrenchOpen = false;
+     var selectorLabel = document.getElementById('appSelectorLabel');
+     if (selectorLabel) selectorLabel.textContent = 'choose app to train in next';
     _EnsureAppPillSpacer();
 
     // Cancel any running spring animation so its RAF doesn't fight us
@@ -4232,6 +4236,8 @@ var PillRect = appPillEl.getBoundingClientRect();
 
 function closeAppPill() {
     AppPillWrenchOpen = false;
+     var selectorLabel = document.getElementById('appSelectorLabel');
+     if (selectorLabel) selectorLabel.textContent = 'now training on';
     appPillEl.classList.remove('open');
 
     var Spring = _AppPillSpring;

@@ -3979,12 +3979,6 @@ function _closeWrenchPicker() {
 }
 
 
-function scrollPillToSelected() {
-  var SelectedIndex = appsShortList.indexOf(currentApp);
-  if (SelectedIndex < 0) SelectedIndex = 0;
-  appPillEl.scrollTop = SelectedIndex * ROW_H;
-}
-
 // ── App pill spring animator ──────────────────────────────────────────────
 // Drives height, translateY (to pin selected row), and spacer height.
 // All three run in one loop for a unified, physical feel.

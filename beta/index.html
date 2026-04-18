@@ -10659,50 +10659,53 @@ function _touchModalVisible() {
 function setKbPosition(pos) {
   if (ForceNoKeyboard) return;
   if (_touchModalVisible()) { _kbPos = pos; _kbFlipped = (pos === 'edge'); return; }
-  var prev = _kbPos;
+  var seq = ++_flipSeq;
   _kbPos     = pos;
   _kbFlipped = (pos === 'edge');
-  var seq = ++_flipSeq;
 
   var panel = document.getElementById('keyboardPanel');
   var stage = document.getElementById('kbFlipStage');
   var wrap  = document.getElementById('keyboardWrap');
 
-  // Going away from face — hide icons, show 3D edges
-  if (prev === 'face') {
-    wrap.classList.add('kb-flipping');
-    setTimeout(function() {
-      if (_flipSeq !== seq) return;
-      panel.classList.add('kb-edged');
-    }, 200);
+  // ── Apply the CSS transforms immediately so the transition starts right away ──
+  stage.style.transform = KB_POS[pos].stage;
+  panel.style.transform = KB_POS[pos].panel;
+
+  // ── kb-edged controls wall and shadow visibility via CSS.
+  //    It must be set immediately and unconditionally so those elements are
+  //    never in the wrong state regardless of how quickly positions change. ──
+  if (pos === 'face') {
+    // Snap key colours back instantly before removing the edged class
+    panel.classList.add('no-key-transition');
+    panel.classList.remove('kb-edged', 'kb-edges-visible', 'kb-partial');
+    stage.classList.remove('kb-show-base');
+    requestAnimationFrame(function() { panel.classList.remove('no-key-transition'); });
+  } else {
+    // Both partial and edge need the edged appearance immediately
+    panel.classList.add('kb-edged');
+    panel.classList.toggle('kb-partial', pos === 'partial');
   }
 
-  // Going to face — remove 3D edges, reveal icons after transition
+  // ── kb-flipping hides the icon tooltips while the keyboard is away from face ──
   if (pos === 'face') {
-    stage.classList.remove('kb-show-base');
-    // Snap keys back to their normal colours instantly (no slow fade from grey)
-    panel.classList.add('no-key-transition');
-    panel.classList.remove('kb-edges-visible', 'kb-edged');
-    requestAnimationFrame(function() { panel.classList.remove('no-key-transition'); });
+    wrap.classList.add('kb-at-face');
+    // Restore pointer-events and flipping class only after the transition settles
     setTimeout(function() {
       if (_flipSeq !== seq) return;
       wrap.classList.remove('kb-flipping');
-      // Restore keyboard stage pointer-events now that it is flat and not obscuring icons
       stage.style.pointerEvents = '';
     }, 900);
+  } else {
+    wrap.classList.remove('kb-at-face');
+    wrap.classList.add('kb-flipping');
   }
 
-  // Arriving at edge — show edge details
+  // ── Edge-only decorations: base highlight and edge detail reveal.
+  //    These are purely additive cosmetic details so no seq guard needed. ──
   if (pos === 'edge') {
-    setTimeout(function() {
-      if (_flipSeq !== seq) return;
-      panel.classList.add('kb-edges-visible');
-    }, 400);
-    setTimeout(function() {
-      if (_flipSeq !== seq) return;
-      stage.classList.add('kb-show-base');
-    }, 650);
-    // Clear sticky keys once the keyboard has fully settled at the edge
+    setTimeout(function() { panel.classList.add('kb-edges-visible'); }, 400);
+    setTimeout(function() { stage.classList.add('kb-show-base'); },    650);
+    // Clear stuck keys once fully settled
     setTimeout(function() {
       if (_flipSeq !== seq) return;
       clearAllLit();
@@ -10713,13 +10716,6 @@ function setKbPosition(pos) {
     panel.classList.remove('kb-edges-visible');
     stage.classList.remove('kb-show-base');
   }
-
-  // Apply the CSS transform — transition handles smooth interpolation from any position
-  stage.style.transform = KB_POS[pos].stage;
-  panel.style.transform = KB_POS[pos].panel;
-  panel.classList.toggle('kb-partial', pos === 'partial');
-  // Drive credit/diffIcon nudge — class applied immediately so CSS transition runs in sync
-  wrap.classList.toggle('kb-at-face', pos === 'face');
 }
 
 function _resetFlipState() {

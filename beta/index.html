@@ -101,8 +101,9 @@
   <!-- App selector: right-aligned in the same osRow -->
   <div id="appSelectorWrap">
     <p id="appSelectorLabel">now training on</p>
-    <div id="appPill" onclick="toggleAppDropdown()">
-    <!-- Options rendered by JS so selected item can be reordered to top -->
+<div id="appPill" onclick="if(typeof toggleAppDropdown==='function')toggleAppDropdown()">
+      
+      <!-- Options rendered by JS so selected item can be reordered to top -->
     </div>
   </div>
 </div>

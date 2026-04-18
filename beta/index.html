@@ -3675,19 +3675,20 @@ function _AnimateWrenchDot(RadioSpanElement, GoingActive) {
       DotEl.style.opacity = '1';
     }, { once: true });
   } else {
-    // ON → OFF: both spin anticlockwise together, ring colour transitions to
-    // light grey during the spin, dot fades to invisible at the end
+    // ON → OFF: ring stroke goes grey immediately (before spin starts so there
+    // is no colour pop at the end), dot fades out, both spin anticlockwise
     DotEl.style.opacity = '1';
     DotEl.style.fill = '#374151';
+    RingEl.setAttribute('stroke', '#d1d5db');
+    void RingEl.getBoundingClientRect(); // flush so stroke change commits before animation
     DotEl.classList.add('animating-out');
-    RingEl.classList.add('animating-out', 'ring-to-light');
+    RingEl.classList.add('animating-out');
     DotEl.addEventListener('animationend', function Handler() {
       DotEl.removeEventListener('animationend', Handler);
       DotEl.classList.remove('animating-out');
-      RingEl.classList.remove('animating-out', 'ring-to-light');
+      RingEl.classList.remove('animating-out');
       DotEl.style.opacity = '0';
       DotEl.style.fill = '#374151'; // keep fill ready for next activation
-      RingEl.setAttribute('stroke', '#d1d5db');
     }, { once: true });
   }
 }

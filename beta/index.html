@@ -3540,6 +3540,66 @@ function _MakeAppPillCaretSvg() {
   return SvgElement;
 }
 
+function _AppPillCalculateOpenGeometry(OpenHeight) {
+    var SelectedIndex = Math.max(0, appsShortList.indexOf(currentApp));
+    var ViewportMargin = 12;
+
+    // The pill's current top edge in the viewport (before any transform)
+    var PillRect = appPillEl.getBoundingClientRect();
+    var PillTopInViewport = PillRect.top;
+
+    // The selected row's top edge relative to the pill's top edge
+    // (each row is ROW_H px tall)
+    var SelectedRowOffsetInPill = SelectedIndex * ROW_H;
+
+    // The selected row's current top edge in the viewport
+    var SelectedRowTopInViewport = PillTopInViewport + SelectedRowOffsetInPill;
+
+    // We want the pill to expand so the selected row stays at exactly
+    // SelectedRowTopInViewport. That means the pill's new top should be:
+    //   NewPillTop = SelectedRowTopInViewport - SelectedRowOffsetInPill
+    // which equals PillTopInViewport — i.e. no translate needed in the ideal case.
+    //
+    // But the full open height may extend above the viewport. Calculate how
+    // much of the pill sits above the current pill top:
+    //   RowsAbove * ROW_H pixels go above PillTopInViewport
+    //   Remaining (OpenHeight - RowsAboveHeight) go below
+
+    var RowsAboveSelected = SelectedIndex; // rows above selected in the list
+    var HeightAbove = RowsAboveSelected * ROW_H; // how far pill wants to grow upward
+    var IdealNewPillTop = PillTopInViewport - HeightAbove;
+
+    // How much does the top of the expanded pill clear the viewport margin?
+    var Overshoot = ViewportMargin - IdealNewPillTop; // positive = goes off-screen
+
+    var SpacerHeight = 0;
+    var TranslateY = 0;
+
+    if (Overshoot > 0) {
+        // We need to push the row down by Overshoot px total.
+        // We do this with a combination of:
+        //   SpacerHeight: pushes #osRow (and the pill) down physically
+        //   TranslateY:   additional visual shift if needed
+        // Since the spacer moves the pill's natural position down,
+        // and we want the selected row to stay pinned, we translate
+        // the pill UP by SpacerHeight to cancel out the spacer push,
+        // then only translate down by what's needed to keep the top in view.
+        //
+        // Simpler: use spacer = Overshoot, translate = -Overshoot
+        // Net effect on selected row position: 0 (stays put)
+        // Net effect on pill top: PillTopInViewport - HeightAbove + Overshoot = ViewportMargin ✓
+        SpacerHeight = Overshoot;
+        TranslateY = -HeightAbove; // translate pill up so selected row stays pinned
+    } else {
+        // Enough room above — just translate the pill upward so it expands both ways
+        TranslateY = -HeightAbove;
+        SpacerHeight = 0;
+    }
+
+    return { TranslateY: TranslateY, SpacerHeight: SpacerHeight };
+}
+
+
 function buildAppPill() {
   appPillEl.innerHTML = '';
 
@@ -3965,18 +4025,13 @@ function _closeWrenchPicker() {
         runData.length = 0; lastCompletedReport = null; CoachAdviceAccepted = false;
     }
     _saveAppsShortList();
+
+    // Close immediately — rebuild and collapse
+    appPillEl.classList.remove('open');
     buildAppPill();
-
-    var OpenHeight = _AppPillMeasureNaturalHeight();
-    _AppPillAnimateTo(OpenHeight, Geometry.TranslateY, Geometry.SpacerHeight);
-
-    setTimeout(function() {
-        appPillEl.classList.remove('open');
-        _AppPillAnimateTo(27, 0, 0);
-        setTimeout(scrollPillToSelected, 280);
-    }, 0);
+    _AppPillAnimateTo(27, 0, 0);
+    setTimeout(scrollPillToSelected, 280);
 }
-
 
 function scrollPillToSelected() {
   var SelectedIndex = appsShortList.indexOf(currentApp);
@@ -4116,18 +4171,23 @@ function scrollPillToSelected() {
 
 function openAppPill() {
     AppPillWrenchOpen = false;
+    _EnsureAppPillSpacer();
     appPillEl.classList.add('open');
 
+    // Measure natural height with the pill visually at its current size
     var OpenHeight = _AppPillMeasureNaturalHeight();
 
-    // scrollTop pins the selected row at the top of the pill window,
-    // which is exactly its resting screen position. The pill then grows
-    // downward. No translateY or spacer needed.
-    var SelectedIndex = Math.max(0, appsShortList.indexOf(currentApp));
-    appPillEl.scrollTop = SelectedIndex * ROW_H;
+    var Geometry = _AppPillCalculateOpenGeometry(OpenHeight);
 
-    _AppPillAnimateTo(OpenHeight, 0, 0);
+    // Set scrollTop so the selected row is visible at the top of the pill window
+    // (not needed since we're expanding, but harmless for safety)
+    var SelectedIndex = Math.max(0, appsShortList.indexOf(currentApp));
+    appPillEl.scrollTop = 0; // full list is revealed by height expansion, no scroll needed
+
+    _AppPillAnimateTo(OpenHeight, Geometry.TranslateY, Geometry.SpacerHeight);
 }
+
+
 function closeAppPill() {
     AppPillWrenchOpen = false;
     appPillEl.classList.remove('open');

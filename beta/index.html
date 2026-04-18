@@ -9,7 +9,7 @@
 <title>beta</title>
 <script>
   const DefaultTitle = 'Keyboard Warriors';
-  const VersionLabel   = '0023';
+  const VersionLabel   = '0024';
   const TitlePrefix  = document.title !== DefaultTitle ? document.title.trim() + '_' : '';
   const DBG_DEVICE   = TitlePrefix + VersionLabel;
 </script>
@@ -4225,9 +4225,7 @@ function openAppPill() {
 
     appPillEl.classList.add('open');
     var OpenHeight = _AppPillMeasureNaturalHeight();
-var PillRect = appPillEl.getBoundingClientRect();
-    console.log('PillRect.top='+PillRect.top+' OpenHeight='+OpenHeight+' vh='+window.innerHeight); 
-
+    var PillRect = appPillEl.getBoundingClientRect();
     var Geometry = _AppPillCalculateOpenGeometry(OpenHeight, PillRect);
 
     appPillEl.scrollTop = 0;

@@ -4151,25 +4151,30 @@ function _AppPillCalculateOpenGeometry(OpenHeight, PillRect) {
     var SelectedIndex = Math.max(0, appsShortList.indexOf(currentApp));
     var SpacerHeight = 0;
 
-    // Ideal: move pill up so selected row stays at PillRect.top
-    var TranslateY = -(SelectedIndex * ROW_H);
-
-    // Clamp so pill top never goes above viewport
-    var PillTopOnScreen = PillRect.top + TranslateY;
-    if (PillTopOnScreen < ViewportMargin) {
-        TranslateY = TranslateY + (ViewportMargin - PillTopOnScreen);
-        PillTopOnScreen = ViewportMargin;
-    }
+    // The closed pill always shows the selected row at PillRect.top (via scrollTop).
+    // On open, the selected row is at offset SelectedIndex*ROW_H from the pill top.
+    // To keep the selected row at PillRect.top we must shift pill UP by that amount.
+    // But "up" means the pill top moves to PillRect.top - SelectedIndex*ROW_H,
+    // which requires a NEGATIVE translateY... except translateY moves the element
+    // in screen space, so moving the pill UP (smaller Y) = negative translateY.
+    // However if SelectedIndex is 0 we want TranslateY = 0 (no movement).
+    // If SelectedIndex is 1 we want the pill to move UP by ROW_H so the second
+    // row sits where the first row was = TranslateY = -ROW_H... 
+    // BUT: that would hide the first row above the osRow.
+    // CORRECT GOAL: expand downward only. TranslateY = 0 always.
+    // The pill simply grows downward from its current position.
+    var TranslateY = 0;
+    var PillTopOnScreen = PillRect.top;
 
     // Clamp so pill bottom never goes below viewport
     var PillBottomOnScreen = PillTopOnScreen + OpenHeight;
     var BottomOvershoot = PillBottomOnScreen - (window.innerHeight - ViewportMargin);
     if (BottomOvershoot > 0) {
-        var MaxUpshift = PillTopOnScreen - ViewportMargin;
-        TranslateY -= Math.min(BottomOvershoot, MaxUpshift);
+        TranslateY = -Math.min(BottomOvershoot, PillTopOnScreen - ViewportMargin);
     }
 
     return { TranslateY: TranslateY, SpacerHeight: SpacerHeight };
+
 }
 
 function openAppPill() {

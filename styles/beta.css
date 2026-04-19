@@ -1431,8 +1431,20 @@ li.conflict-dismissed .conflict-desc {
 .key.lit-orange-up .mod-word,      .key.lit-orange-down .mod-word,
 .key.lit-orange-up .util-sym-only, .key.lit-orange-down .util-sym-only { color: white !important; }
 
+/* ── CapsLock status indicator ─────────────────────────────────────────────
+   Neutral soft yellow: not green (not correct) and not orange (not wrong).
+   Immune to the normal lighting lifecycle — cleared only by our own logic. */
+.key.lit-caps-active {
+  background: rgba(245, 224, 0, 0.22) !important;
+  box-shadow: 0 1px 0 rgba(180, 160, 0, 0.25) !important;
+}
+.key.lit-caps-active .letter-lbl,
+.key.lit-caps-active .util-lbl,
+.key.lit-caps-active .util-sym-only { color: #7a6a00 !important; }
+
 /* Fade-out transition — applied just before removing lit class */
 .key.lit-fading {
+
   transition: background 0.8s ease, box-shadow 0.8s ease !important;
 }
 .key.lit-fading .letter-lbl,

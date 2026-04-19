@@ -3615,7 +3615,7 @@ function _MakeWrenchPickerRadioDot(IsActive) {
  // Centered exactly at 8,8 (half of 16)
   var CentreX = 8, CentreY = 8;
 
-  function BuildHexPath(Radius) {
+    function BuildHexPath(Radius) {
     var HexPoints = [];
     for (var PointIndex = 0; PointIndex < 6; PointIndex++) {
       var AngleRadians = (Math.PI / 180) * (60 * PointIndex - 30);
@@ -3634,26 +3634,30 @@ function _MakeWrenchPickerRadioDot(IsActive) {
   OuterHex.setAttribute('fill', 'none');
   OuterHex.setAttribute('stroke-linejoin', 'round');
   OuterHex.setAttribute('class', 'app-pill-hex-ring');
-  OuterHex.style.transformOrigin = 'center'; // Fixes rotation axis
+  OuterHex.style.transformOrigin = 'center';
 
-  var InnerHex = document.createElementNS(SvgNamespace, 'path');
-  InnerHex.setAttribute('d', BuildHexPath(3.5));
-  InnerHex.setAttribute('fill', '#374151');
-  InnerHex.setAttribute('class', 'app-pill-hex-dot');
-  InnerHex.style.transformOrigin = 'center'; // Fixes rotation axis
+  var InnerDot = document.createElementNS(SvgNamespace, 'circle');
+  InnerDot.setAttribute('cx', CentreX);
+  InnerDot.setAttribute('cy', CentreY);
+  InnerDot.setAttribute('r', '3.5');
+  InnerDot.setAttribute('fill', '#374151');
+  InnerDot.setAttribute('class', 'app-pill-hex-dot');
+  InnerDot.style.transformOrigin = 'center';
+
   
   if (IsActive) {
     OuterHex.style.transform = 'rotate(180deg)';
-    InnerHex.style.transform = 'rotate(180deg)';
-    InnerHex.style.opacity = '1';
+    InnerDot.style.transform = 'rotate(180deg)';
+    InnerDot.style.opacity = '1';
   } else {
     OuterHex.style.transform = 'rotate(0deg)';
-    InnerHex.style.transform = 'rotate(0deg)';
-    InnerHex.style.opacity = '0';
+    InnerDot.style.transform = 'rotate(0deg)';
+    InnerDot.style.opacity = '0';
   }
 
   SvgElement.appendChild(OuterHex);
-  SvgElement.appendChild(InnerHex);
+  SvgElement.appendChild(InnerDot);
+
   return SvgElement;
 }
 

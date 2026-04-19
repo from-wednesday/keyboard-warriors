@@ -9230,7 +9230,7 @@ function _refreshEndGameCheatSheet() {
         : SummaryItem.shortcut;
 
     var ListItem = document.createElement('li');
-    ListItem.style.alignItems = 'flex-start'; 
+    ListItem.style.cssText = 'display:flex;align-items:flex-start;'; 
     ListItem.style.position = 'relative';
     ListItem.dataset.shortcutToken = SummaryItem.shortcutToken || '';
 
@@ -9249,12 +9249,16 @@ function _refreshEndGameCheatSheet() {
 
 var LabelElement = document.createElement('span');
     LabelElement.className = 'sp-report-question-label';
-    LabelElement.style.cssText = 'flex:1;min-width:0;display:block;';
+    LabelElement.style.cssText = 'flex:1;min-width:0;';
     LabelElement.textContent = (SummaryItem.displayText || '').replace(/\\\\/g, '\\');
 
     ListItem.appendChild(DotElement);
 
     var TimingData = AnsweredTimingMap[SummaryItem.shortcutToken] || null;
+
+    ListItem.appendChild(DotElement);
+
+    if (TimingData && TimingData.text) {= AnsweredTimingMap[SummaryItem.shortcutToken] || null;
     if (TimingData && TimingData.text) {
         var TimeElement = document.createElement('small');
         TimeElement.textContent = TimingData.text;

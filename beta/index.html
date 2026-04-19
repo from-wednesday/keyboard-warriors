@@ -1946,6 +1946,8 @@ const NUMPAD_MAP = {
 
 function updateKeyboardLighting(e, isDown) {
   if (isDown && e.repeat) return; // key already lit from initial keydown; repeats do nothing
+  // CapsLock is handled entirely by its own indicator logic -- skip normal lighting
+  if (e.code === 'CapsLock') return;
   const code = NUMPAD_MAP[e.code] || e.code;
   const isExtKey   = code in EXT_KEY_LABELS;
   const isModifier = code === 'MetaLeft'    || code === 'MetaRight'   ||

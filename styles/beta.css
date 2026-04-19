@@ -2637,7 +2637,7 @@ li.conflict-dismissed .conflict-desc {
 }
 
 .app-pill-hex-ring.animating-out {
-  animation: AppPillHexRingOut 0.6s cubic-bezier(0.4, 0, 0.2, 1) 0.15s forwards;
+  animation: AppPillHexRingOut 0.7s cubic-bezier(0.4, 0, 0.2, 1) 0.3s forwards;
 }
 
 /* ring-to-light / ring-to-dark kept for any legacy callers but no longer used

@@ -1,6 +1,5 @@
 /* ═══════════════════════════════════════════════════
    Keyboard Warriors CSS
-   externalised from the HTML file
    Load order: @import → Block 1 → Block 3 → misc
    Do not reorder major sections.
    ═══════════════════════════════════════════════════ */
@@ -2634,12 +2633,11 @@ li.conflict-dismissed .conflict-desc {
 }
 
 .app-pill-hex-dot.animating-out {
-  animation: AppPillHexFadeOut 1.1s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+  animation: AppPillHexFadeOut 0.5s cubic-bezier(0.4, 0, 0.2, 1) forwards;
 }
 
-/* Ring uses its own keyframe so it never becomes invisible */
 .app-pill-hex-ring.animating-out {
-  animation: AppPillHexRingOut 1.1s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+  animation: AppPillHexRingOut 0.7s cubic-bezier(0.4, 0, 0.2, 1) 0.4s forwards;
 }
 
 

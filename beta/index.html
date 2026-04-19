@@ -1777,10 +1777,14 @@ const LINGER_MS = 800;
 function clearAllLit() {
   // Cancel all linger timers first so no deferred class changes fire after we clear
   Object.keys(lingerTimers).forEach(k => { clearTimeout(lingerTimers[k]); delete lingerTimers[k]; });
-  Object.values(keyEls).forEach(el => {
+  Object.entries(keyEls).forEach(([code, el]) => {
     el.classList.remove('lit-green-up','lit-green-down','lit-orange-up','lit-orange-down','lit-fading');
-    void el.offsetWidth; // force reflow to abort any in-progress CSS transitions on this key
+    // CapsLock indicator is managed independently -- do not clear it here
+    if (code !== 'CapsLock') {
+      void el.offsetWidth; // force reflow to abort any in-progress CSS transitions on this key
+    }
   });
+
   clearTimeout(extKeyPillTimer);
   extKeyPillEl.className = '';
   extKeyPillEl.style.display = 'none';
@@ -10138,21 +10142,20 @@ function handleKeydown(e) {
   if (detectedOs === 'mobile' && e.isTrusted) {
     _setHasKeyboard();
   }
-  updateKeyboardLighting(e, true);
+updateKeyboardLighting(e, true);
   // Sync the CapsLock key indicator with the real OS CapsLock state.
   // getModifierState reads the OS-level state directly, so it never drifts.
+  // Uses a dedicated class outside the normal lighting lifecycle so it
+  // persists across key presses and is not cleared by clearAllLit().
   // Skipped in touch mode as there is no physical CapsLock to reflect.
   if (!touchEnabled) {
     const CapsLockKeyElement = keyEls['CapsLock'];
     if (CapsLockKeyElement) {
       const CapsLockIsActive = e.getModifierState('CapsLock');
-      if (CapsLockIsActive) {
-        setKeyLit('CapsLock', 'green-up');
-      } else {
-        setKeyLit('CapsLock', null);
-      }
+      CapsLockKeyElement.classList.toggle('lit-caps-active', CapsLockIsActive);
     }
   }
+
   // DEBUG
   const dbg = document.getElementById('debugOverlay');
   if (dbg && dbg.style.display !== 'none') {

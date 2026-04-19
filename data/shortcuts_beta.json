@@ -107,23 +107,35 @@
     
     "alternates": ["END"]
   },
-
-
-
-
-
-
+  {
+    "shortcut": "SHIFT+ESC",
+    "display": "do not press ⇧ Esc on PC",
+    "mac_sc": "none",
+    "pc_sc": "⇧ Esc",
+    "difficulty": 4,
+    
+    "alternates": ["END"]
+  },
   {
     "shortcut": "META+A",
-    "display": "can you press ⌃ A on Mac?",
+    "display": "DO NOT press Meta A on PC",
     "mac_sc": "⌃ A",
     "pc_sc": "Win A",
     "difficulty": 2,
     "alternates": ["END"]
   },
+{
+    "shortcut": "META",
+    "display": "DO NOT  Meta alone on PC",
+    "mac_sc": "⌃",
+    "pc_sc": "Win",
+    "difficulty": 2,
+    "alternates": ["END"]
+  },
+
   {
     "shortcut": "META+D",
-    "display": "can you press ⌃ D on Mac?",
+    "display": "DO NOT press Meta D on PC",
     "mac_sc": "⌃ D",
     "pc_sc": "Win D",
     "difficulty": 2,
@@ -143,14 +155,6 @@
     "mac_sc": "⌃ F",
     "pc_sc": "Win F",
     "difficulty": 2,
-    "alternates": ["END"]
-  },
-  {
-    "shortcut": "META+SHIFT+/",
-    "display": "can you press ⌃ ⇧ ? on Mac?",
-    "mac_sc": "⌃ ⇧ ?",
-    "pc_sc": "Win ⇧ ?",
-    "difficulty": 5,
     "alternates": ["END"]
   }
 ]

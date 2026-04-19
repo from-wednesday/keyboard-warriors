@@ -9220,7 +9220,7 @@ function _refreshEndGameCheatSheet() {
   var AllQuestions = lastCompletedReport.questionSummaries;
   var HalfwayIndex = Math.ceil(AllQuestions.length / 2);
 
-  function BuildEndGameListItem(SummaryItem) {
+  function BuildEndGameListItem(SummaryItem, QuestionNumber) {
     var PoolQuestion = questionPool.find(function(PoolItem) {
         return PoolItem.shortcut === SummaryItem.shortcutToken;
     });
@@ -9230,13 +9230,20 @@ function _refreshEndGameCheatSheet() {
         : SummaryItem.shortcut;
 
     var ListItem = document.createElement('li');
-    // Added the flex-start style from your second block
     ListItem.style.alignItems = 'flex-start'; 
+    ListItem.style.position = 'relative';
     ListItem.dataset.shortcutToken = SummaryItem.shortcutToken || '';
+
+    // Question number: only for successful answers, floats left of the dot
+    if (SummaryItem.endType === 'success' && QuestionNumber != null) {
+      var NumElement = document.createElement('small');
+      NumElement.textContent = QuestionNumber;
+      NumElement.style.cssText = 'position:absolute;left:-14px;top:2px;color:#9ca3af;font-size:9px;line-height:1.5;white-space:nowrap;text-align:right;width:12px;';
+      ListItem.appendChild(NumElement);
+    }
 
     var DotElement = document.createElement('span');
     DotElement.className = 'sp-report-dot';
-    // Added the margin-top from your second block
     DotElement.style.marginTop = '5px';
     DotElement.style.background = AnsweredOutcomeColourMap[SummaryItem.shortcutToken] || '#b3bdc9';
 
@@ -9264,7 +9271,7 @@ var LabelElement = document.createElement('span');
     return ListItem;
 }
   AllQuestions.forEach(function(SummaryItem, ItemIndex) {
-    var ListItem = BuildEndGameListItem(SummaryItem);
+    var ListItem = BuildEndGameListItem(SummaryItem, ItemIndex + 1);
     if (ItemIndex < HalfwayIndex) {
       LeftList.appendChild(ListItem);
     } else {

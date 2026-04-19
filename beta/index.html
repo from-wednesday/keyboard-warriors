@@ -3992,8 +3992,9 @@ function _openWrenchPicker() {
 function _closeWrenchPicker() {
     AppPillWrenchOpen = false;
     var selectorLabel = document.getElementById('appSelectorLabel');
-    if (selectorLabel) selectorLabel.textContent = 'now training on';    appPillEl.removeEventListener('dragover', _onWrenchDragOver);
+    if (selectorLabel) selectorLabel.textContent = 'choose app to train in next';    appPillEl.removeEventListener('dragover', _onWrenchDragOver);
     appPillEl.removeEventListener('drop',     _onWrenchDrop);
+
 
     var ActiveApps   = appsLongList.filter(function(AppEntry) { return appsShortList.includes(AppEntry.label); });
     var InactiveApps = appsLongList.filter(function(AppEntry) { return !appsShortList.includes(AppEntry.label); });
@@ -4007,12 +4008,15 @@ function _closeWrenchPicker() {
     }
     _saveAppsShortList();
 
-    // Close immediately — rebuild and collapse
-    appPillEl.classList.remove('open');
+// Return to the open drop-down rather than collapsing
     buildAppPill();
-    _AppPillAnimateTo(27, 0, 0);
-    setTimeout(scrollPillToSelected, 280);
+    var OpenHeight = _AppPillMeasureNaturalHeight();
+    var PillRect = appPillEl.getBoundingClientRect();
+    var Geometry = _AppPillCalculateOpenGeometry(OpenHeight, PillRect);
+    appPillEl.scrollTop = 0;
+    _AppPillAnimateTo(OpenHeight, Geometry.TranslateY, Geometry.SpacerHeight);
 }
+
 
 function scrollPillToSelected() {
   var SelectedIndex = appsShortList.indexOf(currentApp);

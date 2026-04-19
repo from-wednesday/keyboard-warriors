@@ -7334,7 +7334,7 @@ function buildPool() {
   var maxDiff = DIFF_MAX[currentDifficulty] || 3;
   const browserSkip   = getBrowserConflictSet();
   const allShortcuts  = UNIVERSAL_SHORTCUTS.concat(loadedAppShortcuts);
-return allShortcuts.filter(s => {
+var filtered = allShortcuts.filter(s => {
     // Ctrl+Alt combinations on Windows trigger AltGr / system dialogs — exclude all CMD+OPTION shortcuts on PC
     if (currentOs === 'pc' && s.shortcut.toUpperCase().includes('OPTION')) return false;
     // keyboard_conflict: true means the shortcut only appears when touch mode bypasses browser/OS conflicts
@@ -7350,7 +7350,17 @@ return allShortcuts.filter(s => {
     if (killPunctuationOn && UNSTABLE_PUNCTUATION_TOKENS.has(s.shortcut)) return false;
     return true;
   });
+
+  // Cap: no more than 2 questions from the same named group per pool.
+  // Entries with an empty/falsy group string are never capped.
+  var groupCounts = {};
+  return filtered.filter(function(s) {
+    if (!s.group) return true;
+    groupCounts[s.group] = (groupCounts[s.group] || 0) + 1;
+    return groupCounts[s.group] <= 2;
+  });
 }
+
 
 // Loads the JSON for the given app key into memory, then calls onReady.
 // If the correct app is already loaded, calls onReady immediately.

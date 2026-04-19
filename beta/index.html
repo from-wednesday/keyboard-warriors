@@ -9270,8 +9270,14 @@ var LabelElement = document.createElement('span');
     
     return ListItem;
 }
+  var successCounter = 0;
   AllQuestions.forEach(function(SummaryItem, ItemIndex) {
-    var ListItem = BuildEndGameListItem(SummaryItem, ItemIndex + 1);
+    var questionNumber = null;
+    if (SummaryItem.endType === 'success') {
+      successCounter++;
+      questionNumber = successCounter;
+    }
+    var ListItem = BuildEndGameListItem(SummaryItem, questionNumber);
     if (ItemIndex < HalfwayIndex) {
       LeftList.appendChild(ListItem);
     } else {

@@ -1,0 +1,734 @@
+[
+
+  {
+    "_comment": "════════════════════════════════════════════════════════",
+    "_section": "CONFIRMED CONFLICTS — do not press these",
+    "_note": "These are known browser/OS intercepts. Inherited supersets listed below each.",
+    "_comment2": "════════════════════════════════════════════════════════"
+  },
+
+  {
+    "shortcut": "CMD+W",
+    "display": "do not press ⌘/Ctrl W",
+    "mac_sc": "⌘ W",
+    "pc_sc": "Ctrl W",
+    "difficulty": 1,
+    "keyboard_conflict": true,
+    "alternates": ["END"]
+  },
+  {
+    "shortcut": "CMD+SHIFT+W",
+    "display": "do not press ⌘/Ctrl ⇧ W (inherited from Cmd+W)",
+    "mac_sc": "⌘ ⇧ W",
+    "pc_sc": "Ctrl ⇧ W",
+    "difficulty": 3,
+    "keyboard_conflict": true,
+    "alternates": ["END"]
+  },
+  {
+    "shortcut": "CMD+T",
+    "display": "do not press ⌘/Ctrl T",
+    "mac_sc": "⌘ T",
+    "pc_sc": "Ctrl T",
+    "difficulty": 1,
+    "keyboard_conflict": true,
+    "alternates": ["END"]
+  },
+  {
+    "shortcut": "CMD+SHIFT+T",
+    "display": "do not press ⌘/Ctrl ⇧ T (inherited from Cmd+T)",
+    "mac_sc": "⌘ ⇧ T",
+    "pc_sc": "Ctrl ⇧ T",
+    "difficulty": 3,
+    "keyboard_conflict": true,
+    "alternates": ["END"]
+  },
+  {
+    "shortcut": "CMD+N",
+    "display": "do not press ⌘/Ctrl N",
+    "mac_sc": "⌘ N",
+    "pc_sc": "Ctrl N",
+    "difficulty": 1,
+    "keyboard_conflict": true,
+    "alternates": ["END"]
+  },
+  {
+    "shortcut": "CMD+SHIFT+N",
+    "display": "do not press ⌘/Ctrl ⇧ N (inherited from Cmd+N)",
+    "mac_sc": "⌘ ⇧ N",
+    "pc_sc": "Ctrl ⇧ N",
+    "difficulty": 3,
+    "keyboard_conflict": true,
+    "alternates": ["END"]
+  },
+  {
+    "shortcut": "CMD+Q",
+    "display": "do not press ⌘ Q",
+    "mac_sc": "⌘ Q",
+    "pc_sc": "none",
+    "difficulty": 2,
+    "keyboard_conflict": true,
+    "alternates": ["END"]
+  },
+  {
+    "shortcut": "CMD+SHIFT+Q",
+    "display": "do not press ⌘ ⇧ Q (inherited from Cmd+Q)",
+    "mac_sc": "⌘ ⇧ Q",
+    "pc_sc": "none",
+    "difficulty": 3,
+    "keyboard_conflict": true,
+    "alternates": ["END"]
+  },
+  {
+    "shortcut": "CMD+TAB",
+    "display": "do not press ⌘/Ctrl Tab",
+    "mac_sc": "⌘ Tab",
+    "pc_sc": "Ctrl Tab",
+    "difficulty": 3,
+    "keyboard_conflict": true,
+    "alternates": ["END"]
+  },
+  {
+    "shortcut": "CMD+SPACE",
+    "display": "do not press ⌘/Ctrl Space",
+    "mac_sc": "⌘ Space",
+    "pc_sc": "Ctrl Space",
+    "difficulty": 1,
+    "keyboard_conflict": true,
+    "alternates": ["END"]
+  },
+  {
+    "shortcut": "CMD+SHIFT+SPACE",
+    "display": "do not press ⌘/Ctrl ⇧ Space (inherited from Cmd+Space)",
+    "mac_sc": "⌘ ⇧ Space",
+    "pc_sc": "Ctrl ⇧ Space",
+    "difficulty": 3,
+    "keyboard_conflict": true,
+    "alternates": ["END"]
+  },
+  {
+    "shortcut": "OPTION+F4",
+    "display": "do not press Alt F4 on PC",
+    "mac_sc": "none",
+    "pc_sc": "Alt F4",
+    "difficulty": 4,
+    "keyboard_conflict": true,
+    "alternates": ["END"]
+  },
+
+  {
+    "_comment": "════════════════════════════════════════════════════════",
+    "_section": "CONFIRMED SAFE — works on both OS and browsers tested",
+    "_comment2": "════════════════════════════════════════════════════════"
+  },
+
+  {
+    "shortcut": "GRAVE",
+    "display": "the grave ` key — works fine on both!",
+    "mac_sc": "`",
+    "pc_sc": "`",
+    "difficulty": 1,
+    "alternates": ["END"]
+  },
+  {
+    "shortcut": "CMD+D",
+    "display": "⌘/Ctrl D — confirmed working on both",
+    "mac_sc": "⌘ D",
+    "pc_sc": "Ctrl D",
+    "difficulty": 1,
+    "alternates": ["END"]
+  },
+  {
+    "shortcut": "CMD+F",
+    "display": "⌘/Ctrl F — confirmed working on both",
+    "mac_sc": "⌘ F",
+    "pc_sc": "Ctrl F",
+    "difficulty": 1,
+    "alternates": ["END"]
+  },
+  {
+    "shortcut": "CMD+L",
+    "display": "⌘/Ctrl L — confirmed working on both",
+    "mac_sc": "⌘ L",
+    "pc_sc": "Ctrl L",
+    "difficulty": 1,
+    "alternates": ["END"]
+  },
+  {
+    "shortcut": "CMD+P",
+    "display": "⌘/Ctrl P — confirmed working on both",
+    "mac_sc": "⌘ P",
+    "pc_sc": "Ctrl P",
+    "difficulty": 1,
+    "alternates": ["END"]
+  },
+  {
+    "shortcut": "CMD+R",
+    "display": "⌘/Ctrl R — confirmed working on both",
+    "mac_sc": "⌘ R",
+    "pc_sc": "Ctrl R",
+    "difficulty": 1,
+    "alternates": ["END"]
+  },
+  {
+    "shortcut": "CMD+SHIFT+R",
+    "display": "⌘/Ctrl ⇧ R — confirmed working on both",
+    "mac_sc": "⌘ ⇧ R",
+    "pc_sc": "Ctrl ⇧ R",
+    "difficulty": 3,
+    "alternates": ["END"]
+  },
+
+  {
+    "_comment": "════════════════════════════════════════════════════════",
+    "_section": "YELLOW — needs testing, base combinations only",
+    "_note": "No entry here contains a known-conflicting component. Test base first — supersets only get added once base is confirmed safe.",
+    "_comment2": "════════════════════════════════════════════════════════"
+  },
+
+  {
+    "shortcut": "CMD+A",
+    "display": "can you press ⌘/Ctrl A?",
+    "mac_sc": "⌘ A",
+    "pc_sc": "Ctrl A",
+    "difficulty": 1,
+    "alternates": ["END"]
+  },
+  {
+    "shortcut": "CMD+B",
+    "display": "can you press ⌘/Ctrl B?",
+    "mac_sc": "⌘ B",
+    "pc_sc": "Ctrl B",
+    "difficulty": 1,
+    "alternates": ["END"]
+  },
+  {
+    "shortcut": "CMD+C",
+    "display": "can you press ⌘/Ctrl C?",
+    "mac_sc": "⌘ C",
+    "pc_sc": "Ctrl C",
+    "difficulty": 1,
+    "alternates": ["END"]
+  },
+  {
+    "shortcut": "CMD+E",
+    "display": "can you press ⌘/Ctrl E?",
+    "mac_sc": "⌘ E",
+    "pc_sc": "Ctrl E",
+    "difficulty": 1,
+    "alternates": ["END"]
+  },
+  {
+    "shortcut": "CMD+G",
+    "display": "can you press ⌘/Ctrl G?",
+    "mac_sc": "⌘ G",
+    "pc_sc": "Ctrl G",
+    "difficulty": 1,
+    "alternates": ["END"]
+  },
+  {
+    "shortcut": "CMD+H",
+    "display": "can you press ⌘/Ctrl H? (Mac may hide window)",
+    "mac_sc": "⌘ H",
+    "pc_sc": "Ctrl H",
+    "difficulty": 1,
+    "alternates": ["END"]
+  },
+  {
+    "shortcut": "CMD+I",
+    "display": "can you press ⌘/Ctrl I?",
+    "mac_sc": "⌘ I",
+    "pc_sc": "Ctrl I",
+    "difficulty": 1,
+    "alternates": ["END"]
+  },
+  {
+    "shortcut": "CMD+J",
+    "display": "can you press ⌘/Ctrl J?",
+    "mac_sc": "⌘ J",
+    "pc_sc": "Ctrl J",
+    "difficulty": 1,
+    "alternates": ["END"]
+  },
+  {
+    "shortcut": "CMD+K",
+    "display": "can you press ⌘/Ctrl K?",
+    "mac_sc": "⌘ K",
+    "pc_sc": "Ctrl K",
+    "difficulty": 1,
+    "alternates": ["END"]
+  },
+  {
+    "shortcut": "CMD+M",
+    "display": "can you press ⌘/Ctrl M? (Mac may minimise window)",
+    "mac_sc": "⌘ M",
+    "pc_sc": "Ctrl M",
+    "difficulty": 1,
+    "alternates": ["END"]
+  },
+  {
+    "shortcut": "CMD+O",
+    "display": "can you press ⌘/Ctrl O?",
+    "mac_sc": "⌘ O",
+    "pc_sc": "Ctrl O",
+    "difficulty": 1,
+    "alternates": ["END"]
+  },
+  {
+    "shortcut": "CMD+S",
+    "display": "can you press ⌘/Ctrl S?",
+    "mac_sc": "⌘ S",
+    "pc_sc": "Ctrl S",
+    "difficulty": 1,
+    "alternates": ["END"]
+  },
+  {
+    "shortcut": "CMD+U",
+    "display": "can you press ⌘/Ctrl U?",
+    "mac_sc": "⌘ U",
+    "pc_sc": "Ctrl U",
+    "difficulty": 1,
+    "alternates": ["END"]
+  },
+  {
+    "shortcut": "CMD+V",
+    "display": "can you press ⌘/Ctrl V?",
+    "mac_sc": "⌘ V",
+    "pc_sc": "Ctrl V",
+    "difficulty": 1,
+    "alternates": ["END"]
+  },
+  {
+    "shortcut": "CMD+X",
+    "display": "can you press ⌘/Ctrl X?",
+    "mac_sc": "⌘ X",
+    "pc_sc": "Ctrl X",
+    "difficulty": 1,
+    "alternates": ["END"]
+  },
+  {
+    "shortcut": "CMD+Y",
+    "display": "can you press ⌘/Ctrl Y?",
+    "mac_sc": "⌘ Y",
+    "pc_sc": "Ctrl Y",
+    "difficulty": 1,
+    "alternates": ["END"]
+  },
+  {
+    "shortcut": "CMD+Z",
+    "display": "can you press ⌘/Ctrl Z?",
+    "mac_sc": "⌘ Z",
+    "pc_sc": "Ctrl Z",
+    "difficulty": 1,
+    "alternates": ["END"]
+  },
+  {
+    "shortcut": "CMD+GRAVE",
+    "display": "can you press ⌘/Ctrl ` ?",
+    "mac_sc": "⌘ `",
+    "pc_sc": "Ctrl `",
+    "difficulty": 2,
+    "alternates": ["END"]
+  },
+  {
+    "shortcut": "CMD+1",
+    "display": "can you press ⌘/Ctrl 1? (tab switch risk in some browsers)",
+    "mac_sc": "⌘ 1",
+    "pc_sc": "Ctrl 1",
+    "difficulty": 2,
+    "alternates": ["END"]
+  },
+  {
+    "shortcut": "CMD+2",
+    "display": "can you press ⌘/Ctrl 2?",
+    "mac_sc": "⌘ 2",
+    "pc_sc": "Ctrl 2",
+    "difficulty": 2,
+    "alternates": ["END"]
+  },
+  {
+    "shortcut": "CMD+3",
+    "display": "can you press ⌘/Ctrl 3?",
+    "mac_sc": "⌘ 3",
+    "pc_sc": "Ctrl 3",
+    "difficulty": 2,
+    "alternates": ["END"]
+  },
+  {
+    "shortcut": "CMD+-",
+    "display": "can you press ⌘/Ctrl - ?",
+    "mac_sc": "⌘ -",
+    "pc_sc": "Ctrl -",
+    "difficulty": 2,
+    "alternates": ["END"]
+  },
+  {
+    "shortcut": "CMD+=",
+    "display": "can you press ⌘/Ctrl = ?",
+    "mac_sc": "⌘ =",
+    "pc_sc": "Ctrl =",
+    "difficulty": 2,
+    "alternates": ["END"]
+  },
+  {
+    "shortcut": "CMD+[",
+    "display": "can you press ⌘/Ctrl [ ?",
+    "mac_sc": "⌘ [",
+    "pc_sc": "Ctrl [",
+    "difficulty": 2,
+    "alternates": ["END"]
+  },
+  {
+    "shortcut": "CMD+]",
+    "display": "can you press ⌘/Ctrl ] ?",
+    "mac_sc": "⌘ ]",
+    "pc_sc": "Ctrl ]",
+    "difficulty": 2,
+    "alternates": ["END"]
+  },
+  {
+    "shortcut": "CMD+BACKSLASH",
+    "display": "can you press ⌘/Ctrl \\ ?",
+    "mac_sc": "⌘ \\",
+    "pc_sc": "Ctrl \\",
+    "difficulty": 2,
+    "alternates": ["END"]
+  },
+  {
+    "shortcut": "CMD+;",
+    "display": "can you press ⌘/Ctrl ; ?",
+    "mac_sc": "⌘ ;",
+    "pc_sc": "Ctrl ;",
+    "difficulty": 2,
+    "alternates": ["END"]
+  },
+  {
+    "shortcut": "CMD+'",
+    "display": "can you press ⌘/Ctrl ' ?",
+    "mac_sc": "⌘ '",
+    "pc_sc": "Ctrl '",
+    "difficulty": 2,
+    "alternates": ["END"]
+  },
+  {
+    "shortcut": "CMD+/",
+    "display": "can you press ⌘/Ctrl / ?",
+    "mac_sc": "⌘ /",
+    "pc_sc": "Ctrl /",
+    "difficulty": 2,
+    "alternates": ["END"]
+  },
+  {
+    "shortcut": "CMD+.",
+    "display": "can you press ⌘/Ctrl . ?",
+    "mac_sc": "⌘ .",
+    "pc_sc": "Ctrl .",
+    "difficulty": 2,
+    "alternates": ["END"]
+  },
+  {
+    "shortcut": "CMD+,",
+    "display": "can you press ⌘/Ctrl , ?",
+    "mac_sc": "⌘ ,",
+    "pc_sc": "Ctrl ,",
+    "difficulty": 2,
+    "alternates": ["END"]
+  },
+  {
+    "shortcut": "SHIFT+GRAVE",
+    "display": "can you press ⇧ ` (tilde ~) ?",
+    "mac_sc": "⇧ `",
+    "pc_sc": "⇧ `",
+    "difficulty": 2,
+    "alternates": ["END"]
+  },
+  {
+    "shortcut": "CMD+SHIFT+B",
+    "display": "can you press ⌘/Ctrl ⇧ B? (bookmarks bar risk in some browsers)",
+    "mac_sc": "⌘ ⇧ B",
+    "pc_sc": "Ctrl ⇧ B",
+    "difficulty": 3,
+    "alternates": ["END"]
+  },
+  {
+    "shortcut": "CMD+SHIFT+C",
+    "display": "can you press ⌘/Ctrl ⇧ C? (devtools risk in some browsers)",
+    "mac_sc": "⌘ ⇧ C",
+    "pc_sc": "Ctrl ⇧ C",
+    "difficulty": 3,
+    "alternates": ["END"]
+  },
+  {
+    "shortcut": "CMD+SHIFT+E",
+    "display": "can you press ⌘/Ctrl ⇧ E?",
+    "mac_sc": "⌘ ⇧ E",
+    "pc_sc": "Ctrl ⇧ E",
+    "difficulty": 3,
+    "alternates": ["END"]
+  },
+  {
+    "shortcut": "CMD+SHIFT+F",
+    "display": "can you press ⌘/Ctrl ⇧ F?",
+    "mac_sc": "⌘ ⇧ F",
+    "pc_sc": "Ctrl ⇧ F",
+    "difficulty": 3,
+    "alternates": ["END"]
+  },
+  {
+    "shortcut": "CMD+SHIFT+G",
+    "display": "can you press ⌘/Ctrl ⇧ G?",
+    "mac_sc": "⌘ ⇧ G",
+    "pc_sc": "Ctrl ⇧ G",
+    "difficulty": 3,
+    "alternates": ["END"]
+  },
+  {
+    "shortcut": "CMD+SHIFT+H",
+    "display": "can you press ⌘/Ctrl ⇧ H? (history risk in some browsers)",
+    "mac_sc": "⌘ ⇧ H",
+    "pc_sc": "Ctrl ⇧ H",
+    "difficulty": 3,
+    "alternates": ["END"]
+  },
+  {
+    "shortcut": "CMD+SHIFT+I",
+    "display": "can you press ⌘/Ctrl ⇧ I? (devtools risk in some browsers)",
+    "mac_sc": "⌘ ⇧ I",
+    "pc_sc": "Ctrl ⇧ I",
+    "difficulty": 3,
+    "alternates": ["END"]
+  },
+  {
+    "shortcut": "CMD+SHIFT+J",
+    "display": "can you press ⌘/Ctrl ⇧ J? (devtools risk in some browsers)",
+    "mac_sc": "⌘ ⇧ J",
+    "pc_sc": "Ctrl ⇧ J",
+    "difficulty": 3,
+    "alternates": ["END"]
+  },
+  {
+    "shortcut": "CMD+SHIFT+K",
+    "display": "can you press ⌘/Ctrl ⇧ K?",
+    "mac_sc": "⌘ ⇧ K",
+    "pc_sc": "Ctrl ⇧ K",
+    "difficulty": 3,
+    "alternates": ["END"]
+  },
+  {
+    "shortcut": "CMD+SHIFT+L",
+    "display": "can you press ⌘/Ctrl ⇧ L?",
+    "mac_sc": "⌘ ⇧ L",
+    "pc_sc": "Ctrl ⇧ L",
+    "difficulty": 3,
+    "alternates": ["END"]
+  },
+  {
+    "shortcut": "CMD+SHIFT+M",
+    "display": "can you press ⌘/Ctrl ⇧ M?",
+    "mac_sc": "⌘ ⇧ M",
+    "pc_sc": "Ctrl ⇧ M",
+    "difficulty": 3,
+    "alternates": ["END"]
+  },
+  {
+    "shortcut": "CMD+SHIFT+O",
+    "display": "can you press ⌘/Ctrl ⇧ O?",
+    "mac_sc": "⌘ ⇧ O",
+    "pc_sc": "Ctrl ⇧ O",
+    "difficulty": 3,
+    "alternates": ["END"]
+  },
+  {
+    "shortcut": "CMD+SHIFT+P",
+    "display": "can you press ⌘/Ctrl ⇧ P? (print risk in some browsers)",
+    "mac_sc": "⌘ ⇧ P",
+    "pc_sc": "Ctrl ⇧ P",
+    "difficulty": 3,
+    "alternates": ["END"]
+  },
+  {
+    "shortcut": "CMD+SHIFT+S",
+    "display": "can you press ⌘/Ctrl ⇧ S?",
+    "mac_sc": "⌘ ⇧ S",
+    "pc_sc": "Ctrl ⇧ S",
+    "difficulty": 3,
+    "alternates": ["END"]
+  },
+  {
+    "shortcut": "CMD+SHIFT+U",
+    "display": "can you press ⌘/Ctrl ⇧ U?",
+    "mac_sc": "⌘ ⇧ U",
+    "pc_sc": "Ctrl ⇧ U",
+    "difficulty": 3,
+    "alternates": ["END"]
+  },
+  {
+    "shortcut": "CMD+SHIFT+V",
+    "display": "can you press ⌘/Ctrl ⇧ V?",
+    "mac_sc": "⌘ ⇧ V",
+    "pc_sc": "Ctrl ⇧ V",
+    "difficulty": 3,
+    "alternates": ["END"]
+  },
+  {
+    "shortcut": "CMD+SHIFT+X",
+    "display": "can you press ⌘/Ctrl ⇧ X?",
+    "mac_sc": "⌘ ⇧ X",
+    "pc_sc": "Ctrl ⇧ X",
+    "difficulty": 3,
+    "alternates": ["END"]
+  },
+  {
+    "shortcut": "CMD+SHIFT+Y",
+    "display": "can you press ⌘/Ctrl ⇧ Y?",
+    "mac_sc": "⌘ ⇧ Y",
+    "pc_sc": "Ctrl ⇧ Y",
+    "difficulty": 3,
+    "alternates": ["END"]
+  },
+  {
+    "shortcut": "CMD+SHIFT+Z",
+    "display": "can you press ⌘/Ctrl ⇧ Z?",
+    "mac_sc": "⌘ ⇧ Z",
+    "pc_sc": "Ctrl ⇧ Z",
+    "difficulty": 3,
+    "alternates": ["END"]
+  },
+  {
+    "shortcut": "CMD+SHIFT+3",
+    "display": "can you press ⌘/Ctrl ⇧ 3? (Mac screenshot risk)",
+    "mac_sc": "⌘ ⇧ 3",
+    "pc_sc": "Ctrl ⇧ 3",
+    "difficulty": 3,
+    "alternates": ["END"]
+  },
+  {
+    "shortcut": "CMD+SHIFT+4",
+    "display": "can you press ⌘/Ctrl ⇧ 4? (Mac screenshot risk)",
+    "mac_sc": "⌘ ⇧ 4",
+    "pc_sc": "Ctrl ⇧ 4",
+    "difficulty": 3,
+    "alternates": ["END"]
+  },
+  {
+    "shortcut": "CMD+SHIFT+5",
+    "display": "can you press ⌘/Ctrl ⇧ 5? (Mac screenshot risk)",
+    "mac_sc": "⌘ ⇧ 5",
+    "pc_sc": "Ctrl ⇧ 5",
+    "difficulty": 3,
+    "alternates": ["END"]
+  },
+  {
+    "shortcut": "CMD+OPTION+I",
+    "display": "can you press ⌘ ⌥ I? (devtools risk on Mac)",
+    "mac_sc": "⌘ ⌥ I",
+    "pc_sc": "none",
+    "difficulty": 3,
+    "alternates": ["END"]
+  },
+  {
+    "shortcut": "CMD+OPTION+J",
+    "display": "can you press ⌘ ⌥ J? (devtools risk on Mac)",
+    "mac_sc": "⌘ ⌥ J",
+    "pc_sc": "none",
+    "difficulty": 3,
+    "alternates": ["END"]
+  },
+  {
+    "shortcut": "CMD+OPTION+U",
+    "display": "can you press ⌘ ⌥ U? (view source risk on Mac)",
+    "mac_sc": "⌘ ⌥ U",
+    "pc_sc": "none",
+    "difficulty": 3,
+    "alternates": ["END"]
+  },
+  {
+    "shortcut": "CMD+OPTION+F",
+    "display": "can you press ⌘ ⌥ F?",
+    "mac_sc": "⌘ ⌥ F",
+    "pc_sc": "none",
+    "difficulty": 3,
+    "alternates": ["END"]
+  },
+  {
+    "shortcut": "CMD+OPTION+L",
+    "display": "can you press ⌘ ⌥ L?",
+    "mac_sc": "⌘ ⌥ L",
+    "pc_sc": "none",
+    "difficulty": 3,
+    "alternates": ["END"]
+  },
+  {
+    "shortcut": "OPTION+[",
+    "display": "can you press ⌥ [ on Mac?",
+    "mac_sc": "⌥ [",
+    "pc_sc": "none",
+    "difficulty": 2,
+    "alternates": ["END"]
+  },
+  {
+    "shortcut": "OPTION+]",
+    "display": "can you press ⌥ ] on Mac?",
+    "mac_sc": "⌥ ]",
+    "pc_sc": "none",
+    "difficulty": 2,
+    "alternates": ["END"]
+  },
+
+  {
+    "_comment": "════════════════════════════════════════════════════════",
+    "_section": "YELLOW — Mac Control key (distinct from CMD)",
+    "_note": "Ctrl on Mac is not the same as CMD. Used by apps like After Effects. Low risk but needs confirmation.",
+    "_comment2": "════════════════════════════════════════════════════════"
+  },
+
+  {
+    "shortcut": "CONTROL+A",
+    "display": "can you press ⌃ A on Mac?",
+    "mac_sc": "⌃ A",
+    "pc_sc": "none",
+    "difficulty": 2,
+    "alternates": ["END"]
+  },
+  {
+    "shortcut": "CONTROL+D",
+    "display": "can you press ⌃ D on Mac?",
+    "mac_sc": "⌃ D",
+    "pc_sc": "none",
+    "difficulty": 2,
+    "alternates": ["END"]
+  },
+  {
+    "shortcut": "CONTROL+E",
+    "display": "can you press ⌃ E on Mac?",
+    "mac_sc": "⌃ E",
+    "pc_sc": "none",
+    "difficulty": 2,
+    "alternates": ["END"]
+  },
+  {
+    "shortcut": "CONTROL+F",
+    "display": "can you press ⌃ F on Mac?",
+    "mac_sc": "⌃ F",
+    "pc_sc": "none",
+    "difficulty": 2,
+    "alternates": ["END"]
+  },
+  {
+    "shortcut": "CONTROL+SHIFT+/",
+    "display": "can you press ⌃ ⇧ ? on Mac?",
+    "mac_sc": "⌃ ⇧ ?",
+    "pc_sc": "none",
+    "difficulty": 5,
+    "alternates": ["END"]
+  },
+  {
+    "shortcut": "CMD+SHIFT+/",
+    "display": "can you press Ctrl ⇧ ? on PC?",
+    "mac_sc": "none",
+    "pc_sc": "Ctrl ⇧ ?",
+    "difficulty": 5,
+    "alternates": ["END"]
+  }
+
+]

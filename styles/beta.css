@@ -2634,13 +2634,14 @@ li.conflict-dismissed .conflict-desc {
 }
 
 .app-pill-hex-dot.animating-out {
-  animation: AppPillHexFadeOut 0.6s cubic-bezier(0.33, 1, 0.68, 1) forwards;
+  animation: AppPillHexFadeOut 1.1s cubic-bezier(0.4, 0, 0.2, 1) forwards;
 }
 
 /* Ring uses its own keyframe so it never becomes invisible */
 .app-pill-hex-ring.animating-out {
-  animation: AppPillHexRingOut 0.6s cubic-bezier(0.33, 1, 0.68, 1) forwards;
+  animation: AppPillHexRingOut 1.1s cubic-bezier(0.4, 0, 0.2, 1) forwards;
 }
+
 
 /* ring-to-light / ring-to-dark kept for any legacy callers but no longer used
    by _AnimateWrenchDot — stroke is set directly before animation starts */

@@ -101,7 +101,7 @@
   <!-- App selector: right-aligned in the same osRow -->
   <div id="appSelectorWrap">
     <p id="appSelectorLabel">now training on</p>
-<div id="appPill" onclick="if(appPillEl.classList.contains('open'))closeAppPill();else openAppPill();">
+<div id="appPill" onclick="if(gameState==='playing'||gameState==='paused'||gameState==='readyToUnpause'||gameState==='counting'){showToast('Change app between game rounds.');return;}if(appPillEl.classList.contains('open'))closeAppPill();else openAppPill();">
       
       <!-- Options rendered by JS so selected item can be reordered to top -->
     </div>

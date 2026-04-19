@@ -2618,7 +2618,7 @@ li.conflict-dismissed .conflict-desc {
 /* Ring-only out: same anticlockwise spin but stays fully opaque — no fade */
 @keyframes AppPillHexRingOut {
   from { transform: rotate(0deg); }
-  to   { transform: rotate(-180deg); }
+  to   { transform: rotate(-270deg); }
 }
 
 .app-pill-hex-dot,
@@ -2633,7 +2633,7 @@ li.conflict-dismissed .conflict-desc {
 }
 
 .app-pill-hex-dot.animating-out {
-  animation: AppPillHexFadeOut 0.4s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+  animation: AppPillHexFadeOut 0.6s cubic-bezier(0.4, 0, 0.2, 1) forwards;
 }
 
 .app-pill-hex-ring.animating-out {

@@ -2633,23 +2633,11 @@ li.conflict-dismissed .conflict-desc {
 }
 
 .app-pill-hex-dot.animating-out {
-  animation: AppPillHexFadeOut 0.6s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+  animation: AppPillHexFadeOut 0.75s cubic-bezier(0.4, 0, 0.2, 1) forwards;
 }
 
 .app-pill-hex-ring.animating-out {
-  animation: AppPillHexRingOut 0.9s cubic-bezier(0.4, 0, 0.2, 1)  forwards;
-}
-
-/* ring-to-light / ring-to-dark kept for any legacy callers but no longer used
-   by _AnimateWrenchDot — stroke is set directly before animation starts */
-.app-pill-hex-ring.ring-to-light {
-  transition: stroke 0.6s ease;
-  stroke: #d1d5db !important;
-}
-
-.app-pill-hex-ring.ring-to-dark {
-  transition: stroke 0.2s ease;
-  stroke: #374151 !important;
+  animation: AppPillHexRingOut 0.9s cubic-bezier(0.33, 1, 0.68, 1)  forwards;
 }
 
 

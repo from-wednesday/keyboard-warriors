@@ -1,6 +1,5 @@
 /* ═══════════════════════════════════════════════════
    Keyboard Warriors CSS
-   externalised from the HTML file
    Load order: @import → Block 1 → Block 3 → misc
    Do not reorder major sections.
    ═══════════════════════════════════════════════════ */
@@ -1482,8 +1481,9 @@ li.conflict-dismissed .conflict-desc {
   #livesRow    { padding: 2px 16px 0; }
 
   #statsRow { padding: 6px 16px 8px; }
-  #statLeft  { width: 108px; }
-  #statRight { width: 90px; }
+   #statLeft  { width: 108px; text-align: center; }
+  #statRight { width: 90px; text-align: center; }
+  #appPill   { width: 102px; min-width: 102px; }
 }
 
 /* ══════════════════════════════════════
@@ -1499,7 +1499,7 @@ li.conflict-dismissed .conflict-desc {
 ══════════════════════════════════════ */
 #osRow {
   display: flex;
-  align-items: center;
+  align-items: flex-start;
   justify-content: center;
   width: 100%;
   padding: 0 60px;
@@ -1589,6 +1589,7 @@ li.conflict-dismissed .conflict-desc {
 ══════════════════════════════════════ */
 #appSelectorWrap {
   margin-left: auto;
+  margin-right: -6px;
   display: flex;
   align-items: center;
   gap: 7px;
@@ -1616,12 +1617,12 @@ li.conflict-dismissed .conflict-desc {
   overflow: hidden;
   cursor: pointer;
   user-select: none;
-  /* Width set by JS at runtime from widest label. Height animated by JS spring. */
+  width: 142px;
+  min-width: 142px;
   height: 27px;
   box-sizing: border-box;
   overscroll-behavior: none;
   transition: border-color 0.15s, background-color 0.15s;
-  /* No CSS height/max-height transition -- JS spring handles it */
 }
 .app-option-wrench {
   border-top: 1px solid rgba(0,0,0,0.05);
@@ -1646,11 +1647,6 @@ li.conflict-dismissed .conflict-desc {
 /* Flip class: used when there is not enough room above to expand upward,
    so the pill drops down as an overlay instead */
 #appPill.open.drop-down {
-  position: absolute;
-  top: -48px;
-  right: 0;
-  z-index: 500;
-  /* Width fixed by JS -- no max-content override */
   border-radius: 10px;
 }
 /* During game: border and background vanish — looks like plain text.
@@ -2428,63 +2424,22 @@ li.conflict-dismissed .conflict-desc {
    border-radius on the correct corners follows the
    panel's 14px curve.                                 */
 
-#kb-wall-top, #kb-wall-bottom {
-  position: absolute;
-  pointer-events: none;
-  opacity: 0;
-  visibility: hidden;
-  transition: opacity 0.3s ease 0.1s, visibility 0s linear 0.3s;
-}
-
-/* And add visibility: visible to the edged state: */
-#keyboardPanel.kb-edged #kb-wall-top,
-#keyboardPanel.kb-edged #kb-wall-bottom {
-  opacity: 1;
-  display: block; 
-  visibility: visible;
-  transition: opacity 0.3s ease 0.1s, visibility 0s linear 0s;
-}
-
-
-/* Bottom wall corner radius: capped at half wall height (3px) at partial so the
-   arc never exceeds the foreshortened strip height at any viewing angle. At full
-   edge (82deg) the strip is nearly perpendicular so 14px/22px reads correctly. */
-#keyboardPanel.kb-partial #kb-wall-bottom          { border-radius: 3px 3px 0 0; }
-#keyboardPanel.pc-keys.kb-partial #kb-wall-bottom  { border-radius: 3px 3px 0 0; }
-
-/* PC panel has 22px radius — bottom wall corners match */
-#keyboardPanel.pc-keys #kb-wall-bottom {
-  border-radius: 22px 22px 0 0;
-}
-#keyboardPanel.pc-keys #kb-wall-top {
-  border-radius: 0 0 6px 6px;
-}
-
-/* Top wall — full width, hinges backward from top edge */
-#kb-wall-top {
-  top:              0;
-  left:             0;
-  right:            0;
-  height:           7px;
-  z-index:          1;
-  transform-origin: center top;
-  transform:        rotateX(-90deg);
-  background:       linear-gradient(to bottom, #a8aeb8, #989eb0);
-  border-radius:    0 0 4px 4px;
-  display:          none;
-}
-
 /* Bottom wall — full width, hinges backward from bottom edge.
-   Most visible face when tilting top-away.             */
+   Hidden by default; only appears when keyboard is folded to edge position.
+   Uses opacity+visibility (not display) so the transition works correctly. */
 #kb-wall-bottom {
+  position:         absolute;
   bottom:           0;
   left:             0;
   right:            0;
   height:           7px;
-  z-index:          1;
+  z-index:          -1;
   transform-origin: center bottom;
   transform:        rotateX(90deg);
-  display: none;  
+  pointer-events:   none;
+  opacity:          0;
+  visibility:       hidden;
+  transition:       opacity 0.25s ease 0.35s, visibility 0s linear 0.6s;
   background:
     linear-gradient(to bottom,
       rgba(0,0,0,0.30)       0px,
@@ -2505,19 +2460,18 @@ li.conflict-dismissed .conflict-desc {
   border-radius:    14px 14px 0 0;
 }
 
-
-/* ─── SLAB BACK — closes the box, invisible ─────────*/
-#kb-slab-back {
-  position:       absolute;
-  inset:          0;
-  border-radius:  14px;
-  pointer-events: none;
-  transform:      translateZ(-7px);
-  background:     #b2b8c0;
-  z-index:        0;
-  box-shadow: 0 0 0 20px #b2b8c0;
-  clip-path: inset(0 round 14px);
+#keyboardPanel.kb-edged #kb-wall-bottom {
+  opacity:    1;
+  visibility: visible;
+  transition: opacity 0.25s ease 0.35s, visibility 0s linear 0s;
 }
+
+/* Corner radii */
+#keyboardPanel.kb-partial #kb-wall-bottom,
+#keyboardPanel.pc-keys.kb-partial #kb-wall-bottom { border-radius: 3px 3px 0 0; }
+#keyboardPanel.pc-keys #kb-wall-bottom             { border-radius: 22px 22px 0 0; }
+
+
 
 /* ─── DROP SHADOW ─────────────────────────────────────
    Blurred translucent blob at negative Z — floats the
@@ -2540,6 +2494,7 @@ li.conflict-dismissed .conflict-desc {
   background: rgba(0,0,0,0.6);
   transform:  translateZ(-10px) translateY(42px);
 }
+
 
 /* ─── BASE EDGE HIGHLIGHT ─────────────────────────────*/
 #kb-base-edge {
@@ -2639,17 +2594,24 @@ li.conflict-dismissed .conflict-desc {
 
 /* ── Wrench picker hex radio dot animations ──────────────────────────────── */
 @keyframes AppPillHexFadeIn {
-  from { opacity: 0; transform: rotate(0deg); }
-  to   { opacity: 1; transform: rotate(180deg); }
+  from { opacity: 0; transform: rotate(-180deg); }
+  to   { opacity: 1; transform: rotate(0deg); }
 }
+
 @keyframes AppPillHexFadeOut {
   from { opacity: 1; transform: rotate(0deg); }
   to   { opacity: 0; transform: rotate(-180deg); }
 }
 
+/* Ring-only out: same anticlockwise spin but stays fully opaque — no fade */
+@keyframes AppPillHexRingOut {
+  from { transform: rotate(0deg); }
+  to   { transform: rotate(-180deg); }
+}
+
 .app-pill-hex-dot,
 .app-pill-hex-ring {
-  transform-origin: center center;
+  transform-origin: 9.5px 9.5px;
   transform-box: fill-box;
 }
 
@@ -2658,10 +2620,27 @@ li.conflict-dismissed .conflict-desc {
   animation: AppPillHexFadeIn 0.6s cubic-bezier(0.33, 1, 0.68, 1) forwards;
 }
 
-.app-pill-hex-dot.animating-out,
-.app-pill-hex-ring.animating-out {
+.app-pill-hex-dot.animating-out {
   animation: AppPillHexFadeOut 0.6s cubic-bezier(0.33, 1, 0.68, 1) forwards;
 }
+
+/* Ring uses its own keyframe so it never becomes invisible */
+.app-pill-hex-ring.animating-out {
+  animation: AppPillHexRingOut 0.6s cubic-bezier(0.33, 1, 0.68, 1) forwards;
+}
+
+/* ring-to-light / ring-to-dark kept for any legacy callers but no longer used
+   by _AnimateWrenchDot — stroke is set directly before animation starts */
+.app-pill-hex-ring.ring-to-light {
+  transition: stroke 0.6s ease;
+  stroke: #d1d5db !important;
+}
+
+.app-pill-hex-ring.ring-to-dark {
+  transition: stroke 0.2s ease;
+  stroke: #374151 !important;
+}
+
 
 /* Returning screen: all settings icons passive, no hover, no interaction */
 body.returning-screen #kbIconWrap,
@@ -2735,15 +2714,6 @@ body.returning-screen #diffIconWrap .icon-tip { display: none; }
   font-weight: 400;
   margin: 0;
   line-height: 1;
-} {
-  font-size: 10px;
-  font-variant: small;
-  letter-spacing: 0.06em;
-  color: #9ca3af;
-  font-weight: 400;
-  margin: 0;
-  line-height: 1;
-  flex-shrink: 0;
 }
 
 /* Column header row: "Report Card" + "Strengths" on left; "Needs Work" on right */
@@ -3087,9 +3057,7 @@ body.returning-screen #diffIconWrap .icon-tip { display: none; }
 #keyboardPanel.ghost-mode .key .util-sym-only,
 #keyboardPanel.ghost-mode .key .lock-svg,
 #keyboardPanel.ghost-mode .key .win-svg { opacity: 0; }
-#keyboardPanel.ghost-mode #kb-wall-top,
 #keyboardPanel.ghost-mode #kb-wall-bottom,
-#keyboardPanel.ghost-mode #kb-slab-back,
 #keyboardPanel.ghost-mode #kb-shadow,
 #keyboardPanel.ghost-mode #kb-base-edge { display: none; }
 /* Lit states remain fully visible in ghost mode */

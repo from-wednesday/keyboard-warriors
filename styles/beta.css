@@ -1435,7 +1435,7 @@ li.conflict-dismissed .conflict-desc {
    Neutral soft yellow: not green (not correct) and not orange (not wrong).
    Immune to the normal lighting lifecycle — cleared only by our own logic. */
 .key.lit-caps-active {
-  background: rgba(245, 224, 0, 0.22) !important;
+  background: rgba(245, 224, 0, 0.3) !important;
   box-shadow: 0 1px 0 rgba(180, 160, 0, 0.25) !important;
 }
 .key.lit-caps-active .letter-lbl,

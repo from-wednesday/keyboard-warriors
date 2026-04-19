@@ -1,19 +1,11 @@
 [
-
-  {
-    "_comment": "════════════════════════════════════════════════════════",
-    "_section": "CONFIRMED CONFLICTS — do not press these",
-    "_note": "These are known browser/OS intercepts. Inherited supersets listed below each.",
-    "_comment2": "════════════════════════════════════════════════════════"
-  },
-
   {
     "shortcut": "CMD+W",
     "display": "do not press ⌘/Ctrl W",
     "mac_sc": "⌘ W",
     "pc_sc": "Ctrl W",
     "difficulty": 1,
-
+    "group": "",
     "alternates": ["END"]
   },
   {
@@ -22,7 +14,7 @@
     "mac_sc": "⌘ ⇧ W",
     "pc_sc": "Ctrl ⇧ W",
     "difficulty": 3,
-
+    
     "alternates": ["END"]
   },
   {
@@ -31,7 +23,7 @@
     "mac_sc": "⌘ T",
     "pc_sc": "Ctrl T",
     "difficulty": 1,
-
+    
     "alternates": ["END"]
   },
   {
@@ -40,7 +32,7 @@
     "mac_sc": "⌘ ⇧ T",
     "pc_sc": "Ctrl ⇧ T",
     "difficulty": 3,
-
+    
     "alternates": ["END"]
   },
   {
@@ -49,7 +41,7 @@
     "mac_sc": "⌘ N",
     "pc_sc": "Ctrl N",
     "difficulty": 1,
-
+    
     "alternates": ["END"]
   },
   {
@@ -58,7 +50,7 @@
     "mac_sc": "⌘ ⇧ N",
     "pc_sc": "Ctrl ⇧ N",
     "difficulty": 3,
-
+    
     "alternates": ["END"]
   },
   {
@@ -67,7 +59,7 @@
     "mac_sc": "⌘ Q",
     "pc_sc": "none",
     "difficulty": 2,
-
+    
     "alternates": ["END"]
   },
   {
@@ -76,7 +68,7 @@
     "mac_sc": "⌘ ⇧ Q",
     "pc_sc": "none",
     "difficulty": 3,
-
+    
     "alternates": ["END"]
   },
   {
@@ -85,7 +77,7 @@
     "mac_sc": "⌘ Tab",
     "pc_sc": "Ctrl Tab",
     "difficulty": 3,
-
+    
     "alternates": ["END"]
   },
   {
@@ -94,7 +86,7 @@
     "mac_sc": "⌘ Space",
     "pc_sc": "Ctrl Space",
     "difficulty": 1,
-
+    
     "alternates": ["END"]
   },
   {
@@ -103,7 +95,7 @@
     "mac_sc": "⌘ ⇧ Space",
     "pc_sc": "Ctrl ⇧ Space",
     "difficulty": 3,
-
+    
     "alternates": ["END"]
   },
   {
@@ -112,17 +104,10 @@
     "mac_sc": "none",
     "pc_sc": "Alt F4",
     "difficulty": 4,
-
+    
     "alternates": ["END"]
   },
-
-  {
-    "_comment": "════════════════════════════════════════════════════════",
-    "_section": "CONFIRMED SAFE — works on both OS and browsers tested",
-    "_comment2": "════════════════════════════════════════════════════════"
-  },
-
-  {
+   {
     "shortcut": "GRAVE",
     "display": "the grave ` key — works fine on both!",
     "mac_sc": "`",
@@ -178,14 +163,6 @@
     "difficulty": 3,
     "alternates": ["END"]
   },
-
-  {
-    "_comment": "════════════════════════════════════════════════════════",
-    "_section": "YELLOW — needs testing, base combinations only",
-    "_note": "No entry here contains a known-conflicting component. Test base first — supersets only get added once base is confirmed safe.",
-    "_comment2": "════════════════════════════════════════════════════════"
-  },
-
   {
     "shortcut": "CMD+A",
     "display": "can you press ⌘/Ctrl A?",
@@ -676,13 +653,6 @@
   },
 
   {
-    "_comment": "════════════════════════════════════════════════════════",
-    "_section": "YELLOW — Mac Control key (distinct from CMD)",
-    "_note": "Ctrl on Mac is not the same as CMD. Used by apps like After Effects. Low risk but needs confirmation.",
-    "_comment2": "════════════════════════════════════════════════════════"
-  },
-
-  {
     "shortcut": "CONTROL+A",
     "display": "can you press ⌃ A on Mac?",
     "mac_sc": "⌃ A",
@@ -730,5 +700,4 @@
     "difficulty": 5,
     "alternates": ["END"]
   }
-
 ]

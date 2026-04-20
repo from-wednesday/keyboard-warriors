@@ -1042,7 +1042,7 @@ body.pc-mode #extKeyPill {
   transition: none;
 }
 
-/* ── Browser modal inner content ──────────────────────────────── */
+/* ── Conflicts modal inner content ──────────────────────────────── */
 
 /* ── Conflict chip styles ─────────────────────────────────────────────────
    Active (radio OFF): shadowed chip, normal descriptor text.
@@ -1066,7 +1066,7 @@ li.conflict-dismissed .conflict-desc {
   color: #c0c5cc;
 }
 
-#panelBrowser .sp-col-right {
+#EndGameHistory .sp-col-right {
   justify-content: flex-end;
   overflow: visible;
 }
@@ -2962,7 +2962,7 @@ body.returning-screen #diffIconWrap .icon-tip { display: none; }
 }
 
 /* ── EndGame CheatSheet panel ────────────────────────────────────────────── */
-#panelEndGameCheatSheet.sp-active {
+#panelEndGameHistory.sp-active {
   display: grid;
   grid-template-columns: 1fr 1fr;
   grid-template-rows: auto;

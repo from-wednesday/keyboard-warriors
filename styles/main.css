@@ -1,5 +1,5 @@
 /* ═══════════════════════════════════════════════════
-   Keyboard Warriors CSS
+   Keyboard Warriors CSS v0024
    Load order: @import → Block 1 → Block 3 → misc
    Do not reorder major sections.
    ═══════════════════════════════════════════════════ */
@@ -564,16 +564,7 @@ body.pc-mode #extKeyPill {
   transition: background 0.8s ease, box-shadow 0.8s ease, color 0.8s ease !important;
 }
 
-/* Toast pill — centred over the stats row, overlaps if needed */
-/* ══════════════════════════════════════
-   KEYBOARD ICON MODAL
-══════════════════════════════════════ */
 
-/* Modal inline rows (label = toggle) */
-/* All three layout rows share a grid so their switches column-align */
-/* All three toggle rows share one table so the switch column aligns perfectly.
-   Left cells are right-aligned (labels hang leftward from switch),
-   switch cells are centred, right cells are left-aligned. */
 .modal-layout-rows {
   display: table;
   border-collapse: separate;
@@ -792,17 +783,17 @@ body.pc-mode #extKeyPill {
 }
 
 /* Returning-user, Welcome, and Difficulty pages: full-width single column, centred */
-#panelDifficulty.sp-active,
-#panelReturning.sp-active,
-#panelWelcome.sp-active {
+#panelDifficultySettings.sp-active,
+#panelLandingReturning.sp-active,
+#panelLandingWelcome.sp-active {
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
 }
-#panelDifficulty.sp-active::after,
-#panelReturning.sp-active::after,
-#panelWelcome.sp-active::after  { display: none; }
+#panelDifficultySettings.sp-active::after,
+#panelLandingReturning.sp-active::after,
+#panelLandingWelcome.sp-active::after  { display: none; }
 
 /* Gutter: a 1px line at the midpoint — centred above diffIcon */
 .sp-page.sp-active::after {
@@ -1042,7 +1033,7 @@ body.pc-mode #extKeyPill {
   transition: none;
 }
 
-/* ── Browser modal inner content ──────────────────────────────── */
+/* ── Conflicts modal inner content ──────────────────────────────── */
 
 /* ── Conflict chip styles ─────────────────────────────────────────────────
    Active (radio OFF): shadowed chip, normal descriptor text.
@@ -1066,7 +1057,7 @@ li.conflict-dismissed .conflict-desc {
   color: #c0c5cc;
 }
 
-#panelBrowser .sp-col-right {
+#EndGameHistory .sp-col-right {
   justify-content: flex-end;
   overflow: visible;
 }
@@ -1430,8 +1421,20 @@ li.conflict-dismissed .conflict-desc {
 .key.lit-orange-up .mod-word,      .key.lit-orange-down .mod-word,
 .key.lit-orange-up .util-sym-only, .key.lit-orange-down .util-sym-only { color: white !important; }
 
+/* ── CapsLock status indicator ─────────────────────────────────────────────
+   Neutral soft yellow: not green (not correct) and not orange (not wrong).
+   Immune to the normal lighting lifecycle — cleared only by our own logic. */
+.key.lit-caps-active {
+  background: #fef08a !important;
+  box-shadow: 0 1px 0 rgba(180, 160, 0, 0.25) !important;
+}
+.key.lit-caps-active .letter-lbl,
+.key.lit-caps-active .util-lbl,
+.key.lit-caps-active .util-sym-only { color: #7a6a00 !important; }
+
 /* Fade-out transition — applied just before removing lit class */
 .key.lit-fading {
+
   transition: background 0.8s ease, box-shadow 0.8s ease !important;
 }
 .key.lit-fading .letter-lbl,
@@ -2020,7 +2023,7 @@ li.conflict-dismissed .conflict-desc {
   line-height: 1.6;
 }
 /* Welcome panel: collapse the subtitle gap so Skill-set loaded sits flush */
-#panelWelcome .diff-subtitle {
+#panelLandingWelcome .diff-subtitle {
   display: none;
 }
 
@@ -2606,7 +2609,7 @@ li.conflict-dismissed .conflict-desc {
 /* Ring-only out: same anticlockwise spin but stays fully opaque — no fade */
 @keyframes AppPillHexRingOut {
   from { transform: rotate(0deg); }
-  to   { transform: rotate(-180deg); }
+  to   { transform: rotate(-270deg); }
 }
 
 .app-pill-hex-dot,
@@ -2621,24 +2624,11 @@ li.conflict-dismissed .conflict-desc {
 }
 
 .app-pill-hex-dot.animating-out {
-  animation: AppPillHexFadeOut 0.6s cubic-bezier(0.33, 1, 0.68, 1) forwards;
+  animation: AppPillHexFadeOut 0.75s cubic-bezier(0.4, 0, 0.2, 1) forwards;
 }
 
-/* Ring uses its own keyframe so it never becomes invisible */
 .app-pill-hex-ring.animating-out {
-  animation: AppPillHexRingOut 0.6s cubic-bezier(0.33, 1, 0.68, 1) forwards;
-}
-
-/* ring-to-light / ring-to-dark kept for any legacy callers but no longer used
-   by _AnimateWrenchDot — stroke is set directly before animation starts */
-.app-pill-hex-ring.ring-to-light {
-  transition: stroke 0.6s ease;
-  stroke: #d1d5db !important;
-}
-
-.app-pill-hex-ring.ring-to-dark {
-  transition: stroke 0.2s ease;
-  stroke: #374151 !important;
+  animation: AppPillHexRingOut 0.9s cubic-bezier(0.33, 1, 0.68, 1) 0.15s forwards;
 }
 
 
@@ -2660,7 +2650,7 @@ body.returning-screen #diffIconWrap .icon-tip { display: none; }
 /* ── Report Card panel ───────────────────────────── */
 
 /* Override the standard two-column grid to add a full-width bottom row */
-#panelReport.sp-page-report.sp-active {
+#panelEndGameReportCard.sp-page-report.sp-active {
   display: grid;
   grid-template-columns: 1fr 1fr;
   grid-template-rows: auto auto;
@@ -2729,16 +2719,16 @@ body.returning-screen #diffIconWrap .icon-tip { display: none; }
 }
 
 /* Suppress the standard centred gutter line — we draw it manually */
-#panelReport.sp-page-report.sp-active::after {
+#panelEndGameReportCard.sp-page-report.sp-active::after {
   display: none;
 }
 
 /* The column divider: sits between left and right, terminates at the horizontal line */
-#panelReport.sp-page-report .sp-col-left {
+#panelEndGameReportCard.sp-page-report .sp-col-left {
   padding-right: 20px;
   position: relative;
 }
-#panelReport.sp-page-report .sp-col-left::after {
+#panelEndGameReportCard.sp-page-report .sp-col-left::after {
   content: '';
   position: absolute;
   top: 16px;
@@ -2750,7 +2740,7 @@ body.returning-screen #diffIconWrap .icon-tip { display: none; }
   pointer-events: none;
 }
 
-#panelReport.sp-page-report .sp-col-right {
+#panelEndGameReportCard.sp-page-report .sp-col-right {
   padding-left: 20px;
 }
 
@@ -2918,7 +2908,7 @@ body.returning-screen #diffIconWrap .icon-tip { display: none; }
 }
 
 /* Cheat sheet panel: full-width title row above the two columns */
-#panelPadlock.sp-page-padlock.sp-active {
+#panelCheatSheet.sp-page-padlock.sp-active {
   display: grid;
   grid-template-columns: 1fr 1fr;
   grid-template-rows: auto auto;
@@ -2926,9 +2916,9 @@ body.returning-screen #diffIconWrap .icon-tip { display: none; }
     "title title"
     "left  right";
 }
-#panelPadlock.sp-page-padlock .sp-col-left  { grid-area: left; }
-#panelPadlock.sp-page-padlock .sp-col-right { grid-area: right; }
-#panelPadlock.sp-page-padlock.sp-active::after {
+#panelCheatSheet.sp-page-padlock .sp-col-left  { grid-area: left; }
+#panelCheatSheet.sp-page-padlock .sp-col-right { grid-area: right; }
+#panelCheatSheet.sp-page-padlock.sp-active::after {
   top: 16px;
 }
 .sp-padlock-title-row {
@@ -2963,7 +2953,7 @@ body.returning-screen #diffIconWrap .icon-tip { display: none; }
 }
 
 /* ── EndGame CheatSheet panel ────────────────────────────────────────────── */
-#panelEndGameCheatSheet.sp-active {
+#panelEndGameHistory.sp-active {
   display: grid;
   grid-template-columns: 1fr 1fr;
   grid-template-rows: auto;
@@ -3376,26 +3366,26 @@ body.returning-screen #diffIconWrap .icon-tip { display: none; }
 }
 
 /* Panels that are normally two-column grids become single-column stacks */
-#phonePanelArea .sp-page.sp-active:not(#panelDifficulty):not(#panelReturning):not(#panelWelcome) {
+#phonePanelArea .sp-page.sp-active:not(#panelDifficultySettings):not(#panelLandingReturning):not(#panelLandingWelcome) {
   display: flex;
   flex-direction: column;
   gap: 16px;
 }
 
 /* Report card: remove the report bottom grid area hack, just stack */
-#phonePanelArea #panelReport.sp-page-report.sp-active {
+#phonePanelArea #panelEndGameReportCard.sp-page-report.sp-active {
   display: flex;
   flex-direction: column;
   gap: 16px;
 }
 
 /* Left column divider line in report card panel */
-#phonePanelArea #panelReport .sp-col-left::after {
+#phonePanelArea #panelEndGameReportCard .sp-col-left::after {
   display: none;
 }
 
 /* Padlock panel */
-#phonePanelArea #panelPadlock.sp-page-padlock.sp-active {
+#phonePanelArea #panelCheatSheet.sp-page-padlock.sp-active {
   display: flex;
   flex-direction: column;
 }

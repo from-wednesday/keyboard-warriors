@@ -9147,9 +9147,8 @@ function BuildEndGameListItem(SummaryItem, QuestionNumber, AnsweredOutcomeColour
         ? (currentOs === 'pc' ? PoolQuestion.pc_sc : PoolQuestion.mac_sc)
         : SummaryItem.shortcut;
 
-    var ListItem = document.createElement('div');
-    ListItem.className = 'app-option';
-    ListItem.style.alignItems = 'flex-start'; 
+    var ListItem = document.createElement('li');
+    ListItem.style.alignItems = 'flex-start';
     ListItem.style.position = 'relative';
     ListItem.dataset.shortcutToken = SummaryItem.shortcutToken || '';
 

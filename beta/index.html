@@ -5273,12 +5273,12 @@ function openSettings(page) {
   // Disable pointer-events on the keyboard stage so the tilted panel
   // doesn't intercept clicks on diffIcon and other elements below it.
   // Exception: cheat sheet needs the keyboard tappable to fold it.
-  // History record also needs the keyboard tappable, but diffIconWrap must
-  // remain clickable, so we disable the stage and force diffIconWrap active.
+  // History record: stage stays enabled for the top-half fold trigger,
+  // but diffIconWrap is forced active so it wins over the stage beneath it.
   var stage = document.getElementById('kbFlipStage');
   var diffWrap = document.getElementById('diffIconWrap');
   if (page === 'panelEndGameHistoryRecord') {
-    if (stage) stage.style.pointerEvents = 'none';
+    if (stage) stage.style.pointerEvents = '';
     if (diffWrap) diffWrap.style.pointerEvents = 'auto';
   } else if (page === 'panelCheatSheet') {
     if (stage) stage.style.pointerEvents = '';
@@ -10151,21 +10151,18 @@ document.addEventListener('pointerdown', _killPunctuationConfirmGuard, true);
 document.addEventListener('keydown', handleKeydown);
 document.addEventListener('keyup',   handleKeyup);
 
-// Tapping the keyboard while the history or cheat sheet panel is open folds it to edge.
-// Must be on kbFlipStage directly — settingsPanelInner sits above keyboardWrap
-// in paint order and swallows clicks before they bubble up to it.
+// Tapping the top half of the keyboard while the history or cheat sheet panel is open folds it to edge.
+// Only the top half is used as the trigger zone, like pressing a lever -- this keeps the area
+// well clear of diffIconWrap which sits visually below the keyboard centre.
 document.getElementById('kbFlipStage').addEventListener('pointerdown', function(e) {
   if (activeSettings !== 'panelEndGameHistoryRecord' && activeSettings !== 'panelCheatSheet') return;
   if (_kbPos === 'edge') return;
-  var IconWrapIds = ['kbIconWrap', 'brIconWrap', 'diffIconWrap'];
-  var PointerIsOverIcon = IconWrapIds.some(function(IconId) {
-    var IconElement = document.getElementById(IconId);
-    if (!IconElement) return false;
-    var IconRect = IconElement.getBoundingClientRect();
-    return e.clientX >= IconRect.left && e.clientX <= IconRect.right &&
-           e.clientY >= IconRect.top  && e.clientY <= IconRect.bottom;
-  });
-  if (PointerIsOverIcon) return;
+  var KeyboardPanel = document.getElementById('keyboardPanel');
+  if (KeyboardPanel) {
+    var KeyboardRect = KeyboardPanel.getBoundingClientRect();
+    var KeyboardMidpoint = KeyboardRect.top + KeyboardRect.height / 2;
+    if (e.clientY > KeyboardMidpoint) return;
+  }
   e.stopPropagation();
   setKbPosition('edge');
 });

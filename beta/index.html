@@ -5220,7 +5220,7 @@ function openSettings(page) {
   }
 
   // Update kbPos — partial for most panels; edge for browser and pause
-  var pos = (page === 'panelConflicts' || page === 'panelPause' || page === 'panelCheatSheet' || page === 'panelDifficultySettings' || page === 'panelEndGameReportCard') ? 'edge' : 'partial';
+  var pos = (page === 'panelConflicts' || page === 'panelPause' || page === 'panelDifficultySettings' || page === 'panelEndGameReportCard') ? 'edge' : 'partial';
   setKbPosition(pos);
 
   // Pause game if needed (not for pause panel or when on welcome screen)
@@ -5273,7 +5273,7 @@ function openSettings(page) {
   // doesn't intercept clicks on diffIcon and other elements below it.
   // Exception: history record panel needs the keyboard tappable to fold it.
   var stage = document.getElementById('kbFlipStage');
-  if (stage) stage.style.pointerEvents = (page === 'panelEndGameHistoryRecord') ? '' : 'none';
+  if (stage) stage.style.pointerEvents = (page === 'panelEndGameHistoryRecord' || page === 'panelCheatSheet') ? '' : 'none';
 
   // Pin tooltip only for the three true settings pages
   var isPinnableSettings = (page === 'panelKeyboard' || page === 'panelConflicts' || page === 'panelDifficultySettings');
@@ -10147,11 +10147,11 @@ document.addEventListener('pointerdown', _killPunctuationConfirmGuard, true);
 document.addEventListener('keydown', handleKeydown);
 document.addEventListener('keyup',   handleKeyup);
 
-// Tapping the keyboard while the history panel is open folds it to edge.
+// Tapping the keyboard while the history or cheat sheet panel is open folds it to edge.
 // Must be on kbFlipStage directly — settingsPanelInner sits above keyboardWrap
 // in paint order and swallows clicks before they bubble up to it.
 document.getElementById('kbFlipStage').addEventListener('pointerdown', function(e) {
-  if (activeSettings !== 'panelEndGameHistoryRecord') return;
+  if (activeSettings !== 'panelEndGameHistoryRecord' && activeSettings !== 'panelCheatSheet') return;
   if (_kbPos === 'edge') return;
   e.stopPropagation();
   setKbPosition('edge');

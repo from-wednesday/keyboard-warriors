@@ -9,7 +9,7 @@
 <title>Keyboard Warriors</title>
 <script>
   const DefaultTitle = 'Keyboard Warriors';
-  const VersionLabel   = '0023';
+  const VersionLabel   = '0024';
   const TitlePrefix  = document.title !== DefaultTitle ? document.title.trim() + '_' : '';
   const DBG_DEVICE   = TitlePrefix + VersionLabel;
 </script>
@@ -256,8 +256,8 @@
   <div id="settingsPanel">
     <div id="settingsPanelInner">
 
-    <!-- ── Browser Settings ─────────────────────────────── -->
-    <div id="panelBrowser" class="sp-page">
+    <!-- ── Conflicts Settings ─────────────────────────────── -->
+    <div id="panelConflicts" class="sp-page">
       <div class="sp-col sp-col-left">
         <p class="sp-body" id="browserCompatHeading"></p>
         <p class="sp-body" id="browserCompatIntro"></p>
@@ -277,7 +277,7 @@
           <span class="sp-nudge-text">Adjust the keyboard layout so the one on the screen matches your actual device.</span>
           <svg class="sp-nudge-icon" viewBox="0 0 110 101.8" xmlns="http://www.w3.org/2000/svg"><path d="M98.6,32.4H11.4c-2.1,0-3.9,1.7-3.9,3.9v29.6c0,2.1,1.7,3.9,3.9,3.9h87.2c2.1,0,3.9-1.7,3.9-3.9v-29.6c0-2.1-1.7-3.9-3.9-3.9ZM99.9,65.9c0,.7-.6,1.3-1.3,1.3H11.4c-.7,0-1.3-.6-1.3-1.3v-29.6c0-.7.6-1.3,1.3-1.3h87.2c.7,0,1.3.6,1.3,1.3v29.6ZM15.2,42.1v-2.6c0-.5.4-.9.9-.9h5.9c.5,0,.9.4.9.9v2.6c0,.5-.4.9-.9.9h-5.9c-.5,0-.9-.4-.9-.9ZM15.2,48.9v-2.6c0-.5.4-.9.9-.9h7.4c.5,0,.9.4.9.9v2.6c0,.5-.4.9-.9.9h-7.4c-.5,0-.9-.4-.9-.9ZM95.9,46.4v2.6c0,.5-.4.9-.9.9h-7.4c-.5,0-.9-.4-.9-.9v-2.6c0-.5.4-.9.9-.9h7.4c.5,0,.9.4.9.9ZM15.2,55.7v-2.6c0-.5.4-.9.9-.9h10.8c.5,0,.9.4.9.9v2.6c0,.5-.4.9-.9.9h-10.8c-.5,0-.9-.4-.9-.9ZM65.8,59.9v2.6c0,.5-.4.9-.9.9h-26.9c-.5,0-.9-.4-.9-.9v-2.6c0-.5.4-.9.9-.9h26.9c.5,0,.9.4.9.9ZM95.9,53.2v2.6c0,.5-.4.9-.9.9h-10.8c-.5,0-.9-.4-.9-.9v-2.6c0-.5.4-.9.9-.9h10.8c.5,0,.9.4.9.9h0ZM24.8,42.2v-2.8c0-.4.3-.8.8-.8h4.4c.4,0,.8.3.8.8v2.8c0,.4-.3.8-.8.8h-4.4c-.4,0-.8-.3-.8-.8ZM33,42.2v-2.8c0-.4.3-.8.8-.8h4.4c.4,0,.8.3.8.8v2.8c0,.4-.3.8-.8.8h-4.4c-.4,0-.8-.3-.8-.8ZM41.1,42.2v-2.8c0-.4.3-.8.8-.8h4.4c.4,0,.8.3.8.8v2.8c0,.4-.3.8-.8.8h-4.4c-.4,0-.8-.3-.8-.8ZM49.3,42.2v-2.8c0-.4.3-.8.8-.8h4.4c.4,0,.8.3.8.8v2.8c0,.4-.3.8-.8.8h-4.4c-.4,0-.8-.3-.8-.8ZM57.4,42.2v-2.8c0-.4.3-.8.8-.8h4.4c.4,0,.8.3.8.8v2.8c0,.4-.3.8-.8.8h-4.4c-.4,0-.8-.3-.8-.8ZM65.5,42.2v-2.8c0-.4.3-.8.8-.8h4.4c.4,0,.8.3.8.8v2.8c0,.4-.3.8-.8.8h-4.4c-.4,0-.8-.3-.8-.8ZM73.7,42.2v-2.8c0-.4.3-.8.8-.8h4.4c.4,0,.8.3.8.8v2.8c0,.4-.3.8-.8.8h-4.4c-.4,0-.8-.3-.8-.8ZM27.8,45.5h4.4c.4,0,.8.3.8.8v2.8c0,.4-.3.8-.8.8h-4.4c-.4,0-.8-.3-.8-.8v-2.8c0-.4.3-.8.8-.8ZM40.7,49.8h-4.4c-.4,0-.8-.3-.8-.8v-2.8c0-.4.3-.8.8-.8h4.4c.4,0,.8.3.8.8v2.8c0,.4-.3.8-.8.8ZM44.8,45.5h4.4c.4,0,.8.3.8.8v2.8c0,.4-.3.8-.8.8h-4.4c-.4,0-.8-.3-.8-.8v-2.8c0-.4.3-.8.8-.8ZM57.7,49.8h-4.4c-.4,0-.8-.3-.8-.8v-2.8c0-.4.3-.8.8-.8h4.4c.4,0,.8.3.8.8v2.8c0,.4-.3.8-.8.8ZM66.2,49.8h-4.4c-.4,0-.8-.3-.8-.8v-2.8c0-.4.3-.8.8-.8h4.4c.4,0,.8.3.8.8v2.8c0,.4-.3.8-.8.8ZM74.7,45.5c.4,0,.8.3.8.8v2.8c0,.4-.3.8-.8.8h-4.4c-.4,0-.8-.3-.8-.8v-2.8c0-.4.3-.8.8-.8h4.4ZM83.2,45.5c.4,0,.8.3.8.8v2.8c0,.4-.3.8-.8.8h-4.4c-.4,0-.8-.3-.8-.8v-2.8c0-.4.3-.8.8-.8h4.4ZM36.3,53.1v2.8c0,.4-.3.8-.8.8h-4.4c-.4,0-.8-.3-.8-.8v-2.8c0-.4.3-.8.8-.8h4.4c.4,0,.8.3.8.8ZM44.3,52.3c.4,0,.8.3.8.8v2.8c0,.4-.3.8-.8.8h-4.4c-.4,0-.8-.3-.8-.8v-2.8c0-.4.3-.8.8-.8h4.4ZM53.1,52.3c.4,0,.8.3.8.8v2.8c0,.4-.3.8-.8.8h-4.4c-.4,0-.8-.3-.8-.8v-2.8c0-.4.3-.8.8-.8h4.4ZM56.7,55.9v-2.8c0-.4.3-.8.8-.8h4.4c.4,0,.8.3.8.8v2.8c0,.4-.3.8-.8.8h-4.4c-.4,0-.8-.3-.8-.8ZM70.7,56.6h-4.4c-.4,0-.8-.3-.8-.8v-2.8c0-.4.3-.8.8-.8h4.4c.4,0,.8.3.8.8v2.8c0,.4-.3.8-.8.8ZM79.5,56.6h-4.4c-.4,0-.8-.3-.8-.8v-2.8c0-.4.3-.8.8-.8h4.4c.4,0,.8.3.8.8v2.8c0,.4-.3.8-.8.8ZM81.8,42.2v-2.8c0-.4.3-.8.8-.8h4.4c.4,0,.8.3.8.8v2.8c0,.4-.3.8-.8.8h-4.4c-.4,0-.8-.3-.8-.8ZM95.9,39.5v2.8c0,.4-.3.8-.8.8h-4.4c-.4,0-.8-.3-.8-.8v-2.8c0-.4.3-.8.8-.8h4.4c.4,0,.8.3.8.8ZM35.4,59.8v2.8c0,.4-.3.8-.8.8h-4.4c-.4,0-.8-.3-.8-.8v-2.8c0-.4.3-.8.8-.8h4.4c.4,0,.8.3.8.8ZM28.3,59.8v2.8c0,.4-.3.8-.8.8h-4.4c-.4,0-.8-.3-.8-.8v-2.8c0-.4.3-.8.8-.8h4.4c.4,0,.8.3.8.8ZM21.2,59.8v2.8c0,.4-.3.8-.8.8h-4.4c-.4,0-.8-.3-.8-.8v-2.8c0-.4.3-.8.8-.8h4.4c.4,0,.8.3.8.8ZM73.5,59.8v2.8c0,.4-.3.8-.8.8h-4.3c-.4,0-.8-.3-.8-.8v-2.8c0-.4.3-.8.8-.8h4.3c.4,0,.8.3.8.8ZM81,59.8v2.8c0,.4-.3.8-.8.8h-4.3c-.4,0-.8-.3-.8-.8v-2.8c0-.4.3-.8.8-.8h4.3c.4,0,.8.3.8.8ZM88.5,59.8v2.8c0,.4-.3.8-.8.8h-4.3c-.4,0-.8-.3-.8-.8v-2.8c0-.4.3-.8.8-.8h4.3c.4,0,.8.3.8.8ZM95.9,59.8v2.8c0,.4-.3.8-.8.8h-4.3c-.4,0-.8-.3-.8-.8v-2.8c0-.4.3-.8.8-.8h4.3c.4,0,.8.3.8.8Z"/></svg>
         </a>
-        <a class="sp-settings-nudge" onclick="event.preventDefault();openSettings('panelBrowser');" href="#">
+        <a class="sp-settings-nudge" onclick="event.preventDefault();openSettings('panelConflicts');" href="#">
           <span class="sp-nudge-text">We can't simulate all shortcuts because your <small>OS</small> &amp; browser own some. Fine-tune here.</span>
           <svg class="sp-nudge-icon" viewBox="0 0 86 64.1" xmlns="http://www.w3.org/2000/svg"><g><path d="M7,11.7v42c0,2.2,1.8,4,4,4h63c2.2,0,4-1.8,4-4V11.7c0-2.2-1.8-4-4-4H11c-2.2,0-4,1.8-4,4ZM9,19.7h67v34c0,1.1-.9,2-2,2H11c-1.1,0-2-.9-2-2V19.7ZM9,11.7c0-1.1.9-2,2-2h63c1.1,0,2,.9,2,2v6H9v-6Z"/><circle cx="19.3" cy="13.7" r="2"/><circle cx="13.3" cy="13.7" r="2"/><circle cx="25.3" cy="13.7" r="2"/></g><path d="M42.5,23.4c-6,0-11.4,2.1-14.9,5.4h0c0,0-.1.1-.2.2-2.4,2.3-3.8,5.2-3.8,8.4s1.4,6,3.8,8.4c0,0,0,.1.2.2,3.4,3.3,8.8,5.4,14.9,5.4s11.4-2.1,14.9-5.4h0c0,0,.1-.1.2-.2,0,0,0,0,0,0,2.4-2.3,3.8-5.2,3.8-8.4s-1.4-6-3.8-8.4c0,0-.1-.1-.2-.2-3.4-3.3-8.8-5.4-14.9-5.4h0ZM41.3,25.3v5.4c-1.9,0-3.7-.2-5.4-.4.3-.6.7-1.2,1-1.7,1.3-1.7,2.8-2.8,4.4-3.2h0ZM43.7,25.3c1.6.4,3.1,1.5,4.4,3.2.4.5.7,1.1,1.1,1.7-1.7.2-3.5.4-5.4.4v-5.3ZM49,26.2c2.1.7,4,1.7,5.5,2.9-.9.3-1.9.5-2.9.8-.4-.8-.8-1.5-1.3-2.2-.4-.5-.8-1-1.3-1.5h0ZM36,26.2c-.5.4-.9.9-1.2,1.5-.5.7-.9,1.4-1.3,2.2-1.1-.2-2.1-.5-2.9-.8,1.5-1.2,3.4-2.2,5.5-2.9h0ZM28.9,30.6c1.1.4,2.4.8,3.8,1-.5,1.5-.8,3.1-.9,4.8h-5.6c.2-2.1,1.2-4.1,2.7-5.8h0ZM56.1,30.6c1.5,1.7,2.5,3.7,2.7,5.8h-5.6c0-1.7-.4-3.3-.9-4.8,1.4-.3,2.7-.6,3.8-1h0ZM35.1,32c1.9.3,4,.4,6.1.5v3.9h-7c0-1.5.4-3,.8-4.3h0ZM49.9,32c.4,1.3.7,2.8.8,4.3h-7v-3.9c2.2,0,4.2-.2,6.1-.5h0ZM26.2,38.2h5.6c0,1.7.4,3.3.9,4.8-1.4.3-2.7.6-3.8,1-1.5-1.7-2.5-3.7-2.7-5.8h0ZM34.3,38.2h7v3.9c-2.2,0-4.2.2-6.1.5-.4-1.3-.7-2.8-.8-4.3h0ZM43.7,38.2h7c0,1.5-.4,3-.8,4.3-1.9-.3-4-.4-6.1-.5v-3.9ZM53.2,38.2h5.6c-.2,2.1-1.2,4.1-2.7,5.8-1.1-.4-2.4-.8-3.8-1,.5-1.5.8-3.1.9-4.8h0ZM41.3,43.9v5.4c-1.6-.4-3.1-1.4-4.4-3.2-.4-.5-.7-1.1-1.1-1.7,1.7-.2,3.5-.4,5.4-.4h0ZM43.7,43.9c1.9,0,3.7.2,5.4.4-.3.6-.7,1.2-1.1,1.7-1.3,1.7-2.8,2.8-4.4,3.2v-5.3ZM33.4,44.7c.4.8.8,1.5,1.3,2.2.4.5.8,1,1.2,1.5-2.1-.7-4-1.7-5.5-2.9.9-.3,1.9-.5,2.9-.8h0ZM51.6,44.7c1.1.2,2.1.5,2.9.8-1.5,1.2-3.4,2.2-5.5,2.9.5-.4.9-.9,1.3-1.5.5-.7.9-1.4,1.3-2.2h0Z"/></svg>
         </a>
@@ -360,10 +360,10 @@
     </div>
    
 <!-- ── Report Card ────────────────────────────────── -->
-<div id="panelReport" class="sp-page sp-page-report">
+<div id="panelEndGameReportCard" class="sp-page sp-page-report">
   <div class="sp-col sp-col-left">
     <div class="sp-report-col-header">
-      <div class="sp-endgame-header-left" onclick="_toggleEndGameCheatSheet()" id="reportCardToggleTrigger">
+      <div class="sp-endgame-header-left" onclick="_toggleEndGameHistory()" id="reportCardToggleTrigger">
         <p class="sp-small-card-title">REPORT CARD</p>
         <svg class="sp-endgame-search-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
           <circle cx="11" cy="11" r="7"/>
@@ -384,32 +384,32 @@
     <div class="sp-report-advice-box" id="reportTrainerAdvice"></div>
   </div>
 </div>
-  <!-- ── EndGame CheatSheet ─────────────────────────────── -->
-    <div id="panelEndGameCheatSheet" class="sp-page">
+  <!-- ── EndGame History View ─────────────────────────────── -->
+    <div id="panelEndGameHistoryRecord" class="sp-page">
    <div class="sp-col sp-col-left">
         <div class="sp-report-col-header">
-          <div class="sp-endgame-header-left" onclick="_toggleEndGameCheatSheet()">
-            <p class="sp-small-card-title">REPORT CARD</p>
+          <div class="sp-endgame-header-left" onclick="_toggleEndGameHistory()">
+            <p class="sp-small-card-title">HISTORY VIEW</p>
            <svg class="sp-endgame-search-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
           <circle cx="11" cy="11" r="7"/>
           <line x1="16.5" y1="16.5" x2="22" y2="22"/>
         </svg>
           </div>
-          <p class="sp-report-section-title" id="endGameCheatSheetMasteredHeading"></p>
+          <p class="sp-report-section-title" id="EndGameHistoryMasteredHeading"></p>
         </div>
-        <ul id="endGameCheatSheetListLeft" class="sp-endgame-list sp-report-weakness"></ul>
+        <ul id="EndGameHistoryListLeft" class="sp-endgame-list sp-report-weakness"></ul>
       </div>
       <div class="sp-col sp-col-right">
         <div class="sp-report-col-header sp-report-col-header-right" style="justify-content:space-between;">
-          <p class="sp-endgame-context-label" id="endGameCheatSheetTimerLabel"></p>
-          <p class="sp-endgame-context-label" id="endGameCheatSheetContextLabel"></p>
+          <p class="sp-endgame-context-label" id="EndGameHistoryTimerLabel"></p>
+          <p class="sp-endgame-context-label" id="EndGameHistoryContextLabel"></p>
         </div>
-        <ul id="endGameCheatSheetListRight" class="sp-endgame-list sp-report-weakness"></ul>
+        <ul id="EndGameHistoryListRight" class="sp-endgame-list sp-report-weakness"></ul>
       </div>
     </div>
 
 <!-- ── Cheat Sheet Panel ─────────────────────────────── -->
-    <div id="panelPadlock" class="sp-page sp-page-padlock">
+    <div id="panelCheatSheet" class="sp-page sp-page-padlock">
       <div class="sp-padlock-title-row" style="display:none;">
         <p class="sp-padlock-main-heading">Cheat Sheet</p>
         <p class="sp-padlock-byline">Your study companion.</p>
@@ -431,7 +431,7 @@
 
 
     <!-- ── Returning User Landing ───────────────────────── -->
-    <div id="panelReturning" class="sp-page">
+    <div id="panelLandingReturning" class="sp-page">
       <p class="sp-title" style="margin-bottom:10px;text-align:center;"><em>Would you like to?</em></p>
       <div class="sp-returning-inner">
         <div class="sp-seg-pill sp-seg-pill-two">
@@ -443,7 +443,7 @@
     </div>
 
     <!-- ── Difficulty Settings ──────────────────────────── -->
-    <div id="panelDifficulty" class="sp-page">
+    <div id="panelDifficultySettings" class="sp-page">
       <p class="sp-title" style="margin-bottom:10px;">Question Difficulty</p>
       <div class="sp-seg-pill sp-seg-pill-three" id="difficultyPill">
         <button class="sp-seg-btn diff-btn" data-mode="fundamentals" onclick="diffBtnClick('fundamentals')"><span class="diff-btn-text">Fundamentals</span></button>
@@ -492,7 +492,7 @@
     </div>
 
     <!-- ── Welcome Landing ──────────────────────────────── -->
-    <div id="panelWelcome" class="sp-page">
+    <div panelKeyboardSettingsWelcome" class="sp-page">
       <p class="sp-title" style="margin-bottom:10px;">Question Difficulty</p>
       <div class="sp-seg-pill sp-seg-pill-three" id="welcomeDifficultyPill">
         <button class="sp-seg-btn diff-btn" data-mode="fundamentals" onclick="diffBtnClick('fundamentals')"><span class="diff-btn-text">Fundamentals</span></button>
@@ -1278,14 +1278,14 @@ function buildOsLabels() {
   leftLabel.addEventListener('click',  function() {
     applyOsMode(leftOperatingSystem);
     if (activeSettings === 'panelKeyboard') updateModalToggles();
-    if (activeSettings === 'panelReport')   _refreshReportPanel();
-    if (activeSettings === 'panelPadlock')  _refreshCheatSheet();
+    if (activeSettings === 'panelEndGameReportCard')   _refreshReportPanel();
+    if (activeSettings === 'panelCheatSheet')  _refreshCheatSheet();
   });
   rightLabel.addEventListener('click', function() {
     applyOsMode(rightOperatingSystem);
     if (activeSettings === 'panelKeyboard') updateModalToggles();
-    if (activeSettings === 'panelReport')   _refreshReportPanel();
-    if (activeSettings === 'panelPadlock')  _refreshCheatSheet();
+    if (activeSettings === 'panelEndGameReportCard')   _refreshReportPanel();
+    if (activeSettings === 'panelCheatSheet')  _refreshCheatSheet();
   });
 }
 
@@ -1439,9 +1439,9 @@ function onOsToggle() {
     ? (nativeMac ? 'pc'  : 'mac')
     : (nativeMac ? 'mac' : 'pc'));
   if (activeSettings === 'panelKeyboard') updateModalToggles();
-  if (activeSettings === 'panelBrowser')  _refreshBrowserContent();
-  if (activeSettings === 'panelReport')     _refreshReportPanel();
-  if (activeSettings === 'panelPadlock')    _refreshCheatSheet();
+  if (activeSettings === 'panelConflicts')  _refreshBrowserContent();
+  if (activeSettings === 'panelEndGameReportCard')     _refreshReportPanel();
+  if (activeSettings === 'panelCheatSheet')    _refreshCheatSheet();
   runData.length = 0; lastCompletedReport = null; CoachAdviceAccepted = false;
 }
 
@@ -1777,10 +1777,14 @@ const LINGER_MS = 800;
 function clearAllLit() {
   // Cancel all linger timers first so no deferred class changes fire after we clear
   Object.keys(lingerTimers).forEach(k => { clearTimeout(lingerTimers[k]); delete lingerTimers[k]; });
-  Object.values(keyEls).forEach(el => {
+  Object.entries(keyEls).forEach(([code, el]) => {
     el.classList.remove('lit-green-up','lit-green-down','lit-orange-up','lit-orange-down','lit-fading');
-    void el.offsetWidth; // force reflow to abort any in-progress CSS transitions on this key
+    // CapsLock indicator is managed independently -- do not clear it here
+    if (code !== 'CapsLock') {
+      void el.offsetWidth; // force reflow to abort any in-progress CSS transitions on this key
+    }
   });
+
   clearTimeout(extKeyPillTimer);
   extKeyPillEl.className = '';
   extKeyPillEl.style.display = 'none';
@@ -1942,6 +1946,21 @@ const NUMPAD_MAP = {
 
 function updateKeyboardLighting(e, isDown) {
   if (isDown && e.repeat) return; // key already lit from initial keydown; repeats do nothing
+  // CapsLock uses its own indicator logic -- skip normal lighting but update the indicator immediately
+  if (e.code === 'CapsLock') {
+    const CapsLockKeyElement = keyEls['CapsLock'];
+    if (CapsLockKeyElement) {
+      if (touchEnabled) {
+        // In touch mode, toggle the indicator state manually
+        CapsLockKeyElement.classList.toggle('lit-caps-active');
+      } else {
+        // In normal mode, sync directly with the real OS state
+        const CapsLockIsActive = e.getModifierState('CapsLock');
+        CapsLockKeyElement.classList.toggle('lit-caps-active', CapsLockIsActive);
+      }
+    }
+    return;
+  }
   const code = NUMPAD_MAP[e.code] || e.code;
   const isExtKey   = code in EXT_KEY_LABELS;
   const isModifier = code === 'MetaLeft'    || code === 'MetaRight'   ||
@@ -2533,11 +2552,11 @@ function clearHelp() {
   if (transitioning) return;
   if (gameState === 'counting') return;
   // If the padlock panel is already open, close it.
-  if (activeSettings === 'panelPadlock') { closeSettings(); return; }
+  if (activeSettings === 'panelCheatSheet') { closeSettings(); return; }
   // Save title text then show cheat sheet heading in the game div
   _padlockSavedTitle = titleEl.textContent;
   // Open the panel first so enterPause does not auto-open panelPause on top.
-  openSettings('panelPadlock');
+  openSettings('panelCheatSheet');
   if (gameState === 'counting')        { cancelCountdown(); }
   else if (gameState === 'readyToUnpause') { _enterReadyToUnpauseCleanup(); enterPause(); }
   else if (gameState === 'playing')    { enterPause(); }
@@ -2616,7 +2635,7 @@ function _clearReadyPromptFromTitle() {
 function _startReadyPromptTimer() {
   clearTimeout(readyPromptTimer);
   readyPromptTimer = setTimeout(function() {
-    if (activeSettings === 'panelPadlock') { readyPromptTimer = null; return; }
+    if (activeSettings === 'panelCheatSheet') { readyPromptTimer = null; return; }
     var awaitingAction = (gameState === 'idle' || gameState === 'paused' ||
                           gameState === 'finished' || gameState === 'readyToUnpause');
     if (!awaitingAction) { readyPromptTimer = null; return; }
@@ -3611,7 +3630,7 @@ function _MakeWrenchPickerRadioDot(IsActive) {
  // Centered exactly at 8,8 (half of 16)
   var CentreX = 8, CentreY = 8;
 
-  function BuildHexPath(Radius) {
+    function BuildHexPath(Radius) {
     var HexPoints = [];
     for (var PointIndex = 0; PointIndex < 6; PointIndex++) {
       var AngleRadians = (Math.PI / 180) * (60 * PointIndex - 30);
@@ -3630,26 +3649,30 @@ function _MakeWrenchPickerRadioDot(IsActive) {
   OuterHex.setAttribute('fill', 'none');
   OuterHex.setAttribute('stroke-linejoin', 'round');
   OuterHex.setAttribute('class', 'app-pill-hex-ring');
-  OuterHex.style.transformOrigin = 'center'; // Fixes rotation axis
+  OuterHex.style.transformOrigin = 'center';
 
-  var InnerHex = document.createElementNS(SvgNamespace, 'path');
-  InnerHex.setAttribute('d', BuildHexPath(3.5));
-  InnerHex.setAttribute('fill', '#374151');
-  InnerHex.setAttribute('class', 'app-pill-hex-dot');
-  InnerHex.style.transformOrigin = 'center'; // Fixes rotation axis
+  var InnerDot = document.createElementNS(SvgNamespace, 'circle');
+  InnerDot.setAttribute('cx', CentreX);
+  InnerDot.setAttribute('cy', CentreY);
+  InnerDot.setAttribute('r', '3.5');
+  InnerDot.setAttribute('fill', '#374151');
+  InnerDot.setAttribute('class', 'app-pill-hex-dot');
+  InnerDot.style.transformOrigin = 'center';
+
   
   if (IsActive) {
     OuterHex.style.transform = 'rotate(180deg)';
-    InnerHex.style.transform = 'rotate(180deg)';
-    InnerHex.style.opacity = '1';
+    InnerDot.style.transform = 'rotate(180deg)';
+    InnerDot.style.opacity = '1';
   } else {
     OuterHex.style.transform = 'rotate(0deg)';
-    InnerHex.style.transform = 'rotate(0deg)';
-    InnerHex.style.opacity = '0';
+    InnerDot.style.transform = 'rotate(0deg)';
+    InnerDot.style.opacity = '0';
   }
 
   SvgElement.appendChild(OuterHex);
-  SvgElement.appendChild(InnerHex);
+  SvgElement.appendChild(InnerDot);
+
   return SvgElement;
 }
 
@@ -3992,8 +4015,9 @@ function _openWrenchPicker() {
 function _closeWrenchPicker() {
     AppPillWrenchOpen = false;
     var selectorLabel = document.getElementById('appSelectorLabel');
-    if (selectorLabel) selectorLabel.textContent = 'now training on';    appPillEl.removeEventListener('dragover', _onWrenchDragOver);
+    if (selectorLabel) selectorLabel.textContent = 'choose app to train in next';    appPillEl.removeEventListener('dragover', _onWrenchDragOver);
     appPillEl.removeEventListener('drop',     _onWrenchDrop);
+
 
     var ActiveApps   = appsLongList.filter(function(AppEntry) { return appsShortList.includes(AppEntry.label); });
     var InactiveApps = appsLongList.filter(function(AppEntry) { return !appsShortList.includes(AppEntry.label); });
@@ -4007,12 +4031,15 @@ function _closeWrenchPicker() {
     }
     _saveAppsShortList();
 
-    // Close immediately — rebuild and collapse
-    appPillEl.classList.remove('open');
+// Return to the open drop-down rather than collapsing
     buildAppPill();
-    _AppPillAnimateTo(27, 0, 0);
-    setTimeout(scrollPillToSelected, 280);
+    var OpenHeight = _AppPillMeasureNaturalHeight();
+    var PillRect = appPillEl.getBoundingClientRect();
+    var Geometry = _AppPillCalculateOpenGeometry(OpenHeight, PillRect);
+    appPillEl.scrollTop = 0;
+    _AppPillAnimateTo(OpenHeight, Geometry.TranslateY, Geometry.SpacerHeight);
 }
+
 
 function scrollPillToSelected() {
   var SelectedIndex = appsShortList.indexOf(currentApp);
@@ -4328,9 +4355,15 @@ function onKbSizeToggle() {
 
 function setTouchEnabled(on) {
   touchEnabled = on;
+  // When leaving touch mode, clear the CapsLock indicator since we cannot
+  // know the real keyboard state until the next keypress
+  if (!on) {
+    const CapsLockKeyElement = keyEls['CapsLock'];
+    if (CapsLockKeyElement) CapsLockKeyElement.classList.remove('lit-caps-active');
+  }
   var radio = document.getElementById('touchRadio');
   if (radio) radio.classList.toggle('on', on);
-  if (activeSettings === 'panelBrowser') _refreshBrowserContent();
+  if (activeSettings === 'panelConflicts') _refreshBrowserContent();
   if (on) {
     setKbSizeToggle(false);
     setSoundEnabled(true);   // audible on by default when touch activates
@@ -4741,22 +4774,22 @@ function onModalFnToggle() {
 }
 
 // ── Settings panel ──────────────────────────────────────────────
-// activeSettings: null | 'panelKeyboard' | 'panelBrowser' | 'panelDifficulty' | 'panelPause' | 'panelReturning' | 'panelWelcome'
+// activeSettings: null | 'panelKeyboard' | 'panelConflicts' | 'panelDifficultySettings' | 'panelPause' | 'panelLandingReturning' | 'panelLandingWelcome'
 var activeSettings = null;
 
-var SP_PAGE_ORDER = ['panelKeyboard', 'panelBrowser', 'panelDifficulty', 'panelPause', 'panelReport', 'panelEndGameCheatSheet', 'panelPadlock', 'panelReturning', 'panelWelcome'];
+var SP_PAGE_ORDER = ['panelKeyboard', 'panelConflicts', 'panelDifficultySettings', 'panelPause', 'panelEndGameReportCard', 'panelEndGameHistoryRecord', 'panelCheatSheet', 'panelLandingReturning', 'panelLandingWelcome'];
 
 function _spPageEl(page) {
   var ids = {
     panelKeyboard:   'panelKeyboard',
-    panelBrowser:    'panelBrowser',
-    panelDifficulty: 'panelDifficulty',
+    panelConflicts:    'panelConflicts',
+    panelDifficultySettings: 'panelDifficultySettings',
     panelPause:      'panelPause',
-    panelEndGameCheatSheet: 'panelEndGameCheatSheet',
-    panelPadlock:    'panelPadlock',
-    panelReturning:  'panelReturning',
-    panelWelcome:    'panelWelcome',
-    panelReport:     'panelReport',
+    panelEndGameHistoryRecord: 'panelEndGameHistoryRecord',
+    panelCheatSheet:    'panelCheatSheet',
+    panelLandingReturning:  'panelLandingReturning',
+    panelLandingWelcome:    'panelLandingWelcome',
+    panelEndGameReportCard:     'panelEndGameReportCard',
   };
   return document.getElementById(ids[page]);
 }
@@ -4784,8 +4817,8 @@ function _syncPhoneToolbarVisibility() {
 function _syncPhoneToolbarActiveState(ActivePage) {
   var PhoneIconMap = {
     panelKeyboard:   'phoneKbIconWrap',
-    panelDifficulty: 'phoneDiffIconWrap',
-    panelBrowser:    'phoneBrIconWrap',
+    panelDifficultySettings: 'phoneDiffIconWrap',
+    panelConflicts:    'phoneBrIconWrap',
   };
   Object.values(PhoneIconMap).forEach(function(IconId) {
     var IconElement = document.getElementById(IconId);
@@ -4836,8 +4869,8 @@ function _phoneOpenPanel(Page, WasAlreadyOpen, PreviousPage) {
   if (WasAlreadyOpen && PreviousPage && PreviousPage !== Page) {
     var PreviousIndex = SP_PAGE_ORDER.indexOf(PreviousPage);
     var NextIndex     = SP_PAGE_ORDER.indexOf(Page);
-    var IsRisingPage  = (Page === 'panelDifficulty' || Page === 'panelWelcome');
-    var WasRisingPage = (PreviousPage === 'panelDifficulty' || PreviousPage === 'panelWelcome');
+    var IsRisingPage  = (Page === 'panelDifficultySettings' || Page === 'panelLandingWelcome');
+    var WasRisingPage = (PreviousPage === 'panelDifficultySettings' || PreviousPage === 'panelLandingWelcome');
     if (IsRisingPage || WasRisingPage) {
       PanelElement.classList.add('sp-wipe-in-up');
     } else {
@@ -4886,7 +4919,7 @@ function _phoneOpenSettings(Page) {
   activeSettings     = Page;
 
   // Clean up padlock tagline if navigating away from it
-  if (PreviousPage === 'panelPadlock' && Page !== 'panelPadlock') {
+  if (PreviousPage === 'panelCheatSheet' && Page !== 'panelCheatSheet') {
     var TaglineElement = document.getElementById('welcomeTagline');
     if (TaglineElement) {
       TaglineElement.style.display = 'none';
@@ -4902,12 +4935,12 @@ function _phoneOpenSettings(Page) {
   }
 
   // Populate content
-  if (Page === 'panelBrowser')    _refreshBrowserContent();
+  if (Page === 'panelConflicts')    _refreshBrowserContent();
   if (Page === 'panelKeyboard')   { updateModalToggles(); updateKbSizeToggle(); }
-  if (Page === 'panelDifficulty') _refreshDifficultyPanel();
+  if (Page === 'panelDifficultySettings') _refreshDifficultyPanel();
   if (Page === 'panelPause')      _refreshPausePanel();
-  if (Page === 'panelReport')     _refreshReportPanel();
-  if (Page === 'panelPadlock')    _refreshCheatSheet();
+  if (Page === 'panelEndGameReportCard')     _refreshReportPanel();
+  if (Page === 'panelCheatSheet')    _refreshCheatSheet();
 
   // Clear active animation classes on all panels before moving
   SP_PAGE_ORDER.forEach(function(P) {
@@ -4937,7 +4970,7 @@ function _phoneCloseSettings() {
   _syncPhoneToolbarActiveState(null);
 
   // Clean up padlock tagline
-  if (ClosingPage === 'panelPadlock') {
+  if (ClosingPage === 'panelCheatSheet') {
     var TaglineElement = document.getElementById('welcomeTagline');
     if (TaglineElement) {
       TaglineElement.style.display = 'none';
@@ -4947,13 +4980,13 @@ function _phoneCloseSettings() {
 
   // Game state routing -- mirrors desktop closeSettings without keyboard movement
   if (gameState === 'finished') {
-    if (ClosingPage !== 'panelReport') { openSettings('panelReport'); return; }
+    if (ClosingPage !== 'panelEndGameReportCard') { openSettings('panelEndGameReportCard'); return; }
     return;
   }
   if (gameState === 'paused') {
-    if (ClosingPage === 'panelPadlock' || ClosingPage === 'panelKeyboard' ||
-        ClosingPage === 'panelBrowser' || ClosingPage === 'panelDifficulty') {
-      if (ClosingPage === 'panelPadlock') titleEl.textContent = _padlockSavedTitle;
+    if (ClosingPage === 'panelCheatSheet' || ClosingPage === 'panelKeyboard' ||
+        ClosingPage === 'panelConflicts' || ClosingPage === 'panelDifficultySettings') {
+      if (ClosingPage === 'panelCheatSheet') titleEl.textContent = _padlockSavedTitle;
       openSettings('panelPause');
       return;
     }
@@ -4961,7 +4994,7 @@ function _phoneCloseSettings() {
     return;
   }
   if (gameState === 'welcome') {
-    var WelcomePage = _welcomeIsReturning ? 'panelReturning' : 'panelWelcome';
+    var WelcomePage = _welcomeIsReturning ? 'panelLandingReturning' : 'panelLandingWelcome';
     if (ClosingPage !== WelcomePage) { openSettings(WelcomePage); return; }
   }
   // Phone has no keyboard to snap to face -- nothing more to do
@@ -4992,9 +5025,9 @@ function _spAlignPanel() {
       // Edge-position panels (report, cheat sheet, pause, browser, difficulty) sit
       // above a fully folded keyboard. Only the content height matters; the stage
       // height is already accounted for by the fold. Add a small buffer only.
-      var IsEdgePanel = (activeSettings === 'panelReport' || activeSettings === 'panelPadlock' ||
-                         activeSettings === 'panelPause'  || activeSettings === 'panelBrowser' ||
-                         activeSettings === 'panelDifficulty');
+      var IsEdgePanel = (activeSettings === 'panelEndGameReportCard' || activeSettings === 'panelCheatSheet' ||
+                         activeSettings === 'panelPause'  || activeSettings === 'panelConflicts' ||
+                         activeSettings === 'panelDifficultySettings');
       var needed = IsEdgePanel
         ? contentH + 8
         : (contentH > stageH ? contentH + stageH + 24 : contentH + 16);
@@ -5003,7 +5036,7 @@ function _spAlignPanel() {
   });
 }
 
-var _iconWrapIds = { panelKeyboard: 'kbIconWrap', panelBrowser: 'brIconWrap', panelDifficulty: 'diffIconWrap' };
+var _iconWrapIds = { panelKeyboard: 'kbIconWrap', panelConflicts: 'brIconWrap', panelDifficultySettings: 'diffIconWrap' };
 
 function _pinTooltip(page) {
   // Remove active class from all icon wraps, then add to the active one
@@ -5061,7 +5094,7 @@ var _PANEL_TIPS = {
   }
   return pool;
 },
-  panelBrowser: function() {
+  panelConflicts: function() {
     var pool = [
       'manage conflicted keys here',
       'holding ESC opens the debugger',
@@ -5089,7 +5122,7 @@ var _PANEL_TIPS = {
     ];
     return pool;
   },
-  panelDifficulty: function() {
+  panelDifficultySettings: function() {
     var pool = [
       'take time to learn first, then push your speed second',
       'the right balance of difficulty speeds your learning',
@@ -5178,7 +5211,7 @@ function openSettings(page) {
   // If navigating away from the cheat sheet without going through
   // closeSettings, clear the tagline it set so it doesn't bleed into
   // the destination panel.
-  if (prevPage === 'panelPadlock' && page !== 'panelPadlock') {
+  if (prevPage === 'panelCheatSheet' && page !== 'panelCheatSheet') {
     var _csTagline = document.getElementById('welcomeTagline');
     if (_csTagline) {
       _csTagline.style.display = 'none';
@@ -5187,7 +5220,7 @@ function openSettings(page) {
   }
 
   // Update kbPos — partial for most panels; edge for browser and pause
-  var pos = (page === 'panelBrowser' || page === 'panelPause' || page === 'panelPadlock' || page === 'panelDifficulty' || page === 'panelReport') ? 'edge' : 'partial';
+  var pos = (page === 'panelConflicts' || page === 'panelPause' || page === 'panelCheatSheet' || page === 'panelDifficultySettings' || page === 'panelEndGameReportCard') ? 'edge' : 'partial';
   setKbPosition(pos);
 
   // Pause game if needed (not for pause panel or when on welcome screen)
@@ -5198,12 +5231,12 @@ function openSettings(page) {
   }
 
   // Populate content
-  if (page === 'panelBrowser')    _refreshBrowserContent();
+  if (page === 'panelConflicts')    _refreshBrowserContent();
   if (page === 'panelKeyboard')   { updateModalToggles(); updateKbSizeToggle(); }
-  if (page === 'panelDifficulty') _refreshDifficultyPanel();
+  if (page === 'panelDifficultySettings') _refreshDifficultyPanel();
   if (page === 'panelPause')      _refreshPausePanel();
-  if (page === 'panelReport')     _refreshReportPanel();
-  if (page === 'panelPadlock')    _refreshCheatSheet();
+  if (page === 'panelEndGameReportCard')     _refreshReportPanel();
+  if (page === 'panelCheatSheet')    _refreshCheatSheet();
 
   // Align panel width to keyboard
   _spAlignPanel();
@@ -5220,8 +5253,8 @@ function openSettings(page) {
     pageEl.classList.add('sp-active');
     if (wasOpen && prevPage !== page) {
       // Difficulty panels always rise up; other pages wipe left/right by order
-      var isDiffPage = (page === 'panelDifficulty' || page === 'panelWelcome');
-      var wasDiffPage = (prevPage === 'panelDifficulty' || prevPage === 'panelWelcome');
+      var isDiffPage = (page === 'panelDifficultySettings' || page === 'panelLandingWelcome');
+      var wasDiffPage = (prevPage === 'panelDifficultySettings' || prevPage === 'panelLandingWelcome');
       if (isDiffPage || wasDiffPage) {
         pageEl.classList.add('sp-wipe-in-up');
       } else {
@@ -5242,7 +5275,7 @@ function openSettings(page) {
   if (stage) stage.style.pointerEvents = 'none';
 
   // Pin tooltip only for the three true settings pages
-  var isPinnableSettings = (page === 'panelKeyboard' || page === 'panelBrowser' || page === 'panelDifficulty');
+  var isPinnableSettings = (page === 'panelKeyboard' || page === 'panelConflicts' || page === 'panelDifficultySettings');
   if (isPinnableSettings) _pinTooltip(page);
 
   // Show a contextual ambient tip in the heading area (no confirm overlay active)
@@ -5288,7 +5321,7 @@ function closeSettings() {
   var stage = document.getElementById('kbFlipStage');
   if (stage && _kbPos === 'face') stage.style.pointerEvents = '';
   // If the cheat sheet was open, clear the tagline it added
-  if (closingPage === 'panelPadlock') {
+  if (closingPage === 'panelCheatSheet') {
     var tagline = document.getElementById('welcomeTagline');
     if (tagline) {
       tagline.style.display = 'none';
@@ -5302,7 +5335,7 @@ function closeSettings() {
   // rather than immediately showing the pause screen — the keyboard comes back up
   // and the unpause button pulses as the CTA.
   if (gameState === 'finished') {
-  var welcomePage = 'panelReport';
+  var welcomePage = 'panelEndGameReportCard';
   if (closingPage !== welcomePage) {
     openSettings(welcomePage);
     return;
@@ -5314,8 +5347,8 @@ function closeSettings() {
     // The cheat sheet and other panels opened while paused should close
     // quietly -- the keyboard stays at edge and the game stays paused.
     // Only raise the keyboard (readyToUnpause) when the pause panel itself is closed.
-    if (closingPage === 'panelPadlock' || closingPage === 'panelKeyboard' || closingPage === 'panelBrowser' || closingPage === 'panelDifficulty') {
-      if (closingPage === 'panelPadlock') {
+    if (closingPage === 'panelCheatSheet' || closingPage === 'panelKeyboard' || closingPage === 'panelConflicts' || closingPage === 'panelDifficultySettings') {
+      if (closingPage === 'panelCheatSheet') {
         titleEl.textContent = _padlockSavedTitle;
       }
       openSettings('panelPause');
@@ -5329,7 +5362,7 @@ function closeSettings() {
   // settings opened on top of the welcome panel), restore the welcome panel.
   // If the welcome panel itself was closed, let it close normally.
   if (gameState === 'welcome') {
-    var welcomePage = _welcomeIsReturning ? 'panelReturning' : 'panelWelcome';
+    var welcomePage = _welcomeIsReturning ? 'panelLandingReturning' : 'panelLandingWelcome';
     if (closingPage !== welcomePage) {
       openSettings(welcomePage);
       return;
@@ -5378,7 +5411,7 @@ function _closeAllModalsInstant() {
 
 // Legacy aliases — kept so remaining call sites compile
 function toggleKbModal()     { activeSettings === 'panelKeyboard' ? closeSettings() : openSettings('panelKeyboard'); }
-function toggleBrowserModal(){ activeSettings === 'panelBrowser'  ? closeSettings() : openSettings('panelBrowser');  }
+function toggleBrowserModal(){ activeSettings === 'panelConflicts'  ? closeSettings() : openSettings('panelConflicts');  }
 function _renderKeyChips(label) {
   var em      = '\u2014';
   var dashIdx = label.indexOf(' ' + em + ' ');
@@ -5429,7 +5462,7 @@ var _browserPanelKeydownHandler = null;
 function _attachBrowserPanelKeypressVerifier() {
   _detachBrowserPanelKeypressVerifier();
   _browserPanelKeydownHandler = function(e) {
-    if (activeSettings !== 'panelBrowser') { _detachBrowserPanelKeypressVerifier(); return; }
+    if (activeSettings !== 'panelConflicts') { _detachBrowserPanelKeypressVerifier(); return; }
     // Check every item in the conflict list against this keypress
     var ul = document.getElementById('browserCompatList');
     if (!ul) return;
@@ -5692,7 +5725,7 @@ function _refreshBrowserContent() {
 
   _attachBrowserPanelKeypressVerifier();
 
-   var rightCol = document.querySelector('#panelBrowser .sp-col-right');
+   var rightCol = document.querySelector('#panelConflicts .sp-col-right');
   if (rightCol) {
     var ExistingPill = rightCol.querySelector('.score-clear-pill');
     if (ExistingPill) rightCol.removeChild(ExistingPill);
@@ -5746,15 +5779,15 @@ document.getElementById('phoneDiffIconWrap').addEventListener('pointerdown', fun
   e.stopPropagation();
   e.preventDefault();
   if (transitioning && gameState !== 'finished') return;
-  if (activeSettings === 'panelDifficulty') { closeSettings(); return; }
-  openSettings('panelDifficulty');
+  if (activeSettings === 'panelDifficultySettings') { closeSettings(); return; }
+  openSettings('panelDifficultySettings');
 });
 document.getElementById('phoneBrIconWrap').addEventListener('pointerdown', function(e) {
   e.stopPropagation();
   e.preventDefault();
   if (transitioning && gameState !== 'finished') return;
-  if (activeSettings === 'panelBrowser') { closeSettings(); return; }
-  openSettings('panelBrowser');
+  if (activeSettings === 'panelConflicts') { closeSettings(); return; }
+  openSettings('panelConflicts');
 });
 
 // ── Outside-click: app pill blocked during play, settings unaffected ─────────
@@ -6187,7 +6220,7 @@ function _showWelcomeScreen() {
   setDiffState(-1);
   _updateDiffBtnStyles('fundamentals');
   _updateDiffSubtitle('fundamentals');
-  openSettings('panelWelcome');
+  openSettings('panelLandingWelcome');
 }
 
 // Shared handler for both the welcome panel and the difficulty settings panel
@@ -6254,7 +6287,7 @@ function _popDiffLabel(btnEl) {
 
 function _updateDiffBtnStyles(activeMode) {
   var hardcoreUnlocked = hasTrophy;
-  var btns = document.querySelectorAll('#panelDifficulty .diff-btn, #panelWelcome .diff-btn');
+  var btns = document.querySelectorAll('#panelDifficultySettings .diff-btn, #panelLandingWelcome .diff-btn');
   btns.forEach(function(btn) {
     var m = btn.getAttribute('data-mode');
     var isLocked = (m === 'hardcore' && !hardcoreUnlocked);
@@ -6730,7 +6763,7 @@ function _refreshPausePanel() {
       nudgeEl.onclick = function() { showToast('Change difficulty between game rounds.'); };
     } else {
       nudgeEl.classList.remove('sp-nudge-inactive');
-      nudgeEl.onclick = function(e) { e.preventDefault(); openSettings('panelDifficulty'); };
+      nudgeEl.onclick = function(e) { e.preventDefault(); openSettings('panelDifficultySettings'); };
     }
   }
 
@@ -7088,11 +7121,11 @@ function _showReturningScreen() {
   setDiffState(modeMap[currentDifficulty] !== undefined ? modeMap[currentDifficulty] : 0);
   _updateDiffBtnStyles(currentDifficulty);
   _updateDiffSubtitle(currentDifficulty);
-  openSettings('panelReturning');
+  openSettings('panelLandingReturning');
 }
 
 function _returningContinue() {
-  var clickedBtn = document.querySelector('#panelReturning .sp-seg-btn-left .diff-btn-text');
+  var clickedBtn = document.querySelector('#panelLandingReturning .sp-seg-btn-left .diff-btn-text');
   if (clickedBtn) _popDiffLabel(clickedBtn);
   _welcomeIsReturning = false;
   document.body.classList.remove('returning-screen');
@@ -7106,7 +7139,7 @@ function _returningContinue() {
 
 function _returningStartOver() {
   // Pop the clicked label, hold briefly, then crossfade to the welcome screen.
-  var clickedBtn = document.querySelector('#panelReturning .sp-seg-btn-right .diff-btn-text');
+  var clickedBtn = document.querySelector('#panelLandingReturning .sp-seg-btn-right .diff-btn-text');
   if (clickedBtn) _popDiffLabel(clickedBtn);
   var panelInner = document.getElementById('settingsPanelInner');
   setTimeout(function() {
@@ -7334,7 +7367,7 @@ function buildPool() {
   var maxDiff = DIFF_MAX[currentDifficulty] || 3;
   const browserSkip   = getBrowserConflictSet();
   const allShortcuts  = UNIVERSAL_SHORTCUTS.concat(loadedAppShortcuts);
-return allShortcuts.filter(s => {
+var filtered = allShortcuts.filter(s => {
     // Ctrl+Alt combinations on Windows trigger AltGr / system dialogs — exclude all CMD+OPTION shortcuts on PC
     if (currentOs === 'pc' && s.shortcut.toUpperCase().includes('OPTION')) return false;
     // keyboard_conflict: true means the shortcut only appears when touch mode bypasses browser/OS conflicts
@@ -7350,7 +7383,17 @@ return allShortcuts.filter(s => {
     if (killPunctuationOn && UNSTABLE_PUNCTUATION_TOKENS.has(s.shortcut)) return false;
     return true;
   });
+
+  // Cap: no more than 2 questions from the same named group per pool.
+  // Entries with an empty/falsy group string are never capped.
+  var groupCounts = {};
+  return filtered.filter(function(s) {
+    if (!s.group) return true;
+    groupCounts[s.group] = (groupCounts[s.group] || 0) + 1;
+    return groupCounts[s.group] <= 2;
+  });
 }
+
 
 // Loads the JSON for the given app key into memory, then calls onReady.
 // If the correct app is already loaded, calls onReady immediately.
@@ -7925,7 +7968,7 @@ function enterDefeat() {
     var DefeatRun = runData.slice();
     runData.length = 0;
     lastCompletedReport = finalizeRunData(DefeatRun, questionPool, NewDefeatCount);
-    openSettings('panelReport');
+    openSettings('panelEndGameReportCard');
     _refreshReportPanel();
   } else {
     runData.length = 0;
@@ -8326,7 +8369,7 @@ lastCompletedReport = finalizeRunData(completedRun, questionPool, 0);
       endScreenInactivityTimer = setTimeout(pulseAndReschedule, 5000);
     }, 14000);
   } else {
-  openSettings('panelReport');
+  openSettings('panelEndGameReportCard');
 _refreshReportPanel()
     startEndScreenInactivityTimer();
   }
@@ -8353,7 +8396,7 @@ _refreshReportPanel()
 
     // Step 1: open the panel (still in pre-trophy locked state)
     setTimeout(function() {
-      openSettings('panelDifficulty');
+      openSettings('panelDifficultySettings');
     }, openDelay);
 
     // Step 2: once panel is visible, change difficulty pill if from Fundamentals
@@ -9086,26 +9129,76 @@ function finalizeRunData(completedRun, currentPool, DefeatCount) {
 }
 
 
-function _toggleEndGameCheatSheet() {
-  if (activeSettings === 'panelEndGameCheatSheet') {
-    openSettings('panelReport');
+function _toggleEndGameHistory() {
+  if (activeSettings === 'panelEndGameHistoryRecord') {
+    openSettings('panelEndGameReportCard');
   } else {
-    _refreshEndGameCheatSheet();
-    openSettings('panelEndGameCheatSheet');
+    _refreshEndGameHistory();
+    openSettings('panelEndGameHistoryRecord');
   }
 }
 
-function _refreshEndGameCheatSheet() {
+function BuildEndGameListItem(SummaryItem, QuestionNumber, AnsweredOutcomeColourMap, AnsweredTimingMap) {
+    var PoolQuestion = questionPool.find(function(PoolItem) {
+        return PoolItem.shortcut === SummaryItem.shortcutToken;
+    });
+
+    var ShortcutChipText = PoolQuestion
+        ? (currentOs === 'pc' ? PoolQuestion.pc_sc : PoolQuestion.mac_sc)
+        : SummaryItem.shortcut;
+
+    var ListItem = document.createElement('li');
+    ListItem.style.alignItems = 'flex-start';
+    ListItem.style.position = 'relative';
+    ListItem.dataset.shortcutToken = SummaryItem.shortcutToken || '';
+
+    // Question number: only for successful answers, floats left of the dot
+    if (SummaryItem.endType === 'success' && QuestionNumber != null) {
+      var NumElement = document.createElement('small');
+      NumElement.textContent = QuestionNumber;
+      NumElement.style.cssText = 'position:absolute;left:-14px;top:2px;color:#9ca3af;font-size:9px;line-height:1.5;white-space:nowrap;text-align:right;width:12px;';
+      ListItem.appendChild(NumElement);
+    }
+
+    var DotElement = document.createElement('span');
+    DotElement.className = 'sp-report-dot';
+    DotElement.style.marginTop = '5px';
+    DotElement.style.background = AnsweredOutcomeColourMap[SummaryItem.shortcutToken] || '#b3bdc9';
+
+var LabelElement = document.createElement('span');
+    LabelElement.className = 'sp-report-question-label';
+    LabelElement.style.cssText = 'flex:1;min-width:0;display:block;';
+    LabelElement.textContent = (SummaryItem.displayText || '').replace(/\\\\/g, '\\');
+    ListItem.appendChild(DotElement);
+
+    var TimingData = AnsweredTimingMap[SummaryItem.shortcutToken] || null;
+    if (TimingData && TimingData.text) {
+        var TimeElement = document.createElement('small');
+        TimeElement.textContent = TimingData.text;
+        TimeElement.style.cssText = 'color:#9ca3af;flex-shrink:0;margin-left:-3px;margin-right:4px;margin-top:2px;line-height:1.5;white-space:nowrap;'
+            + (TimingData.text === 'none' ? 'font-size:9px;letter-spacing:0.01em;margin-right:3px;' : '');
+        ListItem.appendChild(TimeElement);
+    }
+
+    ListItem.appendChild(LabelElement);
+    var ChipsWrapper = BuildShortcutKeyChips(ShortcutChipText, true);
+    ChipsWrapper.style.flexShrink = '0';
+    ListItem.appendChild(ChipsWrapper);
+    
+    return ListItem;
+}
+
+function _refreshEndGameHistory() {
   var AppEntry = APPS.find(function(AppItem) { return AppItem.key === currentApp; });
   var ApplicationName = AppEntry ? AppEntry.label : currentApp;
   var OperatingSystemName = currentOs === 'pc' ? 'PC' : 'Mac';
-  var ContextLabelElement = document.getElementById('endGameCheatSheetContextLabel');
+  var ContextLabelElement = document.getElementById('EndGameHistoryContextLabel');
   if (ContextLabelElement) {
     ContextLabelElement.textContent = ApplicationName + ' on ' + OperatingSystemName;
   }
 
   // Lives count in left column header (replaces the hidden "Mastered" heading slot)
-  var LivesHeadingElement = document.getElementById('endGameCheatSheetMasteredHeading');
+  var LivesHeadingElement = document.getElementById('EndGameHistoryMasteredHeading');
   if (LivesHeadingElement && lastCompletedReport) {
     var SnapshotLives     = lastCompletedReport.snapshotPlayerLives;
     var SnapshotRemaining = lastCompletedReport.snapshotLivesRemaining;
@@ -9132,7 +9225,7 @@ function _refreshEndGameCheatSheet() {
     LivesHeadingElement.innerHTML = LivesCountHtml;
 
     // Timer label in right column header
-    var TimerHeadingElement = document.getElementById('endGameCheatSheetTimerLabel');
+    var TimerHeadingElement = document.getElementById('EndGameHistoryTimerLabel');
     if (TimerHeadingElement) {
       var TimerHtml;
       if (lastCompletedReport.snapshotQuestionTimer === null) {
@@ -9145,8 +9238,8 @@ function _refreshEndGameCheatSheet() {
     }
   }
 
-  var LeftList  = document.getElementById('endGameCheatSheetListLeft');
-  var RightList = document.getElementById('endGameCheatSheetListRight');
+  var LeftList  = document.getElementById('EndGameHistoryListLeft');
+  var RightList = document.getElementById('EndGameHistoryListRight');
   if (!LeftList || !RightList) return;
   LeftList.innerHTML  = '';
   RightList.innerHTML = '';
@@ -9187,56 +9280,20 @@ function _refreshEndGameCheatSheet() {
   var AllQuestions = lastCompletedReport.questionSummaries;
   var HalfwayIndex = Math.ceil(AllQuestions.length / 2);
 
-  function BuildEndGameListItem(SummaryItem) {
-    var PoolQuestion = questionPool.find(function(PoolItem) {
-        return PoolItem.shortcut === SummaryItem.shortcutToken;
-    });
 
-    var ShortcutChipText = PoolQuestion
-        ? (currentOs === 'pc' ? PoolQuestion.pc_sc : PoolQuestion.mac_sc)
-        : SummaryItem.shortcut;
-
-    var ListItem = document.createElement('li');
-    // Added the flex-start style from your second block
-    ListItem.style.alignItems = 'flex-start'; 
-    ListItem.dataset.shortcutToken = SummaryItem.shortcutToken || '';
-
-    var DotElement = document.createElement('span');
-    DotElement.className = 'sp-report-dot';
-    // Added the margin-top from your second block
-    DotElement.style.marginTop = '5px';
-    DotElement.style.background = AnsweredOutcomeColourMap[SummaryItem.shortcutToken] || '#b3bdc9';
-
-var LabelElement = document.createElement('span');
-    LabelElement.className = 'sp-report-question-label';
-    LabelElement.style.cssText = 'flex:1;min-width:0;display:block;';
-    LabelElement.textContent = (SummaryItem.displayText || '').replace(/\\\\/g, '\\');
-
-    ListItem.appendChild(DotElement);
-
-    var TimingData = AnsweredTimingMap[SummaryItem.shortcutToken] || null;
-    if (TimingData && TimingData.text) {
-        var TimeElement = document.createElement('small');
-        TimeElement.textContent = TimingData.text;
-        TimeElement.style.cssText = 'color:#9ca3af;flex-shrink:0;margin-left:-3px;margin-right:4px;margin-top:2px;line-height:1.5;white-space:nowrap;'
-            + (TimingData.text === 'none' ? 'font-size:9px;letter-spacing:0.01em;margin-right:3px;' : '');
-        ListItem.appendChild(TimeElement);
-    }
-
-    ListItem.appendChild(LabelElement);
-    var ChipsWrapper = BuildShortcutKeyChips(ShortcutChipText, true);
-    ChipsWrapper.style.flexShrink = '0';
-    ListItem.appendChild(ChipsWrapper);
-    
-    return ListItem;
-}
+  var successCounter = 0;
   AllQuestions.forEach(function(SummaryItem, ItemIndex) {
-    var ListItem = BuildEndGameListItem(SummaryItem);
-    if (ItemIndex < HalfwayIndex) {
-      LeftList.appendChild(ListItem);
-    } else {
-      RightList.appendChild(ListItem);
+    var questionNumber = null;
+    if (SummaryItem.endType === 'success') {
+      successCounter++;
+      questionNumber = successCounter;
     }
+      var ListItem = BuildEndGameListItem(SummaryItem, questionNumber, AnsweredOutcomeColourMap, AnsweredTimingMap);
+      if (ItemIndex < HalfwayIndex) {
+        LeftList.appendChild(ListItem);
+      } else {
+        RightList.appendChild(ListItem);
+      }
   });
 }
 
@@ -9344,7 +9401,19 @@ var AnsweredTimingMap = {};
     UpcomingQuestions = OrderedPool.slice(0, 5);
   }
 
-  // Left column: answered questions (green dots)
+  // Build a map of shortcut token to answer order number using runData in forward
+  // chronological order. Only successful answers get a number.
+  var SuccessOrderNumberMap = {};
+  var SuccessCounter = 0;
+  runData.forEach(function(Entry) {
+    if (Entry.endType === 'success') {
+      SuccessCounter++;
+      var EntryQuestion = questionPool[Entry.questionIndex];
+      if (EntryQuestion) SuccessOrderNumberMap[EntryQuestion.shortcut] = SuccessCounter;
+    }
+  });
+
+  // Left column: answered questions
   if (AnsweredQuestions.length === 0) {
     var PlaceholderLi = document.createElement('li');
     PlaceholderLi.style.cssText = 'font-size:11px;font-style:italic;color:#9ca3af;list-style:none;padding:4px 0;';
@@ -9352,33 +9421,29 @@ var AnsweredTimingMap = {};
     List.appendChild(PlaceholderLi);
   } else {
     AnsweredQuestions.forEach(function(Question) {
-      var ShortcutDisplay = currentOs === 'pc' ? Question.pc_sc : Question.mac_sc;
-      var li = document.createElement('li');
-      li.style.alignItems = 'flex-start';
-      li.dataset.shortcutToken = Question.shortcut;
-
-var dot = document.createElement('span');
-      dot.className = 'sp-report-dot';
-      dot.style.marginTop = '5px';
-      dot.style.background = AnsweredOutcomeColourMap[Question.shortcut] || '#10b981';
-
-      var label = document.createElement('span');
-      label.className = 'sp-report-question-label';
-      label.textContent = (Question.display || '').replace(/\\\\/g, '\\');
-
-         li.appendChild(dot);
-      var TimingData = AnsweredTimingMap[Question.shortcut] || null;
-      if (TimingData && TimingData.text) {
-        var TimeElement = document.createElement('small');
-        TimeElement.textContent = TimingData.text;
-TimeElement.style.cssText = 'color:#9ca3af;flex-shrink:0;margin-left:-3px;margin-right:4px;margin-top:2px;line-height:1.5;white-space:nowrap;' + (TimingData.text === 'none' ? 'font-size:9px;letter-spacing:0.01em;margin-right:3px;' : '');
-
-        li.appendChild(TimeElement);
+      var MatchingEntry = null;
+      for (var ri = runData.length - 1; ri >= 0; ri--) {
+        var EntryQuestion = questionPool[runData[ri].questionIndex];
+        if (EntryQuestion && EntryQuestion.shortcut === Question.shortcut) {
+          MatchingEntry = runData[ri];
+          break;
+        }
       }
-        
-      li.appendChild(label);
-      li.appendChild(BuildShortcutKeyChips(ShortcutDisplay, true));
-      List.appendChild(li);
+      var QuestionNumber = SuccessOrderNumberMap[Question.shortcut] || null;
+      var SummaryItem = {
+        displayText:       (Question.display || '').replace(/\\\\/g, '\\'),
+        shortcut:          currentOs === 'pc' ? Question.pc_sc : Question.mac_sc,
+        shortcutToken:     Question.shortcut,
+        endType:           MatchingEntry ? MatchingEntry.endType : 'success',
+        timeToAnswerMs:    MatchingEntry ? MatchingEntry.timeToAnswerMs : null,
+        hintUsed:          MatchingEntry ? MatchingEntry.hintUsedAtMs !== null : false,
+        wrongKeyCount:     MatchingEntry ? MatchingEntry.wrongKeyCount : 0,
+        isSlow:            false,
+        partialNudgeFired: MatchingEntry ? (MatchingEntry.partialNudgeFired || false) : false,
+        partialCorrectKey: MatchingEntry ? (MatchingEntry.partialCorrectKey || false) : false,
+      };
+      var ListItem = BuildEndGameListItem(SummaryItem, QuestionNumber, AnsweredOutcomeColourMap, AnsweredTimingMap);
+      List.appendChild(ListItem);
     });
   }
 
@@ -9712,7 +9777,7 @@ function _applyCoachSuggestionsWithAnimation(SuggestionsArray) {
   // Open the difficulty panel -- the animation plays inside it.
   // Override the heading so the user knows what is happening.
   _overridePanelTip = 'Applying suggested settings.';
-  openSettings('panelDifficulty');
+  openSettings('panelDifficultySettings');
 
   // Wait for the panel to fully open before starting (keyboard flip + panel fade-in)
   var PanelOpenDelayMs = 1400;
@@ -10124,7 +10189,20 @@ function handleKeydown(e) {
   if (detectedOs === 'mobile' && e.isTrusted) {
     _setHasKeyboard();
   }
-  updateKeyboardLighting(e, true);
+updateKeyboardLighting(e, true);
+  // Sync the CapsLock key indicator with the real OS CapsLock state.
+  // getModifierState reads the OS-level state directly, so it never drifts.
+  // Uses a dedicated class outside the normal lighting lifecycle so it
+  // persists across key presses and is not cleared by clearAllLit().
+  // Skipped in touch mode as there is no physical CapsLock to reflect.
+  if (!touchEnabled) {
+    const CapsLockKeyElement = keyEls['CapsLock'];
+    if (CapsLockKeyElement) {
+      const CapsLockIsActive = e.getModifierState('CapsLock');
+      CapsLockKeyElement.classList.toggle('lit-caps-active', CapsLockIsActive);
+    }
+  }
+
   // DEBUG
   const dbg = document.getElementById('debugOverlay');
   if (dbg && dbg.style.display !== 'none') {
@@ -10149,7 +10227,7 @@ function handleKeydown(e) {
   if (gameState === 'finished') {
     // When the report card is visible, check if this key matches any listed shortcut first.
     // If it does, use it for Practice lighting and consume the event — do not pass to UI navigation.
-    if (activeSettings === 'panelReport' && lastCompletedReport) {
+    if (activeSettings === 'panelEndGameReportCard' && lastCompletedReport) {
       var ReportShortcutMatched = false;
       lastCompletedReport.questionSummaries.forEach(function(Summary) {
         if (Summary.shortcutToken && matchesShortcut(e, Summary.shortcutToken)) {
@@ -10160,10 +10238,10 @@ function handleKeydown(e) {
       if (ReportShortcutMatched) { e.preventDefault(); return; }
     }
     // Cheat sheet key lighting (runs alongside report card check)
-    if (activeSettings === 'panelEndGameCheatSheet' && lastCompletedReport) {
+    if (activeSettings === 'panelEndGameHistoryRecord' && lastCompletedReport) {
       lastCompletedReport.questionSummaries.forEach(function(Summary) {
         if (Summary.shortcutToken && matchesShortcut(e, Summary.shortcutToken)) {
-          var AllEndGameItems = document.querySelectorAll('#endGameCheatSheetListLeft li, #endGameCheatSheetListRight li');
+          var AllEndGameItems = document.querySelectorAll('#EndGameHistoryListLeft li, #EndGameHistoryListRight li');
           AllEndGameItems.forEach(function(ListItem) {
             if ((ListItem.dataset.shortcutToken || '').toUpperCase() !== Summary.shortcutToken.toUpperCase()) return;
             var ChipWrapper = ListItem.querySelector('[data-chips-wrapper]');
@@ -10176,7 +10254,7 @@ function handleKeydown(e) {
       e.preventDefault();
       return;
     }
-    if (activeSettings === 'panelPadlock') {
+    if (activeSettings === 'panelCheatSheet') {
       CheckAndHighlightCheatSheetFromKeyEvent(e);
     }
     // UI navigation — only reached if no report card shortcut consumed the key
@@ -10193,7 +10271,7 @@ function handleKeydown(e) {
     if (e.key === 'Enter') { e.preventDefault(); mainButtonClick(); return; }
   }
   // Enter while paused (and not in a confirm overlay) resumes the game.
-  if (gameState === 'paused' && activeSettings !== 'panelPadlock') {
+  if (gameState === 'paused' && activeSettings !== 'panelCheatSheet') {
     if (e.key === 'Enter') {
       e.preventDefault();
       _closeAllModals();
@@ -10210,12 +10288,12 @@ function handleKeydown(e) {
     }
   }
   // Cheat sheet lighting when paused
-  if (activeSettings === 'panelPadlock') {
+  if (activeSettings === 'panelCheatSheet') {
     CheckAndHighlightCheatSheetFromKeyEvent(e);
   }
      
   // Enter unpauses when the cheat sheet is open (mirrors the unpause button)
-  if (activeSettings === 'panelPadlock' && e.key === 'Enter') {
+  if (activeSettings === 'panelCheatSheet' && e.key === 'Enter') {
     if (gameState === 'paused') { e.preventDefault(); _closeAllModals(); beginResumeCountdown(); return; }
     if (gameState === 'readyToUnpause') { e.preventDefault(); _enterReadyToUnpauseCleanup(); beginResumeCountdown(); return; }
   }
@@ -10932,10 +11010,10 @@ function syncDiffNeedle() {
 function diffIconClick() {
   resetEndScreenInactivityTimer();
   if (gameState === 'playing') { showToast('Change difficulty between games.'); return; }
-  if (activeSettings === 'panelDifficulty' || activeSettings === 'panelReturning') {
+  if (activeSettings === 'panelDifficultySettings' || activeSettings === 'panelLandingReturning') {
     closeSettings();
   } else {
-    openSettings('panelDifficulty');
+    openSettings('panelDifficultySettings');
   }
 }
 

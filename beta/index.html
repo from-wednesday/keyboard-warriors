@@ -1948,9 +1948,13 @@ function updateKeyboardLighting(e, isDown) {
   if (isDown && e.repeat) return; // key already lit from initial keydown; repeats do nothing
   // CapsLock uses its own indicator logic -- skip normal lighting but update the indicator immediately
   if (e.code === 'CapsLock') {
-    if (!touchEnabled) {
-      const CapsLockKeyElement = keyEls['CapsLock'];
-      if (CapsLockKeyElement) {
+    const CapsLockKeyElement = keyEls['CapsLock'];
+    if (CapsLockKeyElement) {
+      if (touchEnabled) {
+        // In touch mode, toggle the indicator state manually
+        CapsLockKeyElement.classList.toggle('lit-caps-active');
+      } else {
+        // In normal mode, sync directly with the real OS state
         const CapsLockIsActive = e.getModifierState('CapsLock');
         CapsLockKeyElement.classList.toggle('lit-caps-active', CapsLockIsActive);
       }

@@ -9169,8 +9169,7 @@ function BuildEndGameListItem(SummaryItem, QuestionNumber) {
 var LabelElement = document.createElement('span');
     LabelElement.className = 'sp-report-question-label';
     LabelElement.style.cssText = 'flex:1;min-width:0;display:block;';
-    LabelElement.textContent = (SummaryItem.displayText || '').replace(/\\/g, '\');
-
+    LabelElement.textContent = (SummaryItem.displayText || '').replace(/\\\\/g, '\\');
     ListItem.appendChild(DotElement);
 
     var TimingData = AnsweredTimingMap[SummaryItem.shortcutToken] || null;

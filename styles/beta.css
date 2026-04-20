@@ -2719,7 +2719,11 @@ body.returning-screen #diffIconWrap .icon-tip { display: none; }
 }
 
 /* Suppress the standard centred gutter line — we draw it manually */
-#panelEndGameReportCard.sp-page-report.sp-active::after {
+##cheatSheetList {
+  padding-top: 30px;
+  max-height: var(--cheat-sheet-left-list-max-height, 320px);
+  overflow: hidden;
+}.sp-page-report.sp-active::after {
   display: none;
 }
 

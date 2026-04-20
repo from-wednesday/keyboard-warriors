@@ -5273,20 +5273,8 @@ function openSettings(page) {
   // Disable pointer-events on the keyboard stage so the tilted panel
   // doesn't intercept clicks on diffIcon and other elements below it.
   // Exception: cheat sheet needs the keyboard tappable to fold it.
-  // History record: stage stays enabled for the top-half fold trigger,
-  // but diffIconWrap is forced active so it wins over the stage beneath it.
   var stage = document.getElementById('kbFlipStage');
-  var diffWrap = document.getElementById('diffIconWrap');
-  if (page === 'panelEndGameHistoryRecord') {
-    if (stage) stage.style.pointerEvents = '';
-    if (diffWrap) diffWrap.style.pointerEvents = 'auto';
-  } else if (page === 'panelCheatSheet') {
-    if (stage) stage.style.pointerEvents = '';
-    if (diffWrap) diffWrap.style.pointerEvents = '';
-  } else {
-    if (stage) stage.style.pointerEvents = 'none';
-    if (diffWrap) diffWrap.style.pointerEvents = '';
-  }
+  if (stage) stage.style.pointerEvents = (page === 'panelCheatSheet') ? '' : 'none';
 
   // Pin tooltip only for the three true settings pages
   var isPinnableSettings = (page === 'panelKeyboard' || page === 'panelConflicts' || page === 'panelDifficultySettings');
@@ -5334,8 +5322,6 @@ function closeSettings() {
   // Restoring here while the keyboard is still tilted was causing the icons to fire through the stage.
   var stage = document.getElementById('kbFlipStage');
   if (stage && _kbPos === 'face') stage.style.pointerEvents = '';
-  var diffWrap = document.getElementById('diffIconWrap');
-  if (diffWrap) diffWrap.style.pointerEvents = '';
   // If the cheat sheet was open, clear the tagline it added
   if (closingPage === 'panelCheatSheet') {
     var tagline = document.getElementById('welcomeTagline');
@@ -10151,25 +10137,24 @@ document.addEventListener('pointerdown', _killPunctuationConfirmGuard, true);
 document.addEventListener('keydown', handleKeydown);
 document.addEventListener('keyup',   handleKeyup);
 
-// Tapping the top half of the keyboard while the history or cheat sheet panel is open folds it to edge.
-// Only the top half is used as the trigger zone, like pressing a lever -- this keeps the area
-// well clear of diffIconWrap which sits visually below the keyboard centre.
-document.getElementById('kbFlipStage').addEventListener('pointerdown', function(e) {
-  if (activeSettings !== 'panelEndGameHistoryRecord' && activeSettings !== 'panelCheatSheet') return;
-  if (_kbPos === 'edge') return;
-  var KeyboardPanel = document.getElementById('keyboardPanel');
-  if (KeyboardPanel) {
-    var KeyboardRect = KeyboardPanel.getBoundingClientRect();
-    var KeyboardMidpoint = KeyboardRect.top + KeyboardRect.height / 2;
-    if (e.clientY > KeyboardMidpoint) return;
-  }
-  e.stopPropagation();
-  setKbPosition('edge');
-});
-
 document.getElementById('keyboardWrap').addEventListener('click', function(e) {
-  // If a settings panel is open, the keyboard is not truly resting idle --
-  // ignore the click so it does not trigger unpausing beneath the panel.
+  // Fold to edge when history or cheat sheet panel is open and keyboard is tapped.
+  // Only the top half of the keyboard acts as the trigger, like a lever,
+  // keeping the hit zone clear of the diffIconWrap below.
+  if (activeSettings === 'panelEndGameHistoryRecord' || activeSettings === 'panelCheatSheet') {
+    if (_kbPos !== 'edge') {
+      var KeyboardPanel = document.getElementById('keyboardPanel');
+      if (KeyboardPanel) {
+        var KeyboardRect = KeyboardPanel.getBoundingClientRect();
+        if (e.clientY <= KeyboardRect.top + KeyboardRect.height / 2) {
+          setKbPosition('edge');
+          return;
+        }
+      }
+    }
+    return;
+  }
+  // If any other settings panel is open, ignore clicks on the keyboard area.
   if (activeSettings !== null) return;
   if (gameState === 'readyToUnpause') {
     // Any click in the keyboard area folds it away to the pause screen

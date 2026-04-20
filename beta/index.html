@@ -5219,8 +5219,9 @@ function openSettings(page) {
     }
   }
 
-  // Update kbPos — partial for most panels; edge for browser and pause
-  var pos = (page === 'panelConflicts' || page === 'panelPause' || page === 'panelCheatSheet' || page === 'panelDifficultySettings' || page === 'panelEndGameReportCard') ? 'edge' : 'partial';
+  // Update kbPos — partial for most panels; edge for browser and pause;
+  // face for history record so the keyboard is visible and tappable to fold down.
+  var pos = (page === 'panelConflicts' || page === 'panelPause' || page === 'panelCheatSheet' || page === 'panelDifficultySettings' || page === 'panelEndGameReportCard') ? 'edge' : (page === 'panelEndGameHistoryRecord') ? 'face' : 'partial';
   setKbPosition(pos);
 
   // Pause game if needed (not for pause panel or when on welcome screen)
@@ -10150,9 +10151,10 @@ document.addEventListener('keyup',   handleKeyup);
 document.getElementById('keyboardWrap').addEventListener('click', function(e) {
   // If a settings panel is open, the keyboard is not truly resting idle --
   // ignore the click so it does not trigger unpausing beneath the panel.
-  // Exception: tapping the keyboard while viewing the history record folds it down.
+  // Exception: tapping the keyboard while viewing the history record toggles fold.
   if (activeSettings === 'panelEndGameHistoryRecord') {
     if (_kbPos === 'face') setKbPosition('edge');
+    else setKbPosition('face');
     return;
   }
   if (activeSettings !== null) return;

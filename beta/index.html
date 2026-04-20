@@ -4355,6 +4355,12 @@ function onKbSizeToggle() {
 
 function setTouchEnabled(on) {
   touchEnabled = on;
+  // When leaving touch mode, clear the CapsLock indicator since we cannot
+  // know the real keyboard state until the next keypress
+  if (!on) {
+    const CapsLockKeyElement = keyEls['CapsLock'];
+    if (CapsLockKeyElement) CapsLockKeyElement.classList.remove('lit-caps-active');
+  }
   var radio = document.getElementById('touchRadio');
   if (radio) radio.classList.toggle('on', on);
   if (activeSettings === 'panelConflicts') _refreshBrowserContent();

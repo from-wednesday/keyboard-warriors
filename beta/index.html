@@ -9138,6 +9138,58 @@ function _toggleEndGameHistory() {
   }
 }
 
+function BuildEndGameListItem(SummaryItem, QuestionNumber) {
+    var PoolQuestion = questionPool.find(function(PoolItem) {
+        return PoolItem.shortcut === SummaryItem.shortcutToken;
+    });
+
+    var ShortcutChipText = PoolQuestion
+        ? (currentOs === 'pc' ? PoolQuestion.pc_sc : PoolQuestion.mac_sc)
+        : SummaryItem.shortcut;
+
+    var ListItem = document.createElement('div');
+    ListItem.className = 'app-option';
+    ListItem.style.alignItems = 'flex-start'; 
+    ListItem.style.position = 'relative';
+    ListItem.dataset.shortcutToken = SummaryItem.shortcutToken || '';
+
+    // Question number: only for successful answers, floats left of the dot
+    if (SummaryItem.endType === 'success' && QuestionNumber != null) {
+      var NumElement = document.createElement('small');
+      NumElement.textContent = QuestionNumber;
+      NumElement.style.cssText = 'position:absolute;left:-14px;top:2px;color:#9ca3af;font-size:9px;line-height:1.5;white-space:nowrap;text-align:right;width:12px;';
+      ListItem.appendChild(NumElement);
+    }
+
+    var DotElement = document.createElement('span');
+    DotElement.className = 'sp-report-dot';
+    DotElement.style.marginTop = '5px';
+    DotElement.style.background = AnsweredOutcomeColourMap[SummaryItem.shortcutToken] || '#b3bdc9';
+
+var LabelElement = document.createElement('span');
+    LabelElement.className = 'sp-report-question-label';
+    LabelElement.style.cssText = 'flex:1;min-width:0;display:block;';
+    LabelElement.textContent = (SummaryItem.displayText || '').replace(/\\/g, '\');
+
+    ListItem.appendChild(DotElement);
+
+    var TimingData = AnsweredTimingMap[SummaryItem.shortcutToken] || null;
+    if (TimingData && TimingData.text) {
+        var TimeElement = document.createElement('small');
+        TimeElement.textContent = TimingData.text;
+        TimeElement.style.cssText = 'color:#9ca3af;flex-shrink:0;margin-left:-3px;margin-right:4px;margin-top:2px;line-height:1.5;white-space:nowrap;'
+            + (TimingData.text === 'none' ? 'font-size:9px;letter-spacing:0.01em;margin-right:3px;' : '');
+        ListItem.appendChild(TimeElement);
+    }
+
+    ListItem.appendChild(LabelElement);
+    var ChipsWrapper = BuildShortcutKeyChips(ShortcutChipText, true);
+    ChipsWrapper.style.flexShrink = '0';
+    ListItem.appendChild(ChipsWrapper);
+    
+    return ListItem;
+}
+
 function _refreshEndGameHistory() {
   var AppEntry = APPS.find(function(AppItem) { return AppItem.key === currentApp; });
   var ApplicationName = AppEntry ? AppEntry.label : currentApp;
@@ -9230,56 +9282,7 @@ function _refreshEndGameHistory() {
   var AllQuestions = lastCompletedReport.questionSummaries;
   var HalfwayIndex = Math.ceil(AllQuestions.length / 2);
 
-  function BuildEndGameListItem(SummaryItem, QuestionNumber) {
-    var PoolQuestion = questionPool.find(function(PoolItem) {
-        return PoolItem.shortcut === SummaryItem.shortcutToken;
-    });
 
-    var ShortcutChipText = PoolQuestion
-        ? (currentOs === 'pc' ? PoolQuestion.pc_sc : PoolQuestion.mac_sc)
-        : SummaryItem.shortcut;
-
-    var ListItem = document.createElement('li');
-    ListItem.style.alignItems = 'flex-start'; 
-    ListItem.style.position = 'relative';
-    ListItem.dataset.shortcutToken = SummaryItem.shortcutToken || '';
-
-    // Question number: only for successful answers, floats left of the dot
-    if (SummaryItem.endType === 'success' && QuestionNumber != null) {
-      var NumElement = document.createElement('small');
-      NumElement.textContent = QuestionNumber;
-      NumElement.style.cssText = 'position:absolute;left:-14px;top:2px;color:#9ca3af;font-size:9px;line-height:1.5;white-space:nowrap;text-align:right;width:12px;';
-      ListItem.appendChild(NumElement);
-    }
-
-    var DotElement = document.createElement('span');
-    DotElement.className = 'sp-report-dot';
-    DotElement.style.marginTop = '5px';
-    DotElement.style.background = AnsweredOutcomeColourMap[SummaryItem.shortcutToken] || '#b3bdc9';
-
-var LabelElement = document.createElement('span');
-    LabelElement.className = 'sp-report-question-label';
-    LabelElement.style.cssText = 'flex:1;min-width:0;display:block;';
-    LabelElement.textContent = (SummaryItem.displayText || '').replace(/\\\\/g, '\\');
-
-    ListItem.appendChild(DotElement);
-
-    var TimingData = AnsweredTimingMap[SummaryItem.shortcutToken] || null;
-    if (TimingData && TimingData.text) {
-        var TimeElement = document.createElement('small');
-        TimeElement.textContent = TimingData.text;
-        TimeElement.style.cssText = 'color:#9ca3af;flex-shrink:0;margin-left:-3px;margin-right:4px;margin-top:2px;line-height:1.5;white-space:nowrap;'
-            + (TimingData.text === 'none' ? 'font-size:9px;letter-spacing:0.01em;margin-right:3px;' : '');
-        ListItem.appendChild(TimeElement);
-    }
-
-    ListItem.appendChild(LabelElement);
-    var ChipsWrapper = BuildShortcutKeyChips(ShortcutChipText, true);
-    ChipsWrapper.style.flexShrink = '0';
-    ListItem.appendChild(ChipsWrapper);
-    
-    return ListItem;
-}
   var successCounter = 0;
   AllQuestions.forEach(function(SummaryItem, ItemIndex) {
     var questionNumber = null;

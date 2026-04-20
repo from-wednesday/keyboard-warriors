@@ -5272,9 +5272,21 @@ function openSettings(page) {
 
   // Disable pointer-events on the keyboard stage so the tilted panel
   // doesn't intercept clicks on diffIcon and other elements below it.
-  // Exception: history record panel needs the keyboard tappable to fold it.
+  // Exception: cheat sheet needs the keyboard tappable to fold it.
+  // History record also needs the keyboard tappable, but diffIconWrap must
+  // remain clickable, so we disable the stage and force diffIconWrap active.
   var stage = document.getElementById('kbFlipStage');
-  if (stage) stage.style.pointerEvents = (page === 'panelEndGameHistoryRecord' || page === 'panelCheatSheet') ? '' : 'none';
+  var diffWrap = document.getElementById('diffIconWrap');
+  if (page === 'panelEndGameHistoryRecord') {
+    if (stage) stage.style.pointerEvents = 'none';
+    if (diffWrap) diffWrap.style.pointerEvents = 'auto';
+  } else if (page === 'panelCheatSheet') {
+    if (stage) stage.style.pointerEvents = '';
+    if (diffWrap) diffWrap.style.pointerEvents = '';
+  } else {
+    if (stage) stage.style.pointerEvents = 'none';
+    if (diffWrap) diffWrap.style.pointerEvents = '';
+  }
 
   // Pin tooltip only for the three true settings pages
   var isPinnableSettings = (page === 'panelKeyboard' || page === 'panelConflicts' || page === 'panelDifficultySettings');
@@ -5322,6 +5334,8 @@ function closeSettings() {
   // Restoring here while the keyboard is still tilted was causing the icons to fire through the stage.
   var stage = document.getElementById('kbFlipStage');
   if (stage && _kbPos === 'face') stage.style.pointerEvents = '';
+  var diffWrap = document.getElementById('diffIconWrap');
+  if (diffWrap) diffWrap.style.pointerEvents = '';
   // If the cheat sheet was open, clear the tagline it added
   if (closingPage === 'panelCheatSheet') {
     var tagline = document.getElementById('welcomeTagline');
@@ -5338,9 +5352,6 @@ function closeSettings() {
   }
 
   if (gameState === 'paused') {
-    // The cheat sheet and other panels opened while paused should close
-    // quietly -- the keyboard stays at edge and the game stays paused.
-    // Only raise the keyboard (readyToUnpause) when the pause panel itself is closed.
     if (closingPage === 'panelCheatSheet' || closingPage === 'panelKeyboard' || closingPage === 'panelConflicts' || closingPage === 'panelDifficultySettings' || closingPage === 'panelEndGameHistoryRecord') {
       if (closingPage === 'panelCheatSheet') {
         titleEl.textContent = _padlockSavedTitle;
@@ -10146,8 +10157,6 @@ document.addEventListener('keyup',   handleKeyup);
 document.getElementById('kbFlipStage').addEventListener('pointerdown', function(e) {
   if (activeSettings !== 'panelEndGameHistoryRecord' && activeSettings !== 'panelCheatSheet') return;
   if (_kbPos === 'edge') return;
-  // Don't fold if the pointer is over one of the settings icon wraps --
-  // they are positioned outside kbFlipStage in the DOM but overlap it visually.
   var IconWrapIds = ['kbIconWrap', 'brIconWrap', 'diffIconWrap'];
   var PointerIsOverIcon = IconWrapIds.some(function(IconId) {
     var IconElement = document.getElementById(IconId);

@@ -5329,21 +5329,16 @@ function closeSettings() {
       tagline.innerHTML = '<em>Your keyboard shortcuts coach &amp; personal trainer.</em>';
     }
   }
-  // Reset wrap height
-  var wrap = document.getElementById('keyboardWrap');
-  if (wrap) wrap.style.minHeight = '';
-  // If paused mid-game and the user closes a settings panel, enter readyToUnpause
-  // rather than immediately showing the pause screen — the keyboard comes back up
-  // and the unpause button pulses as the CTA.
-  if (gameState === 'finished') {
-  var welcomePage = 'panelEndGameReportCard';
-  if (closingPage !== welcomePage) {
-    openSettings(welcomePage);
-    return;
-  }
-  setKbPosition('face');
-  return;
-}
+ var left  = stage.offsetLeft + panel.offsetLeft;
+  var width = panel.offsetWidth;
+  inner.style.left  = left + 'px';
+  inner.style.width = width + 'px';
+  // Compute how far the keyboard panel top is below the settings inner top,
+  // then set a CSS custom property so the cheat sheet left list can use it
+  // as a max-height, letting content run into the hidden-behind-keyboard zone.
+  var KeyboardPanelTopRelativeToInner = panel.getBoundingClientRect().top - inner.getBoundingClientRect().top;
+  inner.style.setProperty('--cheat-sheet-left-list-max-height', KeyboardPanelTopRelativeToInner + 'px');
+  // Grow the wrap so the tilted keyboard sits below the settings content.
   if (gameState === 'paused') {
     // The cheat sheet and other panels opened while paused should close
     // quietly -- the keyboard stays at edge and the game stays paused.
@@ -9385,7 +9380,7 @@ var AnsweredTimingMap = {};
 
   if (IsActiveGame && runData.length > 0) {
     var SeenTokens = new Set();
-    for (var ri = runData.length - 1; ri >= 0 && AnsweredQuestions.length < 5; ri--) {
+    for (var ri = runData.length - 1; ri >= 0 && AnsweredQuestions.length < 15; ri--) {
       var Entry = runData[ri];
       var AnsweredQ = questionPool[Entry.questionIndex];
       if (AnsweredQ && !SeenTokens.has(AnsweredQ.shortcut)) {

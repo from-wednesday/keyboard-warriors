@@ -9291,10 +9291,10 @@ function _refreshEndGameHistory() {
     }
       var ListItem = BuildEndGameListItem(SummaryItem, questionNumber, AnsweredOutcomeColourMap, AnsweredTimingMap);
       if (ItemIndex < HalfwayIndex) {
-      LeftList.appendChild(ListItem);
-    } else {
-      RightList.appendChild(ListItem);
-    }
+        LeftList.appendChild(ListItem);
+      } else {
+        RightList.appendChild(ListItem);
+      }
   });
 }
 
@@ -9436,9 +9436,7 @@ var AnsweredTimingMap = {};
         partialNudgeFired: MatchingEntry ? (MatchingEntry.partialNudgeFired || false) : false,
         partialCorrectKey: MatchingEntry ? (MatchingEntry.partialCorrectKey || false) : false,
       };
-      var ListItem = BuildEndGameListItem(SummaryItem, QuestionNumber);
-      var DotElement = ListItem.querySelector('.sp-report-dot');
-      if (DotElement) DotElement.style.background = AnsweredOutcomeColourMap[Question.shortcut] || '#10b981';
+      var ListItem = BuildEndGameListItem(SummaryItem, QuestionNumber, AnsweredOutcomeColourMap, AnsweredTimingMap);
       List.appendChild(ListItem);
     });
   }

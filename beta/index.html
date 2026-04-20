@@ -2318,7 +2318,7 @@ function _closeAllModals() {
 function mainButtonClick() {
   mainBtn.blur();
   if (gameState === 'welcome') { _startFromWelcome(); return; }
-  if (gameState === 'idle' || gameState === 'finished') { _closeAllModals(); beginCountdown(); return; }
+  if (gameState === 'idle' || gameState === 'finished') { _closeAllModalsInstant(); beginCountdown(); return; }
   if (gameState === 'counting')      { cancelCountdown(); return; }
   if (gameState === 'playing')       { skipShortcut(); return; }
   if (gameState === 'readyToUnpause') {
@@ -4980,7 +4980,8 @@ function _phoneCloseSettings() {
 
   // Game state routing -- mirrors desktop closeSettings without keyboard movement
   if (gameState === 'finished') {
-    if (ClosingPage !== 'panelEndGameReportCard') { openSettings('panelEndGameReportCard'); return; }
+    if (closingPage === 'panelEndGameHistoryRecord') { openSettings('panelEndGameReportCard'); return; }
+    if (closingPage !== 'panelEndGameReportCard') { openSettings('panelEndGameReportCard'); return; }
     return;
   }
   if (gameState === 'paused') {
@@ -5329,10 +5330,7 @@ function closeSettings() {
       tagline.innerHTML = '<em>Your keyboard shortcuts coach &amp; personal trainer.</em>';
     }
   }
- var left  = stage.offsetLeft + panel.offsetLeft;
-  var width = panel.offsetWidth;
-  inner.style.left  = left + 'px';
-  inner.style.width = width + 'px';
+// Grow the wrap so the tilted keyboard sits below the settings content.
   // Compute how far the keyboard panel top is below the settings inner top,
   // then set a CSS custom property so the cheat sheet left list can use it
   // as a max-height, letting content run into the hidden-behind-keyboard zone.

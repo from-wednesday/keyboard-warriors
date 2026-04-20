@@ -10148,15 +10148,19 @@ document.addEventListener('pointerdown', _killPunctuationConfirmGuard, true);
 document.addEventListener('keydown', handleKeydown);
 document.addEventListener('keyup',   handleKeyup);
 
+// Tapping the physical keyboard while the history panel is open folds/unfolds it.
+// This listener is on kbFlipStage directly so settingsPanelInner (position:absolute,
+// pointer-events:auto) cannot intercept the click before it reaches keyboardWrap.
+document.getElementById('kbFlipStage').addEventListener('pointerdown', function(e) {
+  if (activeSettings !== 'panelEndGameHistoryRecord') return;
+  e.stopPropagation();
+  if (_kbPos === 'face') setKbPosition('edge');
+  else setKbPosition('face');
+});
+
 document.getElementById('keyboardWrap').addEventListener('click', function(e) {
   // If a settings panel is open, the keyboard is not truly resting idle --
   // ignore the click so it does not trigger unpausing beneath the panel.
-  // Exception: tapping the keyboard while viewing the history record toggles fold.
-  if (activeSettings === 'panelEndGameHistoryRecord') {
-    if (_kbPos === 'face') setKbPosition('edge');
-    else setKbPosition('face');
-    return;
-  }
   if (activeSettings !== null) return;
   if (gameState === 'readyToUnpause') {
     // Any click in the keyboard area folds it away to the pause screen

@@ -5270,9 +5270,10 @@ function openSettings(page) {
   if (sp) sp.classList.add('sp-open');
 
   // Disable pointer-events on the keyboard stage so the tilted panel
-  // doesn't intercept clicks on diffIcon and other elements below it
+  // doesn't intercept clicks on diffIcon and other elements below it.
+  // Exception: history record panel needs the keyboard tappable to fold it.
   var stage = document.getElementById('kbFlipStage');
-  if (stage) stage.style.pointerEvents = 'none';
+  if (stage) stage.style.pointerEvents = (page === 'panelEndGameHistoryRecord') ? '' : 'none';
 
   // Pin tooltip only for the three true settings pages
   var isPinnableSettings = (page === 'panelKeyboard' || page === 'panelConflicts' || page === 'panelDifficultySettings');

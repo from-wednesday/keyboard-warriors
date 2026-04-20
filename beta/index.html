@@ -9401,14 +9401,25 @@ var AnsweredTimingMap = {};
     UpcomingQuestions = OrderedPool.slice(0, 5);
   }
 
-  // Left column: answered questions (green dots)
+  // Build a map of shortcut token to answer order number using runData in forward
+  // chronological order. Only successful answers get a number.
+  var SuccessOrderNumberMap = {};
+  var SuccessCounter = 0;
+  runData.forEach(function(Entry) {
+    if (Entry.endType === 'success') {
+      SuccessCounter++;
+      var EntryQuestion = questionPool[Entry.questionIndex];
+      if (EntryQuestion) SuccessOrderNumberMap[EntryQuestion.shortcut] = SuccessCounter;
+    }
+  });
+
+  // Left column: answered questions
   if (AnsweredQuestions.length === 0) {
     var PlaceholderLi = document.createElement('li');
     PlaceholderLi.style.cssText = 'font-size:11px;font-style:italic;color:#9ca3af;list-style:none;padding:4px 0;';
     PlaceholderLi.textContent = IsActiveGame ? 'Answered questions will appear here.' : '';
     List.appendChild(PlaceholderLi);
   } else {
-    var CheatSheetSuccessCounter = 0;
     AnsweredQuestions.forEach(function(Question) {
       var MatchingEntry = null;
       for (var ri = runData.length - 1; ri >= 0; ri--) {
@@ -9418,11 +9429,7 @@ var AnsweredTimingMap = {};
           break;
         }
       }
-      var QuestionNumber = null;
-      if (MatchingEntry && MatchingEntry.endType === 'success') {
-        CheatSheetSuccessCounter++;
-        QuestionNumber = CheatSheetSuccessCounter;
-      }
+      var QuestionNumber = SuccessOrderNumberMap[Question.shortcut] || null;
       var SummaryItem = {
         displayText:       (Question.display || '').replace(/\\\\/g, '\\'),
         shortcut:          currentOs === 'pc' ? Question.pc_sc : Question.mac_sc,

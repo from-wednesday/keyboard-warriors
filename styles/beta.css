@@ -564,16 +564,7 @@ body.pc-mode #extKeyPill {
   transition: background 0.8s ease, box-shadow 0.8s ease, color 0.8s ease !important;
 }
 
-/* Toast pill — centred over the stats row, overlaps if needed */
-/* ══════════════════════════════════════
-   panelEndGameHistoryRecord ICON MODAL
-══════════════════════════════════════ */
 
-/* Modal inline rows (label = toggle) */
-/* All three layout rows share a grid so their switches column-align */
-/* All three toggle rows share one table so the switch column aligns perfectly.
-   Left cells are right-aligned (labels hang leftward from switch),
-   switch cells are centred, right cells are left-aligned. */
 .modal-layout-rows {
   display: table;
   border-collapse: separate;

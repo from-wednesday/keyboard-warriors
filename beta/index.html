@@ -2554,14 +2554,15 @@ function clearHelp() {
   if (gameState === 'counting') return;
   // If the cheat sheet panel is already open, close it.
   if (activeSettings === 'panelCheatSheet') { closeSettings(); return; }
-  // Save title text then show cheat sheet heading in the game div
+  // Save title text before pausing (enterPause may overwrite it).
   _padlockSavedTitle = titleEl.textContent;
-  // Open the panel first so enterPause does not auto-open panelPause on top.
+  // Pause first so enterPause's setKbPosition('edge') fires before openSettings
+  // overrides it with 'partial'. Order matters here.
+  if (gameState === 'readyToUnpause') { _enterReadyToUnpauseCleanup(); enterPause(); }
+  else if (gameState === 'playing')   { enterPause(); }
+  // Open panel after pausing so it wins the keyboard position.
   openSettings('panelCheatSheet');
-  if (gameState === 'counting')        { cancelCountdown(); }
-  else if (gameState === 'readyToUnpause') { _enterReadyToUnpauseCleanup(); enterPause(); }
-  else if (gameState === 'playing')    { enterPause(); }
-  // Always set title + tagline last, overwriting any blur/text from enterPause
+  // Always set title + tagline last, overwriting any blur/text from enterPause.
   titleEl.className = '';
   titleEl.textContent = 'Cheat Sheet';
   var tagline = document.getElementById('welcomeTagline');
@@ -5222,8 +5223,23 @@ function openSettings(page) {
   }
 
   // Update kbPos — partial for most panels; edge for browser and pause
-  var pos = (page === 'panelConflicts' || page === 'panelPause' || page === 'panelDifficultySettings' || page === 'panelEndGameReportCard') ? 'edge' : 'partial';
+  var pos = (page === 'panelConflicts' || page === 'panelPause' || page === 'panelDifficultySettings') ? 'edge' : 'partial';
   setKbPosition(pos);
+  // Report card: start at partial, then check after render whether the advice box
+  // is clipped by the keyboard. If so, upgrade to edge.
+  if (page === 'panelEndGameReportCard') {
+    requestAnimationFrame(function() {
+      requestAnimationFrame(function() {
+        var AdviceBox = document.getElementById('reportTrainerAdvice');
+        var KeyboardPanel = document.getElementById('keyboardPanel');
+        if (AdviceBox && KeyboardPanel) {
+          var AdviceBottom = AdviceBox.getBoundingClientRect().bottom;
+          var KeyboardTop  = KeyboardPanel.getBoundingClientRect().top;
+          if (AdviceBottom > KeyboardTop) setKbPosition('edge');
+        }
+      });
+    });
+  }
 
   // Pause game if needed (not for pause panel or when on welcome screen)
   if (page !== 'panelPause' && gameState !== 'welcome') {
@@ -5273,7 +5289,7 @@ function openSettings(page) {
 
   // Disable pointer-events on the keyboard stage so the tilted panel
   // doesn't intercept clicks on diffIcon and other elements below it.
-  // Exception: cheat sheet needs the keyboard tappable to fold it.
+  // Exception: history record panel needs the keyboard tappable to fold it.
   var stage = document.getElementById('kbFlipStage');
   if (stage) stage.style.pointerEvents = (page === 'panelCheatSheet') ? '' : 'none';
 

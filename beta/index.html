@@ -5219,9 +5219,8 @@ function openSettings(page) {
     }
   }
 
-  // Update kbPos — partial for most panels; edge for browser and pause;
-  // face for history record so the keyboard is visible and tappable to fold down.
-  var pos = (page === 'panelConflicts' || page === 'panelPause' || page === 'panelCheatSheet' || page === 'panelDifficultySettings' || page === 'panelEndGameReportCard') ? 'edge' : (page === 'panelEndGameHistoryRecord') ? 'face' : 'partial';
+  // Update kbPos — partial for most panels; edge for browser and pause
+  var pos = (page === 'panelConflicts' || page === 'panelPause' || page === 'panelCheatSheet' || page === 'panelDifficultySettings' || page === 'panelEndGameReportCard') ? 'edge' : 'partial';
   setKbPosition(pos);
 
   // Pause game if needed (not for pause panel or when on welcome screen)
@@ -10148,14 +10147,14 @@ document.addEventListener('pointerdown', _killPunctuationConfirmGuard, true);
 document.addEventListener('keydown', handleKeydown);
 document.addEventListener('keyup',   handleKeyup);
 
-// Tapping the physical keyboard while the history panel is open folds/unfolds it.
-// This listener is on kbFlipStage directly so settingsPanelInner (position:absolute,
-// pointer-events:auto) cannot intercept the click before it reaches keyboardWrap.
+// Tapping the keyboard while the history panel is open folds it to edge.
+// Must be on kbFlipStage directly — settingsPanelInner sits above keyboardWrap
+// in paint order and swallows clicks before they bubble up to it.
 document.getElementById('kbFlipStage').addEventListener('pointerdown', function(e) {
   if (activeSettings !== 'panelEndGameHistoryRecord') return;
+  if (_kbPos === 'edge') return;
   e.stopPropagation();
-  if (_kbPos === 'face') setKbPosition('edge');
-  else setKbPosition('face');
+  setKbPosition('edge');
 });
 
 document.getElementById('keyboardWrap').addEventListener('click', function(e) {

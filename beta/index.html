@@ -9289,7 +9289,8 @@ function _refreshEndGameHistory() {
       successCounter++;
       questionNumber = successCounter;
     }
-      var ListItem = BuildEndGameListItem(SummaryItem, questionNumber, AnsweredOutcomeColourMap, AnsweredTimingMap);    if (ItemIndex < HalfwayIndex) {
+      var ListItem = BuildEndGameListItem(SummaryItem, questionNumber, AnsweredOutcomeColourMap, AnsweredTimingMap);
+      if (ItemIndex < HalfwayIndex) {
       LeftList.appendChild(ListItem);
     } else {
       RightList.appendChild(ListItem);
@@ -9297,7 +9298,7 @@ function _refreshEndGameHistory() {
   });
 }
 
-function var ListItem = BuildEndGameListItem(SummaryItem, QuestionNumber, AnsweredOutcomeColourMap, AnsweredTimingMap);() {
+function _refreshCheatSheet() {
   var List = document.getElementById('cheatSheetList');
   var ListRight = document.getElementById('cheatSheetListRight');
   var ContextLabel   = document.getElementById('cheatSheetContextLabel');

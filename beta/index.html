@@ -363,7 +363,7 @@
 <div id="panelEndGameReportCard" class="sp-page sp-page-report">
   <div class="sp-col sp-col-left">
     <div class="sp-report-col-header">
-      <div class="sp-endgame-header-left" onclick="_toggleEndGameHistory()" id="reportCardToggleTrigger">
+      <div class="sp-endgame-header-left" onclick="_toggleEndGameHistory(event)" id="reportCardToggleTrigger">
         <p class="sp-small-card-title">REPORT CARD</p>
         <svg class="sp-endgame-search-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
           <circle cx="11" cy="11" r="7"/>
@@ -388,7 +388,7 @@
     <div id="panelEndGameHistoryRecord" class="sp-page">
    <div class="sp-col sp-col-left">
         <div class="sp-report-col-header">
-          <div class="sp-endgame-header-left" onclick="_toggleEndGameHistory()">
+          <div class="sp-endgame-header-left" onclick="_toggleEndGameHistory(event)">
             <p class="sp-small-card-title">HISTORY VIEW</p>
            <svg class="sp-endgame-search-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
           <circle cx="11" cy="11" r="7"/>
@@ -802,7 +802,7 @@ function buildKey(cfg, isMini) {
       el.style.display = 'flex';
       el.style.alignItems = 'center';
       el.style.justifyContent = 'center';
-      el.addEventListener('mousedown', function(ev) { ev.preventDefault(); openPadlockPanel(); });
+      el.addEventListener('mousedown', function(ev) { ev.preventDefault(); openCheatSheetPanel(ev); });
       lockKeyEl = el;
       break;
     case 'letter':
@@ -2548,10 +2548,11 @@ function clearHelp() {
 
 /* ══════════════════════════════════════
    PAUSE / EASTER EGG
-══════════════════════════════════════ */function openPadlockPanel() {
+══════════════════════════════════════ */function openCheatSheetPanel(e) {
+  if (e) e.stopPropagation();
   if (transitioning) return;
   if (gameState === 'counting') return;
-  // If the padlock panel is already open, close it.
+  // If the cheat sheet panel is already open, close it.
   if (activeSettings === 'panelCheatSheet') { closeSettings(); return; }
   // Save title text then show cheat sheet heading in the game div
   _padlockSavedTitle = titleEl.textContent;
@@ -9120,7 +9121,8 @@ function finalizeRunData(completedRun, currentPool, DefeatCount) {
 }
 
 
-function _toggleEndGameHistory() {
+function _toggleEndGameHistory(e) {
+  if (e) e.stopPropagation();
   if (activeSettings === 'panelEndGameHistoryRecord') {
     openSettings('panelEndGameReportCard');
   } else {
@@ -10138,9 +10140,7 @@ document.addEventListener('keydown', handleKeydown);
 document.addEventListener('keyup',   handleKeyup);
 
 document.getElementById('keyboardWrap').addEventListener('click', function(e) {
-  // Fold to edge when history or cheat sheet panel is open and keyboard is tapped.
-  // Only the top half of the keyboard acts as the trigger, like a lever,
-  // keeping the hit zone clear of the diffIconWrap below.
+  // Fold to edge when history or cheat sheet panel is open and the top half of the keyboard is tapped.
   if (activeSettings === 'panelEndGameHistoryRecord' || activeSettings === 'panelCheatSheet') {
     if (_kbPos !== 'edge') {
       var KeyboardPanel = document.getElementById('keyboardPanel');
@@ -10157,14 +10157,11 @@ document.getElementById('keyboardWrap').addEventListener('click', function(e) {
   // If any other settings panel is open, ignore clicks on the keyboard area.
   if (activeSettings !== null) return;
   if (gameState === 'readyToUnpause') {
-    // Any click in the keyboard area folds it away to the pause screen
     _enterReadyToUnpauseCleanup();
     gameState = 'paused';
     enterPause();
     return;
   }
-  // When the keyboard is folded and touch is not enabled, clicking it raises it back up.
-  // In paused/finished states this enters the readyToUnpause / face position.
   if (_kbPos !== 'face' && !touchEnabled) {
     if (gameState === 'paused') {
       _enterReadyToUnpause();

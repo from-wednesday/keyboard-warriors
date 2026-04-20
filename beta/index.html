@@ -360,7 +360,7 @@
     </div>
    
 <!-- ── Report Card ────────────────────────────────── -->
-<div id="panelReportCard" class="sp-page sp-page-report">
+<div id="panelEndGameReportCard" class="sp-page sp-page-report">
   <div class="sp-col sp-col-left">
     <div class="sp-report-col-header">
       <div class="sp-endgame-header-left" onclick="_toggleEndGameHistory()" id="reportCardToggleTrigger">
@@ -1278,13 +1278,13 @@ function buildOsLabels() {
   leftLabel.addEventListener('click',  function() {
     applyOsMode(leftOperatingSystem);
     if (activeSettings === 'panelKeyboard') updateModalToggles();
-    if (activeSettings === 'panelReportCard')   _refreshReportPanel();
+    if (activeSettings === 'panelEndGameReportCard')   _refreshReportPanel();
     if (activeSettings === 'panelCheatSheet')  _refreshCheatSheet();
   });
   rightLabel.addEventListener('click', function() {
     applyOsMode(rightOperatingSystem);
     if (activeSettings === 'panelKeyboard') updateModalToggles();
-    if (activeSettings === 'panelReportCard')   _refreshReportPanel();
+    if (activeSettings === 'panelEndGameReportCard')   _refreshReportPanel();
     if (activeSettings === 'panelCheatSheet')  _refreshCheatSheet();
   });
 }
@@ -1440,7 +1440,7 @@ function onOsToggle() {
     : (nativeMac ? 'mac' : 'pc'));
   if (activeSettings === 'panelKeyboard') updateModalToggles();
   if (activeSettings === 'panelConflicts')  _refreshBrowserContent();
-  if (activeSettings === 'panelReportCard')     _refreshReportPanel();
+  if (activeSettings === 'panelEndGameReportCard')     _refreshReportPanel();
   if (activeSettings === 'panelCheatSheet')    _refreshCheatSheet();
   runData.length = 0; lastCompletedReport = null; CoachAdviceAccepted = false;
 }
@@ -4767,7 +4767,7 @@ function onModalFnToggle() {
 // activeSettings: null | 'panelKeyboard' | 'panelConflicts' | 'panelDifficultySettings' | 'panelPause' | 'panelLandingReturning' | 'panelLandingWelcome'
 var activeSettings = null;
 
-var SP_PAGE_ORDER = ['panelKeyboard', 'panelConflicts', 'panelDifficultySettings', 'panelPause', 'panelReportCard', 'panelEndGameHistoryRecord', 'panelCheatSheet', 'panelLandingReturning', 'panelLandingWelcome'];
+var SP_PAGE_ORDER = ['panelKeyboard', 'panelConflicts', 'panelDifficultySettings', 'panelPause', 'panelEndGameReportCard', 'panelEndGameHistoryRecord', 'panelCheatSheet', 'panelLandingReturning', 'panelLandingWelcome'];
 
 function _spPageEl(page) {
   var ids = {
@@ -4779,7 +4779,7 @@ function _spPageEl(page) {
     panelCheatSheet:    'panelCheatSheet',
     panelLandingReturning:  'panelLandingReturning',
     panelLandingWelcome:    'panelLandingWelcome',
-    panelReportCard:     'panelReportCard',
+    panelEndGameReportCard:     'panelEndGameReportCard',
   };
   return document.getElementById(ids[page]);
 }
@@ -4929,7 +4929,7 @@ function _phoneOpenSettings(Page) {
   if (Page === 'panelKeyboard')   { updateModalToggles(); updateKbSizeToggle(); }
   if (Page === 'panelDifficultySettings') _refreshDifficultyPanel();
   if (Page === 'panelPause')      _refreshPausePanel();
-  if (Page === 'panelReportCard')     _refreshReportPanel();
+  if (Page === 'panelEndGameReportCard')     _refreshReportPanel();
   if (Page === 'panelCheatSheet')    _refreshCheatSheet();
 
   // Clear active animation classes on all panels before moving
@@ -4970,7 +4970,7 @@ function _phoneCloseSettings() {
 
   // Game state routing -- mirrors desktop closeSettings without keyboard movement
   if (gameState === 'finished') {
-    if (ClosingPage !== 'panelReportCard') { openSettings('panelReportCard'); return; }
+    if (ClosingPage !== 'panelEndGameReportCard') { openSettings('panelEndGameReportCard'); return; }
     return;
   }
   if (gameState === 'paused') {
@@ -5015,7 +5015,7 @@ function _spAlignPanel() {
       // Edge-position panels (report, cheat sheet, pause, browser, difficulty) sit
       // above a fully folded keyboard. Only the content height matters; the stage
       // height is already accounted for by the fold. Add a small buffer only.
-      var IsEdgePanel = (activeSettings === 'panelReportCard' || activeSettings === 'panelCheatSheet' ||
+      var IsEdgePanel = (activeSettings === 'panelEndGameReportCard' || activeSettings === 'panelCheatSheet' ||
                          activeSettings === 'panelPause'  || activeSettings === 'panelConflicts' ||
                          activeSettings === 'panelDifficultySettings');
       var needed = IsEdgePanel
@@ -5210,7 +5210,7 @@ function openSettings(page) {
   }
 
   // Update kbPos — partial for most panels; edge for browser and pause
-  var pos = (page === 'panelConflicts' || page === 'panelPause' || page === 'panelCheatSheet' || page === 'panelDifficultySettings' || page === 'panelReportCard') ? 'edge' : 'partial';
+  var pos = (page === 'panelConflicts' || page === 'panelPause' || page === 'panelCheatSheet' || page === 'panelDifficultySettings' || page === 'panelEndGameReportCard') ? 'edge' : 'partial';
   setKbPosition(pos);
 
   // Pause game if needed (not for pause panel or when on welcome screen)
@@ -5225,7 +5225,7 @@ function openSettings(page) {
   if (page === 'panelKeyboard')   { updateModalToggles(); updateKbSizeToggle(); }
   if (page === 'panelDifficultySettings') _refreshDifficultyPanel();
   if (page === 'panelPause')      _refreshPausePanel();
-  if (page === 'panelReportCard')     _refreshReportPanel();
+  if (page === 'panelEndGameReportCard')     _refreshReportPanel();
   if (page === 'panelCheatSheet')    _refreshCheatSheet();
 
   // Align panel width to keyboard
@@ -5325,7 +5325,7 @@ function closeSettings() {
   // rather than immediately showing the pause screen — the keyboard comes back up
   // and the unpause button pulses as the CTA.
   if (gameState === 'finished') {
-  var welcomePage = 'panelReportCard';
+  var welcomePage = 'panelEndGameReportCard';
   if (closingPage !== welcomePage) {
     openSettings(welcomePage);
     return;
@@ -7958,7 +7958,7 @@ function enterDefeat() {
     var DefeatRun = runData.slice();
     runData.length = 0;
     lastCompletedReport = finalizeRunData(DefeatRun, questionPool, NewDefeatCount);
-    openSettings('panelReportCard');
+    openSettings('panelEndGameReportCard');
     _refreshReportPanel();
   } else {
     runData.length = 0;
@@ -8359,7 +8359,7 @@ lastCompletedReport = finalizeRunData(completedRun, questionPool, 0);
       endScreenInactivityTimer = setTimeout(pulseAndReschedule, 5000);
     }, 14000);
   } else {
-  openSettings('panelReportCard');
+  openSettings('panelEndGameReportCard');
 _refreshReportPanel()
     startEndScreenInactivityTimer();
   }
@@ -9121,7 +9121,7 @@ function finalizeRunData(completedRun, currentPool, DefeatCount) {
 
 function _toggleEndGameHistory() {
   if (activeSettings === 'panelEndGameHistoryRecord') {
-    openSettings('panelReportCard');
+    openSettings('panelEndGameReportCard');
   } else {
     _refreshEndGameHistory();
     openSettings('panelEndGameHistoryRecord');
@@ -10208,7 +10208,7 @@ updateKeyboardLighting(e, true);
   if (gameState === 'finished') {
     // When the report card is visible, check if this key matches any listed shortcut first.
     // If it does, use it for Practice lighting and consume the event — do not pass to UI navigation.
-    if (activeSettings === 'panelReportCard' && lastCompletedReport) {
+    if (activeSettings === 'panelEndGameReportCard' && lastCompletedReport) {
       var ReportShortcutMatched = false;
       lastCompletedReport.questionSummaries.forEach(function(Summary) {
         if (Summary.shortcutToken && matchesShortcut(e, Summary.shortcutToken)) {

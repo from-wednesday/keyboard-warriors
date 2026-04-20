@@ -9,7 +9,7 @@
 <title>beta</title>
 <script>
   const DefaultTitle = 'Keyboard Warriors';
-  const VersionLabel   = '0024';
+  const VersionLabel   = '0025';
   const TitlePrefix  = document.title !== DefaultTitle ? document.title.trim() + '_' : '';
   const DBG_DEVICE   = TitlePrefix + VersionLabel;
 </script>
@@ -10149,6 +10149,11 @@ document.addEventListener('keyup',   handleKeyup);
 document.getElementById('keyboardWrap').addEventListener('click', function(e) {
   // If a settings panel is open, the keyboard is not truly resting idle --
   // ignore the click so it does not trigger unpausing beneath the panel.
+  // Exception: tapping the keyboard while viewing the history record folds it down.
+  if (activeSettings === 'panelEndGameHistoryRecord') {
+    if (_kbPos === 'face') setKbPosition('edge');
+    return;
+  }
   if (activeSettings !== null) return;
   if (gameState === 'readyToUnpause') {
     // Any click in the keyboard area folds it away to the pause screen
@@ -10157,7 +10162,6 @@ document.getElementById('keyboardWrap').addEventListener('click', function(e) {
     enterPause();
     return;
   }
-
   // When the keyboard is folded and touch is not enabled, clicking it raises it back up.
   // In paused/finished states this enters the readyToUnpause / face position.
   if (_kbPos !== 'face' && !touchEnabled) {

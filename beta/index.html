@@ -10146,8 +10146,17 @@ document.addEventListener('keyup',   handleKeyup);
 document.getElementById('kbFlipStage').addEventListener('pointerdown', function(e) {
   if (activeSettings !== 'panelEndGameHistoryRecord' && activeSettings !== 'panelCheatSheet') return;
   if (_kbPos === 'edge') return;
-  // Allow clicks on the settings icons to pass through
-  if (e.target.closest('#kbIconWrap, #brIconWrap, #diffIconWrap')) return;
+  // Don't fold if the pointer is over one of the settings icon wraps --
+  // they are positioned outside kbFlipStage in the DOM but overlap it visually.
+  var IconWrapIds = ['kbIconWrap', 'brIconWrap', 'diffIconWrap'];
+  var PointerIsOverIcon = IconWrapIds.some(function(IconId) {
+    var IconElement = document.getElementById(IconId);
+    if (!IconElement) return false;
+    var IconRect = IconElement.getBoundingClientRect();
+    return e.clientX >= IconRect.left && e.clientX <= IconRect.right &&
+           e.clientY >= IconRect.top  && e.clientY <= IconRect.bottom;
+  });
+  if (PointerIsOverIcon) return;
   e.stopPropagation();
   setKbPosition('edge');
 });

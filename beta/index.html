@@ -5029,7 +5029,7 @@ function _spAlignPanel() {
       var IsEdgePanel = (activeSettings === 'panelEndGameReportCard' || activeSettings === 'panelCheatSheet' ||
                          activeSettings === 'panelPause'  || activeSettings === 'panelConflicts' ||
                          activeSettings === 'panelDifficultySettings' || activeSettings === 'panelEndGameHistoryRecord');
-      var needed = IsEdgePanel
+      var needed = IsPartialPanel
         ? contentH + 8
         : (contentH > stageH ? contentH + stageH + 24 : contentH + 16);
       wrap.style.minHeight = Math.max(needed, 320) + 'px';

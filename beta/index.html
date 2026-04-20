@@ -9407,34 +9407,37 @@ var AnsweredTimingMap = {};
     PlaceholderLi.textContent = IsActiveGame ? 'Answered questions will appear here.' : '';
     List.appendChild(PlaceholderLi);
   } else {
+    var CheatSheetSuccessCounter = 0;
     AnsweredQuestions.forEach(function(Question) {
-      var ShortcutDisplay = currentOs === 'pc' ? Question.pc_sc : Question.mac_sc;
-      var li = document.createElement('li');
-      li.style.alignItems = 'flex-start';
-      li.dataset.shortcutToken = Question.shortcut;
-
-var dot = document.createElement('span');
-      dot.className = 'sp-report-dot';
-      dot.style.marginTop = '5px';
-      dot.style.background = AnsweredOutcomeColourMap[Question.shortcut] || '#10b981';
-
-      var label = document.createElement('span');
-      label.className = 'sp-report-question-label';
-      label.textContent = (Question.display || '').replace(/\\\\/g, '\\');
-
-         li.appendChild(dot);
-      var TimingData = AnsweredTimingMap[Question.shortcut] || null;
-      if (TimingData && TimingData.text) {
-        var TimeElement = document.createElement('small');
-        TimeElement.textContent = TimingData.text;
-TimeElement.style.cssText = 'color:#9ca3af;flex-shrink:0;margin-left:-3px;margin-right:4px;margin-top:2px;line-height:1.5;white-space:nowrap;' + (TimingData.text === 'none' ? 'font-size:9px;letter-spacing:0.01em;margin-right:3px;' : '');
-
-        li.appendChild(TimeElement);
+      var MatchingEntry = null;
+      for (var ri = runData.length - 1; ri >= 0; ri--) {
+        var EntryQuestion = questionPool[runData[ri].questionIndex];
+        if (EntryQuestion && EntryQuestion.shortcut === Question.shortcut) {
+          MatchingEntry = runData[ri];
+          break;
+        }
       }
-        
-      li.appendChild(label);
-      li.appendChild(BuildShortcutKeyChips(ShortcutDisplay, true));
-      List.appendChild(li);
+      var QuestionNumber = null;
+      if (MatchingEntry && MatchingEntry.endType === 'success') {
+        CheatSheetSuccessCounter++;
+        QuestionNumber = CheatSheetSuccessCounter;
+      }
+      var SummaryItem = {
+        displayText:       (Question.display || '').replace(/\\\\/g, '\\'),
+        shortcut:          currentOs === 'pc' ? Question.pc_sc : Question.mac_sc,
+        shortcutToken:     Question.shortcut,
+        endType:           MatchingEntry ? MatchingEntry.endType : 'success',
+        timeToAnswerMs:    MatchingEntry ? MatchingEntry.timeToAnswerMs : null,
+        hintUsed:          MatchingEntry ? MatchingEntry.hintUsedAtMs !== null : false,
+        wrongKeyCount:     MatchingEntry ? MatchingEntry.wrongKeyCount : 0,
+        isSlow:            false,
+        partialNudgeFired: MatchingEntry ? (MatchingEntry.partialNudgeFired || false) : false,
+        partialCorrectKey: MatchingEntry ? (MatchingEntry.partialCorrectKey || false) : false,
+      };
+      var ListItem = BuildEndGameListItem(SummaryItem, QuestionNumber);
+      var DotElement = ListItem.querySelector('.sp-report-dot');
+      if (DotElement) DotElement.style.background = AnsweredOutcomeColourMap[Question.shortcut] || '#10b981';
+      List.appendChild(ListItem);
     });
   }
 

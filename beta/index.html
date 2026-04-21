@@ -11044,9 +11044,9 @@ function setKbPosition(pos) {
 }
 
 // Auto-settle: called after panel content has rendered.
-// Measures the bottom of critical content and animates the keyboard to the highest
-// acceptable angle — revealing all content but not leaving unnecessary empty space.
-// PanelElementId: the id of the innermost content container to measure.
+// Moves the keyboard to edge first (guaranteed safe), measures the content bottom,
+// then animates back up to the highest angle that does not eclipse the content.
+// PanelElementId: the id of the content container to measure against.
 // AfterSettleCallback: optional, called once the settle animation completes.
 function setKbPositionAutoSettle(PanelElementId, AfterSettleCallback) {
   if (ForceNoKeyboard) {
@@ -11054,88 +11054,95 @@ function setKbPositionAutoSettle(PanelElementId, AfterSettleCallback) {
     return;
   }
 
-  // Two rAFs to let the browser commit the rendered panel before we measure.
+  // Default toggle targets: partial / edge. These are overwritten by the
+  // settle logic below, but must always be sensible named positions.
+  _kbToggleHigh = 'partial';
+  _kbToggleLow  = 'edge';
+
+  // Step 1: move keyboard to edge immediately so content is fully unobscured
+  // while we measure. The keyboard will then animate back up.
+  setKbPosition('edge');
+
+  // Step 2: wait for the CSS transition to commit the edge position (one rAF
+  // is enough — we just need the transform to be applied so getBoundingClientRect
+  // reads the edge geometry, not the old face geometry).
   requestAnimationFrame(function() {
     requestAnimationFrame(function() {
-      var ContentElement = PanelElementId ? document.getElementById(PanelElementId) : null;
-      var PanelInner     = document.getElementById('settingsPanelInner');
-      var Stage          = document.getElementById('kbFlipStage');
-      var KeyboardPanel  = document.getElementById('keyboardPanel');
+      var PanelInner    = document.getElementById('settingsPanelInner');
+      var Stage         = document.getElementById('kbFlipStage');
+      var KeyboardPanel = document.getElementById('keyboardPanel');
 
-      if (!Stage || !KeyboardPanel) {
-        setKbPosition('partial');
+      if (!Stage || !KeyboardPanel || !PanelInner) {
+        // Fallback: stay at edge.
         if (AfterSettleCallback) AfterSettleCallback();
         return;
       }
 
-      // Measure the bottom of the content we need to keep visible.
-      // We use the settingsPanelInner scrollHeight as proxy if no specific element given.
-      var MeasureElement = ContentElement || PanelInner;
-      var ContentBottomInViewport = MeasureElement
-        ? MeasureElement.getBoundingClientRect().bottom
-        : 0;
+      // Measure the bottom of the panel content in viewport coordinates.
+      // scrollHeight gives us the full rendered height even if clipped by overflow.
+      // getBoundingClientRect().top gives us where the inner starts in the viewport.
+      var PanelInnerRect   = PanelInner.getBoundingClientRect();
+      var ContentBottom    = PanelInnerRect.top + PanelInner.scrollHeight;
 
-      // The keyboard panel's top edge at each named position (in viewport coords).
-      // We need the keyboard top to be AT or BELOW the content bottom.
-      // First move to partial to get a real measurement baseline.
-      var PartialAngle = KbNamedPositions.partial.panelRotateX;
-      var EdgeAngle    = KbNamedPositions.edge.panelRotateX;
-      var FaceAngle    = KbNamedPositions.face.panelRotateX;
+      // Measure where the keyboard top sits at partial and at edge (current position).
+      // At edge the keyboard is already there, so we can read it directly.
+      var KbRectAtEdge     = KeyboardPanel.getBoundingClientRect();
+      var KbTopAtEdge      = KbRectAtEdge.top;
 
-      // Temporarily read the keyboard panel's top at partial (it may already be there).
-      // We derive the ideal angle mathematically from the content bottom position
-      // relative to the stage position at each named extreme.
+      // Estimate KbTop at partial by offsetting from edge using the known difference
+      // in stageTranslateY between the two named positions.
+      var StageYDifference = KbNamedPositions.edge.stageTranslateY - KbNamedPositions.partial.stageTranslateY;
+      var KbTopAtPartial   = KbTopAtEdge - StageYDifference;
 
-      // Get keyboard panel top at partial and edge by computing from stage position.
-      // Stage offsetTop + stageTranslateY gives us the stage top on the page.
-      var StageOffsetTop  = Stage.offsetTop || 0;
-      var PartialKbTop    = StageOffsetTop + KbNamedPositions.partial.stageTranslateY - window.scrollY;
-      var EdgeKbTop       = StageOffsetTop + KbNamedPositions.edge.stageTranslateY - window.scrollY;
+      // Estimate KbTop at face similarly.
+      var KbTopAtFace      = KbTopAtEdge - KbNamedPositions.edge.stageTranslateY;
 
-      // How much clearance we want below the content before the keyboard starts (px).
-      // A small positive value means we prefer slight clipping over leaving a gap.
-      var ClearanceBuffer = -6;
+      // How much clearance between content bottom and keyboard top we are happy with.
+      // Negative = slight clipping preferred over a visible gap.
+      var ClearanceBuffer  = -6;
+      var IdealKbTop       = ContentBottom + ClearanceBuffer;
 
-      var IdealKbTop = ContentBottomInViewport + ClearanceBuffer;
-
+      var FaceAngle        = KbNamedPositions.face.panelRotateX;
+      var PartialAngle     = KbNamedPositions.partial.panelRotateX;
+      var EdgeAngle        = KbNamedPositions.edge.panelRotateX;
       var IdealAngle;
 
-      if (IdealKbTop >= EdgeKbTop) {
-        // Content is short — keyboard can go higher than partial, even toward face.
-        // Interpolate between face and partial.
-        if (IdealKbTop >= StageOffsetTop - window.scrollY) {
-          // Content so short keyboard could go to face — cap at face.
-          IdealAngle = FaceAngle;
-        } else {
-          var FractionToPartial = 1 - ((IdealKbTop - PartialKbTop) / ((StageOffsetTop - window.scrollY) - PartialKbTop));
-          IdealAngle = Math.round(FractionToPartial * PartialAngle);
-        }
+      if (IdealKbTop >= KbTopAtFace) {
+        // Content is very short — keyboard can go all the way to face.
+        IdealAngle    = FaceAngle;
         _kbToggleHigh = 'face';
         _kbToggleLow  = 'partial';
-      } else if (IdealKbTop >= PartialKbTop) {
-        // Content fits within partial — keyboard stays at or shallower than partial.
-        var FractionBetween = (PartialKbTop - IdealKbTop) / (PartialKbTop - EdgeKbTop);
-        IdealAngle = Math.round(PartialAngle + FractionBetween * (EdgeAngle - PartialAngle));
+      } else if (IdealKbTop >= KbTopAtPartial) {
+        // Content fits above the partial position — interpolate between face and partial.
+        var Range     = KbTopAtPartial - KbTopAtFace;
+        var Fraction  = Range > 0 ? (IdealKbTop - KbTopAtFace) / Range : 1;
+        IdealAngle    = Math.round(Fraction * PartialAngle);
+        _kbToggleHigh = 'face';
+        _kbToggleLow  = 'partial';
+      } else if (IdealKbTop >= KbTopAtEdge) {
+        // Content fits between partial and edge — interpolate.
+        var Range     = KbTopAtEdge - KbTopAtPartial;
+        var Fraction  = Range > 0 ? (IdealKbTop - KbTopAtPartial) / Range : 1;
+        IdealAngle    = Math.round(PartialAngle + Fraction * (EdgeAngle - PartialAngle));
         _kbToggleHigh = 'partial';
         _kbToggleLow  = 'edge';
       } else {
-        // Content is tall — keyboard must go to or past edge.
-        IdealAngle = EdgeAngle;
+        // Content is taller than the keyboard at edge — stay at edge.
+        IdealAngle    = EdgeAngle;
         _kbToggleHigh = 'partial';
         _kbToggleLow  = 'edge';
       }
 
-      // Clamp to the allowed range.
+      // Clamp to allowed range.
       IdealAngle = Math.max(FaceAngle, Math.min(EdgeAngle, IdealAngle));
 
-      // If the ideal angle matches a named position exactly, use named position logic
-      // so we get the wall/shadow decorations correctly.
+      // Apply: use named position if we landed exactly on one (gets decorations right).
       if (IdealAngle === FaceAngle) {
         setKbPosition('face');
       } else if (IdealAngle === PartialAngle) {
         setKbPosition('partial');
       } else if (IdealAngle === EdgeAngle) {
-        setKbPosition('edge');
+        // Already at edge — nothing to do.
       } else {
         _applyKbAngle(IdealAngle);
       }

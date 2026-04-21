@@ -755,6 +755,12 @@ body.pc-mode #extKeyPill {
     opacity   0.3s ease 0.25s,
     transform 0.3s ease 0.25s;
   pointer-events: none;
+  /* Overflow fade: a permanent gradient mask at the bottom of the content area.
+     Only becomes visible when content extends into the keyboard fold zone.
+     The fade sits behind the keyboard position in both Partial and Edge views,
+     roughly level with the bottom of the SHIFT key row. */
+  -webkit-mask-image: linear-gradient(to bottom, black 0%, black calc(100% - 48px), transparent 100%);
+  mask-image: linear-gradient(to bottom, black 0%, black calc(100% - 48px), transparent 100%);
 }
 
 #settingsPanel.sp-open #settingsPanelInner {
@@ -2533,6 +2539,10 @@ li.conflict-dismissed .conflict-desc {
   display: flex;
   align-items: center;
   justify-content: center;
+  /* Always above the kbFlipStage (z-index 2) so icon clicks are never
+     blocked when the stage has pointer-events:none applied by JS. */
+  z-index: 4;
+  pointer-events: auto;
 }
 #kbIconWrap { left: 0; }
 #brIconWrap { right: 0; }
@@ -2542,8 +2552,16 @@ li.conflict-dismissed .conflict-desc {
   display: flex;
   justify-content: center;
   margin-top: 4px;
+  /* diffIconWrap sits in normal document flow below the keyboard wrap.
+     When the keyboard folds down (stage translates), the wrap's minHeight
+     increases and diffIconWrap is pushed further down naturally.
+     The translate nudge at face position tucks it up into the keyboard shadow. */
   transform: translateY(0);
   transition: transform 0.85s cubic-bezier(0.4, 0, 0.2, 1);
+  /* Ensure the icon is always clickable — sit above the keyboard stage's
+     pointer-events:none zone that is set while a panel is open. */
+  position: relative;
+  z-index: 3;
 }
 #diffIcon {
   display: block; fill: #9ca3af; pointer-events: auto;

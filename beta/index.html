@@ -11081,10 +11081,9 @@ function setKbPositionAutoSettle(AfterSettleCallback) {
     // Measure where the keyboard top sits right now (at edge position).
     var KbTopAtEdge = KeyboardPanel.getBoundingClientRect().top;
 
-    // Back-calculate keyboard top at partial and face from the known stageTranslateY differences.
+    // Back-calculate keyboard top at partial from the known stageTranslateY difference.
     var EdgeToPartialDiff = KbNamedPositions.edge.stageTranslateY - KbNamedPositions.partial.stageTranslateY;
     var KbTopAtPartial    = KbTopAtEdge - EdgeToPartialDiff;
-    var KbTopAtFace       = KbTopAtEdge - KbNamedPositions.edge.stageTranslateY;
 
     // Measure the bottom of the rendered panel content.
     var PanelRect    = PanelInner.getBoundingClientRect();
@@ -11093,23 +11092,18 @@ function setKbPositionAutoSettle(AfterSettleCallback) {
     // Prefer slight clipping (6px) over leaving a visible gap below the content.
     var IdealKbTop = ContentBottom - 6;
 
-    var FaceAngle    = KbNamedPositions.face.panelRotateX;    // 0
     var PartialAngle = KbNamedPositions.partial.panelRotateX; // 62
     var EdgeAngle    = KbNamedPositions.edge.panelRotateX;    // 82
     var IdealAngle;
 
-    if (IdealKbTop >= KbTopAtFace) {
-      // Content so short the keyboard could return to face.
-      IdealAngle    = FaceAngle;
-      _kbToggleHigh = 'face';
-      _kbToggleLow  = 'partial';
-    } else if (IdealKbTop >= KbTopAtPartial) {
-      // Content fits above partial -- interpolate between face and partial.
-      var Range    = KbTopAtPartial - KbTopAtFace;
-      var Fraction = Range > 0 ? (IdealKbTop - KbTopAtFace) / Range : 1;
-      IdealAngle    = Math.round(Fraction * PartialAngle);
-      _kbToggleHigh = 'face';
-      _kbToggleLow  = 'partial';
+    // Auto-settle never returns the keyboard to face: the minimum settled position
+    // is partial. Face is only reached by the user manually raising the keyboard.
+    // Toggle targets always allow the user to push further down to edge.
+    if (IdealKbTop >= KbTopAtPartial) {
+      // Content short enough that partial (or higher) would clear it -- settle at partial.
+      IdealAngle    = PartialAngle;
+      _kbToggleHigh = 'partial';
+      _kbToggleLow  = 'edge';
     } else if (IdealKbTop >= KbTopAtEdge) {
       // Content fits between partial and edge -- interpolate.
       var Range    = KbTopAtEdge - KbTopAtPartial;
@@ -11124,12 +11118,10 @@ function setKbPositionAutoSettle(AfterSettleCallback) {
       _kbToggleLow  = 'edge';
     }
 
-    IdealAngle = Math.max(FaceAngle, Math.min(EdgeAngle, IdealAngle));
+    IdealAngle = Math.max(PartialAngle, Math.min(EdgeAngle, IdealAngle));
 
     // Apply position. Use named positions where possible for correct decorations.
-    if (IdealAngle === FaceAngle) {
-      setKbPosition('face');
-    } else if (IdealAngle === PartialAngle) {
+    if (IdealAngle === PartialAngle) {
       setKbPosition('partial');
     } else if (IdealAngle === EdgeAngle) {
       // Already at edge -- no movement needed.

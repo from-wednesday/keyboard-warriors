@@ -755,12 +755,23 @@ body.pc-mode #extKeyPill {
     opacity   0.3s ease 0.25s,
     transform 0.3s ease 0.25s;
   pointer-events: none;
-  /* Overflow fade: a permanent gradient mask at the bottom of the content area.
-     Only becomes visible when content extends into the keyboard fold zone.
-     The fade sits behind the keyboard position in both Partial and Edge views,
-     roughly level with the bottom of the SHIFT key row. */
-  -webkit-mask-image: linear-gradient(to bottom, black 0%, black calc(100% - 48px), transparent 100%);
-  mask-image: linear-gradient(to bottom, black 0%, black calc(100% - 48px), transparent 100%);
+}
+
+/* Overflow fade: a gradient overlay that sits in front of overflowing content
+   at the bottom of the panel. Only becomes visible when content extends into
+   the keyboard fold zone. Uses a pseudo-element so it does not affect pointer
+   events on the content beneath (which would break buttons near the fold). */
+#settingsPanel.sp-open #settingsPanelInner::after {
+  content: '';
+  position: sticky;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 48px;
+  display: block;
+  background: linear-gradient(to bottom, transparent 0%, #f0f4f8 100%);
+  pointer-events: none;
+  margin-top: -48px;
 }
 
 #settingsPanel.sp-open #settingsPanelInner {

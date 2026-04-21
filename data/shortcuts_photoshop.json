@@ -15,10 +15,17 @@
   },
   {
     "shortcut": "A",
-    "display": "switch to the Direct Selection tool",
+    "display": "switch to the Path Selection tools",
     "mac_sc": "A",
     "pc_sc": "A",
-    "difficulty": 1
+    "difficulty": 2
+  },
+  {
+    "shortcut": "SHIFT+A",
+    "display": "toggle between Path Select & Point Select tools",
+    "mac_sc": "⇧+A",
+    "pc_sc": "⇧+A",
+    "difficulty": 4
   },
   {
     "shortcut": "P",

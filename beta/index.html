@@ -1329,8 +1329,9 @@ function applyOsMode(os) {
 
   // Restore keyboard position without any animation after DOM rebuild
   if (savedPos !== 'face') {
+    var RestoreNamedPos = KbNamedPositions[savedPos] || KbNamedPositions.partial;
     _kbPos     = savedPos;
-    _kbFlipped = (savedPos === 'edge');
+    _kbFlipped = (savedPos !== 'face');
     panel.classList.toggle('kb-partial', savedPos === 'partial');
     panel.classList.add('kb-edged');
     if (savedPos === 'edge') {
@@ -1338,8 +1339,8 @@ function applyOsMode(os) {
       stage.classList.add('kb-show-base');
     }
     wrap.classList.add('kb-flipping');
-    panel.style.transform = KB_POS[savedPos].panel;
-    stage.style.transform = KB_POS[savedPos].stage;
+    panel.style.transform = 'rotateX(' + RestoreNamedPos.panelRotateX + 'deg)';
+    stage.style.transform = 'translateY(' + RestoreNamedPos.stageTranslateY + 'px)';
     // Force a reflow so the browser commits the transform at this position,
     // then re-enable transitions synchronously — no async gap for clicks to fall into.
     void panel.offsetWidth;
@@ -5222,23 +5223,20 @@ function openSettings(page) {
     }
   }
 
-  // Update kbPos — partial preferred for most panels
-  var pos = (page === 'panelConflicts' || page === 'panelPause' || page === 'panelDifficultySettings') ? 'edge' : 'partial';
-  setKbPosition(pos);
-  // Report card: start at partial, then check after render whether the advice box
-  // is clipped by the keyboard. If so, upgrade to edge.
-  if (page === 'panelEndGameReportCard') {
-    requestAnimationFrame(function() {
-      requestAnimationFrame(function() {
-        var AdviceBox = document.getElementById('reportTrainerAdvice');
-        var KeyboardPanel = document.getElementById('keyboardPanel');
-        if (AdviceBox && KeyboardPanel) {
-          var AdviceBottom = AdviceBox.getBoundingClientRect().bottom;
-          var KeyboardTop  = KeyboardPanel.getBoundingClientRect().top;
-          if (AdviceBottom > KeyboardTop) setKbPosition('edge');
-        }
-      });
-    });
+  // Keyboard positioning: for panels that need all content visible, render the
+  // panel content first (by populating it below), then auto-settle the keyboard
+  // to the highest angle that does not eclipse the content.
+  // For panels where clipping is acceptable, go straight to partial.
+  var ContentCriticalPanels = new Set([
+    'panelKeyboard', 'panelDifficultySettings', 'panelPause',
+    'panelEndGameReportCard', 'panelLandingWelcome', 'panelLandingReturning'
+  ]);
+  var UseAutoSettle = ContentCriticalPanels.has(page);
+
+  // For non-critical panels go to partial immediately so the keyboard is already
+  // moving while the content renders. Auto-settle is not run for these.
+  if (!UseAutoSettle) {
+    setKbPosition('partial');
   }
 
   // Pause game if needed (not for pause panel or when on welcome screen)
@@ -5258,6 +5256,12 @@ function openSettings(page) {
 
   // Align panel width to keyboard
   _spAlignPanel();
+
+  // Auto-settle keyboard position for content-critical panels.
+  // Content has been populated above; auto-settle measures and animates.
+  if (UseAutoSettle) {
+    setKbPositionAutoSettle('settingsPanelInner');
+  }
 
   // Show/activate the right page
   SP_PAGE_ORDER.forEach(function(p) {
@@ -5287,11 +5291,13 @@ function openSettings(page) {
   var sp = document.getElementById('settingsPanel');
   if (sp) sp.classList.add('sp-open');
 
-  // Disable pointer-events on the keyboard stage so the tilted panel
-  // doesn't intercept clicks on diffIcon and other elements below it.
-  // Exception: history record panel needs the keyboard tappable to fold it.
+  // Disable pointer-events on the keyboard stage so the tilted 3D surface
+  // doesn't intercept clicks on elements below it.
+  // Icon wraps (kbIconWrap, brIconWrap, diffIconWrap) have z-index above the stage
+  // and explicit pointer-events:auto in CSS so they are unaffected.
+  // Keyboard tap-to-adjust-angle works via keyboardWrap click, not the stage itself.
   var stage = document.getElementById('kbFlipStage');
-  if (stage) stage.style.pointerEvents = (page === 'panelCheatSheet') ? '' : 'none';
+  if (stage) stage.style.pointerEvents = 'none';
 
   // Pin tooltip only for the three true settings pages
   var isPinnableSettings = (page === 'panelKeyboard' || page === 'panelConflicts' || page === 'panelDifficultySettings');
@@ -10156,22 +10162,23 @@ document.addEventListener('keydown', handleKeydown);
 document.addEventListener('keyup',   handleKeyup);
 
 document.getElementById('keyboardWrap').addEventListener('click', function(e) {
-  // Fold to edge when history or cheat sheet panel is open and the top half of the keyboard is tapped.
-  if (activeSettings === 'panelEndGameHistoryRecord' || activeSettings === 'panelCheatSheet') {
-    if (_kbPos !== 'edge') {
-      var KeyboardPanel = document.getElementById('keyboardPanel');
-      if (KeyboardPanel) {
-        var KeyboardRect = KeyboardPanel.getBoundingClientRect();
-        if (e.clientY <= KeyboardRect.top + KeyboardRect.height / 2) {
-          setKbPosition('edge');
-          return;
-        }
-      }
+  // When a panel is open: keyboard taps adjust the fold position.
+  // The icon wraps (kb/browser/diff) sit outside the kbFlipStage and have their
+  // own pointer handlers — do not intercept those.
+  if (e.target.closest('#kbIconWrap, #brIconWrap, #diffIconWrap')) return;
+
+  if (activeSettings !== null) {
+    // Any panel open: let the keyboard itself be tapped to adjust angle.
+    // Touch-enabled mode does not use this — touch keys need face position.
+    if (!touchEnabled) {
+      var WasHandled = handleKeyboardPanelTap(e.clientY);
+      if (WasHandled) return;
     }
+    // Cheat sheet / history: tapping was previously also used to fold; keep that.
     return;
   }
-  // If any other settings panel is open, ignore clicks on the keyboard area.
-  if (activeSettings !== null) return;
+
+  // No panel open: existing behaviour.
   if (gameState === 'readyToUnpause') {
     _enterReadyToUnpauseCleanup();
     gameState = 'paused';
@@ -10912,16 +10919,26 @@ function handleKeyup(e) {
 }
 
 /* ── Keyboard flip ────────────────────────────────── */
-var _kbPos     = 'face'; // 'face' | 'partial' | 'edge'
-var _kbFlipped = false;  // kept for applyOsMode compatibility — true when pos is 'edge'
-var _flipSeq   = 0;      // still used by the show/hide icon timing
+var _kbPos     = 'face'; // 'face' | 'partial' | 'edge' | 'custom'
+var _kbFlipped = false;  // kept for applyOsMode compatibility — true when pos is 'edge' or 'custom'
+var _flipSeq   = 0;
 
-// KB position targets
-var KB_POS = {
-  face:    { stage: 'translateY(0px)',   panel: 'rotateX(0deg)'  },
-  partial: { stage: 'translateY(89px)',  panel: 'rotateX(62deg)' },
-  edge:    { stage: 'translateY(118px)', panel: 'rotateX(82deg)' },
+// Named position angle definitions.
+// StageTranslateY moves the stage down (revealing space above for panel content).
+// PanelRotateX tilts the keyboard panel backward on its bottom hinge.
+var KbNamedPositions = {
+  face:    { stageTranslateY: 0,   panelRotateX: 0  },
+  partial: { stageTranslateY: 89,  panelRotateX: 62 },
+  edge:    { stageTranslateY: 118, panelRotateX: 82 },
 };
+
+// The custom resting angle used when auto-settle lands between named positions.
+// Null when not in custom mode.
+var _kbCustomRotateX = null;
+
+// After auto-settle, user taps toggle between these two named positions only.
+var _kbToggleLow  = 'edge';
+var _kbToggleHigh = 'partial';
 
 function _touchModalVisible() {
   var gyro = document.getElementById('gyroModal');
@@ -10930,40 +10947,77 @@ function _touchModalVisible() {
          (kb   && kb.classList.contains('visible'));
 }
 
+// Internal: apply a specific rotateX angle to the keyboard without snapping to a named position.
+// Used by auto-settle. Sets _kbPos to 'custom'.
+function _applyKbAngle(RotateXDegrees) {
+  if (ForceNoKeyboard) return;
+  var StageTranslateY = _interpolateStageY(RotateXDegrees);
+  var panel = document.getElementById('keyboardPanel');
+  var stage = document.getElementById('kbFlipStage');
+  var wrap  = document.getElementById('keyboardWrap');
+  if (!panel || !stage || !wrap) return;
+
+  _kbPos           = 'custom';
+  _kbCustomRotateX = RotateXDegrees;
+  _kbFlipped       = true;
+
+  stage.style.transform = 'translateY(' + StageTranslateY + 'px)';
+  panel.style.transform = 'rotateX(' + RotateXDegrees + 'deg)';
+
+  panel.classList.add('kb-edged');
+  panel.classList.remove('kb-edges-visible', 'kb-partial');
+  stage.classList.remove('kb-show-base');
+  wrap.classList.remove('kb-at-face');
+  wrap.classList.add('kb-flipping');
+}
+
+// Linear interpolation of stageTranslateY from the angle, using the partial and edge anchors.
+function _interpolateStageY(RotateXDegrees) {
+  var PartialAngle = KbNamedPositions.partial.panelRotateX;
+  var EdgeAngle    = KbNamedPositions.edge.panelRotateX;
+  var PartialY     = KbNamedPositions.partial.stageTranslateY;
+  var EdgeY        = KbNamedPositions.edge.stageTranslateY;
+  if (RotateXDegrees <= 0)              return 0;
+  if (RotateXDegrees <= PartialAngle) {
+    // Between face and partial
+    return Math.round((RotateXDegrees / PartialAngle) * PartialY);
+  }
+  if (RotateXDegrees >= EdgeAngle)    return EdgeY;
+  // Between partial and edge
+  var Fraction = (RotateXDegrees - PartialAngle) / (EdgeAngle - PartialAngle);
+  return Math.round(PartialY + Fraction * (EdgeY - PartialY));
+}
+
 function setKbPosition(pos) {
   if (ForceNoKeyboard) return;
-  if (_touchModalVisible()) { _kbPos = pos; _kbFlipped = (pos === 'edge'); return; }
+  if (_touchModalVisible()) { _kbPos = pos; _kbFlipped = (pos !== 'face'); return; }
   var seq = ++_flipSeq;
-  _kbPos     = pos;
-  _kbFlipped = (pos === 'edge');
+  _kbPos           = pos;
+  _kbCustomRotateX = null;
+  _kbFlipped       = (pos !== 'face');
+
+  var NamedPos = KbNamedPositions[pos];
+  if (!NamedPos) { console.warn('setKbPosition: unknown position "' + pos + '"'); return; }
 
   var panel = document.getElementById('keyboardPanel');
   var stage = document.getElementById('kbFlipStage');
   var wrap  = document.getElementById('keyboardWrap');
 
-  // ── Apply the CSS transforms immediately so the transition starts right away ──
-  stage.style.transform = KB_POS[pos].stage;
-  panel.style.transform = KB_POS[pos].panel;
+  stage.style.transform = 'translateY(' + NamedPos.stageTranslateY + 'px)';
+  panel.style.transform = 'rotateX(' + NamedPos.panelRotateX + 'deg)';
 
-  // ── kb-edged controls wall and shadow visibility via CSS.
-  //    It must be set immediately and unconditionally so those elements are
-  //    never in the wrong state regardless of how quickly positions change. ──
   if (pos === 'face') {
-    // Snap key colours back instantly before removing the edged class
     panel.classList.add('no-key-transition');
     panel.classList.remove('kb-edged', 'kb-edges-visible', 'kb-partial');
     stage.classList.remove('kb-show-base');
     requestAnimationFrame(function() { panel.classList.remove('no-key-transition'); });
   } else {
-    // Both partial and edge need the edged appearance immediately
     panel.classList.add('kb-edged');
     panel.classList.toggle('kb-partial', pos === 'partial');
   }
 
-  // ── kb-flipping hides the icon tooltips while the keyboard is away from face ──
   if (pos === 'face') {
     wrap.classList.add('kb-at-face');
-    // Restore pointer-events and flipping class only after the transition settles
     setTimeout(function() {
       if (_flipSeq !== seq) return;
       wrap.classList.remove('kb-flipping');
@@ -10974,12 +11028,9 @@ function setKbPosition(pos) {
     wrap.classList.add('kb-flipping');
   }
 
-  // ── Edge-only decorations: base highlight and edge detail reveal.
-  //    These are purely additive cosmetic details so no seq guard needed. ──
   if (pos === 'edge') {
     setTimeout(function() { panel.classList.add('kb-edges-visible'); }, 400);
     setTimeout(function() { stage.classList.add('kb-show-base'); },    650);
-    // Clear stuck keys once fully settled
     setTimeout(function() {
       if (_flipSeq !== seq) return;
       clearAllLit();
@@ -10992,11 +11043,141 @@ function setKbPosition(pos) {
   }
 }
 
+// Auto-settle: called after panel content has rendered.
+// Measures the bottom of critical content and animates the keyboard to the highest
+// acceptable angle — revealing all content but not leaving unnecessary empty space.
+// PanelElementId: the id of the innermost content container to measure.
+// AfterSettleCallback: optional, called once the settle animation completes.
+function setKbPositionAutoSettle(PanelElementId, AfterSettleCallback) {
+  if (ForceNoKeyboard) {
+    if (AfterSettleCallback) AfterSettleCallback();
+    return;
+  }
+
+  // Two rAFs to let the browser commit the rendered panel before we measure.
+  requestAnimationFrame(function() {
+    requestAnimationFrame(function() {
+      var ContentElement = PanelElementId ? document.getElementById(PanelElementId) : null;
+      var PanelInner     = document.getElementById('settingsPanelInner');
+      var Stage          = document.getElementById('kbFlipStage');
+      var KeyboardPanel  = document.getElementById('keyboardPanel');
+
+      if (!Stage || !KeyboardPanel) {
+        setKbPosition('partial');
+        if (AfterSettleCallback) AfterSettleCallback();
+        return;
+      }
+
+      // Measure the bottom of the content we need to keep visible.
+      // We use the settingsPanelInner scrollHeight as proxy if no specific element given.
+      var MeasureElement = ContentElement || PanelInner;
+      var ContentBottomInViewport = MeasureElement
+        ? MeasureElement.getBoundingClientRect().bottom
+        : 0;
+
+      // The keyboard panel's top edge at each named position (in viewport coords).
+      // We need the keyboard top to be AT or BELOW the content bottom.
+      // First move to partial to get a real measurement baseline.
+      var PartialAngle = KbNamedPositions.partial.panelRotateX;
+      var EdgeAngle    = KbNamedPositions.edge.panelRotateX;
+      var FaceAngle    = KbNamedPositions.face.panelRotateX;
+
+      // Temporarily read the keyboard panel's top at partial (it may already be there).
+      // We derive the ideal angle mathematically from the content bottom position
+      // relative to the stage position at each named extreme.
+
+      // Get keyboard panel top at partial and edge by computing from stage position.
+      // Stage offsetTop + stageTranslateY gives us the stage top on the page.
+      var StageOffsetTop  = Stage.offsetTop || 0;
+      var PartialKbTop    = StageOffsetTop + KbNamedPositions.partial.stageTranslateY - window.scrollY;
+      var EdgeKbTop       = StageOffsetTop + KbNamedPositions.edge.stageTranslateY - window.scrollY;
+
+      // How much clearance we want below the content before the keyboard starts (px).
+      // A small positive value means we prefer slight clipping over leaving a gap.
+      var ClearanceBuffer = -6;
+
+      var IdealKbTop = ContentBottomInViewport + ClearanceBuffer;
+
+      var IdealAngle;
+
+      if (IdealKbTop >= EdgeKbTop) {
+        // Content is short — keyboard can go higher than partial, even toward face.
+        // Interpolate between face and partial.
+        if (IdealKbTop >= StageOffsetTop - window.scrollY) {
+          // Content so short keyboard could go to face — cap at face.
+          IdealAngle = FaceAngle;
+        } else {
+          var FractionToPartial = 1 - ((IdealKbTop - PartialKbTop) / ((StageOffsetTop - window.scrollY) - PartialKbTop));
+          IdealAngle = Math.round(FractionToPartial * PartialAngle);
+        }
+        _kbToggleHigh = 'face';
+        _kbToggleLow  = 'partial';
+      } else if (IdealKbTop >= PartialKbTop) {
+        // Content fits within partial — keyboard stays at or shallower than partial.
+        var FractionBetween = (PartialKbTop - IdealKbTop) / (PartialKbTop - EdgeKbTop);
+        IdealAngle = Math.round(PartialAngle + FractionBetween * (EdgeAngle - PartialAngle));
+        _kbToggleHigh = 'partial';
+        _kbToggleLow  = 'edge';
+      } else {
+        // Content is tall — keyboard must go to or past edge.
+        IdealAngle = EdgeAngle;
+        _kbToggleHigh = 'partial';
+        _kbToggleLow  = 'edge';
+      }
+
+      // Clamp to the allowed range.
+      IdealAngle = Math.max(FaceAngle, Math.min(EdgeAngle, IdealAngle));
+
+      // If the ideal angle matches a named position exactly, use named position logic
+      // so we get the wall/shadow decorations correctly.
+      if (IdealAngle === FaceAngle) {
+        setKbPosition('face');
+      } else if (IdealAngle === PartialAngle) {
+        setKbPosition('partial');
+      } else if (IdealAngle === EdgeAngle) {
+        setKbPosition('edge');
+      } else {
+        _applyKbAngle(IdealAngle);
+      }
+
+      if (AfterSettleCallback) {
+        setTimeout(AfterSettleCallback, 900);
+      }
+    });
+  });
+}
+
+// Handle a tap on the keyboard when a panel is open.
+// Top two-thirds of the visible keyboard panel moves it toward the low toggle position.
+// Bottom third moves it toward the high toggle position.
+function handleKeyboardPanelTap(ClientY) {
+  if (activeSettings === null) return false; // not in a panel — don't handle
+  if (touchEnabled) return false;            // touch keys active — don't interfere
+
+  var KeyboardPanel = document.getElementById('keyboardPanel');
+  if (!KeyboardPanel) return false;
+
+  var KbRect   = KeyboardPanel.getBoundingClientRect();
+  var TapFraction = (ClientY - KbRect.top) / KbRect.height;
+
+  if (TapFraction <= 0.67) {
+    // Top two-thirds: fold further down (toward edge)
+    setKbPosition(_kbToggleLow);
+  } else {
+    // Bottom third: raise up (toward partial or face)
+    setKbPosition(_kbToggleHigh);
+  }
+  return true;
+}
+
 function _resetFlipState() {
   // Instantly snaps to face — used by applyOsMode when rebuilding the keyboard
   _flipSeq++;
-  _kbPos     = 'face';
-  _kbFlipped = false;
+  _kbPos           = 'face';
+  _kbCustomRotateX = null;
+  _kbFlipped       = false;
+  _kbToggleHigh    = 'partial';
+  _kbToggleLow     = 'edge';
   var panel = document.getElementById('keyboardPanel');
   var stage = document.getElementById('kbFlipStage');
   var wrap  = document.getElementById('keyboardWrap');

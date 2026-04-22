@@ -742,6 +742,7 @@ body.pc-mode #extKeyPill {
 
 #settingsPanelInner {
   position: absolute;
+   background: transparent;
   top: 0;
   /* left and width set by JS to match keyboardPanel */
   padding: 0 0 8px;

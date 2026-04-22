@@ -723,8 +723,8 @@
   </div>
 </div>
 
-<p id="credit" class="page-initially-hidden"><em>Built for learners.</em><small> This digital toy was created by Wednesday Dessauer &amp; is free to adapt under Polyform Non-Commercial 1.0.0</small></p>
 <div id="panelFog"></div>
+<p id="credit" class="page-initially-hidden"><em>Built for learners.</em><small> This digital toy was created by Wednesday Dessauer &amp; is free to adapt under Polyform Non-Commercial 1.0.0</small></p>
 
 <div id="diffIconWrap" class="page-initially-hidden">
   <svg id="diffIcon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 90 90" style="width:44px;height:auto;" cursor="pointer">
@@ -11081,9 +11081,13 @@ function setKbPositionAutoSettle(AfterSettleCallback) {
   _kbToggleHigh = 'partial';
   _kbToggleLow  = 'edge';
 
-  // Step 1: go to edge immediately. This is synchronous and guaranteed.
-  // The keyboard is now fully folded -- all content is unobscured.
-  setKbPosition('edge');
+  // Step 1: go to edge so all panel content is unobscured for measurement.
+  // Skip this if the keyboard is already folded — the content is already
+  // visible and re-folding causes a distracting flash on every interaction.
+  var AlreadyFolded = (_kbPos !== 'face');
+  if (!AlreadyFolded) {
+    setKbPosition('edge');
+  }
 
   // Step 2: wait for the panel content and _spAlignPanel to finish laying out,
   // then measure and animate back up. A single setTimeout of ~120ms is enough
@@ -11107,8 +11111,18 @@ function setKbPositionAutoSettle(AfterSettleCallback) {
     var KbTopAtLow        = KbTopAtEdge - EdgeToLowDiff;
 
     // Measure the bottom of the rendered panel content.
-    var PanelRect     = PanelInner.getBoundingClientRect();
-    var ContentBottom = PanelRect.top + PanelInner.scrollHeight;
+    // Use the active panel element's bounding rect bottom for accuracy --
+    // this captures all grid rows including the coach advice roundrect,
+    // rather than relying solely on the container's scrollHeight.
+    var ActivePanelElement = document.querySelector('#settingsPanelInner .sp-page.sp-active');
+    var ContentBottom;
+    if (ActivePanelElement) {
+      var ActivePanelRect = ActivePanelElement.getBoundingClientRect();
+      ContentBottom = ActivePanelRect.bottom;
+    } else {
+      var PanelRect = PanelInner.getBoundingClientRect();
+      ContentBottom = PanelRect.top + PanelInner.scrollHeight;
+    }
 
     // Prefer slight clipping (6px) over leaving a visible gap below the content.
     var IdealKbTop = ContentBottom - 6;

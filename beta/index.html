@@ -261,7 +261,7 @@
       <div class="sp-col sp-col-left">
         <p class="sp-body" id="browserCompatHeading"></p>
         <p class="sp-body" id="browserCompatIntro"></p>
-        <p class="sp-body" id="browserCompatFooter"></p> <p class="sp-body sp-hint">Keyboard setting <strong><small>'Touch Enabled'</small></strong> avoids all these conflicts.</p>
+        <p class="sp-body" id="browserCompatFooter"></p> <p class="sp-body sp-hint">Using the virtual <strong><small>'Touch Enabled'</small></strong> keyboard avoids all conflicts to build knowledge, but is <em>less effective</em> than a real keyboard in building 'muscle memory'.</p>
       </div>
       <div class="sp-col sp-col-right">
         <ul id="browserCompatList" class="sp-conflict-list"></ul>
@@ -1341,6 +1341,7 @@ function applyOsMode(os) {
     wrap.classList.add('kb-flipping');
     panel.style.transform = 'rotateX(' + RestoreNamedPos.panelRotateX + 'deg)';
     stage.style.transform = 'translateY(' + RestoreNamedPos.stageTranslateY + 'px)';
+    if (savedPos === 'edge') document.body.classList.add('kb-at-edge');
     // Force a reflow so the browser commits the transform at this position,
     // then re-enable transitions synchronously — no async gap for clicks to fall into.
     void panel.offsetWidth;
@@ -5123,7 +5124,8 @@ var _PANEL_TIPS = {
       'does your keyboard have a number pad?',
       'sticky keys help when modifier chords feel awkward',
       'ghost mode is great for testing your memory',
-      'the PC layout trains Ctrl muscle memory',
+      'the touch enabled virtual keyboard allows you to practice conflicted shortcuts',
+      'cross-training PC on Mac works better than Mac on PC',
     ];
     return pool;
   },

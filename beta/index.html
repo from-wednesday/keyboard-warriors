@@ -5307,7 +5307,8 @@ function openSettings(page) {
   if (sp) sp.classList.add('sp-open');
 
   if (stage) stage.style.pointerEvents = 'none';
-
+  var kbPanel = document.getElementById('keyboardPanel');
+  if (kbPanel) kbPanel.style.pointerEvents = 'auto';
 
   // Pin tooltip only for the three true settings pages
   var isPinnableSettings = (page === 'panelKeyboard' || page === 'panelConflicts' || page === 'panelDifficultySettings');

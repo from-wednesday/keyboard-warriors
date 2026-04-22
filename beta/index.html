@@ -11168,16 +11168,22 @@ function setKbPositionAutoSettle(AfterSettleCallback) {
 // Pointer capture ensures drags continue even if the pointer leaves the element.
 
 function _stagePointerIsInDragZone(Event) {
-  var stage = document.getElementById('kbFlipStage');
-  if (!stage) return false;
-  var Rect = stage.getBoundingClientRect();
+  var panel = document.getElementById('keyboardPanel');
+  if (!panel) return false;
+  var Rect = panel.getBoundingClientRect();
   return Event.clientX >= Rect.left  + StageDragInsetPixels &&
          Event.clientX <= Rect.right - StageDragInsetPixels &&
          Event.clientY >= Rect.top &&
          Event.clientY <= Rect.bottom;
 }
 
-function _onStageDragPointerDown(Event) {
+function function _onStageDragPointerDown(Event) {
+  if (!Event.isPrimary) return;
+  if (touchEnabled && _kbPos === 'face') return;
+  if (_kbPos === 'face') return;
+  var settingsInner = document.getElementById('settingsPanelInner');
+  if (settingsInner && settingsInner.contains(Event.target)) return;
+  if (!_stagePointerIsInDragZone(Event)) return;(Event) {
   if (!Event.isPrimary) return;
   // Virtual key taps take precedence when the keyboard is at face during play.
   if (touchEnabled && _kbPos === 'face') return;

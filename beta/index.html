@@ -5233,9 +5233,7 @@ function openSettings(page) {
   // to the highest angle that does not eclipse the content.
   // For panels where clipping is acceptable, go straight to partial.
   var ContentCriticalPanels = new Set([
-    'panelDifficultySettings', 'panelPause',
-    'panelEndGameReportCard', 'panelLandingWelcome', 'panelLandingReturning',
-    'panelCheatSheet'
+    'panelDifficultySettings', 'panelLandingWelcome', 'panelLandingReturning'
   ]);
   var UseAutoSettle = ContentCriticalPanels.has(page);
 

@@ -5031,7 +5031,8 @@ function _spAlignPanel() {
       // height is already accounted for by the fold. Add a small buffer only.
       var IsEdgePanel = (activeSettings === 'panelEndGameReportCard' || activeSettings === 'panelCheatSheet' ||
                          activeSettings === 'panelPause'  || activeSettings === 'panelConflicts' ||
-                         activeSettings === 'panelDifficultySettings' || activeSettings === 'panelEndGameHistoryRecord');
+                         activeSettings === 'panelDifficultySettings' || activeSettings === 'panelEndGameHistoryRecord' ||
+                         activeSettings === 'panelKeyboard');
       var needed = IsEdgePanel
         ? contentH + 8
         : (contentH > stageH ? contentH + stageH + 24 : contentH + 16);
@@ -5228,7 +5229,7 @@ function openSettings(page) {
   // to the highest angle that does not eclipse the content.
   // For panels where clipping is acceptable, go straight to partial.
   var ContentCriticalPanels = new Set([
-    'panelKeyboard', 'panelDifficultySettings', 'panelPause',
+    'panelDifficultySettings', 'panelPause',
     'panelEndGameReportCard', 'panelLandingWelcome', 'panelLandingReturning'
   ]);
   var UseAutoSettle = ContentCriticalPanels.has(page);
@@ -10929,6 +10930,7 @@ var _flipSeq   = 0;
 var KbNamedPositions = {
   face:    { stageTranslateY: 0,   panelRotateX: 0  },
   partial: { stageTranslateY: 89,  panelRotateX: 62 },
+  low:     { stageTranslateY: 107, panelRotateX: 74 },
   edge:    { stageTranslateY: 118, panelRotateX: 82 },
 };
 
@@ -10969,23 +10971,31 @@ function _applyKbAngle(RotateXDegrees) {
   stage.classList.remove('kb-show-base');
   wrap.classList.remove('kb-at-face');
   wrap.classList.add('kb-flipping');
+  document.body.classList.remove('kb-at-edge');
 }
 
 // Linear interpolation of stageTranslateY from the angle, using the partial and edge anchors.
 function _interpolateStageY(RotateXDegrees) {
   var PartialAngle = KbNamedPositions.partial.panelRotateX;
+  var LowAngle     = KbNamedPositions.low.panelRotateX;
   var EdgeAngle    = KbNamedPositions.edge.panelRotateX;
   var PartialY     = KbNamedPositions.partial.stageTranslateY;
+  var LowY         = KbNamedPositions.low.stageTranslateY;
   var EdgeY        = KbNamedPositions.edge.stageTranslateY;
-  if (RotateXDegrees <= 0)              return 0;
+  if (RotateXDegrees <= 0)            return 0;
   if (RotateXDegrees <= PartialAngle) {
     // Between face and partial
     return Math.round((RotateXDegrees / PartialAngle) * PartialY);
   }
   if (RotateXDegrees >= EdgeAngle)    return EdgeY;
-  // Between partial and edge
-  var Fraction = (RotateXDegrees - PartialAngle) / (EdgeAngle - PartialAngle);
-  return Math.round(PartialY + Fraction * (EdgeY - PartialY));
+  if (RotateXDegrees <= LowAngle) {
+    // Between partial and low
+    var Fraction = (RotateXDegrees - PartialAngle) / (LowAngle - PartialAngle);
+    return Math.round(PartialY + Fraction * (LowY - PartialY));
+  }
+  // Between low and edge
+  var Fraction = (RotateXDegrees - LowAngle) / (EdgeAngle - LowAngle);
+  return Math.round(LowY + Fraction * (EdgeY - LowY));
 }
 
 function setKbPosition(pos) {
@@ -11018,6 +11028,7 @@ function setKbPosition(pos) {
 
   if (pos === 'face') {
     wrap.classList.add('kb-at-face');
+    document.body.classList.remove('kb-at-edge');
     setTimeout(function() {
       if (_flipSeq !== seq) return;
       wrap.classList.remove('kb-flipping');
@@ -11033,11 +11044,13 @@ function setKbPosition(pos) {
     setTimeout(function() { stage.classList.add('kb-show-base'); },    650);
     setTimeout(function() {
       if (_flipSeq !== seq) return;
+      document.body.classList.add('kb-at-edge');
       clearAllLit();
       heldKeys.clear();
       stickyLit.clear();
     }, 900);
   } else {
+    document.body.classList.remove('kb-at-edge');
     panel.classList.remove('kb-edges-visible');
     stage.classList.remove('kb-show-base');
   }
@@ -11081,38 +11094,50 @@ function setKbPositionAutoSettle(AfterSettleCallback) {
     // Measure where the keyboard top sits right now (at edge position).
     var KbTopAtEdge = KeyboardPanel.getBoundingClientRect().top;
 
-    // Back-calculate keyboard top at partial from the known stageTranslateY difference.
+    // Back-calculate keyboard top at partial and low from known stageTranslateY differences.
     var EdgeToPartialDiff = KbNamedPositions.edge.stageTranslateY - KbNamedPositions.partial.stageTranslateY;
+    var EdgeToLowDiff     = KbNamedPositions.edge.stageTranslateY - KbNamedPositions.low.stageTranslateY;
     var KbTopAtPartial    = KbTopAtEdge - EdgeToPartialDiff;
+    var KbTopAtLow        = KbTopAtEdge - EdgeToLowDiff;
 
     // Measure the bottom of the rendered panel content.
-    var PanelRect    = PanelInner.getBoundingClientRect();
+    var PanelRect     = PanelInner.getBoundingClientRect();
     var ContentBottom = PanelRect.top + PanelInner.scrollHeight;
 
     // Prefer slight clipping (6px) over leaving a visible gap below the content.
     var IdealKbTop = ContentBottom - 6;
 
     var PartialAngle = KbNamedPositions.partial.panelRotateX; // 62
+    var LowAngle     = KbNamedPositions.low.panelRotateX;     // 74
     var EdgeAngle    = KbNamedPositions.edge.panelRotateX;    // 82
     var IdealAngle;
 
-    // Auto-settle never returns the keyboard to face: the minimum settled position
-    // is partial. Face is only reached by the user manually raising the keyboard.
-    // Toggle targets always allow the user to push further down to edge.
+    // Auto-settle never returns the keyboard to face: minimum settled position is partial.
+    // The toggle chain always lets the user push further down to edge.
     if (IdealKbTop >= KbTopAtPartial) {
-      // Content short enough that partial (or higher) would clear it -- settle at partial.
+      // Content short enough that partial clears it — settle at partial.
       IdealAngle    = PartialAngle;
       _kbToggleHigh = 'partial';
       _kbToggleLow  = 'edge';
-    } else if (IdealKbTop >= KbTopAtEdge) {
-      // Content fits between partial and edge -- interpolate.
-      var Range    = KbTopAtEdge - KbTopAtPartial;
+    } else if (IdealKbTop >= KbTopAtLow) {
+      // Content fits between partial and low — interpolate, snap to low if close.
+      var Range    = KbTopAtLow - KbTopAtPartial;
       var Fraction = Range > 0 ? (IdealKbTop - KbTopAtPartial) / Range : 1;
-      IdealAngle    = Math.round(PartialAngle + Fraction * (EdgeAngle - PartialAngle));
+      IdealAngle   = Math.round(PartialAngle + Fraction * (LowAngle - PartialAngle));
+      // Snap to the nearer named position to avoid arbitrary custom angles.
+      IdealAngle    = (IdealAngle >= (PartialAngle + LowAngle) / 2) ? LowAngle : PartialAngle;
+      _kbToggleHigh = 'partial';
+      _kbToggleLow  = 'edge';
+    } else if (IdealKbTop >= KbTopAtEdge) {
+      // Content fits between low and edge — interpolate, snap to low or edge.
+      var Range    = KbTopAtEdge - KbTopAtLow;
+      var Fraction = Range > 0 ? (IdealKbTop - KbTopAtLow) / Range : 1;
+      IdealAngle   = Math.round(LowAngle + Fraction * (EdgeAngle - LowAngle));
+      IdealAngle    = (IdealAngle >= (LowAngle + EdgeAngle) / 2) ? EdgeAngle : LowAngle;
       _kbToggleHigh = 'partial';
       _kbToggleLow  = 'edge';
     } else {
-      // Content taller than the keyboard at edge -- stay at edge.
+      // Content taller than the keyboard at edge — stay at edge.
       IdealAngle    = EdgeAngle;
       _kbToggleHigh = 'partial';
       _kbToggleLow  = 'edge';
@@ -11120,11 +11145,13 @@ function setKbPositionAutoSettle(AfterSettleCallback) {
 
     IdealAngle = Math.max(PartialAngle, Math.min(EdgeAngle, IdealAngle));
 
-    // Apply position. Use named positions where possible for correct decorations.
+    // Apply position. Use named positions for correct decorations.
     if (IdealAngle === PartialAngle) {
       setKbPosition('partial');
+    } else if (IdealAngle === LowAngle) {
+      setKbPosition('low');
     } else if (IdealAngle === EdgeAngle) {
-      // Already at edge -- no movement needed.
+      // Already at edge — no movement needed.
     } else {
       _applyKbAngle(IdealAngle);
     }
@@ -11172,6 +11199,7 @@ function _resetFlipState() {
   if (panel) { panel.classList.remove('kb-edged', 'kb-edges-visible', 'kb-partial'); panel.style.transform = ''; }
   if (stage) { stage.classList.remove('kb-show-base'); stage.style.transform = ''; }
   if (wrap)  { wrap.classList.remove('kb-flipping'); wrap.classList.add('kb-at-face'); }
+  document.body.classList.remove('kb-at-edge');
 }
 
 /* ── Difficulty needle states ── */

@@ -3188,7 +3188,6 @@ function confirmDiffChangeNo() {
   // openSettings set them to none; since we're staying on this panel (not
   // navigating away), nothing else would restore them.
   var stage = document.getElementById('kbFlipStage');
-  if (stage) stage.style.pointerEvents = '';
   _startPauseInactivityTimer();
 }
 
@@ -5313,7 +5312,6 @@ function openSettings(page) {
   // and explicit pointer-events:auto in CSS so they are unaffected.
   // Keyboard tap-to-adjust-angle works via keyboardWrap click, not the stage itself.
   var stage = document.getElementById('kbFlipStage');
-  if (stage) stage.style.pointerEvents = 'none';
 
   // Pin tooltip only for the three true settings pages
   var isPinnableSettings = (page === 'panelKeyboard' || page === 'panelConflicts' || page === 'panelDifficultySettings');
@@ -5360,7 +5358,6 @@ function closeSettings() {
   // that call will re-set pointerEvents = 'none' correctly.
   // Restoring here while the keyboard is still tilted was causing the icons to fire through the stage.
   var stage = document.getElementById('kbFlipStage');
-  if (stage && _kbPos === 'face') stage.style.pointerEvents = '';
   // If the cheat sheet was open, clear the tagline it added
   if (closingPage === 'panelCheatSheet') {
     var tagline = document.getElementById('welcomeTagline');
@@ -11089,7 +11086,6 @@ function setKbPosition(pos) {
     setTimeout(function() {
       if (_flipSeq !== seq) return;
       wrap.classList.remove('kb-flipping');
-      stage.style.pointerEvents = '';
     }, 900);
   } else {
     wrap.classList.remove('kb-at-face');
@@ -11196,7 +11192,7 @@ function _onStageDragPointerDown(Event) {
   // Virtual key taps take precedence when the keyboard is at face during play.
   if (touchEnabled && _kbPos === 'face') return;
   // Only active when a panel is open or the keyboard is already folded.
-  if (activeSettings === null && _kbPos === 'face') return;
+  if (_kbPos === 'face') return;
   if (!_stagePointerIsInDragZone(Event)) return;
 
   _kbDragActive             = false;

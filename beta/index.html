@@ -641,6 +641,7 @@
   </div><!-- /#settingsPanel -->
   <div id="kbFlipStage">
   <div id="keyboardPanel">
+    <div id="kbDragHandle"></div>
     <div id="kb-shadow"></div>
     <div id="kb-wall-bottom"></div>
     <div id="kb-base-edge"></div>
@@ -5305,6 +5306,8 @@ function openSettings(page) {
   // Open panel
   var sp = document.getElementById('settingsPanel');
   if (sp) sp.classList.add('sp-open');
+  var wrap = document.getElementById('keyboardWrap');
+  if (wrap) wrap.classList.add('settings-open');
 
   // Pin tooltip only for the three true settings pages
   var isPinnableSettings = (page === 'panelKeyboard' || page === 'panelConflicts' || page === 'panelDifficultySettings');
@@ -5338,6 +5341,8 @@ function closeSettings() {
     setTimeout(function() { sp.classList.remove('sp-closing'); }, 250);
     sp.classList.remove('sp-open');
   }
+  var wrap = document.getElementById('keyboardWrap');
+  if (wrap) wrap.classList.remove('settings-open');
 
   // Hide all pages
   SP_PAGE_ORDER.forEach(function(p) {
@@ -5346,8 +5351,6 @@ function closeSettings() {
   });
 
   _unpinTooltip();
-  // Note: stage pointer-events are intentionally NOT restored here.
-  var stage = document.getElementById('kbFlipStage');
   // If the cheat sheet was open, clear the tagline it added
   if (closingPage === 'panelCheatSheet') {
     var tagline = document.getElementById('welcomeTagline');
@@ -5419,11 +5422,8 @@ function _closeAllModalsInstant() {
     if (el) el.classList.remove('sp-active', 'sp-wipe-in', 'sp-wipe-in-left', 'sp-wipe-in-up');
   });
   _unpinTooltip();
-  // Note: stage pointer-events are intentionally NOT restored here.
-  // They are restored by setKbPosition when the keyboard returns to face,
-  // so confirm states that follow immediately don't expose the icons.
   var wrap2 = document.getElementById('keyboardWrap');
-  if (wrap2) wrap2.style.minHeight = '';
+  if (wrap2) { wrap2.classList.remove('settings-open'); wrap2.style.minHeight = ''; }
 }
 
 // Legacy aliases — kept so remaining call sites compile
@@ -10168,9 +10168,8 @@ document.getElementById('keyboardWrap').addEventListener('click', function(e) {
   // The icon wraps have their own pointer handlers — do not intercept those.
   if (e.target.closest('#kbIconWrap, #brIconWrap, #diffIconWrap')) return;
 
-  // Drag and tap on the keyboard stage are now handled by the stage pointer listeners
-  // (_onStageDragPointerDown / Move / Up). The click event is only needed for
-  // the non-panel game-state actions below.
+  // Drag and tap on the keyboard are handled by the drag handle listeners.
+  // The click event is only needed for the non-panel game-state actions below.
 
   if (activeSettings !== null) return;
 
@@ -10937,10 +10936,6 @@ var KbNamedPositions = {
   edge: { stageTranslateY: 118, panelRotateX: 82 },
 };
 
-// Inset (pixels) applied to the stage hit-target for drag/tap detection.
-// Keeps drag interactions away from the icon wraps at the sides.
-var StageDragInsetPixels = 14;
-
 // ── Drag state ────────────────────────────────────────────────────────────────
 var _kbDragActive             = false;
 var _kbDragPointerId          = null;
@@ -11108,10 +11103,10 @@ function setKbPositionAutoSettle(AfterSettleCallback) {
     return;
   }
 
-  var AlreadyFolded = (_kbPos !== 'face');
-  if (!AlreadyFolded) {
-    setKbPosition('edge');
-  }
+  // Always go to edge first so the panel content is fully unobscured
+  // before measuring. Without this, content measured at a shallower angle
+  // gives a wrong ContentBottom and the keyboard settles too high.
+  setKbPosition('edge');
 
   setTimeout(function() {
     var PanelInner    = document.getElementById('settingsPanelInner');
@@ -11160,43 +11155,16 @@ function setKbPositionAutoSettle(AfterSettleCallback) {
     if (AfterSettleCallback) {
       setTimeout(AfterSettleCallback, 900);
     }
-  }, 350);
+  }, 700);
 }
 
 // ── Stage drag and tap listeners ──────────────────────────────────────────────
 // Attached to #kbFlipStage. An inset zone prevents interference with icon wraps.
 // Pointer capture ensures drags continue even if the pointer leaves the element.
 
-function _stagePointerIsInDragZone(Event) {
-  var panel = document.getElementById('keyboardPanel');
-  if (!panel) return false;
-  var Rect = panel.getBoundingClientRect();
-  return Event.clientX >= Rect.left  + StageDragInsetPixels &&
-         Event.clientX <= Rect.right - StageDragInsetPixels &&
-         Event.clientY >= Rect.top &&
-         Event.clientY <= Rect.bottom;
-}
-
-function _onStageDragPointerDown(Event) {
+function _onDragHandlePointerDown(Event) {
   if (!Event.isPrimary) return;
-  if (touchEnabled && _kbPos === 'face') return;
   if (_kbPos === 'face') return;
-function _initialiseStageDragListeners() {
-  var stage = document.getElementById('kbFlipStage');
-  var panel = document.getElementById('keyboardPanel');
-  if (!stage || !panel) return;
-  panel.addEventListener('pointerdown',   _onStageDragPointerDown);
-  stage.addEventListener('pointermove',   _onStageDragPointerMove);
-  stage.addEventListener('pointerup',     _onStageDragPointerUp);
-  stage.addEventListener('pointercancel', function(Event) {
-    if (Event.pointerId !== _kbDragPointerId) return;
-    _kbDragActive    = false;
-    _kbDragPointerId = null;
-    if (panel) panel.style.transition = '';
-    if (stage) stage.style.transition = '';
-  });
-}
-  if (!_stagePointerIsInDragZone(Event)) return;
 
   _kbDragActive             = false;
   _kbDragDirectionConfirmed = false;
@@ -11206,8 +11174,8 @@ function _initialiseStageDragListeners() {
   _kbDragStartAngle         = (_kbPos === 'edge') ? EdgeAngle : _kbPartialAngle;
   _kbPointerDownTime        = Date.now();
 
-  var stage = document.getElementById('kbFlipStage');
-  if (stage) stage.setPointerCapture(Event.pointerId);
+  var handle = document.getElementById('kbDragHandle');
+  if (handle) handle.setPointerCapture(Event.pointerId);
   Event.preventDefault();
 }
 
@@ -11238,7 +11206,7 @@ function _onStageDragPointerMove(Event) {
   Event.preventDefault();
 }
 
-function _onStageDragPointerUp(Event) {
+function _onDragHandlePointerUp(Event) {
   if (Event.pointerId !== _kbDragPointerId) return;
 
   var WasDrag     = _kbDragActive;
@@ -11273,12 +11241,12 @@ function _onStageDragPointerUp(Event) {
 }
 
 function _initialiseStageDragListeners() {
-  var stage = document.getElementById('kbFlipStage');
-  if (!stage) return;
-  stage.addEventListener('pointerdown',   _onStageDragPointerDown);
-  stage.addEventListener('pointermove',   _onStageDragPointerMove);
-  stage.addEventListener('pointerup',     _onStageDragPointerUp);
-  stage.addEventListener('pointercancel', function(Event) {
+  var handle = document.getElementById('kbDragHandle');
+  if (!handle) return;
+  handle.addEventListener('pointerdown', _onDragHandlePointerDown);
+  handle.addEventListener('pointermove', _onStageDragPointerMove);
+  handle.addEventListener('pointerup',   _onDragHandlePointerUp);
+  handle.addEventListener('pointercancel', function(Event) {
     if (Event.pointerId !== _kbDragPointerId) return;
     _kbDragActive    = false;
     _kbDragPointerId = null;

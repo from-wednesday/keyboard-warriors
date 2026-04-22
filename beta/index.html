@@ -720,6 +720,9 @@
       </div>
       <div style="width:60px;height:1px;background:#444;margin:2px auto;"></div>
       <div id="dbgPct" style="font-size:22px;font-weight:700;color:#888;line-height:1;text-align:center;">&#8212;</div>
+      <div style="width:60px;height:1px;background:#444;margin:4px auto;"></div>
+      <div style="font-size:9px;color:#888;text-transform:uppercase;letter-spacing:1px;text-align:center;">kb angle</div>
+      <div id="dbgKbAngle" style="font-size:22px;font-weight:700;color:#888;line-height:1;text-align:center;">&#8212;</div>
     </div>
   </div>
 </div>
@@ -795,7 +798,13 @@ function buildKey(cfg, isMini) {
     case 'fn':
       el.classList.add('fn');
       el.innerHTML = `<span class="fn-lbl">${cfg.label}</span>`;
-      el.addEventListener('mousedown', function(ev){ touchEnabled ? handleKeyTouch(ev, el) : showKbToast(ev); });
+      if (cfg.id === 'Escape') {
+        el.addEventListener('pointerdown',  function(ev) { ev.preventDefault(); _debugEscHoldStart(); });
+        el.addEventListener('pointerup',    function(ev) { ev.preventDefault(); _debugEscHoldCancel(); });
+        el.addEventListener('pointerleave', function(ev) { _debugEscHoldCancel(); });
+      } else {
+        el.addEventListener('mousedown', function(ev){ touchEnabled ? handleKeyTouch(ev, el) : showKbToast(ev); });
+      }
       break;
     case 'lock':
       el.classList.add('fn', 'lock-key');
@@ -5853,29 +5862,37 @@ document.getElementById('gameContainer').addEventListener('click', function(e) {
 });
 
 
-// ── Debug overlay — Esc hold 2s to show, single Esc to hide ─────────────────
-// ── Debug overlay — Esc hold 2s to show, single Esc to hide ─────────────────
+// ── Debug overlay — Esc hold to show, single Esc to hide ─────────────────────
+// Shared logic used by both the physical keyboard and the virtual esc key.
 let escHoldTimer = null;
 let escHoldFired = false;
 
-document.addEventListener('keydown', e => {
-  if (e.key !== 'Escape' || e.repeat) return;
-  if (document.getElementById('debugOverlay').style.display !== 'none') return;
+function _debugOverlayOpen() {
+  const dbg = document.getElementById('debugOverlay');
+  dbg.style.display = 'flex';
+  document.getElementById('dbgAnswer').textContent = 'debug on — press a key during play';
+  document.getElementById('dbgQuestion').textContent = '';
+  document.getElementById('dbgKey').textContent = '';
+  document.getElementById('dbgMatch').textContent = '';
+  dbgRefreshCtx(); dbgRefreshAccuracy(); dbgRefreshAngle();
+}
+
+function _debugOverlayClose() {
+  const dbg = document.getElementById('debugOverlay');
+  dbg.style.display = 'none';
+}
+
+function _debugEscHoldStart() {
+  const dbg = document.getElementById('debugOverlay');
+  if (dbg.style.display !== 'none') return;
   escHoldFired = false;
   escHoldTimer = setTimeout(() => {
     escHoldFired = true;
-    const dbg = document.getElementById('debugOverlay');
-    dbg.style.display = 'flex';
-    document.getElementById('dbgAnswer').textContent = 'debug on — press a key during play';
-    document.getElementById('dbgQuestion').textContent = '';
-    document.getElementById('dbgKey').textContent = '';
-    document.getElementById('dbgMatch').textContent = '';
-    dbgRefreshCtx(); dbgRefreshAccuracy();
-  }, 2000);
-});
+    _debugOverlayOpen();
+  }, 1000);
+}
 
-document.addEventListener('keyup', e => {
-  if (e.key !== 'Escape') return;
+function _debugEscHoldCancel() {
   clearTimeout(escHoldTimer);
   escHoldTimer = null;
   if (escHoldFired) {
@@ -5883,7 +5900,18 @@ document.addEventListener('keyup', e => {
     return;
   }
   const dbg = document.getElementById('debugOverlay');
-  if (dbg.style.display !== 'none') dbg.style.display = 'none';
+  if (dbg.style.display !== 'none') _debugOverlayClose();
+}
+
+// Physical keyboard: hold Escape to open, tap Escape to close
+document.addEventListener('keydown', e => {
+  if (e.key !== 'Escape' || e.repeat) return;
+  _debugEscHoldStart();
+});
+
+document.addEventListener('keyup', e => {
+  if (e.key !== 'Escape') return;
+  _debugEscHoldCancel();
 });
 
 // ── Debug context display ────────────────────────────────────────────────────
@@ -6025,6 +6053,22 @@ function dbgRefreshAccuracy() {
   } else {
     pc.textContent = pct + '%' + (hintPenaltyPct > 0 ? ' (-' + hintPenaltyPct + ')' : '');
     pc.style.color = pct >= 80 ? '#0f0' : pct >= 50 ? '#fa0' : '#f48';
+  }
+}
+
+// ── Debug keyboard angle display ──────────────────────────────────────────────
+function dbgRefreshAngle() {
+  var AngleElement = document.getElementById('dbgKbAngle');
+  if (!AngleElement) return;
+  if (_kbPos === 'face') {
+    AngleElement.innerHTML = '0&deg;';
+    AngleElement.style.color = '#888';
+  } else if (_kbPos === 'edge') {
+    AngleElement.innerHTML = EdgeAngle + '&deg;';
+    AngleElement.style.color = '#fa0';
+  } else {
+    AngleElement.innerHTML = Math.round(_kbPartialAngle) + '&deg;';
+    AngleElement.style.color = '#0f0';
   }
 }
 
@@ -11011,6 +11055,7 @@ function _applyPartialAngleInstant(RotateXDegrees) {
   wrap.classList.remove('kb-at-face');
   wrap.classList.add('kb-flipping');
   document.body.classList.remove('kb-at-edge');
+  dbgRefreshAngle();
 }
 
 // Animate to a partial angle with the standard CSS transition
@@ -11038,6 +11083,7 @@ function _animateToPartialAngle(RotateXDegrees) {
   wrap.classList.remove('kb-at-face');
   wrap.classList.add('kb-flipping');
   document.body.classList.remove('kb-at-edge');
+  dbgRefreshAngle();
 }
 
 function setKbPosition(pos) {
@@ -11079,6 +11125,7 @@ function setKbPosition(pos) {
   if (pos === 'face') {
     wrap.classList.add('kb-at-face');
     document.body.classList.remove('kb-at-edge');
+    dbgRefreshAngle();
     setTimeout(function() {
       if (_flipSeq !== seq) return;
       wrap.classList.remove('kb-flipping');

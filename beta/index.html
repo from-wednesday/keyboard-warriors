@@ -5306,10 +5306,6 @@ function openSettings(page) {
   var sp = document.getElementById('settingsPanel');
   if (sp) sp.classList.add('sp-open');
 
-  if (stage) stage.style.pointerEvents = 'none';
-  var kbPanel = document.getElementById('keyboardPanel');
-  if (kbPanel) kbPanel.style.pointerEvents = 'auto';
-
   // Pin tooltip only for the three true settings pages
   var isPinnableSettings = (page === 'panelKeyboard' || page === 'panelConflicts' || page === 'panelDifficultySettings');
   if (isPinnableSettings) _pinTooltip(page);
@@ -5350,8 +5346,8 @@ function closeSettings() {
   });
 
   _unpinTooltip();
+  // Note: stage pointer-events are intentionally NOT restored here.
   var stage = document.getElementById('kbFlipStage');
-  if (stage) stage.style.pointerEvents = '';
   // If the cheat sheet was open, clear the tagline it added
   if (closingPage === 'panelCheatSheet') {
     var tagline = document.getElementById('welcomeTagline');
@@ -11065,8 +11061,8 @@ function setKbPosition(pos) {
   panel.style.transform  = 'rotateX(' + NamedPos.panelRotateX + 'deg)';
 
   if (pos === 'face') {
-    var stageEl = document.getElementById('kbFlipStage');
-    if (stageEl) stageEl.style.pointerEvents = '';
+    panel.classList.add('no-key-transition');
+    panel.classList.remove('kb-edged', 'kb-edges-visible', 'kb-partial');
     stage.classList.remove('kb-show-base');
     requestAnimationFrame(function() { panel.classList.remove('no-key-transition'); });
   } else {
@@ -11187,6 +11183,10 @@ function _onStageDragPointerDown(Event) {
   if (touchEnabled && _kbPos === 'face') return;
   // Only active when a panel is open or the keyboard is already folded.
   if (_kbPos === 'face') return;
+  // Only capture pointer events when the click lands within the keyboard panel's
+  // actual rendered bounds. Clicks below the keyboard reach settings content directly.
+  var kbPanelRect = document.getElementById('keyboardPanel').getBoundingClientRect();
+  if (Event.clientY < kbPanelRect.top || Event.clientY > kbPanelRect.bottom) return;
   if (!_stagePointerIsInDragZone(Event)) return;
 
   _kbDragActive             = false;

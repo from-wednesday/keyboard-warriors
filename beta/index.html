@@ -5273,12 +5273,6 @@ function openSettings(page) {
   // Align panel width to keyboard
   _spAlignPanel();
 
-  // Auto-settle keyboard position for content-critical panels.
-  // Content has been populated above; auto-settle measures and animates.
-  if (UseAutoSettle) {
-    setKbPositionAutoSettle();
-  }
-
   // Show/activate the right page
   SP_PAGE_ORDER.forEach(function(p) {
     var el = _spPageEl(p);
@@ -5306,8 +5300,15 @@ function openSettings(page) {
   // Open panel
   var sp = document.getElementById('settingsPanel');
   if (sp) sp.classList.add('sp-open');
-  var wrap = document.getElementById('keyboardWrap');
-  if (wrap) wrap.classList.add('settings-open');
+  var kbWrap = document.getElementById('keyboardWrap');
+  if (kbWrap) kbWrap.classList.add('settings-open');
+
+  // Auto-settle keyboard position for content-critical panels.
+  // Must run after sp-active and sp-open are applied so getBoundingClientRect()
+  // measures the fully visible, correctly positioned panel content.
+  if (UseAutoSettle) {
+    setKbPositionAutoSettle();
+  }
 
   // Pin tooltip only for the three true settings pages
   var isPinnableSettings = (page === 'panelKeyboard' || page === 'panelConflicts' || page === 'panelDifficultySettings');
@@ -5336,13 +5337,12 @@ function closeSettings() {
 
   var sp = document.getElementById('settingsPanel');
   if (sp) {
-    // Apply closing class first so content fades out before keyboard moves up
     sp.classList.add('sp-closing');
     setTimeout(function() { sp.classList.remove('sp-closing'); }, 250);
     sp.classList.remove('sp-open');
   }
-  var wrap = document.getElementById('keyboardWrap');
-  if (wrap) wrap.classList.remove('settings-open');
+  var kbWrap = document.getElementById('keyboardWrap');
+  if (kbWrap) kbWrap.classList.remove('settings-open');
 
   // Hide all pages
   SP_PAGE_ORDER.forEach(function(p) {
@@ -5351,6 +5351,8 @@ function closeSettings() {
   });
 
   _unpinTooltip();
+  // Note: stage pointer-events are intentionally NOT restored here.
+  var stage = document.getElementById('kbFlipStage');
   // If the cheat sheet was open, clear the tagline it added
   if (closingPage === 'panelCheatSheet') {
     var tagline = document.getElementById('welcomeTagline');
@@ -10168,8 +10170,8 @@ document.getElementById('keyboardWrap').addEventListener('click', function(e) {
   // The icon wraps have their own pointer handlers — do not intercept those.
   if (e.target.closest('#kbIconWrap, #brIconWrap, #diffIconWrap')) return;
 
-  // Drag and tap on the keyboard are handled by the drag handle listeners.
-  // The click event is only needed for the non-panel game-state actions below.
+  // Drag and tap are handled by the kbDragHandle listeners.
+  // This click handler covers non-panel game-state actions only.
 
   if (activeSettings !== null) return;
 
@@ -11103,11 +11105,12 @@ function setKbPositionAutoSettle(AfterSettleCallback) {
     return;
   }
 
-  // Always go to edge first so the panel content is fully unobscured
-  // before measuring. Without this, content measured at a shallower angle
-  // gives a wrong ContentBottom and the keyboard settles too high.
+  // Always go to edge first so geometry is consistent when we measure.
+  // Skipping this when already folded was the source of wrong ContentBottom readings.
   setKbPosition('edge');
 
+  // Wait for the settingsPanelInner transition to finish before measuring.
+  // It has a 0.25s delay then a 0.3s transition = 550ms total. 650ms is safe.
   setTimeout(function() {
     var PanelInner    = document.getElementById('settingsPanelInner');
     var KeyboardPanel = document.getElementById('keyboardPanel');
@@ -11155,12 +11158,13 @@ function setKbPositionAutoSettle(AfterSettleCallback) {
     if (AfterSettleCallback) {
       setTimeout(AfterSettleCallback, 900);
     }
-  }, 700);
+  }, 650);
 }
 
-// ── Stage drag and tap listeners ──────────────────────────────────────────────
-// Attached to #kbFlipStage. An inset zone prevents interference with icon wraps.
-// Pointer capture ensures drags continue even if the pointer leaves the element.
+// ── Keyboard drag handle listeners ───────────────────────────────────────────
+// All drag interaction lives on #kbDragHandle — a thin strip at the top of
+// the keyboard panel. This keeps the keyboard body from intercepting clicks
+// on the settings content behind it when a panel is open.
 
 function _onDragHandlePointerDown(Event) {
   if (!Event.isPrimary) return;
@@ -11179,7 +11183,7 @@ function _onDragHandlePointerDown(Event) {
   Event.preventDefault();
 }
 
-function _onStageDragPointerMove(Event) {
+function _onDragHandlePointerMove(Event) {
   if (Event.pointerId !== _kbDragPointerId) return;
 
   var DeltaY      = Event.clientY - _kbDragStartClientY;
@@ -11188,18 +11192,14 @@ function _onStageDragPointerMove(Event) {
 
   if (!_kbDragActive) {
     if (TotalTravel < DragThresholdPixels) return;
-    // Reject if mostly horizontal (likely a scroll gesture).
     if (Math.abs(DeltaX) > Math.abs(DeltaY)) return;
-    // From edge, only accept an upward drag (negative DeltaY = pointer moving up).
     if (_kbPos === 'edge' && DeltaY >= 0) return;
     _kbDragActive = true;
   }
 
-  // 0.5 degrees per pixel — upward movement (negative DeltaY) reduces the angle.
   var DegreesPerPixel = 0.5;
   var NewAngle        = _kbDragStartAngle + DeltaY * DegreesPerPixel;
 
-  // If dragging up from edge, hold visually at edge until the angle clears the drag max.
   if (_kbDragStartAngle >= EdgeAngle && NewAngle >= PartialDragMaxAngle) return;
 
   _applyPartialAngleInstant(NewAngle);
@@ -11220,7 +11220,6 @@ function _onDragHandlePointerUp(Event) {
   _kbDragPointerId = null;
 
   if (WasDrag) {
-    // Restore CSS transitions after the drag is complete.
     var panel = document.getElementById('keyboardPanel');
     var stage = document.getElementById('kbFlipStage');
     if (panel) panel.style.transition = '';
@@ -11231,7 +11230,6 @@ function _onDragHandlePointerUp(Event) {
 
   if (!IsTap) return;
 
-  // Tap: partial → Edge; Edge → 72° (noticeably higher, back into partial range).
   if (_kbPos === 'edge') {
     _animateToPartialAngle(72);
   } else {
@@ -11243,9 +11241,9 @@ function _onDragHandlePointerUp(Event) {
 function _initialiseStageDragListeners() {
   var handle = document.getElementById('kbDragHandle');
   if (!handle) return;
-  handle.addEventListener('pointerdown', _onDragHandlePointerDown);
-  handle.addEventListener('pointermove', _onStageDragPointerMove);
-  handle.addEventListener('pointerup',   _onDragHandlePointerUp);
+  handle.addEventListener('pointerdown',   _onDragHandlePointerDown);
+  handle.addEventListener('pointermove',   _onDragHandlePointerMove);
+  handle.addEventListener('pointerup',     _onDragHandlePointerUp);
   handle.addEventListener('pointercancel', function(Event) {
     if (Event.pointerId !== _kbDragPointerId) return;
     _kbDragActive    = false;

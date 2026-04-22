@@ -11183,16 +11183,6 @@ function _onStageDragPointerDown(Event) {
   if (_kbPos === 'face') return;
   var settingsInner = document.getElementById('settingsPanelInner');
   if (settingsInner && settingsInner.contains(Event.target)) return;
-  if (!_stagePointerIsInDragZone(Event)) return;(Event) {
-  if (!Event.isPrimary) return;
-  // Virtual key taps take precedence when the keyboard is at face during play.
-  if (touchEnabled && _kbPos === 'face') return;
-  // Only active when a panel is open or the keyboard is already folded.
-  if (_kbPos === 'face') return;
-  // Only capture pointer events when the click lands within the keyboard panel's
-  // actual rendered bounds. Clicks below the keyboard reach settings content directly.
-  var stageRect = document.getElementById('kbFlipStage').getBoundingClientRect();
-  if (Event.clientY < stageRect.top || Event.clientY > stageRect.bottom) return;
   if (!_stagePointerIsInDragZone(Event)) return;
 
   _kbDragActive             = false;

@@ -757,29 +757,20 @@ body.pc-mode #extKeyPill {
   pointer-events: none;
 }
 
-/* Overflow fade: a gradient overlay that sits in front of overflowing content
-   at the bottom of the panel. Only becomes visible when content extends into
-   the keyboard fold zone. Uses a pseudo-element so it does not affect pointer
-   events on the content beneath (which would break buttons near the fold).
-   Suppressed at edge position — content is fully clear, no fog needed. */
-#settingsPanel.sp-open #settingsPanelInner::after {
-  content: '';
-  position: sticky;
-  bottom: 0;
-  left: 0;
-  right: 0;
+/* Overflow fog: a static gradient strip that sits just above the credit line.
+   Normally invisible (no content reaches it), but prevents overflow from
+   bleeding into the credit area — particularly in ghost mode or on history
+   screens with long content lists. */
+#panelFog {
+  width: 100%;
   height: 48px;
-  display: block;
+  margin-top: -48px;
   background: linear-gradient(to bottom, transparent 0%, #f0f4f8 100%);
   pointer-events: none;
-  margin-top: -48px;
-  transition: opacity 0.4s ease;
+  position: relative;
+  z-index: 5;
 }
-/* At edge: content is fully exposed — remove the fog */
-body.kb-at-edge #settingsPanel.sp-open #settingsPanelInner::after {
-  opacity: 0;
-  pointer-events: none;
-}
+
 /* At edge: shadow stays behind the keyboard, not cast onto content above */
 body.kb-at-edge #keyboardPanel #kb-shadow {
   display: none;

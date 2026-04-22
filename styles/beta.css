@@ -2507,7 +2507,39 @@ li.conflict-dismissed .conflict-desc {
 
 
 
-/* ─── DROP SHADOW ─────────────────────────────────────
+/* ─── DRAG HANDLE ─────────────────────────────────────
+   A thin strip at the top of the keyboard panel that is
+   the sole pointer-event target when a settings panel is
+   open. This prevents the keyboard from intercepting
+   clicks on the settings content behind it.
+   The handle is always on top of the panel (z-index 10)
+   and always accepts pointer events regardless of state. */
+#kbDragHandle {
+  position: absolute;
+  top: -10px;
+  left: 14px;
+  right: 14px;
+  height: 28px;
+  z-index: 10;
+  pointer-events: none;
+  cursor: grab;
+  border-radius: 8px 8px 0 0;
+}
+/* Only activate the handle when a settings panel is open
+   and the keyboard is folded away from face position. */
+#keyboardWrap.settings-open #kbDragHandle {
+  pointer-events: auto;
+}
+#keyboardWrap.settings-open #kbDragHandle:active {
+  cursor: grabbing;
+}
+
+/* When a settings panel is open, the keyboard panel must
+   not intercept pointer events on the content behind it.
+   The drag handle above takes over as the sole hit target. */
+#keyboardWrap.settings-open #keyboardPanel {
+  pointer-events: none;
+}
    Blurred translucent blob at negative Z — floats the
    keyboard just above the surface, shadow falls on
    whatever is below (credit line etc).               */

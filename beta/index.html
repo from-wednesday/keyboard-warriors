@@ -10947,16 +10947,16 @@ function handleKeyup(e) {
 // These are interim values. Wednesday will tune each panel individually
 // based on observation across devices.
 var PanelKeyboardPositions = {
-  panelKeyboard:             { desktop: 45, tablet: 30 },
-  panelConflicts:            { desktop: 45, tablet: 30 },
-  panelDifficultySettings:   { desktop: 45, tablet: 30 },
-  panelPause:                { desktop: 45, tablet: 30 },
-  panelEndGameReportCard:    { desktop: 45, tablet: 30 },
-  panelEndGameHistoryRecord: { desktop: 45, tablet: 30 },
-  panelCheatSheet:           { desktop: 45, tablet: 30 },
-  panelLandingReturning:     { desktop: 45, tablet: 30 },
-  panelLandingWelcome:       { desktop: 45, tablet: 30 },
-};
+  panelKeyboard:             { desktop: 58, tablet: 58 },
+  panelConflicts:            { desktop: 62, tablet: 76 },
+  panelDifficultySettings:   { desktop: 74, tablet: 76 },
+  panelPause:                { desktop: 67, tablet: 67 },
+  panelEndGameReportCard:    { desktop: 80, tablet: 80 },
+  panelEndGameHistoryRecord: { desktop: 80, tablet: 80 },
+  panelCheatSheet:           { desktop: 47, tablet: 76 },
+  panelLandingReturning:     { desktop: 47, tablet: 58 },
+  panelLandingWelcome:       { desktop: 47, tablet: 58 },
+}; 
 
 function GetPanelKeyboardAngle(PanelName) {
   var Config = PanelKeyboardPositions[PanelName];
@@ -10999,13 +10999,10 @@ var _kbDragStartAngle         = 0;
 var _kbDragStartClientX       = 0;
 var _kbDragDirectionConfirmed = false;
 
-// Pixels of pointer movement required before committing to a drag (vs tap).
+// Pixels of pointer movement required before committing to a drag.
 var DragThresholdPixels = 6;
-// Maximum pointer travel (px) for a gesture to still count as a tap.
-var TapMaxTravelPixels  = 8;
-// Maximum duration (ms) for a tap.
-var TapMaxDurationMs    = 220;
-var _kbPointerDownTime  = 0;
+// Degrees the drag can overshoot the min/max angle before snapping back on release.
+var DragOvershootDegrees = 3;
 
 function _touchModalVisible() {
   var gyro = document.getElementById('gyroModal');
@@ -11031,22 +11028,22 @@ function _interpolateStageY(RotateXDegrees) {
   return Math.round(AnchorPartialY + Fraction * (AnchorEdgeY - AnchorPartialY));
 }
 
-// Apply a partial-range angle immediately with no CSS transition (used during live drag).
+// Apply an angle immediately with no CSS transition (used during live drag).
+// Callers are responsible for clamping -- this function applies whatever angle it receives.
 function _applyPartialAngleInstant(RotateXDegrees) {
-  var ClampedAngle = Math.max(PartialDragMinAngle, Math.min(PartialDragMaxAngle, RotateXDegrees));
-  var StageY       = _interpolateStageY(ClampedAngle);
+  var StageY = _interpolateStageY(RotateXDegrees);
   var panel        = document.getElementById('keyboardPanel');
   var stage        = document.getElementById('kbFlipStage');
   var wrap         = document.getElementById('keyboardWrap');
   if (!panel || !stage || !wrap) return;
 
-  _kbPartialAngle = ClampedAngle;
+  _kbPartialAngle = RotateXDegrees;
   _kbPos          = 'partial';
   _kbFlipped      = true;
 
   panel.style.transition = 'none';
   stage.style.transition = 'none';
-  panel.style.transform  = 'rotateX(' + ClampedAngle + 'deg)';
+  panel.style.transform  = 'rotateX(' + RotateXDegrees + 'deg)';
   stage.style.transform  = 'translateY(' + StageY + 'px)';
 
   panel.classList.add('kb-edged');
@@ -11167,7 +11164,6 @@ function _onDragHandlePointerDown(Event) {
   _kbDragStartClientY       = Event.clientY;
   _kbDragStartClientX       = Event.clientX;
   _kbDragStartAngle         = (_kbPos === 'edge') ? EdgeAngle : _kbPartialAngle;
-  _kbPointerDownTime        = Date.now();
 
   var handle = document.getElementById('kbDragHandle');
   if (handle) handle.setPointerCapture(Event.pointerId);
@@ -11184,48 +11180,46 @@ function _onDragHandlePointerMove(Event) {
   if (!_kbDragActive) {
     if (TotalTravel < DragThresholdPixels) return;
     if (Math.abs(DeltaX) > Math.abs(DeltaY)) return;
-    if (_kbPos === 'edge' && DeltaY >= 0) return;
     _kbDragActive = true;
   }
 
   var DegreesPerPixel = 0.5;
   var NewAngle        = _kbDragStartAngle + DeltaY * DegreesPerPixel;
 
-  if (_kbDragStartAngle >= EdgeAngle && NewAngle >= PartialDragMaxAngle) return;
+  // Allow DragOvershootDegrees beyond each extreme during live drag.
+  var ClampedAngle = Math.max(
+    PartialDragMinAngle - DragOvershootDegrees,
+    Math.min(EdgeAngle + DragOvershootDegrees, NewAngle)
+  );
 
-  _applyPartialAngleInstant(NewAngle);
+  _applyPartialAngleInstant(ClampedAngle);
   Event.preventDefault();
 }
 
 function _onDragHandlePointerUp(Event) {
   if (Event.pointerId !== _kbDragPointerId) return;
 
-  var WasDrag     = _kbDragActive;
-  var DeltaY      = Event.clientY - _kbDragStartClientY;
-  var DeltaX      = Event.clientX - _kbDragStartClientX;
-  var TotalTravel = Math.sqrt(DeltaX * DeltaX + DeltaY * DeltaY);
-  var ElapsedMs   = Date.now() - _kbPointerDownTime;
-  var IsTap       = !WasDrag && TotalTravel <= TapMaxTravelPixels && ElapsedMs <= TapMaxDurationMs;
-
+  var WasDrag = _kbDragActive;
   _kbDragActive    = false;
   _kbDragPointerId = null;
 
-  if (WasDrag) {
-    var panel = document.getElementById('keyboardPanel');
-    var stage = document.getElementById('kbFlipStage');
-    if (panel) panel.style.transition = '';
-    if (stage) stage.style.transition = '';
-    Event.preventDefault();
-    return;
-  }
+  var panel = document.getElementById('keyboardPanel');
+  var stage = document.getElementById('kbFlipStage');
+  if (panel) panel.style.transition = '';
+  if (stage) stage.style.transition = '';
 
-  if (!IsTap) return;
+  if (!WasDrag) return;
 
-  if (_kbPos === 'edge') {
-    _animateToPartialAngle(72);
-  } else {
+  // Snap to the nearest extreme if the drag overshot, otherwise animate to the
+  // clamped partial angle (which may have been updated during the drag).
+  if (_kbPartialAngle <= PartialDragMinAngle) {
+    _animateToPartialAngle(PartialDragMinAngle);
+  } else if (_kbPartialAngle >= PartialDragMaxAngle) {
     setKbPosition('edge');
+  } else {
+    _animateToPartialAngle(_kbPartialAngle);
   }
+
   Event.preventDefault();
 }
 
@@ -11243,6 +11237,12 @@ function _initialiseStageDragListeners() {
     var stage = document.getElementById('kbFlipStage');
     if (panel) panel.style.transition = '';
     if (stage) stage.style.transition = '';
+    // Snap back to the nearest valid extreme on cancel too.
+    if (_kbPartialAngle <= PartialDragMinAngle) {
+      _animateToPartialAngle(PartialDragMinAngle);
+    } else if (_kbPartialAngle >= PartialDragMaxAngle) {
+      setKbPosition('edge');
+    }
   });
 }
 

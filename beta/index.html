@@ -724,6 +724,7 @@
 </div>
 
 <p id="credit" class="page-initially-hidden"><em>Built for learners.</em><small> This digital toy was created by Wednesday Dessauer &amp; is free to adapt under Polyform Non-Commercial 1.0.0</small></p>
+<div id="panelFog"></div>
 
 <div id="diffIconWrap" class="page-initially-hidden">
   <svg id="diffIcon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 90 90" style="width:44px;height:auto;" cursor="pointer">
@@ -4522,7 +4523,9 @@ function setKeyboardDisplayMode(mode) {
   if (GoingToNone) {
     var SettingsPageToReopen = activeSettings;
     if (SettingsPageToReopen !== null) _closeAllModalsInstant();
-    setKbPosition('edge');
+    // Move to partial so the keyboard visibly reacts to the toggle
+    // without burying the panel content at edge position.
+    setKbPosition('partial');
     setTimeout(function() {
       ForceNoKeyboard = true;
       updateKeyboardMode();
@@ -5232,7 +5235,8 @@ function openSettings(page) {
   // For panels where clipping is acceptable, go straight to partial.
   var ContentCriticalPanels = new Set([
     'panelDifficultySettings', 'panelPause',
-    'panelEndGameReportCard', 'panelLandingWelcome', 'panelLandingReturning'
+    'panelEndGameReportCard', 'panelLandingWelcome', 'panelLandingReturning',
+    'panelCheatSheet'
   ]);
   var UseAutoSettle = ContentCriticalPanels.has(page);
 
@@ -11169,7 +11173,6 @@ function setKbPositionAutoSettle(AfterSettleCallback) {
 // Bottom third moves it toward the high toggle position.
 function handleKeyboardPanelTap(ClientY) {
   if (activeSettings === null) return false; // not in a panel — don't handle
-  if (touchEnabled) return false;            // touch keys active — don't interfere
 
   var KeyboardPanel = document.getElementById('keyboardPanel');
   if (!KeyboardPanel) return false;

@@ -11181,9 +11181,21 @@ function _onStageDragPointerDown(Event) {
   if (!Event.isPrimary) return;
   if (touchEnabled && _kbPos === 'face') return;
   if (_kbPos === 'face') return;
-  var settingsInner = document.getElementById('settingsPanelInner');
-  console.log('pointerdown target:', Event.target.id, Event.target.className, 'inSettings:', settingsInner && settingsInner.contains(Event.target));
-  if (settingsInner && settingsInner.contains(Event.target)) return;
+function _initialiseStageDragListeners() {
+  var stage = document.getElementById('kbFlipStage');
+  var panel = document.getElementById('keyboardPanel');
+  if (!stage || !panel) return;
+  panel.addEventListener('pointerdown',   _onStageDragPointerDown);
+  stage.addEventListener('pointermove',   _onStageDragPointerMove);
+  stage.addEventListener('pointerup',     _onStageDragPointerUp);
+  stage.addEventListener('pointercancel', function(Event) {
+    if (Event.pointerId !== _kbDragPointerId) return;
+    _kbDragActive    = false;
+    _kbDragPointerId = null;
+    if (panel) panel.style.transition = '';
+    if (stage) stage.style.transition = '';
+  });
+}
   if (!_stagePointerIsInDragZone(Event)) return;
 
   _kbDragActive             = false;

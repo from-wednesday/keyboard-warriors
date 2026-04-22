@@ -749,6 +749,7 @@ body.pc-mode #extKeyPill {
   font-family: 'Lato', system-ui, sans-serif;
   font-size: 13px;
   color: #374151;
+  background: transparent;
   line-height: 1.55;
   opacity: 0;
   transform: translateY(-8px);

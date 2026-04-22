@@ -757,20 +757,6 @@ body.pc-mode #extKeyPill {
   pointer-events: none;
 }
 
-/* Overflow fog: a static gradient strip that sits just above the credit line.
-   Normally invisible (no content reaches it), but prevents overflow from
-   bleeding into the credit area — particularly in ghost mode or on history
-   screens with long content lists. */
-#panelFog {
-  width: 100%;
-  height: 48px;
-  margin-top: -48px;
-  background: linear-gradient(to bottom, transparent 0%, #f0f4f8 100%);
-  pointer-events: none;
-  position: relative;
-  z-index: 5;
-}
-
 /* At edge: shadow stays behind the keyboard, not cast onto content above */
 body.kb-at-edge #keyboardPanel #kb-shadow {
   display: none;

@@ -11182,6 +11182,7 @@ function _onStageDragPointerDown(Event) {
   if (touchEnabled && _kbPos === 'face') return;
   if (_kbPos === 'face') return;
   var settingsInner = document.getElementById('settingsPanelInner');
+  console.log('pointerdown target:', Event.target.id, Event.target.className, 'inSettings:', settingsInner && settingsInner.contains(Event.target));
   if (settingsInner && settingsInner.contains(Event.target)) return;
   if (!_stagePointerIsInDragZone(Event)) return;
 

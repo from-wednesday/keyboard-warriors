@@ -723,7 +723,6 @@
   </div>
 </div>
 
-<div id="panelFog"></div>
 <p id="credit" class="page-initially-hidden"><em>Built for learners.</em><small> This digital toy was created by Wednesday Dessauer &amp; is free to adapt under Polyform Non-Commercial 1.0.0</small></p>
 
 <div id="diffIconWrap" class="page-initially-hidden">
@@ -10174,10 +10173,13 @@ document.getElementById('keyboardWrap').addEventListener('click', function(e) {
   // own pointer handlers — do not intercept those.
   if (e.target.closest('#kbIconWrap, #brIconWrap, #diffIconWrap')) return;
 
+  // Only treat this as a keyboard tap if the click landed on the keyboard
+  // stage or panel itself, not on the settings panel content area above it.
+  var KeyboardStage = document.getElementById('kbFlipStage');
+  var ClickIsOnKeyboard = KeyboardStage && (e.target === KeyboardStage || KeyboardStage.contains(e.target));
+
   if (activeSettings !== null) {
-    // Any panel open: let the keyboard itself be tapped to adjust angle.
-    // Touch-enabled mode does not use this — touch keys need face position.
-    if (!touchEnabled) {
+    if (!touchEnabled && ClickIsOnKeyboard) {
       var WasHandled = handleKeyboardPanelTap(e.clientY);
       if (WasHandled) return;
     }
@@ -11101,14 +11103,17 @@ function setKbPositionAutoSettle(AfterSettleCallback) {
       return;
     }
 
-    // Measure where the keyboard top sits right now (at edge position).
-    var KbTopAtEdge = KeyboardPanel.getBoundingClientRect().top;
-
-    // Back-calculate keyboard top at partial and low from known stageTranslateY differences.
-    var EdgeToPartialDiff = KbNamedPositions.edge.stageTranslateY - KbNamedPositions.partial.stageTranslateY;
-    var EdgeToLowDiff     = KbNamedPositions.edge.stageTranslateY - KbNamedPositions.low.stageTranslateY;
-    var KbTopAtPartial    = KbTopAtEdge - EdgeToPartialDiff;
-    var KbTopAtLow        = KbTopAtEdge - EdgeToLowDiff;
+    // Compute where the keyboard top would sit at each named position.
+    // Rather than reading the current DOM position (which is only accurate when
+    // already at edge), derive it from the wrap's top plus the known stageTranslateY
+    // offsets. This is correct regardless of where the keyboard currently sits.
+    var KeyboardWrap = document.getElementById('keyboardWrap');
+    var WrapTop = KeyboardWrap ? KeyboardWrap.getBoundingClientRect().top : 0;
+    // stageTranslateY pushes the stage (and therefore the keyboard panel) down
+    // relative to the wrap top. Keyboard panel top = wrap top + stageTranslateY.
+    var KbTopAtEdge    = WrapTop + KbNamedPositions.edge.stageTranslateY;
+    var KbTopAtPartial = WrapTop + KbNamedPositions.partial.stageTranslateY;
+    var KbTopAtLow     = WrapTop + KbNamedPositions.low.stageTranslateY;
 
     // Measure the bottom of the rendered panel content.
     // Use the active panel element's bounding rect bottom for accuracy --

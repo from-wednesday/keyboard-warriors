@@ -736,20 +736,11 @@ body.pc-mode #extKeyPill {
   right: 0;
   bottom: 0;
   pointer-events: none;
-  z-index: 3; /* above keyboard 3D stage when open */
+  z-index: 1; /* above bg, below keyboard 3D stage */
   overflow: hidden;
 }
 
-#settingsPanel {
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  pointer-events: none;
-  z-index: 3; /* above keyboard 3D stage when open */
-  overflow: hidden;
-}
+#settingsPanelInner {
   position: absolute;
    background: transparent;
   top: 0;

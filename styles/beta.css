@@ -760,7 +760,8 @@ body.pc-mode #extKeyPill {
 /* Overflow fade: a gradient overlay that sits in front of overflowing content
    at the bottom of the panel. Only becomes visible when content extends into
    the keyboard fold zone. Uses a pseudo-element so it does not affect pointer
-   events on the content beneath (which would break buttons near the fold). */
+   events on the content beneath (which would break buttons near the fold).
+   Suppressed at edge position — content is fully clear, no fog needed. */
 #settingsPanel.sp-open #settingsPanelInner::after {
   content: '';
   position: sticky;
@@ -772,6 +773,16 @@ body.pc-mode #extKeyPill {
   background: linear-gradient(to bottom, transparent 0%, #f0f4f8 100%);
   pointer-events: none;
   margin-top: -48px;
+  transition: opacity 0.4s ease;
+}
+/* At edge: content is fully exposed — remove the fog */
+body.kb-at-edge #settingsPanel.sp-open #settingsPanelInner::after {
+  opacity: 0;
+  pointer-events: none;
+}
+/* At edge: shadow stays behind the keyboard, not cast onto content above */
+body.kb-at-edge #keyboardPanel #kb-shadow {
+  display: none;
 }
 
 #settingsPanel.sp-open #settingsPanelInner {
@@ -2389,6 +2400,14 @@ li.conflict-dismissed .conflict-desc {
   z-index:            2; /* above settingsPanel (z:1) */
 }
 
+/* Spacer: when a panel is open, push the keyboard down so the fold reveals
+   more page content above it. Padding transitions in with the panel. */
+#settingsPanel.sp-open ~ #kbFlipStage {
+  padding-top: 28px;
+  transition: transform 0.85s cubic-bezier(0.4, 0, 0.2, 1),
+              padding-top 0.55s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
 /* ─── PANEL ──────────────────────────────────────────*/
 #keyboardPanel {
   transform-style:  preserve-3d;
@@ -2511,8 +2530,8 @@ li.conflict-dismissed .conflict-desc {
   z-index:        0;
 }
 #keyboardPanel.kb-edged #kb-shadow {
-  background: rgba(0,0,0,0.6);
-  transform:  translateZ(-10px) translateY(42px);
+  background: rgba(0,0,0,0.45);
+  transform:  translateZ(-10px) translateY(6px);
 }
 
 

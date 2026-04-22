@@ -5306,12 +5306,8 @@ function openSettings(page) {
   var sp = document.getElementById('settingsPanel');
   if (sp) sp.classList.add('sp-open');
 
-  // Disable pointer-events on the keyboard stage so the tilted 3D surface
-  // doesn't intercept clicks on elements below it.
-  // Icon wraps (kbIconWrap, brIconWrap, diffIconWrap) have z-index above the stage
-  // and explicit pointer-events:auto in CSS so they are unaffected.
-  // Keyboard tap-to-adjust-angle works via keyboardWrap click, not the stage itself.
-  var stage = document.getElementById('kbFlipStage');
+  if (stage) stage.style.pointerEvents = 'none';
+
 
   // Pin tooltip only for the three true settings pages
   var isPinnableSettings = (page === 'panelKeyboard' || page === 'panelConflicts' || page === 'panelDifficultySettings');
@@ -5353,11 +5349,8 @@ function closeSettings() {
   });
 
   _unpinTooltip();
-  // Only restore stage pointer-events if the keyboard is returning to face position.
-  // If another openSettings call follows immediately (e.g. returnToPause, readyToUnpause),
-  // that call will re-set pointerEvents = 'none' correctly.
-  // Restoring here while the keyboard is still tilted was causing the icons to fire through the stage.
   var stage = document.getElementById('kbFlipStage');
+  if (stage) stage.style.pointerEvents = '';
   // If the cheat sheet was open, clear the tagline it added
   if (closingPage === 'panelCheatSheet') {
     var tagline = document.getElementById('welcomeTagline');
@@ -11071,8 +11064,8 @@ function setKbPosition(pos) {
   panel.style.transform  = 'rotateX(' + NamedPos.panelRotateX + 'deg)';
 
   if (pos === 'face') {
-    panel.classList.add('no-key-transition');
-    panel.classList.remove('kb-edged', 'kb-edges-visible', 'kb-partial');
+    var stageEl = document.getElementById('kbFlipStage');
+    if (stageEl) stageEl.style.pointerEvents = '';
     stage.classList.remove('kb-show-base');
     requestAnimationFrame(function() { panel.classList.remove('no-key-transition'); });
   } else {

@@ -35,6 +35,75 @@
     visibility: hidden;
     opacity: 0;
   }
+
+  /* ── Keyboard drag handle affordance ──────────────────────────────────────
+     Sits inside #kbDragHandle which is absolutely positioned at the top of
+     #keyboardPanel. The SVG travels with the 3D panel transform automatically.
+     Width matches the keyboard panel width via 100%; the SVG scales to fill.
+
+     Desktop: invisible by default, fades in on hover over the drag handle zone.
+              Only shown when the keyboard is not at face position (settings-open).
+     Touch:   always visible when settings are open (IS the touch handle).
+  ──────────────────────────────────────────────────────────────────────────── */
+  #kbDragHandle {
+    /* Extend touch target downward so the full affordance height is grabbable */
+    height: 48px;
+    top: -24px; /* centre the 48px zone over the panel top edge */
+  }
+
+  #kbHandleAffordance {
+    position: absolute;
+    left: 14px;   /* inset to match panel border-radius */
+    right: 14px;
+    top: 0;
+    height: 48px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    pointer-events: none;  /* clicks fall through to the handle div itself */
+    opacity: 0;
+    transition: opacity 0.22s ease;
+  }
+
+  #kbHandleAffordance svg {
+    width: 100%;
+    height: auto;
+    max-height: 44px;
+    display: block;
+  }
+
+  /* Desktop hover: show when mouse enters the drag handle zone.
+     Only active when settings are open (keyboard is not at face). */
+  #keyboardWrap.settings-open #kbDragHandle:hover #kbHandleAffordance {
+    opacity: 1;
+  }
+
+  /* Touch: always visible when settings are open */
+  @media (hover: none) {
+    #keyboardWrap.settings-open #kbHandleAffordance {
+      opacity: 1;
+    }
+    /* On touch, the whole affordance area is the drag target — ensure pointer events */
+    #keyboardWrap.settings-open #kbDragHandle {
+      pointer-events: auto;
+    }
+    /* Make the touch target generously tall */
+    #kbDragHandle {
+      height: 56px;
+      top: -28px;
+    }
+  }
+
+  /* Hide when face-down (nothing to drag) */
+  #keyboardWrap.kb-at-face #kbHandleAffordance {
+    opacity: 0 !important;
+    pointer-events: none;
+  }
+
+  /* Subtle active/press state feedback */
+  #kbDragHandle:active #kbHandleAffordance {
+    opacity: 0.6;
+  }
 </style>
 </head>
 <!-- ══════════════════════════════════════
@@ -641,7 +710,28 @@
   </div><!-- /#settingsPanel -->
   <div id="kbFlipStage">
   <div id="keyboardPanel">
-    <div id="kbDragHandle"></div>
+    <div id="kbDragHandle">
+      <div id="kbHandleAffordance" aria-hidden="true">
+        <!-- keyboard_handle.svg inline — dashed line with arrow and endpoint dots -->
+        <svg xmlns="http://www.w3.org/2000/svg" width="649.94" height="68.72" viewBox="0 0 649.94 68.72">
+          <defs>
+            <style>
+              .kh-dash{stroke-dasharray:11.73 11.73;}
+              .kh-dash,.kh-solid{fill:none;stroke:#5ab685;stroke-linecap:round;stroke-miterlimit:10;stroke-width:3px;}
+              .kh-fill{fill:#5ab685;}
+            </style>
+          </defs>
+          <line class="kh-solid" x1="44.69" y1="38.79" x2="50.69" y2="38.79"/>
+          <line class="kh-dash"  x1="62.43" y1="38.79" x2="572.76" y2="38.79"/>
+          <line class="kh-solid" x1="578.62" y1="38.79" x2="584.62" y2="38.79"/>
+          <path class="kh-fill"  d="M44.88,42.51c-2.06,0-3.72-1.67-3.72-3.72s1.67-3.72,3.72-3.72,3.72,1.67,3.72,3.72-1.67,3.72-3.72,3.72Z"/>
+          <path class="kh-fill"  d="M584.44,42.51c2.06,0,3.72-1.67,3.72-3.72s-1.67-3.72-3.72-3.72-3.72,1.67-3.72,3.72,1.67,3.72,3.72,3.72Z"/>
+          <path class="kh-solid" d="M30.04,11.52c-1.4,14.56-7.53,30.25-18.39,44.81"/>
+          <polygon class="kh-fill" points="24.69 12.55 30.76 4.02 35.11 13.55 24.69 12.55"/>
+          <polygon class="kh-fill" points="8.37 51.98 7.15 62.38 16.77 58.24 8.37 51.98"/>
+        </svg>
+      </div>
+    </div>
     <div id="kb-shadow"></div>
     <div id="kb-wall-bottom"></div>
     <div id="kb-base-edge"></div>

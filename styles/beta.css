@@ -2394,7 +2394,8 @@ li.conflict-dismissed .conflict-desc {
   perspective:        900px;
   perspective-origin: 50% 50%;
   transform-style:    preserve-3d;
-  transition:         transform 0.85s cubic-bezier(0.4, 0, 0.2, 1);
+  transition:         transform 0.85s cubic-bezier(0.4, 0, 0.2, 1),
+                      padding-top 0.45s cubic-bezier(0.4, 0, 0.2, 1);
   overflow:           visible;
   position:           relative;
   z-index:            2; /* above settingsPanel (z:1) */

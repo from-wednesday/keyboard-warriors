@@ -5238,22 +5238,8 @@ function openSettings(page) {
     }
   }
 
-  // Keyboard positioning: for panels that need all content visible, render the
-  // panel content first (by populating it below), then auto-settle the keyboard
-  // to the highest angle that does not eclipse the content.
-  // For panels where clipping is acceptable, go straight to partial.
-  var ContentCriticalPanels = new Set([
-    'panelDifficultySettings', 'panelPause',
-    'panelEndGameReportCard', 'panelLandingWelcome', 'panelLandingReturning',
-    'panelCheatSheet'
-  ]);
-  var UseAutoSettle = ContentCriticalPanels.has(page);
-
-  // For non-critical panels go to partial immediately so the keyboard is already
-  // moving while the content renders. Auto-settle is not run for these.
-  if (!UseAutoSettle) {
-    setKbPosition('partial');
-  }
+  // Keyboard positioning: all panels use a configured angle via SetKeyboardPositionForPanel.
+  // Angles are defined in PanelKeyboardPositions and tuned per panel per device type.
 
   // Pause game if needed (not for pause panel or when on welcome screen)
   if (page !== 'panelPause' && gameState !== 'welcome') {
@@ -5270,8 +5256,9 @@ function openSettings(page) {
   if (page === 'panelEndGameReportCard')     _refreshReportPanel();
   if (page === 'panelCheatSheet')    _refreshCheatSheet();
 
-  // Align panel width to keyboard
+  // Align panel width to keyboard and set the configured keyboard fold angle.
   _spAlignPanel();
+  SetKeyboardPositionForPanel(page);
 
   // Show/activate the right page
   SP_PAGE_ORDER.forEach(function(p) {
@@ -5302,13 +5289,6 @@ function openSettings(page) {
   if (sp) sp.classList.add('sp-open');
   var kbWrap = document.getElementById('keyboardWrap');
   if (kbWrap) kbWrap.classList.add('settings-open');
-
-  // Auto-settle keyboard position for content-critical panels.
-  // Must run after sp-active and sp-open are applied so getBoundingClientRect()
-  // measures the fully visible, correctly positioned panel content.
-  if (UseAutoSettle) {
-    setKbPositionAutoSettle();
-  }
 
   // Pin tooltip only for the three true settings pages
   var isPinnableSettings = (page === 'panelKeyboard' || page === 'panelConflicts' || page === 'panelDifficultySettings');
@@ -10917,6 +10897,35 @@ function handleKeyup(e) {
 /* ── Keyboard flip ────────────────────────────────── */
 // ── Keyboard position state ───────────────────────────────────────────────────
 // _kbPos: 'face' | 'partial' | 'edge'
+// ── Per-panel keyboard fold angle config ─────────────────────────────────────
+// Each panel has a desktop and tablet angle (rotateX in degrees).
+// Desktop = non-touch devices. Tablet = touch devices (detectedOs === 'mobile').
+// These are interim values. Wednesday will tune each panel individually
+// based on observation across devices.
+var PanelKeyboardPositions = {
+  panelKeyboard:             { desktop: 45, tablet: 30 },
+  panelConflicts:            { desktop: 45, tablet: 30 },
+  panelDifficultySettings:   { desktop: 45, tablet: 30 },
+  panelPause:                { desktop: 45, tablet: 30 },
+  panelEndGameReportCard:    { desktop: 45, tablet: 30 },
+  panelEndGameHistoryRecord: { desktop: 45, tablet: 30 },
+  panelCheatSheet:           { desktop: 45, tablet: 30 },
+  panelLandingReturning:     { desktop: 45, tablet: 30 },
+  panelLandingWelcome:       { desktop: 45, tablet: 30 },
+};
+
+function GetPanelKeyboardAngle(PanelName) {
+  var Config = PanelKeyboardPositions[PanelName];
+  if (!Config) return 45;
+  return detectedOs === 'mobile' ? Config.tablet : Config.desktop;
+}
+
+function SetKeyboardPositionForPanel(PanelName) {
+  if (ForceNoKeyboard) return;
+  var Angle = GetPanelKeyboardAngle(PanelName);
+  _animateToPartialAngle(Angle);
+}
+
 // 'partial' covers any angle between PartialDragMinAngle and PartialDragMaxAngle.
 // The exact rotateX within that range is stored in _kbPartialAngle.
 // 'edge' is a discrete state beyond the draggable range (82°) with its own decorations.
@@ -11094,71 +11103,6 @@ function setKbPosition(pos) {
     panel.classList.remove('kb-edges-visible');
     stage.classList.remove('kb-show-base');
   }
-}
-
-// Auto-settle: moves keyboard to edge immediately, then after layout settles,
-// measures panel content and animates to the shallowest angle that clears it.
-// For content-critical panels only. Non-critical panels call setKbPosition directly.
-function setKbPositionAutoSettle(AfterSettleCallback) {
-  if (ForceNoKeyboard) {
-    if (AfterSettleCallback) AfterSettleCallback();
-    return;
-  }
-
-  // Always go to edge first so geometry is consistent when we measure.
-  // Skipping this when already folded was the source of wrong ContentBottom readings.
-  setKbPosition('edge');
-
-  // Wait for the settingsPanelInner transition to finish before measuring.
-  // It has a 0.25s delay then a 0.3s transition = 550ms total. 650ms is safe.
-  setTimeout(function() {
-    var PanelInner    = document.getElementById('settingsPanelInner');
-    var KeyboardPanel = document.getElementById('keyboardPanel');
-    if (!PanelInner || !KeyboardPanel) {
-      if (AfterSettleCallback) AfterSettleCallback();
-      return;
-    }
-
-    var KeyboardWrap = document.getElementById('keyboardWrap');
-    var WrapTop      = KeyboardWrap ? KeyboardWrap.getBoundingClientRect().top : 0;
-
-    var KbTopAtDragMin = WrapTop + _interpolateStageY(PartialDragMinAngle);
-    var KbTopAtEdge    = WrapTop + KbNamedPositions.edge.stageTranslateY;
-
-    var ActivePanelElement = document.querySelector('#settingsPanelInner .sp-page.sp-active');
-    var ContentBottom;
-    if (ActivePanelElement) {
-      ContentBottom = ActivePanelElement.getBoundingClientRect().bottom;
-    } else {
-      var PanelRect = PanelInner.getBoundingClientRect();
-      ContentBottom = PanelRect.top + PanelInner.scrollHeight;
-    }
-
-    var IdealKbTop = ContentBottom - 6;
-
-    var IdealAngle;
-    if (IdealKbTop >= KbTopAtDragMin) {
-      IdealAngle = PartialDragMinAngle;
-    } else if (IdealKbTop <= KbTopAtEdge) {
-      IdealAngle = EdgeAngle;
-    } else {
-      var Range    = KbTopAtEdge - KbTopAtDragMin;
-      var Fraction = Range > 0 ? (KbTopAtDragMin - IdealKbTop) / Range : 1;
-      IdealAngle   = Math.round(PartialDragMinAngle + Fraction * (EdgeAngle - PartialDragMinAngle));
-    }
-
-    IdealAngle = Math.max(PartialDragMinAngle, Math.min(EdgeAngle, IdealAngle));
-
-    if (IdealAngle >= EdgeAngle) {
-      // Content too tall even at edge — already there, no movement needed.
-    } else {
-      _animateToPartialAngle(IdealAngle);
-    }
-
-    if (AfterSettleCallback) {
-      setTimeout(AfterSettleCallback, 900);
-    }
-  }, 650);
 }
 
 // ── Keyboard drag handle listeners ───────────────────────────────────────────

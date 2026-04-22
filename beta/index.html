@@ -11168,9 +11168,9 @@ function setKbPositionAutoSettle(AfterSettleCallback) {
 // Pointer capture ensures drags continue even if the pointer leaves the element.
 
 function _stagePointerIsInDragZone(Event) {
-  var panel = document.getElementById('keyboardPanel');
-  if (!panel) return false;
-  var Rect = panel.getBoundingClientRect();
+  var stage = document.getElementById('kbFlipStage');
+  if (!stage) return false;
+  var Rect = stage.getBoundingClientRect();
   return Event.clientX >= Rect.left  + StageDragInsetPixels &&
          Event.clientX <= Rect.right - StageDragInsetPixels &&
          Event.clientY >= Rect.top &&
@@ -11185,8 +11185,8 @@ function _onStageDragPointerDown(Event) {
   if (_kbPos === 'face') return;
   // Only capture pointer events when the click lands within the keyboard panel's
   // actual rendered bounds. Clicks below the keyboard reach settings content directly.
-  var kbPanelRect = document.getElementById('keyboardPanel').getBoundingClientRect();
-  if (Event.clientY < kbPanelRect.top || Event.clientY > kbPanelRect.bottom) return;
+  var stageRect = document.getElementById('kbFlipStage').getBoundingClientRect();
+  if (Event.clientY < stageRect.top || Event.clientY > stageRect.bottom) return;
   if (!_stagePointerIsInDragZone(Event)) return;
 
   _kbDragActive             = false;

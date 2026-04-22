@@ -1101,6 +1101,7 @@ li.conflict-dismissed .conflict-desc {
   position: relative;
   z-index: 1;
   gap: 4px;
+  pointer-events: auto;
 }
 .kb-row {
   display: flex;
@@ -2391,6 +2392,7 @@ li.conflict-dismissed .conflict-desc {
   overflow:           visible;
   position:           relative;
   z-index:            2; /* above settingsPanel (z:1) */
+  pointer-events:     none;
 }
 
 /* Spacer: when a panel is open, push the keyboard down so the fold reveals

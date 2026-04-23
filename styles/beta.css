@@ -2511,6 +2511,18 @@ li.conflict-dismissed .conflict-desc {
    Restored to a simple invisible hit-strip at the top
    of #keyboardPanel. Pointer events wired by the open/
    close classes on #keyboardWrap as before.            */
+/* Sentinel: zero-height anchor at the top of keyboardPanel.
+   Lives in 3D transform space so BCR.top always equals the
+   keyboard's true visual top edge regardless of rotateX angle. */
+#kbTopSentinel {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 0;
+  pointer-events: none;
+}
+
 #kbDragHandle {
   position: absolute;
   top: -10px;

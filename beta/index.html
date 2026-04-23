@@ -645,7 +645,7 @@
   <!-- Drag handle affordance: positioned by _spAlignPanel using stage.offsetTop
        so it always floats just above the keyboard top edge and moves with it. -->
   <div id="kbHandleAffordance" aria-hidden="true">
-    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 649.94 68.72" preserveAspectRatio="xMidYMid meet">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="-30 0 710 90" preserveAspectRatio="xMidYMid meet">
       <defs>
         <style>
           .kh-dash{stroke-dasharray:11.73 11.73;}
@@ -4620,100 +4620,67 @@ function setKeyboardDisplayMode(mode) {
 }
 
 function _redrawAffordanceArrow(KeyboardAngleDegrees) {
-  var ShaftPath       = document.getElementById('kbAffordanceArrowShaft');
-  var HeadTop         = document.getElementById('kbAffordanceArrowHeadTop');
-  var HeadBottom      = document.getElementById('kbAffordanceArrowHeadBottom');
+  var ShaftPath  = document.getElementById('kbAffordanceArrowShaft');
+  var HeadTop    = document.getElementById('kbAffordanceArrowHeadTop');
+  var HeadBottom = document.getElementById('kbAffordanceArrowHeadBottom');
   if (!ShaftPath || !HeadTop || !HeadBottom) return;
 
-  // Map keyboard angle to bend fraction: 0 at top (10°), 1 at bottom (80°)
   var BendFraction = Math.max(0, Math.min(1,
     (KeyboardAngleDegrees - PartialDragMinAngle) / (PartialDragMaxAngle - PartialDragMinAngle)
   ));
 
-  // Bottom segment angle in radians: 0° (straight down) at top, 73° left at bottom
-  // 73° left means the direction vector rotates -73° from straight down
+  // Bottom exit angle: 0° (straight down) at top, -73° (leftward) at bottom
   var BottomAngleRadians = BendFraction * (-73 * Math.PI / 180);
+  var BottomDirX = Math.sin(BottomAngleRadians);
+  var BottomDirY = Math.cos(BottomAngleRadians);
 
-  // Arrow spans y=4 to y=62, centred at x=20. Total length ~58 units.
-  // Each straight quarter = 14.5 units. Middle bezier occupies the middle 29 units.
-  var TotalLength    = 58;
-  var QuarterLength  = TotalLength / 4;
+  // Fixed endpoints
+  var TopX    = 20;
+  var TopY    = 6;
+  var BottomX = 20 + BottomDirX * 52;
+  var BottomY = TopY + BottomDirY * 52;
 
-  // Top straight segment: straight down from arrowhead tip
-  var TopTipX    = 20;
-  var TopTipY    = 4;
-  var TopEndX    = TopTipX;
-  var TopEndY    = TopTipY + QuarterLength;
+  // Control points: each pulls from its endpoint along its tangent direction
+  var ControlSpan = 26;
+  var Control1X = TopX;
+  var Control1Y = TopY + ControlSpan;             // top tangent: straight down
+  var Control2X = BottomX - BottomDirX * ControlSpan;
+  var Control2Y = BottomY - BottomDirY * ControlSpan;
 
-  // Bottom straight segment direction unit vector at the bend angle
-  // Straight down = (0, 1). Rotating left by BottomAngleRadians:
-  var BottomDirectionX = Math.sin(BottomAngleRadians);   // negative = leftward
-  var BottomDirectionY = Math.cos(BottomAngleRadians);   // positive = downward
-
-  // Bottom tip position (arrowhead end)
-  var BottomTipX = 20 + BottomDirectionX * (TotalLength);
-  var BottomTipY = 4  + BottomDirectionY * (TotalLength);
-
-  // Bottom segment start (where bezier ends, quarter-length back from tip)
-  var BottomStartX = BottomTipX - BottomDirectionX * QuarterLength;
-  var BottomStartY = BottomTipY - BottomDirectionY * QuarterLength;
-
-  // Cubic bezier control points: tangent at each end matches the straight segments
-  // Control point length = half the bezier span for a natural curve
-  var BezierSpanX    = BottomStartX - TopEndX;
-  var BezierSpanY    = BottomStartY - TopEndY;
-  var BezierLength   = Math.sqrt(BezierSpanX * BezierSpanX + BezierSpanY * BezierSpanY);
-  var ControlLength  = BezierLength * 0.5;
-
-  // Control point 1: from TopEnd in the top direction (straight down)
-  var Control1X = TopEndX;
-  var Control1Y = TopEndY + ControlLength;
-
-  // Control point 2: from BottomStart in the bottom direction (reversed, going back up the curve)
-  var Control2X = BottomStartX - BottomDirectionX * ControlLength;
-  var Control2Y = BottomStartY - BottomDirectionY * ControlLength;
-
-  // Build the shaft path: top segment + bezier + bottom segment
-  var PathData = [
-    'M', TopEndX.toFixed(2), TopTipY.toFixed(2),
-    'L', TopEndX.toFixed(2), TopEndY.toFixed(2),
+  ShaftPath.setAttribute('d', [
+    'M', TopX.toFixed(2), TopY.toFixed(2),
     'C', Control1X.toFixed(2), Control1Y.toFixed(2),
          Control2X.toFixed(2), Control2Y.toFixed(2),
-         BottomStartX.toFixed(2), BottomStartY.toFixed(2),
-    'L', BottomTipX.toFixed(2), BottomTipY.toFixed(2),
-  ].join(' ');
-  ShaftPath.setAttribute('d', PathData);
-
-  // Top arrowhead: always pointing straight up, centred at TopTipX, TopTipY
-  var HeadSize = 5;
-  HeadTop.setAttribute('points', [
-    TopTipX,            TopTipY - HeadSize * 1.6,
-    TopTipX - HeadSize, TopTipY + HeadSize * 0.4,
-    TopTipX + HeadSize, TopTipY + HeadSize * 0.4,
+         BottomX.toFixed(2), BottomY.toFixed(2),
   ].join(' '));
 
-  // Bottom arrowhead: rotated to match the bottom segment direction
-  // Build arrowhead in local space (pointing down = 0°) then rotate
-  var BottomHeadAngle = BottomAngleRadians;
-  var CosA = Math.cos(BottomHeadAngle);
-  var SinA = Math.sin(BottomHeadAngle);
+  // Top arrowhead: straight up
+  var HeadSize = 5;
+  HeadTop.setAttribute('points', [
+    TopX + ' ' + (TopY - HeadSize * 1.6),
+    (TopX - HeadSize) + ' ' + (TopY + HeadSize * 0.4),
+    (TopX + HeadSize) + ' ' + (TopY + HeadSize * 0.4),
+  ].join(' '));
+
+  // Bottom arrowhead: rotated to match exit direction
+  var CosA = Math.cos(BottomAngleRadians);
+  var SinA = Math.sin(BottomAngleRadians);
 
   function RotatePoint(LocalX, LocalY) {
     return [
-      BottomTipX + LocalX * CosA - LocalY * SinA,
-      BottomTipY + LocalX * SinA + LocalY * CosA,
+      BottomX + LocalX * CosA - LocalY * SinA,
+      BottomY + LocalX * SinA + LocalY * CosA,
     ];
   }
 
-  // Arrowhead in local space: tip at origin, pointing down
-  var PointTip    = RotatePoint(0,             HeadSize * 1.6);
-  var PointLeft   = RotatePoint(-HeadSize,    -HeadSize * 0.4);
-  var PointRight  = RotatePoint( HeadSize,    -HeadSize * 0.4);
+  var PointTip   = RotatePoint(0,          HeadSize * 1.6);
+  var PointLeft  = RotatePoint(-HeadSize, -HeadSize * 0.4);
+  var PointRight = RotatePoint( HeadSize, -HeadSize * 0.4);
 
   HeadBottom.setAttribute('points', [
-    PointTip[0].toFixed(2),   PointTip[1].toFixed(2),
-    PointLeft[0].toFixed(2),  PointLeft[1].toFixed(2),
-    PointRight[0].toFixed(2), PointRight[1].toFixed(2),
+    PointTip[0].toFixed(2)   + ' ' + PointTip[1].toFixed(2),
+    PointLeft[0].toFixed(2)  + ' ' + PointLeft[1].toFixed(2),
+    PointRight[0].toFixed(2) + ' ' + PointRight[1].toFixed(2),
   ].join(' '));
 }
 

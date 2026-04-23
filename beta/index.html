@@ -11103,10 +11103,10 @@ function _repositionAffordance() {
   var arrowDeg;
   if (delta <= 0) {
     // Above midpoint: gentle anticlockwise — linear, small range
-    arrowDeg = delta * 0.12;
+    arrowDeg = delta * 0.15;
   } else {
     // Below midpoint: clockwise, power-ramped so it grows faster near the bottom
-    arrowDeg = Math.pow(delta, 1.4) * 0.04;
+    arrowDeg = Math.pow(delta, 1.4) * 0.02;
   }
 
   arrow.style.transform = 'rotate(' + arrowDeg + 'deg)';

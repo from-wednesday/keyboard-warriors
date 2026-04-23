@@ -2508,18 +2508,15 @@ li.conflict-dismissed .conflict-desc {
 
 
 /* ─── DRAG HANDLE ─────────────────────────────────────
-   Taller than the original 28px so the affordance SVG
-   has vertical room and touch targets are generous.
-   Centred over the panel top edge: top = -(height/2).
-   When a settings panel is open it becomes the sole
-   pointer target, letting all other clicks fall through
-   to the settings content behind the keyboard body.   */
+   Restored to a simple invisible hit-strip at the top
+   of #keyboardPanel. Pointer events wired by the open/
+   close classes on #keyboardWrap as before.            */
 #kbDragHandle {
   position: absolute;
-  top: -24px;
+  top: -10px;
   left: 14px;
   right: 14px;
-  height: 48px;
+  height: 28px;
   z-index: 10;
   pointer-events: none;
   cursor: grab;
@@ -2537,59 +2534,57 @@ li.conflict-dismissed .conflict-desc {
 }
 
 /* ─── DRAG HANDLE AFFORDANCE ──────────────────────────
-   keyboard_handle.svg inlined inside #kbDragHandle.
-   Stretches to fill the handle width; height is auto.
-   Travels with the 3D panel transform for free.
+   Lives inside #settingsPanel (sibling of
+   settingsPanelInner). Left and width are set by
+   _spAlignPanel() in JS so it always matches the
+   keyboard panel's real pixel dimensions exactly.
 
-   Desktop (hover pointer): invisible by default, fades
-   in when the mouse enters the handle zone. Only active
-   while settings are open (keyboard is not at face).
+   bottom: 0 pins it to the bottom of #settingsPanel
+   which is itself positioned to fill #keyboardWrap,
+   so the SVG sits just above the keyboard stage top.
 
-   Touch (no hover): always visible while settings are
-   open — the SVG IS the visual drag handle. The full
-   48px handle height is the touch target.             */
+   Desktop: invisible, fades in on mouseenter of the
+   kbDragHandle zone (pointer events on the handle,
+   visual on the affordance — they overlap).
+   Touch: always visible while settings are open.      */
 #kbHandleAffordance {
   position: absolute;
-  left: 0;
-  right: 0;
-  top: 0;
-  height: 100%;
+  bottom: 0;
+  height: 80px;
+  /* left and width set by JS */
   display: flex;
-  align-items: center;
+  align-items: flex-end;
   justify-content: center;
-  pointer-events: none;   /* clicks pass through to the handle div */
+  pointer-events: none;
   opacity: 0;
   transition: opacity 0.22s ease;
+  z-index: 1;
 }
 #kbHandleAffordance svg {
   width: 100%;
   height: auto;
-  max-height: 44px;
   display: block;
 }
 
-/* Show on hover — desktop only, settings must be open */
-#keyboardWrap.settings-open #kbDragHandle:hover #kbHandleAffordance {
+/* Show on hover via .handle-hover class toggled by JS on #kbDragHandle */
+#kbHandleAffordance.handle-hover {
   opacity: 1;
 }
 
 /* Subtle press feedback */
-#keyboardWrap.settings-open #kbDragHandle:active #kbHandleAffordance {
+#kbHandleAffordance.handle-active {
   opacity: 0.55;
 }
 
-/* Never show when keyboard is at face position (nothing to drag) */
+/* Never show when keyboard is at face position */
 #keyboardWrap.kb-at-face #kbHandleAffordance {
   opacity: 0 !important;
+  transition: none;
 }
 
 /* Touch: always visible when settings are open */
 @media (hover: none) {
-  #kbDragHandle {
-    height: 56px;
-    top: -28px;
-  }
-  #keyboardWrap.settings-open #kbHandleAffordance {
+  #settingsPanel.sp-open #kbHandleAffordance {
     opacity: 1;
   }
 }

@@ -2508,16 +2508,18 @@ li.conflict-dismissed .conflict-desc {
 
 
 /* ─── DRAG HANDLE ─────────────────────────────────────
-   A thin strip at the top of the keyboard panel. When a
-   settings panel is open it becomes the sole pointer
-   target, letting all other clicks fall through to the
-   settings content behind the keyboard body.          */
+   Taller than the original 28px so the affordance SVG
+   has vertical room and touch targets are generous.
+   Centred over the panel top edge: top = -(height/2).
+   When a settings panel is open it becomes the sole
+   pointer target, letting all other clicks fall through
+   to the settings content behind the keyboard body.   */
 #kbDragHandle {
   position: absolute;
-  top: -10px;
+  top: -24px;
   left: 14px;
   right: 14px;
-  height: 28px;
+  height: 48px;
   z-index: 10;
   pointer-events: none;
   cursor: grab;
@@ -2532,6 +2534,64 @@ li.conflict-dismissed .conflict-desc {
 /* Disable the keyboard body as a hit target while settings are open. */
 #keyboardWrap.settings-open #keyboardPanel {
   pointer-events: none;
+}
+
+/* ─── DRAG HANDLE AFFORDANCE ──────────────────────────
+   keyboard_handle.svg inlined inside #kbDragHandle.
+   Stretches to fill the handle width; height is auto.
+   Travels with the 3D panel transform for free.
+
+   Desktop (hover pointer): invisible by default, fades
+   in when the mouse enters the handle zone. Only active
+   while settings are open (keyboard is not at face).
+
+   Touch (no hover): always visible while settings are
+   open — the SVG IS the visual drag handle. The full
+   48px handle height is the touch target.             */
+#kbHandleAffordance {
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 0;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  pointer-events: none;   /* clicks pass through to the handle div */
+  opacity: 0;
+  transition: opacity 0.22s ease;
+}
+#kbHandleAffordance svg {
+  width: 100%;
+  height: auto;
+  max-height: 44px;
+  display: block;
+}
+
+/* Show on hover — desktop only, settings must be open */
+#keyboardWrap.settings-open #kbDragHandle:hover #kbHandleAffordance {
+  opacity: 1;
+}
+
+/* Subtle press feedback */
+#keyboardWrap.settings-open #kbDragHandle:active #kbHandleAffordance {
+  opacity: 0.55;
+}
+
+/* Never show when keyboard is at face position (nothing to drag) */
+#keyboardWrap.kb-at-face #kbHandleAffordance {
+  opacity: 0 !important;
+}
+
+/* Touch: always visible when settings are open */
+@media (hover: none) {
+  #kbDragHandle {
+    height: 56px;
+    top: -28px;
+  }
+  #keyboardWrap.settings-open #kbHandleAffordance {
+    opacity: 1;
+  }
 }
 
 /* ─── DROP SHADOW ─────────────────────────────────────

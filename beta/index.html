@@ -4620,6 +4620,7 @@ function setKeyboardDisplayMode(mode) {
 }
 
 function _redrawAffordanceArrow(KeyboardAngleDegrees) {
+  console.log('TopX:', TopX, 'TopY:', TopY, 'BottomX:', BottomX, 'BottomY:', BottomY);
   var ShaftPath  = document.getElementById('kbAffordanceArrowShaft');
   var HeadTop    = document.getElementById('kbAffordanceArrowHeadTop');
   var HeadBottom = document.getElementById('kbAffordanceArrowHeadBottom');

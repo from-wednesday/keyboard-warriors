@@ -11124,7 +11124,7 @@ function _repositionAffordance() {
   var wrapRect  = wrap.getBoundingClientRect();
   var anchorTop = sentinel.getBoundingClientRect().top - wrapRect.top + wrap.scrollTop;
   affordance.style.top      = (anchorTop - affH + _AffordanceCloseOffset) + 'px';
-  affordance.style.transform = ''; // no 3D slant on the container
+  affordance.style.transform = '0.1'; // no 3D slant on the container
 
   // Arrow rotation: based on the sentinel's position in the viewport.
   // Mid-screen = 0deg (as designed). Higher on screen (smaller top) = anticlockwise.
@@ -11142,7 +11142,7 @@ function _repositionAffordance() {
     arrowDeg = delta * 0.12;
   } else {
     // Below midpoint: clockwise, power-ramped so it grows faster near the bottom
-    arrowDeg = Math.pow(delta, 1.4) * 0.09;
+    arrowDeg = Math.pow(delta, 1.4) * 0.01;
   }
 
   arrow.style.transform = 'rotate(' + arrowDeg + 'deg)';

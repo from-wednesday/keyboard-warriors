@@ -2561,15 +2561,16 @@ li.conflict-dismissed .conflict-desc {
    Touch: always visible while settings are open.      */
 #kbHandleAffordance {
   position: absolute;
-  /* top, left and width set by JS via _spAlignPanel so the affordance
-     always floats just above the keyboard top edge and moves with it */
+  /* top, left and width set by JS via _repositionAffordance */
   height: 80px;
   display: flex;
   align-items: flex-end;
   justify-content: center;
   pointer-events: none;
   opacity: 0;
-  transition: opacity 0.22s ease;
+  transition: opacity 0.22s ease, transform 0.85s cubic-bezier(0.4, 0, 0.2, 1);
+  /* Pivot from bottom edge so tilt feels anchored to the keyboard top */
+  transform-origin: center bottom;
   z-index: 200;
 }
 #kbHandleAffordance svg {

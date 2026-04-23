@@ -5066,12 +5066,11 @@ function _spAlignPanel() {
   var width = panel.offsetWidth;
   inner.style.left  = left + 'px';
   inner.style.width = width + 'px';
+  // left/width for affordance set now so horizontal position is immediate
   var affordance = document.getElementById('kbHandleAffordance');
   if (affordance) {
-    var affH = affordance.offsetHeight || 80;
     affordance.style.left  = left + 'px';
     affordance.style.width = width + 'px';
-    affordance.style.top   = (stage.offsetTop - affH) + 'px';
   }
   // Grow the wrap so the tilted keyboard sits below the settings content.
   // Two rAFs: first lets the browser lay out the content at its new width,
@@ -5080,6 +5079,16 @@ function _spAlignPanel() {
     requestAnimationFrame(function() {
       var contentH = inner.scrollHeight;
       var stageH   = stage.offsetHeight;
+      // Position affordance after layout settles so geometry is accurate.
+      // Use getBoundingClientRect to get the true rendered top of the stage
+      // relative to keyboardWrap (accounts for padding-top transition etc).
+      if (affordance) {
+        var affH        = affordance.offsetHeight || 80;
+        var wrapRect    = wrap.getBoundingClientRect();
+        var stageRect   = stage.getBoundingClientRect();
+        var stageTopInWrap = stageRect.top - wrapRect.top + wrap.scrollTop;
+        affordance.style.top = (stageTopInWrap - affH) + 'px';
+      }
       // Edge-position panels (report, cheat sheet, pause, conflicts, difficulty) sit
       // above a fully folded keyboard. Only the content height matters; the stage
       // height is already accounted for by the fold. Add a small buffer only.
@@ -5300,6 +5309,8 @@ function openSettings(page) {
   // Align panel width to keyboard and set the configured keyboard fold angle.
   _spAlignPanel();
   SetKeyboardPositionForPanel(page);
+  // Re-align affordance vertical position after padding-top transition completes (550ms).
+  setTimeout(function() { if (activeSettings !== null) _spAlignPanel(); }, 580);
 
   // Show/activate the right page
   SP_PAGE_ORDER.forEach(function(p) {

@@ -1201,6 +1201,21 @@ li.conflict-dismissed .conflict-desc {
 }
 
 /* Utility keys */
+/* Key glyph SVGs — option (⌥), control (⌃), return (↩) on full-size Mac.
+   Absolutely positioned top-left like sym-sub so they sit in the key corner
+   consistently regardless of the key's flex layout. */
+.key .key-glyph-sym {
+  position: absolute;
+  top: 4px;
+  left: 5px;
+  display: block;
+  color: #777;
+  flex-shrink: 0;
+}
+.key .key-glyph-option  { width: 12px; height: 8px; }
+.key .key-glyph-control { width: 11px; height: 8px; }
+.key .key-glyph-return  { width: 11px; height: 9px; }
+
 .key .util-lbl {
   font-size: 9px;
   font-weight: 400;
@@ -1415,7 +1430,8 @@ li.conflict-dismissed .conflict-desc {
 .key.lit-green-up .mod-sym,       .key.lit-green-down .mod-sym,
 .key.lit-green-up .mod-sym-only,  .key.lit-green-down .mod-sym-only,
 .key.lit-green-up .mod-word,      .key.lit-green-down .mod-word,
-.key.lit-green-up .util-sym-only, .key.lit-green-down .util-sym-only { color: white !important; }
+.key.lit-green-up .util-sym-only, .key.lit-green-down .util-sym-only,
+.key.lit-green-up .key-glyph-sym, .key.lit-green-down .key-glyph-sym { color: white !important; }
 
 /* ── ORANGE UP: resting coloured state ── */
 .key.lit-orange-up {
@@ -1440,7 +1456,8 @@ li.conflict-dismissed .conflict-desc {
 .key.lit-orange-up .mod-sym,       .key.lit-orange-down .mod-sym,
 .key.lit-orange-up .mod-sym-only,  .key.lit-orange-down .mod-sym-only,
 .key.lit-orange-up .mod-word,      .key.lit-orange-down .mod-word,
-.key.lit-orange-up .util-sym-only, .key.lit-orange-down .util-sym-only { color: white !important; }
+.key.lit-orange-up .util-sym-only, .key.lit-orange-down .util-sym-only,
+.key.lit-orange-up .key-glyph-sym, .key.lit-orange-down .key-glyph-sym { color: white !important; }
 
 /* ── CapsLock status indicator ─────────────────────────────────────────────
    Neutral soft yellow: not green (not correct) and not orange (not wrong).
@@ -3199,6 +3216,7 @@ body.returning-screen #diffIconWrap .icon-tip { display: none; }
 #keyboardPanel.ghost-mode .key .mod-sym-only,
 #keyboardPanel.ghost-mode .key .mod-word,
 #keyboardPanel.ghost-mode .key .util-sym-only,
+#keyboardPanel.ghost-mode .key .key-glyph-sym,
 #keyboardPanel.ghost-mode .key .lock-svg,
 #keyboardPanel.ghost-mode .key .win-svg { opacity: 0; }
 #keyboardPanel.ghost-mode #kb-wall-bottom,
@@ -3227,6 +3245,8 @@ body.returning-screen #diffIconWrap .icon-tip { display: none; }
 #keyboardPanel.ghost-mode .key.lit-green-down .util-lbl,
 #keyboardPanel.ghost-mode .key.lit-green-up  .util-sym-only,
 #keyboardPanel.ghost-mode .key.lit-green-down .util-sym-only,
+#keyboardPanel.ghost-mode .key.lit-green-up  .key-glyph-sym,
+#keyboardPanel.ghost-mode .key.lit-green-down .key-glyph-sym,
 #keyboardPanel.ghost-mode .key.lit-orange-up  .letter-lbl,
 #keyboardPanel.ghost-mode .key.lit-orange-down .letter-lbl,
 #keyboardPanel.ghost-mode .key.lit-orange-up  .sym-main,
@@ -3238,7 +3258,9 @@ body.returning-screen #diffIconWrap .icon-tip { display: none; }
 #keyboardPanel.ghost-mode .key.lit-orange-up  .util-lbl,
 #keyboardPanel.ghost-mode .key.lit-orange-down .util-lbl,
 #keyboardPanel.ghost-mode .key.lit-orange-up  .util-sym-only,
-#keyboardPanel.ghost-mode .key.lit-orange-down .util-sym-only {
+#keyboardPanel.ghost-mode .key.lit-orange-down .util-sym-only,
+#keyboardPanel.ghost-mode .key.lit-orange-up  .key-glyph-sym,
+#keyboardPanel.ghost-mode .key.lit-orange-down .key-glyph-sym {
   opacity: 1 !important;
   color: white !important;
 }

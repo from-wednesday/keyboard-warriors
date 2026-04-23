@@ -2517,7 +2517,7 @@ li.conflict-dismissed .conflict-desc {
   left: 14px;
   right: 14px;
   height: 28px;
-  z-index: 10;
+  z-index: 100;
   pointer-events: none;
   cursor: grab;
   border-radius: 8px 8px 0 0;
@@ -2558,7 +2558,7 @@ li.conflict-dismissed .conflict-desc {
   pointer-events: none;
   opacity: 0;
   transition: opacity 0.22s ease;
-  z-index: 1;
+  z-index: 200;
 }
 #kbHandleAffordance svg {
   width: 100%;

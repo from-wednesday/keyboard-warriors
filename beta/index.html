@@ -27,6 +27,32 @@
 </script>
 
 <style>
+  /* ── Key glyph SVGs (full-size Mac keyboard only) ──────────────────────────
+     Vector symbols for option (⌥), control (⌃), and return (↩).
+     Rendered as inline SVG so they scale, colour, and animate exactly like
+     the Command symbol in shortcut chips. Mini keyboards use text fallbacks. */
+  .key-glyph-sym {
+    display: block;
+    color: #555;
+    flex-shrink: 0;
+  }
+  .key-glyph-option  { width: 16px; height: 11px; margin-bottom: 1px; }
+  .key-glyph-control { width: 14px; height: 10px; margin-bottom: 1px; }
+  .key-glyph-return  { width: 14px; height: 11px; margin-bottom: 1px; }
+
+  /* Lit states: glyphs inherit white from the parent lit-* rules */
+  .key.lit-green-up    .key-glyph-sym,
+  .key.lit-green-down  .key-glyph-sym,
+  .key.lit-orange-up   .key-glyph-sym,
+  .key.lit-orange-down .key-glyph-sym { color: white; }
+
+  /* Ghost mode: hide with other label content, restore when lit */
+  #keyboardPanel.ghost-mode .key .key-glyph-sym { opacity: 0; }
+  #keyboardPanel.ghost-mode .key.lit-green-up    .key-glyph-sym,
+  #keyboardPanel.ghost-mode .key.lit-green-down  .key-glyph-sym,
+  #keyboardPanel.ghost-mode .key.lit-orange-up   .key-glyph-sym,
+  #keyboardPanel.ghost-mode .key.lit-orange-down .key-glyph-sym { opacity: 1 !important; }
+
   @keyframes SkeletonGrow {
     from { width: 18px; border-radius: 9px; }
     to   { width: 100%; border-radius: 16px; }
@@ -818,6 +844,27 @@ function _setGhostLockHint(visible) {
   lockKeyEl.classList.toggle('ghost-lock-visible', visible);
 }
 
+/* ══════════════════════════════════════
+   KEY GLYPH SVG CONSTANTS
+   Vector symbols for full-size Mac keys.
+   Match the Command symbol aesthetic used
+   in shortcut chips — clean stroke paths,
+   no emoji, no OS-dependent rendering.
+   Only injected when isMini is false and
+   currentOs is 'mac' (see buildKey util).
+══════════════════════════════════════ */
+
+// Option (⌥): horizontal bar at top spanning full width, diagonal line from
+// left end down to bottom-left, short horizontal bar at bottom-right.
+const OPTION_SYM_SVG = `<svg class="key-glyph-sym key-glyph-option" viewBox="0 0 80 52" fill="none" stroke="currentColor" stroke-width="7" stroke-linecap="round" stroke-linejoin="round" xmlns="http://www.w3.org/2000/svg"><line x1="6" y1="10" x2="74" y2="10"/><line x1="44" y1="42" x2="74" y2="42"/><line x1="6" y1="10" x2="44" y2="42"/></svg>`;
+
+// Control (⌃): upward-pointing caret / chevron.
+const CONTROL_SYM_SVG = `<svg class="key-glyph-sym key-glyph-control" viewBox="0 0 56 38" fill="none" stroke="currentColor" stroke-width="7" stroke-linecap="round" stroke-linejoin="round" xmlns="http://www.w3.org/2000/svg"><polyline points="6,32 28,7 50,32"/></svg>`;
+
+// Return (↩): right-angle arrow — horizontal stem then downward hook with
+// arrowhead pointing left, matching the standard Apple keycap return glyph.
+const RETURN_SYM_SVG = `<svg class="key-glyph-sym key-glyph-return" viewBox="0 0 58 46" fill="none" stroke="currentColor" stroke-width="6.5" stroke-linecap="round" stroke-linejoin="round" xmlns="http://www.w3.org/2000/svg"><polyline points="10,34 3,27 10,20"/><path d="M3,27 L40,27 L40,10"/></svg>`;
+
 const LOCK_SVG = `<svg class="lock-svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
   <rect x="5" y="11" width="14" height="10" rx="2"/>
   <path d="M8 11V7a4 4 0 0 1 8 0v4"/>
@@ -864,11 +911,24 @@ function buildKey(cfg, isMini) {
       break;
     case 'util': {
       const utilText = isMini ? cfg.mini : cfg.label;
-      const isGlyph = utilText && utilText.length <= 2 && /\p{So}|\p{Sm}|[⇧↩↑↓←→⌫↵]/u.test(utilText);
-      if (isGlyph) {
-        el.innerHTML = `<span class="util-sym-only">${utilText}</span>`;
+      // ── Full-size Mac keyboard: SVG glyphs for option, control, and return ──
+      // Ensures these keys always render as clean vector symbols rather than
+      // unicode characters or emoji, consistent with the Command symbol style.
+      // Mini keyboards and PC mode fall through to the standard text path.
+      const _isFullMac = !isMini && currentOs === 'mac';
+      if (_isFullMac && (cfg.id === 'AltLeft' || cfg.id === 'AltRight')) {
+        el.innerHTML = `${OPTION_SYM_SVG}<span class="mod-word">option</span>`;
+      } else if (_isFullMac && (cfg.id === 'ControlLeft' || cfg.id === 'ControlRight')) {
+        el.innerHTML = `${CONTROL_SYM_SVG}<span class="mod-word">control</span>`;
+      } else if (_isFullMac && cfg.id === 'Enter') {
+        el.innerHTML = `${RETURN_SYM_SVG}<span class="mod-word">return</span>`;
       } else {
-        el.innerHTML = `<span class="util-lbl">${utilText}</span>`;
+        const isGlyph = utilText && utilText.length <= 2 && /\p{So}|\p{Sm}|[⇧↩↑↓←→⌫↵]/u.test(utilText);
+        if (isGlyph) {
+          el.innerHTML = `<span class="util-sym-only">${utilText}</span>`;
+        } else {
+          el.innerHTML = `<span class="util-lbl">${utilText}</span>`;
+        }
       }
       el.addEventListener('mousedown', function(ev){ touchEnabled ? handleKeyTouch(ev, el) : showKbToast(ev); });
       break;

@@ -2572,8 +2572,9 @@ li.conflict-dismissed .conflict-desc {
   justify-content: center;
   pointer-events: none;
   opacity: 0;
-  transition: opacity 0.22s ease, transform 0.85s cubic-bezier(0.4, 0, 0.2, 1);
-  /* Pivot from bottom edge so tilt feels anchored to the keyboard top */
+  transition: opacity 0.22s ease;
+  /* No transform transition — arrow rotation is instant during drag,
+     animated snaps use _animateToPartialAngle's own 850ms transition */
   transform-origin: center bottom;
   z-index: 200;
 }
@@ -2581,6 +2582,14 @@ li.conflict-dismissed .conflict-desc {
   width: 100%;
   height: auto;
   display: block;
+}
+
+#kbAffordanceArrow {
+  transition: transform 0.85s cubic-bezier(0.4, 0, 0.2, 1);
+}
+/* During drag the transition is suppressed by JS so it tracks instantly */
+#kbHandleAffordance.dragging #kbAffordanceArrow {
+  transition: none;
 }
 
 /* Show on hover via .handle-hover class toggled by JS on #kbDragHandle */

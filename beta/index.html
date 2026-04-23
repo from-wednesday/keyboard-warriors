@@ -658,9 +658,12 @@
       <line class="kh-solid" x1="578.62" y1="38.79" x2="584.62" y2="38.79"/>
       <path class="kh-fill"  d="M44.88,42.51c-2.06,0-3.72-1.67-3.72-3.72s1.67-3.72,3.72-3.72,3.72,1.67,3.72,3.72-1.67,3.72-3.72,3.72Z"/>
       <path class="kh-fill"  d="M584.44,42.51c2.06,0,3.72-1.67,3.72-3.72s-1.67-3.72-3.72-3.72-3.72,1.67-3.72,3.72,1.67,3.72,3.72,3.72Z"/>
-      <path class="kh-solid" d="M30.04,11.52c-1.4,14.56-7.53,30.25-18.39,44.81"/>
-      <polygon class="kh-fill" points="24.69 12.55 30.76 4.02 35.11 13.55 24.69 12.55"/>
-      <polygon class="kh-fill" points="8.37 51.98 7.15 62.38 16.77 58.24 8.37 51.98"/>
+      <!-- Arrow: rotated by JS around its natural centre (~20,38) to indicate drag direction -->
+      <g id="kbAffordanceArrow" style="transform-origin: 20px 38px; transform-box: fill-box;">
+        <path class="kh-solid" d="M30.04,11.52c-1.4,14.56-7.53,30.25-18.39,44.81"/>
+        <polygon class="kh-fill" points="24.69 12.55 30.76 4.02 35.11 13.55 24.69 12.55"/>
+        <polygon class="kh-fill" points="8.37 51.98 7.15 62.38 16.77 58.24 8.37 51.98"/>
+      </g>
     </svg>
   </div>
 
@@ -11070,13 +11073,7 @@ function _interpolateStageY(RotateXDegrees) {
   return Math.round(AnchorPartialY + Fraction * (AnchorEdgeY - AnchorPartialY));
 }
 
-// Reposition and re-tilt the drag-handle affordance.
-// Vertical: sentinel BCR gives the keyboard's true visual top in 3D space.
-//           _AffordanceCloseOffset pulls it toward the keyboard edge.
-// Tilt:     50% of the keyboard's angular departure from the 58 degree baseline,
-//           so at 58 degrees the affordance is flat, scaling with drag.
-var _AffordanceBaselineAngle = 58;
-var _AffordanceCloseOffset   = 18; // px toward keyboard — raised from 30
+var _AffordanceCloseOffset = 18; // px toward keyboard top edge
 
 function _repositionAffordance() {
   var affordance = document.getElementById('kbHandleAffordance');
@@ -11085,21 +11082,34 @@ function _repositionAffordance() {
   var wrap     = document.getElementById('keyboardWrap');
   if (!sentinel || !wrap) return;
 
+  // Vertical position: sentinel is inside the 3D keyboard so its BCR.top
+  // always reflects the true visual top edge of the keyboard.
   var affH      = affordance.offsetHeight || 80;
   var wrapRect  = wrap.getBoundingClientRect();
   var anchorTop = sentinel.getBoundingClientRect().top - wrapRect.top + wrap.scrollTop;
-  affordance.style.top = (anchorTop - affH + _AffordanceCloseOffset) + 'px';
+  affordance.style.top      = (anchorTop - affH + _AffordanceCloseOffset) + 'px';
+  affordance.style.transform = ''; // no 3D slant on the container
 
-  var kbAngle = (_kbPos === 'face') ? 0
-              : (_kbPos === 'edge') ? EdgeAngle
-              : _kbPartialAngle;
-  // Non-linear tilt: delta from baseline, then apply a power curve so the
-  // lower (flatter) end gets more rotation to match the 3D scene geometry,
-  // while the top two-thirds stay gently dampened as before.
-  var delta = kbAngle - _AffordanceBaselineAngle;
-  var sign  = delta < 0 ? -1 : 1;
-  var tiltAngle = sign * Math.pow(Math.abs(delta), 1.35) * 0.4247;
-  affordance.style.transform = 'perspective(900px) rotateX(' + tiltAngle + 'deg)';
+  // Arrow rotation: based on the sentinel's position in the viewport.
+  // Mid-screen = 0deg (as designed). Higher on screen (smaller top) = anticlockwise.
+  // Lower on screen (larger top) = clockwise, ramped more aggressively downward.
+  var arrow = document.getElementById('kbAffordanceArrow');
+  if (!arrow) return;
+
+  var sentinelMidY = sentinel.getBoundingClientRect().top;
+  var viewMid      = window.innerHeight * 0.45; // neutral point ~45% down
+  var delta        = sentinelMidY - viewMid;    // negative = above mid, positive = below
+
+  var arrowDeg;
+  if (delta <= 0) {
+    // Above midpoint: gentle anticlockwise — linear, small range
+    arrowDeg = delta * 0.12;
+  } else {
+    // Below midpoint: clockwise, power-ramped so it grows faster near the bottom
+    arrowDeg = Math.pow(delta, 1.4) * 0.04;
+  }
+
+  arrow.style.transform = 'rotate(' + arrowDeg + 'deg)';
 }
 
 // Callers are responsible for clamping -- this function applies whatever angle it receives.
@@ -11245,7 +11255,7 @@ function _onDragHandlePointerDown(Event) {
 
   // Kill the tilt transition so affordance tracks drag instantly
   var aff = document.getElementById('kbHandleAffordance');
-  if (aff) aff.style.transition = 'opacity 0.22s ease';
+  if (aff) { aff.style.transition = 'opacity 0.22s ease'; aff.classList.add('dragging'); }
 
   var handle = document.getElementById('kbDragHandle');
   if (handle) handle.setPointerCapture(Event.pointerId);
@@ -11292,7 +11302,7 @@ function _onDragHandlePointerUp(Event) {
 
   // Restore affordance tilt transition for the animated snap-back
   var aff = document.getElementById('kbHandleAffordance');
-  if (aff) aff.style.transition = '';
+  if (aff) { aff.style.transition = ''; aff.classList.remove('dragging'); }
 
   if (!WasDrag) return;
 

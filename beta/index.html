@@ -11142,7 +11142,7 @@ function _repositionAffordance() {
     arrowDeg = delta * 0.12;
   } else {
     // Below midpoint: clockwise, power-ramped so it grows faster near the bottom
-    arrowDeg = Math.pow(delta, 1.4) * 0.04;
+    arrowDeg = Math.pow(delta, 1.4) * 0.09;
   }
 
   arrow.style.transform = 'rotate(' + arrowDeg + 'deg)';

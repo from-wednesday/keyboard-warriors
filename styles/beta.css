@@ -3251,8 +3251,13 @@ body.returning-screen #diffIconWrap .icon-tip { display: none; }
    both selectors are scoped to specific IDs.
    ═══════════════════════════════════════════════════ */
 
-/* Pause-nudge SVG gauge strokes (was inline in SVG element) */
-.pn-stroke { fill:none; stroke:currentColor; stroke-width:2px; stroke-linecap:round; stroke-miterlimit:10; }
+/* App pill open: fade the main title out of view */
+  #title.app-pill-open {
+  opacity: 0;
+  transition: opacity 1s ease;
+}
+
+/* Pause-nudge SVG gauge strokes (was inline in SVG element) */.pn-stroke { fill:none; stroke:currentColor; stroke-width:2px; stroke-linecap:round; stroke-miterlimit:10; }
 
 /* ── Blur pause diagnostic panel ────────────────────────────────────────────
    Hides both settings columns and shows the full-width diagnostic block.   */

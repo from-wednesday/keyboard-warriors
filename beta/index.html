@@ -638,31 +638,33 @@
     </div><!-- /#panelKeyboard -->
 
   </div><!-- /#settingsPanelInner -->
+
+  <!-- Drag handle affordance: positioned by _spAlignPanel, same coordinate
+       system as settingsPanelInner. Sits just above the keyboard stage top. -->
+  <div id="kbHandleAffordance" aria-hidden="true">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 649.94 68.72" preserveAspectRatio="xMidYMid meet">
+      <defs>
+        <style>
+          .kh-dash{stroke-dasharray:11.73 11.73;}
+          .kh-dash,.kh-solid{fill:none;stroke:#5ab685;stroke-linecap:round;stroke-miterlimit:10;stroke-width:3px;}
+          .kh-fill{fill:#5ab685;}
+        </style>
+      </defs>
+      <line class="kh-solid" x1="44.69" y1="38.79" x2="50.69" y2="38.79"/>
+      <line class="kh-dash"  x1="62.43" y1="38.79" x2="572.76" y2="38.79"/>
+      <line class="kh-solid" x1="578.62" y1="38.79" x2="584.62" y2="38.79"/>
+      <path class="kh-fill"  d="M44.88,42.51c-2.06,0-3.72-1.67-3.72-3.72s1.67-3.72,3.72-3.72,3.72,1.67,3.72,3.72-1.67,3.72-3.72,3.72Z"/>
+      <path class="kh-fill"  d="M584.44,42.51c2.06,0,3.72-1.67,3.72-3.72s-1.67-3.72-3.72-3.72-3.72,1.67-3.72,3.72,1.67,3.72,3.72,3.72Z"/>
+      <path class="kh-solid" d="M30.04,11.52c-1.4,14.56-7.53,30.25-18.39,44.81"/>
+      <polygon class="kh-fill" points="24.69 12.55 30.76 4.02 35.11 13.55 24.69 12.55"/>
+      <polygon class="kh-fill" points="8.37 51.98 7.15 62.38 16.77 58.24 8.37 51.98"/>
+    </svg>
+  </div>
+
   </div><!-- /#settingsPanel -->
   <div id="kbFlipStage">
   <div id="keyboardPanel">
-    <div id="kbDragHandle">
-      <div id="kbHandleAffordance" aria-hidden="true">
-        <!-- keyboard_handle.svg inline — dashed line with arrow and endpoint dots -->
-        <svg xmlns="http://www.w3.org/2000/svg" width="649.94" height="68.72" viewBox="0 0 649.94 68.72">
-          <defs>
-            <style>
-              .kh-dash{stroke-dasharray:11.73 11.73;}
-              .kh-dash,.kh-solid{fill:none;stroke:#5ab685;stroke-linecap:round;stroke-miterlimit:10;stroke-width:3px;}
-              .kh-fill{fill:#5ab685;}
-            </style>
-          </defs>
-          <line class="kh-solid" x1="44.69" y1="38.79" x2="50.69" y2="38.79"/>
-          <line class="kh-dash"  x1="62.43" y1="38.79" x2="572.76" y2="38.79"/>
-          <line class="kh-solid" x1="578.62" y1="38.79" x2="584.62" y2="38.79"/>
-          <path class="kh-fill"  d="M44.88,42.51c-2.06,0-3.72-1.67-3.72-3.72s1.67-3.72,3.72-3.72,3.72,1.67,3.72,3.72-1.67,3.72-3.72,3.72Z"/>
-          <path class="kh-fill"  d="M584.44,42.51c2.06,0,3.72-1.67,3.72-3.72s-1.67-3.72-3.72-3.72-3.72,1.67-3.72,3.72,1.67,3.72,3.72,3.72Z"/>
-          <path class="kh-solid" d="M30.04,11.52c-1.4,14.56-7.53,30.25-18.39,44.81"/>
-          <polygon class="kh-fill" points="24.69 12.55 30.76 4.02 35.11 13.55 24.69 12.55"/>
-          <polygon class="kh-fill" points="8.37 51.98 7.15 62.38 16.77 58.24 8.37 51.98"/>
-        </svg>
-      </div>
-    </div>
+    <div id="kbDragHandle"></div>
     <div id="kb-shadow"></div>
     <div id="kb-wall-bottom"></div>
     <div id="kb-base-edge"></div>
@@ -5062,6 +5064,11 @@ function _spAlignPanel() {
   var width = panel.offsetWidth;
   inner.style.left  = left + 'px';
   inner.style.width = width + 'px';
+  var affordance = document.getElementById('kbHandleAffordance');
+  if (affordance) {
+    affordance.style.left  = left + 'px';
+    affordance.style.width = width + 'px';
+  }
   // Grow the wrap so the tilted keyboard sits below the settings content.
   // Two rAFs: first lets the browser lay out the content at its new width,
   // second reads the settled scrollHeight after reflow.
@@ -11264,6 +11271,23 @@ function _initialiseStageDragListeners() {
     } else if (_kbPartialAngle >= PartialDragMaxAngle) {
       setKbPosition('edge');
     }
+  });
+  // Affordance hover: show/hide via class so CSS can transition it
+  handle.addEventListener('mouseenter', function() {
+    var aff = document.getElementById('kbHandleAffordance');
+    if (aff) aff.classList.add('handle-hover');
+  });
+  handle.addEventListener('mouseleave', function() {
+    var aff = document.getElementById('kbHandleAffordance');
+    if (aff) aff.classList.remove('handle-hover', 'handle-active');
+  });
+  handle.addEventListener('mousedown', function() {
+    var aff = document.getElementById('kbHandleAffordance');
+    if (aff) { aff.classList.remove('handle-hover'); aff.classList.add('handle-active'); }
+  });
+  handle.addEventListener('mouseup', function() {
+    var aff = document.getElementById('kbHandleAffordance');
+    if (aff) { aff.classList.remove('handle-active'); aff.classList.add('handle-hover'); }
   });
 }
 

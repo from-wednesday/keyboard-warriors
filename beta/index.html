@@ -11098,7 +11098,7 @@ function _repositionAffordance() {
   // while the top two-thirds stay gently dampened as before.
   var delta = kbAngle - _AffordanceBaselineAngle;
   var sign  = delta < 0 ? -1 : 1;
-  var tiltAngle = sign * Math.pow(Math.abs(delta), 1.35) * 0.22;
+  var tiltAngle = sign * Math.pow(Math.abs(delta), 1.35) * 0.4247;
   affordance.style.transform = 'perspective(900px) rotateX(' + tiltAngle + 'deg)';
 }
 

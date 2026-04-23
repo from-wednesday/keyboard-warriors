@@ -35,6 +35,15 @@
     visibility: hidden;
     opacity: 0;
   }
+  /* Ghost mode: show lock key glyph as a faint hint when keyboard is in face position */
+  .lock-key .lock-svg {
+    opacity: 0;
+    transition: opacity 0.4s ease;
+    pointer-events: none;
+  }
+  .lock-key.ghost-lock-visible .lock-svg {
+    opacity: 0.33;
+  }
 </style>
 </head>
 <!-- ══════════════════════════════════════
@@ -645,7 +654,7 @@
   <!-- Drag handle affordance: positioned by _spAlignPanel using stage.offsetTop
        so it always floats just above the keyboard top edge and moves with it. -->
   <div id="kbHandleAffordance" aria-hidden="true">
-    <svg xmlns="http://www.w3.org/2000/svg" viewBox="-20 0 689.94 80" preserveAspectRatio="xMidYMid meet">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 649.94 68.72" preserveAspectRatio="xMidYMid meet">
       <defs>
         <style>
           .kh-dash{stroke-dasharray:11.73 11.73;}
@@ -658,11 +667,11 @@
       <line class="kh-solid" x1="578.62" y1="38.79" x2="584.62" y2="38.79"/>
       <path class="kh-fill"  d="M44.88,42.51c-2.06,0-3.72-1.67-3.72-3.72s1.67-3.72,3.72-3.72,3.72,1.67,3.72,3.72-1.67,3.72-3.72,3.72Z"/>
       <path class="kh-fill"  d="M584.44,42.51c2.06,0,3.72-1.67,3.72-3.72s-1.67-3.72-3.72-3.72-3.72,1.67-3.72,3.72,1.67,3.72,3.72,3.72Z"/>
-      <!-- Arrow: redrawn dynamically by _redrawAffordanceArrow() -->
-      <g id="kbAffordanceArrow">
-        <path id="kbAffordanceArrowShaft" fill="none" stroke="#5ab685" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
-        <polygon id="kbAffordanceArrowHeadTop" fill="#5ab685"/>
-        <polygon id="kbAffordanceArrowHeadBottom" fill="#5ab685"/>
+      <!-- Arrow: rotated by JS around its natural centre (~20,38) to indicate drag direction -->
+      <g id="kbAffordanceArrow" style="transform-origin: 20px 38px; transform-box: fill-box;">
+        <path class="kh-solid" d="M30.04,11.52c-1.4,14.56-7.53,30.25-18.39,44.81"/>
+        <polygon class="kh-fill" points="24.69 12.55 30.76 4.02 35.11 13.55 24.69 12.55"/>
+        <polygon class="kh-fill" points="8.37 51.98 7.15 62.38 16.77 58.24 8.37 51.98"/>
       </g>
     </svg>
   </div>
@@ -811,6 +820,12 @@ const UNIVERSAL_SHORTCUTS = [
 ══════════════════════════════════════ */
 const keyEls = {};
 let lockKeyEl = null;
+
+// Show/hide the faint lock-key glyph hint used in ghost mode.
+function _setGhostLockHint(visible) {
+  if (!lockKeyEl) return;
+  lockKeyEl.classList.toggle('ghost-lock-visible', visible);
+}
 
 const LOCK_SVG = `<svg class="lock-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
   <rect x="5" y="11" width="14" height="10" rx="2"/>
@@ -4557,6 +4572,9 @@ function setKeyboardDisplayMode(mode) {
   var KeyboardPanelElement = document.getElementById('keyboardPanel');
   if (KeyboardPanelElement) KeyboardPanelElement.classList.toggle('ghost-mode', mode === 'ghost');
 
+  // Ghost lock hint: visible when ghost mode is on and no settings panel is open
+  _setGhostLockHint(mode === 'ghost' && activeSettings === null);
+
   // Touch: only available in graphical mode. Sticky: available in graphical and ghost modes.
   var TouchRowElement  = document.getElementById('touchRow');
   var StickyRowElement = document.getElementById('stickyRow');
@@ -5289,6 +5307,9 @@ function openSettings(page) {
   var prevPage = activeSettings;
   activeSettings = page;
 
+  // Ghost lock hint: hide while any settings panel is open (keyboard is folded down)
+  _setGhostLockHint(false);
+
   // If navigating away from the cheat sheet without going through
   // closeSettings, clear the tagline it set so it doesn't bleed into
   // the destination panel.
@@ -5436,6 +5457,8 @@ function closeSettings() {
   }
   // Only snap keyboard to face if not mid-countdown — that flow handles it itself
   if (gameState !== 'counting') {
+    // Ghost lock hint: restore if ghost mode is still active
+    _setGhostLockHint(keyboardDisplayMode === 'ghost');
     setKbPosition('face');
   }
 }
@@ -10196,6 +10219,9 @@ function runCountdown(onComplete) {
   // countdown duration (~2.7s) to complete the 850ms transition.
   setKbPosition('face');
 
+  // Ghost lock hint: restore now that the keyboard is heading back to face position
+  _setGhostLockHint(keyboardDisplayMode === 'ghost');
+
   // Close any open settings panel (including pause screen)
   _closeAllModalsInstant();
 
@@ -11128,84 +11154,26 @@ function _repositionAffordance() {
   affordance.style.top      = (anchorTop - affH + _AffordanceCloseOffset) + 'px';
   affordance.style.transform = '0.1'; // no 3D slant on the container
 
-  _redrawAffordanceArrow(_kbPartialAngle);
-}
+  // Arrow rotation: based on the sentinel's position in the viewport.
+  // Mid-screen = 0deg (as designed). Higher on screen (smaller top) = anticlockwise.
+  // Lower on screen (larger top) = clockwise, ramped more aggressively downward.
+  var arrow = document.getElementById('kbAffordanceArrow');
+  if (!arrow) return;
 
-function _redrawAffordanceArrow(KeyboardAngleDegrees) {
-  var ShaftPath  = document.getElementById('kbAffordanceArrowShaft');
-  var HeadTop    = document.getElementById('kbAffordanceArrowHeadTop');
-  var HeadBottom = document.getElementById('kbAffordanceArrowHeadBottom');
-  if (!ShaftPath || !HeadTop || !HeadBottom) return;
+  var sentinelMidY = sentinel.getBoundingClientRect().top;
+  var viewMid      = window.innerHeight * 0.45; // neutral point ~45% down
+  var delta        = sentinelMidY - viewMid;    // negative = above mid, positive = below
 
-  // 0 at shallowest fold (10°), 1 at deepest fold (80°)
-  var BendFraction = Math.max(0, Math.min(1,
-    (KeyboardAngleDegrees - PartialDragMinAngle) / (PartialDragMaxAngle - PartialDragMinAngle)
-  ));
-
-  // Bottom exit direction: straight down at 0, rotating left by 73° at full bend.
-  // Negative angle = leftward rotation from vertical.
-  var BottomAngleRadians = BendFraction * (-73 * Math.PI / 180);
-  var BottomDirX = Math.sin(BottomAngleRadians);  // negative = leftward
-  var BottomDirY = Math.cos(BottomAngleRadians);  // positive = downward
-
-  // The arrow is centred around x=20 in SVG space.
-  // Top tip is near the top of the viewBox, bottom tip 52 units away along the exit direction.
-  var CentreX   = 20;
-  var TopTipX   = CentreX;
-  var TopTipY   = 6;
-  var ArcLength = 52;
-
-  var BottomTipX = TopTipX + BottomDirX * ArcLength;
-  var BottomTipY = TopTipY + BottomDirY * ArcLength;
-
-  // Cubic bezier: control points pull along the tangent at each end.
-  // Control 1 pulls straight down from the top tip.
-  // Control 2 pulls back along the bottom exit direction from the bottom tip.
-  var ControlLength = ArcLength * 0.55;
-
-  var Control1X = TopTipX;
-  var Control1Y = TopTipY + ControlLength;
-
-  var Control2X = BottomTipX - BottomDirX * ControlLength;
-  var Control2Y = BottomTipY - BottomDirY * ControlLength;
-
-  ShaftPath.setAttribute('d', [
-    'M', TopTipX.toFixed(2),    TopTipY.toFixed(2),
-    'C', Control1X.toFixed(2),  Control1Y.toFixed(2),
-         Control2X.toFixed(2),  Control2Y.toFixed(2),
-         BottomTipX.toFixed(2), BottomTipY.toFixed(2),
-  ].join(' '));
-
-  // Top arrowhead: always pointing straight up
-  var HeadSize = 5;
-  HeadTop.setAttribute('points', [
-    TopTipX       + ',' + (TopTipY - HeadSize * 1.6),
-    (TopTipX - HeadSize) + ',' + (TopTipY + HeadSize * 0.5),
-    (TopTipX + HeadSize) + ',' + (TopTipY + HeadSize * 0.5),
-  ].join(' '));
-
-  // Bottom arrowhead: points along the exit direction.
-  // Built in local space pointing downward (0,1), then rotated to match exit direction.
-  var CosAngle = Math.cos(BottomAngleRadians);
-  var SinAngle = Math.sin(BottomAngleRadians);
-
-  function RotateAndTranslate(LocalX, LocalY) {
-    return [
-      BottomTipX + LocalX * CosAngle - LocalY * SinAngle,
-      BottomTipY + LocalX * SinAngle + LocalY * CosAngle,
-    ];
+  var arrowDeg;
+  if (delta <= 0) {
+    // Above midpoint: gentle anticlockwise — linear, small range
+    arrowDeg = delta * 0.12;
+  } else {
+    // Below midpoint: clockwise, power-ramped so it grows faster near the bottom
+    arrowDeg = Math.pow(delta, 1.4) * 0.01;
   }
 
-  // Tip points forward along exit direction; base points sit behind it
-  var ArrowTip    = RotateAndTranslate(0,            HeadSize * 1.6);
-  var ArrowBaseL  = RotateAndTranslate(-HeadSize,   -HeadSize * 0.5);
-  var ArrowBaseR  = RotateAndTranslate( HeadSize,   -HeadSize * 0.5);
-
-  HeadBottom.setAttribute('points', [
-    ArrowTip[0].toFixed(2)   + ',' + ArrowTip[1].toFixed(2),
-    ArrowBaseL[0].toFixed(2) + ',' + ArrowBaseL[1].toFixed(2),
-    ArrowBaseR[0].toFixed(2) + ',' + ArrowBaseR[1].toFixed(2),
-  ].join(' '));
+  arrow.style.transform = 'rotate(' + arrowDeg + 'deg)';
 }
 
 // Callers are responsible for clamping -- this function applies whatever angle it receives.

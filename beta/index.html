@@ -11076,8 +11076,7 @@ function _interpolateStageY(RotateXDegrees) {
 // Tilt:     50% of the keyboard's angular departure from the 58 degree baseline,
 //           so at 58 degrees the affordance is flat, scaling with drag.
 var _AffordanceBaselineAngle = 58;
-var _AffordanceTiltRatio     = 0.5;
-var _AffordanceCloseOffset   = 30; // px toward keyboard (reduces gap)
+var _AffordanceCloseOffset   = 18; // px toward keyboard — raised from 30
 
 function _repositionAffordance() {
   var affordance = document.getElementById('kbHandleAffordance');
@@ -11091,10 +11090,15 @@ function _repositionAffordance() {
   var anchorTop = sentinel.getBoundingClientRect().top - wrapRect.top + wrap.scrollTop;
   affordance.style.top = (anchorTop - affH + _AffordanceCloseOffset) + 'px';
 
-  var kbAngle   = (_kbPos === 'face') ? 0
-                : (_kbPos === 'edge') ? EdgeAngle
-                : _kbPartialAngle;
-  var tiltAngle = (kbAngle - _AffordanceBaselineAngle) * _AffordanceTiltRatio;
+  var kbAngle = (_kbPos === 'face') ? 0
+              : (_kbPos === 'edge') ? EdgeAngle
+              : _kbPartialAngle;
+  // Non-linear tilt: delta from baseline, then apply a power curve so the
+  // lower (flatter) end gets more rotation to match the 3D scene geometry,
+  // while the top two-thirds stay gently dampened as before.
+  var delta = kbAngle - _AffordanceBaselineAngle;
+  var sign  = delta < 0 ? -1 : 1;
+  var tiltAngle = sign * Math.pow(Math.abs(delta), 1.35) * 0.22;
   affordance.style.transform = 'perspective(900px) rotateX(' + tiltAngle + 'deg)';
 }
 

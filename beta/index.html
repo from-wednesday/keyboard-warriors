@@ -3800,7 +3800,7 @@ function _buildWrenchPickerRows() {
     LabelSpan.textContent = AppEntry.label + (IsBetaApp ? ' (beta)' : '');
 
     var DragHandle = document.createElement('span');
-    DragHandle.style.cssText = 'display:flex;align-items:center;padding:0 0 0 4px;opacity:0.25;flex-shrink:0;cursor:grab;touch-action:none;margin-left:auto;';
+    DragHandle.style.cssText = 'display:flex;align-items:center;opacity:0.25;flex-shrink:0;cursor:grab;touch-action:none;margin-left:auto;';
     DragHandle.innerHTML = '<svg width="8" height="12" viewBox="0 0 8 12" fill="currentColor"><circle cx="2" cy="2" r="1.2"/><circle cx="6" cy="2" r="1.2"/><circle cx="2" cy="6" r="1.2"/><circle cx="6" cy="6" r="1.2"/><circle cx="2" cy="10" r="1.2"/><circle cx="6" cy="10" r="1.2"/></svg>';
 
     Row.appendChild(IconColumn);
@@ -5088,7 +5088,7 @@ function _spAlignPanel() {
   var affordance = document.getElementById('kbHandleAffordance');
   if (affordance) {
     affordance.style.left  = left + 'px';
-    affordance.style.width = width + 'px';
+    affordance.style.width = (width + 20)  + 'px';
   }
   // Grow the wrap so the tilted keyboard sits below the settings content.
   // Two rAFs: first lets the browser lay out the content at its new width,

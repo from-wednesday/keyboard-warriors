@@ -639,8 +639,11 @@
 
   </div><!-- /#settingsPanelInner -->
 
-  <!-- Drag handle affordance: positioned by _spAlignPanel, same coordinate
-       system as settingsPanelInner. Sits just above the keyboard stage top. -->
+
+  </div><!-- /#settingsPanel -->
+
+  <!-- Drag handle affordance: positioned by _spAlignPanel using stage.offsetTop
+       so it always floats just above the keyboard top edge and moves with it. -->
   <div id="kbHandleAffordance" aria-hidden="true">
     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 649.94 68.72" preserveAspectRatio="xMidYMid meet">
       <defs>
@@ -661,7 +664,6 @@
     </svg>
   </div>
 
-  </div><!-- /#settingsPanel -->
   <div id="kbFlipStage">
   <div id="keyboardPanel">
     <div id="kbDragHandle"></div>
@@ -5066,8 +5068,10 @@ function _spAlignPanel() {
   inner.style.width = width + 'px';
   var affordance = document.getElementById('kbHandleAffordance');
   if (affordance) {
+    var affH = affordance.offsetHeight || 80;
     affordance.style.left  = left + 'px';
     affordance.style.width = width + 'px';
+    affordance.style.top   = (stage.offsetTop - affH) + 'px';
   }
   // Grow the wrap so the tilted keyboard sits below the settings content.
   // Two rAFs: first lets the browser lay out the content at its new width,

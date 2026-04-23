@@ -645,7 +645,7 @@
   <!-- Drag handle affordance: positioned by _spAlignPanel using stage.offsetTop
        so it always floats just above the keyboard top edge and moves with it. -->
   <div id="kbHandleAffordance" aria-hidden="true">
-    <svg xmlns="http://www.w3.org/2000/svg" viewBox="-30 0 710 90" preserveAspectRatio="xMidYMid meet">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="-20 0 689.94 80" preserveAspectRatio="xMidYMid meet">
       <defs>
         <style>
           .kh-dash{stroke-dasharray:11.73 11.73;}
@@ -658,12 +658,12 @@
       <line class="kh-solid" x1="578.62" y1="38.79" x2="584.62" y2="38.79"/>
       <path class="kh-fill"  d="M44.88,42.51c-2.06,0-3.72-1.67-3.72-3.72s1.67-3.72,3.72-3.72,3.72,1.67,3.72,3.72-1.67,3.72-3.72,3.72Z"/>
       <path class="kh-fill"  d="M584.44,42.51c2.06,0,3.72-1.67,3.72-3.72s-1.67-3.72-3.72-3.72-3.72,1.67-3.72,3.72,1.67,3.72,3.72,3.72Z"/>
-      <!-- Arrow: rotated by JS around its natural centre (~20,38) to indicate drag direction -->
-      <g id="kbAffordanceArrow" style="transform-origin: 20px 38px; transform-box: fill-box;">
-  <path id="kbAffordanceArrowShaft" fill="none" stroke="#5ab685" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
-  <polygon id="kbAffordanceArrowHeadTop" fill="#5ab685"/>
-  <polygon id="kbAffordanceArrowHeadBottom" fill="#5ab685"/>
-</g>
+      <!-- Arrow: redrawn dynamically by _redrawAffordanceArrow() -->
+      <g id="kbAffordanceArrow">
+        <path id="kbAffordanceArrowShaft" fill="none" stroke="#5ab685" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
+        <polygon id="kbAffordanceArrowHeadTop" fill="#5ab685"/>
+        <polygon id="kbAffordanceArrowHeadBottom" fill="#5ab685"/>
+      </g>
     </svg>
   </div>
 
@@ -3783,7 +3783,7 @@ function _buildWrenchPickerRows() {
     Row.className = 'app-option app-option-wrench-picker'
       + (IsInShortList ? ' wrench-picker-active' : ' wrench-picker-inactive');
     Row.dataset.appLabel = AppEntry.label;
-    Row.style.cssText = 'display:flex;align-items:center;height:24px;padding:0 5px 0 0;cursor:pointer;';
+    Row.style.cssText = 'display:flex;align-items:center;height:24px;padding:0 10px 0 0;cursor:pointer;';
     Row.draggable = true;
     _attachWrenchRowDragListeners(Row);
 
@@ -3800,7 +3800,7 @@ function _buildWrenchPickerRows() {
     LabelSpan.textContent = AppEntry.label + (IsBetaApp ? ' (beta)' : '');
 
     var DragHandle = document.createElement('span');
-    DragHandle.style.cssText = 'display:flex;align-items:center;opacity:0.25;flex-shrink:0;cursor:grab;touch-action:none;margin-left:auto;';
+    DragHandle.style.cssText = 'display:flex;align-items:center;padding:0 2px 0 4px;opacity:0.25;flex-shrink:0;cursor:grab;touch-action:none;margin-left:auto;';
     DragHandle.innerHTML = '<svg width="8" height="12" viewBox="0 0 8 12" fill="currentColor"><circle cx="2" cy="2" r="1.2"/><circle cx="6" cy="2" r="1.2"/><circle cx="2" cy="6" r="1.2"/><circle cx="6" cy="6" r="1.2"/><circle cx="2" cy="10" r="1.2"/><circle cx="6" cy="10" r="1.2"/></svg>';
 
     Row.appendChild(IconColumn);
@@ -4619,74 +4619,6 @@ function setKeyboardDisplayMode(mode) {
   showModeToast(ToastMessages[mode]);
 }
 
-function _redrawAffordanceArrow(KeyboardAngleDegrees) {
-  console.log('TopX:', TopX, 'TopY:', TopY, 'BottomX:', BottomX, 'BottomY:', BottomY);
-  var ShaftPath  = document.getElementById('kbAffordanceArrowShaft');
-  var HeadTop    = document.getElementById('kbAffordanceArrowHeadTop');
-  var HeadBottom = document.getElementById('kbAffordanceArrowHeadBottom');
-  if (!ShaftPath || !HeadTop || !HeadBottom) return;
-
-  var BendFraction = Math.max(0, Math.min(1,
-    (KeyboardAngleDegrees - PartialDragMinAngle) / (PartialDragMaxAngle - PartialDragMinAngle)
-  ));
-
-  // Bottom exit angle: 0° (straight down) at top, -73° (leftward) at bottom
-  var BottomAngleRadians = BendFraction * (-73 * Math.PI / 180);
-  var BottomDirX = Math.sin(BottomAngleRadians);
-  var BottomDirY = Math.cos(BottomAngleRadians);
-
-  // Fixed endpoints
-  var TopX    = 20;
-  var TopY    = 6;
-  var BottomX = 20 + BottomDirX * 52;
-  var BottomY = TopY + BottomDirY * 52;
-
-  // Control points: each pulls from its endpoint along its tangent direction
-  var ControlSpan = 26;
-  var Control1X = TopX;
-  var Control1Y = TopY + ControlSpan;             // top tangent: straight down
-  var Control2X = BottomX - BottomDirX * ControlSpan;
-  var Control2Y = BottomY - BottomDirY * ControlSpan;
-
-  ShaftPath.setAttribute('d', [
-    'M', TopX.toFixed(2), TopY.toFixed(2),
-    'C', Control1X.toFixed(2), Control1Y.toFixed(2),
-         Control2X.toFixed(2), Control2Y.toFixed(2),
-         BottomX.toFixed(2), BottomY.toFixed(2),
-  ].join(' '));
-
-  // Top arrowhead: straight up
-  var HeadSize = 5;
-  HeadTop.setAttribute('points', [
-    TopX + ' ' + (TopY - HeadSize * 1.6),
-    (TopX - HeadSize) + ' ' + (TopY + HeadSize * 0.4),
-    (TopX + HeadSize) + ' ' + (TopY + HeadSize * 0.4),
-  ].join(' '));
-
-  // Bottom arrowhead: rotated to match exit direction
-  var CosA = Math.cos(BottomAngleRadians);
-  var SinA = Math.sin(BottomAngleRadians);
-
-  function RotatePoint(LocalX, LocalY) {
-    return [
-      BottomX + LocalX * CosA - LocalY * SinA,
-      BottomY + LocalX * SinA + LocalY * CosA,
-    ];
-  }
-
-  var PointTip   = RotatePoint(0,          HeadSize * 1.6);
-  var PointLeft  = RotatePoint(-HeadSize, -HeadSize * 0.4);
-  var PointRight = RotatePoint( HeadSize, -HeadSize * 0.4);
-
-  HeadBottom.setAttribute('points', [
-    PointTip[0].toFixed(2)   + ' ' + PointTip[1].toFixed(2),
-    PointLeft[0].toFixed(2)  + ' ' + PointLeft[1].toFixed(2),
-    PointRight[0].toFixed(2) + ' ' + PointRight[1].toFixed(2),
-  ].join(' '));
-}
-
-
-    
 function onTouchToggle() {
   setTouchEnabled(!touchEnabled);
   if (touchEnabled) {
@@ -5156,7 +5088,7 @@ function _spAlignPanel() {
   var affordance = document.getElementById('kbHandleAffordance');
   if (affordance) {
     affordance.style.left  = left + 'px';
-    affordance.style.width = (width + 20)  + 'px';
+    affordance.style.width = width + 'px';
   }
   // Grow the wrap so the tilted keyboard sits below the settings content.
   // Two rAFs: first lets the browser lay out the content at its new width,
@@ -11196,28 +11128,84 @@ function _repositionAffordance() {
   affordance.style.top      = (anchorTop - affH + _AffordanceCloseOffset) + 'px';
   affordance.style.transform = '0.1'; // no 3D slant on the container
 
-  // Arrow rotation: based on the sentinel's position in the viewport.
-  // Mid-screen = 0deg (as designed). Higher on screen (smaller top) = anticlockwise.
-  // Lower on screen (larger top) = clockwise, ramped more aggressively downward.
-  var arrow = document.getElementById('kbAffordanceArrow');
-  if (!arrow) return;
+  _redrawAffordanceArrow(_kbPartialAngle);
+}
 
-  var sentinelMidY = sentinel.getBoundingClientRect().top;
-  var viewMid      = window.innerHeight * 0.45; // neutral point ~45% down
-  var delta        = sentinelMidY - viewMid;    // negative = above mid, positive = below
+function _redrawAffordanceArrow(KeyboardAngleDegrees) {
+  var ShaftPath  = document.getElementById('kbAffordanceArrowShaft');
+  var HeadTop    = document.getElementById('kbAffordanceArrowHeadTop');
+  var HeadBottom = document.getElementById('kbAffordanceArrowHeadBottom');
+  if (!ShaftPath || !HeadTop || !HeadBottom) return;
 
-  var arrowDeg;
-  if (delta <= 0) {
-    // Above midpoint: gentle anticlockwise — linear, small range
-    arrowDeg = delta * 0.12;
-  } else {
-    // Below midpoint: clockwise, power-ramped so it grows faster near the bottom
-    arrowDeg = Math.pow(delta, 1.4) * 0.01;
+  // 0 at shallowest fold (10°), 1 at deepest fold (80°)
+  var BendFraction = Math.max(0, Math.min(1,
+    (KeyboardAngleDegrees - PartialDragMinAngle) / (PartialDragMaxAngle - PartialDragMinAngle)
+  ));
+
+  // Bottom exit direction: straight down at 0, rotating left by 73° at full bend.
+  // Negative angle = leftward rotation from vertical.
+  var BottomAngleRadians = BendFraction * (-73 * Math.PI / 180);
+  var BottomDirX = Math.sin(BottomAngleRadians);  // negative = leftward
+  var BottomDirY = Math.cos(BottomAngleRadians);  // positive = downward
+
+  // The arrow is centred around x=20 in SVG space.
+  // Top tip is near the top of the viewBox, bottom tip 52 units away along the exit direction.
+  var CentreX   = 20;
+  var TopTipX   = CentreX;
+  var TopTipY   = 6;
+  var ArcLength = 52;
+
+  var BottomTipX = TopTipX + BottomDirX * ArcLength;
+  var BottomTipY = TopTipY + BottomDirY * ArcLength;
+
+  // Cubic bezier: control points pull along the tangent at each end.
+  // Control 1 pulls straight down from the top tip.
+  // Control 2 pulls back along the bottom exit direction from the bottom tip.
+  var ControlLength = ArcLength * 0.55;
+
+  var Control1X = TopTipX;
+  var Control1Y = TopTipY + ControlLength;
+
+  var Control2X = BottomTipX - BottomDirX * ControlLength;
+  var Control2Y = BottomTipY - BottomDirY * ControlLength;
+
+  ShaftPath.setAttribute('d', [
+    'M', TopTipX.toFixed(2),    TopTipY.toFixed(2),
+    'C', Control1X.toFixed(2),  Control1Y.toFixed(2),
+         Control2X.toFixed(2),  Control2Y.toFixed(2),
+         BottomTipX.toFixed(2), BottomTipY.toFixed(2),
+  ].join(' '));
+
+  // Top arrowhead: always pointing straight up
+  var HeadSize = 5;
+  HeadTop.setAttribute('points', [
+    TopTipX       + ',' + (TopTipY - HeadSize * 1.6),
+    (TopTipX - HeadSize) + ',' + (TopTipY + HeadSize * 0.5),
+    (TopTipX + HeadSize) + ',' + (TopTipY + HeadSize * 0.5),
+  ].join(' '));
+
+  // Bottom arrowhead: points along the exit direction.
+  // Built in local space pointing downward (0,1), then rotated to match exit direction.
+  var CosAngle = Math.cos(BottomAngleRadians);
+  var SinAngle = Math.sin(BottomAngleRadians);
+
+  function RotateAndTranslate(LocalX, LocalY) {
+    return [
+      BottomTipX + LocalX * CosAngle - LocalY * SinAngle,
+      BottomTipY + LocalX * SinAngle + LocalY * CosAngle,
+    ];
   }
 
-  arrow.style.transform = 'rotate(' + arrowDeg + 'deg)';
-    _redrawAffordanceArrow(_kbPartialAngle);
+  // Tip points forward along exit direction; base points sit behind it
+  var ArrowTip    = RotateAndTranslate(0,            HeadSize * 1.6);
+  var ArrowBaseL  = RotateAndTranslate(-HeadSize,   -HeadSize * 0.5);
+  var ArrowBaseR  = RotateAndTranslate( HeadSize,   -HeadSize * 0.5);
 
+  HeadBottom.setAttribute('points', [
+    ArrowTip[0].toFixed(2)   + ',' + ArrowTip[1].toFixed(2),
+    ArrowBaseL[0].toFixed(2) + ',' + ArrowBaseL[1].toFixed(2),
+    ArrowBaseR[0].toFixed(2) + ',' + ArrowBaseR[1].toFixed(2),
+  ].join(' '));
 }
 
 // Callers are responsible for clamping -- this function applies whatever angle it receives.
@@ -11396,7 +11384,6 @@ function _onDragHandlePointerMove(Event) {
   );
 
   _applyPartialAngleInstant(ClampedAngle);
-  _redrawAffordanceArrow(ClampedAngle);
   Event.preventDefault();
 }
 

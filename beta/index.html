@@ -11070,20 +11070,32 @@ function _interpolateStageY(RotateXDegrees) {
   return Math.round(AnchorPartialY + Fraction * (AnchorEdgeY - AnchorPartialY));
 }
 
-// Apply an angle immediately with no CSS transition (used during live drag).
-// Reposition the drag-handle affordance so it always sits just above the
-// keyboard's true visual top edge. Uses the sentinel inside keyboardPanel
-// (same 3D transform space) so BCR.top is always accurate.
+// Reposition and re-tilt the drag-handle affordance.
+// Vertical: sentinel BCR gives the keyboard's true visual top in 3D space.
+//           _AffordanceCloseOffset pulls it toward the keyboard edge.
+// Tilt:     50% of the keyboard's angular departure from the 58 degree baseline,
+//           so at 58 degrees the affordance is flat, scaling with drag.
+var _AffordanceBaselineAngle = 58;
+var _AffordanceTiltRatio     = 0.5;
+var _AffordanceCloseOffset   = 30; // px toward keyboard (reduces gap)
+
 function _repositionAffordance() {
   var affordance = document.getElementById('kbHandleAffordance');
   if (!affordance) return;
   var sentinel = document.getElementById('kbTopSentinel');
   var wrap     = document.getElementById('keyboardWrap');
   if (!sentinel || !wrap) return;
-  var affH         = affordance.offsetHeight || 80;
-  var wrapRect     = wrap.getBoundingClientRect();
-  var anchorTop    = sentinel.getBoundingClientRect().top - wrapRect.top + wrap.scrollTop;
-  affordance.style.top = (anchorTop - affH) + 'px';
+
+  var affH      = affordance.offsetHeight || 80;
+  var wrapRect  = wrap.getBoundingClientRect();
+  var anchorTop = sentinel.getBoundingClientRect().top - wrapRect.top + wrap.scrollTop;
+  affordance.style.top = (anchorTop - affH + _AffordanceCloseOffset) + 'px';
+
+  var kbAngle   = (_kbPos === 'face') ? 0
+                : (_kbPos === 'edge') ? EdgeAngle
+                : _kbPartialAngle;
+  var tiltAngle = (kbAngle - _AffordanceBaselineAngle) * _AffordanceTiltRatio;
+  affordance.style.transform = 'perspective(900px) rotateX(' + tiltAngle + 'deg)';
 }
 
 // Callers are responsible for clamping -- this function applies whatever angle it receives.
@@ -11227,6 +11239,10 @@ function _onDragHandlePointerDown(Event) {
   _kbDragStartClientX       = Event.clientX;
   _kbDragStartAngle         = (_kbPos === 'edge') ? EdgeAngle : _kbPartialAngle;
 
+  // Kill the tilt transition so affordance tracks drag instantly
+  var aff = document.getElementById('kbHandleAffordance');
+  if (aff) aff.style.transition = 'opacity 0.22s ease';
+
   var handle = document.getElementById('kbDragHandle');
   if (handle) handle.setPointerCapture(Event.pointerId);
   Event.preventDefault();
@@ -11269,6 +11285,10 @@ function _onDragHandlePointerUp(Event) {
   var stage = document.getElementById('kbFlipStage');
   if (panel) panel.style.transition = '';
   if (stage) stage.style.transition = '';
+
+  // Restore affordance tilt transition for the animated snap-back
+  var aff = document.getElementById('kbHandleAffordance');
+  if (aff) aff.style.transition = '';
 
   if (!WasDrag) return;
 

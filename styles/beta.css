@@ -3247,7 +3247,7 @@ body.returning-screen #diffIconWrap .icon-tip { display: none; }
 /* Ghost mode: faint lock-key hint visible when keyboard is facing up.
    Overrides the opacity:0 set by the ghost-mode block above. */
 #keyboardPanel.ghost-mode .key.lock-key.ghost-lock-visible .lock-svg {
-  opacity: 0.13;
+  opacity: 0.07;
 }
 
 

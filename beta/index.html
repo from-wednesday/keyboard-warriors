@@ -8076,7 +8076,7 @@ function enterDefeat() {
   // Show the report card if at least 3 questions were answered (answersLeft <= 7)
   // This gives the coach enough data to say something useful
   var QuestionsAnswered = 10 - answersLeft;
-  if (QuestionsAnswered >= 3) {
+  if (QuestionsAnswered >= 1) {
     var DefeatRun = runData.slice();
     runData.length = 0;
     lastCompletedReport = finalizeRunData(DefeatRun, questionPool, NewDefeatCount);

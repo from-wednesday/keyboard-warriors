@@ -4307,6 +4307,7 @@ function openAppPill() {
     var PillRect = appPillEl.getBoundingClientRect();
 
     appPillEl.classList.add('open');
+    titleEl.classList.add('app-pill-open');
     var OpenHeight = _AppPillMeasureNaturalHeight();
     var PillRect = appPillEl.getBoundingClientRect();
     var Geometry = _AppPillCalculateOpenGeometry(OpenHeight, PillRect);
@@ -4320,6 +4321,7 @@ function closeAppPill() {
      var selectorLabel = document.getElementById('appSelectorLabel');
      if (selectorLabel) selectorLabel.textContent = 'now training on';
     appPillEl.classList.remove('open');
+    titleEl.classList.remove('app-pill-open');
 
     var Spring = _AppPillSpring;
     if (Spring.AnimationFrame) {

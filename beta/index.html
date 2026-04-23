@@ -4594,8 +4594,16 @@ function setKeyboardDisplayMode(mode) {
       if (SettingsPageToReopen !== null) openSettings(SettingsPageToReopen);
     }, 100);
   } else if (mode === 'ghost' || previous === 'ghost') {
-    // Ghost ↔ graphical: keyboard stays present, just re-align the panel
-    if (activeSettings !== null) _spAlignPanel();
+    // Ghost ↔ graphical: apply angle immediately and refresh affordance visibility.
+    if (activeSettings !== null) {
+      if (mode === 'ghost') {
+        _animateToPartialAngle(47);
+      } else {
+        _animateToPartialAngle(GetPanelKeyboardAngle(activeSettings));
+      }
+      _spAlignPanel();
+    }
+    _repositionAffordance();
   }
 
   // Keyboard layout toggles: pointless when there is no keyboard to show
@@ -11009,10 +11017,34 @@ function GetPanelKeyboardAngle(PanelName) {
   return detectedOs === 'mobile' ? Config.tablet : Config.desktop;
 }
 
+// Low angle used for tablet tap-toggle and ghost mode.
+var TabletKeyboardLowAngle = 80;
+
 function SetKeyboardPositionForPanel(PanelName) {
   if (ForceNoKeyboard) return;
+  // Ghost mode: always flat at 47, no dragging or toggling.
+  if (keyboardDisplayMode === 'ghost') { _animateToPartialAngle(47); return; }
+  // Tablet: animate to the panel's tablet angle; tap-toggle is handled separately.
   var Angle = GetPanelKeyboardAngle(PanelName);
   _animateToPartialAngle(Angle);
+  // Reset tablet toggle state whenever a panel opens so it starts at the panel default.
+  _tabletKbToggleAtLow = false;
+}
+
+// Tablet tap-toggle state: tracks whether we've toggled down to the low angle.
+var _tabletKbToggleAtLow = false;
+
+function _onTabletKeyboardTap() {
+  if (detectedOs !== 'mobile') return;
+  if (!activeSettings) return;
+  if (keyboardDisplayMode === 'ghost') return;
+  if (_kbDragActive) return;  // ignore taps that are actually drag releases
+  _tabletKbToggleAtLow = !_tabletKbToggleAtLow;
+  if (_tabletKbToggleAtLow) {
+    _animateToPartialAngle(TabletKeyboardLowAngle);
+  } else {
+    _animateToPartialAngle(GetPanelKeyboardAngle(activeSettings));
+  }
 }
 
 // 'partial' covers any angle between PartialDragMinAngle and PartialDragMaxAngle.
@@ -11078,6 +11110,10 @@ var _AffordanceCloseOffset = 18; // px toward keyboard top edge
 function _repositionAffordance() {
   var affordance = document.getElementById('kbHandleAffordance');
   if (!affordance) return;
+  // No affordance on tablet (tap-toggle instead) or in ghost mode (fixed angle).
+  var suppress = (detectedOs === 'mobile') || (keyboardDisplayMode === 'ghost');
+  affordance.style.visibility = suppress ? 'hidden' : '';
+  if (suppress) return;
   var sentinel = document.getElementById('kbTopSentinel');
   var wrap     = document.getElementById('keyboardWrap');
   if (!sentinel || !wrap) return;
@@ -11103,10 +11139,10 @@ function _repositionAffordance() {
   var arrowDeg;
   if (delta <= 0) {
     // Above midpoint: gentle anticlockwise — linear, small range
-    arrowDeg = delta * 0.15;
+    arrowDeg = delta * 0.12;
   } else {
     // Below midpoint: clockwise, power-ramped so it grows faster near the bottom
-    arrowDeg = Math.pow(delta, 1.4) * 0.02;
+    arrowDeg = Math.pow(delta, 1.4) * 0.04;
   }
 
   arrow.style.transform = 'rotate(' + arrowDeg + 'deg)';
@@ -11245,6 +11281,9 @@ function setKbPosition(pos) {
 function _onDragHandlePointerDown(Event) {
   if (!Event.isPrimary) return;
   if (_kbPos === 'face') return;
+  // No drag on tablet (tap-toggle handles it) or in ghost mode (fixed angle).
+  if (detectedOs === 'mobile') return;
+  if (keyboardDisplayMode === 'ghost') return;
 
   _kbDragActive             = false;
   _kbDragDirectionConfirmed = false;
@@ -11325,6 +11364,18 @@ function _initialiseStageDragListeners() {
   handle.addEventListener('pointerdown',   _onDragHandlePointerDown);
   handle.addEventListener('pointermove',   _onDragHandlePointerMove);
   handle.addEventListener('pointerup',     _onDragHandlePointerUp);
+
+  // Tablet tap-toggle: tap the keyboard body (not just the drag handle)
+  // to toggle between the panel's default angle and the low angle (80°).
+  var stage = document.getElementById('kbFlipStage');
+  if (stage) {
+    stage.addEventListener('click', function(e) {
+      if (detectedOs !== 'mobile') return;
+      if (keyboardDisplayMode === 'ghost') return;
+      if (!activeSettings) return;
+      _onTabletKeyboardTap();
+    });
+  }
   handle.addEventListener('pointercancel', function(Event) {
     if (Event.pointerId !== _kbDragPointerId) return;
     _kbDragActive    = false;

@@ -666,6 +666,11 @@
 
   <div id="kbFlipStage">
   <div id="keyboardPanel">
+    <!-- Sentinel: zero-height element at the very top of the keyboard panel.
+         Lives in the same 3D transform space as the keyboard, so its
+         getBoundingClientRect().top always reflects the keyboard's true
+         visual top edge regardless of rotateX angle or layout changes. -->
+    <div id="kbTopSentinel"></div>
     <div id="kbDragHandle"></div>
     <div id="kb-shadow"></div>
     <div id="kb-wall-bottom"></div>
@@ -5079,16 +5084,10 @@ function _spAlignPanel() {
     requestAnimationFrame(function() {
       var contentH = inner.scrollHeight;
       var stageH   = stage.offsetHeight;
-      // Position affordance after layout settles so geometry is accurate.
-      // Use getBoundingClientRect to get the true rendered top of the stage
-      // relative to keyboardWrap (accounts for padding-top transition etc).
-      if (affordance) {
-        var affH        = affordance.offsetHeight || 80;
-        var wrapRect    = wrap.getBoundingClientRect();
-        var stageRect   = stage.getBoundingClientRect();
-        var stageTopInWrap = stageRect.top - wrapRect.top + wrap.scrollTop;
-        affordance.style.top = (stageTopInWrap - affH) + 'px';
-      }
+      // Position affordance using the sentinel inside keyboardPanel —
+      // it lives in the same 3D transform space so its BCR.top is the
+      // keyboard's true visual top edge, regardless of rotateX angle.
+      if (affordance) _repositionAffordance();
       // Edge-position panels (report, cheat sheet, pause, conflicts, difficulty) sit
       // above a fully folded keyboard. Only the content height matters; the stage
       // height is already accounted for by the fold. Add a small buffer only.
@@ -11072,6 +11071,21 @@ function _interpolateStageY(RotateXDegrees) {
 }
 
 // Apply an angle immediately with no CSS transition (used during live drag).
+// Reposition the drag-handle affordance so it always sits just above the
+// keyboard's true visual top edge. Uses the sentinel inside keyboardPanel
+// (same 3D transform space) so BCR.top is always accurate.
+function _repositionAffordance() {
+  var affordance = document.getElementById('kbHandleAffordance');
+  if (!affordance) return;
+  var sentinel = document.getElementById('kbTopSentinel');
+  var wrap     = document.getElementById('keyboardWrap');
+  if (!sentinel || !wrap) return;
+  var affH         = affordance.offsetHeight || 80;
+  var wrapRect     = wrap.getBoundingClientRect();
+  var anchorTop    = sentinel.getBoundingClientRect().top - wrapRect.top + wrap.scrollTop;
+  affordance.style.top = (anchorTop - affH) + 'px';
+}
+
 // Callers are responsible for clamping -- this function applies whatever angle it receives.
 function _applyPartialAngleInstant(RotateXDegrees) {
   var StageY = _interpolateStageY(RotateXDegrees);
@@ -11096,6 +11110,7 @@ function _applyPartialAngleInstant(RotateXDegrees) {
   wrap.classList.add('kb-flipping');
   document.body.classList.remove('kb-at-edge');
   dbgRefreshAngle();
+  _repositionAffordance();
 }
 
 // Animate to a partial angle with the standard CSS transition
@@ -11124,6 +11139,10 @@ function _animateToPartialAngle(RotateXDegrees) {
   wrap.classList.add('kb-flipping');
   document.body.classList.remove('kb-at-edge');
   dbgRefreshAngle();
+  // Reposition immediately (start of animation) and again after the
+  // 850ms CSS transition settles so the affordance tracks the final resting spot.
+  _repositionAffordance();
+  setTimeout(_repositionAffordance, 870);
 }
 
 function setKbPosition(pos) {

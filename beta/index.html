@@ -4046,8 +4046,6 @@ function _openWrenchPicker() {
     if (selectorLabel) selectorLabel.textContent = 'edit and sort your app list';
     _EnsureAppPillSpacer();    AppPillWrenchOpen = true;
     appPillEl.classList.add('open');
-    titleEl.classList.add('app-pill-open');
-    
     appPillEl.classList.remove('drop-down');
     appPillEl.scrollTop = 0;
     buildAppPill();
@@ -4322,8 +4320,6 @@ function closeAppPill() {
      var selectorLabel = document.getElementById('appSelectorLabel');
      if (selectorLabel) selectorLabel.textContent = 'now training on';
     appPillEl.classList.remove('open');
-    titleEl.classList.remove('app-pill-open');
-
 
     var Spring = _AppPillSpring;
     if (Spring.AnimationFrame) {

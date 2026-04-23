@@ -2549,9 +2549,9 @@ li.conflict-dismissed .conflict-desc {
    Touch: always visible while settings are open.      */
 #kbHandleAffordance {
   position: absolute;
-  bottom: 0;
+  /* top, left and width set by JS via _spAlignPanel so the affordance
+     always floats just above the keyboard top edge and moves with it */
   height: 80px;
-  /* left and width set by JS */
   display: flex;
   align-items: flex-end;
   justify-content: center;
@@ -2584,7 +2584,7 @@ li.conflict-dismissed .conflict-desc {
 
 /* Touch: always visible when settings are open */
 @media (hover: none) {
-  #settingsPanel.sp-open #kbHandleAffordance {
+  #keyboardWrap.settings-open #kbHandleAffordance {
     opacity: 1;
   }
 }

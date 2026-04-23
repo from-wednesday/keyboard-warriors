@@ -289,8 +289,19 @@
         <p class="sp-body" id="browserCompatIntro"></p>
         <p class="sp-body sp-hint">Using the virtual <strong><small>'Touch Enabled'</small></strong> keyboard avoids all conflicts to build knowledge, but is <em>less effective</em> than a real keyboard in building 'muscle memory'.</p>
       </div>
-      <div class="sp-col sp-col-right
-      <p class="sp-title" style="font-size:12px;">Tracked Conflicts</p></br>
+      <div class="sp-col sp-col-right">
+      <div class="more-info-wrap" style="margin-bottom:4px;">
+        <p class="sp-title" onclick="toggleMoreInfo('csTrackedConflictsMoreInfo')" style="font-size:12px;margin:0;">Tracked Conflicts</p>
+        <span class="more-info-trigger" id="csTrackedConflictsMoreInfoTrigger" onclick="toggleMoreInfo('csTrackedConflictsMoreInfo')">
+          <svg class="more-info-icon" viewBox="0 0 20 20" width="14" height="14" fill="none" stroke="currentColor" stroke-width="1.25" stroke-linecap="round">
+            <circle cx="10" cy="10" r="8.5"/>
+            <text x="10" y="15" text-anchor="middle" font-size="14" font-weight="720" font-family="system-ui,sans-serif" fill="currentColor" stroke="none">?</text>
+          </svg>
+          <div class="more-info-popup" id="csTrackedConflictsMoreInfo">
+            <p class="more-info-body">If we detect you successfully press any of these shortcuts, we will add questions using them back into the pool. But be warned, they are here because we have reason to expect they won&#8217;t work on your system.</p>
+          </div>
+        </span>
+      </div>
         <ul id="browserCompatList" class="sp-conflict-list"></ul>
     
       </div>
@@ -339,7 +350,18 @@
         </span>
       </div>
       <div class="sp-col sp-col-right">
-        <p class="sp-body sp-clear-label" id="spClearLabel"><strong>Clear high score record?</strong></p>
+        <div class="more-info-wrap" style="margin-bottom:4px;">
+          <p class="sp-body sp-clear-label" id="spClearLabel" onclick="toggleMoreInfo('ppClearRecordsMoreInfo')" style="margin:0;cursor:pointer;"><strong>Clear high score record?</strong></p>
+          <span class="more-info-trigger" id="ppClearRecordsMoreInfoTrigger" onclick="toggleMoreInfo('ppClearRecordsMoreInfo')">
+            <svg class="more-info-icon" viewBox="0 0 20 20" width="14" height="14" fill="none" stroke="currentColor" stroke-width="1.25" stroke-linecap="round">
+              <circle cx="10" cy="10" r="8.5"/>
+              <text x="10" y="15" text-anchor="middle" font-size="14" font-weight="720" font-family="system-ui,sans-serif" fill="currentColor" stroke="none">?</text>
+            </svg>
+            <div class="more-info-popup" id="ppClearRecordsMoreInfo">
+              <p class="more-info-body">Your records are private and never leave your device. This panel lets you selectively reset high score records and training history when it suits you.</p>
+            </div>
+          </span>
+        </div>
         <div class="score-clear-pill">
           <button id="clearTimeBtn" class="score-pill-seg score-pill-quarter" onclick="_pauseClearClick('time')" title="Clear best time">
             <span class="diff-btn-text"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="14" height="14"><circle cx="12" cy="13" r="8"/><path d="M12 9v4l3 3"/><path d="M9 3h6"/><path d="M12 3v2"/></svg></span>
@@ -542,7 +564,18 @@
         </div>
 
         <div class="modal-section-gap"></div>
-        <p class="sp-title">Keyboard Layout</p>
+        <div class="more-info-wrap">
+          <p class="sp-title" onclick="toggleMoreInfo('kbLayoutMoreInfo')" style="margin:0;">Keyboard Layout</p>
+          <span class="more-info-trigger" id="kbLayoutMoreInfoTrigger" onclick="toggleMoreInfo('kbLayoutMoreInfo')">
+            <svg class="more-info-icon" viewBox="0 0 20 20" width="14" height="14" fill="none" stroke="currentColor" stroke-width="1.25" stroke-linecap="round">
+              <circle cx="10" cy="10" r="8.5"/>
+              <text x="10" y="15" text-anchor="middle" font-size="14" font-weight="720" font-family="system-ui,sans-serif" fill="currentColor" stroke="none">?</text>
+            </svg>
+            <div class="more-info-popup" id="kbLayoutMoreInfo">
+              <p class="more-info-body">Ensure that the lower left corner of the graphical keyboard is matched to your actual keyboard modifier key layout.</p>
+            </div>
+          </span>
+        </div>
 
         <div class="modal-layout-rows">
           <div class="modal-inline-row" id="modalKeyCountRow">
@@ -577,7 +610,18 @@
       </div><!-- /.sp-col-left -->
 
       <div class="sp-col sp-col-right">
-        <p class="sp-title" style="font-size:12px;">Keyboard Behaviour</p>
+        <div class="more-info-wrap">
+          <p class="sp-title" onclick="toggleMoreInfo('kbBehaviourMoreInfo')" style="font-size:12px;margin:0;">Keyboard Behaviour</p>
+          <span class="more-info-trigger" id="kbBehaviourMoreInfoTrigger" onclick="toggleMoreInfo('kbBehaviourMoreInfo')">
+            <svg class="more-info-icon" viewBox="0 0 20 20" width="14" height="14" fill="none" stroke="currentColor" stroke-width="1.25" stroke-linecap="round">
+              <circle cx="10" cy="10" r="8.5"/>
+              <text x="10" y="15" text-anchor="middle" font-size="14" font-weight="720" font-family="system-ui,sans-serif" fill="currentColor" stroke="none">?</text>
+            </svg>
+            <div class="more-info-popup" id="kbBehaviourMoreInfo">
+              <p class="more-info-body">Our Touch Enabled virtual keyboard permits you to train on tablet devices, as well as simulating conflicted shortcuts and other operating systems. Great to build knowledge, but touch is less effective than a real keyboard in building &#8216;muscle memory&#8217;.</p>
+            </div>
+          </span>
+        </div>
 
         <div class="modal-toggle-row" id="touchRow">
           <label onclick="onTouchToggle()">
@@ -855,9 +899,8 @@ function _setGhostLockHint(visible) {
    currentOs is 'mac' (see buildKey util).
 ══════════════════════════════════════ */
 
-// Option (⌥): horizontal bar at top spanning full width, diagonal line from
-// left end down to bottom-left, short horizontal bar at bottom-right.
-const OPTION_SYM_SVG = `<svg class="key-glyph-sym key-glyph-option" viewBox="0 0 80 52" fill="none" stroke="currentColor" stroke-width="7" stroke-linecap="round" stroke-linejoin="round" xmlns="http://www.w3.org/2000/svg"><line x1="6" y1="10" x2="74" y2="10"/><line x1="44" y1="42" x2="74" y2="42"/><line x1="6" y1="10" x2="44" y2="42"/></svg>`;
+// Option (⌥)matches the Apple keycap.
+const OPTION_SYM_SVG = `<svg class="key-glyph-sym key-glyph-option" viewBox="0 0 80 52" fill="none" stroke="currentColor" stroke-width="7" stroke-linecap="round" stroke-linejoin="round" xmlns="http://www.w3.org/2000/svg"><line x1="6" y1="10" x2="74" y2="10"/><line x1="6" y1="10" x2="40" y2="42"/><line x1="46" y1="42" x2="74" y2="42"/></svg>`;
 
 // Control (⌃): upward-pointing caret / chevron.
 const CONTROL_SYM_SVG = `<svg class="key-glyph-sym key-glyph-control" viewBox="0 0 56 38" fill="none" stroke="currentColor" stroke-width="7" stroke-linecap="round" stroke-linejoin="round" xmlns="http://www.w3.org/2000/svg"><polyline points="6,32 28,7 50,32"/></svg>`;

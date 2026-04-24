@@ -11268,6 +11268,9 @@ function _repositionAffordance() {
     arrowDeg = Math.pow(delta, 1.4) * 0.01;
   }
 
+// Apply global clockwise offset
+arrowDeg += 5;
+
   arrow.style.transform = 'rotate(' + arrowDeg + 'deg)';
 }
 

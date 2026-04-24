@@ -2539,7 +2539,7 @@ const IMPROVEMENT_TIPS = [
 function helpButtonClick() {
   helpBtn.blur();
   resetEndScreenInactivityTimer();
-  if (gameState === 'idle')           { titleEl.textContent = bestRecord.time !== null ? 'To reset your score, press the lock key on the keyboard.' : 'Press start to begin.'; return; }
+  if (gameState === 'idle')           { titleEl.textContent = bestRecord.time !== null ? 'You can reset your score from the pause screen.' : 'Press start to begin.'; return; }
   if (gameState === 'playing')        { toggleHelp(); return; }
   if (gameState === 'readyToUnpause') { _enterReadyToUnpauseCleanup(); enterPause(); enterConfirmQuit(); return; }
   if (gameState === 'paused')         { enterConfirmQuit(); return; }

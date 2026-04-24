@@ -340,10 +340,9 @@
   <span class="key">"display"</span>: <span class="str">"Redo"</span>,               <span class="comment">// plain text shown as the question</span>
   <span class="key">"difficulty"</span>: <span class="num">2</span>,               <span class="comment">// integer 1–5</span>
   <span class="key">"group"</span>: <span class="str">"history"</span>,            <span class="comment">// optional — only when pool de-duplication needed</span>
-  <span class="key">"keyboard_conflict"</span>: <span class="bool">true</span>   <span class="comment">// optional — omit when false; presence = conflict exists</span>
 }
 
-<span class="comment">// Minimal entry — Mac only shortcut, no group, no conflict</span>
+<span class="comment">// Minimal entry — Mac only shortcut, no group</span>
 {
   <span class="key">"mac_sc"</span>: <span class="str">"CONTROL+SHIFT+SLASH"</span>,
   <span class="key">"display"</span>: <span class="str">"Open Keyboard Shortcuts"</span>,
@@ -367,7 +366,6 @@
           <strong>display</strong> — Plain text only. No markup.<br><br>
           <strong>difficulty</strong> — Integer 1 to 5. Controls which pool the shortcut enters based on the player's difficulty setting.<br><br>
           <strong>group</strong> — Optional short string. The pool builder caps any named group at two questions per ten-question set. Only add when genuinely needed (e.g. opacity shortcuts 1–9).<br><br>
-          <strong>keyboard_conflict</strong> — Optional boolean. Omit entirely when false. When present and true, the shortcut is excluded from the pool for physical keyboard users and only appears for touch-enabled users.
         </p>
       </div>
       <div class="card">
@@ -856,12 +854,16 @@
         <p>Keep the existing <code>shortcut</code> field in place alongside the new <code>mac_sc</code> and <code>pc_sc</code> token strings until the new HTML is deployed. The old code still reads <code>shortcut</code>. Once the parser rewrite is live, the old field can be removed from all entries.</p>
       </div>
       <div class="card">
-        <h3>Three malformed entries to fix now</h3>
-        <p>Three entries in the current files have tokens that were concatenated without separators. These need fixing regardless of the migration:<br><br>
-        <code>ALTCTRLN</code> → <code>OPTION+CMD+N</code><br>
-        <code>ALTCTRLO</code> → <code>OPTION+CMD+O</code><br>
-        <code>ALTCTRLP</code> → <code>OPTION+CMD+P</code><br><br>
-        Check which file these appear in and verify the intended shortcuts before correcting.</p>
+        <h3>Alternate Shortcuts:</h3>
+        <p>The first listed shortcut will create the Chips, however acceptable alternates can be added with a pipe seperator like this:</p>
+        <p>
+        {   "shortcut": "H",</p>
+<p>  "display": "select the Hand tool",</p>
+<p>  "mac_sc": "H|SPACE",</p>
+<p>  "pc_sc": "H|SPACE",</p>
+ <p> "difficulty": 1 },
+        
+        </p>
       </div>
     </div>
   </section>

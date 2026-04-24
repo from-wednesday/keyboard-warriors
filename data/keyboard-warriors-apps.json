@@ -1,13 +1,17 @@
 [
   { "label": "Photoshop (Ps)",     "path": "/keyboard-warriors/data/shortcuts_photoshop.json"    },
-     { "label": "NEW Photoshop",     "path": "/keyboard-warriors/data/BETAtest_photoshop.json",       "beta": true    },
   { "label": "Illustrator (Ai)",   "path": "/keyboard-warriors/data/shortcuts_illustrator.json"  },
   { "label": "InDesign (Id)",      "path": "/keyboard-warriors/data/shortcuts_inDesign.json"     },
   { "label": "After Effects (Ae)", "path": "/keyboard-warriors/data/shortcuts_afterEffects.json" },
   { "label": "Figma",              "path": "/keyboard-warriors/data/shortcuts_figma.json"        },
-     { "label": "ms Word",            "path": "/keyboard-warriors/data/shortcuts_msWord.json",       "beta": true },
-     { "label": "ms Excel",            "path": "/keyboard-warriors/data/shortcuts_msExcel.json",       "beta": true },
-     { "label": "Conflicts test",   "path": "/keyboard-warriors/data/shortcuts_beta.json",         "beta": true }
-]
+  
+    { "label": "NEW Photoshop",     "path": "/keyboard-warriors/data/in_progress/shortcuts_photoshop.json",         "beta": true    },
+    { "label": "NEW Illustrator",   "path": "/keyboard-warriors/data/in_progress/shortcuts_illustrator.json",       "beta": true    },
+    { "label": "NEW InDesign",      "path": "/keyboard-warriors/data/in_progress/shortcuts_inDesign.json",          "beta": true    },
+    { "label": "NEW After Effects", "path": "/keyboard-warriors/data/in_progress/shortcuts_afterEffects.json",      "beta": true    },
+    { "label": "NEW Figma",         "path": "/keyboard-warriors/data/in_progress/shortcuts_figma.json",             "beta": true    },
+    { "label": "NEW ms Word",       "path": "/keyboard-warriors/data/in_progress/shortcuts_msWord.json",            "beta": true    }
+     
+     ]
 
 

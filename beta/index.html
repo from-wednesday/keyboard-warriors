@@ -11259,22 +11259,20 @@ function _repositionAffordance() {
   var viewMid      = window.innerHeight * 0.45; // neutral point ~45% down
   var delta        = sentinelMidY - viewMid;    // negative = above mid, positive = below
 
-var arrowDeg;
-var transform;
+  var arrowDeg;
+  if (delta <= 0) {
+    // Above midpoint: gentle anticlockwise — linear, small range
+    arrowDeg = delta * 0.12 + 1;
+  } else {
+    // Below midpoint: clockwise, power-ramped so it grows faster near the bottom
+    arrowDeg = Math.pow(delta, 1.45) * 0.01;
+  }
 
-if (delta <= 0) {
-  // Above midpoint
-  arrowDeg = delta * 0.12 + 1 + 9;
-  transform = 'translateX(-10px) rotate(' + arrowDeg + 'deg)';
-} else {
-  // Below midpoint
-  arrowDeg = Math.pow(delta, 1.45) * 0.01 + 9;
-  transform = 'rotate(' + arrowDeg + 'deg)';
+// Apply global clockwise offset
+arrowDeg += 9;
+
+  arrow.style.transform = 'rotate(' + arrowDeg + 'deg)';
 }
-
-arrow.style.transform = transform;
-}
-
 
 // Callers are responsible for clamping -- this function applies whatever angle it receives.
 function _applyPartialAngleInstant(RotateXDegrees) {

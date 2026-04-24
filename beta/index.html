@@ -958,14 +958,18 @@ function buildKey(cfg, isMini) {
       // Ensures these keys always render as clean vector symbols rather than
       // unicode characters or emoji, consistent with the Command symbol style.
       // Mini keyboards and PC mode fall through to the standard text path.
-      const _isFullMac = !isMini && currentOs === 'mac';
-      } else if (_isFullMac && cfg.id === 'AltLeft') {
-        el.innerHTML = `${OPTION_SYM_SVG}<span class="mod-word">option</span>`;
-        el.querySelector('.key-glyph-sym').style.cssText = 'position:absolute;top:4px;right:5px;left:auto;';
-      } else if (_isFullMac && cfg.id === 'AltRight') {
-        el.innerHTML = `${OPTION_SYM_SVG}<span class="mod-word">option</span>`;
-      } else if (_isFullMac && (cfg.id === 'ControlLeft' || cfg.id === 'ControlRight')) {
-        el.innerHTML = `${CONTROL_SYM_SVG}<span class="mod-word">control</span>`;
+     const _isFullMac = !isMini && currentOs === 'mac';
+     if (_isFullMac && cfg.id === 'AltLeft') {
+      // Specifically target Left Alt to add the custom positioning
+      el.innerHTML = `${OPTION_SYM_SVG}<span class="mod-word">option</span>`;
+      el.querySelector('.key-glyph-sym').style.cssText = 'position:absolute;top:4px;right:5px;left:auto;';
+     } else if (_isFullMac && cfg.id === 'AltRight') {
+      // Right Alt stays standard
+      el.innerHTML = `${OPTION_SYM_SVG}<span class="mod-word">option</span>`;
+     } else if (_isFullMac && (cfg.id === 'ControlLeft' || cfg.id === 'ControlRight')) {
+    // Control keys remain grouped
+      el.innerHTML = `${CONTROL_SYM_SVG}<span class="mod-word">control</span>`;
+     }
       } else if (_isFullMac && cfg.id === 'Enter') {
         el.innerHTML = `${RETURN_SYM_SVG}<span class="mod-word">return</span>`;
       } else {

@@ -953,33 +953,29 @@ function buildKey(cfg, isMini) {
       el.addEventListener('mousedown', function(ev){ touchEnabled ? handleKeyTouch(ev, el) : showKbToast(ev); });
       break;
     case 'util': {
-  const utilText = isMini ? cfg.mini : cfg.label;
-  const _isFullMac = !isMini && currentOs === 'mac';
-
-  if (_isFullMac && cfg.id === 'AltLeft') {
-    // Specifically target Left Alt to add the custom positioning
-    el.innerHTML = `${OPTION_SYM_SVG}<span class="mod-word">option</span>`;
-    el.querySelector('.key-glyph-sym').style.cssText = 'position:absolute;top:4px;right:5px;left:auto;';
-  } else if (_isFullMac && cfg.id === 'AltRight') {
-    // Right Alt stays standard
-    el.innerHTML = `${OPTION_SYM_SVG}<span class="mod-word">option</span>`;
-  } else if (_isFullMac && (cfg.id === 'ControlLeft' || cfg.id === 'ControlRight')) {
-    // Control keys remain grouped
-    el.innerHTML = `${CONTROL_SYM_SVG}<span class="mod-word">control</span>`;
-  } else if (_isFullMac && cfg.id === 'Enter') {
-    // Enter/Return key
-    el.innerHTML = `${RETURN_SYM_SVG}<span class="mod-word">return</span>`;
-  } else {
-    // Fallback for non-Mac or other utility keys
-    const isGlyph = utilText && utilText.length <= 2 && /\p{So}|\p{Sm}|[⇧↩↑↓←→⌫↵]/u.test(utilText);
-    if (isGlyph) {
-      el.innerHTML = `<span class="util-sym-only">${utilText}</span>`;
-    } else {
-      el.innerHTML = `<span class="util-lbl">${utilText}</span>`;
-    }
-  }
-  break; // Don't forget the break statement for the case!
-}
+      const utilText = isMini ? cfg.mini : cfg.label;
+      // ── Full-size Mac keyboard: SVG glyphs for option, control, and return ──
+      // Ensures these keys always render as clean vector symbols rather than
+      // unicode characters or emoji, consistent with the Command symbol style.
+      // Mini keyboards and PC mode fall through to the standard text path.
+      const _isFullMac = !isMini && currentOs === 'mac';
+      if (_isFullMac && cfg.id === 'AltLeft') {
+        el.innerHTML = `${OPTION_SYM_SVG}<span class="mod-word">option</span>`;
+        el.querySelector('.key-glyph-sym').style.cssText = 'position:absolute;top:4px;right:5px;left:auto;';
+      } else if (_isFullMac && cfg.id === 'AltRight') {
+        el.innerHTML = `${OPTION_SYM_SVG}<span class="mod-word">option</span>`;
+      } else if (_isFullMac && (cfg.id === 'ControlLeft' || cfg.id === 'ControlRight')) {
+        el.innerHTML = `${CONTROL_SYM_SVG}<span class="mod-word">control</span>`;
+      } else if (_isFullMac && cfg.id === 'Enter') {
+        el.innerHTML = `${RETURN_SYM_SVG}<span class="mod-word">return</span>`;
+      } else {
+        const isGlyph = utilText && utilText.length <= 2 && /\p{So}|\p{Sm}|[⇧↩↑↓←→⌫↵]/u.test(utilText);
+        if (isGlyph) {
+          el.innerHTML = `<span class="util-sym-only">${utilText}</span>`;
+        } else {
+          el.innerHTML = `<span class="util-lbl">${utilText}</span>`;
+        }
+      }
       el.addEventListener('mousedown', function(ev){ touchEnabled ? handleKeyTouch(ev, el) : showKbToast(ev); });
       break;
     }

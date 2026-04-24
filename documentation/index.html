@@ -1,1 +1,872 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Keyboard Warriors — JSON & System Reference</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;600&display=swap');
+
+  :root {
+    --bg:          #f0f4f8;
+    --surface:     #ffffff;
+    --surface-2:   #f7f9fb;
+    --border:      #e2e8f0;
+    --border-strong: #c8d0db;
+    --text:        #1e2a3a;
+    --text-2:      #4a5568;
+    --text-3:      #7a8899;
+    --green:       #10b981;
+    --green-bg:    #ecfdf5;
+    --amber:       #f59e0b;
+    --amber-bg:    #fffbeb;
+    --blue:        #3b82f6;
+    --blue-bg:     #eff6ff;
+    --red:         #ef4444;
+    --red-bg:      #fef2f2;
+    --purple:      #8b5cf6;
+    --purple-bg:   #f5f3ff;
+    --mono:        'JetBrains Mono', monospace;
+    --sans:        'Inter', system-ui, sans-serif;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    font-family: var(--sans);
+    background: var(--bg);
+    color: var(--text);
+    font-size: 14px;
+    line-height: 1.6;
+    padding: 40px 24px 80px;
+  }
+
+  .page {
+    max-width: 1100px;
+    margin: 0 auto;
+    display: flex;
+    flex-direction: column;
+    gap: 40px;
+  }
+
+  /* ── Header ── */
+  .page-header {
+    border-bottom: 2px solid var(--border-strong);
+    padding-bottom: 20px;
+  }
+  .page-header h1 {
+    font-size: 22px;
+    font-weight: 600;
+    color: var(--text);
+    letter-spacing: -0.02em;
+  }
+  .page-header p {
+    color: var(--text-3);
+    margin-top: 4px;
+    font-size: 13px;
+  }
+
+  /* ── Section ── */
+  section { display: flex; flex-direction: column; gap: 12px; }
+  section h2 {
+    font-size: 13px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: var(--text-3);
+    padding-bottom: 8px;
+    border-bottom: 1px solid var(--border);
+  }
+
+  /* ── Cards ── */
+  .card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 20px 24px;
+  }
+  .card h3 {
+    font-size: 14px;
+    font-weight: 600;
+    margin-bottom: 8px;
+    color: var(--text);
+  }
+  .card p {
+    color: var(--text-2);
+    font-size: 13px;
+    line-height: 1.65;
+  }
+  .card code {
+    font-family: var(--mono);
+    font-size: 12px;
+    background: var(--surface-2);
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    padding: 1px 5px;
+    color: var(--blue);
+  }
+
+  /* ── Schema block ── */
+  .schema-block {
+    background: #1e2a3a;
+    border-radius: 10px;
+    padding: 20px 24px;
+    font-family: var(--mono);
+    font-size: 13px;
+    line-height: 1.8;
+    color: #e2e8f0;
+    overflow-x: auto;
+  }
+  .schema-block .key   { color: #93c5fd; }
+  .schema-block .str   { color: #86efac; }
+  .schema-block .num   { color: #fbbf24; }
+  .schema-block .bool  { color: #f9a8d4; }
+  .schema-block .null  { color: #94a3b8; }
+  .schema-block .comment { color: #64748b; font-style: italic; }
+
+  /* ── Tables ── */
+  .table-wrap {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    overflow: hidden;
+  }
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 13px;
+  }
+  thead tr {
+    background: var(--surface-2);
+    border-bottom: 1px solid var(--border-strong);
+  }
+  th {
+    text-align: left;
+    padding: 10px 16px;
+    font-weight: 600;
+    font-size: 12px;
+    color: var(--text-3);
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    white-space: nowrap;
+  }
+  td {
+    padding: 9px 16px;
+    border-bottom: 1px solid var(--border);
+    vertical-align: top;
+    color: var(--text-2);
+    line-height: 1.5;
+  }
+  tr:last-child td { border-bottom: none; }
+  tr:hover td { background: var(--surface-2); }
+
+  /* Token pill */
+  .tok {
+    display: inline-block;
+    font-family: var(--mono);
+    font-size: 11.5px;
+    font-weight: 600;
+    background: var(--surface-2);
+    border: 1px solid var(--border-strong);
+    border-radius: 5px;
+    padding: 1px 7px;
+    color: var(--text);
+    white-space: nowrap;
+    margin: 1px 2px 1px 0;
+  }
+  .tok.canonical { background: #1e2a3a; color: #e2e8f0; border-color: #1e2a3a; }
+  .tok.synonym   { background: var(--surface-2); color: var(--text-3); }
+  .tok.green  { background: var(--green-bg);  color: #065f46; border-color: #6ee7b7; }
+  .tok.amber  { background: var(--amber-bg);  color: #92400e; border-color: #fcd34d; }
+  .tok.blue   { background: var(--blue-bg);   color: #1e40af; border-color: #93c5fd; }
+  .tok.red    { background: var(--red-bg);    color: #991b1b; border-color: #fca5a5; }
+  .tok.purple { background: var(--purple-bg); color: #5b21b6; border-color: #c4b5fd; }
+
+  /* Badge */
+  .badge {
+    display: inline-block;
+    font-size: 10px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    border-radius: 4px;
+    padding: 2px 6px;
+    white-space: nowrap;
+  }
+  .badge.mac     { background: var(--surface-2); color: var(--text-3); border: 1px solid var(--border); }
+  .badge.pc      { background: var(--blue-bg);   color: #1e40af;       border: 1px solid #93c5fd; }
+  .badge.both    { background: var(--green-bg);  color: #065f46;       border: 1px solid #6ee7b7; }
+  .badge.touch   { background: var(--amber-bg);  color: #92400e;       border: 1px solid #fcd34d; }
+  .badge.optional{ background: var(--surface-2); color: var(--text-3); border: 1px solid var(--border); font-style: italic; }
+
+  /* Chip preview */
+  .chip-preview {
+    display: inline-flex;
+    align-items: center;
+    gap: 2px;
+    font-size: 11px;
+    font-weight: 600;
+    font-family: var(--sans);
+  }
+  .chip-long {
+    background: #f3f4f6;
+    border: 1px solid #d1d5db;
+    border-radius: 5px;
+    padding: 3px 9px;
+    box-shadow: 0 1.5px 0 #c9cdd3;
+    color: #1e3a5f;
+    white-space: nowrap;
+  }
+  .chip-short {
+    background: #f3f4f6;
+    border: 1px solid #d1d5db;
+    border-radius: 3px;
+    padding: 1px 5px;
+    box-shadow: 0 1.5px 0 #c9cdd3;
+    color: #1e3a5f;
+    white-space: nowrap;
+    font-size: 10px;
+  }
+  .chip-sep {
+    color: #9ca3af;
+    font-size: 10px;
+    margin: 0 1px;
+  }
+
+  /* Two column layout */
+  .two-col {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 16px;
+  }
+  @media (max-width: 700px) { .two-col { grid-template-columns: 1fr; } }
+
+  /* Function glossary */
+  .glossary-item {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 16px 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+  }
+  .glossary-item .fn-name {
+    font-family: var(--mono);
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--blue);
+  }
+  .glossary-item .fn-role {
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--text-3);
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+  }
+  .glossary-item .fn-desc {
+    font-size: 13px;
+    color: var(--text-2);
+    line-height: 1.6;
+  }
+  .glossary-item .fn-replaces {
+    font-size: 12px;
+    color: var(--text-3);
+    font-style: italic;
+  }
+  .glossary-item .fn-replaces code {
+    font-family: var(--mono);
+    font-size: 11px;
+    background: var(--surface-2);
+    border: 1px solid var(--border);
+    border-radius: 3px;
+    padding: 1px 4px;
+    color: var(--text-3);
+    font-style: normal;
+  }
+
+  .note {
+    background: var(--amber-bg);
+    border: 1px solid #fcd34d;
+    border-radius: 8px;
+    padding: 10px 14px;
+    font-size: 12.5px;
+    color: #92400e;
+    line-height: 1.55;
+  }
+  .note strong { color: #78350f; }
+
+  .section-intro {
+    font-size: 13px;
+    color: var(--text-2);
+    line-height: 1.65;
+  }
+
+  /* Render order row */
+  .render-order {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    flex-wrap: wrap;
+    padding: 14px 20px;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+  }
+  .render-order .arrow { color: var(--text-3); font-size: 16px; }
+
+  .tag-row { display: flex; gap: 6px; flex-wrap: wrap; align-items: center; }
+</style>
+</head>
+<body>
+<div class="page">
+
+  <header class="page-header">
+    <h1>Keyboard Warriors — JSON & System Reference</h1>
+    <p>Schema definition, token vocabulary, chip rendering rules, and system component glossary.</p>
+  </header>
+
+  <!-- ══ SCHEMA ══════════════════════════════════════════════════════════ -->
+  <section>
+    <h2>JSON Schema</h2>
+
+    <p class="section-intro">Each shortcut entry in an app JSON file uses the following fields. The <code>shortcut</code> field from the old schema is removed. <code>mac_sc</code> and <code>pc_sc</code> are now token strings used for both matching logic and chip rendering.</p>
+
+    <div class="schema-block">
+<span class="comment">// Full entry — all fields shown</span>
+{
+  <span class="key">"mac_sc"</span>: <span class="str">"CMD+SHIFT+Z"</span>,        <span class="comment">// token string for Mac matching + chip rendering</span>
+  <span class="key">"pc_sc"</span>:  <span class="str">"CMD+SHIFT+Z"</span>,        <span class="comment">// token string for PC  matching + chip rendering</span>
+  <span class="key">"display"</span>: <span class="str">"Redo"</span>,               <span class="comment">// plain text shown as the question</span>
+  <span class="key">"difficulty"</span>: <span class="num">2</span>,               <span class="comment">// integer 1–5</span>
+  <span class="key">"group"</span>: <span class="str">"history"</span>,            <span class="comment">// optional — only when pool de-duplication needed</span>
+  <span class="key">"keyboard_conflict"</span>: <span class="bool">true</span>   <span class="comment">// optional — omit when false; presence = conflict exists</span>
+}
+
+<span class="comment">// Minimal entry — Mac only shortcut, no group, no conflict</span>
+{
+  <span class="key">"mac_sc"</span>: <span class="str">"CONTROL+SHIFT+SLASH"</span>,
+  <span class="key">"display"</span>: <span class="str">"Open Keyboard Shortcuts"</span>,
+  <span class="key">"difficulty"</span>: <span class="num">3</span>
+}
+
+<span class="comment">// Platform-divergent shortcut</span>
+{
+  <span class="key">"mac_sc"</span>: <span class="str">"CMD+OPTION+M"</span>,
+  <span class="key">"pc_sc"</span>:  <span class="str">"CMD+CONTROL+M"</span>,
+  <span class="key">"display"</span>: <span class="str">"Add to Render Queue"</span>,
+  <span class="key">"difficulty"</span>: <span class="num">3</span>
+}
+    </div>
+
+    <div class="two-col">
+      <div class="card">
+        <h3>Field rules</h3>
+        <p>
+          <strong>mac_sc / pc_sc</strong> — Token string. Omit the field (or set to <code>null</code>) if the shortcut does not exist on that platform. At least one must be present.<br><br>
+          <strong>display</strong> — Plain text only. No markup.<br><br>
+          <strong>difficulty</strong> — Integer 1 to 5. Controls which pool the shortcut enters based on the player's difficulty setting.<br><br>
+          <strong>group</strong> — Optional short string. The pool builder caps any named group at two questions per ten-question set. Only add when genuinely needed (e.g. opacity shortcuts 1–9).<br><br>
+          <strong>keyboard_conflict</strong> — Optional boolean. Omit entirely when false. When present and true, the shortcut is excluded from the pool for physical keyboard users and only appears for touch-enabled users.
+        </p>
+      </div>
+      <div class="card">
+        <h3>Token string rules</h3>
+        <p>
+          Tokens are separated by <code>+</code>.<br><br>
+          Order does not matter for matching or rendering — the system canonicalises order automatically before display.<br><br>
+          Case does not matter — the system uppercases all tokens internally. Uppercase is recommended for readability.<br><br>
+          Canonical display order for chips is always:<br>
+          <strong>CMD → CONTROL → OPTION → SHIFT → key</strong> on Mac<br>
+          <strong>WIN → CMD → OPTION → SHIFT → key</strong> on PC
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ══ TOKENS ══════════════════════════════════════════════════════════ -->
+  <section>
+    <h2>Token Vocabulary</h2>
+
+    <p class="section-intro">Write the canonical token in your JSON. Synonyms are accepted and normalised automatically by the parser. Platform column indicates where the token is meaningful.</p>
+
+    <div class="note"><strong>Case insensitive.</strong> Token order in the string does not affect matching or chip rendering. The system always canonicalises both.</div>
+
+    <!-- Modifiers -->
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>Canonical token</th><th>Also accepts</th><th>Platform</th><th>Meaning</th></tr></thead>
+        <tbody>
+          <tr>
+            <td><span class="tok canonical">CMD</span></td>
+            <td><span class="tok synonym">COMMAND</span> <span class="tok synonym">CTRL</span></td>
+            <td><span class="badge both">Both</span></td>
+            <td>Primary command modifier. Command (⌘) on Mac, Ctrl on Windows.</td>
+          </tr>
+          <tr>
+            <td><span class="tok canonical">SHIFT</span></td>
+            <td></td>
+            <td><span class="badge both">Both</span></td>
+            <td>Shift key on either platform.</td>
+          </tr>
+          <tr>
+            <td><span class="tok canonical">OPTION</span></td>
+            <td><span class="tok synonym">OPT</span> <span class="tok synonym">ALT</span></td>
+            <td><span class="badge both">Both</span></td>
+            <td>Option (⌥) on Mac, Alt on Windows.</td>
+          </tr>
+          <tr>
+            <td><span class="tok canonical">CONTROL</span></td>
+            <td></td>
+            <td><span class="badge mac">Mac</span></td>
+            <td>The literal Control key (⌃) on Mac. Used alongside CMD in a small number of shortcuts. No Windows equivalent — omit pc_sc or use a different combination.</td>
+          </tr>
+          <tr>
+            <td><span class="tok canonical">WIN</span></td>
+            <td><span class="tok synonym">WINDOWS</span></td>
+            <td><span class="badge touch">Touch / PC</span></td>
+            <td>Windows logo key. PC only. Primarily for touch-enabled mode where OS-level interception is bypassed.</td>
+          </tr>
+          <tr>
+            <td><span class="tok canonical">FN</span></td>
+            <td></td>
+            <td><span class="badge touch">Touch only</span></td>
+            <td>Function modifier key. Browser cannot detect the physical Fn key. Use only in touch-enabled shortcuts where the virtual keyboard provides it.</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <!-- Letters, digits, function keys -->
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>Token</th><th>Platform</th><th>Meaning</th></tr></thead>
+        <tbody>
+          <tr>
+            <td><span class="tok canonical">A</span> <span style="color:var(--text-3);font-size:12px;">through</span> <span class="tok canonical">Z</span></td>
+            <td><span class="badge both">Both</span></td>
+            <td>Letter keys by their label. Always uppercase in token string.</td>
+          </tr>
+          <tr>
+            <td><span class="tok canonical">0</span> <span style="color:var(--text-3);font-size:12px;">through</span> <span class="tok canonical">9</span></td>
+            <td><span class="badge both">Both</span></td>
+            <td>Main keyboard digit keys.</td>
+          </tr>
+          <tr>
+            <td><span class="tok canonical">F1</span> <span style="color:var(--text-3);font-size:12px;">through</span> <span class="tok canonical">F12</span></td>
+            <td><span class="badge both">Both</span></td>
+            <td>Function row keys.</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <!-- Named keys -->
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>Canonical token</th><th>Also accepts</th><th>Platform</th><th>Meaning</th></tr></thead>
+        <tbody>
+          <tr>
+            <td><span class="tok canonical">RETURN</span></td>
+            <td><span class="tok synonym">ENTER</span></td>
+            <td><span class="badge both">Both</span></td>
+            <td>Return on Mac, Enter on Windows. Numpad Enter also accepted.</td>
+          </tr>
+          <tr>
+            <td><span class="tok canonical">TAB</span></td>
+            <td></td>
+            <td><span class="badge both">Both</span></td>
+            <td>Tab key.</td>
+          </tr>
+          <tr>
+            <td><span class="tok canonical">SPACE</span></td>
+            <td></td>
+            <td><span class="badge both">Both</span></td>
+            <td>Spacebar.</td>
+          </tr>
+          <tr>
+            <td><span class="tok canonical">BACKSPACE</span></td>
+            <td><span class="tok synonym">DEL</span></td>
+            <td><span class="badge both">Both</span></td>
+            <td>Backspace/Delete key (the one above Return). Accepts both physical Backspace and Delete codes.</td>
+          </tr>
+          <tr>
+            <td><span class="tok canonical">DELETE</span></td>
+            <td></td>
+            <td><span class="badge both">Both</span></td>
+            <td>Forward Delete key (⌦ on Mac, Del on extended PC keyboard).</td>
+          </tr>
+          <tr>
+            <td><span class="tok canonical">ESCAPE</span></td>
+            <td><span class="tok synonym">ESC</span></td>
+            <td><span class="badge both">Both</span></td>
+            <td>Escape key.</td>
+          </tr>
+          <tr>
+            <td><span class="tok canonical">CAPSLOCK</span></td>
+            <td></td>
+            <td><span class="badge both">Both</span></td>
+            <td>Caps Lock key.</td>
+          </tr>
+          <tr>
+            <td><span class="tok canonical">ARROWUP</span></td>
+            <td></td>
+            <td><span class="badge both">Both</span></td>
+            <td>Up arrow.</td>
+          </tr>
+          <tr>
+            <td><span class="tok canonical">ARROWDOWN</span></td>
+            <td></td>
+            <td><span class="badge both">Both</span></td>
+            <td>Down arrow.</td>
+          </tr>
+          <tr>
+            <td><span class="tok canonical">ARROWLEFT</span></td>
+            <td></td>
+            <td><span class="badge both">Both</span></td>
+            <td>Left arrow.</td>
+          </tr>
+          <tr>
+            <td><span class="tok canonical">ARROWRIGHT</span></td>
+            <td></td>
+            <td><span class="badge both">Both</span></td>
+            <td>Right arrow.</td>
+          </tr>
+          <tr>
+            <td><span class="tok canonical">HOME</span></td>
+            <td></td>
+            <td><span class="badge both">Both</span></td>
+            <td>Home key.</td>
+          </tr>
+          <tr>
+            <td><span class="tok canonical">END</span></td>
+            <td></td>
+            <td><span class="badge both">Both</span></td>
+            <td>End key.</td>
+          </tr>
+          <tr>
+            <td><span class="tok canonical">PAGEUP</span></td>
+            <td></td>
+            <td><span class="badge both">Both</span></td>
+            <td>Page Up key.</td>
+          </tr>
+          <tr>
+            <td><span class="tok canonical">PAGEDOWN</span></td>
+            <td></td>
+            <td><span class="badge both">Both</span></td>
+            <td>Page Down key.</td>
+          </tr>
+          <tr>
+            <td><span class="tok canonical">INSERT</span></td>
+            <td></td>
+            <td><span class="badge pc">PC</span></td>
+            <td>Insert key on extended PC keyboard.</td>
+          </tr>
+          <tr>
+            <td><span class="tok canonical">PRINTSCREEN</span></td>
+            <td></td>
+            <td><span class="badge pc">PC</span></td>
+            <td>Print Screen key.</td>
+          </tr>
+          <tr>
+            <td><span class="tok canonical">SCROLLLOCK</span></td>
+            <td></td>
+            <td><span class="badge pc">PC</span></td>
+            <td>Scroll Lock key.</td>
+          </tr>
+          <tr>
+            <td><span class="tok canonical">PAUSE</span></td>
+            <td></td>
+            <td><span class="badge pc">PC</span></td>
+            <td>Pause/Break key.</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <!-- Punctuation -->
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>Canonical token</th><th>Also accepts</th><th>Physical key</th><th>Notes</th></tr></thead>
+        <tbody>
+          <tr>
+            <td><span class="tok canonical">EQUAL</span></td>
+            <td><span class="tok synonym">PLUS</span> <span class="tok synonym">EQUALS</span></td>
+            <td><code>=</code> / <code>+</code></td>
+            <td>Matches the physical key regardless of shift state. PLUS and EQUAL are the same key. If shift is needed, add SHIFT as a separate token.</td>
+          </tr>
+          <tr>
+            <td><span class="tok canonical">MINUS</span></td>
+            <td></td>
+            <td><code>-</code> / <code>_</code></td>
+            <td>Matches the physical key regardless of shift state.</td>
+          </tr>
+          <tr>
+            <td><span class="tok canonical">BRACKETLEFT</span></td>
+            <td></td>
+            <td><code>[</code> / <code>{</code></td>
+            <td></td>
+          </tr>
+          <tr>
+            <td><span class="tok canonical">BRACKETRIGHT</span></td>
+            <td></td>
+            <td><code>]</code> / <code>}</code></td>
+            <td></td>
+          </tr>
+          <tr>
+            <td><span class="tok canonical">BACKSLASH</span></td>
+            <td></td>
+            <td><code>\</code> / <code>|</code></td>
+            <td></td>
+          </tr>
+          <tr>
+            <td><span class="tok canonical">SEMICOLON</span></td>
+            <td></td>
+            <td><code>;</code> / <code>:</code></td>
+            <td></td>
+          </tr>
+          <tr>
+            <td><span class="tok canonical">QUOTE</span></td>
+            <td></td>
+            <td><code>'</code> / <code>"</code></td>
+            <td></td>
+          </tr>
+          <tr>
+            <td><span class="tok canonical">COMMA</span></td>
+            <td></td>
+            <td><code>,</code> / <code>&lt;</code></td>
+            <td></td>
+          </tr>
+          <tr>
+            <td><span class="tok canonical">PERIOD</span></td>
+            <td></td>
+            <td><code>.</code> / <code>&gt;</code></td>
+            <td></td>
+          </tr>
+          <tr>
+            <td><span class="tok canonical">SLASH</span></td>
+            <td></td>
+            <td><code>/</code> / <code>?</code></td>
+            <td></td>
+          </tr>
+          <tr>
+            <td><span class="tok canonical">GRAVE</span></td>
+            <td></td>
+            <td><code>`</code> / <code>~</code></td>
+            <td></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <!-- Numpad -->
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>Canonical token</th><th>Platform</th><th>Meaning</th></tr></thead>
+        <tbody>
+          <tr>
+            <td><span class="tok canonical">NUMPAD0</span> <span style="color:var(--text-3);font-size:12px;">through</span> <span class="tok canonical">NUMPAD9</span></td>
+            <td><span class="badge both">Both</span></td>
+            <td>Numpad digit keys specifically. Distinct from main row digits. When a shortcut is numpad-specific (e.g. After Effects preview), use this token so the main row digit does not trigger it incorrectly.</td>
+          </tr>
+          <tr>
+            <td><span class="tok canonical">NUMPADADD</span></td>
+            <td><span class="badge both">Both</span></td>
+            <td>Numpad + key.</td>
+          </tr>
+          <tr>
+            <td><span class="tok canonical">NUMPADSUBTRACT</span></td>
+            <td><span class="badge both">Both</span></td>
+            <td>Numpad - key.</td>
+          </tr>
+          <tr>
+            <td><span class="tok canonical">NUMPADMULTIPLY</span></td>
+            <td></td>
+            <td><span class="badge both">Both</span></td>
+            <td>Numpad * key. Not the same as Shift+8 on the main keyboard.</td>
+          </tr>
+          <tr>
+            <td><span class="tok canonical">NUMPADDIVIDE</span></td>
+            <td></td>
+            <td><span class="badge both">Both</span></td>
+            <td>Numpad / key.</td>
+          </tr>
+          <tr>
+            <td><span class="tok canonical">NUMPADDECIMAL</span></td>
+            <td></td>
+            <td><span class="badge both">Both</span></td>
+            <td>Numpad . key.</td>
+          </tr>
+          <tr>
+            <td><span class="tok canonical">NUMPADENTER</span></td>
+            <td></td>
+            <td><span class="badge both">Both</span></td>
+            <td>Numpad Enter key. RETURN also accepts this but NUMPADENTER specifies it exclusively.</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <!-- ══ CHIPS ══════════════════════════════════════════════════════════ -->
+  <section>
+    <h2>Chip Rendering</h2>
+
+    <p class="section-intro">Chips appear in the report card, cheat sheet, toast hints, end screen history, and conflicts settings. Two sizes are used depending on context.</p>
+
+    <div class="two-col">
+      <div class="card">
+        <h3>Long chips — single-key shortcuts</h3>
+        <p>Used when a shortcut has only one token. The chip is wider and includes a word label alongside any symbol.</p>
+        <br>
+        <div style="display:flex;flex-direction:column;gap:10px;margin-top:4px;">
+          <div class="chip-preview"><span class="chip-long">⌘ command</span></div>
+          <div class="chip-preview"><span class="chip-long">Space</span></div>
+          <div class="chip-preview"><span class="chip-long">⇥ tab</span></div>
+          <div class="chip-preview"><span class="chip-long">↩ return</span></div>
+          <div class="chip-preview"><span class="chip-long">B</span></div>
+          <div class="chip-preview"><span class="chip-long">Esc</span></div>
+        </div>
+      </div>
+      <div class="card">
+        <h3>Short chips — multi-key shortcuts</h3>
+        <p>Used when a shortcut has two or more tokens. Each token becomes a compact chip. Word labels are dropped; symbols only.</p>
+        <br>
+        <div style="display:flex;flex-direction:column;gap:10px;margin-top:4px;">
+          <div class="chip-preview"><span class="chip-short">⌘</span><span class="chip-sep">+</span><span class="chip-short">Z</span></div>
+          <div class="chip-preview"><span class="chip-short">⌘</span><span class="chip-sep">+</span><span class="chip-short">⇧</span><span class="chip-sep">+</span><span class="chip-short">Z</span></div>
+          <div class="chip-preview"><span class="chip-short">⌘</span><span class="chip-sep">+</span><span class="chip-short">⌥</span><span class="chip-sep">+</span><span class="chip-short">⇧</span><span class="chip-sep">+</span><span class="chip-short">H</span></div>
+          <div class="chip-preview"><span class="chip-short">Ctrl</span><span class="chip-sep">+</span><span class="chip-short">⇧</span><span class="chip-sep">+</span><span class="chip-short">Z</span></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Symbol map table -->
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>Token</th><th>Mac short</th><th>Mac long</th><th>PC short</th><th>PC long</th><th>Notes</th></tr></thead>
+        <tbody>
+          <tr><td><span class="tok canonical">CMD</span></td><td>⌘</td><td>⌘ command</td><td>Ctrl</td><td>Ctrl</td><td></td></tr>
+          <tr><td><span class="tok canonical">SHIFT</span></td><td>⇧</td><td>⇧ shift</td><td>⇧</td><td>Shift</td><td></td></tr>
+          <tr><td><span class="tok canonical">OPTION</span></td><td>⌥</td><td>⌥ option</td><td>Alt</td><td>Alt</td><td></td></tr>
+          <tr><td><span class="tok canonical">CONTROL</span></td><td>⌃</td><td>⌃ control</td><td>—</td><td>—</td><td>Mac only. No PC chip.</td></tr>
+          <tr><td><span class="tok canonical">WIN</span></td><td>—</td><td>—</td><td><em>[Win SVG]</em></td><td><em>[Win SVG]</em> Windows</td><td>Uses the existing Windows logo SVG from the OS toggle.</td></tr>
+          <tr><td><span class="tok canonical">FN</span></td><td>fn</td><td>🌐 function</td><td>FN</td><td>Function</td><td></td></tr>
+          <tr><td><span class="tok canonical">RETURN</span></td><td colspan="4"><em>[SVG arrow]</em> — not Unicode ↩ to avoid emoji rendering issues</td><td>Use inline SVG for both platforms.</td></tr>
+          <tr><td><span class="tok canonical">BACKSPACE</span></td><td>⌫</td><td>⌫ delete</td><td>⌫</td><td>⌫ Backspace</td><td></td></tr>
+          <tr><td><span class="tok canonical">DELETE</span></td><td>⌦</td><td>⌦ delete</td><td>⌦</td><td>⌦ Delete</td><td></td></tr>
+          <tr><td><span class="tok canonical">ESCAPE</span></td><td>Esc</td><td>Esc</td><td>Esc</td><td>Esc</td><td>No symbol. Word label used at both sizes.</td></tr>
+          <tr><td><span class="tok canonical">TAB</span></td><td>⇥</td><td>⇥ tab</td><td>Tab</td><td>Tab</td><td></td></tr>
+          <tr><td><span class="tok canonical">SPACE</span></td><td>Space</td><td>Space</td><td>Space</td><td>Space</td><td>Word label at both sizes. No symbol.</td></tr>
+          <tr><td><span class="tok canonical">CAPSLOCK</span></td><td>⇪</td><td>⇪ caps lock</td><td>Caps Lock</td><td>Caps Lock</td><td></td></tr>
+          <tr><td><span class="tok canonical">ARROWUP</span></td><td>↑</td><td>↑ up</td><td>↑</td><td>↑</td><td></td></tr>
+          <tr><td><span class="tok canonical">ARROWDOWN</span></td><td>↓</td><td>↓ down</td><td>↓</td><td>↓</td><td></td></tr>
+          <tr><td><span class="tok canonical">ARROWLEFT</span></td><td>←</td><td>← left</td><td>←</td><td>←</td><td></td></tr>
+          <tr><td><span class="tok canonical">ARROWRIGHT</span></td><td>→</td><td>→ right</td><td>→</td><td>→</td><td></td></tr>
+          <tr><td><span class="tok canonical">HOME</span></td><td>↖</td><td>↖ home</td><td>Home</td><td>Home</td><td></td></tr>
+          <tr><td><span class="tok canonical">END</span></td><td>↘</td><td>↘ end</td><td>End</td><td>End</td><td></td></tr>
+          <tr><td><span class="tok canonical">PAGEUP</span></td><td>⇞</td><td>⇞ page up</td><td>Page Up</td><td>Page Up</td><td></td></tr>
+          <tr><td><span class="tok canonical">PAGEDOWN</span></td><td>⇟</td><td>⇟ page down</td><td>Page Down</td><td>Page Down</td><td></td></tr>
+          <tr><td><span class="tok canonical">Letters A–Z</span></td><td colspan="4">Rendered as the letter itself at both sizes, both platforms.</td><td></td></tr>
+          <tr><td><span class="tok canonical">Digits 0–9</span></td><td colspan="4">Rendered as the digit itself at both sizes, both platforms.</td><td></td></tr>
+          <tr><td><span class="tok canonical">F1–F12</span></td><td colspan="4">Rendered as F1, F2… at both sizes, both platforms.</td><td></td></tr>
+          <tr><td><span class="tok canonical">Punctuation</span></td><td colspan="4">Rendered as the unshifted character symbol (e.g. EQUAL → <code>=</code>, BRACKETLEFT → <code>[</code>).</td><td></td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="card">
+      <h3>Canonical chip order</h3>
+      <p style="margin-bottom:12px;">Regardless of the order tokens appear in the JSON string, chips always render in this order:</p>
+      <div class="render-order">
+        <span class="chip-short">⌘</span><span class="arrow">→</span>
+        <span class="chip-short">⌃</span><span class="arrow">→</span>
+        <span class="chip-short">⌥</span><span class="arrow">→</span>
+        <span class="chip-short">⇧</span><span class="arrow">→</span>
+        <span class="chip-short">key</span>
+        <span style="color:var(--text-3);font-size:12px;margin-left:8px;">Mac: CMD → CONTROL → OPTION → SHIFT → key</span>
+      </div>
+      <div class="render-order" style="margin-top:8px;">
+        <span class="chip-short" style="font-size:9px;">⊞</span><span class="arrow">→</span>
+        <span class="chip-short">Ctrl</span><span class="arrow">→</span>
+        <span class="chip-short">Alt</span><span class="arrow">→</span>
+        <span class="chip-short">⇧</span><span class="arrow">→</span>
+        <span class="chip-short">key</span>
+        <span style="color:var(--text-3);font-size:12px;margin-left:8px;">PC: WIN → CMD → OPTION → SHIFT → key</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- ══ GLOSSARY ══════════════════════════════════════════════════════════ -->
+  <section>
+    <h2>System Component Glossary</h2>
+    <p class="section-intro">Use these names when discussing the system. Each corresponds to a distinct function in the JavaScript.</p>
+
+    <div class="two-col">
+
+      <div class="glossary-item">
+        <div class="fn-name">NormaliseToken( token )</div>
+        <div class="fn-role">Token normaliser</div>
+        <div class="fn-desc">Converts any accepted synonym to its canonical form. <code>ALT</code> → <code>OPTION</code>, <code>ENTER</code> → <code>RETURN</code>, <code>CTRL</code> → <code>CMD</code> etc. Called first by everything else so the rest of the system only ever sees canonical tokens.</div>
+      </div>
+
+      <div class="glossary-item">
+        <div class="fn-name">ParseShortcutString( shortcutString )</div>
+        <div class="fn-role">String parser</div>
+        <div class="fn-desc">Splits a token string on <code>+</code>, runs each token through <code>NormaliseToken</code>, and returns a structured object: which modifier flags are required (<code>cmd</code>, <code>shift</code>, <code>option</code>, <code>control</code>, <code>win</code>) and what the key token is. Example: <code>CMD+SHIFT+Z</code> → <code>{ cmd: true, shift: true, option: false, control: false, win: false, key: 'Z' }</code>.</div>
+      </div>
+
+      <div class="glossary-item">
+        <div class="fn-name">GetActiveShortcutString( shortcutEntry )</div>
+        <div class="fn-role">OS selector</div>
+        <div class="fn-desc">Takes a shortcut JSON entry object and returns the correct token string for the current OS. Returns <code>entry.mac_sc</code> on Mac, <code>entry.pc_sc</code> on PC. Returns <code>null</code> if the field is absent or null (shortcut does not exist on this platform).</div>
+        <div class="fn-replaces">Replaces all direct reads of <code>entry.shortcut</code> throughout the codebase.</div>
+      </div>
+
+      <div class="glossary-item">
+        <div class="fn-name">ShortcutMatchesEvent( shortcutString, keyboardEvent )</div>
+        <div class="fn-role">Match checker</div>
+        <div class="fn-desc">Takes a token string and a browser keyboard event. Returns true if the event satisfies the shortcut. Calls <code>ParseShortcutString</code> internally, then checks modifier flags and physical key code against the parsed result.</div>
+        <div class="fn-replaces">Replaces <code>matchesShortcut()</code>.</div>
+      </div>
+
+      <div class="glossary-item">
+        <div class="fn-name">ShortcutToKeyCodes( shortcutString )</div>
+        <div class="fn-role">Keyboard lighting</div>
+        <div class="fn-desc">Takes a token string and returns the array of browser key code strings that need to be lit on the graphical keyboard display. Used only by the lighting system, not by match checking.</div>
+        <div class="fn-replaces">Replaces <code>shortcutToCodes()</code>.</div>
+      </div>
+
+      <div class="glossary-item">
+        <div class="fn-name">RenderShortcutChips( shortcutString, isLongForm )</div>
+        <div class="fn-role">Chip renderer</div>
+        <div class="fn-desc">Takes a token string and a boolean. When <code>isLongForm</code> is true (single-token shortcut), renders wide chips with word labels. When false (multi-token), renders compact chips with symbols only. Canonicalises token order before rendering. Returns a DOM element.</div>
+        <div class="fn-replaces">Replaces <code>BuildShortcutKeyChips()</code>.</div>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- ══ NOTES ══════════════════════════════════════════════════════════ -->
+  <section>
+    <h2>Migration Notes</h2>
+    <div class="two-col">
+      <div class="card">
+        <h3>While migrating the JSON files</h3>
+        <p>Keep the existing <code>shortcut</code> field in place alongside the new <code>mac_sc</code> and <code>pc_sc</code> token strings until the new HTML is deployed. The old code still reads <code>shortcut</code>. Once the parser rewrite is live, the old field can be removed from all entries.</p>
+      </div>
+      <div class="card">
+        <h3>Three malformed entries to fix now</h3>
+        <p>Three entries in the current files have tokens that were concatenated without separators. These need fixing regardless of the migration:<br><br>
+        <code>ALTCTRLN</code> → <code>OPTION+CMD+N</code><br>
+        <code>ALTCTRLO</code> → <code>OPTION+CMD+O</code><br>
+        <code>ALTCTRLP</code> → <code>OPTION+CMD+P</code><br><br>
+        Check which file these appear in and verify the intended shortcuts before correcting.</p>
+      </div>
+    </div>
+  </section>
+
+</div>
+</body>
+</html>
 

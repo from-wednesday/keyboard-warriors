@@ -88,7 +88,7 @@
     "display": "open Find and Replace",
     "mac_sc": "CMD+H",
     "pc_sc": "CTRL+H",
-    "difficulty": 3
+    "difficulty": 2
   },
   {
     "shortcut": "CMD+G",
@@ -151,7 +151,7 @@
     "display": "toggle small caps",
     "mac_sc": "CMD+SHIFT+K",
     "pc_sc": "CTRL+SHIFT+K",
-    "difficulty": 5
+    "difficulty": 4
   },
   {
     "shortcut": "CMD+SHIFT+A",
@@ -179,14 +179,14 @@
     "display": "create hanging indent",
     "mac_sc": "CMD+T",
     "pc_sc": "CTRL+T",
-    "difficulty": 3
+    "difficulty": 4
   },
   {
     "shortcut": "CMD+SHIFT+T",
     "display": "reduce hanging indent",
     "mac_sc": "CMD+SHIFT+T",
     "pc_sc": "CTRL+SHIFT+T",
-    "difficulty": 3
+    "difficulty": 4
   },
   {
     "shortcut": "CMD+E",
@@ -263,14 +263,14 @@
     "display": "increase font size",
     "mac_sc": "CMD+SHIFT+PERIOD",
     "pc_sc": "CTRL+SHIFT+PERIOD",
-    "difficulty": 3
+    "difficulty": 2
   },
   {
     "shortcut": "CMD+SHIFT+COMMA",
     "display": "decrease font size",
     "mac_sc": "CMD+SHIFT+COMMA",
     "pc_sc": "CTRL+SHIFT+COMMA",
-    "difficulty": 3
+    "difficulty": 2
   },
   {
     "shortcut": "CMD+BRACKETLEFT",
@@ -294,7 +294,7 @@
     "difficulty": 3
   },
   {
-    "shortcut": "CMD+EQUALS",
+    "shortcut": "CMD+PLUS",
     "display": "toggle subscript",
     "mac_sc": "CMD+PLUS",
     "pc_sc": "CTRL+PLUS",
@@ -305,7 +305,7 @@
     "display": "insert hyperlink",
     "mac_sc": "CMD+K",
     "pc_sc": "CTRL+K",
-    "difficulty": 3
+    "difficulty": 2
   },
   {
     "shortcut": "CMD+SHIFT+G",
@@ -382,7 +382,7 @@
     "display": "insert a comment",
     "mac_sc": "CMD+OPT+M",
     "pc_sc": "CTRL+ALT+M",
-    "difficulty": 3
+    "difficulty": 4
   },
   {
     "shortcut": "CMD+OPTION+A",
@@ -466,14 +466,14 @@
     "display": "move paragraph up",
     "mac_sc": "OPT+SHIFT+ARROWUP",
     "pc_sc": "ALT+SHIFT+ARROWUP",
-    "difficulty": 3
+    "difficulty": 4
   },
   {
     "shortcut": "OPTION+SHIFT+ARROWDOWN",
     "display": "move paragraph down",
     "mac_sc": "OPT+SHIFT+ARROWDOWN",
     "pc_sc": "ALT+SHIFT+ARROWDOWN",
-    "difficulty": 3
+    "difficulty": 4
   },
   {
     "shortcut": "CMD+SHIFT+ENTER",
@@ -487,7 +487,7 @@
     "display": "insert page break",
     "mac_sc": "CMD+RETURN",
     "pc_sc": "CTRL+ENTER",
-    "difficulty": 3
+    "difficulty": 2
   },
   {
     "shortcut": "SHIFT+ENTER",
@@ -501,7 +501,7 @@
     "display": "toggle formatting marks",
     "mac_sc": "CMD+SHIFT+8",
     "pc_sc": "CTRL+SHIFT+8",
-    "difficulty": 3
+    "difficulty": 2
   },
   {
     "shortcut": "CMD+ALT+I",
@@ -529,7 +529,7 @@
     "display": "cycle case",
     "mac_sc": "CMD+SHIFT+F3",
     "pc_sc": "SHIFT+F3",
-    "difficulty": 3
+    "difficulty": 4
   },
   {
     "shortcut": "CMD+SHIFT+F9",
@@ -814,7 +814,7 @@
     "display": "insert current time field",
     "mac_sc": "CMD+OPT+SHIFT+T",
     "pc_sc": "ALT+SHIFT+T",
-    "difficulty": 5
+    "difficulty": 4
   },
   {
     "shortcut": "CMD+OPTION+SHIFT+D",
@@ -835,7 +835,7 @@
     "display": "update selected fields",
     "mac_sc": "CMD+OPT+SHIFT+U",
     "pc_sc": "F9",
-    "difficulty": 3
+    "difficulty": 4
   },
   {
     "shortcut": "CMD+OPTION+SHIFT+G",

@@ -59,12 +59,9 @@
   {
     "shortcut": "I",
     "display": "pick up the Eyedropper",
-    "mac_sc": "I",
+    "mac_sc": "I|CTRL+C",
     "pc_sc": "I",
-    "difficulty": 1,
-    "alternates": [
-      "CTRL+C"
-    ]
+    "difficulty": 1
   },
   {
     "shortcut": "Z",
@@ -86,7 +83,6 @@
     "mac_sc": "H|SPACE",
     "pc_sc": "H|SPACE",
     "difficulty": 1
-    ]
   },
   {
     "shortcut": "F",
@@ -147,12 +143,9 @@
   {
     "shortcut": "CMD+SEMICOLON",
     "display": "show/hide Guides",
-    "mac_sc": "CMD+SEMICOLON",
-    "pc_sc": "CTRL+SEMICOLON",
-    "difficulty": 1,
-    "alternates": [
-      "SHIFT+G"
-    ]
+    "mac_sc": "CMD+SEMICOLON|SHIFT+G",
+    "pc_sc": "CTRL+SEMICOLON|SHIFT+G",
+    "difficulty": 1
   },
   {
     "shortcut": "CMD+SHIFT+H",
@@ -425,8 +418,8 @@
   {
     "shortcut": "CMD+BACKSLASH",
     "display": "Show/Hide UI",
-    "mac_sc": "CMD+SLASH",
-    "pc_sc": "CTRL+SLASH",
+    "mac_sc": "CMD+BACKSLASH",
+    "pc_sc": "CTRL+BACKSLASH",
     "difficulty": 5
   },
   {
@@ -568,7 +561,7 @@
     "shortcut": "CMD",
     "display": "hold while resizing to Override Constraints",
     "mac_sc": "CMD",
-    "pc_sc": "Ctrl",
+    "pc_sc": "CTRL",
     "difficulty": 5
   },
   {
@@ -630,8 +623,8 @@
   {
     "shortcut": "CMD+OPTION+BACKSLASH",
     "display": "toggle Multiplayer Cursor visibility",
-    "mac_sc": "CMD+OPT+SLASH",
-    "pc_sc": "CTRL+ALT+SLASH",
+    "mac_sc": "CMD+OPT+BACKSLASH",
+    "pc_sc": "CTRL+ALT+BACKSLASH",
     "difficulty": 5
   },
   {
@@ -665,8 +658,8 @@
   {
     "shortcut": "CMD+SHIFT+BACKSLASH",
     "display": "Minimise UI",
-    "mac_sc": "CMD+SHIFT+SLASH",
-    "pc_sc": "CTRL+SHIFT+SLASH",
+    "mac_sc": "CMD+SHIFT+BACKSLASH",
+    "pc_sc": "CTRL+SHIFT+BACKSLASH",
     "difficulty": 5
   },
   {
@@ -692,7 +685,7 @@
   },
   {
     "shortcut": "SHIFT+OPTION+V",
-    "display": "Dristribute Vertically",
+    "display": "Distribute Vertically",
     "mac_sc": "SHIFT+OPT+V",
     "pc_sc": "SHIFT+ALT+V",
     "difficulty": 3

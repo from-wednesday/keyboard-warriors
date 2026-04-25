@@ -138,7 +138,6 @@
     "mac_sc": "H|SPACE",
     "pc_sc": "H|SPACE",
     "difficulty": 1
-    ]
   },
   {
     "shortcut": "W",
@@ -460,7 +459,7 @@
     "shortcut": "CMD",
     "display": "temporarily active Selection Tool while using Pen Tool",
     "mac_sc": "CMD",
-    "pc_sc": "Ctrl",
+    "pc_sc": "CTRL",
     "difficulty": 1
   },
   {
@@ -473,8 +472,8 @@
   {
     "shortcut": "BACKSLASH",
     "display": "pick up the Line tool",
-    "mac_sc": "SLASH",
-    "pc_sc": "SLASH",
+    "mac_sc": "BACKSLASH",
+    "pc_sc": "BACKSLASH",
     "difficulty": 3
   },
   {
@@ -675,7 +674,7 @@
     "display": "Create Outlines",
     "mac_sc": "CMD+SHIFT+O",
     "pc_sc": "CTRL+SHIFT+O",
-    "difficulty": 1
+    "difficulty": 2
   },
   {
     "shortcut": "CMD+SHIFT+OPTION+O",
@@ -689,7 +688,7 @@
     "display": "insert forced Line-Break",
     "mac_sc": "SHIFT+RETURN",
     "pc_sc": "SHIFT+ENTER",
-    "difficulty": 3
+    "difficulty": 2
   },
   {
     "shortcut": "CMD+ENTER",

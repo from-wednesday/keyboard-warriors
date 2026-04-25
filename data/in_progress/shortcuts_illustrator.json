@@ -103,7 +103,6 @@
     "mac_sc": "H|SPACE",
     "pc_sc": "H|SPACE",
     "difficulty": 1
-    ]
   },
   {
     "shortcut": "K",
@@ -159,13 +158,6 @@
     "display": "reset colours to Black & White",
     "mac_sc": "D",
     "pc_sc": "D",
-    "difficulty": 1
-  },
-  {
-    "shortcut": "X",
-    "display": "swap Foreground & Background colours",
-    "mac_sc": "X",
-    "pc_sc": "X",
     "difficulty": 1
   },
   {
@@ -544,7 +536,7 @@
     "shortcut": "CMD",
     "display": "temporarily active Selection Tool while using Pen Tool",
     "mac_sc": "CMD",
-    "pc_sc": "Ctrl",
+    "pc_sc": "CTRL",
     "difficulty": 1
   },
   {
@@ -636,7 +628,7 @@
     "display": "Create a Clipping Mask",
     "mac_sc": "CMD+7",
     "pc_sc": "CTRL+7",
-    "difficulty": 3
+    "difficulty": 2
   },
   {
     "shortcut": "CMD+OPTION+7",
@@ -647,7 +639,7 @@
   },
   {
     "shortcut": "SHIFT+GRAVE",
-    "display": "hold to draw multiple shapes at once with the 'Tilde TrickQUOTE",
+    "display": "hold to draw multiple shapes at once with the 'Tilde Trick'",
     "mac_sc": "SHIFT+GRAVE",
     "pc_sc": "SHIFT+GRAVE",
     "difficulty": 5
@@ -679,13 +671,6 @@
     "mac_sc": "CMD+SHIFT+1",
     "pc_sc": "CTRL+SHIFT+1",
     "difficulty": 5
-  },
-  {
-    "shortcut": "R",
-    "display": "select the Rotate tool",
-    "mac_sc": "R",
-    "pc_sc": "R",
-    "difficulty": 3
   },
   {
     "shortcut": "CMD+SHIFT+0",

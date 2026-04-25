@@ -32,14 +32,14 @@
     "display": "Reveal Rotation property on selected layer",
     "mac_sc": "R",
     "pc_sc": "R",
-    "difficulty": 3
+    "difficulty": 2
   },
   {
     "shortcut": "S",
     "display": "Reveal Scale property on selected layer",
     "mac_sc": "S",
     "pc_sc": "S",
-    "difficulty": 3
+    "difficulty": 2
   },
   {
     "shortcut": "N",
@@ -88,14 +88,14 @@
     "display": "Reveal Position property on selected layer",
     "mac_sc": "P",
     "pc_sc": "P",
-    "difficulty": 3
+    "difficulty": 2
   },
   {
     "shortcut": "T",
     "display": "Reveal Opacity property on selected layer",
     "mac_sc": "T",
     "pc_sc": "T",
-    "difficulty": 3
+    "difficulty": 2
   },
   {
     "shortcut": "A",
@@ -109,7 +109,7 @@
     "display": "Reveal Effects on selected layer",
     "mac_sc": "E",
     "pc_sc": "E",
-    "difficulty": 3
+    "difficulty": 2
   },
   {
     "shortcut": "SHIFT",
@@ -281,21 +281,21 @@
     "display": "Scale footage to fit the composition",
     "mac_sc": "CMD+OPT+F",
     "pc_sc": "CTRL+ALT+F",
-    "difficulty": 3
+    "difficulty": 4
   },
   {
     "shortcut": "CMD+SHIFT+OPTION+F",
     "display": "Scale and crop footage to fill the composition",
     "mac_sc": "CMD+SHIFT+OPT+F",
     "pc_sc": "CTRL+SHIFT+ALT+F",
-    "difficulty": 3
+    "difficulty": 4
   },
   {
     "shortcut": "OPTION+SHIFT+P",
     "display": "Add or remove a Position keyframe",
     "mac_sc": "OPT+SHIFT+P",
     "pc_sc": "ALT+SHIFT+P",
-    "difficulty": 3
+    "difficulty": 2
   },
   {
     "shortcut": "OPTION+SHIFT+S",
@@ -372,7 +372,7 @@
     "display": "Centre the Anchor Point in the layer content",
     "mac_sc": "CMD+OPT+HOME",
     "pc_sc": "CTRL+ALT+HOME",
-    "difficulty": 3
+    "difficulty": 4
   },
   {
     "shortcut": "CMD+HOME",
@@ -393,14 +393,14 @@
     "display": "Enable Time Remapping",
     "mac_sc": "CMD+OPT+T",
     "pc_sc": "CTRL+ALT+T",
-    "difficulty": 3
+    "difficulty": 4
   },
   {
     "shortcut": "SHIFT+F3",
     "display": "Toggle the Graph Editor",
     "mac_sc": "SHIFT+F3",
     "pc_sc": "SHIFT+F3",
-    "difficulty": 5
+    "difficulty": 4
   },
   {
     "shortcut": "CMD+I",
@@ -475,7 +475,7 @@
   {
     "shortcut": "CMD+CTRL+M",
     "display": "Add to Render Queue",
-    "mac_sc": "CMD+CMD+M",
+    "mac_sc": "CMD+CONTROL+M",
     "pc_sc": "CTRL+ALT+M",
     "difficulty": 5
   },
@@ -546,7 +546,7 @@
     "shortcut": "CMD",
     "display": "Hold this and click a keyframe to remove its Easing",
     "mac_sc": "CMD",
-    "pc_sc": "Ctrl",
+    "pc_sc": "CTRL",
     "difficulty": 3
   },
   {
@@ -592,7 +592,7 @@
     "difficulty": 5
   },
   {
-    "shortcut": "CMD+OPTION+GRAVE",
+    "shortcut": "CMD+OPTION+QUOTE",
     "display": "Open the Keyboard Shortcuts editor",
     "mac_sc": "CMD+OPT+QUOTE",
     "pc_sc": "CTRL+ALT+QUOTE",
@@ -714,7 +714,7 @@
     "shortcut": "CMD",
     "display": "Temporarily active Selection Tool while using Pen",
     "mac_sc": "CMD",
-    "pc_sc": "Ctrl",
+    "pc_sc": "CTRL",
     "difficulty": 5
   },
   {
@@ -728,7 +728,7 @@
     "shortcut": "CMD",
     "display": "Hold this while dragging time indicator to scrub through footage",
     "mac_sc": "CMD",
-    "pc_sc": "Ctrl",
+    "pc_sc": "CTRL",
     "difficulty": 1
   },
   {

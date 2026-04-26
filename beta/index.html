@@ -2828,50 +2828,13 @@ if (transitioning && gameState !== 'finished') return;
 /* ══════════════════════════════════════
    HELP — auto-fades after 3s
 ══════════════════════════════════════ */
-const KEY_DISPLAY_MAC = {
-  'CMD':        { sym: '⌘', name: '' },
-  'SHIFT':      { sym: '⇧', name: 'Shift' },
-  'OPTION':     { sym: '⌥', name: 'Option' },
-  'RETURN':     { sym: '↩', name: 'Return' },
-  'ARROWLEFT':  { sym: '←', name: 'Left' },
-  'ARROWRIGHT': { sym: '→', name: 'Right' },
-  'ARROWUP':    { sym: '↑', name: 'Up' },
-  'ARROWDOWN':  { sym: '↓', name: 'Down' },
-  'HOME':       { sym: '↖', name: 'Home' },
-  'END':        { sym: '⇥', name: 'End' },
-  'SPACE':      { sym: '␣', name: 'Space' },
-  'TAB':        { sym: '⇥', name: 'Tab' },
-  'BACKSLASH':  { sym: '\\', name: '' },
-  'GRAVE':      { sym: '`', name: '' },
-};
-const KEY_DISPLAY_PC = {
-  'CMD':        { sym: 'Ctrl', name: '' },
-  'SHIFT':      { sym: '⇧', name: 'Shift' },
-  'OPTION':     { sym: 'Alt', name: '' },
-  'RETURN':     { sym: '↵', name: 'Enter' },
-  'ARROWLEFT':  { sym: '←', name: 'Left' },
-  'ARROWRIGHT': { sym: '→', name: 'Right' },
-  'ARROWUP':    { sym: '↑', name: 'Up' },
-  'ARROWDOWN':  { sym: '↓', name: 'Down' },
-  'HOME':       { sym: '↖', name: 'Home' },
-  'END':        { sym: '⇥', name: 'End' },
-  'SPACE':      { sym: '␣', name: 'Space' },
-  'TAB':        { sym: '⇥', name: 'Tab' },
-  'BACKSLASH':  { sym: '\\', name: '' },
-  'GRAVE':      { sym: '`', name: '' },
-};
-
-function pillHTML(token, bg) {
-  const map = currentOs === 'pc' ? KEY_DISPLAY_PC : KEY_DISPLAY_MAC;
-  const k = map[token.toUpperCase()];
-  const label = k ? (k.name ? k.sym + ' ' + k.name : k.sym) : token;
-  const colour = bg || '#f59e0b';
-  return '<span style="display:inline-block;background:' + colour + ';color:white;font-weight:700;font-size:12px;padding:3px 10px;border-radius:10px;white-space:nowrap;">' + label + '</span>';
-}
-
-function buildHintHTML(shortcut, bg) {
-  const parts = shortcut.toUpperCase().split('+');
-  return parts.map(t => pillHTML(t, bg)).join(' <span style="color:#6b7280;font-weight:700;">+</span> ');
+/* ── ShowHintToast ───────────────────────────────────────────────────────────
+   Renders the current answer as key chips inside the stats-row toast.
+   Uses BuildShortcutKeyChips so alternates, symbols, and ordering are all
+   handled by the single unified chip system. ── */
+function ShowHintToast(TokenString) {
+  kbToastEl.innerHTML = '';
+  kbToastEl.appendChild(BuildShortcutKeyChips(TokenString, false));
 }
 
 function toggleHelp() {
@@ -2884,7 +2847,7 @@ function toggleHelp() {
 }
 
     // Show hint in the stats-row toast pill — below the game panel, always readable
-    kbToastEl.innerHTML = buildHintHTML(currentAnswer.replace(/\\\\/g, '\\'), '#10b981');
+    ShowHintToast(currentAnswer);
     kbToastEl.classList.add('show');
     clearTimeout(_kwToastTimer);
     // Suppress the "Ready?" prompt while the hint is on screen
@@ -2921,7 +2884,7 @@ function toggleHelp() {
   }
 }
 function showAutoHintToast() {
-    kbToastEl.innerHTML = buildHintHTML(currentAnswer.replace(/\\\\/g, '\\'), '#f97316');
+    ShowHintToast(currentAnswer);
     kbToastEl.classList.add('show');
     clearTimeout(_kwToastTimer);
     clearTimeout(_kbToastAutoHideTimer);
@@ -2929,7 +2892,7 @@ function showAutoHintToast() {
 }
 
 function showSuccessHintToast() {
-    kbToastEl.innerHTML = buildHintHTML(currentAnswer.replace(/\\\\/g, '\\'), '#10b981');
+    ShowHintToast(currentAnswer);
     kbToastEl.classList.add('show');
     clearTimeout(_kbToastAutoHideTimer);
     _kbToastAutoHideTimer = setTimeout(function() { kbToastEl.classList.remove('show'); }, 1200);

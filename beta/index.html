@@ -1261,6 +1261,7 @@ function _kbPanelRect() {
 }
 
 function showToast(msg, duration) {
+  if (!_uiReady) return;
   var readingDuration = Math.min(5000, 1400 + msg.length * 40);
   duration = duration || readingDuration;
   var el = document.getElementById('kwToast');
@@ -1535,6 +1536,10 @@ function applyOsMode(os) {
 // Session-level flag: once the "recommend a keyboard" pill has been visible
 // for a cumulative 60 seconds, it is permanently hidden for this session.
 var _pillDismissedThisSession = false;
+
+// Gates showToast until the UI is fully built and initial modals are dismissed.
+// Prevents stray toasts appearing at position (0,0) / left-edge during boot.
+var _uiReady = false;
 var _pillAutoHideTimer        = null;
 
 function _startPillAutoHideTimer() {
@@ -1720,6 +1725,7 @@ function _revealPageContent() {
   // Show phone toolbar if applicable (not hidden by .page-initially-hidden
   // since it must also respond to game state)
   if (ForceNoKeyboard) _syncPhoneToolbarVisibility();
+  _uiReady = true;
 }
 
 var DomReady = new Promise(function(resolve) {
@@ -11669,6 +11675,7 @@ function HideGyroModal() {
 }
 
 function onGyroAllow() {
+  _uiReady = true;
   HideGyroModal();
   var NeedsPermission = typeof DeviceOrientationEvent !== 'undefined' &&
                         typeof DeviceOrientationEvent.requestPermission === 'function';
@@ -11688,6 +11695,7 @@ function onGyroAllow() {
 }
 
 function onGyroDeny() {
+  _uiReady = true;
   try { localStorage.setItem('kw_gyro', 'denied'); } catch(StorageError) {}
   HideGyroModal();
   ShowKeyboardRecommendModal();
@@ -11706,6 +11714,7 @@ function HideKeyboardRecommendModal() {
 }
 
 function onKeyboardRecommendHaveOne() {
+  _uiReady = true;
   HideKeyboardRecommendModal();
   _setHasKeyboard();
   // Physical keyboard connected: behave like desktop mode
@@ -11718,6 +11727,7 @@ function onKeyboardRecommendHaveOne() {
 }
 
 function onKeyboardRecommendTouchOnly() {
+  _uiReady = true;
   HideKeyboardRecommendModal();
   // Touch only: enable sticky and touch modes
   setTouchEnabled(true);
@@ -11752,6 +11762,7 @@ function HidePhoneWarningModal() {
 }
 
 function OnPhoneWarningDismiss() {
+  _uiReady = true;
   HidePhoneWarningModal();
   // Reverse the touch defaults set at startup -- phone plays without
   // the graphical keyboard and without on-screen key input.

@@ -1943,16 +1943,29 @@ function ParseShortcutString(ShortcutString) {
    Returns the correct token string for the current OS from a shortcut entry.
    Falls back to the legacy shortcut field if neither platform field exists.
    Returns null if this shortcut does not exist on the current platform. ── */
+/* ── GetActiveShortcutString ────────────────────────────────────────────────
+   Returns the token string for the current OS from a shortcut entry.
+   Falls back to the legacy shortcut field if mac_sc/pc_sc are absent or
+   still contain old-schema display symbols (⌘ ⇧ etc.) rather than tokens.
+   Delete the fallback block and the shortcut field from each JSON file once
+   all entries in that file have proper token strings in mac_sc and pc_sc. ── */
 function GetActiveShortcutString(ShortcutEntry) {
-  var ActiveString = currentOs === 'pc'
+  var CandidateString = currentOs === 'pc'
     ? ShortcutEntry.pc_sc
     : ShortcutEntry.mac_sc;
-  if (ActiveString === null || ActiveString === undefined) {
-    // Fall back to legacy field during migration
-    return ShortcutEntry.shortcut || null;
+
+  if (CandidateString !== null && CandidateString !== undefined
+      && CandidateString !== 'none' && CandidateString !== '') {
+    // Old display strings contain Unicode key symbols — detect and skip them
+    if (!/[⌘⇧⌥⌃⊞↩↵⌫⌦⎋⇥⇪⇞⇟←→↑↓]/.test(CandidateString)) {
+      return CandidateString;
+    }
   }
-  if (ActiveString === 'none' || ActiveString === '') return null;
-  return ActiveString;
+
+  // Fallback: legacy shortcut field (remove once all JSON files are migrated)
+  var LegacyString = ShortcutEntry.shortcut || null;
+  if (!LegacyString || LegacyString === 'none') return null;
+  return LegacyString;
 }
 
 /* ── GetAllAlternatives ─────────────────────────────────────────────────────
@@ -9675,7 +9688,7 @@ var AnsweredTimingMap = {};
       var QuestionNumber = SuccessOrderNumberMap[QuestionActiveKey] || null;
       var SummaryItem = {
         displayText:       (Question.display || '').replace(/\\\\/g, '\\'),
-        shortcut:          currentOs === 'pc' ? Question.pc_sc : Question.mac_sc,
+        shortcut:          GetActiveShortcutString(Question) || '',
         shortcutToken:     GetActiveShortcutString(Question) || Question.shortcut || '',
         endType:           MatchingEntry ? MatchingEntry.endType : 'success',
         timeToAnswerMs:    MatchingEntry ? MatchingEntry.timeToAnswerMs : null,
@@ -9775,28 +9788,82 @@ function HighlightReportListItems(ShortcutToken) {
   });
 }
 
-function BuildShortcutKeyChips(DisplayString, IsWeakness) {
-  DisplayString = (DisplayString || '').replace(/\\\\/g, '\\');
+function BuildShortcutKeyChips(TokenString, IsWeakness) {
+  TokenString = (TokenString || '').replace(/\\\\/g, '\\');
+
+  // Strip pipe alternates — chips show the primary (first) alternative only
+  var PrimaryString = TokenString.split('|')[0].trim();
+
+  // Symbol display maps per platform
+  var MacChipSymbols = {
+    'CMD':'⌘','SHIFT':'⇧','OPTION':'⌥','CONTROL':'⌃','FN':'fn',
+    'RETURN':'↩','TAB':'⇥','SPACE':'Space','ESCAPE':'Esc',
+    'BACKSPACE':'⌫','DELETE':'⌦','CAPSLOCK':'⇪',
+    'ARROWUP':'↑','ARROWDOWN':'↓','ARROWLEFT':'←','ARROWRIGHT':'→',
+    'HOME':'↖','END':'↘','PAGEUP':'⇞','PAGEDOWN':'⇟',
+    'EQUAL':'=','MINUS':'-','BRACKETLEFT':'[','BRACKETRIGHT':']',
+    'BACKSLASH':'\\','SEMICOLON':';','QUOTE':"'",'COMMA':',',
+    'PERIOD':'.','SLASH':'/','GRAVE':'`',
+  };
+  var PcChipSymbols = {
+    'CMD':'Ctrl','SHIFT':'⇧','OPTION':'Alt','CONTROL':'Ctrl','WIN':'Win','FN':'FN',
+    'RETURN':'↵','TAB':'Tab','SPACE':'Space','ESCAPE':'Esc',
+    'BACKSPACE':'⌫','DELETE':'⌦','CAPSLOCK':'Caps',
+    'ARROWUP':'↑','ARROWDOWN':'↓','ARROWLEFT':'←','ARROWRIGHT':'→',
+    'HOME':'Home','END':'End','PAGEUP':'PgUp','PAGEDOWN':'PgDn',
+    'EQUAL':'=','MINUS':'-','BRACKETLEFT':'[','BRACKETRIGHT':']',
+    'BACKSLASH':'\\','SEMICOLON':';','QUOTE':"'",'COMMA':',',
+    'PERIOD':'.','SLASH':'/','GRAVE':'`',
+  };
+  var ChipSymbols = currentOs === 'pc' ? PcChipSymbols : MacChipSymbols;
+
+  // Canonical modifier rendering order
+  var ModifierOrder = ['CMD','CONTROL','WIN','OPTION','SHIFT','FN'];
+
+  // Parse tokens
+  var RawTokens = PrimaryString.split('+').map(NormaliseToken).filter(Boolean);
+  var ModifierTokens = [];
+  var KeyToken = null;
+  RawTokens.forEach(function(Token) {
+    if (ModifierOrder.indexOf(Token) !== -1) {
+      ModifierTokens.push(Token);
+    } else {
+      KeyToken = Token;
+    }
+  });
+
+  // Sort modifiers into canonical order
+  ModifierTokens.sort(function(A, B) {
+    return ModifierOrder.indexOf(A) - ModifierOrder.indexOf(B);
+  });
+
+  // Build display labels
+  var DisplayTokens = [];
+  ModifierTokens.forEach(function(Mod) {
+    var Symbol = ChipSymbols[Mod];
+    if (Symbol !== null && Symbol !== undefined) DisplayTokens.push(Symbol);
+  });
+  if (KeyToken) {
+    var KeySymbol = ChipSymbols[KeyToken];
+    if (KeySymbol !== null && KeySymbol !== undefined) {
+      DisplayTokens.push(KeySymbol);
+    } else if (KeyToken.startsWith('NUMPAD')) {
+      DisplayTokens.push(KeyToken.replace('NUMPAD','') );
+    } else if (KeyToken.length === 1) {
+      DisplayTokens.push(KeyToken);
+    } else {
+      // F1-F12 and anything else: render as-is
+      DisplayTokens.push(KeyToken);
+    }
+  }
+
+  // Build DOM
   var Wrapper = document.createElement('span');
   Wrapper.dataset.chipsWrapper = '1';
   Wrapper.style.cssText = 'flex-shrink:0;margin-left:6px;display:inline-flex;align-items:center;flex-wrap:nowrap;';
-  // Split on spaces, then merge modifier symbols (⌘⇧⌥⌃) with a following word label
-  // e.g. '⇧ Shift' → ['⇧ Shift'] (one chip), '⌘ Z' → ['⌘', 'Z'] (two chips)
-  var WordLabels = new Set(['shift','option','opt','control','ctrl','command','alt','fn']);
-  var RawTokens = DisplayString.trim().split(/\s+/).filter(function(t) { return t.length > 0; });
-  var Tokens = [];
-  var ModifierSymbols = /^[⌘⇧⌥⌃]$/;
-  for (var ti = 0; ti < RawTokens.length; ti++) {
-    var tok = RawTokens[ti];
-    if (ModifierSymbols.test(tok) && ti + 1 < RawTokens.length && WordLabels.has(RawTokens[ti + 1].toLowerCase())) {
-      Tokens.push(tok + '\u00a0' + RawTokens[ti + 1]);
-      ti++; // skip the word label, it's been merged
-    } else {
-      Tokens.push(tok);
-    }
-  }
-  Tokens.forEach(function(Token, TokenIndex) {
-    if (TokenIndex > 0) {
+
+  DisplayTokens.forEach(function(Label, Index) {
+    if (Index > 0) {
       var Separator = document.createElement('span');
       Separator.textContent = '+';
       Separator.style.cssText = 'margin:0 1px;color:#9ca3af;font-size:10px;line-height:1;vertical-align:middle;';
@@ -9804,7 +9871,7 @@ function BuildShortcutKeyChips(DisplayString, IsWeakness) {
     }
     var Chip = document.createElement('span');
     Chip.className = 'sp-report-chip-key';
-    Chip.textContent = Token;
+    Chip.textContent = Label;
     var ChipStyles = [
       'display:inline-block',
       'font-family:inherit',

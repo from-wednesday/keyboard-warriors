@@ -2832,9 +2832,27 @@ if (transitioning && gameState !== 'finished') return;
    Renders the current answer as key chips inside the stats-row toast.
    Uses BuildShortcutKeyChips so alternates, symbols, and ordering are all
    handled by the single unified chip system. ── */
-function ShowHintToast(TokenString) {
+/* colour: 'green' | 'amber' | null (unstyled) */
+function ShowHintToast(TokenString, colour) {
   kbToastEl.innerHTML = '';
-  kbToastEl.appendChild(BuildShortcutKeyChips(TokenString, false));
+  var ChipsWrapper = BuildShortcutKeyChips(TokenString, false);
+  if (colour) {
+    var IsGreen    = colour === 'green';
+    var ChipBg     = IsGreen ? '#10b981' : '#f59e0b';
+    var ChipBorder = IsGreen ? '#059669' : '#d97706';
+    var ChipShadow = IsGreen ? '0 0 6px rgba(16,185,129,0.45)' : '0 0 6px rgba(245,158,11,0.45)';
+    var SepColour  = IsGreen ? '#059669' : '#d97706';
+    ChipsWrapper.querySelectorAll('.sp-report-chip-key').forEach(function(Chip) {
+      Chip.style.background  = ChipBg;
+      Chip.style.color       = 'white';
+      Chip.style.borderColor = ChipBorder;
+      Chip.style.boxShadow   = ChipShadow;
+    });
+    ChipsWrapper.querySelectorAll('span:not(.sp-report-chip-key)').forEach(function(Sep) {
+      Sep.style.color = SepColour;
+    });
+  }
+  kbToastEl.appendChild(ChipsWrapper);
 }
 
 function toggleHelp() {
@@ -2847,7 +2865,7 @@ function toggleHelp() {
 }
 
     // Show hint in the stats-row toast pill — below the game panel, always readable
-    ShowHintToast(currentAnswer);
+    ShowHintToast(currentAnswer, 'green');
     kbToastEl.classList.add('show');
     clearTimeout(_kwToastTimer);
     // Suppress the "Ready?" prompt while the hint is on screen
@@ -2884,7 +2902,7 @@ function toggleHelp() {
   }
 }
 function showAutoHintToast() {
-    ShowHintToast(currentAnswer);
+    ShowHintToast(currentAnswer, 'amber');
     kbToastEl.classList.add('show');
     clearTimeout(_kwToastTimer);
     clearTimeout(_kbToastAutoHideTimer);
@@ -2892,7 +2910,7 @@ function showAutoHintToast() {
 }
 
 function showSuccessHintToast() {
-    ShowHintToast(currentAnswer);
+    ShowHintToast(currentAnswer, 'green');
     kbToastEl.classList.add('show');
     clearTimeout(_kbToastAutoHideTimer);
     _kbToastAutoHideTimer = setTimeout(function() { kbToastEl.classList.remove('show'); }, 1200);
@@ -9801,9 +9819,24 @@ function BuildShortcutKeyChips(TokenString, IsWeakness) {
   });
 
   // Build display labels
+  // Long-form rule: if there are ≤ 2 total tokens (e.g. just SHIFT, or SHIFT+Z),
+  // non-CMD modifiers get their word label appended. CMD is always symbol-only.
+  var TotalTokenCount = ModifierTokens.length + (KeyToken ? 1 : 0);
+  var UseLongForm = TotalTokenCount <= 2;
+
+  // Long-form labels for non-CMD modifiers (symbol + word)
+  var MacLongForm = { 'SHIFT': '⇧ Shift', 'OPTION': '⌥ Option', 'CONTROL': '⌃ Control', 'FN': 'fn' };
+  var PcLongForm  = { 'SHIFT': '⇧ Shift', 'OPTION': 'Alt',      'CONTROL': 'Ctrl',       'FN': 'Fn'  };
+  var LongFormMap = currentOs === 'pc' ? PcLongForm : MacLongForm;
+
   var DisplayTokens = [];
   ModifierTokens.forEach(function(Mod) {
-    var Symbol = ChipSymbols[Mod];
+    var Symbol;
+    if (UseLongForm && Mod !== 'CMD' && LongFormMap[Mod]) {
+      Symbol = LongFormMap[Mod];
+    } else {
+      Symbol = ChipSymbols[Mod];
+    }
     if (Symbol !== null && Symbol !== undefined) DisplayTokens.push(Symbol);
   });
   if (KeyToken) {

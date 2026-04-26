@@ -1,5 +1,5 @@
 <!-- ═══════════════════════════════════════════════════
-    BUILD launched April 2026 
+    Keyboard Warrios main file 
      ═══════════════════════════════════════════════════ -->
 <!DOCTYPE html>
 <html>
@@ -9,7 +9,7 @@
 <title>beta</title>
 <script>
   const DefaultTitle = 'Keyboard Warriors';
-  const VersionLabel   = '0025';
+  const VersionLabel   = '0026';
   const TitlePrefix  = document.title !== DefaultTitle ? document.title.trim() + '_' : '';
   const DBG_DEVICE   = TitlePrefix + VersionLabel;
 </script>
@@ -1517,12 +1517,12 @@ function applyOsMode(os) {
   if (gameState === 'playing') {
     const newPool = shuffleArray(buildPool());
     const currentStillValid = newPool.some(s =>
-      s.shortcut === currentAnswer && s.display === titleEl.textContent
+      GetActiveShortcutString(s) === currentAnswer && s.display === titleEl.textContent
     );
     if (!currentStillValid) {
       questionPool = newPool;
       questionIndex = 0;
-      currentAnswer = questionPool[0].shortcut;
+      currentAnswer = GetActiveShortcutString(questionPool[0]) || "";
       titleEl.className = '';
       titleEl.textContent = (questionPool[0].display || '').replace(/\\\\/g, '\\');
     } else {
@@ -1750,126 +1750,411 @@ Promise.all([DomReady, StylesheetReady, SkeletonAnimationComplete]).then(functio
   if (activeSettings !== null) _spAlignPanel();
 });
 /* ══════════════════════════════════════
-   SHORTCUT → KEY CODES
-   CHANGE 1: extended for new shortcuts
+   SHORTCUT PARSING SYSTEM
+   NormaliseToken       — resolves synonyms to canonical form
+   ParseShortcutString  — splits token string into structured object
+   GetActiveShortcutString — picks mac_sc or pc_sc for current OS
+   ShortcutToKeyCodes   — returns browser key codes for lighting
+   ShortcutMatchesEvent — checks a keyboard event against a token string
+   IsKeyPartOfCurrentShortcut — used by the lighting system
 ══════════════════════════════════════ */
-function shortcutToCodes(s) {
-  const u = s.toUpperCase();
-  const CMD  = currentOs === 'pc' ? ['ControlLeft','ControlRight'] : ['MetaLeft','MetaRight'];
-  const OPT  = ['AltLeft','AltRight'];
-  const SH   = ['ShiftLeft','ShiftRight'];
 
-  if (u === 'SPACE')     return ['Space'];
-  if (u === 'TAB')       return ['Tab'];
-  if (u === 'HOME')      return ['Home'];
-  if (u === 'END')       return ['End'];
-  if (u === 'DEL')       return ['Backspace', 'Delete'];
-  if (u === 'GRAVE')     return ['Backquote'];
-  if (u === 'BACKSLASH') return ['Backslash'];
-  if (u === 'PAGEUP')    return ['PageUp'];
-  if (u === 'PAGEDOWN')  return ['PageDown'];
-  if (u === 'CMD')       return CMD;
-  if (u === 'CTRL')      return ['ControlLeft', 'ControlRight'];
-  if (u === 'SHIFT')     return SH;
-  if (u === 'OPTION')    return OPT;
+/* ── Token → browser key code map ──────────────────────────────────────────
+   Maps every canonical token to its browser KeyboardEvent.code string(s).
+   Modifiers return arrays (L+R variants). Keys return a single string.
+   Returns null for tokens that have no direct code mapping (should not occur
+   with valid input). ── */
+const TOKEN_TO_BROWSER_CODE = {
+  // Modifiers — arrays because L and R variants are interchangeable
+  'CMD':     () => currentOs === 'pc' ? ['ControlLeft','ControlRight'] : ['MetaLeft','MetaRight'],
+  'SHIFT':   () => ['ShiftLeft','ShiftRight'],
+  'OPTION':  () => ['AltLeft','AltRight'],
+  'CONTROL': () => ['ControlLeft','ControlRight'],
+  'WIN':     () => ['MetaLeft','MetaRight'],
+  // Named keys
+  'RETURN':    'Enter',
+  'TAB':       'Tab',
+  'SPACE':     'Space',
+  'BACKSPACE': ['Backspace','Delete'],
+  'DELETE':    'Delete',
+  'ESCAPE':    'Escape',
+  'CAPSLOCK':  'CapsLock',
+  'ARROWUP':    'ArrowUp',
+  'ARROWDOWN':  'ArrowDown',
+  'ARROWLEFT':  'ArrowLeft',
+  'ARROWRIGHT': 'ArrowRight',
+  'HOME':     'Home',
+  'END':      'End',
+  'PAGEUP':   'PageUp',
+  'PAGEDOWN': 'PageDown',
+  'INSERT':      'Insert',
+  'PRINTSCREEN': 'PrintScreen',
+  'SCROLLLOCK':  'ScrollLock',
+  'PAUSE':       'Pause',
+  'FN':          'Fn',
+  // Punctuation
+  'EQUAL':        'Equal',
+  'MINUS':        'Minus',
+  'BRACKETLEFT':  'BracketLeft',
+  'BRACKETRIGHT': 'BracketRight',
+  'BACKSLASH':    'Backslash',
+  'SEMICOLON':    'Semicolon',
+  'QUOTE':        'Quote',
+  'COMMA':        'Comma',
+  'PERIOD':       'Period',
+  'SLASH':        'Slash',
+  'GRAVE':        'Backquote',
+  // Numpad
+  'NUMPAD0': 'Numpad0', 'NUMPAD1': 'Numpad1', 'NUMPAD2': 'Numpad2',
+  'NUMPAD3': 'Numpad3', 'NUMPAD4': 'Numpad4', 'NUMPAD5': 'Numpad5',
+  'NUMPAD6': 'Numpad6', 'NUMPAD7': 'Numpad7', 'NUMPAD8': 'Numpad8',
+  'NUMPAD9': 'Numpad9',
+  'NUMPADADD':      'NumpadAdd',
+  'NUMPADSUBTRACT': 'NumpadSubtract',
+  'NUMPADMULTIPLY': 'NumpadMultiply',
+  'NUMPADDIVIDE':   'NumpadDivide',
+  'NUMPADDECIMAL':  'NumpadDecimal',
+  'NUMPADENTER':    'NumpadEnter',
+  // Function keys
+  'F1':'F1','F2':'F2','F3':'F3','F4':'F4',
+  'F5':'F5','F6':'F6','F7':'F7','F8':'F8',
+  'F9':'F9','F10':'F10','F11':'F11','F12':'F12',
+};
 
-  // Arrow keys bare
-  if (u === 'ARROWLEFT')  return ['ArrowLeft'];
-  if (u === 'ARROWRIGHT') return ['ArrowRight'];
-  if (u === 'ARROWUP')    return ['ArrowUp'];
-  if (u === 'ARROWDOWN')  return ['ArrowDown'];
+/* ── Synonym map — every accepted alias → canonical token ───────────────── */
+const TOKEN_SYNONYM_MAP = {
+  // CMD synonyms
+  'COMMAND': 'CMD',
+  'CTRL':    'CMD',
+  // OPTION synonyms
+  'OPT': 'OPTION',
+  'ALT': 'OPTION',
+  // RETURN synonyms
+  'ENTER': 'RETURN',
+  // BACKSPACE synonyms
+  'DEL':        'BACKSPACE',
+  'BACKDELETE': 'BACKSPACE',
+  // ESCAPE synonyms
+  'ESC': 'ESCAPE',
+  // EQUAL synonyms
+  'PLUS':   'EQUAL',
+  'EQUALS': 'EQUAL',
+  // WIN synonyms
+  'WINDOWS': 'WIN',
+  // FN synonyms
+  'FUNCTION': 'FN',
+  // SPACE synonyms
+  'SPACEBAR': 'SPACE',
+  // Arrow synonyms
+  'UP':    'ARROWUP',
+  'DOWN':  'ARROWDOWN',
+  'LEFT':  'ARROWLEFT',
+  'RIGHT': 'ARROWRIGHT',
+  // MINUS synonyms
+  'UNDERSCORE': 'MINUS',
+  // Bracket synonyms
+  'OPENBRACKET':  'BRACKETLEFT',
+  'CLOSEBRACKET': 'BRACKETRIGHT',
+  // BACKSLASH synonyms
+  'PIPE': 'BACKSLASH',
+  // SEMICOLON synonyms
+  'COLON': 'SEMICOLON',
+  // COMMA synonyms
+  'LESSTHAN': 'COMMA',
+  // PERIOD synonyms
+  'MORETHAN': 'PERIOD',
+  // SLASH synonyms
+  'QUESTION': 'SLASH',
+  // GRAVE synonyms
+  'TILDE':   'GRAVE',
+  'BACKTICK':'GRAVE',
+  // Bare punctuation characters — normalise to named tokens
+  '=':  'EQUAL',
+  '-':  'MINUS',
+  '[':  'BRACKETLEFT',
+  ']':  'BRACKETRIGHT',
+  '\\': 'BACKSLASH',
+  ';':  'SEMICOLON',
+  "'":  'QUOTE',
+  ',':  'COMMA',
+  '.':  'PERIOD',
+  '/':  'SLASH',
+  '`':  'GRAVE',
+  // Old-style bare symbols that may still appear in legacy shortcut fields
+  '<':  'COMMA',
+  '>':  'PERIOD',
+  '+':  'EQUAL',
+  '~':  'GRAVE',
+};
 
-  // SHIFT + arrow
-  if (u === 'SHIFT+ARROWLEFT')  return [...SH, 'ArrowLeft'];
-  if (u === 'SHIFT+ARROWRIGHT') return [...SH, 'ArrowRight'];
-  if (u === 'SHIFT+ARROWUP')    return [...SH, 'ArrowUp'];
-  if (u === 'SHIFT+ARROWDOWN')  return [...SH, 'ArrowDown'];
-
-  // SHIFT + letter (e.g. SHIFT+A)
-  if (u.startsWith('SHIFT+') && !u.includes('CMD') && !u.includes('OPTION')) {
-    const key = charToCode(u.slice(6));
-    return [...SH, key].filter(Boolean);
-  }
-
-  // OPTION + arrow
-  if (u === 'OPTION+ARROWLEFT')  return [...OPT, 'ArrowLeft'];
-  if (u === 'OPTION+ARROWRIGHT') return [...OPT, 'ArrowRight'];
-  if (u === 'OPTION+ARROWUP')    return [...OPT, 'ArrowUp'];
-  if (u === 'OPTION+ARROWDOWN')  return [...OPT, 'ArrowDown'];
-
-  // OPTION + bracket (AE layer in/out)
-  if (u === 'OPTION+[') return [...OPT, 'BracketLeft'];
-  if (u === 'OPTION+]') return [...OPT, 'BracketRight'];
-  if (u.startsWith('OPTION+')) {
-    const key = charToCode(u.slice(7));
-    return [...OPT, key].filter(Boolean);
-  }
-
-  // SHIFT + OPTION + key (prefix variant)
-  if (u.startsWith('SHIFT+OPTION+')) {
-    const key = charToCode(u.slice(13));
-    return [...SH, ...OPT, key].filter(Boolean);
-  }
-
-  // OPTION + SHIFT + key (AE keyframe shortcuts)
-  if (u.startsWith('OPTION+SHIFT+')) {
-    const key = charToCode(u.slice(13));
-    return [...OPT, ...SH, key].filter(Boolean);
-  }
-
-  // CMD + OPTION + SHIFT + key
-  if (u.startsWith('CMD+SHIFT+OPTION+') || u.startsWith('CMD+OPTION+SHIFT+')) {
-    const rest = u.startsWith('CMD+SHIFT+OPTION+') ? u.slice(17) : u.slice(17);
-    const key = charToCode(rest);
-    return [...CMD, ...SH, ...OPT, key].filter(Boolean);
-  }
-
-  // CMD + OPTION + key
-  if (u.startsWith('CMD+OPTION+')) {
-    const key = charToCode(u.slice(11));
-    return [...CMD, ...OPT, key].filter(Boolean);
-  }
-
-  // CMD + SHIFT + key
-  if (u.startsWith('CMD+SHIFT+')) {
-    const key = charToCode(u.slice(10));
-    return [...CMD, ...SH, key].filter(Boolean);
-  }
-
-  // CMD + key
-  if (u.startsWith('CMD+')) {
-    const key = charToCode(u.slice(4));
-    return [...CMD, key].filter(Boolean);
-  }
-
-  // Bare single character (letter, digit, punctuation)
-  const c = charToCode(u);
-  return c ? [c] : [];
+/* ── NormaliseToken ─────────────────────────────────────────────────────────
+   Converts any accepted token or synonym to its canonical uppercase form.
+   Called by ParseShortcutString before anything else. ── */
+function NormaliseToken(RawToken) {
+  var UpperToken = RawToken.trim().toUpperCase();
+  return TOKEN_SYNONYM_MAP[UpperToken] || UpperToken;
 }
 
-function charToCode(ch) {
-  const map = {
-'RETURN':'Enter','ENTER':'Enter',
-';':'Semicolon','=':'Equal','-':'Minus',"'":"Quote",
-    '[':'BracketLeft',']':'BracketRight',
-    '/':'Slash','.':'Period',',':'Comma',
-    '<':'Comma','>':'Period',
-    '0':'Digit0','1':'Digit1','2':'Digit2','3':'Digit3',
-    '4':'Digit4','5':'Digit5','6':'Digit6','7':'Digit7',
-    '8':'Digit8','9':'Digit9',
-    'ARROWLEFT':'ArrowLeft','ARROWRIGHT':'ArrowRight',
-    'ARROWUP':'ArrowUp','ARROWDOWN':'ArrowDown',
-    'HOME':'Home','END':'End',
-    'PAGEUP':'PageUp','PAGEDOWN':'PageDown',
-    'GRAVE':'Backquote','BACKSLASH':'Backslash',
-    'TAB':'Tab','SPACE':'Space','DEL':'Backspace','DELETE':'Delete',
-    'F1':'F1','F2':'F2','F3':'F3','F4':'F4',
-    'F5':'F5','F6':'F6','F7':'F7','F8':'F8',
-    'F9':'F9','F10':'F10','F11':'F11','F12':'F12',
+/* ── ParseShortcutString ────────────────────────────────────────────────────
+   Splits a token string (e.g. "CMD+SHIFT+Z") on + and returns a structured
+   object describing which modifiers are required and what the key token is.
+   Handles the pipe-separated alternates format: only the first alternative
+   is parsed here; the caller iterates alternates when needed. ── */
+function ParseShortcutString(ShortcutString) {
+  if (!ShortcutString) return null;
+  // Use only the first alternative for parsing (pipe = alternates)
+  var PrimaryAlternative = ShortcutString.split('|')[0];
+  var RawTokens = PrimaryAlternative.split('+').map(NormaliseToken).filter(Boolean);
+
+  var RequiresCmd     = false;
+  var RequiresShift   = false;
+  var RequiresOption  = false;
+  var RequiresControl = false;
+  var RequiresWin     = false;
+  var KeyToken        = null;
+
+  RawTokens.forEach(function(Token) {
+    if      (Token === 'CMD')     RequiresCmd     = true;
+    else if (Token === 'SHIFT')   RequiresShift   = true;
+    else if (Token === 'OPTION')  RequiresOption  = true;
+    else if (Token === 'CONTROL') RequiresControl = true;
+    else if (Token === 'WIN')     RequiresWin     = true;
+    else                          KeyToken        = Token;
+  });
+
+  return {
+    requiresCmd:     RequiresCmd,
+    requiresShift:   RequiresShift,
+    requiresOption:  RequiresOption,
+    requiresControl: RequiresControl,
+    requiresWin:     RequiresWin,
+    keyToken:        KeyToken,
+    rawTokens:       RawTokens,
   };
-  if (map[ch]) return map[ch];
-  if (ch.length === 1 && ch >= 'A' && ch <= 'Z') return 'Key' + ch;
-  return null;
+}
+
+/* ── GetActiveShortcutString ────────────────────────────────────────────────
+   Returns the correct token string for the current OS from a shortcut entry.
+   Falls back to the legacy shortcut field if neither platform field exists.
+   Returns null if this shortcut does not exist on the current platform. ── */
+function GetActiveShortcutString(ShortcutEntry) {
+  var ActiveString = currentOs === 'pc'
+    ? ShortcutEntry.pc_sc
+    : ShortcutEntry.mac_sc;
+  if (ActiveString === null || ActiveString === undefined) {
+    // Fall back to legacy field during migration
+    return ShortcutEntry.shortcut || null;
+  }
+  if (ActiveString === 'none' || ActiveString === '') return null;
+  return ActiveString;
+}
+
+/* ── GetAllAlternatives ─────────────────────────────────────────────────────
+   Returns all pipe-separated alternatives from a token string as an array. ── */
+function GetAllAlternatives(ShortcutString) {
+  if (!ShortcutString) return [];
+  return ShortcutString.split('|').map(function(s) { return s.trim(); }).filter(Boolean);
+}
+
+/* ── TokenToBrowserCode ─────────────────────────────────────────────────────
+   Resolves a single canonical token to its browser key code string(s).
+   Letters return 'KeyA' etc. Digits return 'Digit0' etc.
+   Modifier tokens return arrays. Everything else uses TOKEN_TO_BROWSER_CODE. ── */
+function TokenToBrowserCode(Token) {
+  // Modifier tokens with dynamic resolution
+  if (TOKEN_TO_BROWSER_CODE[Token] && typeof TOKEN_TO_BROWSER_CODE[Token] === 'function') {
+    return TOKEN_TO_BROWSER_CODE[Token]();
+  }
+  if (TOKEN_TO_BROWSER_CODE[Token]) {
+    var Mapped = TOKEN_TO_BROWSER_CODE[Token];
+    return Array.isArray(Mapped) ? Mapped : [Mapped];
+  }
+  // Single letter A–Z
+  if (Token.length === 1 && Token >= 'A' && Token <= 'Z') return ['Key' + Token];
+  // Single digit 0–9
+  if (Token.length === 1 && Token >= '0' && Token <= '9') return ['Digit' + Token];
+  return [];
+}
+
+/* ── ShortcutToKeyCodes ─────────────────────────────────────────────────────
+   Takes a token string and returns the flat array of browser key codes needed
+   to light those keys on the graphical keyboard. Handles alternates by using
+   the first alternative only (the canonical one shown in chips). ── */
+function ShortcutToKeyCodes(ShortcutString) {
+  var Parsed = ParseShortcutString(ShortcutString);
+  if (!Parsed) return [];
+  var AllCodes = [];
+  Parsed.rawTokens.forEach(function(Token) {
+    var Codes = TokenToBrowserCode(Token);
+    Codes.forEach(function(Code) {
+      if (Code && AllCodes.indexOf(Code) === -1) AllCodes.push(Code);
+    });
+  });
+  return AllCodes;
+}
+
+// Legacy alias — keeps existing call sites working during transition
+function shortcutToCodes(s) { return ShortcutToKeyCodes(s); }
+
+/* ── ShortcutMatchesEvent ───────────────────────────────────────────────────
+   Takes a token string and a browser KeyboardEvent.
+   Returns true if the event satisfies the shortcut.
+   Checks all pipe-separated alternatives. ── */
+function ShortcutMatchesEvent(ShortcutString, KeyboardEvent) {
+  if (!ShortcutString) return false;
+  var Alternatives = GetAllAlternatives(ShortcutString);
+  return Alternatives.some(function(Alternative) {
+    return _MatchesSingleAlternative(Alternative, KeyboardEvent);
+  });
+}
+
+// Legacy alias
+function matchesShortcut(event, str) { return ShortcutMatchesEvent(str, event); }
+
+/* ── _MatchesSingleAlternative ──────────────────────────────────────────────
+   Internal — checks one alternative (no pipes) against a keyboard event. ── */
+function _MatchesSingleAlternative(ShortcutString, Event) {
+  var Parsed = ParseShortcutString(ShortcutString);
+  if (!Parsed) return false;
+
+  // Modifier state from the event
+  var EventHasCmd     = currentOs === 'pc' ? Event.ctrlKey  : Event.metaKey;
+  var EventHasNoCmd   = currentOs === 'pc' ? (!Event.ctrlKey && !Event.metaKey) : (!Event.metaKey && !Event.ctrlKey);
+  var EventHasOption  = Event.altKey;
+  var EventHasShift   = Event.shiftKey;
+  var EventHasControl = Event.ctrlKey; // literal Control on Mac (alongside Meta)
+
+  // Modifier requirements must match exactly
+  if (Parsed.requiresCmd     !== EventHasCmd)    return false;
+  if (Parsed.requiresShift   !== EventHasShift)  return false;
+  if (Parsed.requiresOption  !== EventHasOption) return false;
+  // CONTROL on Mac: require ctrlKey but only when metaKey is also present
+  // (to avoid clashing with CMD-only checks where ctrl is the CMD key on PC)
+  if (Parsed.requiresControl) {
+    if (currentOs === 'pc') return false; // CONTROL token is Mac-only
+    if (!Event.ctrlKey) return false;
+  }
+  if (Parsed.requiresWin) {
+    if (currentOs !== 'pc') return false;
+    if (!Event.metaKey) return false;
+  }
+
+  // Bare modifier shortcuts — no key token, just check the modifier key itself was pressed
+  if (!Parsed.keyToken) {
+    var ModifierKeyName = Event.key;
+    if (Parsed.requiresCmd && !Parsed.requiresShift && !Parsed.requiresOption) {
+      return currentOs === 'pc'
+        ? (ModifierKeyName === 'Control' && !EventHasShift && !EventHasOption)
+        : (ModifierKeyName === 'Meta'    && !EventHasShift && !EventHasOption);
+    }
+    if (Parsed.requiresShift && !Parsed.requiresCmd && !Parsed.requiresOption) {
+      return ModifierKeyName === 'Shift';
+    }
+    if (Parsed.requiresOption && !Parsed.requiresCmd && !Parsed.requiresShift) {
+      return ModifierKeyName === 'Alt';
+    }
+    return false;
+  }
+
+  // Key matching — physical key code takes priority over event.key
+  return _KeyTokenMatchesEvent(Parsed.keyToken, Event);
+}
+
+/* ── _KeyTokenMatchesEvent ──────────────────────────────────────────────────
+   Checks whether the physical key pressed matches a key token.
+   Uses event.code for layout-independence, with event.key as a fallback
+   for shifted-punctuation edge cases on non-English keyboards. ── */
+function _KeyTokenMatchesEvent(KeyToken, Event) {
+  var EventCode = Event.code || '';
+  var EventKey  = (Event.key || '').toUpperCase();
+
+  // Derive a layout-independent physical char from event.code
+  var PhysicalChar = null;
+  if (EventCode.startsWith('Key'))   PhysicalChar = EventCode.slice(3);
+  if (EventCode.startsWith('Digit')) PhysicalChar = EventCode.slice(5);
+  var PunctuationCodeMap = {
+    'BracketLeft':'[', 'BracketRight':']', 'Semicolon':';', 'Quote':"'",
+    'Equal':'=', 'Minus':'-', 'Slash':'/', 'Backslash':'\\',
+    'Backquote':'`', 'Period':'.', 'Comma':',',
+  };
+  if (!PhysicalChar && PunctuationCodeMap[EventCode]) PhysicalChar = PunctuationCodeMap[EventCode];
+
+  // Get expected browser codes for this token
+  var ExpectedCodes = TokenToBrowserCode(KeyToken);
+
+  // Primary: event.code is in the expected set
+  if (ExpectedCodes.indexOf(EventCode) !== -1) return true;
+
+  // Accept NumpadEnter for RETURN
+  if (KeyToken === 'RETURN' && EventCode === 'NumpadEnter') return true;
+
+  // Accept Quote as Backquote on some PC keyboard layouts
+  if (KeyToken === 'GRAVE' && EventCode === 'Quote') return true;
+
+  // EQUAL/PLUS: match either = or + regardless of shift, match = key code
+  if (KeyToken === 'EQUAL') {
+    if (EventCode === 'Equal') return true;
+    if (EventCode === 'NumpadAdd') return true;
+    if (EventKey === '=' || EventKey === '+') return true;
+  }
+
+  // Fallback: physical char derived from code matches a single-char token
+  if (PhysicalChar && PhysicalChar.toUpperCase() === KeyToken) return true;
+
+  // Fallback: event.key matches for keys that produce their token directly
+  if (EventKey === KeyToken) return true;
+
+  // Special: arrow / nav keys via event.key
+  var EventKeyToToken = {
+    'ARROWLEFT':'ARROWLEFT','ARROWRIGHT':'ARROWRIGHT',
+    'ARROWUP':'ARROWUP','ARROWDOWN':'ARROWDOWN',
+    'HOME':'HOME','END':'END','PAGEUP':'PAGEUP','PAGEDOWN':'PAGEDOWN',
+    'TAB':'TAB',' ':'SPACE','ENTER':'RETURN',
+    'BACKSPACE':'BACKSPACE','DELETE':'DELETE','ESCAPE':'ESCAPE',
+  };
+  if (EventKeyToToken[EventKey] === KeyToken) return true;
+  if (Event.key === ' ' && KeyToken === 'SPACE') return true;
+  if (Event.key === 'Enter' && KeyToken === 'RETURN') return true;
+
+  return false;
+}
+
+/* ── IsKeyPartOfCurrentShortcut ─────────────────────────────────────────────
+   Used by the keyboard lighting system. Returns true if this key event
+   presses one of the required keys for the current question's shortcut
+   (including all pipe alternatives). ── */
+function IsKeyPartOfCurrentShortcut(KeyboardEvent, ShortcutString) {
+  if (!ShortcutString) return false;
+  var Alternatives = GetAllAlternatives(ShortcutString);
+  return Alternatives.some(function(Alternative) {
+    return _IsKeyPartOfAlternative(KeyboardEvent, Alternative);
+  });
+}
+
+// Legacy alias
+function isKeyPartOfShortcut(e, token) { return IsKeyPartOfCurrentShortcut(e, token); }
+
+function _IsKeyPartOfAlternative(Event, ShortcutString) {
+  var Parsed = ParseShortcutString(ShortcutString);
+  if (!Parsed) return false;
+  var EventCode = Event.code || '';
+
+  // Check if this event is pressing a required modifier
+  var IsCmdKey     = currentOs === 'pc'
+    ? (EventCode === 'ControlLeft' || EventCode === 'ControlRight')
+    : (EventCode === 'MetaLeft'    || EventCode === 'MetaRight');
+  var IsShiftKey   = EventCode === 'ShiftLeft'   || EventCode === 'ShiftRight';
+  var IsOptionKey  = EventCode === 'AltLeft'      || EventCode === 'AltRight';
+  var IsControlKey = EventCode === 'ControlLeft'  || EventCode === 'ControlRight';
+
+  if (IsCmdKey    && Parsed.requiresCmd)     return true;
+  if (IsShiftKey  && Parsed.requiresShift)   return true;
+  if (IsOptionKey && Parsed.requiresOption)  return true;
+  if (IsControlKey && Parsed.requiresControl && currentOs === 'mac') return true;
+
+  // Check if this event is pressing the required key
+  if (Parsed.keyToken) return _KeyTokenMatchesEvent(Parsed.keyToken, Event);
+  return false;
 }
 
 /* ══════════════════════════════════════
@@ -1985,87 +2270,13 @@ function fadeKeyOut(code) {
 function checkStickyShortcut() {
   // All required codes must be green-toggled on; no orange key may be active.
   if ([...stickyLit.values()].includes('orange')) return false;
-  // Primary path: check the canonical shortcut codes
-  const needed = shortcutToCodes(currentAnswer);
-  if (neededSatisfied(needed)) return true;
-  // Alternate path: if this shortcut has alternates (e.g. H → Space),
-  // check whether the green-held keys satisfy any alternate instead.
-  const alts = SHORTCUT_ALTERNATES[currentAnswer.toUpperCase()];
-  if (alts) {
-    for (const alt of alts) {
-      if (neededSatisfied(shortcutToCodes(alt))) return true;
-    }
-  }
-  return false;
-}
-
-function isKeyPartOfShortcut(e, token) {
-  // Returns true if this key event is one of the required keys for the token.
-  // Uses the same modifier-flag logic as matchesShortcut so they stay in sync.
-  const u = token.toUpperCase();
-  const code = e.code;
-  // Check alternates — if any alternate matches, treat as correct
-  const alts = SHORTCUT_ALTERNATES[u];
-  if (alts) {
-    for (const alt of alts) {
-      if (isKeyPartOfShortcut(e, alt)) return true;
-    }
-  }
-
-  // Determine which modifiers the token needs
-  const needsCmd   = u.includes('CMD');
-  const needsShift = u.includes('SHIFT');
-  const needsOpt   = u.includes('OPTION');
-
-  // Is this key press a modifier key that the shortcut requires?
-  // On Mac, CMD = Meta only. On PC, CMD = Ctrl only. Control on Mac is never CMD.
-  const isCmdKey   = currentOs === 'pc'
-    ? (code === 'ControlLeft'  || code === 'ControlRight')
-    : (code === 'MetaLeft'     || code === 'MetaRight');
-  const isShiftKey = code === 'ShiftLeft'   || code === 'ShiftRight';
-  const isOptKey   = code === 'AltLeft'     || code === 'AltRight';
-
-  if (isCmdKey   && (needsCmd   || u === 'CMD'))   return true;
-  if (isShiftKey && (u === 'SHIFT' || (u.includes('SHIFT') && needsShift))) return true;
-  if (isOptKey   && (u === 'OPTION' || (u.includes('OPTION') && needsOpt))) return true;
-
-  // Bare modifier questions — no character key involved
-  if (u === 'CMD' || u === 'SHIFT' || u === 'OPTION') return false;
-
-  // Is this the character key? Use shortcutToCodes to get the expected code
-  // but also cross-check via e.key for shifted-character edge cases
-  const needed = shortcutToCodes(token);
-  const charCodes = needed.filter(c =>
-    !['MetaLeft','MetaRight','ControlLeft','ControlRight',
-      'ShiftLeft','ShiftRight','AltLeft','AltRight'].includes(c)
-  );
-  if (charCodes.length === 0) return false;
-
-  // Primary check: e.code matches
-  if (charCodes.includes(code)) return true;
-
-  // Quote key can fire for Backquote on some PC keyboard layouts
-  if (charCodes.includes('Backquote') && code === 'Quote') return true;
-
-  // Fallback: e.key normalised matches (handles shifted punctuation etc.)
-  const ku = e.key.toUpperCase();
-  return charCodes.some(c => {
-    const codeToKey = {
-      'BracketLeft':'[','BracketRight':']','Semicolon':';','Equal':'=',
-      'Minus':'-','Slash':'/','Period':'.','Comma':',',
-      'ArrowLeft':'ARROWLEFT','ArrowRight':'ARROWRIGHT',
-      'ArrowUp':'ARROWUP','ArrowDown':'ARROWDOWN',
-      'Home':'HOME','End':'END','Enter':'RETURN','Space':' ','Tab':'TAB',
-      'Backspace':'DEL','Delete':'DEL','Backquote':'GRAVE','Backslash':'BACKSLASH',
-    };
-    // Accept Quote as matching Backquote (international PC keyboards)
-    if (c === 'Backquote' && (ku === "'" || ku === '`')) return true;
-    if (codeToKey[c]) return ku === codeToKey[c].toUpperCase();
-    if (c.startsWith('Key'))   return ku === c.slice(3);
-    if (c.startsWith('Digit')) return ku === c.slice(5);
-    return false;
+  // Check all pipe-separated alternatives — any one satisfied = correct
+  var Alternatives = GetAllAlternatives(currentAnswer);
+  return Alternatives.some(function(Alternative) {
+    return neededSatisfied(ShortcutToKeyCodes(Alternative));
   });
 }
+
 
 // Extended key labels for the ghost pill
 const EXT_KEY_LABELS = {
@@ -2935,7 +3146,7 @@ function unpause() {
   if (questionPool.length > 0 && (!titleEl.textContent || titleEl.textContent === '')) {
     titleEl.className = '';
     titleEl.textContent = (questionPool[questionIndex]?.display || '').replace(/\\\\/g, '\\');
-    currentAnswer = questionPool[questionIndex]?.shortcut || '';
+    currentAnswer = GetActiveShortcutString(questionPool[questionIndex]) || '';
   }
   titleEl.classList.remove('blurred');
   questionCountEl.classList.remove('blurred');
@@ -3484,205 +3695,7 @@ function resetToIdle() {
 ══════════════════════════════════════ */
 // Alternate accepted answers: pressing any of these counts as correct
 // for questions whose shortcut token matches the key.
-let SHORTCUT_ALTERNATES = {
-  'H':       ['SPACE'],     // Hand tool — Space bar temporarily activates it
-  'SHIFT++': ['SHIFT+-'],   // Ps blend mode cycle — both + and - work
-  'I':       ['CTRL+C'],    // Fi Eyedropper — legacy Ctrl+C shortcut also works
-};
-
-
-function matchesShortcut(event, str) {
-  const s    = str.toUpperCase();
-  // Check alternates first
-  const alts = SHORTCUT_ALTERNATES[s];
-  if (alts) {
-    for (const alt of alts) {
-      if (matchesShortcut(event, alt)) return true;
-    }
-  }
-  const cmd  = currentOs === 'pc' ? event.ctrlKey  : event.metaKey;
-  const nocmd= currentOs === 'pc' ? !event.ctrlKey && !event.metaKey : !event.metaKey && !event.ctrlKey;
-  const opt  = event.altKey;
-  const sh   = event.shiftKey;
-  const k    = event.key;
-  const ku   = k.toUpperCase();
-  // e.code gives the physical key regardless of modifier remapping.
-  // e.g. Option+C fires event.key='ç' but event.code='KeyC'.
-  // We derive a plain char from e.code for Option-combo matching.
-  // codeChar: physical key char regardless of modifier remapping.
-  // Covers letters (KeyC→C), digits (Digit2→2), and punctuation (BracketRight→]).
-  const codeChar = (() => {
-    const c = event.code;
-    if (!c) return null;
-    if (c.startsWith('Key'))   return c.slice(3);      // 'KeyC' → 'C'
-    if (c.startsWith('Digit')) return c.slice(5);      // 'Digit2' → '2'
-    // Punctuation keys whose e.key changes under modifiers on various layouts
-    const punctMap = {
-      'BracketLeft':'[', 'BracketRight':']', 'Semicolon':';', 'Quote':"'",
-      'Equal':'=', 'Minus':'-', 'Slash':'/', 'Backslash':'\\',
-      'Backquote':'`', 'Period':'.', 'Comma':',',
-    };
-    return punctMap[c] || null;
-  })();
-
-  // Helper: does the event key match the expected bare char/token?
-  function keyIs(exp) {
-    if (exp === 'RETURN' || exp === 'ENTER') return k === 'Enter' || event.code === 'Enter' || event.code === 'NumpadEnter';
-    if (exp === 'ARROWLEFT')  return k === 'ArrowLeft';
-    if (exp === 'ARROWRIGHT') return k === 'ArrowRight';
-    if (exp === 'ARROWUP')    return k === 'ArrowUp';
-    if (exp === 'ARROWDOWN')  return k === 'ArrowDown';
-    if (exp === 'HOME')       return k === 'Home'     || event.code === 'Home';
-    if (exp === 'END')        return k === 'End'      || event.code === 'End';
-    if (exp === 'PAGEUP')     return k === 'PageUp'   || event.code === 'PageUp';
-    if (exp === 'PAGEDOWN')   return k === 'PageDown' || event.code === 'PageDown';
-    if (exp === 'BACKSLASH')  return event.code === 'Backslash';
-    if (exp === 'GRAVE')      return event.code === 'Backquote';
-    if (exp === '[')  return k === '[' || (k === '{' && sh) || codeChar === '[';
-    if (exp === ']')  return k === ']' || (k === '}' && sh) || codeChar === ']';
-    if (exp === '=')  return k === '=' || k === '+' || codeChar === '=';
-    if (exp === '-')  return k === '-' || k === '_' || codeChar === '-';
-    if (exp === '/')  return k === '/' || k === '?' || codeChar === '/';
-    if (exp === '.')  return k === '.' || codeChar === '.';
-    if (exp === ',')  return k === ',' || codeChar === ',';
-    if (exp === ';')  return k === ';' || k === ':' || k === '\u2026' || codeChar === ';';
-    if (exp === "'")  return k === "'" || k === '"' || codeChar === "'";
-    if (exp === '<')  return k === '<' || (k === ',' && sh) || codeChar === ',';
-    if (exp === '>')  return k === '>' || (k === '.' && sh) || codeChar === '.';
-    if (exp === '2')  return k === '2' || k === '\u2122';
-    if (exp === '3')  return k === '3' || k === '\u00a3';
-    if (exp === '8')  return k === '8' || k === '\u2022';
-    if (exp === 'A' && s.startsWith('SHIFT+A') && !s.includes('CMD') && !s.includes('OPTION')) {
-      return ku === 'A';
-    }
-    if (codeChar && codeChar === exp) return true;
-    return ku === exp;
-  }
-
-  // ── Bare modifiers ─────────────────────────────────────────────────────────
-  if (s === 'SHIFT')  return k === 'Shift' && nocmd && !opt;
-  if (s === 'OPTION') return k === 'Alt'   && nocmd && !sh;
-  if (s === 'CMD')    return currentOs === 'pc'
-    ? (k === 'Control' && !sh && !opt)
-    : (k === 'Meta'    && !sh && !opt);
-
-  // ── Bare non-modifier keys ─────────────────────────────────────────────────
-  if (s === 'SPACE')  return k === ' '          && nocmd && !opt && !sh;
-  if (s === 'TAB')    return k === 'Tab'         && nocmd && !opt && !sh;
-  if (s === 'HOME')   return k === 'Home'        && nocmd && !opt && !sh;
-  if (s === 'DEL')    return k === 'Backspace'    && nocmd && !opt && !sh;
-  if (s === 'END')    return k === 'End'         && nocmd && !opt && !sh;
-  if (s === 'PAGEUP')   return k === 'PageUp'      && nocmd && !opt && !sh;
-  if (s === 'PAGEDOWN') return k === 'PageDown'    && nocmd && !opt && !sh;
-  if (s === 'ENTER')  return k === 'Enter'       && nocmd && !opt && !sh;
-  if (s === 'GRAVE')  return event.code === 'Backquote' && nocmd && !opt && !sh;
-  if (s === '[')      return (k === '[' || codeChar === '[') && nocmd && !opt && !sh;
-  if (s === ']')      return (k === ']' || codeChar === ']') && nocmd && !opt && !sh;
-  if (s === '.')      return k === '.'           && nocmd && !opt && !sh;
-  if (s === ',')      return k === ','           && nocmd && !opt && !sh;
-  if (s === '=')      return (k === '=' || k === '+') && nocmd && !opt && !sh;
-  if (s === '+')      return (k === '+' || k === '=') && nocmd && !opt && !sh;
-  if (s === '-')      return k === '-'            && nocmd && !opt && !sh;
-  if (s === ';')      return (k === ';' || k === ':') && nocmd && !opt && !sh;
-  if (s === '/')      return (k === '/' || k === '?') && nocmd && !opt && !sh;
-  if (s === '~')      return (k === '~' || k === '`') && nocmd && !opt && !sh;
-
-  // ── Arrow keys bare ────────────────────────────────────────────────────────
-  if (s === 'ARROWLEFT')  return k === 'ArrowLeft'  && nocmd && !opt && !sh;
-  if (s === 'ARROWRIGHT') return k === 'ArrowRight' && nocmd && !opt && !sh;
-  if (s === 'ARROWUP')    return k === 'ArrowUp'    && nocmd && !opt && !sh;
-  if (s === 'ARROWDOWN')  return k === 'ArrowDown'  && nocmd && !opt && !sh;
-
-  // ── SHIFT + arrow ──────────────────────────────────────────────────────────
-  if (s === 'SHIFT+ENTER')       return k === 'Enter'      && sh && nocmd && !opt;
-  if (s === 'SHIFT+ARROWLEFT')  return k === 'ArrowLeft'  && sh && nocmd && !opt;
-  if (s === 'SHIFT+ARROWRIGHT') return k === 'ArrowRight' && sh && nocmd && !opt;
-  if (s === 'SHIFT+ARROWUP')    return k === 'ArrowUp'    && sh && nocmd && !opt;
-  if (s === 'SHIFT+ARROWDOWN')  return k === 'ArrowDown'  && sh && nocmd && !opt;
-
-  if (s === 'SHIFT+GRAVE') return event.code === 'Backquote' && sh && !cmd && !opt;
-  if (s === "SHIFT+'")     return event.code === 'Quote'     && sh && !cmd && !opt;
-  if (s === 'SHIFT++' || s === 'SHIFT+=') return (k === '+' || k === '=' || codeChar === '=') && sh && !cmd && !opt;
-  if (s === 'SHIFT+-') return (k === '-' || codeChar === '-') && sh && !cmd && !opt;
-  if (s === 'SHIFT+~') return event.code === 'Backquote'     && sh && !cmd && !opt;
-
-  // ── OPTION + arrow ─────────────────────────────────────────────────────────
-  if (s === 'OPTION+ARROWLEFT')  return k === 'ArrowLeft'  && opt && nocmd && !sh;
-  if (s === 'OPTION+ARROWRIGHT') return k === 'ArrowRight' && opt && nocmd && !sh;
-  if (s === 'OPTION+ARROWUP')    return k === 'ArrowUp'    && opt && nocmd && !sh;
-  if (s === 'OPTION+ARROWDOWN')  return k === 'ArrowDown'  && opt && nocmd && !sh;
-
-  // ── SHIFT+OPTION + arrow ─────────────────────────────────────────
-  if (s === 'SHIFT+OPTION+ARROWLEFT')  return k === 'ArrowLeft'  && sh && opt && !cmd;
-  if (s === 'SHIFT+OPTION+ARROWRIGHT') return k === 'ArrowRight' && sh && opt && !cmd;
-  if (s === 'SHIFT+OPTION+ARROWUP')    return k === 'ArrowUp'    && sh && opt && !cmd;
-  if (s === 'SHIFT+OPTION+ARROWDOWN')  return k === 'ArrowDown'  && sh && opt && !cmd;
-
-  // ── CMD + special keys ───────────────────────────────────────────
-  if (s === 'CMD+DEL')              return (k === 'Backspace' || k === 'Delete') && cmd && !opt && !sh;
-  if (s === 'CMD+GRAVE')            return (k === "'" || k === '`' || e.code === 'Backquote') && cmd && !opt && !sh;
-  if (s === 'CMD+OPTION+GRAVE')     return (k === "'" || k === '`' || event.code === 'Backquote') && cmd && opt && !sh;
-  if (s === 'CMD+BACKSLASH')        return (k === '\\' || event.code === 'Backslash') && cmd && !opt && !sh;
-  if (s === 'CMD+SHIFT+BACKSLASH')  return (k === '\\' || event.code === 'Backslash') && cmd && sh && !opt;
-  if (s === 'CMD+OPTION+BACKSLASH') return (k === '\\' || e.code === 'Backslash') && cmd && opt && !sh;
-
-  // ── CTRL+C (Fi Eyedropper legacy) ─────────────────────────────────
-  if (s === 'CTRL+C') return event.ctrlKey && !event.metaKey && k.toUpperCase() === 'C' && !sh && !opt;
-
-  // ── CMD+CTRL (Ae Render Queue) ─────────────────────────────────
-  if (s === 'CMD+CTRL+M') {
-    return currentOs === 'pc'
-      ? (event.ctrlKey && event.altKey && k.toUpperCase() === 'M')
-      : (event.metaKey && event.ctrlKey && k.toUpperCase() === 'M');
-  }
-
-  // ── SHIFT + letter (e.g. SHIFT+A for Figma Auto Layout) ───────────────────
-  if (s.startsWith('SHIFT+') && !s.includes('CMD') && !s.includes('OPTION')) {
-    const exp = s.slice(6);
-    return sh && !cmd && !opt && keyIs(exp);
-  }
-
-  // ── OPTION + bracket ───────────────────────────────────────────────────────
-  if (s === 'OPTION+[') return (k === '[' || codeChar === '[') && opt && nocmd && !sh;
-  if (s === 'OPTION+]') return (k === ']' || codeChar === ']') && opt && nocmd && !sh;
-  if (s.startsWith('OPTION+') && !s.includes('SHIFT') && !s.includes('CMD') && !s.includes('ARROW')) {
-    const exp = s.slice(7);
-    return opt && nocmd && !sh && keyIs(exp);
-  }
-  // ── OPTION + SHIFT + key ───────────────────────────────────────────────────
-  if (s.startsWith('OPTION+SHIFT+')) {
-    const exp = s.slice(13);
-    return opt && sh && nocmd && keyIs(exp);
-  }
-
-  // ── CMD + SHIFT + OPTION + key ─────────────────────────────────────────────
-  if (s.startsWith('CMD+SHIFT+OPTION+') || s.startsWith('CMD+OPTION+SHIFT+')) {
-    const exp = s.startsWith('CMD+SHIFT+OPTION+') ? s.slice(17) : s.slice(17);
-    return cmd && sh && opt && keyIs(exp);
-  }
-
-  // ── CMD + OPTION + key ─────────────────────────────────────────────────────
-  if (s.startsWith('CMD+OPTION+')) {
-    const exp = s.slice(11);
-    return cmd && opt && !sh && keyIs(exp);
-  }
-
-  // ── CMD + SHIFT + key ──────────────────────────────────────────────────────
-  if (s.startsWith('CMD+SHIFT+')) {
-    const exp = s.slice(10);
-    return cmd && sh && !opt && keyIs(exp);
-  }
-
-  // ── CMD + key ──────────────────────────────────────────────────────────────
-  if (s.startsWith('CMD+')) {
-    const exp = s.slice(4);
-    return cmd && !sh && !opt && keyIs(exp);
-  }
-
-  // ── Bare single key ────────────────────────────────────────────────────────
-  if (cmd || opt || sh) return false;
-  return keyIs(s);
-}
+// SHORTCUT_ALTERNATES removed — alternates now live in mac_sc/pc_sc as pipe-separated values
 
 /* ══════════════════════════════════════
    APP SELECTOR
@@ -6251,7 +6264,7 @@ function dbgRefreshAngle() {
 function dbgPrevQuestion() {
   if (questionPool.length === 0) return;
   questionIndex = (questionIndex - 1 + questionPool.length) % questionPool.length;
-  currentAnswer = questionPool[questionIndex].shortcut;
+  currentAnswer = GetActiveShortcutString(questionPool[questionIndex]) || "";
   titleEl.className = '';
   titleEl.textContent = (questionPool[questionIndex].display || '').replace(/\\\\/g, '\\');
   clearAllLit(); heldKeys.clear();
@@ -6261,7 +6274,7 @@ function dbgPrevQuestion() {
 function dbgNextQuestion() {
   if (questionPool.length === 0) return;
   questionIndex = (questionIndex + 1) % questionPool.length;
-  currentAnswer = questionPool[questionIndex].shortcut;
+  currentAnswer = GetActiveShortcutString(questionPool[questionIndex]) || "";
   titleEl.className = '';
   titleEl.textContent = (questionPool[questionIndex].display || '').replace(/\\\\/g, '\\');
   clearAllLit(); heldKeys.clear();
@@ -7583,32 +7596,38 @@ const UNSTABLE_PUNCTUATION_TOKENS = new Set([
 
 function buildPool() {
   var maxDiff = DIFF_MAX[currentDifficulty] || 3;
-  const browserSkip   = getBrowserConflictSet();
-  const allShortcuts  = UNIVERSAL_SHORTCUTS.concat(loadedAppShortcuts);
-var filtered = allShortcuts.filter(s => {
-    // Ctrl+Alt combinations on Windows trigger AltGr / system dialogs — exclude all CMD+OPTION shortcuts on PC
-    if (currentOs === 'pc' && s.shortcut.toUpperCase().includes('OPTION')) return false;
-    // keyboard_conflict: true means the shortcut only appears when touch mode bypasses browser/OS conflicts
-    if (s.keyboard_conflict && !touchEnabled) return false;
-    // OS-specific exclusion: pc_sc or mac_sc set to "none" signals this shortcut
-    // does not exist on that OS and should be excluded from the pool entirely.
-    if (currentOs === 'pc'  && s.pc_sc  === 'none') return false;
-    if (currentOs === 'mac' && s.mac_sc === 'none') return false;
-    if (s.difficulty > maxDiff) return false;
-    if ((touchEnabled || !hasFullKeyboard) && requiresExtKey(s.shortcut)) return false;
-    if (!touchEnabled && browserSkip.has(s.shortcut)) return false;
-    if (!touchEnabled && dismissedConflicts.has(s.shortcut)) return false;
-    if (killPunctuationOn && UNSTABLE_PUNCTUATION_TOKENS.has(s.shortcut)) return false;
+  var browserSkip = getBrowserConflictSet();
+  var allShortcuts = UNIVERSAL_SHORTCUTS.concat(loadedAppShortcuts);
+
+  var filtered = allShortcuts.filter(function(ShortcutEntry) {
+    var ActiveString = GetActiveShortcutString(ShortcutEntry);
+
+    // No token string for this platform — exclude
+    if (!ActiveString) return false;
+
+    // Difficulty cap
+    if (ShortcutEntry.difficulty > maxDiff) return false;
+
+    // Browser conflict exclusion — check primary alternative only
+    var PrimaryString = ActiveString.split('|')[0];
+    if (!touchEnabled && browserSkip.has(PrimaryString)) return false;
+    if (!touchEnabled && dismissedConflicts.has(PrimaryString)) return false;
+
+    // Extended key exclusion for compact keyboards or touch
+    if ((touchEnabled || !hasFullKeyboard) && requiresExtKey(ActiveString)) return false;
+
+    // Kill punctuation
+    if (killPunctuationOn && UNSTABLE_PUNCTUATION_TOKENS.has(PrimaryString)) return false;
+
     return true;
   });
 
-  // Cap: no more than 2 questions from the same named group per pool.
-  // Entries with an empty/falsy group string are never capped.
+  // Cap: no more than 2 questions from the same named group per pool
   var groupCounts = {};
-  return filtered.filter(function(s) {
-    if (!s.group) return true;
-    groupCounts[s.group] = (groupCounts[s.group] || 0) + 1;
-    return groupCounts[s.group] <= 2;
+  return filtered.filter(function(ShortcutEntry) {
+    if (!ShortcutEntry.group) return true;
+    groupCounts[ShortcutEntry.group] = (groupCounts[ShortcutEntry.group] || 0) + 1;
+    return groupCounts[ShortcutEntry.group] <= 2;
   });
 }
 
@@ -7638,16 +7657,8 @@ function loadAppShortcutsIfNeeded(appKey, onReady) {
     .then(function(shortcuts) {
       console.log('[Shortcuts] Loaded', shortcuts.length, 'shortcuts for', appKey);
       if (thisLoadSequence === loadSequenceNumber) {
-         loadedAppShortcuts = shortcuts;
+        loadedAppShortcuts = shortcuts;
         loadedAppName      = appKey;
-        // Rebuild SHORTCUT_ALTERNATES from all currently loaded shortcuts
-        // (UNIVERSAL_SHORTCUTS + newly loaded app shortcuts)
-        var allLoaded = UNIVERSAL_SHORTCUTS.concat(shortcuts);
-        allLoaded.forEach(function(s) {
-          if (s.alternates && Array.isArray(s.alternates) && s.alternates.length > 0) {
-            SHORTCUT_ALTERNATES[s.shortcut.toUpperCase()] = s.alternates.map(function(a) { return a.toUpperCase(); });
-          }
-        });
         onReady();      } else {
         console.log('[Shortcuts] Stale response ignored (sequence mismatch)');
       }
@@ -8214,7 +8225,7 @@ questionPool = adaptivePool || shuffleArray(buildPool());  if (currentApp === 'A
   questionIndex = 0;
   answersLeft = 10;
   _wasPlaying = true;
-  currentAnswer = questionPool[0].shortcut;
+  currentAnswer = GetActiveShortcutString(questionPool[0]) || "";
   helpActive = false;
 
   mainBtn.textContent = 'Skip';
@@ -8350,7 +8361,7 @@ function advanceQuestion() {
     }
     questionIndex = 0;
   }
-  currentAnswer = questionPool[questionIndex].shortcut;
+  currentAnswer = GetActiveShortcutString(questionPool[questionIndex]) || "";
   titleEl.className = '';
   void titleEl.offsetWidth; // flush so animation restarts
   titleEl.textContent = (questionPool[questionIndex].display || '').replace(/\\\\/g, '\\');
@@ -8813,7 +8824,7 @@ function finalizeRunData(completedRun, currentPool, DefeatCount) {
     return {
       displayText,
       shortcut,
-      shortcutToken: question ? question.shortcut : '',
+      shortcutToken: question ? (GetActiveShortcutString(question) || question.shortcut || '') : '',
       partialNudgeFired: entry.partialNudgeFired || false,
       partialCorrectKey: entry.partialCorrectKey || false,
       timeToAnswerMs: entry.timeToAnswerMs,
@@ -9551,7 +9562,7 @@ function _refreshCheatSheet() {
   runData.forEach(function(OutcomeEntry) {
     var OutcomeQ = questionPool[OutcomeEntry.questionIndex];
     if (!OutcomeQ) return;
-    var OutcomeToken = OutcomeQ.shortcut;
+    var OutcomeToken = GetActiveShortcutString(OutcomeQ) || OutcomeQ.shortcut || '';
     var Colour;
     if (OutcomeEntry.endType === 'success' && OutcomeEntry.wrongKeyCount === 0 && OutcomeEntry.hintUsedAtMs === null) {
       Colour = '#10b981'; // green: clean success
@@ -9567,7 +9578,7 @@ var AnsweredTimingMap = {};
   runData.forEach(function(TimingEntry) {
     var TimingQ = questionPool[TimingEntry.questionIndex];
     if (!TimingQ) return;
-    var TimingToken = TimingQ.shortcut;
+    var TimingToken = GetActiveShortcutString(TimingQ) || TimingQ.shortcut || '';
     var TimeDisplay;
     var TimeIsStrikethrough = false;
     if (TimingEntry.endType === 'skip') {
@@ -9606,13 +9617,15 @@ var AnsweredTimingMap = {};
     for (var ri = runData.length - 1; ri >= 0 && AnsweredQuestions.length < 15; ri--) {
       var Entry = runData[ri];
       var AnsweredQ = questionPool[Entry.questionIndex];
-      if (AnsweredQ && !SeenTokens.has(AnsweredQ.shortcut)) {
-        SeenTokens.add(AnsweredQ.shortcut);
+      var AnsweredKey = AnsweredQ ? (GetActiveShortcutString(AnsweredQ) || AnsweredQ.shortcut || '') : '';
+      if (AnsweredQ && !SeenTokens.has(AnsweredKey)) {
+        SeenTokens.add(AnsweredKey);
         AnsweredQuestions.push(AnsweredQ);
       }
     }
     for (var ui = 0; ui < OrderedPool.length && UpcomingQuestions.length < 5; ui++) {
-      if (!SeenTokens.has(OrderedPool[ui].shortcut)) {
+      var UpcomingKey = GetActiveShortcutString(OrderedPool[ui]) || OrderedPool[ui].shortcut || '';
+      if (!SeenTokens.has(UpcomingKey)) {
         UpcomingQuestions.push(OrderedPool[ui]);
       }
     }
@@ -9628,7 +9641,10 @@ var AnsweredTimingMap = {};
     if (Entry.endType === 'success') {
       SuccessCounter++;
       var EntryQuestion = questionPool[Entry.questionIndex];
-      if (EntryQuestion) SuccessOrderNumberMap[EntryQuestion.shortcut] = SuccessCounter;
+      if (EntryQuestion) {
+        var EntryKey = GetActiveShortcutString(EntryQuestion) || EntryQuestion.shortcut || '';
+        SuccessOrderNumberMap[EntryKey] = SuccessCounter;
+      }
     }
   });
 
@@ -9641,18 +9657,20 @@ var AnsweredTimingMap = {};
   } else {
     AnsweredQuestions.forEach(function(Question) {
       var MatchingEntry = null;
+      var QuestionActiveKey = GetActiveShortcutString(Question) || Question.shortcut || '';
       for (var ri = runData.length - 1; ri >= 0; ri--) {
         var EntryQuestion = questionPool[runData[ri].questionIndex];
-        if (EntryQuestion && EntryQuestion.shortcut === Question.shortcut) {
+        var EntryKey = EntryQuestion ? (GetActiveShortcutString(EntryQuestion) || EntryQuestion.shortcut || '') : '';
+        if (EntryKey && EntryKey === QuestionActiveKey) {
           MatchingEntry = runData[ri];
           break;
         }
       }
-      var QuestionNumber = SuccessOrderNumberMap[Question.shortcut] || null;
+      var QuestionNumber = SuccessOrderNumberMap[QuestionActiveKey] || null;
       var SummaryItem = {
         displayText:       (Question.display || '').replace(/\\\\/g, '\\'),
         shortcut:          currentOs === 'pc' ? Question.pc_sc : Question.mac_sc,
-        shortcutToken:     Question.shortcut,
+        shortcutToken:     GetActiveShortcutString(Question) || Question.shortcut || '',
         endType:           MatchingEntry ? MatchingEntry.endType : 'success',
         timeToAnswerMs:    MatchingEntry ? MatchingEntry.timeToAnswerMs : null,
         hintUsed:          MatchingEntry ? MatchingEntry.hintUsedAtMs !== null : false,
@@ -9676,7 +9694,7 @@ var AnsweredTimingMap = {};
       var ShortcutDisplay = currentOs === 'pc' ? Question.pc_sc : Question.mac_sc;
       var li = document.createElement('li');
       li.style.alignItems = 'flex-start';
-      li.dataset.shortcutToken = Question.shortcut;
+      li.dataset.shortcutToken = GetActiveShortcutString(Question) || Question.shortcut || '';
 
       var dot = document.createElement('span');
       dot.className = 'sp-report-dot';
@@ -10648,19 +10666,17 @@ function _blurDiagnosticReplaceQuestion() {
   var FullPool = shuffleArray(buildPool());
   var PreviousDisplay = questionPool[questionIndex] ? questionPool[questionIndex].display : null;
   var ReplacementQuestion = FullPool.find(function(Question) {
-    return Question.shortcut !== _blurDiagnosticShortcutToken &&
+    return (GetActiveShortcutString(Question) || Question.shortcut || '') !== _blurDiagnosticShortcutToken &&
            Question.display !== PreviousDisplay;
   });
   if (ReplacementQuestion) {
     questionPool[questionIndex] = ReplacementQuestion;
-    currentAnswer = ReplacementQuestion.shortcut;
+    currentAnswer = GetActiveShortcutString(ReplacementQuestion) || "";
   }
-  // Remove this question's entry from runData if it was recorded (it shouldn't be yet,
-  // but guard just in case to keep report card clean)
   runData = runData.filter(function(entry) {
     return !(entry.questionIndex === questionIndex &&
              questionPool[entry.questionIndex] &&
-             questionPool[entry.questionIndex].shortcut === _blurDiagnosticShortcutToken);
+             (GetActiveShortcutString(questionPool[entry.questionIndex]) || questionPool[entry.questionIndex].shortcut || '') === _blurDiagnosticShortcutToken);
   });
 }
 
@@ -10712,7 +10728,7 @@ function _blurDiagnosticFindQuestion() {
   // so a mid-transition blur cannot return the wrong question.
   if (!_blurDiagnosticShortcutToken) return null;
   return questionPool.find(function(Question) {
-    return Question.shortcut === _blurDiagnosticShortcutToken;
+    return (GetActiveShortcutString(Question) || Question.shortcut || '') === _blurDiagnosticShortcutToken;
   }) || null;
 }
 

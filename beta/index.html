@@ -6861,7 +6861,6 @@ function _initSliders() {
           if (newValue !== questionTimer) {
             questionTimer = newValue;
             try { localStorage.setItem('kw_timer', String(newValue)); } catch(ex) {}
-            syncDiffNeedle();
           }
         } else {
           if (newValue !== playerLives) {
@@ -6906,7 +6905,6 @@ function _initSliders() {
       if (sliderType === 'timer') {
         questionTimer = newValue;
         try { localStorage.setItem('kw_timer', String(newValue)); } catch(ex) {}
-        syncDiffNeedle();
       } else {
         playerLives = newValue;
         try { localStorage.setItem('kw_lives', String(newValue)); } catch(ex) {}
@@ -6969,7 +6967,6 @@ document.addEventListener('DOMContentLoaded', function() {
       if (sliderType === 'timer') {
         questionTimer = newValue;
         try { localStorage.setItem('kw_timer', String(newValue)); } catch(ex) {}
-        syncDiffNeedle();
       } else {
         playerLives = newValue;
         try { localStorage.setItem('kw_lives', String(newValue)); } catch(ex) {}
@@ -7386,10 +7383,7 @@ function _returningContinue() {
   var tagline = document.getElementById('welcomeTagline');
   if (tagline) tagline.style.display = 'none';
   closeSettings();
-  try { localStorage.setItem('kw_timer', String(newValue)); } catch(ex) {}
-            syncDiffNeedle();
-          }
-        } else {
+  syncDiffNeedle();
   resetToIdle();
   beginCountdown();
 }
@@ -11717,11 +11711,10 @@ function setDiffState(newState) {
 }
 
 function syncDiffNeedle() {
-  var stateMap = { fundamentals: -1, 'fundamentals-plus': -0.5, normal: 0, 'normal-plus': 0.5, hardcore: 1 };
+  var stateMap = { fundamentals: -1, normal: 0, hardcore: 1 };
   var state = stateMap[currentDifficulty] !== undefined ? stateMap[currentDifficulty] : 0;
   var needle = document.querySelector('#diffIcon #Needle');
-  var needleAngle = (questionTimer === 1) ? 100 : DIFF_ANGLES[String(state)];
-  if (needle) needle.style.transform = 'rotate(' + needleAngle + 'deg)';
+  if (needle) needle.style.transform = 'rotate(' + DIFF_ANGLES[String(state)] + 'deg)';
   _diffState = state;
 }
 

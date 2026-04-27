@@ -9882,8 +9882,7 @@ function BuildShortcutKeyChips(TokenString, IsWeakness) {
   var MacLongForm = { 'SHIFT': '⇧ Shift', 'OPTION': '⌥ Option', 'CONTROL': '⌃ Control', 'FN': 'fn', 'RETURN':'↩ return','TAB':'⇥ tab','HOME': '↖ home' , 'END' : "↘ end" ,'PAGEUP':'⇞ page up','PAGEDOWN':'⇟ page down'};
   var PcLongForm  = { 'SHIFT': '⇧ Shift', 'OPTION': 'Alt',      'CONTROL': 'Ctrl',       'FN': 'Fn'  };
   var LongFormMap = currentOs === 'pc' ? PcLongForm : MacLongForm;
-
-  var // Split without normalising so display overrides can read the raw token name.
+// Split without normalising so display overrides can read the raw token name.
   var RawSplitTokens = PrimaryString.split('+').map(function(T) { return T.trim().toUpperCase(); }).filter(Boolean);
 // Parse tokens -- keep both raw (for display overrides) and normalised (for symbol lookup).
   var RawSplitTokens = PrimaryString.split('+').map(function(T) { return T.trim().toUpperCase(); }).filter(Boolean);

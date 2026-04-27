@@ -2750,6 +2750,7 @@ const IMPROVEMENT_TIPS = [
   'Pause the game to reflect on a miss.',
   'The help button isn’t to cheat. It’s to learn.',
   'Celebrate streaks. How many can you do in a row?',
+  'Some actions have more than one possible shortcut.',
   'Compare your scores over time to see your progress.',
   'Share scores with classmates for friendly rivalry.',
   'Eyes on work, not the keys. Trust the muscle memory.',
@@ -3901,7 +3902,6 @@ function _AnimateWrenchDot(RadioSpanElement, GoingActive) {
   void DotEl.offsetWidth;
 
   if (GoingActive) {
-    // OFF → ON: ring goes dark immediately, both spin clockwise, dot fades in
     RingEl.setAttribute('stroke', '#374151');
     DotEl.style.opacity = '0';
     DotEl.classList.add('animating-in');
@@ -4401,16 +4401,6 @@ function _AppPillCalculateOpenGeometry(OpenHeight, PillRect) {
     var SelectedIndex = Math.max(0, appsShortList.indexOf(currentApp));
     var SpacerHeight = 0;
 
-    // The closed pill always shows the selected row at PillRect.top (via scrollTop).
-    // On open, the selected row is at offset SelectedIndex*ROW_H from the pill top.
-    // To keep the selected row at PillRect.top we must shift pill UP by that amount.
-    // But "up" means the pill top moves to PillRect.top - SelectedIndex*ROW_H,
-    // which requires a NEGATIVE translateY... except translateY moves the element
-    // in screen space, so moving the pill UP (smaller Y) = negative translateY.
-    // However if SelectedIndex is 0 we want TranslateY = 0 (no movement).
-    // If SelectedIndex is 1 we want the pill to move UP by ROW_H so the second
-    // row sits where the first row was = TranslateY = -ROW_H... 
-    // BUT: that would hide the first row above the osRow.
     var SpacerHeight = 0;
     var TranslateY = 0;
 
@@ -4578,7 +4568,7 @@ function setTouchEnabled(on) {
     const CapsLockKeyElement = keyEls['CapsLock'];
     if (CapsLockKeyElement) CapsLockKeyElement.classList.remove('lit-caps-active');
   }
-  var radio = document.getElementById('touchRadio');
+  varradio = document.getElementById('touchRadio');
   if (radio) radio.classList.toggle('on', on);
   if (activeSettings === 'panelConflicts') _refreshBrowserContent();
   if (on) {
@@ -4889,11 +4879,7 @@ function onStickyKeysToggle() {
   }
 }
 
-
-// ── Keyboard variant picker ───────────────────────────────────────────────────
-
-
-// ── Keyboard layout toggles in modal ─────────────────────────────────────────
+// ── Keyboard layout toggles  ─────────────────────────────────────────
 function activeVariantKey() {
   if (currentOs === 'mac') {
     if (kbLeftCount === 3) return 'mac-3key';
@@ -5684,7 +5670,7 @@ function _renderKeyChips(label) {
   return frag;
 }
 
-// ── Browser conflict shortcut verification via keypress ───────────────────────
+// ── Conflicted shortcut verification via keypress ───────────────────────
 // When the conflicts panel is open, listens for the user successfully pressing
 // a listed shortcut. If it fires without a blur, the shortcut is auto-unblocked.
 var _conflictsPanelKeydownHandler = null;
@@ -6630,7 +6616,7 @@ function playerLivesBtnClick(value) {
 }
 
 /* ── Fibonacci Slider ────────────────────────────────────────────────────────
-   Stop positions as % of track width (Fibonacci gaps 1:2:3:5):
+   Stop positions as % of track width (Fibonacci with first two terms omitted results in gaps 1:2:3:5):
    0%, 9.1%, 27.3%, 54.5%, 100%
    Values at stops: 1, 3, 5, 10, null (∞)
 ──────────────────────────────────────────────────────────────────────────── */
@@ -8150,16 +8136,24 @@ function loseLife() {
 const DEFEAT_MESSAGES = [
   // answersLeft 9--8: barely started
   [ "Try again. Every rep you put in counts.",
+    "Let's go again, but this time use the help button.",
+    "Start another round and then press the padlock key.",
+    "Don't quit. Keep practicing. You're sure to see the difference it makes.",
     "No shame in an early exit. Get right back up!",
     "Keep trying." ],
   // answersLeft 7--5: got going but ran out
   [ "You were just finding your rhythm! Give it another go?",
+    "Give it another shot.",
+    "Don't quit. Keep practicing. You're sure to see the difference it makes.",
     "Halfway there. The shortcuts are sticking, keep going." ],
   // answersLeft 4--2: close
   [ "So close! A few more questions and you'd have had it.",
+    "Good try. Keep going.",
+    "Let's go again!",
     "That was a solid run. One more attempt might crack it." ],
   // answersLeft 1: tantalizingly close
   [ "One question away. You know the material. Trust it.",
+    "Unbelievable. You were so close!",
     "Ooof. Well, that last shortcut will be automatic next time!" ],
 ];
 
@@ -8472,13 +8466,13 @@ function endGameMessage(time, accuracy, record, wasFirst) {
       ? _pickEndGameFallback(['New time record!', 'Fastest yet. Keep that up.', 'A new personal best for speed.'])
       : _pickEndGameFallback([
           'New time record! Can you raise the accuracy too?',
-          'Your fastest yet. Now sharpen the accuracy.',
+          'Your fastest run on record.\nNow sharpen the accuracy.',
           'Time is down. Accuracy is next.',
         ]);
   }
   if (newBestAcc) {
     return _pickEndGameFallback([
-      'Best accuracy yet!\nNow push that time down.',
+      'Your best accuracy yet!\nNow push that time down.',
       'Highest accuracy so far.\nYour speed will follow.',
       'An accuracy record!\nKeep building on that.',
     ]);
@@ -8488,7 +8482,9 @@ function endGameMessage(time, accuracy, record, wasFirst) {
       'Excellent accuracy.',
       'Perfect round.',
       'Flawless.',
+      'Impressive.',
       'A clean sweep.',
+      'Might be time to ramp up the difficulty.',
     ]);
   }
   if (time < record.time + 10 && accuracy > (record.accuracy ?? 0) - 5) {
@@ -8502,6 +8498,7 @@ function endGameMessage(time, accuracy, record, wasFirst) {
   if (accuracy > (record.accuracy ?? 0)) {
     return _pickEndGameFallback([
       'Your Accuracy is improving. Keep up the pace.',
+      'Great to see you are making progress.',
       'More accurate than last time. That shows progress.',
       'Awesome. Your accuracy is trending up.',
     ]);
@@ -8509,6 +8506,8 @@ function endGameMessage(time, accuracy, record, wasFirst) {
   if (!hasTrophy && time < record.time + 15) {
     return _pickEndGameFallback([
       "Try again. You're almost there.",
+      'That was a good run. Keep training.',
+      "Your consistency is good. Don't stop now.",
       'Close to your best. Another run might get you there.',
     ]);
   }
@@ -9862,7 +9861,7 @@ function BuildShortcutKeyChips(TokenString, IsWeakness) {
   var UseLongForm = TotalTokenCount <= 2;
 
   // Long-form labels for non-CMD modifiers (symbol + word)
-  var MacLongForm = { 'SHIFT': '⇧ Shift', 'OPTION': '⌥ Option', 'CONTROL': '⌃ Control', 'FN': 'fn' };
+  var MacLongForm = { 'SHIFT': '⇧ Shift', 'OPTION': '⌥ Option', 'CONTROL': '⌃ Control', 'FN': 'fn', 'RETURN':'↩ return','TAB':'⇥ tab','HOME': '↖ home' , 'END' : "↘ end" ,'PAGEUP':'⇞ page up','PAGEDOWN':'⇟ page down'};
   var PcLongForm  = { 'SHIFT': '⇧ Shift', 'OPTION': 'Alt',      'CONTROL': 'Ctrl',       'FN': 'Fn'  };
   var LongFormMap = currentOs === 'pc' ? PcLongForm : MacLongForm;
 

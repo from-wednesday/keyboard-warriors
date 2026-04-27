@@ -9876,7 +9876,7 @@ function BuildShortcutKeyChips(TokenString, IsWeakness) {
     if (Symbol !== null && Symbol !== undefined) DisplayTokens.push(Symbol);
   });
   if (KeyToken) {
-    var KeySymbol = ChipSymbols[KeyToken];
+    var KeySymbol = (UseLongForm && LongFormMap[KeyToken]) ? LongFormMap[KeyToken] : ChipSymbols[KeyToken];
     if (KeySymbol !== null && KeySymbol !== undefined) {
       DisplayTokens.push(KeySymbol);
     } else if (KeyToken.startsWith('NUMPAD')) {

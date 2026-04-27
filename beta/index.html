@@ -10844,51 +10844,6 @@ function _blurDiagnosticFindQuestion() {
   }) || null;
 }
 
-function _blurDiagnosticBuildSymbolChips(ShortcutToken) {
-  // Produces compact symbol-only chips from the shortcut token string,
-  // e.g. "CMD+SHIFT+E" → ⌘ + ⇧ + E chips. Falls back gracefully for PC mode.
-  var MacSymbols = { 'CMD': '⌘', 'SHIFT': '⇧', 'OPTION': '⌥', 'CTRL': '⌃', 'BACKSLASH': '\\',
-                     'ARROWLEFT': '←', 'ARROWRIGHT': '→', 'ARROWUP': '↑', 'ARROWDOWN': '↓',
-                     'RETURN': '↩', 'ENTER': '↩', 'SPACE': '␣', 'TAB': '⇥',
-                     'DEL': '⌫', 'BACKSPACE': '⌫', 'ESCAPE': '⎋' };
-  var PcSymbols  = { 'CMD': 'Ctrl', 'SHIFT': '⇧', 'OPTION': 'Alt', 'BACKSLASH': '\\',
-                     'ARROWLEFT': '←', 'ARROWRIGHT': '→', 'ARROWUP': '↑', 'ARROWDOWN': '↓',
-                     'RETURN': '↵', 'ENTER': '↵', 'SPACE': '␣', 'TAB': '⇥',
-                     'DEL': '⌫', 'BACKSPACE': '⌫', 'ESCAPE': 'Esc' };
-  var SymbolMap = currentOs === 'pc' ? PcSymbols : MacSymbols;
-  var Tokens = ShortcutToken.toUpperCase().split('+').map(function(Token) {
-    return SymbolMap[Token] || Token;
-  });
-  var Wrapper = document.createElement('span');
-  Wrapper.style.cssText = 'display:inline-flex;align-items:center;flex-wrap:nowrap;max-width:100%;overflow:hidden;';
-  var TotalWidth = 0;
-  var Truncated = false;
-  Tokens.forEach(function(Token, Index) {
-    if (Truncated) return;
-    if (Index > 0) {
-      var Sep = document.createElement('span');
-      Sep.textContent = '+';
-      Sep.style.cssText = 'margin:0 1px;color:#9ca3af;font-size:10px;line-height:1;vertical-align:middle;flex-shrink:0;';
-      Wrapper.appendChild(Sep);
-      TotalWidth += 12;
-    }
-    var Chip = document.createElement('span');
-    Chip.className = 'sp-report-chip-key';
-    // Estimate whether this chip will overflow -- rough heuristic: 8px per character + 8px padding
-    var EstimatedWidth = Token.length * 8 + 8;
-    if (TotalWidth + EstimatedWidth > 120) {
-      Chip.textContent = '…';
-      Truncated = true;
-    } else {
-      Chip.textContent = Token;
-      TotalWidth += EstimatedWidth;
-    }
-    Chip.style.cssText = 'display:inline-block;font-family:inherit;font-size:10px;font-weight:600;color:#1e3a5f;border:1px solid #d1d5db;border-radius:3px;padding:1px 4px 0;line-height:1.6;white-space:nowrap;vertical-align:middle;background:#f3f4f6;box-shadow:0 1.5px 0 #c9cdd3;flex-shrink:0;';
-    Wrapper.appendChild(Chip);
-  });
-  return Wrapper;
-}
-
 function _activateBlurPauseScreen() {
   // If the flow already reached a resolution this session, do not restart it.
   // The guard is cleared when the player unpauses or resets to idle.
@@ -11003,7 +10958,9 @@ function _deactivateBlurPauseScreen() {
   var ChipsArea = document.getElementById('blurDiagnosticChipsArea');
   if (ChipsArea) {
     ChipsArea.innerHTML = '';
-    var ChipWrapper = _blurDiagnosticBuildSymbolChips(_blurDiagnosticShortcutToken);
+    var _diagQuestion = questionPool.find(function(q) { return q.shortcut === _blurDiagnosticShortcutToken; });
+    var _diagDisplay  = _diagQuestion ? (currentOs === 'pc' ? _diagQuestion.pc_sc : _diagQuestion.mac_sc) : _blurDiagnosticShortcutToken;
+    var ChipWrapper = BuildShortcutKeyChips(_diagDisplay, true);
     ChipWrapper.style.cssText = 'display:inline-flex;align-items:center;gap:4px;';
     ChipsArea.appendChild(ChipWrapper);
     ChipsArea.style.display = 'flex';

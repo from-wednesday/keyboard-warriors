@@ -4,7 +4,6 @@
    Do not reorder major sections.
    ═══════════════════════════════════════════════════ */
 
-/* ── Google Fonts (must be first rule) ─────────────── */
 @import url('https://fonts.googleapis.com/css2?family=Lato:wght@400;700&display=swap');
 
 * { margin:0; padding:0; box-sizing:border-box; }
@@ -14,8 +13,6 @@
   opacity: 1;
   transition: opacity 0.3s ease;
 }
-
-
 
 body {
   font-family: system-ui, -apple-system, sans-serif;
@@ -2606,6 +2603,11 @@ li.conflict-dismissed .conflict-desc {
 /* During drag the transition is suppressed by JS so it tracks instantly */
 #kbHandleAffordance.dragging #kbAffordanceArrow {
   transition: none;
+}
+
+#kbHandleAffordance.aff-transitioning {
+  opacity: 0 !important;
+  pointer-events: none !important;
 }
 
 /* Show on hover via .handle-hover class toggled by JS on #kbDragHandle */

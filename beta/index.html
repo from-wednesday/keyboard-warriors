@@ -1945,10 +1945,7 @@ function ParseShortcutString(ShortcutString) {
    Returns null if this shortcut does not exist on the current platform. ── */
 /* ── GetActiveShortcutString ────────────────────────────────────────────────
    Returns the token string for the current OS from a shortcut entry.
-   Falls back to the legacy shortcut field if mac_sc/pc_sc are absent or
-   still contain old-schema display symbols (⌘ ⇧ etc.) rather than tokens.
-   Delete the fallback block and the shortcut field from each JSON file once
-   all entries in that file have proper token strings in mac_sc and pc_sc. ── */
+   Returns null if the platform field is absent, empty, or 'none'. ── */
 function GetActiveShortcutString(ShortcutEntry) {
   var CandidateString = currentOs === 'pc'
     ? ShortcutEntry.pc_sc
@@ -1962,10 +1959,8 @@ function GetActiveShortcutString(ShortcutEntry) {
     }
   }
 
-  // Fallback: legacy shortcut field (remove once all JSON files are migrated)
-  var LegacyString = ShortcutEntry.shortcut || null;
-  if (!LegacyString || LegacyString === 'none') return null;
-  return LegacyString;
+    return null;
+
 }
 
 /* ── GetAllAlternatives ─────────────────────────────────────────────────────
@@ -6193,7 +6188,7 @@ function dbgBuildReport() {
     'kbLayout:'      + (currentOs === 'pc' ? kbVariantPc : kbVariantMac),
     'kbFlags:'       + KeyboardFlags,
     'gameState:'     + gameState + '  Q:' + QuestionString,
-    CurrentQuestion  ? 'answer:'  + CurrentQuestion.shortcut  : '',
+    CurrentQuestion  ? 'answer:'  + (GetActiveShortcutString(CurrentQuestion) || '') : '',
     CurrentQuestion  ? 'display:' + CurrentQuestion.display    : '',
     CurrentQuestion  ? 'difficulty:' + CurrentQuestion.difficulty : '',
   ];
@@ -7235,7 +7230,7 @@ function _reportImpossibleQuestion() {
     'kbLayout:'    + (currentOs === 'pc' ? kbVariantPc : kbVariantMac),
     'kbFlags:'     + KeyboardFlags,
     'gameState:'   + gameState + '  Q:' + QuestionString,
-    CurrentQuestion ? 'answer:'     + CurrentQuestion.shortcut    : '',
+    CurrentQuestion ? 'answer:'     + (GetActiveShortcutString(CurrentQuestion) || '') : '',
     CurrentQuestion ? 'display:'    + CurrentQuestion.display     : '',
     CurrentQuestion ? 'difficulty:' + CurrentQuestion.difficulty  : '',
   ];
@@ -8866,7 +8861,7 @@ function finalizeRunData(completedRun, currentPool, DefeatCount) {
     return {
       displayText,
       shortcut,
-      shortcutToken: question ? (GetActiveShortcutString(question) || question.shortcut || '') : '',
+      shortcutToken: question ? (GetActiveShortcutString(question) || '') : '',
       partialNudgeFired: entry.partialNudgeFired || false,
       partialCorrectKey: entry.partialCorrectKey || false,
       timeToAnswerMs: entry.timeToAnswerMs,

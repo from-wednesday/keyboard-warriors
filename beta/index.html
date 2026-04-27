@@ -2938,7 +2938,7 @@ function showSuccessHintToast() {
    after the question timer has expired. Shows orange chips (they were too slow,
    but they knew the answer) and briefly extends the toast so it reads clearly. */
 function showNearMissHintToast() {
-    ShowHintToast(nearMissAnswer, 'orange');
+    ShowHintToast(nearMissAnswer, 'yellow');
     kbToastEl.classList.add('show');
     clearTimeout(_kbToastAutoHideTimer);
     _kbToastAutoHideTimer = setTimeout(function() { kbToastEl.classList.remove('show'); }, 1600);
@@ -9807,8 +9807,13 @@ function BuildShortcutKeyChips(TokenString, IsWeakness) {
   // consulted before NormaliseToken strips them to their base key.
   var RawDisplayOverrideMap = {
     'PLUS':        '+',
-    'TILDE':       '~',
-    'LESSTHAN':    '<',
+if (colour) {
+    var IsGreen    = (colour === 'green');
+    var IsYellow   = (colour === 'yellow');
+    var ChipBg     = IsGreen ? '#10b981' : IsYellow ? '#f59e0b' : '#f97316';
+    var ChipBorder = IsGreen ? '#059669' : IsYellow ? '#d97706' : '#c2410c';
+    var ChipShadow = IsGreen ? '0 0 6px rgba(16,185,129,0.45)' : IsYellow ? '0 0 6px rgba(245,158,11,0.45)' : '0 0 6px rgba(249,115,22,0.45)';
+    var SepColour  = IsGreen ? '#059669' : IsYellow ? '#d97706' : '#c2410c';    'LESSTHAN':    '<',
     'MORETHAN':    '>',
     'QUESTION':    '?',
     'PIPE':        '|',

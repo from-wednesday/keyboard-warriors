@@ -6337,11 +6337,12 @@ function getBrowserConflicts() {
   if (detectedOs === 'mobile') {
     return {
       name:   'Safari on iOS/iPadOS',
-      keys:   ['CMD+T', 'CMD+SHIFT+N', 'CMD+1'],
+      keys:   ['CMD+T', 'CMD+SHIFT+N', 'CMD+1', 'Cmd+R'],
       labels: [
         'Cmd+T \u2014 opens a new tab',
         'Cmd+Shift+N \u2014 opens a Private tab',
         'Cmd+1 \u2014 switches to the first tab',
+        'Cmd+R \u2014 reload tab',
       ],
     };
   }
@@ -6360,7 +6361,7 @@ function getBrowserConflicts() {
   var mac = {
     Edge:    ['CMD+T','CMD+SHIFT+N'],
     Firefox: ['CMD+T','CMD+SHIFT+P'],
-    Safari:  ['CMD+T','CMD+N','CMD+SHIFT+N','CMD+O'],
+    Safari:  ['CMD+T','CMD+N','CMD+SHIFT+N','CMD+O', 'CMD+1', 'Cmd+R'],
     Opera:   ['CMD+T','CMD+SHIFT+N'],
     Chrome:  ['CMD+T','CMD+SHIFT+N'],
   };
@@ -6387,6 +6388,8 @@ function getBrowserConflicts() {
       'Cmd+N \u2014 opens new window',
       'Cmd+Shift+N \u2014 opens Private window',
       'Cmd+O \u2014 open a file',
+      'Cmd+1 \u2014 switches to the first tab',
+      'Cmd+R \u2014 reload tab',
     ],
     Opera: [
       'Cmd+T \u2014 opens new tab',

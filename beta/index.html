@@ -2957,6 +2957,14 @@ function clearHelp() {
   if (gameState === 'counting') return;
   // If the cheat sheet panel is already open, close it.
   if (activeSettings === 'panelCheatSheet') { closeSettings(); return; }
+  // Suppress the drag affordance during the flip+panel-fade transition (~1400ms).
+  var aff = document.getElementById('kbHandleAffordance');
+  if (aff) {
+    aff.classList.remove('handle-hover', 'handle-active');
+    aff.style.opacity = '0';
+    aff.style.pointerEvents = 'none';
+    setTimeout(function() { aff.style.opacity = ''; aff.style.pointerEvents = ''; }, 1500);
+  }
   // Save title text before pausing (enterPause may overwrite it).
   _cheatsheetSavedTitle = titleEl.textContent;
   // Pause first so enterPause's setKbPosition('edge') fires before openSettings
@@ -10714,6 +10722,8 @@ updateKeyboardLighting(e, true);
   const isCorrect = stickyKeysOn ? checkStickyShortcut() : matchesShortcut(e, currentAnswer);
   if (isCorrect) {
     transitioning = true;
+    resetPartialShortcutNudgeTimers();
+    clearToast();
     clearHelp();
     showSuccessHintToast();
     hideQuestionTimerArc();

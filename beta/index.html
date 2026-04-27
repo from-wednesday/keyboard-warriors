@@ -9,7 +9,7 @@
 <title>beta</title>
 <script>
   const DefaultTitle = 'Keyboard Warriors';
-  const VersionLabel   = '0026';
+  const VersionLabel   = '0027';
   const TitlePrefix  = document.title !== DefaultTitle ? document.title.trim() + '_' : '';
   const DBG_DEVICE   = TitlePrefix + VersionLabel;
 </script>
@@ -2961,9 +2961,8 @@ function clearHelp() {
   var aff = document.getElementById('kbHandleAffordance');
   if (aff) {
     aff.classList.remove('handle-hover', 'handle-active');
-    aff.style.opacity = '0';
-    aff.style.pointerEvents = 'none';
-    setTimeout(function() { aff.style.opacity = ''; aff.style.pointerEvents = ''; }, 1500);
+    aff.classList.add('aff-transitioning');
+    setTimeout(function() { aff.classList.remove('aff-transitioning'); }, 1500);
   }
   // Save title text before pausing (enterPause may overwrite it).
   _cheatsheetSavedTitle = titleEl.textContent;

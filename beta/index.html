@@ -2307,15 +2307,12 @@ function showExtKeyPill(code, state) {
 }
 
 function hideExtKeyPill() {
-  // Linger then fade, matching real key behaviour
   clearTimeout(extKeyPillTimer);
   extKeyPillEl.classList.add('lit-fading');
-  requestAnimationFrame(() => requestAnimationFrame(() => {
-    extKeyPillEl.classList.remove('lit-green', 'lit-orange');
-    extKeyPillTimer = setTimeout(() => {
-      extKeyPillEl.classList.remove('lit-fading');
-      extKeyPillEl.style.display = 'none';
-    }, 900);
+  extKeyPillTimer = setTimeout(() => {
+    extKeyPillEl.classList.remove('lit-fading', 'lit-green', 'lit-orange');
+    extKeyPillEl.style.display = 'none';
+  }, 900);
   }));
 }
 

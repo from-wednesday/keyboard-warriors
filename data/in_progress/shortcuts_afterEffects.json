@@ -1,795 +1,682 @@
 [
   {
-    "shortcut": "V",
-    "display": "Switch to the Selection tool",
+"display": "Switch to the Selection tool",
     "mac_sc": "V",
     "pc_sc": "V",
     "difficulty": 1
   },
   {
-    "shortcut": "Z",
-    "display": "Pick up the Magnifying Glass",
+"display": "Pick up the Magnifying Glass",
     "mac_sc": "Z",
     "pc_sc": "Z",
     "difficulty": 1
   },
   {
-    "shortcut": "H",
-    "display": "Select the Hand tool",
+"display": "Select the Hand tool",
     "mac_sc": "H",
     "pc_sc": "H",
     "difficulty": 1
   },
   {
-    "shortcut": "K",
-    "display": "Jump to the next keyframe or marker",
+"display": "Jump to the next keyframe or marker",
     "mac_sc": "K",
     "pc_sc": "K",
     "difficulty": 1
   },
   {
-    "shortcut": "R",
-    "display": "Reveal Rotation property on selected layer",
+"display": "Reveal Rotation property on selected layer",
     "mac_sc": "R",
     "pc_sc": "R",
     "difficulty": 2
   },
   {
-    "shortcut": "S",
-    "display": "Reveal Scale property on selected layer",
+"display": "Reveal Scale property on selected layer",
     "mac_sc": "S",
     "pc_sc": "S",
     "difficulty": 2
   },
   {
-    "shortcut": "N",
-    "display": "Set work area Out point to current time",
+"display": "Set work area Out point to current time",
     "mac_sc": "N",
     "pc_sc": "N",
     "difficulty": 1
   },
   {
-    "shortcut": "J",
-    "display": "Jump to the previous keyframe or marker",
+"display": "Jump to the previous keyframe or marker",
     "mac_sc": "J",
     "pc_sc": "J",
     "difficulty": 1
   },
   {
-    "shortcut": "U",
-    "display": "Reveal all keyframed properties on selected layer",
+"display": "Reveal all keyframed properties on selected layer",
     "mac_sc": "U",
     "pc_sc": "U",
     "difficulty": 3
   },
   {
-    "shortcut": "I",
-    "display": "Move the playhead to the In point of the selected layer",
+"display": "Move the playhead to the In point of the selected layer",
     "mac_sc": "I",
     "pc_sc": "I",
     "difficulty": 1
   },
   {
-    "shortcut": "O",
-    "display": "Move the playhead to the Out point of the selected layer",
+"display": "Move the playhead to the Out point of the selected layer",
     "mac_sc": "O",
     "pc_sc": "O",
     "difficulty": 1
   },
   {
-    "shortcut": "B",
-    "display": "Set the work area In point to the current time",
+"display": "Set the work area In point to the current time",
     "mac_sc": "B",
     "pc_sc": "B",
     "difficulty": 1
   },
   {
-    "shortcut": "P",
-    "display": "Reveal Position property on selected layer",
+"display": "Reveal Position property on selected layer",
     "mac_sc": "P",
     "pc_sc": "P",
     "difficulty": 2
   },
   {
-    "shortcut": "T",
-    "display": "Reveal Opacity property on selected layer",
+"display": "Reveal Opacity property on selected layer",
     "mac_sc": "T",
     "pc_sc": "T",
     "difficulty": 2
   },
   {
-    "shortcut": "A",
-    "display": "Reveal Anchor Point property on selected layer",
+"display": "Reveal Anchor Point property on selected layer",
     "mac_sc": "A",
     "pc_sc": "A",
     "difficulty": 3
   },
   {
-    "shortcut": "E",
-    "display": "Reveal Effects on selected layer",
+"display": "Reveal Effects on selected layer",
     "mac_sc": "E",
     "pc_sc": "E",
     "difficulty": 2
   },
   {
-    "shortcut": "SHIFT",
-    "display": "Hold to constrain proportions while transforming",
+"display": "Hold to constrain proportions while transforming",
     "mac_sc": "SHIFT",
     "pc_sc": "SHIFT",
     "difficulty": 1
   },
   {
-    "shortcut": "OPTION",
-    "display": "Hold to transform from the centre outward",
+"display": "Hold to transform from the centre outward",
     "mac_sc": "OPT",
     "pc_sc": "ALT",
     "difficulty": 1
   },
   {
-    "shortcut": "CMD+PLUS",
-    "display": "Zoom in",
+"display": "Zoom in",
     "mac_sc": "CMD+PLUS",
     "pc_sc": "CTRL+PLUS",
     "difficulty": 1
   },
   {
-    "shortcut": "CMD+MINUS",
-    "display": "Zoom out",
+"display": "Zoom out",
     "mac_sc": "CMD+MINUS",
     "pc_sc": "CTRL+MINUS",
     "difficulty": 1
   },
   {
-    "shortcut": "CMD+SEMICOLON",
-    "display": "Show or hide guides",
+"display": "Show or hide guides",
     "mac_sc": "CMD+SEMICOLON",
     "pc_sc": "CTRL+SEMICOLON",
     "difficulty": 1
   },
   {
-    "shortcut": "CMD+G",
-    "display": "Group selected objects",
+"display": "Group selected objects",
     "mac_sc": "CMD+G",
     "pc_sc": "CTRL+G",
     "difficulty": 1
   },
   {
-    "shortcut": "CMD+SHIFT+G",
-    "display": "Ungroup selected objects",
+"display": "Ungroup selected objects",
     "mac_sc": "CMD+SHIFT+G",
     "pc_sc": "CTRL+SHIFT+G",
     "difficulty": 3
   },
   {
-    "shortcut": "CMD+D",
-    "display": "Place",
+"display": "Place",
     "mac_sc": "CMD+D",
     "pc_sc": "CTRL+D",
     "difficulty": 1
   },
   {
-    "shortcut": "CMD+SHIFT+A",
-    "display": "Deselect all",
+"display": "Deselect all",
     "mac_sc": "CMD+SHIFT+A",
     "pc_sc": "CTRL+SHIFT+A",
     "difficulty": 3
   },
   {
-    "shortcut": "CMD+SHIFT+D",
-    "display": "Split the selected layer at the playhead",
+"display": "Split the selected layer at the playhead",
     "mac_sc": "CMD+SHIFT+D",
     "pc_sc": "CTRL+SHIFT+D",
     "difficulty": 1
   },
   {
-    "shortcut": "ARROWLEFT",
-    "display": "Move back 1 frame",
+"display": "Move back 1 frame",
     "mac_sc": "ARROWLEFT",
     "pc_sc": "ARROWLEFT",
     "difficulty": 1,
     "group": "nudge"
   },
   {
-    "shortcut": "ARROWRIGHT",
-    "display": "Move forward 1 frame",
+"display": "Move forward 1 frame",
     "mac_sc": "ARROWRIGHT",
     "pc_sc": "ARROWRIGHT",
     "difficulty": 1,
     "group": "nudge"
   },
   {
-    "shortcut": "SHIFT+ARROWLEFT",
-    "display": "Move back 10 frames",
+"display": "Move back 10 frames",
     "mac_sc": "SHIFT+ARROWLEFT",
     "pc_sc": "SHIFT+ARROWLEFT",
     "difficulty": 1,
     "group": "nudge"
   },
   {
-    "shortcut": "SHIFT+ARROWRIGHT",
-    "display": "Move forward 10 frames",
+"display": "Move forward 10 frames",
     "mac_sc": "SHIFT+ARROWRIGHT",
     "pc_sc": "SHIFT+ARROWRIGHT",
     "difficulty": 1,
     "group": "nudge"
   },
   {
-    "shortcut": "HOME",
-    "display": "Move the playhead to the start of the composition",
+"display": "Move the playhead to the start of the composition",
     "mac_sc": "HOME",
     "pc_sc": "HOME",
     "difficulty": 1
   },
   {
-    "shortcut": "END",
-    "display": "Move the playhead to the end of the composition",
+"display": "Move the playhead to the end of the composition",
     "mac_sc": "END",
     "pc_sc": "END",
     "difficulty": 1
   },
   {
-    "shortcut": "BRACKETLEFT",
-    "display": "Trim layer In-point to the current time",
+"display": "Trim layer In-point to the current time",
     "mac_sc": "BRACKETLEFT",
     "pc_sc": "BRACKETLEFT",
     "difficulty": 1
   },
   {
-    "shortcut": "BRACKETRIGHT",
-    "display": "Trim layer Out-point to the current time",
+"display": "Trim layer Out-point to the current time",
     "mac_sc": "BRACKETRIGHT",
     "pc_sc": "BRACKETRIGHT",
     "difficulty": 1
   },
   {
-    "shortcut": "OPTION+BRACKETLEFT",
-    "display": "Set layer In-point to the current time",
+"display": "Set layer In-point to the current time",
     "mac_sc": "OPT+BRACKETLEFT",
     "pc_sc": "ALT+BRACKETLEFT",
     "difficulty": 3
   },
   {
-    "shortcut": "OPTION+BRACKETRIGHT",
-    "display": "Set layer Out-point to the current time",
+"display": "Set layer Out-point to the current time",
     "mac_sc": "OPT+BRACKETRIGHT",
     "pc_sc": "ALT+BRACKETRIGHT",
     "difficulty": 3
   },
   {
-    "shortcut": "CMD+ARROWUP",
-    "display": "Select the layer above in the timeline",
+"display": "Select the layer above in the timeline",
     "mac_sc": "CMD+ARROWUP",
     "pc_sc": "CTRL+ARROWUP",
     "difficulty": 3
   },
   {
-    "shortcut": "CMD+ARROWDOWN",
-    "display": "Select the layer below in the timeline",
+"display": "Select the layer below in the timeline",
     "mac_sc": "CMD+ARROWDOWN",
     "pc_sc": "CTRL+ARROWDOWN",
     "difficulty": 3
   },
   {
-    "shortcut": "CMD+SHIFT+C",
-    "display": "Pre-compose selected layers",
+"display": "Pre-compose selected layers",
     "mac_sc": "CMD+SHIFT+C",
     "pc_sc": "CTRL+SHIFT+C",
     "difficulty": 3
   },
   {
-    "shortcut": "CMD+OPTION+F",
-    "display": "Scale footage to fit the composition",
+"display": "Scale footage to fit the composition",
     "mac_sc": "CMD+OPT+F",
     "pc_sc": "CTRL+ALT+F",
     "difficulty": 4
   },
   {
-    "shortcut": "CMD+SHIFT+OPTION+F",
-    "display": "Scale and crop footage to fill the composition",
+"display": "Scale and crop footage to fill the composition",
     "mac_sc": "CMD+SHIFT+OPT+F",
     "pc_sc": "CTRL+SHIFT+ALT+F",
     "difficulty": 4
   },
   {
-    "shortcut": "OPTION+SHIFT+P",
-    "display": "Add or remove a Position keyframe",
+"display": "Add or remove a Position keyframe",
     "mac_sc": "OPT+SHIFT+P",
     "pc_sc": "ALT+SHIFT+P",
     "difficulty": 2
   },
   {
-    "shortcut": "OPTION+SHIFT+S",
-    "display": "Add or remove a Scale keyframe",
+"display": "Add or remove a Scale keyframe",
     "mac_sc": "OPT+SHIFT+S",
     "pc_sc": "ALT+SHIFT+S",
     "difficulty": 3
   },
   {
-    "shortcut": "OPTION+SHIFT+R",
-    "display": "Add or remove a Rotation keyframe",
+"display": "Add or remove a Rotation keyframe",
     "mac_sc": "OPT+SHIFT+R",
     "pc_sc": "ALT+SHIFT+R",
     "difficulty": 3
   },
   {
-    "shortcut": "OPTION+SHIFT+T",
-    "display": "Add or remove an Opacity keyframe",
+"display": "Add or remove an Opacity keyframe",
     "mac_sc": "OPT+SHIFT+T",
     "pc_sc": "ALT+SHIFT+T",
     "difficulty": 3
   },
   {
-    "shortcut": "CMD+K",
-    "display": "Open Composition Settings",
+"display": "Open Composition Settings",
     "mac_sc": "CMD+K",
     "pc_sc": "CTRL+K",
     "difficulty": 3
   },
   {
-    "shortcut": "CMD+SHIFT+K",
-    "display": "Open Layer Settings",
+"display": "Open Layer Settings",
     "mac_sc": "CMD+SHIFT+K",
     "pc_sc": "CTRL+SHIFT+K",
     "difficulty": 3
   },
   {
-    "shortcut": "COMMA",
-    "display": "Zoom out in the composition viewer",
+"display": "Zoom out in the composition viewer",
     "mac_sc": "COMMA",
     "pc_sc": "COMMA",
     "difficulty": 1
   },
   {
-    "shortcut": "PERIOD",
-    "display": "Zoom in in the composition viewer",
+"display": "Zoom in in the composition viewer",
     "mac_sc": "PERIOD",
     "pc_sc": "PERIOD",
     "difficulty": 1
   },
   {
-    "shortcut": "CMD+T",
-    "display": "Switch to the Type tool",
+"display": "Switch to the Type tool",
     "mac_sc": "CMD+T",
     "pc_sc": "CTRL+T",
     "difficulty": 3
   },
   {
-    "shortcut": "OPTION",
-    "display": "Hold this while you drag to duplicate",
+"display": "Hold this while you drag to duplicate",
     "mac_sc": "OPT",
     "pc_sc": "ALT",
     "difficulty": 3
   },
   {
-    "shortcut": "CMD+R",
-    "display": "Toggle Rulers",
+"display": "Toggle Rulers",
     "mac_sc": "CMD+R",
     "pc_sc": "CTRL+R",
     "difficulty": 1
   },
   {
-    "shortcut": "CMD+OPTION+HOME",
-    "display": "Centre the Anchor Point in the layer content",
+"display": "Centre the Anchor Point in the layer content",
     "mac_sc": "CMD+OPT+HOME",
     "pc_sc": "CTRL+ALT+HOME",
     "difficulty": 4
   },
   {
-    "shortcut": "CMD+HOME",
-    "display": "Centre layer in composition",
+"display": "Centre layer in composition",
     "mac_sc": "CMD+HOME",
     "pc_sc": "CTRL+HOME",
     "difficulty": 3
   },
   {
-    "shortcut": "F9",
-    "display": "Apply Easy Ease to selected keyframes",
+"display": "Apply Easy Ease to selected keyframes",
     "mac_sc": "F9",
     "pc_sc": "F9",
     "difficulty": 3
   },
   {
-    "shortcut": "CMD+OPTION+T",
-    "display": "Enable Time Remapping",
+"display": "Enable Time Remapping",
     "mac_sc": "CMD+OPT+T",
     "pc_sc": "CTRL+ALT+T",
     "difficulty": 4
   },
   {
-    "shortcut": "SHIFT+F3",
-    "display": "Toggle the Graph Editor",
+"display": "Toggle the Graph Editor",
     "mac_sc": "SHIFT+F3",
     "pc_sc": "SHIFT+F3",
     "difficulty": 4
   },
   {
-    "shortcut": "CMD+I",
-    "display": "Import",
+"display": "Import",
     "mac_sc": "CMD+I",
     "pc_sc": "CTRL+I",
     "difficulty": 1
   },
   {
-    "shortcut": "CMD+F",
-    "display": "Find in Timeline Panel",
+"display": "Find in Timeline Panel",
     "mac_sc": "CMD+F",
     "pc_sc": "CTRL+F",
     "difficulty": 3
   },
   {
-    "shortcut": "CMD+Y",
-    "display": "New Layer",
+"display": "New Layer",
     "mac_sc": "CMD+Y",
     "pc_sc": "CTRL+Y",
     "difficulty": 1
   },
   {
-    "shortcut": "1",
-    "display": "Orbit Camera Tool",
+"display": "Orbit Camera Tool",
     "mac_sc": "1",
     "pc_sc": "1",
     "difficulty": 3
   },
   {
-    "shortcut": "2",
-    "display": "Pan Camera Tool",
+"display": "Pan Camera Tool",
     "mac_sc": "2",
     "pc_sc": "2",
     "difficulty": 3
   },
   {
-    "shortcut": "3",
-    "display": "Dolly Camera Tool",
+"display": "Dolly Camera Tool",
     "mac_sc": "3",
     "pc_sc": "3",
     "difficulty": 3
   },
   {
-    "shortcut": "W",
-    "display": "Rotate Tool",
+"display": "Rotate Tool",
     "mac_sc": "W",
     "pc_sc": "W",
     "difficulty": 3
   },
   {
-    "shortcut": "Q",
-    "display": "Rectangle Tool",
+"display": "Rectangle Tool",
     "mac_sc": "Q",
     "pc_sc": "Q",
     "difficulty": 3
   },
   {
-    "shortcut": "G",
-    "display": "Pen Tool",
+"display": "Pen Tool",
     "mac_sc": "G",
     "pc_sc": "G",
     "difficulty": 3
   },
   {
-    "shortcut": "CMD+P",
-    "display": "Toggle between Puppet Pin Tools",
+"display": "Toggle between Puppet Pin Tools",
     "mac_sc": "CMD+P",
     "pc_sc": "CTRL+P",
     "difficulty": 3
   },
   {
-    "shortcut": "CMD+CTRL+M",
-    "display": "Add to Render Queue",
+"display": "Add to Render Queue",
     "mac_sc": "CMD+CONTROL+M",
     "pc_sc": "CTRL+ALT+M",
     "difficulty": 5
   },
   {
-    "shortcut": "CMD+SHIFT+OPTION+SEMICOLON",
-    "display": "Toggle Guide Lock",
+"display": "Toggle Guide Lock",
     "mac_sc": "CMD+SHIFT+OPT+SEMICOLON",
     "pc_sc": "CTRL+SHIFT+ALT+SEMICOLON",
     "difficulty": 3
   },
   {
-    "shortcut": "CMD+BRACKETLEFT",
-    "display": "Move Layer Down",
+"display": "Move Layer Down",
     "mac_sc": "CMD+BRACKETLEFT",
     "pc_sc": "CTRL+BRACKETLEFT",
     "difficulty": 1
   },
   {
-    "shortcut": "CMD+BRACKETRIGHT",
-    "display": "Move Layer Up",
+"display": "Move Layer Up",
     "mac_sc": "CMD+BRACKETRIGHT",
     "pc_sc": "CTRL+BRACKETRIGHT",
     "difficulty": 1
   },
   {
-    "shortcut": "CMD+SHIFT+BRACKETLEFT",
-    "display": "Move Layer to Bottom",
+"display": "Move Layer to Bottom",
     "mac_sc": "CMD+SHIFT+BRACKETLEFT",
     "pc_sc": "CTRL+SHIFT+BRACKETLEFT",
     "difficulty": 1
   },
   {
-    "shortcut": "CMD+SHIFT+BRACKETRIGHT",
-    "display": "Move Layer to Top",
+"display": "Move Layer to Top",
     "mac_sc": "CMD+SHIFT+BRACKETRIGHT",
     "pc_sc": "CTRL+SHIFT+BRACKETRIGHT",
     "difficulty": 1
   },
   {
-    "shortcut": "CMD+L",
-    "display": "Lock layer",
+"display": "Lock layer",
     "mac_sc": "CMD+L",
     "pc_sc": "CTRL+L",
     "difficulty": 1
   },
   {
-    "shortcut": "CMD+SHIFT+L",
-    "display": "Unlock all layers",
+"display": "Unlock all layers",
     "mac_sc": "CMD+SHIFT+L",
     "pc_sc": "CTRL+SHIFT+L",
     "difficulty": 1
   },
   {
-    "shortcut": "SHIFT+F9",
-    "display": "Add Easy Ease-In",
+"display": "Add Easy Ease-In",
     "mac_sc": "SHIFT+F9",
     "pc_sc": "SHIFT+F9",
     "difficulty": 3
   },
   {
-    "shortcut": "CMD+SHIFT+F9",
-    "display": "Add Easy Ease-Out",
+"display": "Add Easy Ease-Out",
     "mac_sc": "CMD+SHIFT+F9",
     "pc_sc": "CTRL+SHIFT+F9",
     "difficulty": 3
   },
   {
-    "shortcut": "CMD",
-    "display": "Hold this and click a keyframe to remove its Easing",
+"display": "Hold this and click a keyframe to remove its Easing",
     "mac_sc": "CMD",
     "pc_sc": "CTRL",
     "difficulty": 3
   },
   {
-    "shortcut": "OPTION",
-    "display": "Hold this and click the stopwatch to add an expression",
+"display": "Hold this and click the stopwatch to add an expression",
     "mac_sc": "OPT",
     "pc_sc": "ALT",
     "difficulty": 5
   },
   {
-    "shortcut": "OPTION+ARROWRIGHT",
-    "display": "Move selected keyframe forward one frame",
+"display": "Move selected keyframe forward one frame",
     "mac_sc": "OPT+ARROWRIGHT",
     "pc_sc": "ALT+ARROWRIGHT",
     "difficulty": 1
   },
   {
-    "shortcut": "OPTION+ARROWLEFT",
-    "display": "Move selected keyframe back one frame",
+"display": "Move selected keyframe back one frame",
     "mac_sc": "OPT+ARROWLEFT",
     "pc_sc": "ALT+ARROWLEFT",
     "difficulty": 1
   },
   {
-    "shortcut": "SHIFT+OPTION+ARROWRIGHT",
-    "display": "Move selected keyframe forward ten frames",
+"display": "Move selected keyframe forward ten frames",
     "mac_sc": "SHIFT+OPT+ARROWRIGHT",
     "pc_sc": "SHIFT+ALT+ARROWRIGHT",
     "difficulty": 1
   },
   {
-    "shortcut": "SHIFT+OPTION+ARROWLEFT",
-    "display": "Move selected keyframe back ten frames",
+"display": "Move selected keyframe back ten frames",
     "mac_sc": "SHIFT+OPT+ARROWLEFT",
     "pc_sc": "SHIFT+ALT+ARROWLEFT",
     "difficulty": 1
   },
   {
-    "shortcut": "CMD+OPTION+SLASH",
-    "display": "Replace Footage",
+"display": "Replace Footage",
     "mac_sc": "CMD+OPT+SLASH",
     "pc_sc": "CTRL+ALT+SLASH",
     "difficulty": 5
   },
   {
-    "shortcut": "CMD+OPTION+QUOTE",
-    "display": "Open the Keyboard Shortcuts editor",
+"display": "Open the Keyboard Shortcuts editor",
     "mac_sc": "CMD+OPT+QUOTE",
     "pc_sc": "CTRL+ALT+QUOTE",
     "difficulty": 5
   },
   {
-    "shortcut": "SHIFT+ARROWDOWN",
-    "display": "Extend selection to next item",
+"display": "Extend selection to next item",
     "mac_sc": "SHIFT+ARROWDOWN",
     "pc_sc": "SHIFT+ARROWDOWN",
     "difficulty": 3
   },
   {
-    "shortcut": "SHIFT+ARROWUP",
-    "display": "Extend selection to previous item",
+"display": "Extend selection to previous item",
     "mac_sc": "SHIFT+ARROWUP",
     "pc_sc": "SHIFT+ARROWUP",
     "difficulty": 3
   },
   {
-    "shortcut": "CMD+SHIFT+OPTION+K",
-    "display": "Open Project Settings",
+"display": "Open Project Settings",
     "mac_sc": "CMD+SHIFT+OPT+K",
     "pc_sc": "CTRL+SHIFT+ALT+K",
     "difficulty": 5
   },
   {
-    "shortcut": "CMD+OPTION+SEMICOLON",
-    "display": "Open Preferences",
+"display": "Open Preferences",
     "mac_sc": "CMD+OPT+SEMICOLON",
     "pc_sc": "CTRL+ALT+SEMICOLON",
     "difficulty": 5
   },
   {
-    "shortcut": "CMD+1",
-    "display": "Toggle Tools Panel",
+"display": "Toggle Tools Panel",
     "mac_sc": "CMD+1",
     "pc_sc": "CTRL+1",
     "difficulty": 3
   },
   {
-    "shortcut": "CMD+2",
-    "display": "Toggle Info Panel",
+"display": "Toggle Info Panel",
     "mac_sc": "CMD+2",
     "pc_sc": "CTRL+2",
     "difficulty": 3
   },
   {
-    "shortcut": "CMD+3",
-    "display": "Toggle Preview Panel",
+"display": "Toggle Preview Panel",
     "mac_sc": "CMD+3",
     "pc_sc": "CTRL+3",
     "difficulty": 3
   },
   {
-    "shortcut": "CMD+4",
-    "display": "Toggle Audio Panel",
+"display": "Toggle Audio Panel",
     "mac_sc": "CMD+4",
     "pc_sc": "CTRL+4",
     "difficulty": 3
   },
   {
-    "shortcut": "CMD+5",
-    "display": "Toggle Effects & Presets Panel",
+"display": "Toggle Effects & Presets Panel",
     "mac_sc": "CMD+5",
     "pc_sc": "CTRL+5",
     "difficulty": 3
   },
   {
-    "shortcut": "CMD+6",
-    "display": "Toggle Character Panel",
+"display": "Toggle Character Panel",
     "mac_sc": "CMD+6",
     "pc_sc": "CTRL+6",
     "difficulty": 3
   },
   {
-    "shortcut": "CMD+7",
-    "display": "Toggle Paragraph Panel",
+"display": "Toggle Paragraph Panel",
     "mac_sc": "CMD+7",
     "pc_sc": "CTRL+7",
     "difficulty": 3
   },
   {
-    "shortcut": "CMD+8",
-    "display": "Toggle Paint Panel",
+"display": "Toggle Paint Panel",
     "mac_sc": "CMD+8",
     "pc_sc": "CTRL+8",
     "difficulty": 3
   },
   {
-    "shortcut": "CMD+9",
-    "display": "Toggle Brushes Panel",
+"display": "Toggle Brushes Panel",
     "mac_sc": "CMD+9",
     "pc_sc": "CTRL+9",
     "difficulty": 3
   },
   {
-    "shortcut": "CMD+0",
-    "display": "Toggle Project Panel",
+"display": "Toggle Project Panel",
     "mac_sc": "CMD+0",
     "pc_sc": "CTRL+0",
     "difficulty": 3
   },
   {
-    "shortcut": "CMD+OPTION+0",
-    "display": "Toggle Render Queue Panel",
+"display": "Toggle Render Queue Panel",
     "mac_sc": "CMD+OPT+0",
     "pc_sc": "CTRL+ALT+0",
     "difficulty": 3
   },
   {
-    "shortcut": "C",
-    "display": "Cycle through Camera Tools",
+"display": "Cycle through Camera Tools",
     "mac_sc": "C",
     "pc_sc": "C",
     "difficulty": 5
   },
   {
-    "shortcut": "CMD",
-    "display": "Temporarily active Selection Tool while using Pen",
+"display": "Temporarily active Selection Tool while using Pen",
     "mac_sc": "CMD",
     "pc_sc": "CTRL",
     "difficulty": 5
   },
   {
-    "shortcut": "SHIFT+OPTION+J",
-    "display": "Go to specific Time",
+"display": "Go to specific Time",
     "mac_sc": "SHIFT+OPT+J",
     "pc_sc": "SHIFT+ALT+J",
     "difficulty": 5
   },
   {
-    "shortcut": "CMD",
-    "display": "Hold this while dragging time indicator to scrub through footage",
+"display": "Hold this while dragging time indicator to scrub through footage",
     "mac_sc": "CMD",
     "pc_sc": "CTRL",
     "difficulty": 1
   },
   {
-    "shortcut": "QUOTE",
-    "display": "Toggle Safe Zone visibility",
+"display": "Toggle Safe Zone visibility",
     "mac_sc": "QUOTE",
     "pc_sc": "QUOTE",
     "difficulty": 1
   },
   {
-    "shortcut": "CMD+DEL",
-    "display": "Delete footage without warning",
+"display": "Delete footage without warning",
     "mac_sc": "CMD+DEL",
     "pc_sc": "CTRL+BACKSPACE",
     "difficulty": 5
   },
   {
-    "shortcut": "CMD+OPTION+Y",
-    "display": "New Adjustment Layer",
+"display": "New Adjustment Layer",
     "mac_sc": "CMD+OPT+Y",
     "pc_sc": "CTRL+ALT+Y",
     "difficulty": 5
   },
   {
-    "shortcut": "CMD+SHIFT+E",
-    "display": "Remove all effects from the selected layer",
+"display": "Remove all effects from the selected layer",
     "mac_sc": "CMD+SHIFT+E",
     "pc_sc": "CTRL+SHIFT+E",
     "difficulty": 5
   },
   {
-    "shortcut": "CMD+SHIFT+OPTION+E",
-    "display": "Re-apply the last effect with the same settings",
+"display": "Re-apply the last effect with the same settings",
     "mac_sc": "CMD+SHIFT+OPT+E",
     "pc_sc": "CTRL+SHIFT+ALT+E",
     "difficulty": 5
   },
   {
-    "shortcut": "CMD+X",
-    "display": "Cut the selection",
+"display": "Cut the selection",
     "mac_sc": "CMD+X",
     "pc_sc": "CTRL+X",
     "difficulty": 1
   },
   {
-    "shortcut": "CMD+C",
-    "display": "Copy the selection",
+"display": "Copy the selection",
     "mac_sc": "CMD+C",
     "pc_sc": "CTRL+C",
     "difficulty": 1
   },
   {
-    "shortcut": "CMD+V",
-    "display": "Paste",
+"display": "Paste",
     "mac_sc": "CMD+V",
     "pc_sc": "CTRL+V",
     "difficulty": 1
   },
   {
-    "shortcut": "CMD+Q",
-    "display": "Quit the application",
+"display": "Quit the application",
     "mac_sc": "CMD+Q",
      "pc_sc": "ALT+F4",
     "difficulty": 3

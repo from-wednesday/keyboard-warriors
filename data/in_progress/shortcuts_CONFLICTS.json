@@ -1,266 +1,224 @@
 [
   {
-    "shortcut": "CMD+W",
-    "display": "do not press ⌘/Ctrl W",
+"display": "do not press ⌘/Ctrl W",
     "mac_sc": "CMD+W",
     "pc_sc": "Ctrl+W",
     "difficulty": 1,
   },
   {
-    "shortcut": "CMD+T",
-    "display": "do not press ⌘/Ctrl T",
+"display": "do not press ⌘/Ctrl T",
     "mac_sc": "CMD+T",
     "pc_sc": "Ctrl+T",
     "difficulty": 1
   },
   {
-    "shortcut": "CMD+N",
-    "display": "do not press ⌘/Ctrl N",
+"display": "do not press ⌘/Ctrl N",
     "mac_sc": "CMD+N",
     "pc_sc": "Ctrl+N",
     "difficulty": 1
   },
   {
-    "shortcut": "CMD+Q",
-    "display": "do not press ⌘ Q",
+"display": "do not press ⌘ Q",
     "mac_sc": "CMD+Q",
     "difficulty": 1
   },
   {
-    "shortcut": "CMD+TAB",
-    "display": "do not press ⌘/Ctrl Tab",
+"display": "do not press ⌘/Ctrl Tab",
     "mac_sc": "CMD+Tab",
     "pc_sc": "Ctrl+Tab",
     "difficulty": 1
   },
   {
-    "shortcut": "CMD+SPACE",
-    "display": "do not press ⌘/Ctrl Space",
+"display": "do not press ⌘/Ctrl Space",
     "mac_sc": "CMD+Space",
     "pc_sc": "Ctrl+Space",
     "difficulty": 1
   },
   {
-    "shortcut": "OPTION+F4",
-    "display": "do not press Alt F4 on PC",
+"display": "do not press Alt F4 on PC",
     "pc_sc": "Alt+F4",
     "difficulty": 1
   },
   {
-    "shortcut": "CMD+1",
-    "display": "can you press ⌘/Ctrl 1? (tab switch suspect in some browsers)",
+"display": "can you press ⌘/Ctrl 1? (tab switch suspect in some browsers)",
     "mac_sc": "CMD+1",
     "pc_sc": "Ctrl+1",
     "difficulty": 1
   },
   {
-    "shortcut": "SHIFT+ESC",
-    "display": "Don't press Shift Esc on PC",
+"display": "Don't press Shift Esc on PC",
     "pc_sc": "SHIFT+ESC",
     "difficulty": 1
   },
   {
-    "shortcut": "CMD+SHIFT+B",
-    "display": "can you press ⌘/Ctrl ⇧ B? (bookmarks bar suspect in some browsers)",
+"display": "can you press ⌘/Ctrl ⇧ B? (bookmarks bar suspect in some browsers)",
     "mac_sc": "CMD+SHIFT+B",
     "pc_sc": "Ctrl+SHIFT+B",
     "difficulty": 1
   },
   {
-    "shortcut": "CMD+SHIFT+C",
-    "display": "can you press ⌘/Ctrl ⇧ C? (devtools suspect in some browsers)",
+"display": "can you press ⌘/Ctrl ⇧ C? (devtools suspect in some browsers)",
     "mac_sc": "CMD+SHIFT+C",
     "pc_sc": "Ctrl+SHIFT+C",
     "difficulty": 1
   },
   {
-    "shortcut": "CMD+SHIFT+H",
-    "display": "can you press ⌘/Ctrl ⇧ H? (history suspect in some browsers)",
+"display": "can you press ⌘/Ctrl ⇧ H? (history suspect in some browsers)",
     "mac_sc": "CMD+SHIFT+H",
     "pc_sc": "Ctrl+SHIFT+H",
     "difficulty": 1
   },
   {
-    "shortcut": "CMD+SHIFT+I",
-    "display": "can you press ⌘/Ctrl ⇧ I? (devtools suspect in some browsers)",
+"display": "can you press ⌘/Ctrl ⇧ I? (devtools suspect in some browsers)",
     "mac_sc": "CMD+SHIFT+I",
     "pc_sc": "Ctrl+SHIFT+I",
     "difficulty": 1
   },
   {
-    "shortcut": "CMD+SHIFT+J",
-    "display": "can you press ⌘/Ctrl ⇧ J? (devtools suspect in some browsers)",
+"display": "can you press ⌘/Ctrl ⇧ J? (devtools suspect in some browsers)",
     "mac_sc": "CMD+SHIFT+J",
     "pc_sc": "Ctrl+SHIFT+J",
     "difficulty": 1
   },
   {
-    "shortcut": "CMD+SHIFT+P",
-    "display": "can you press ⌘/Ctrl ⇧ P? (print suspect in some browsers)",
+"display": "can you press ⌘/Ctrl ⇧ P? (print suspect in some browsers)",
     "mac_sc": "CMD+SHIFT+P",
     "pc_sc": "Ctrl+SHIFT+P",
     "difficulty": 1
   },  
   {
-    "shortcut": "CMD+SHIFT+P",
-    "display": "don't press ⌘/Ctrl ⇧ P in Firefox",
+"display": "don't press ⌘/Ctrl ⇧ P in Firefox",
     "mac_sc": "CMD+SHIFT+P",
     "pc_sc": "Ctrl+SHIFT+P",
     "difficulty": 1
   },
     {
-    "shortcut": "F1",
-    "display": "Don't press F1 on Mac",
+"display": "Don't press F1 on Mac",
     "mac_sc": "F1",
     "difficulty": 1
   },
       {
-    "shortcut": "F2",
-    "display": "Don't press F2 on Mac",
+"display": "Don't press F2 on Mac",
     "mac_sc": "F2",
     "difficulty": 1
   },
       {
-    "shortcut": "F3",
-    "display": "Don't press F3 on Mac",
+"display": "Don't press F3 on Mac",
     "mac_sc": "F3",
     "difficulty": 1
   },
       {
-    "shortcut": "F4",
-    "display": "Don't press F4 on Mac",
+"display": "Don't press F4 on Mac",
     "mac_sc": "F4",
     "difficulty": 1
   },
       {
-    "shortcut": "F5",
-    "display": "Can you press F5 on Mac? (Suspect function)",
+"display": "Can you press F5 on Mac? (Suspect function)",
     "mac_sc": "F5",
     "difficulty": 1
   },
        {
-    "shortcut": "F6",
-    "display": "Can you press F6 on Mac? (Suspect function)",
+"display": "Can you press F6 on Mac? (Suspect function)",
     "mac_sc": "F6",
     "difficulty": 1
   },
       {
-    "shortcut": "F7",
-    "display": "Don't press F7 on Mac",
+"display": "Don't press F7 on Mac",
     "mac_sc": "F7",
     "difficulty": 1
   },
       {
-    "shortcut": "F8",
-    "display": "Don't press F8 on Mac",
+"display": "Don't press F8 on Mac",
     "mac_sc": "F8",
     "difficulty": 1
   },
       {
-    "shortcut": "F9",
-    "display": "Don't press F9 on Mac",
+"display": "Don't press F9 on Mac",
     "mac_sc": "F9",
     "difficulty": 1
   },
       {
-    "shortcut": "F10",
-    "display": "Don't press F10 on Mac",
+"display": "Don't press F10 on Mac",
     "mac_sc": "F10",
     "difficulty": 1
   },
       {
-    "shortcut": "F11",
-    "display": "Don't press F11 on Mac",
+"display": "Don't press F11 on Mac",
     "mac_sc": "F11",
     "difficulty": 1
   },
       {
-    "shortcut": "F12",
-    "display": "Don't press F12 on Mac",
+"display": "Don't press F12 on Mac",
     "mac_sc": "F12",
     "difficulty": 1
   },
   {
-    "shortcut": "CMD+SHIFT+3",
-    "display": "Don't press ⌘/Ctrl ⇧ 3 on Mac",
+"display": "Don't press ⌘/Ctrl ⇧ 3 on Mac",
     "mac_sc": "CMD+SHIFT+3",
     "difficulty": 1
   },
   {
-    "shortcut": "CMD+SHIFT+4",
-    "display": "Don't press ⌘/Ctrl ⇧ 4 on Mac",
+"display": "Don't press ⌘/Ctrl ⇧ 4 on Mac",
     "mac_sc": "CMD+SHIFT+4",
     "difficulty": 1
   },
   {
-    "shortcut": "CMD+SHIFT+5",
-    "display": "Don't press ⌘/Ctrl ⇧ 5 on Mac",
+"display": "Don't press ⌘/Ctrl ⇧ 5 on Mac",
     "mac_sc": "CMD+SHIFT+5",
     "difficulty": 1
   },
   {
-    "shortcut": "CMD+OPTION+I",
-    "display": "can you press ⌘ ⌥ I? (devtools suspect on Mac)",
+"display": "can you press ⌘ ⌥ I? (devtools suspect on Mac)",
     "mac_sc": "CMD+OPTION+I",
     "difficulty": 1
   },
   {
-    "shortcut": "CMD+OPTION+J",
-    "display": "can you press ⌘ ⌥ J? (devtools suspect on Mac)",
+"display": "can you press ⌘ ⌥ J? (devtools suspect on Mac)",
     "mac_sc": "CMD+OPTION+J",
     "difficulty": 1
   },
    {
-    "shortcut": "WIN+A",
-    "display": "Don't press Windows A on PC",
+"display": "Don't press Windows A on PC",
     "pc_sc": "WIN+A",
     "difficulty": 1
   },
      {
-    "shortcut": "WIN+D",
-    "display": "Don't press Windows D on PC",
+"display": "Don't press Windows D on PC",
     "pc_sc": "WIN+D",
     "difficulty": 1
   },
      {
-    "shortcut": "WIN+E",
-    "display": "Don't press Windows E on PC",
+"display": "Don't press Windows E on PC",
     "pc_sc": "WIN+E",
     "difficulty": 1
   },
      {
-    "shortcut": "WIN+F",
-    "display": "Don't press Windows F on PC",
+"display": "Don't press Windows F on PC",
     "pc_sc": "WIN+F",
     "difficulty": 1
   },
     {
-    "shortcut": "CMD+R",
-    "display": "can you press ⌘ R? (print suspect in some browsers)",
+"display": "can you press ⌘ R? (print suspect in some browsers)",
     "mac_sc": "CMD+R",
     "difficulty": 1
   },   
   {
-    "shortcut": "CMD+R",
-    "display": "Don't press ⌘ R in Safari",
+"display": "Don't press ⌘ R in Safari",
     "mac_sc": "CMD+R",
     "difficulty": 1
   },
       {
-    "shortcut": "CMD+O",
-    "display": "can you press ⌘ O? (print suspect in some browsers)",
+"display": "can you press ⌘ O? (print suspect in some browsers)",
     "mac_sc": "CMD+O",
     "difficulty": 1
   },
       {
-    "shortcut": "CMD+O",
-    "display": "Don't press ⌘ O in Safari",
+"display": "Don't press ⌘ O in Safari",
     "mac_sc": "CMD+O",
     "difficulty": 1
   },
   {
-    "shortcut": "CMD+OPTION+U",
-    "display": "can you press ⌘ ⌥ U? (view source suspect on Mac)",
+"display": "can you press ⌘ ⌥ U? (view source suspect on Mac)",
     "mac_sc": "CMD+OPTION+U",
     "difficulty": 1
   }

@@ -1,5 +1,5 @@
 /* ═══════════════════════════════════════════════════
-   Keyboard Warriors CSS v0024
+   Keyboard Warriors CSS
    Load order: @import → Block 1 → Block 3 → misc
    Do not reorder major sections.
    ═══════════════════════════════════════════════════ */
@@ -742,6 +742,7 @@ body.pc-mode #extKeyPill {
 
 #settingsPanelInner {
   position: absolute;
+   background: transparent;
   top: 0;
   /* left and width set by JS to match keyboardPanel */
   padding: 0 0 8px;
@@ -755,6 +756,25 @@ body.pc-mode #extKeyPill {
     opacity   0.3s ease 0.25s,
     transform 0.3s ease 0.25s;
   pointer-events: none;
+}
+
+/* Overflow fog: a static gradient strip that sits just above the credit line.
+   Normally invisible (no content reaches it), but prevents overflow from
+   bleeding into the credit area — particularly in ghost mode or on history
+   screens with long content lists. */
+#panelFog {
+  width: 100%;
+  height: 48px;
+  margin-top: -48px;
+  background: linear-gradient(to bottom, transparent 0%, #f0f4f8 100%);
+  pointer-events: none;
+  position: relative;
+  z-index: 5;
+}
+
+/* At edge: shadow stays behind the keyboard, not cast onto content above */
+body.kb-at-edge #keyboardPanel #kb-shadow {
+  display: none;
 }
 
 #settingsPanel.sp-open #settingsPanelInner {
@@ -1081,6 +1101,7 @@ li.conflict-dismissed .conflict-desc {
   position: relative;
   z-index: 1;
   gap: 4px;
+  pointer-events: auto;
 }
 .kb-row {
   display: flex;
@@ -1180,6 +1201,21 @@ li.conflict-dismissed .conflict-desc {
 }
 
 /* Utility keys */
+/* Key glyph SVGs — option (⌥), control (⌃), return (↩) on full-size Mac.
+   Absolutely positioned top-left like sym-sub so they sit in the key corner
+   consistently regardless of the key's flex layout. */
+.key .key-glyph-sym {
+  position: absolute;
+  top: 4px;
+  left: 5px;
+  display: block;
+  color: #777;
+  flex-shrink: 0;
+}
+.key .key-glyph-option  { width: 12px; height: 8px; }
+.key .key-glyph-control { width: 11px; height: 8px; }
+.key .key-glyph-return  { width: 11px; height: 9px; }
+
 .key .util-lbl {
   font-size: 9px;
   font-weight: 400;
@@ -1229,7 +1265,7 @@ li.conflict-dismissed .conflict-desc {
 .key.lock-key { cursor: pointer; }
 .key.lock-key:hover  { background: #e8e8ea; }
 .key.lock-key.active { background: #f5f5f7; }
-.key .lock-svg { width: 14px; height: 14px; opacity: 0.55; stroke: #555; }
+.key .lock-svg { width: 14px; height: 14px; opacity: 0.55; stroke: #555; transition: opacity 0.4s ease; }
 
 /* Spacebar */
 .key.space-key { width: 180px; }
@@ -1394,7 +1430,8 @@ li.conflict-dismissed .conflict-desc {
 .key.lit-green-up .mod-sym,       .key.lit-green-down .mod-sym,
 .key.lit-green-up .mod-sym-only,  .key.lit-green-down .mod-sym-only,
 .key.lit-green-up .mod-word,      .key.lit-green-down .mod-word,
-.key.lit-green-up .util-sym-only, .key.lit-green-down .util-sym-only { color: white !important; }
+.key.lit-green-up .util-sym-only, .key.lit-green-down .util-sym-only,
+.key.lit-green-up .key-glyph-sym, .key.lit-green-down .key-glyph-sym { color: white !important; }
 
 /* ── ORANGE UP: resting coloured state ── */
 .key.lit-orange-up {
@@ -1419,7 +1456,8 @@ li.conflict-dismissed .conflict-desc {
 .key.lit-orange-up .mod-sym,       .key.lit-orange-down .mod-sym,
 .key.lit-orange-up .mod-sym-only,  .key.lit-orange-down .mod-sym-only,
 .key.lit-orange-up .mod-word,      .key.lit-orange-down .mod-word,
-.key.lit-orange-up .util-sym-only, .key.lit-orange-down .util-sym-only { color: white !important; }
+.key.lit-orange-up .util-sym-only, .key.lit-orange-down .util-sym-only,
+.key.lit-orange-up .key-glyph-sym, .key.lit-orange-down .key-glyph-sym { color: white !important; }
 
 /* ── CapsLock status indicator ─────────────────────────────────────────────
    Neutral soft yellow: not green (not correct) and not orange (not wrong).
@@ -1669,7 +1707,6 @@ li.conflict-dismissed .conflict-desc {
   align-items: center;
   height: 24px;
   line-height: 1;
-  padding: 0 10px 0 0;
   font-family: 'Lato', system-ui, sans-serif;
   font-size: 12px;
   color: #9ca3af;
@@ -2366,10 +2403,20 @@ li.conflict-dismissed .conflict-desc {
   perspective:        900px;
   perspective-origin: 50% 50%;
   transform-style:    preserve-3d;
-  transition:         transform 0.85s cubic-bezier(0.4, 0, 0.2, 1);
+  transition:         transform 0.85s cubic-bezier(0.4, 0, 0.2, 1),
+                      padding-top 0.45s cubic-bezier(0.4, 0, 0.2, 1);
   overflow:           visible;
   position:           relative;
   z-index:            2; /* above settingsPanel (z:1) */
+  pointer-events:     none;
+}
+
+/* Spacer: when a panel is open, push the keyboard down so the fold reveals
+   more page content above it. Padding transitions in with the panel. */
+#settingsPanel.sp-open ~ #kbFlipStage {
+  padding-top: 28px;
+  transition: transform 0.85s cubic-bezier(0.4, 0, 0.2, 1),
+              padding-top 0.55s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 /* ─── PANEL ──────────────────────────────────────────*/
@@ -2476,6 +2523,114 @@ li.conflict-dismissed .conflict-desc {
 
 
 
+/* ─── DRAG HANDLE ─────────────────────────────────────
+   Restored to a simple invisible hit-strip at the top
+   of #keyboardPanel. Pointer events wired by the open/
+   close classes on #keyboardWrap as before.            */
+/* Sentinel: zero-height anchor at the top of keyboardPanel.
+   Lives in 3D transform space so BCR.top always equals the
+   keyboard's true visual top edge regardless of rotateX angle. */
+#kbTopSentinel {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 0;
+  pointer-events: none;
+}
+
+#kbDragHandle {
+  position: absolute;
+  top: -10px;
+  left: 14px;
+  right: 14px;
+  height: 28px;
+  z-index: 100;
+  pointer-events: none;
+  cursor: grab;
+  border-radius: 8px 8px 0 0;
+  /* Prevent the browser attempting scroll when the user drags the keyboard
+     angle handle on touch devices — all touch handling is done in JS. */
+  touch-action: none;
+}
+#keyboardWrap.settings-open #kbDragHandle {
+  pointer-events: auto;
+  touch-action: none;
+}
+#keyboardWrap.settings-open #kbDragHandle:active {
+  cursor: grabbing;
+}
+/* Disable the keyboard body as a hit target while settings are open. */
+#keyboardWrap.settings-open #keyboardPanel {
+  pointer-events: none;
+}
+
+/* ─── DRAG HANDLE AFFORDANCE ──────────────────────────
+   Lives inside #settingsPanel (sibling of
+   settingsPanelInner). Left and width are set by
+   _spAlignPanel() in JS so it always matches the
+   keyboard panel's real pixel dimensions exactly.
+
+   bottom: 0 pins it to the bottom of #settingsPanel
+   which is itself positioned to fill #keyboardWrap,
+   so the SVG sits just above the keyboard stage top.
+
+   Desktop: invisible, fades in on mouseenter of the
+   kbDragHandle zone (pointer events on the handle,
+   visual on the affordance — they overlap).
+   Touch: always visible while settings are open.      */
+#kbHandleAffordance {
+  position: absolute;
+  /* top, left and width set by JS via _repositionAffordance */
+  height: 80px;
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 0.22s ease;
+  /* No transform transition — arrow rotation is instant during drag,
+     animated snaps use _animateToPartialAngle's own 850ms transition */
+  transform-origin: center bottom;
+  z-index: 200;
+}
+#kbHandleAffordance svg {
+  width: 100%;
+  height: auto;
+  display: block;
+}
+
+#kbAffordanceArrow {
+  transition: transform 0.85s cubic-bezier(0.4, 0, 0.2, 1);
+}
+/* During drag the transition is suppressed by JS so it tracks instantly */
+#kbHandleAffordance.dragging #kbAffordanceArrow {
+  transition: none;
+}
+
+/* Show on hover via .handle-hover class toggled by JS on #kbDragHandle */
+#kbHandleAffordance.handle-hover {
+  opacity: 1;
+}
+
+/* Subtle press feedback */
+#kbHandleAffordance.handle-active {
+  opacity: 0.55;
+}
+
+/* Never show when keyboard is at face position */
+#keyboardWrap.kb-at-face #kbHandleAffordance {
+  opacity: 0 !important;
+  transition: none;
+}
+
+/* Touch: always visible when settings are open */
+@media (hover: none) {
+  #keyboardWrap.settings-open #kbHandleAffordance {
+    opacity: 1;
+  }
+}
+
 /* ─── DROP SHADOW ─────────────────────────────────────
    Blurred translucent blob at negative Z — floats the
    keyboard just above the surface, shadow falls on
@@ -2494,8 +2649,8 @@ li.conflict-dismissed .conflict-desc {
   z-index:        0;
 }
 #keyboardPanel.kb-edged #kb-shadow {
-  background: rgba(0,0,0,0.6);
-  transform:  translateZ(-10px) translateY(42px);
+  background: rgba(0,0,0,0.45);
+  transform:  translateZ(-10px) translateY(6px);
 }
 
 
@@ -2533,6 +2688,10 @@ li.conflict-dismissed .conflict-desc {
   display: flex;
   align-items: center;
   justify-content: center;
+  /* Always above the kbFlipStage (z-index 2) so icon clicks are never
+     blocked when the stage has pointer-events:none applied by JS. */
+  z-index: 4;
+  pointer-events: auto;
 }
 #kbIconWrap { left: 0; }
 #brIconWrap { right: 0; }
@@ -2542,8 +2701,16 @@ li.conflict-dismissed .conflict-desc {
   display: flex;
   justify-content: center;
   margin-top: 4px;
+  /* diffIconWrap sits in normal document flow below the keyboard wrap.
+     When the keyboard folds down (stage translates), the wrap's minHeight
+     increases and diffIconWrap is pushed further down naturally.
+     The translate nudge at face position tucks it up into the keyboard shadow. */
   transform: translateY(0);
   transition: transform 0.85s cubic-bezier(0.4, 0, 0.2, 1);
+  /* Ensure the icon is always clickable — sit above the keyboard stage's
+     pointer-events:none zone that is set while a panel is open. */
+  position: relative;
+  z-index: 3;
 }
 #diffIcon {
   display: block; fill: #9ca3af; pointer-events: auto;
@@ -2719,7 +2886,11 @@ body.returning-screen #diffIconWrap .icon-tip { display: none; }
 }
 
 /* Suppress the standard centred gutter line — we draw it manually */
-#panelEndGameReportCard.sp-page-report.sp-active::after {
+##cheatSheetList {
+  padding-top: 30px;
+  max-height: var(--cheat-sheet-left-list-max-height, 320px);
+  overflow: hidden;
+}.sp-page-report.sp-active::after {
   display: none;
 }
 
@@ -2908,7 +3079,7 @@ body.returning-screen #diffIconWrap .icon-tip { display: none; }
 }
 
 /* Cheat sheet panel: full-width title row above the two columns */
-#panelCheatSheet.sp-page-padlock.sp-active {
+#panelCheatSheet.sp-page-cheatsheet.sp-active {
   display: grid;
   grid-template-columns: 1fr 1fr;
   grid-template-rows: auto auto;
@@ -2916,26 +3087,26 @@ body.returning-screen #diffIconWrap .icon-tip { display: none; }
     "title title"
     "left  right";
 }
-#panelCheatSheet.sp-page-padlock .sp-col-left  { grid-area: left; }
-#panelCheatSheet.sp-page-padlock .sp-col-right { grid-area: right; }
-#panelCheatSheet.sp-page-padlock.sp-active::after {
+#panelCheatSheet.sp-page-cheatsheet .sp-col-left  { grid-area: left; }
+#panelCheatSheet.sp-page-cheatsheet .sp-col-right { grid-area: right; }
+#panelCheatSheet.sp-page-cheatsheet.sp-active::after {
   top: 16px;
 }
-.sp-padlock-title-row {
+.sp-cheatsheet-title-row {
   grid-area: title;
   text-align: center;
   padding-bottom: 10px;
   border-bottom: 1px solid #e5e7eb;
   margin-bottom: 10px;
 }
-.sp-padlock-main-heading {
+.sp-cheatsheet-main-heading {
   font-size: 15px;
   font-weight: 700;
   color: #1e3a5f;
   margin: 0 0 2px 0;
   line-height: 1.2;
 }
-.sp-padlock-byline {
+.sp-cheatsheet-byline {
   font-size: 11px;
   font-style: italic;
   color: #9ca3af;
@@ -3045,6 +3216,7 @@ body.returning-screen #diffIconWrap .icon-tip { display: none; }
 #keyboardPanel.ghost-mode .key .mod-sym-only,
 #keyboardPanel.ghost-mode .key .mod-word,
 #keyboardPanel.ghost-mode .key .util-sym-only,
+#keyboardPanel.ghost-mode .key .key-glyph-sym,
 #keyboardPanel.ghost-mode .key .lock-svg,
 #keyboardPanel.ghost-mode .key .win-svg { opacity: 0; }
 #keyboardPanel.ghost-mode #kb-wall-bottom,
@@ -3073,6 +3245,8 @@ body.returning-screen #diffIconWrap .icon-tip { display: none; }
 #keyboardPanel.ghost-mode .key.lit-green-down .util-lbl,
 #keyboardPanel.ghost-mode .key.lit-green-up  .util-sym-only,
 #keyboardPanel.ghost-mode .key.lit-green-down .util-sym-only,
+#keyboardPanel.ghost-mode .key.lit-green-up  .key-glyph-sym,
+#keyboardPanel.ghost-mode .key.lit-green-down .key-glyph-sym,
 #keyboardPanel.ghost-mode .key.lit-orange-up  .letter-lbl,
 #keyboardPanel.ghost-mode .key.lit-orange-down .letter-lbl,
 #keyboardPanel.ghost-mode .key.lit-orange-up  .sym-main,
@@ -3084,9 +3258,17 @@ body.returning-screen #diffIconWrap .icon-tip { display: none; }
 #keyboardPanel.ghost-mode .key.lit-orange-up  .util-lbl,
 #keyboardPanel.ghost-mode .key.lit-orange-down .util-lbl,
 #keyboardPanel.ghost-mode .key.lit-orange-up  .util-sym-only,
-#keyboardPanel.ghost-mode .key.lit-orange-down .util-sym-only {
+#keyboardPanel.ghost-mode .key.lit-orange-down .util-sym-only,
+#keyboardPanel.ghost-mode .key.lit-orange-up  .key-glyph-sym,
+#keyboardPanel.ghost-mode .key.lit-orange-down .key-glyph-sym {
   opacity: 1 !important;
   color: white !important;
+}
+
+/* Ghost mode: faint lock-key hint visible when keyboard is facing up.
+   Overrides the opacity:0 set by the ghost-mode block above. */
+#keyboardPanel.ghost-mode .key.lock-key.ghost-lock-visible .lock-svg {
+  opacity: 0.07;
 }
 
 
@@ -3096,8 +3278,13 @@ body.returning-screen #diffIconWrap .icon-tip { display: none; }
    both selectors are scoped to specific IDs.
    ═══════════════════════════════════════════════════ */
 
-/* Pause-nudge SVG gauge strokes (was inline in SVG element) */
-.pn-stroke { fill:none; stroke:currentColor; stroke-width:2px; stroke-linecap:round; stroke-miterlimit:10; }
+/* App pill open: fade the main title out of view */
+  #title.app-pill-open {
+  opacity: 0;
+  transition: opacity 1s ease;
+}
+
+/* Pause-nudge SVG gauge strokes (was inline in SVG element) */.pn-stroke { fill:none; stroke:currentColor; stroke-width:2px; stroke-linecap:round; stroke-miterlimit:10; }
 
 /* ── Blur pause diagnostic panel ────────────────────────────────────────────
    Hides both settings columns and shows the full-width diagnostic block.   */
@@ -3384,8 +3571,8 @@ body.returning-screen #diffIconWrap .icon-tip { display: none; }
   display: none;
 }
 
-/* Padlock panel */
-#phonePanelArea #panelCheatSheet.sp-page-padlock.sp-active {
+/* Cheat Sheet panel */
+#phonePanelArea #panelCheatSheet.sp-page-cheatsheet.sp-active {
   display: flex;
   flex-direction: column;
 }

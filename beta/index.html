@@ -2291,7 +2291,7 @@ const EXT_KEY_LABELS = {
   'PageUp': 'pg up', 'PageDown': 'pg dn',
   'Insert': 'insert', 'Delete': 'del',
   'PrintScreen': 'prt sc', 'ScrollLock': 'scr lk', 'Pause': 'pause',
-  'NumLock': 'num lk',
+  'NumLock': 'clear',
 };
 const extKeyPillEl = document.getElementById('extKeyPill');
 let extKeyPillTimer = null;
@@ -9834,6 +9834,7 @@ function BuildShortcutKeyChips(TokenString, IsWeakness) {
     'BACKSPACE':'⌫','DELETE':'⌦','CAPSLOCK':'⇪',
     'ARROWUP':'↑','ARROWDOWN':'↓','ARROWLEFT':'←','ARROWRIGHT':'→',
     'HOME':'↖','END':'↘','PAGEUP':'⇞','PAGEDOWN':'⇟',
+    'NUMLOCK':'clear',
     'EQUAL':'=','MINUS':'-','BRACKETLEFT':'[','BRACKETRIGHT':']',
     'BACKSLASH':'\\','SEMICOLON':';','QUOTE':"'",'COMMA':',',
     'PERIOD':'.','SLASH':'/','GRAVE':'`',
@@ -9844,6 +9845,7 @@ function BuildShortcutKeyChips(TokenString, IsWeakness) {
     'BACKSPACE':'⌫','DELETE':'⌦','CAPSLOCK':'Caps',
     'ARROWUP':'↑','ARROWDOWN':'↓','ARROWLEFT':'←','ARROWRIGHT':'→',
     'HOME':'Home','END':'End','PAGEUP':'PgUp','PAGEDOWN':'PgDn',
+    'NUMLOCK':'NumLk',
     'EQUAL':'=','MINUS':'-','BRACKETLEFT':'[','BRACKETRIGHT':']',
     'BACKSLASH':'\\','SEMICOLON':';','QUOTE':"'",'COMMA':',',
     'PERIOD':'.','SLASH':'/','GRAVE':'`',

@@ -1,777 +1,645 @@
 [
  {
-    "shortcut": "CMD+SHIFT+/",
-    "display": "open keyboard shortcuts",
-    "mac_sc": "none",
-    "pc_sc": "Ctrl ⇧ ?",
+"display": "open keyboard shortcuts",
+    "mac_sc": "CMD+SHIFT+SLASH",
+    "pc_sc": "CTRL+SHIFT+SLASH",
     "difficulty": 5
   },
-   {
-    "shortcut": "CONTROL+SHIFT+/",
-    "display": "open keyboard shortcuts",
-    "mac_sc": "⌃ ⇧ ?",
-    "pc_sc": "none",
-    "difficulty": 5
-  },
+  
   {
-    "shortcut": "CMD+1",
-    "display": "view at 100% zoom",
-    "mac_sc": "⌘ 1",
-    "pc_sc": "Ctrl 1",
+"display": "view at 100% zoom",
+    "mac_sc": "CMD+1",
+    "pc_sc": "CTRL+1",
     "difficulty": 1
   },
   {
-    "shortcut": "V",
-    "display": "switch to the Selection tool",
+"display": "switch to the Selection tool",
     "mac_sc": "V",
     "pc_sc": "V",
     "difficulty": 1
   },
   {
-    "shortcut": "P",
-    "display": "pick up the Pen tool",
+"display": "pick up the Pen tool",
     "mac_sc": "P",
     "pc_sc": "P",
     "difficulty": 1
   },
   {
-    "shortcut": "T",
-    "display": "switch to the Type tool",
+"display": "switch to the Type tool",
     "mac_sc": "T",
     "pc_sc": "T",
     "difficulty": 1
   },
   {
-    "shortcut": "L",
-    "display": "switch to the Line tool",
+"display": "switch to the Line tool",
     "mac_sc": "L",
     "pc_sc": "L",
     "difficulty": 1
   },
   {
-    "shortcut": "O",
-    "display": "switch to the Ellipse tool",
+"display": "switch to the Ellipse tool",
     "mac_sc": "O",
     "pc_sc": "O",
     "difficulty": 1
   },
   {
-    "shortcut": "M",
-    "display": "switch to the Rectangle tool",
+"display": "switch to the Rectangle tool",
     "mac_sc": "M",
     "pc_sc": "M",
     "difficulty": 1
   },
   {
-    "shortcut": "I",
-    "display": "pick up the Eyedropper",
-    "mac_sc": "I",
+"display": "pick up the Eyedropper",
+    "mac_sc": "I|CTRL+C",
     "pc_sc": "I",
-    "difficulty": 1,
-    "alternates": [
-      "CTRL+C"
-    ]
+    "difficulty": 1
   },
   {
-    "shortcut": "Z",
-    "display": "pick up the Magnifying Glass",
+"display": "pick up the Magnifying Glass",
     "mac_sc": "Z",
     "pc_sc": "Z",
     "difficulty": 1
   },
   {
-    "shortcut": "C",
-    "display": "select the Comment tool",
+"display": "select the Comment tool",
     "mac_sc": "C",
     "pc_sc": "C",
     "difficulty": 1
   },
   {
-    "shortcut": "H",
-    "display": "select the Hand tool",
-    "mac_sc": "H",
-    "pc_sc": "H",
-    "difficulty": 1,
-    "alternates": [
-      "SPACE"
-    ]
+"display": "select the Hand tool",
+    "mac_sc": "H|SPACE",
+    "pc_sc": "H|SPACE",
+    "difficulty": 1
   },
   {
-    "shortcut": "F",
-    "display": "switch to the Frame tool",
+"display": "switch to the Frame tool",
     "mac_sc": "F",
     "pc_sc": "F",
     "difficulty": 1
   },
   {
-    "shortcut": "X",
-    "display": "swap Foreground & Background colours",
+"display": "swap Foreground & Background colours",
     "mac_sc": "X",
     "pc_sc": "X",
     "difficulty": 1
   },
   {
-    "shortcut": "SPACE",
-    "display": "hold to quickly pan with Hand tool",
-    "mac_sc": "Space",
-    "pc_sc": "Space",
+"display": "hold to quickly pan with Hand tool",
+    "mac_sc": "SPACE",
+    "pc_sc": "SPACE",
     "difficulty": 1
   },
   {
-    "shortcut": "SHIFT",
-    "display": "hold to Constrain Proportions while transforming",
-    "mac_sc": "⇧ Shift",
-    "pc_sc": "⇧ Shift",
+"display": "hold to Constrain Proportions while transforming",
+    "mac_sc": "SHIFT",
+    "pc_sc": "SHIFT",
     "difficulty": 1
   },
   {
-    "shortcut": "SHIFT",
-    "display": "hold to Add to the selection",
-    "mac_sc": "⇧ Shift",
-    "pc_sc": "⇧ Shift",
+"display": "hold to Add to the selection",
+    "mac_sc": "SHIFT",
+    "pc_sc": "SHIFT",
     "difficulty": 1
   },
   {
-    "shortcut": "OPTION",
-    "display": "hold to transform from Centre",
-    "mac_sc": "⌥ Option",
-    "pc_sc": "Alt",
+"display": "hold to transform from Centre",
+    "mac_sc": "OPT",
+    "pc_sc": "ALT",
     "difficulty": 1
   },
   {
-    "shortcut": "CMD+=",
-    "display": "Zoom IN",
-    "mac_sc": "⌘ =",
-    "pc_sc": "Ctrl =",
+"display": "Zoom IN",
+    "mac_sc": "CMD+PLUS",
+    "pc_sc": "CTRL+PLUS",
     "difficulty": 1
   },
   {
-    "shortcut": "CMD+-",
-    "display": "Zoom OUT",
-    "mac_sc": "⌘ -",
-    "pc_sc": "Ctrl -",
+"display": "Zoom OUT",
+    "mac_sc": "CMD+MINUS",
+    "pc_sc": "CTRL+MINUS",
     "difficulty": 1
   },
   {
-    "shortcut": "CMD+;",
-    "display": "show/hide Guides",
-    "mac_sc": "⌘ ;",
-    "pc_sc": "Ctrl ;",
-    "difficulty": 1,
-    "alternates": [
-      "SHIFT+G"
-    ]
+"display": "show/hide Guides",
+    "mac_sc": "CMD+SEMICOLON|SHIFT+G",
+    "pc_sc": "CTRL+SEMICOLON|SHIFT+G",
+    "difficulty": 1
   },
   {
-    "shortcut": "CMD+SHIFT+H",
-    "display": "fit content to Screen",
-    "mac_sc": "⌘ ⇧ H",
-    "pc_sc": "Ctrl ⇧ H",
+"display": "fit content to Screen",
+    "mac_sc": "CMD+SHIFT+H",
+    "pc_sc": "CTRL+SHIFT+H",
     "difficulty": 3
   },
   {
-    "shortcut": "CMD+G",
-    "display": "Group selected objects",
-    "mac_sc": "⌘ G",
-    "pc_sc": "Ctrl G",
+"display": "Group selected objects",
+    "mac_sc": "CMD+G",
+    "pc_sc": "CTRL+G",
     "difficulty": 1
   },
   {
-    "shortcut": "CMD+SHIFT+G",
-    "display": "Ungroup objects",
-    "mac_sc": "⌘ ⇧ G",
-    "pc_sc": "Ctrl ⇧ G",
+"display": "Ungroup objects",
+    "mac_sc": "CMD+SHIFT+G",
+    "pc_sc": "CTRL+SHIFT+G",
     "difficulty": 3
   },
   {
-    "shortcut": "CMD+]",
-    "display": "Raise object one level in stack",
-    "mac_sc": "⌘ ]",
-    "pc_sc": "Ctrl ]",
+"display": "Raise object one level in stack",
+    "mac_sc": "CMD+BRACKETRIGHT",
+    "pc_sc": "CTRL+BRACKETRIGHT",
     "difficulty": 1
   },
   {
-    "shortcut": "CMD+[",
-    "display": "Lower object one level in stack",
-    "mac_sc": "⌘ [",
-    "pc_sc": "Ctrl [",
+"display": "Lower object one level in stack",
+    "mac_sc": "CMD+BRACKETLEFT",
+    "pc_sc": "CTRL+BRACKETLEFT",
     "difficulty": 1
   },
   {
-  "shortcut": "CMD+D",
-  "display": "Duplicate the selection",
-  "mac_sc": "⌘ D",
-  "pc_sc": "Ctrl D",
+"display": "Duplicate the selection",
+  "mac_sc": "CMD+D|OPT",
+  "pc_sc": "CTRL+D|ALT",
   "pc_safe": true,
-  "difficulty": 1,
-  "group": "",
-  "alternates": [
-    "OPTION"
-  ]
+  "difficulty": 1
 },
   {
-    "shortcut": "CMD+SHIFT+A",
-    "display": "Deselect ALL",
-    "mac_sc": "⌘ ⇧ A",
-    "pc_sc": "Ctrl ⇧ A",
+"display": "Deselect ALL",
+    "mac_sc": "CMD+SHIFT+A",
+    "pc_sc": "CTRL+SHIFT+A",
     "difficulty": 3
   },
   {
-    "shortcut": "CMD+OPTION+G",
-    "display": "Frame the selection",
-    "mac_sc": "⌘ ⌥ G",
-    "pc_sc": "Ctrl Alt G",
+"display": "Frame the selection",
+    "mac_sc": "CMD+OPT+G",
+    "pc_sc": "CTRL+ALT+G",
     "difficulty": 1
   },
   {
-    "shortcut": "CMD+E",
-    "display": "Flatten the selection",
-    "mac_sc": "⌘ E",
-    "pc_sc": "Ctrl E",
+"display": "Flatten the selection",
+    "mac_sc": "CMD+E",
+    "pc_sc": "CTRL+E",
     "difficulty": 3
   },
   {
-    "shortcut": "SHIFT+A",
-    "display": "add Auto Layout",
-    "mac_sc": "⇧ A",
-    "pc_sc": "⇧ A",
+"display": "add Auto Layout",
+    "mac_sc": "SHIFT+A",
+    "pc_sc": "SHIFT+A",
     "difficulty": 1
   },
   {
-    "shortcut": "CMD+SHIFT+>",
-    "display": "Increase font size",
-    "mac_sc": "⌘ ⇧ >",
-    "pc_sc": "Ctrl ⇧ >",
+"display": "Increase font size",
+    "mac_sc": "CMD+SHIFT+PERIOD",
+    "pc_sc": "CTRL+SHIFT+PERIOD",
     "difficulty": 3
   },
   {
-    "shortcut": "CMD+SHIFT+<",
-    "display": "Decrease font size",
-    "mac_sc": "⌘ ⇧ <",
-    "pc_sc": "Ctrl ⇧ <",
+"display": "Decrease font size",
+    "mac_sc": "CMD+SHIFT+COMMA",
+    "pc_sc": "CTRL+SHIFT+COMMA",
     "difficulty": 3
   },
   {
-    "shortcut": "CMD+SHIFT+L",
-    "display": "Align text left",
-    "mac_sc": "⌘ ⇧ L",
-    "pc_sc": "Ctrl ⇧ L",
+"display": "Align text left",
+    "mac_sc": "CMD+SHIFT+L",
+    "pc_sc": "CTRL+SHIFT+L",
     "difficulty": 3
   },
   {
-    "shortcut": "CMD+SHIFT+C",
-    "display": "Align text to centre",
-    "mac_sc": "⌘ ⇧ C",
-    "pc_sc": "Ctrl ⇧ C",
+"display": "Align text to centre",
+    "mac_sc": "CMD+SHIFT+C",
+    "pc_sc": "CTRL+SHIFT+C",
     "difficulty": 3
   },
   {
-    "shortcut": "ARROWLEFT",
-    "display": "nudge 1px Left",
-    "mac_sc": "← ",
-    "pc_sc": "← ",
+"display": "nudge 1px Left",
+    "mac_sc": "ARROWLEFT",
+    "pc_sc": "ARROWLEFT",
     "difficulty": 1,
     "group": "nudge"
   },
   {
-    "shortcut": "ARROWRIGHT",
-    "display": "nudge 1px Right",
-    "mac_sc": "→ ",
-    "pc_sc": "→ ",
+"display": "nudge 1px Right",
+    "mac_sc": "ARROWRIGHT",
+    "pc_sc": "ARROWRIGHT",
     "difficulty": 1,
     "group": "nudge"
   },
   {
-    "shortcut": "ARROWUP",
-    "display": "nudge 1px UP",
-    "mac_sc": "↑ ",
-    "pc_sc": "↑ ",
+"display": "nudge 1px UP",
+    "mac_sc": "ARROWUP",
+    "pc_sc": "ARROWUP",
     "difficulty": 1,
     "group": "nudge"
   },
   {
-    "shortcut": "ARROWDOWN",
-    "display": "nudge 1px Down",
-    "mac_sc": "↓ ",
-    "pc_sc": "↓ ",
+"display": "nudge 1px Down",
+    "mac_sc": "ARROWDOWN",
+    "pc_sc": "ARROWDOWN",
     "difficulty": 1,
     "group": "nudge"
   },
   {
-    "shortcut": "SHIFT+ARROWLEFT",
-    "display": "nudge 10px Left",
-    "mac_sc": "⇧ ← ",
-    "pc_sc": "⇧ ← ",
+"display": "nudge 10px Left",
+    "mac_sc": "SHIFT+ARROWLEFT",
+    "pc_sc": "SHIFT+ARROWLEFT",
     "difficulty": 1,
     "group": "nudge"
   },
   {
-    "shortcut": "SHIFT+ARROWRIGHT",
-    "display": "nudge 10px Right",
-    "mac_sc": "⇧ → ",
-    "pc_sc": "⇧ → ",
+"display": "nudge 10px Right",
+    "mac_sc": "SHIFT+ARROWRIGHT",
+    "pc_sc": "SHIFT+ARROWRIGHT",
     "difficulty": 1,
     "group": "nudge"
   },
   {
-    "shortcut": "SHIFT+ARROWUP",
-    "display": "nudge 10px UP",
-    "mac_sc": "⇧ ↑ ",
-    "pc_sc": "⇧ ↑ ",
+"display": "nudge 10px UP",
+    "mac_sc": "SHIFT+ARROWUP",
+    "pc_sc": "SHIFT+ARROWUP",
     "difficulty": 1,
     "group": "nudge"
   },
   {
-    "shortcut": "SHIFT+ARROWDOWN",
-    "display": "nudge 10px Down",
-    "mac_sc": "⇧ ↓ ",
-    "pc_sc": "⇧ ↓ ",
+"display": "nudge 10px Down",
+    "mac_sc": "SHIFT+ARROWDOWN",
+    "pc_sc": "SHIFT+ARROWDOWN",
     "difficulty": 1,
     "group": "nudge"
   },
   {
-    "shortcut": "CMD+/",
-    "display": "open Quick Actions search",
-    "mac_sc": "⌘ /",
-    "pc_sc": "Ctrl /",
+"display": "open Quick Actions search",
+    "mac_sc": "CMD+SLASH",
+    "pc_sc": "CTRL+SLASH",
     "difficulty": 3
   },
   {
-    "shortcut": "CMD+OPTION+K",
-    "display": "create Component",
-    "mac_sc": "⌘ ⌥ K",
-    "pc_sc": "Ctrl Alt K",
+"display": "create Component",
+    "mac_sc": "CMD+OPT+K",
+    "pc_sc": "CTRL+ALT+K",
     "difficulty": 1
   },
   {
-    "shortcut": "CMD+OPTION+B",
-    "display": "Detach Instance",
-    "mac_sc": "⌘ ⌥ B",
-    "pc_sc": "Ctrl Alt B",
+"display": "Detach Instance",
+    "mac_sc": "CMD+OPT+B",
+    "pc_sc": "CTRL+ALT+B",
     "difficulty": 5
   },
   {
-    "shortcut": "CMD+OPTION+/",
-    "display": "Swap Instance",
-    "mac_sc": "⌘ ⌥ /",
-    "pc_sc": "Ctrl Alt /",
+"display": "Swap Instance",
+    "mac_sc": "CMD+OPT+SLASH",
+    "pc_sc": "CTRL+ALT+SLASH",
     "difficulty": 5
   },
   {
-    "shortcut": "CMD+OPTION+C",
-    "display": "Copy Properties",
-    "mac_sc": "⌘ ⌥ C",
-    "pc_sc": "Ctrl Alt C",
+"display": "Copy Properties",
+    "mac_sc": "CMD+OPT+C",
+    "pc_sc": "CTRL+ALT+C",
     "difficulty": 1
   },
   {
-    "shortcut": "CMD+OPTION+V",
-    "display": "Paste Properties",
-    "mac_sc": "⌘ ⌥ V",
-    "pc_sc": "Ctrl Alt V",
+"display": "Paste Properties",
+    "mac_sc": "CMD+OPT+V",
+    "pc_sc": "CTRL+ALT+V",
     "difficulty": 1
   },
   {
-    "shortcut": "N",
-    "display": "zoom to Next frame",
+"display": "zoom to Next frame",
     "mac_sc": "N",
     "pc_sc": "N",
     "difficulty": 1
   },
   {
-    "shortcut": "SHIFT+N",
-    "display": "zoom to Previous frame",
-    "mac_sc": "⇧ N",
-    "pc_sc": "⇧ N",
+"display": "zoom to Previous frame",
+    "mac_sc": "SHIFT+N",
+    "pc_sc": "SHIFT+N",
     "difficulty": 1
   },
   {
-    "shortcut": "]",
-    "display": "raise to Front",
-    "mac_sc": "]",
-    "pc_sc": "]",
+"display": "raise to Front",
+    "mac_sc": "BRACKETRIGHT",
+    "pc_sc": "BRACKETRIGHT",
     "difficulty": 1
   },
   {
-    "shortcut": "[",
-    "display": "lower to Back",
-    "mac_sc": "[",
-    "pc_sc": "[",
+"display": "lower to Back",
+    "mac_sc": "BRACKETLEFT",
+    "pc_sc": "BRACKETLEFT",
     "difficulty": 1
   },
   {
-    "shortcut": "ENTER",
-    "display": "Dive into group (select Child)",
-    "mac_sc": "⏎ Return",
-    "pc_sc": "Enter",
+"display": "Dive into group (select Child)",
+    "mac_sc": "RETURN",
+    "pc_sc": "ENTER",
     "difficulty": 1
   },
   {
-    "shortcut": "SHIFT+ENTER",
-    "display": "select Parent Container",
-    "mac_sc": "⇧ ⏎ ",
-    "pc_sc": "⇧ Enter",
+"display": "select Parent Container",
+    "mac_sc": "SHIFT+RETURN",
+    "pc_sc": "SHIFT+ENTER",
     "difficulty": 1
   },
   {
-    "shortcut": "OPTION",
-    "display": "hold this while you drag to Duplicate",
-    "mac_sc": "⌥ Option",
-    "pc_sc": "Alt",
+"display": "hold this while you drag to Duplicate",
+    "mac_sc": "OPT",
+    "pc_sc": "ALT",
     "difficulty": 3
   },
   {
-    "shortcut": "CMD+SHIFT+V",
-    "display": "Paste in Place",
-    "mac_sc": "⌘ ⇧ V",
-    "pc_sc": "Ctrl ⇧ V",
+"display": "Paste in Place",
+    "mac_sc": "CMD+SHIFT+V",
+    "pc_sc": "CTRL+SHIFT+V",
     "difficulty": 3
   },
   {
-    "shortcut": "SHIFT+I",
-    "display": "open Resources (Components/Plugins) search bar",
-    "mac_sc": "⇧ I",
-    "pc_sc": "⇧ I",
+"display": "open Resources (Components/Plugins) search bar",
+    "mac_sc": "SHIFT+I",
+    "pc_sc": "SHIFT+I",
     "difficulty": 5
   },
   {
-    "shortcut": "CMD+BACKSLASH",
-    "display": "Show/Hide UI",
-    "mac_sc": "⌘ \\\\",
-    "pc_sc": "Ctrl \\\\",
+"display": "Show/Hide UI",
+    "mac_sc": "CMD+BACKSLASH",
+    "pc_sc": "CTRL+BACKSLASH",
     "difficulty": 5
   },
   {
-    "shortcut": "SHIFT+H",
-    "display": "Flip Horizontal",
-    "mac_sc": "⇧ H",
-    "pc_sc": "⇧ H",
+"display": "Flip Horizontal",
+    "mac_sc": "SHIFT+H",
+    "pc_sc": "SHIFT+H",
     "difficulty": 3
   },
   {
-    "shortcut": "SHIFT+V",
-    "display": "Flip Vertical",
-    "mac_sc": "⇧ V",
-    "pc_sc": "⇧ V",
+"display": "Flip Vertical",
+    "mac_sc": "SHIFT+V",
+    "pc_sc": "SHIFT+V",
     "difficulty": 3
   },
   {
-    "shortcut": "SHIFT+R",
-    "display": "toggle Rulers",
-    "mac_sc": "⇧ R",
-    "pc_sc": "⇧ R",
+"display": "toggle Rulers",
+    "mac_sc": "SHIFT+R",
+    "pc_sc": "SHIFT+R",
     "difficulty": 1
   },
   {
-    "shortcut": "1",
-    "display": "set Opacity to 10%",
+"display": "set Opacity to 10%",
     "mac_sc": "1",
     "pc_sc": "1",
     "difficulty": 1,
     "group": "opacity"
   },
   {
-    "shortcut": "2",
-    "display": "set Opacity to 20%",
+"display": "set Opacity to 20%",
     "mac_sc": "2",
     "pc_sc": "2",
     "difficulty": 1,
     "group": "opacity"
   },
   {
-    "shortcut": "3",
-    "display": "set Opacity to 30%",
+"display": "set Opacity to 30%",
     "mac_sc": "3",
     "pc_sc": "3",
     "difficulty": 1,
     "group": "opacity"
   },
   {
-    "shortcut": "4",
-    "display": "set Opacity to 40%",
+"display": "set Opacity to 40%",
     "mac_sc": "4",
     "pc_sc": "4",
     "difficulty": 1,
     "group": "opacity"
   },
   {
-    "shortcut": "5",
-    "display": "set Opacity to 50%",
+"display": "set Opacity to 50%",
     "mac_sc": "5",
     "pc_sc": "5",
     "difficulty": 1,
     "group": "opacity"
   },
   {
-    "shortcut": "6",
-    "display": "set Opacity to 60%",
+"display": "set Opacity to 60%",
     "mac_sc": "6",
     "pc_sc": "6",
     "difficulty": 1,
     "group": "opacity"
   },
   {
-    "shortcut": "7",
-    "display": "set Opacity to 70%",
+"display": "set Opacity to 70%",
     "mac_sc": "7",
     "pc_sc": "7",
     "difficulty": 1,
     "group": "opacity"
   },
   {
-    "shortcut": "8",
-    "display": "set Opacity to 80%",
+"display": "set Opacity to 80%",
     "mac_sc": "8",
     "pc_sc": "8",
     "difficulty": 1,
     "group": "opacity"
   },
   {
-    "shortcut": "9",
-    "display": "set Opacity to 90%",
+"display": "set Opacity to 90%",
     "mac_sc": "9",
     "pc_sc": "9",
     "difficulty": 1,
     "group": "opacity"
   },
   {
-    "shortcut": "CMD+OPTION+S",
-    "display": "Save version history checkpoint with note",
-    "mac_sc": "⌘ ⌥ S",
-    "pc_sc": "Ctrl Alt S",
+"display": "Save version history checkpoint with note",
+    "mac_sc": "CMD+OPT+S",
+    "pc_sc": "CTRL+ALT+S",
     "difficulty": 5
   },
   {
-    "shortcut": "OPTION+W",
-    "display": "Align object to Top",
-    "mac_sc": "⌥ W",
-    "pc_sc": "Alt W",
+"display": "Align object to Top",
+    "mac_sc": "OPT+W",
+    "pc_sc": "ALT+W",
     "difficulty": 3
   },
   {
-    "shortcut": "OPTION+A",
-    "display": "Align object to Left",
-    "mac_sc": "⌥ A",
-    "pc_sc": "Alt A",
+"display": "Align object to Left",
+    "mac_sc": "OPT+A",
+    "pc_sc": "ALT+A",
     "difficulty": 3
   },
   {
-    "shortcut": "OPTION+S",
-    "display": "Align object to Bottom",
-    "mac_sc": "⌥ S",
-    "pc_sc": "Alt S",
+"display": "Align object to Bottom",
+    "mac_sc": "OPT+S",
+    "pc_sc": "ALT+S",
     "difficulty": 3
   },
   {
-    "shortcut": "OPTION+D",
-    "display": "Align object to Right",
-    "mac_sc": "⌥ D",
-    "pc_sc": "Alt D",
+"display": "Align object to Right",
+    "mac_sc": "OPT+D",
+    "pc_sc": "ALT+D",
     "difficulty": 3
   },
   {
-    "shortcut": "SHIFT+E",
-    "display": "toggle Design/Prototype tabs",
-    "mac_sc": "⇧ E",
-    "pc_sc": "⇧ E",
+"display": "toggle Design/Prototype TABs",
+    "mac_sc": "SHIFT+E",
+    "pc_sc": "SHIFT+E",
     "difficulty": 3
   },
   {
-    "shortcut": "CMD",
-    "display": "hold while resizing to Override Constraints",
-    "mac_sc": "⌘ ",
-    "pc_sc": "Ctrl",
+"display": "hold while resizing to Override Constraints",
+    "mac_sc": "CMD",
+    "pc_sc": "CTRL",
     "difficulty": 5
   },
   {
-    "shortcut": "CMD+OPTION+T",
-    "display": "Tidy Up",
-    "mac_sc": "⌘ ⌥ T",
-    "pc_sc": "Ctrl Alt T",
+"display": "Tidy Up",
+    "mac_sc": "CMD+OPT+T",
+    "pc_sc": "CTRL+ALT+T",
     "difficulty": 5
   },
   {
-    "shortcut": "SHIFT+1",
-    "display": "zoom to Fit",
-    "mac_sc": "⇧ 1",
-    "pc_sc": "⇧ 1",
+"display": "zoom to Fit",
+    "mac_sc": "SHIFT+1",
+    "pc_sc": "SHIFT+1",
     "difficulty": 1
   },
   {
-    "shortcut": "SHIFT+2",
-    "display": "zoom to Selection",
-    "mac_sc": "⇧ 2",
-    "pc_sc": "⇧ 2",
+"display": "zoom to Selection",
+    "mac_sc": "SHIFT+2",
+    "pc_sc": "SHIFT+2",
     "difficulty": 1
   },
   {
-    "shortcut": "CMD+OPTION+L",
-    "display": "toggle Lock",
-    "mac_sc": "⌘ ⌥ L",
-    "pc_sc": "Ctrl Alt L",
+"display": "toggle Lock",
+    "mac_sc": "CMD+OPT+L",
+    "pc_sc": "CTRL+ALT+L",
     "difficulty": 1
   },
   {
-    "shortcut": "OPTION+1",
-    "display": "open Layers Panel",
-    "mac_sc": "⌥ 1",
-    "pc_sc": "Alt 1",
+"display": "open Layers Panel",
+    "mac_sc": "OPT+1",
+    "pc_sc": "ALT+1",
     "difficulty": 3
   },
   {
-    "shortcut": "OPTION+2",
-    "display": "open Assets Panel",
-    "mac_sc": "⌥ 2",
-    "pc_sc": "Alt 2",
+"display": "open Assets Panel",
+    "mac_sc": "OPT+2",
+    "pc_sc": "ALT+2",
     "difficulty": 3
   },
   {
-    "shortcut": "CMD+SHIFT+OPTION+C",
-    "display": "copy as a PNG",
-    "mac_sc": "⌘ ⇧ ⌥ C",
-    "pc_sc": "Ctrl ⇧ Alt C",
+"display": "copy as a PNG",
+    "mac_sc": "CMD+SHIFT+OPT+C",
+    "pc_sc": "CTRL+SHIFT+ALT+C",
     "difficulty": 5
   },
   {
-    "shortcut": "CMD+OPTION+P",
-    "display": "run last Plugin",
-    "mac_sc": "⌘ ⌥ P",
-    "pc_sc": "Ctrl Alt P",
+"display": "run last Plugin",
+    "mac_sc": "CMD+OPT+P",
+    "pc_sc": "CTRL+ALT+P",
     "difficulty": 5
   },
   {
-    "shortcut": "CMD+OPTION+BACKSLASH",
-    "display": "toggle Multiplayer Cursor visibility",
-    "mac_sc": "⌘ ⌥ \\\\",
-    "pc_sc": "Ctrl Alt \\\\",
+"display": "toggle Multiplayer Cursor visibility",
+    "mac_sc": "CMD+OPT+BACKSLASH",
+    "pc_sc": "CTRL+ALT+BACKSLASH",
     "difficulty": 5
   },
   {
-    "shortcut": "SHIFT+GRAVE",
-    "display": "toggle Pixel Grid",
-    "mac_sc": "⇧ '",
-    "pc_sc": "⇧ '",
+"display": "toggle Pixel Grid",
+    "mac_sc": "SHIFT+QUOTE",
+    "pc_sc": "SHIFT+QUOTE",
     "difficulty": 5
   },
   {
-    "shortcut": "SHIFT+C",
-    "display": "toggle Comments visibility",
-    "mac_sc": "⇧ C",
-    "pc_sc": "⇧ C",
+"display": "toggle Comments visibility",
+    "mac_sc": "SHIFT+C",
+    "pc_sc": "SHIFT+C",
     "difficulty": 3
   },
   {
-    "shortcut": "SHIFT+Y",
-    "display": "toggle Annotations visibility",
-    "mac_sc": "⇧ Y",
-    "pc_sc": "⇧ Y",
+"display": "toggle Annotations visibility",
+    "mac_sc": "SHIFT+Y",
+    "pc_sc": "SHIFT+Y",
     "difficulty": 5
   },
   {
-    "shortcut": "CMD+SHIFT+P",
-    "display": "toggle Pixel preview",
-    "mac_sc": "⌘ ⇧ P",
-    "pc_sc": "Ctrl ⇧ P",
+"display": "toggle Pixel preview",
+    "mac_sc": "CMD+SHIFT+P",
+    "pc_sc": "CTRL+SHIFT+P",
     "difficulty": 5
   },
   {
-    "shortcut": "CMD+SHIFT+BACKSLASH",
-    "display": "Minimise UI",
-    "mac_sc": "⌘ ⇧ \\\\",
-    "pc_sc": "Ctrl ⇧ \\\\",
+"display": "Minimise UI",
+    "mac_sc": "CMD+SHIFT+BACKSLASH",
+    "pc_sc": "CTRL+SHIFT+BACKSLASH",
     "difficulty": 5
   },
   {
-    "shortcut": "CMD+DEL",
-    "display": "Delete & heal the selection",
-    "mac_sc": "⌘ ⌫ ",
-    "pc_sc": "Ctrl Backspace",
+"display": "Delete & heal the selection",
+    "mac_sc": "CMD+DELETE",
+    "pc_sc": "CTRL+BACKSPACE",
     "difficulty": 3
   },
   {
-    "shortcut": "CMD+SHIFT+F",
-    "display": "Flatten",
-    "mac_sc": "⌘ ⇧ F",
-    "pc_sc": "Ctrl ⇧ F",
+"display": "Flatten",
+    "mac_sc": "CMD+SHIFT+F",
+    "pc_sc": "CTRL+SHIFT+F",
     "difficulty": 3
   },
   {
-    "shortcut": "SHIFT+OPTION+H",
-    "display": "Distribute Horizontally",
-    "mac_sc": "⇧ ⌥ H",
-    "pc_sc": "⇧ Alt H",
+"display": "Distribute Horizontally",
+    "mac_sc": "SHIFT+OPT+H",
+    "pc_sc": "SHIFT+ALT+H",
     "difficulty": 3
   },
   {
-    "shortcut": "SHIFT+OPTION+V",
-    "display": "Dristribute Vertically",
-    "mac_sc": "⇧ ⌥ V",
-    "pc_sc": "⇧ Alt V",
+"display": "Distribute Vertically",
+    "mac_sc": "SHIFT+OPT+V",
+    "pc_sc": "SHIFT+ALT+V",
     "difficulty": 3
   },
   {
-    "shortcut": "CMD+J",
-    "display": "Join vectors",
-    "mac_sc": "⌘ J",
-    "pc_sc": "Ctrl J",
+"display": "Join vectors",
+    "mac_sc": "CMD+J",
+    "pc_sc": "CTRL+J",
     "difficulty": 3
   },
   {
-    "shortcut": "CMD+SHIFT+J",
-    "display": "Smooth vectors",
-    "mac_sc": "⌘ ⇧ J",
-    "pc_sc": "Ctrl ⇧ J",
+"display": "Smooth vectors",
+    "mac_sc": "CMD+SHIFT+J",
+    "pc_sc": "CTRL+SHIFT+J",
     "difficulty": 5
   },
   {
-    "shortcut": "CMD+A",
-    "display": "select ALL",
-    "mac_sc": "⌘ A",
-    "pc_sc": "Ctrl A",
+"display": "select ALL",
+    "mac_sc": "CMD+A",
+    "pc_sc": "CTRL+A",
     "difficulty": 1
   },
   {
-    "shortcut": "CMD+OPTION+A",
-    "display": "select Matching Layers",
-    "mac_sc": "⌘ ⌥ A",
-    "pc_sc": "Ctrl Alt A",
+"display": "select Matching Layers",
+    "mac_sc": "CMD+OPT+A",
+    "pc_sc": "CTRL+ALT+A",
     "difficulty": 5
   },
   {
-    "shortcut": "CMD+X",
-    "display": "CUT!",
-    "mac_sc": "⌘ X",
-    "pc_sc": "Ctrl X",
+"display": "CUT!",
+    "mac_sc": "CMD+X",
+    "pc_sc": "CTRL+X",
     "difficulty": 1
   },
   {
-    "shortcut": "CMD+C",
-    "display": "Copy",
-    "mac_sc": "⌘ C",
-    "pc_sc": "Ctrl C",
+"display": "Copy",
+    "mac_sc": "CMD+C",
+    "pc_sc": "CTRL+C",
     "difficulty": 1
   },
   {
-    "shortcut": "CMD+V",
-    "display": "Paste",
-    "mac_sc": "⌘ V",
-    "pc_sc": "Ctrl V",
+"display": "Paste",
+    "mac_sc": "CMD+V",
+    "pc_sc": "CTRL+V",
     "difficulty": 1
   },
   {
-    "shortcut": "CMD+Q",
-    "display": "Quit the application",
-    "mac_sc": "⌘ Q",
-    "pc_sc": "none",
-    "difficulty": 2,
-    "keyboard_conflict": true
-  },
-      {
-    "shortcut": "OPTION+F4",
-    "display": "Quit the application",
-    "mac_sc": "none",
-    "pc_sc": "Alt F4",
-    "difficulty": 4,
-    "keyboard_conflict": true
+"display": "Quit the application",
+    "mac_sc": "CMD+Q",
+     "pc_sc": "ALT+F4",
+    "difficulty": 3
   }
 ]

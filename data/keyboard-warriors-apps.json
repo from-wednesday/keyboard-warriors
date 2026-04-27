@@ -1,17 +1,15 @@
 [
-  { "label": "Photoshop (Ps)",     "path": "/keyboard-warriors/data/shortcuts_photoshop.json"    },
-  { "label": "Illustrator (Ai)",   "path": "/keyboard-warriors/data/shortcuts_illustrator.json"  },
-  { "label": "InDesign (Id)",      "path": "/keyboard-warriors/data/shortcuts_inDesign.json"     },
-  { "label": "After Effects (Ae)", "path": "/keyboard-warriors/data/shortcuts_afterEffects.json" },
-  { "label": "Figma",              "path": "/keyboard-warriors/data/shortcuts_figma.json"        },
-  
-    { "label": "[Ps] Photoshop",     "path": "/keyboard-warriors/data/in_progress/shortcuts_photoshop.json",         "beta": true    },
-    { "label": "[Ai] Illustrator",   "path": "/keyboard-warriors/data/in_progress/shortcuts_illustrator.json",       "beta": true    },
-    { "label": "[Id] InDesign",      "path": "/keyboard-warriors/data/in_progress/shortcuts_inDesign.json",          "beta": true    },
-    { "label": "[Ae] After Effects", "path": "/keyboard-warriors/data/in_progress/shortcuts_afterEffects.json",      "beta": true    },
-    { "label": "Figma",         "path": "/keyboard-warriors/data/in_progress/shortcuts_figma.json",             "beta": true    },
-    { "label": "ms Word",       "path": "/keyboard-warriors/data/in_progress/shortcuts_msWord.json",            "beta": true    },
-        { "label": "testing",       "path": "/keyboard-warriors/data/in_progress/shortcuts_TESTING.json",            "beta": true    }
+    { "label": "[Ps] Photoshop",     "path": "/keyboard-warriors/data/shortcuts_photoshop.json",      },
+    { "label": "[Ai] Illustrator",   "path": "/keyboard-warriors/data/shortcuts_illustrator.json",    },
+    { "label": "[Id] InDesign",      "path": "/keyboard-warriors/data/shortcuts_inDesign.json",       },
+    { "label": "[Ae] After Effects", "path": "/keyboard-warriors/data/shortcuts_afterEffects.json",   },
+         { "label": "Figma",         "path": "/keyboard-warriors/data/shortcuts_figma.json",               },
+         { "label": "ms Word",       "path": "/keyboard-warriors/data/shortcuts_msWord.json",              },
+         
+         
+         
+{ "label": "testing only",     "path": "/keyboard-warriors/data/in_progress/shortcuts_TESTING.json",    "beta": true  },
+{ "label": "known conflicts",  "path": "/keyboard-warriors/data/in_progress/shortcuts_CONFLICTS.json",  "beta": true  }
 
      
      ]

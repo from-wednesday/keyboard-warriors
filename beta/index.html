@@ -1829,52 +1829,46 @@ const TOKEN_TO_BROWSER_CODE = {
 
 /* ── Synonym map — every accepted alias → canonical token ───────────────── */
 const TOKEN_SYNONYM_MAP = {
-  // CMD synonyms
-  'COMMAND': 'CMD',
-  'CTRL':    'CMD',
-  // OPTION synonyms
-  'OPT': 'OPTION',
-  'ALT': 'OPTION',
-  // RETURN synonyms
-  'ENTER': 'RETURN',
-  // BACKSPACE synonyms
-  'DEL':        'BACKSPACE',
-  'BACKDELETE': 'BACKSPACE',
-  // ESCAPE synonyms
-  'ESC': 'ESCAPE',
-  // EQUAL synonyms
-  'PLUS':   'EQUAL',
-  'EQUALS': 'EQUAL',
-  // WIN synonyms
-  'WINDOWS': 'WIN',
-  // FN synonyms
-  'FUNCTION': 'FN',
-  // SPACE synonyms
-  'SPACEBAR': 'SPACE',
-  // Arrow synonyms
-  'UP':    'ARROWUP',
-  'DOWN':  'ARROWDOWN',
-  'LEFT':  'ARROWLEFT',
-  'RIGHT': 'ARROWRIGHT',
-  // MINUS synonyms
-  'UNDERSCORE': 'MINUS',
-  // Bracket synonyms
-  'OPENBRACKET':  'BRACKETLEFT',
-  'CLOSEBRACKET': 'BRACKETRIGHT',
-  // BACKSLASH synonyms
-  'PIPE': 'BACKSLASH',
-  // SEMICOLON synonyms
-  'COLON': 'SEMICOLON',
-  // COMMA synonyms
-  'LESSTHAN': 'COMMA',
-  // PERIOD synonyms
-  'MORETHAN': 'PERIOD',
-  // SLASH synonyms
-  'QUESTION': 'SLASH',
-  // GRAVE synonyms
-  'TILDE':   'GRAVE',
-  'BACKTICK':'GRAVE',
-  // Bare punctuation characters — normalise to named tokens
+  'COMMAND':     'CMD',
+  'CTRL':        'CMD',
+  'OPT':         'OPTION',
+  'ALT':         'OPTION',
+  'WINDOWS':     'WIN',
+  'FUNCTION':    'FN',
+  'ENTER':       'RETURN',
+  'SPACEBAR':    'SPACE',
+  'DEL':         'BACKSPACE',
+  'BACKDELETE':  'BACKSPACE',
+  'ESC':         'ESCAPE',
+  'PLUS':        'EQUAL',
+  'EQUALS':      'EQUAL',
+  'LESSTHAN':    'COMMA',
+  'MORETHAN':    'PERIOD',
+  'QUESTION':    'SLASH',
+  'TILDE':       'GRAVE',
+  'BACKTICK':    'GRAVE',
+  'PIPE':        'BACKSLASH',
+  'UNDERSCORE':  'MINUS',
+  'COLON':       'SEMICOLON',
+  'DOUBLEQUOTE': 'QUOTE',
+  'OPENBRACE':   'BRACKETLEFT',
+  'CLOSEBRACE':  'BRACKETRIGHT',
+  'OPENBRACKET': 'BRACKETLEFT',
+  'CLOSEBRACKET':'BRACKETRIGHT',
+  'EXCLAMATION': 'DIGIT1',
+  'AT':          'DIGIT2',
+  'HASH':        'DIGIT3',
+  'DOLLAR':      'DIGIT4',
+  'PERCENT':     'DIGIT5',
+  'CARET':       'DIGIT6',
+  'AMPERSAND':   'DIGIT7',
+  'ASTERISK':    'DIGIT8',
+  'OPENPAREN':   'DIGIT9',
+  'CLOSEPAREN':  'DIGIT0',
+  'UP':          'ARROWUP',
+  'DOWN':        'ARROWDOWN',
+  'LEFT':        'ARROWLEFT',
+  'RIGHT':       'ARROWRIGHT',
   '=':  'EQUAL',
   '-':  'MINUS',
   '[':  'BRACKETLEFT',
@@ -1886,7 +1880,6 @@ const TOKEN_SYNONYM_MAP = {
   '.':  'PERIOD',
   '/':  'SLASH',
   '`':  'GRAVE',
-  // Old-style bare symbols that may still appear in legacy shortcut fields
   '<':  'COMMA',
   '>':  'PERIOD',
   '+':  'EQUAL',
@@ -9808,9 +9801,34 @@ function HighlightReportListItems(ShortcutToken) {
 function BuildShortcutKeyChips(TokenString, IsWeakness) {
   TokenString = (TokenString || '').replace(/\\\\/g, '\\');
 
-  // Strip pipe alternates — chips show the primary (first) alternative only
   var PrimaryString = TokenString.split('|')[0].trim();
 
+  // Display symbols that should be preserved from the raw JSON token,
+  // consulted before NormaliseToken strips them to their base key.
+  var RawDisplayOverrideMap = {
+    'PLUS':        '+',
+    'TILDE':       '~',
+    'LESSTHAN':    '<',
+    'MORETHAN':    '>',
+    'QUESTION':    '?',
+    'PIPE':        '|',
+    'UNDERSCORE':  '_',
+    'COLON':       ':',
+    'DOUBLEQUOTE': '"',
+    'OPENBRACE':   '{',
+    'CLOSEBRACE':  '}',
+    'EXCLAMATION': '!',
+    'AT':          '@',
+    'HASH':        '#',
+    'DOLLAR':      '$',
+    'PERCENT':     '%',
+    'CARET':       '^',
+    'AMPERSAND':   '&',
+    'ASTERISK':    '*',
+    'OPENPAREN':   '(',
+    'CLOSEPAREN':  ')',
+  };
+  
   // Symbol display maps per platform
   var MacChipSymbols = {
     'CMD':'⌘','SHIFT':'⇧','OPTION':'⌥','CONTROL':'⌃','FN':'fn',
@@ -9865,26 +9883,65 @@ function BuildShortcutKeyChips(TokenString, IsWeakness) {
   var PcLongForm  = { 'SHIFT': '⇧ Shift', 'OPTION': 'Alt',      'CONTROL': 'Ctrl',       'FN': 'Fn'  };
   var LongFormMap = currentOs === 'pc' ? PcLongForm : MacLongForm;
 
+  var // Split without normalising so display overrides can read the raw token name.
+  var RawSplitTokens = PrimaryString.split('+').map(function(T) { return T.trim().toUpperCase(); }).filter(Boolean);
+// Parse tokens -- keep both raw (for display overrides) and normalised (for symbol lookup).
+  var RawSplitTokens = PrimaryString.split('+').map(function(T) { return T.trim().toUpperCase(); }).filter(Boolean);
+  var NormalisedTokens = RawSplitTokens.map(NormaliseToken);
+
+  var ModifierOrder = ['CMD','CONTROL','WIN','OPTION','SHIFT','FN'];
+  var ModifierTokens    = [];
+  var ModifierRawTokens = [];
+  var KeyToken    = null;
+  var KeyRawToken = null;
+
+  NormalisedTokens.forEach(function(Token, Index) {
+    if (ModifierOrder.indexOf(Token) !== -1) {
+      ModifierTokens.push(Token);
+      ModifierRawTokens.push(RawSplitTokens[Index]);
+    } else {
+      KeyToken    = Token;
+      KeyRawToken = RawSplitTokens[Index];
+    }
+  });
+
+  ModifierTokens.sort(function(A, B) {
+    return ModifierOrder.indexOf(A) - ModifierOrder.indexOf(B);
+  });
+
+  var TotalTokenCount = ModifierTokens.length + (KeyToken ? 1 : 0);
+  var UseLongForm = TotalTokenCount <= 2;
+
   var DisplayTokens = [];
-  ModifierTokens.forEach(function(Mod) {
+  ModifierTokens.forEach(function(Mod, Index) {
+    var RawMod = ModifierRawTokens[Index];
     var Symbol;
-    if (UseLongForm && Mod !== 'CMD' && LongFormMap[Mod]) {
+    if (RawDisplayOverrideMap[RawMod]) {
+      Symbol = RawDisplayOverrideMap[RawMod];
+    } else if (UseLongForm && Mod !== 'CMD' && LongFormMap[Mod]) {
       Symbol = LongFormMap[Mod];
     } else {
       Symbol = ChipSymbols[Mod];
     }
     if (Symbol !== null && Symbol !== undefined) DisplayTokens.push(Symbol);
   });
+
   if (KeyToken) {
-    var KeySymbol = (UseLongForm && LongFormMap[KeyToken]) ? LongFormMap[KeyToken] : ChipSymbols[KeyToken];
+    var KeySymbol;
+    if (RawDisplayOverrideMap[KeyRawToken]) {
+      KeySymbol = RawDisplayOverrideMap[KeyRawToken];
+    } else if (UseLongForm && LongFormMap[KeyToken]) {
+      KeySymbol = LongFormMap[KeyToken];
+    } else {
+      KeySymbol = ChipSymbols[KeyToken];
+    }
     if (KeySymbol !== null && KeySymbol !== undefined) {
       DisplayTokens.push(KeySymbol);
     } else if (KeyToken.startsWith('NUMPAD')) {
-      DisplayTokens.push(KeyToken.replace('NUMPAD','') );
+      DisplayTokens.push(KeyToken.replace('NUMPAD',''));
     } else if (KeyToken.length === 1) {
       DisplayTokens.push(KeyToken);
     } else {
-      // F1-F12 and anything else: render as-is
       DisplayTokens.push(KeyToken);
     }
   }

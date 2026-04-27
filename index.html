@@ -1,5 +1,5 @@
 <!-- ═══════════════════════════════════════════════════
-    BUILD launched April 2026 
+    Keyboard Warrios main file 
      ═══════════════════════════════════════════════════ -->
 <!DOCTYPE html>
 <html>
@@ -9,7 +9,7 @@
 <title>Keyboard Warriors</title>
 <script>
   const DefaultTitle = 'Keyboard Warriors';
-  const VersionLabel   = '0024';
+  const VersionLabel   = '0026';
   const TitlePrefix  = document.title !== DefaultTitle ? document.title.trim() + '_' : '';
   const DBG_DEVICE   = TitlePrefix + VersionLabel;
 </script>
@@ -27,6 +27,32 @@
 </script>
 
 <style>
+  /* ── Key glyph SVGs (full-size Mac keyboard only) ──────────────────────────
+     Vector symbols for option (⌥), control (⌃), and return (↩).
+     Rendered as inline SVG so they scale, colour, and animate exactly like
+     the Command symbol in shortcut chips. Mini keyboards use text fallbacks. */
+  .key-glyph-sym {
+    display: block;
+    color: #555;
+    flex-shrink: 0;
+  }
+  .key-glyph-option  { width: 16px; height: 11px; margin-bottom: 1px; }
+  .key-glyph-control { width: 14px; height: 10px; margin-bottom: 1px; }
+  .key-glyph-return  { width: 14px; height: 11px; margin-bottom: 1px; }
+
+  /* Lit states: glyphs inherit white from the parent lit-* rules */
+  .key.lit-green-up    .key-glyph-sym,
+  .key.lit-green-down  .key-glyph-sym,
+  .key.lit-orange-up   .key-glyph-sym,
+  .key.lit-orange-down .key-glyph-sym { color: white; }
+
+  /* Ghost mode: hide with other label content, restore when lit */
+  #keyboardPanel.ghost-mode .key .key-glyph-sym { opacity: 0; }
+  #keyboardPanel.ghost-mode .key.lit-green-up    .key-glyph-sym,
+  #keyboardPanel.ghost-mode .key.lit-green-down  .key-glyph-sym,
+  #keyboardPanel.ghost-mode .key.lit-orange-up   .key-glyph-sym,
+  #keyboardPanel.ghost-mode .key.lit-orange-down .key-glyph-sym { opacity: 1 !important; }
+
   @keyframes SkeletonGrow {
     from { width: 18px; border-radius: 9px; }
     to   { width: 100%; border-radius: 16px; }
@@ -240,7 +266,7 @@
         </g>
         <path d="M42.5,23.4c-6,0-11.4,2.1-14.9,5.4h0c0,0-.1.1-.2.2-2.4,2.3-3.8,5.2-3.8,8.4s1.4,6,3.8,8.4c0,0,0,.1.2.2,3.4,3.3,8.8,5.4,14.9,5.4s11.4-2.1,14.9-5.4h0c0,0,.1-.1.2-.2,0,0,0,0,0,0,2.4-2.3,3.8-5.2,3.8-8.4s-1.4-6-3.8-8.4c0,0-.1-.1-.2-.2-3.4-3.3-8.8-5.4-14.9-5.4h0ZM41.3,25.3v5.4c-1.9,0-3.7-.2-5.4-.4.3-.6.7-1.2,1-1.7,1.3-1.7,2.8-2.8,4.4-3.2h0ZM43.7,25.3c1.6.4,3.1,1.5,4.4,3.2.4.5.7,1.1,1.1,1.7-1.7.2-3.5.4-5.4.4v-5.3ZM49,26.2c2.1.7,4,1.7,5.5,2.9-.9.3-1.9.5-2.9.8-.4-.8-.8-1.5-1.3-2.2-.4-.5-.8-1-1.3-1.5h0ZM36,26.2c-.5.4-.9.9-1.2,1.5-.5.7-.9,1.4-1.3,2.2-1.1-.2-2.1-.5-2.9-.8,1.5-1.2,3.4-2.2,5.5-2.9h0ZM28.9,30.6c1.1.4,2.4.8,3.8,1-.5,1.5-.8,3.1-.9,4.8h-5.6c.2-2.1,1.2-4.1,2.7-5.8h0ZM56.1,30.6c1.5,1.7,2.5,3.7,2.7,5.8h-5.6c0-1.7-.4-3.3-.9-4.8,1.4-.3,2.7-.6,3.8-1h0ZM35.1,32c1.9.3,4,.4,6.1.5v3.9h-7c0-1.5.4-3,.8-4.3h0ZM49.9,32c.4,1.3.7,2.8.8,4.3h-7v-3.9c2.2,0,4.2-.2,6.1-.5h0ZM26.2,38.2h5.6c0,1.7.4,3.3.9,4.8-1.4.3-2.7.6-3.8,1-1.5-1.7-2.5-3.7-2.7-5.8h0ZM34.3,38.2h7v3.9c-2.2,0-4.2.2-6.1.5-.4-1.3-.7-2.8-.8-4.3h0ZM43.7,38.2h7c0,1.5-.4,3-.8,4.3-1.9-.3-4-.4-6.1-.5v-3.9ZM53.2,38.2h5.6c-.2,2.1-1.2,4.1-2.7,5.8-1.1-.4-2.4-.8-3.8-1,.5-1.5.8-3.1.9-4.8h0ZM41.3,43.9v5.4c-1.6-.4-3.1-1.4-4.4-3.2-.4-.5-.7-1.1-1.1-1.7,1.7-.2,3.5-.4,5.4-.4h0ZM43.7,43.9c1.9,0,3.7.2,5.4.4-.3.6-.7,1.2-1.1,1.7-1.3,1.7-2.8,2.8-4.4,3.2v-5.3ZM33.4,44.7c.4.8.8,1.5,1.3,2.2.4.5.8,1,1.2,1.5-2.1-.7-4-1.7-5.5-2.9.9-.3,1.9-.5,2.9-.8h0ZM51.6,44.7c1.1.2,2.1.5,2.9.8-1.5,1.2-3.4,2.2-5.5,2.9.5-.4.9-.9,1.3-1.5.5-.7.9-1.4,1.3-2.2h0Z"/>
       </svg>
-      <span class="phone-icon-label">Browser</span>
+      <span class="phone-icon-label">Conflicts</span>
     </div>
   </div>
   <div id="phonePanelArea"></div>
@@ -261,9 +287,21 @@
       <div class="sp-col sp-col-left">
         <p class="sp-body" id="browserCompatHeading"></p>
         <p class="sp-body" id="browserCompatIntro"></p>
-        <p class="sp-body" id="browserCompatFooter"></p> <p class="sp-body sp-hint">Keyboard setting <strong><small>'Touch Enabled'</small></strong> avoids all these conflicts.</p>
+        <p class="sp-body sp-hint">Using the virtual <strong><small>'Touch Enabled'</small></strong> keyboard avoids all conflicts to build knowledge, but is <em>less effective</em> than a real keyboard in building 'muscle memory'.</p>
       </div>
       <div class="sp-col sp-col-right">
+      <div class="more-info-wrap" style="margin-bottom:4px;">
+        <p class="sp-title" onclick="toggleMoreInfo('csTrackedConflictsMoreInfo')" style="font-size:12px;margin:0;">Tracked Conflicts</p>
+        <span class="more-info-trigger" id="csTrackedConflictsMoreInfoTrigger" onclick="toggleMoreInfo('csTrackedConflictsMoreInfo')">
+          <svg class="more-info-icon" viewBox="0 0 20 20" width="14" height="14" fill="none" stroke="currentColor" stroke-width="1.25" stroke-linecap="round">
+            <circle cx="10" cy="10" r="8.5"/>
+            <text x="10" y="15" text-anchor="middle" font-size="14" font-weight="720" font-family="system-ui,sans-serif" fill="currentColor" stroke="none">?</text>
+          </svg>
+          <div class="more-info-popup" id="csTrackedConflictsMoreInfo">
+            <p class="more-info-body">If we detect you successfully press any of these shortcuts, we will add questions using them back into the pool. But be warned, they are here because we have reason to expect they won&#8217;t work on your system.</p>
+          </div>
+        </span>
+      </div>
         <ul id="browserCompatList" class="sp-conflict-list"></ul>
     
       </div>
@@ -312,7 +350,18 @@
         </span>
       </div>
       <div class="sp-col sp-col-right">
-        <p class="sp-body sp-clear-label" id="spClearLabel"><strong>Clear high score record?</strong></p>
+        <div class="more-info-wrap" style="margin-bottom:4px;">
+          <p class="sp-body sp-clear-label" id="spClearLabel" onclick="toggleMoreInfo('ppClearRecordsMoreInfo')" style="margin:0;cursor:pointer;"><strong>Clear high score record?</strong></p>
+          <span class="more-info-trigger" id="ppClearRecordsMoreInfoTrigger" onclick="toggleMoreInfo('ppClearRecordsMoreInfo')">
+            <svg class="more-info-icon" viewBox="0 0 20 20" width="14" height="14" fill="none" stroke="currentColor" stroke-width="1.25" stroke-linecap="round">
+              <circle cx="10" cy="10" r="8.5"/>
+              <text x="10" y="15" text-anchor="middle" font-size="14" font-weight="720" font-family="system-ui,sans-serif" fill="currentColor" stroke="none">?</text>
+            </svg>
+            <div class="more-info-popup" id="ppClearRecordsMoreInfo">
+              <p class="more-info-body">Your records are private and never leave your device. This panel lets you selectively reset high score records and training history when it suits you.</p>
+            </div>
+          </span>
+        </div>
         <div class="score-clear-pill">
           <button id="clearTimeBtn" class="score-pill-seg score-pill-quarter" onclick="_pauseClearClick('time')" title="Clear best time">
             <span class="diff-btn-text"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="14" height="14"><circle cx="12" cy="13" r="8"/><path d="M12 9v4l3 3"/><path d="M9 3h6"/><path d="M12 3v2"/></svg></span>
@@ -326,7 +375,7 @@
           <button id="startOverBtn" class="score-pill-seg score-pill-full" onclick="_pauseStartOverClick()">
             <span class="diff-btn-text">clear memory &amp; start fresh</span>
           </button>
-        </div>
+        </div></br>
         <p class="sp-body sp-clear-label" style="margin-top:8px;"><strong>Report a problem:</strong></p>
         <div class="score-clear-pill">
           <button class="score-pill-seg score-pill-full" onclick="_reportImpossibleQuestion()" title="Report a problem">
@@ -363,7 +412,7 @@
 <div id="panelEndGameReportCard" class="sp-page sp-page-report">
   <div class="sp-col sp-col-left">
     <div class="sp-report-col-header">
-      <div class="sp-endgame-header-left" onclick="_toggleEndGameHistory()" id="reportCardToggleTrigger">
+      <div class="sp-endgame-header-left" onclick="_toggleEndGameHistory(event)" id="reportCardToggleTrigger">
         <p class="sp-small-card-title">REPORT CARD</p>
         <svg class="sp-endgame-search-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
           <circle cx="11" cy="11" r="7"/>
@@ -388,7 +437,7 @@
     <div id="panelEndGameHistoryRecord" class="sp-page">
    <div class="sp-col sp-col-left">
         <div class="sp-report-col-header">
-          <div class="sp-endgame-header-left" onclick="_toggleEndGameHistory()">
+          <div class="sp-endgame-header-left" onclick="_toggleEndGameHistory(event)">
             <p class="sp-small-card-title">HISTORY VIEW</p>
            <svg class="sp-endgame-search-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
           <circle cx="11" cy="11" r="7"/>
@@ -409,10 +458,10 @@
     </div>
 
 <!-- ── Cheat Sheet Panel ─────────────────────────────── -->
-    <div id="panelCheatSheet" class="sp-page sp-page-padlock">
-      <div class="sp-padlock-title-row" style="display:none;">
-        <p class="sp-padlock-main-heading">Cheat Sheet</p>
-        <p class="sp-padlock-byline">Your study companion.</p>
+    <div id="panelCheatSheet" class="sp-page sp-page-cheatsheet">
+      <div class="sp-cheatsheet-title-row" style="display:none;">
+        <p class="sp-cheatsheet-main-heading">Cheat Sheet</p>
+        <p class="sp-cheatsheet-byline">Your study companion.</p>
       </div>
       <div class="sp-col sp-col-left">
         <div class="sp-report-col-header">
@@ -492,8 +541,8 @@
     </div>
 
     <!-- ── Welcome Landing ──────────────────────────────── -->
-    <div panelKeyboardSettingsWelcome" class="sp-page">
-      <p class="sp-title" style="margin-bottom:10px;">Question Difficulty</p>
+   <div id="panelLandingWelcome" class="sp-page">
+    <p class="sp-title" style="margin-bottom:10px;">Question Difficulty</p>
       <div class="sp-seg-pill sp-seg-pill-three" id="welcomeDifficultyPill">
         <button class="sp-seg-btn diff-btn" data-mode="fundamentals" onclick="diffBtnClick('fundamentals')"><span class="diff-btn-text">Fundamentals</span></button>
         <button class="sp-seg-btn diff-btn" data-mode="normal" onclick="diffBtnClick('normal')"><span class="diff-btn-text">Normal</span></button>
@@ -515,7 +564,18 @@
         </div>
 
         <div class="modal-section-gap"></div>
-        <p class="sp-title">Keyboard Layout</p>
+        <div class="more-info-wrap">
+          <p class="sp-title" onclick="toggleMoreInfo('kbLayoutMoreInfo')" style="margin:0;">Keyboard Layout</p>
+          <span class="more-info-trigger" id="kbLayoutMoreInfoTrigger" onclick="toggleMoreInfo('kbLayoutMoreInfo')">
+            <svg class="more-info-icon" viewBox="0 0 20 20" width="14" height="14" fill="none" stroke="currentColor" stroke-width="1.25" stroke-linecap="round">
+              <circle cx="10" cy="10" r="8.5"/>
+              <text x="10" y="15" text-anchor="middle" font-size="14" font-weight="720" font-family="system-ui,sans-serif" fill="currentColor" stroke="none">?</text>
+            </svg>
+            <div class="more-info-popup" id="kbLayoutMoreInfo">
+              <p class="more-info-body">Ensure that the lower left corner of the graphical keyboard is matched to your actual keyboard modifier key layout.</p>
+            </div>
+          </span>
+        </div>
 
         <div class="modal-layout-rows">
           <div class="modal-inline-row" id="modalKeyCountRow">
@@ -550,7 +610,18 @@
       </div><!-- /.sp-col-left -->
 
       <div class="sp-col sp-col-right">
-        <p class="sp-title" style="font-size:12px;">Keyboard Behaviour</p>
+        <div class="more-info-wrap">
+          <p class="sp-title" onclick="toggleMoreInfo('kbBehaviourMoreInfo')" style="font-size:12px;margin:0;">Keyboard Behaviour</p>
+          <span class="more-info-trigger" id="kbBehaviourMoreInfoTrigger" onclick="toggleMoreInfo('kbBehaviourMoreInfo')">
+            <svg class="more-info-icon" viewBox="0 0 20 20" width="14" height="14" fill="none" stroke="currentColor" stroke-width="1.25" stroke-linecap="round">
+              <circle cx="10" cy="10" r="8.5"/>
+              <text x="10" y="15" text-anchor="middle" font-size="14" font-weight="720" font-family="system-ui,sans-serif" fill="currentColor" stroke="none">?</text>
+            </svg>
+            <div class="more-info-popup" id="kbBehaviourMoreInfo">
+              <p class="more-info-body">Our Touch Enabled virtual keyboard permits you to train on tablet devices, as well as simulating conflicted shortcuts and other operating systems. Great to build knowledge, but touch is less effective than a real keyboard in building &#8216;muscle memory&#8217;.</p>
+            </div>
+          </span>
+        </div>
 
         <div class="modal-toggle-row" id="touchRow">
           <label onclick="onTouchToggle()">
@@ -638,9 +709,43 @@
     </div><!-- /#panelKeyboard -->
 
   </div><!-- /#settingsPanelInner -->
+
+
   </div><!-- /#settingsPanel -->
+
+  <!-- Drag handle affordance: positioned by _spAlignPanel using stage.offsetTop
+       so it always floats just above the keyboard top edge and moves with it. -->
+  <div id="kbHandleAffordance" aria-hidden="true">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 649.94 68.72" preserveAspectRatio="xMidYMid meet">
+      <defs>
+        <style>
+          .kh-dash{stroke-dasharray:11.73 11.73;}
+          .kh-dash,.kh-solid{fill:none;stroke:#5ab685;stroke-linecap:round;stroke-miterlimit:10;stroke-width:3px;}
+          .kh-fill{fill:#5ab685;}
+        </style>
+      </defs>
+      <line class="kh-solid" x1="44.69" y1="38.79" x2="50.69" y2="38.79"/>
+      <line class="kh-dash"  x1="62.43" y1="38.79" x2="572.76" y2="38.79"/>
+      <line class="kh-solid" x1="578.62" y1="38.79" x2="584.62" y2="38.79"/>
+      <path class="kh-fill"  d="M44.88,42.51c-2.06,0-3.72-1.67-3.72-3.72s1.67-3.72,3.72-3.72,3.72,1.67,3.72,3.72-1.67,3.72-3.72,3.72Z"/>
+      <path class="kh-fill"  d="M584.44,42.51c2.06,0,3.72-1.67,3.72-3.72s-1.67-3.72-3.72-3.72-3.72,1.67-3.72,3.72,1.67,3.72,3.72,3.72Z"/>
+      <!-- Arrow: rotated by JS around its natural centre (~20,38) to indicate drag direction -->
+      <g id="kbAffordanceArrow" style="transform-origin: 20px 38px; transform-box: fill-box;">
+        <path class="kh-solid" d="M30.04,11.52c-1.4,14.56-7.53,30.25-18.39,44.81"/>
+        <polygon class="kh-fill" points="24.69 12.55 30.76 4.02 35.11 13.55 24.69 12.55"/>
+        <polygon class="kh-fill" points="8.37 51.98 7.15 62.38 16.77 58.24 8.37 51.98"/>
+      </g>
+    </svg>
+  </div>
+
   <div id="kbFlipStage">
   <div id="keyboardPanel">
+    <!-- Sentinel: zero-height element at the very top of the keyboard panel.
+         Lives in the same 3D transform space as the keyboard, so its
+         getBoundingClientRect().top always reflects the keyboard's true
+         visual top edge regardless of rotateX angle or layout changes. -->
+    <div id="kbTopSentinel"></div>
+    <div id="kbDragHandle"></div>
     <div id="kb-shadow"></div>
     <div id="kb-wall-bottom"></div>
     <div id="kb-base-edge"></div>
@@ -662,7 +767,7 @@
   </g>
   <path d="M42.5,23.4c-6,0-11.4,2.1-14.9,5.4h0c0,0-.1.1-.2.2-2.4,2.3-3.8,5.2-3.8,8.4s1.4,6,3.8,8.4c0,0,0,.1.2.2,3.4,3.3,8.8,5.4,14.9,5.4s11.4-2.1,14.9-5.4h0c0,0,.1-.1.2-.2,0,0,0,0,0,0,2.4-2.3,3.8-5.2,3.8-8.4s-1.4-6-3.8-8.4c0,0-.1-.1-.2-.2-3.4-3.3-8.8-5.4-14.9-5.4h0ZM41.3,25.3v5.4c-1.9,0-3.7-.2-5.4-.4.3-.6.7-1.2,1-1.7,1.3-1.7,2.8-2.8,4.4-3.2h0ZM43.7,25.3c1.6.4,3.1,1.5,4.4,3.2.4.5.7,1.1,1.1,1.7-1.7.2-3.5.4-5.4.4v-5.3ZM49,26.2c2.1.7,4,1.7,5.5,2.9-.9.3-1.9.5-2.9.8-.4-.8-.8-1.5-1.3-2.2-.4-.5-.8-1-1.3-1.5h0ZM36,26.2c-.5.4-.9.9-1.2,1.5-.5.7-.9,1.4-1.3,2.2-1.1-.2-2.1-.5-2.9-.8,1.5-1.2,3.4-2.2,5.5-2.9h0ZM28.9,30.6c1.1.4,2.4.8,3.8,1-.5,1.5-.8,3.1-.9,4.8h-5.6c.2-2.1,1.2-4.1,2.7-5.8h0ZM56.1,30.6c1.5,1.7,2.5,3.7,2.7,5.8h-5.6c0-1.7-.4-3.3-.9-4.8,1.4-.3,2.7-.6,3.8-1h0ZM35.1,32c1.9.3,4,.4,6.1.5v3.9h-7c0-1.5.4-3,.8-4.3h0ZM49.9,32c.4,1.3.7,2.8.8,4.3h-7v-3.9c2.2,0,4.2-.2,6.1-.5h0ZM26.2,38.2h5.6c0,1.7.4,3.3.9,4.8-1.4.3-2.7.6-3.8,1-1.5-1.7-2.5-3.7-2.7-5.8h0ZM34.3,38.2h7v3.9c-2.2,0-4.2.2-6.1.5-.4-1.3-.7-2.8-.8-4.3h0ZM43.7,38.2h7c0,1.5-.4,3-.8,4.3-1.9-.3-4-.4-6.1-.5v-3.9ZM53.2,38.2h5.6c-.2,2.1-1.2,4.1-2.7,5.8-1.1-.4-2.4-.8-3.8-1,.5-1.5.8-3.1.9-4.8h0ZM41.3,43.9v5.4c-1.6-.4-3.1-1.4-4.4-3.2-.4-.5-.7-1.1-1.1-1.7,1.7-.2,3.5-.4,5.4-.4h0ZM43.7,43.9c1.9,0,3.7.2,5.4.4-.3.6-.7,1.2-1.1,1.7-1.3,1.7-2.8,2.8-4.4,3.2v-5.3ZM33.4,44.7c.4.8.8,1.5,1.3,2.2.4.5.8,1,1.2,1.5-2.1-.7-4-1.7-5.5-2.9.9-.3,1.9-.5,2.9-.8h0ZM51.6,44.7c1.1.2,2.1.5,2.9.8-1.5,1.2-3.4,2.2-5.5,2.9.5-.4.9-.9,1.3-1.5.5-.7.9-1.4,1.3-2.2h0Z"/>
   </svg>
-  <span class="icon-tip">browser<br>settings</span>
+  <span class="icon-tip">conflicted<br>shortcuts</span>
   </div>
 </div>
 
@@ -719,6 +824,9 @@
       </div>
       <div style="width:60px;height:1px;background:#444;margin:2px auto;"></div>
       <div id="dbgPct" style="font-size:22px;font-weight:700;color:#888;line-height:1;text-align:center;">&#8212;</div>
+      <div style="width:60px;height:1px;background:#444;margin:4px auto;"></div>
+      <div style="font-size:9px;color:#888;text-transform:uppercase;letter-spacing:1px;text-align:center;">kb angle</div>
+      <div id="dbgKbAngle" style="font-size:22px;font-weight:700;color:#888;line-height:1;text-align:center;">&#8212;</div>
     </div>
   </div>
 </div>
@@ -775,7 +883,32 @@ const UNIVERSAL_SHORTCUTS = [
 const keyEls = {};
 let lockKeyEl = null;
 
-const LOCK_SVG = `<svg class="lock-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+// Show/hide the faint lock-key glyph hint used in ghost mode.
+function _setGhostLockHint(visible) {
+  if (!lockKeyEl) return;
+  lockKeyEl.classList.toggle('ghost-lock-visible', visible);
+}
+
+/* ══════════════════════════════════════
+   KEY GLYPH SVG CONSTANTS
+   Vector symbols for full-size Mac keys.
+   Match the Command symbol aesthetic used
+   in shortcut chips — clean stroke paths,
+   no emoji, no OS-dependent rendering.
+   Only injected when isMini is false and
+   currentOs is 'mac' (see buildKey util).
+══════════════════════════════════════ */
+
+// Option (⌥)matches the Apple keycap.
+const OPTION_SYM_SVG = `<svg class="key-glyph-sym key-glyph-option" viewBox="47.91 147.91 333.33 133.33" fill="none" stroke="currentColor" stroke-width="36" stroke-linecap="round" stroke-linejoin="round" xmlns="http://www.w3.org/2000/svg"><line x1="281.24" y1="147.91" x2="381.24" y2="147.91"/><polyline points="381.24,281.24 214.57,281.24 158.91,147.91 47.91,147.91"/></svg>`;
+// Control (⌃): upward-pointing caret / chevron.
+const CONTROL_SYM_SVG = `<svg class="key-glyph-sym key-glyph-control" viewBox="0 0 56 38" fill="none" stroke="currentColor" stroke-width="7" stroke-linecap="round" stroke-linejoin="round" xmlns="http://www.w3.org/2000/svg"><polyline points="6,32 28,7 50,32"/></svg>`;
+
+// Return (↩): right-angle arrow — horizontal stem then downward hook with
+// arrowhead pointing left, matching the standard Apple keycap return glyph.
+const RETURN_SYM_SVG = `<svg class="key-glyph-sym key-glyph-return" viewBox="0 0 58 46" fill="none" stroke="currentColor" stroke-width="6.5" stroke-linecap="round" stroke-linejoin="round" xmlns="http://www.w3.org/2000/svg"><polyline points="10,34 3,27 10,20"/><path d="M3,27 L40,27 L40,10"/></svg>`;
+
+const LOCK_SVG = `<svg class="lock-svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
   <rect x="5" y="11" width="14" height="10" rx="2"/>
   <path d="M8 11V7a4 4 0 0 1 8 0v4"/>
 </svg>`;
@@ -794,7 +927,13 @@ function buildKey(cfg, isMini) {
     case 'fn':
       el.classList.add('fn');
       el.innerHTML = `<span class="fn-lbl">${cfg.label}</span>`;
-      el.addEventListener('mousedown', function(ev){ touchEnabled ? handleKeyTouch(ev, el) : showKbToast(ev); });
+      if (cfg.id === 'Escape') {
+        el.addEventListener('pointerdown',  function(ev) { ev.preventDefault(); _debugEscHoldStart(); });
+        el.addEventListener('pointerup',    function(ev) { ev.preventDefault(); _debugEscHoldCancel(); });
+        el.addEventListener('pointerleave', function(ev) { _debugEscHoldCancel(); });
+      } else {
+        el.addEventListener('mousedown', function(ev){ touchEnabled ? handleKeyTouch(ev, el) : showKbToast(ev); });
+      }
       break;
     case 'lock':
       el.classList.add('fn', 'lock-key');
@@ -802,7 +941,7 @@ function buildKey(cfg, isMini) {
       el.style.display = 'flex';
       el.style.alignItems = 'center';
       el.style.justifyContent = 'center';
-      el.addEventListener('mousedown', function(ev) { ev.preventDefault(); openPadlockPanel(); });
+      el.addEventListener('mousedown', function(ev) { ev.preventDefault(); openCheatSheetPanel(ev); });
       lockKeyEl = el;
       break;
     case 'letter':
@@ -815,11 +954,27 @@ function buildKey(cfg, isMini) {
       break;
     case 'util': {
       const utilText = isMini ? cfg.mini : cfg.label;
-      const isGlyph = utilText && utilText.length <= 2 && /\p{So}|\p{Sm}|[⇧↩↑↓←→⌫↵]/u.test(utilText);
-      if (isGlyph) {
-        el.innerHTML = `<span class="util-sym-only">${utilText}</span>`;
+      // ── Full-size Mac keyboard: SVG glyphs for option, control, and return ──
+      // Ensures these keys always render as clean vector symbols rather than
+      // unicode characters or emoji, consistent with the Command symbol style.
+      // Mini keyboards and PC mode fall through to the standard text path.
+      const _isFullMac = !isMini && currentOs === 'mac';
+      if (_isFullMac && cfg.id === 'AltLeft') {
+        el.innerHTML = `${OPTION_SYM_SVG}<span class="mod-word">option</span>`;
+        el.querySelector('.key-glyph-sym').style.cssText = 'position:absolute;top:4px;right:5px;left:auto;';
+      } else if (_isFullMac && cfg.id === 'AltRight') {
+        el.innerHTML = `${OPTION_SYM_SVG}<span class="mod-word">option</span>`;
+      } else if (_isFullMac && (cfg.id === 'ControlLeft' || cfg.id === 'ControlRight')) {
+        el.innerHTML = `${CONTROL_SYM_SVG}<span class="mod-word">control</span>`;
+      } else if (_isFullMac && cfg.id === 'Enter') {
+        el.innerHTML = `${RETURN_SYM_SVG}<span class="mod-word">return</span>`;
       } else {
-        el.innerHTML = `<span class="util-lbl">${utilText}</span>`;
+        const isGlyph = utilText && utilText.length <= 2 && /\p{So}|\p{Sm}|[⇧↩↑↓←→⌫↵]/u.test(utilText);
+        if (isGlyph) {
+          el.innerHTML = `<span class="util-sym-only">${utilText}</span>`;
+        } else {
+          el.innerHTML = `<span class="util-lbl">${utilText}</span>`;
+        }
       }
       el.addEventListener('mousedown', function(ev){ touchEnabled ? handleKeyTouch(ev, el) : showKbToast(ev); });
       break;
@@ -1106,6 +1261,7 @@ function _kbPanelRect() {
 }
 
 function showToast(msg, duration) {
+  if (!_uiReady) return;
   var readingDuration = Math.min(5000, 1400 + msg.length * 40);
   duration = duration || readingDuration;
   var el = document.getElementById('kwToast');
@@ -1327,19 +1483,30 @@ function applyOsMode(os) {
   _syncKbCountFromVariant();
   if (activeSettings !== null) _spAlignPanel();
 
-  // Restore keyboard position without any animation after DOM rebuild
+  // Restore keyboard position without any animation after DOM rebuild.
   if (savedPos !== 'face') {
     _kbPos     = savedPos;
-    _kbFlipped = (savedPos === 'edge');
-    panel.classList.toggle('kb-partial', savedPos === 'partial');
+    _kbFlipped = true;
     panel.classList.add('kb-edged');
+    panel.classList.remove('kb-partial');
     if (savedPos === 'edge') {
       panel.classList.add('kb-edges-visible');
       stage.classList.add('kb-show-base');
     }
     wrap.classList.add('kb-flipping');
-    panel.style.transform = KB_POS[savedPos].panel;
-    stage.style.transform = KB_POS[savedPos].stage;
+    var RestoreRotateX;
+    var RestoreStageY;
+    if (savedPos === 'partial') {
+      RestoreRotateX = _kbPartialAngle;
+      RestoreStageY  = _interpolateStageY(_kbPartialAngle);
+    } else {
+      // edge
+      RestoreRotateX = KbNamedPositions.edge.panelRotateX;
+      RestoreStageY  = KbNamedPositions.edge.stageTranslateY;
+    }
+    panel.style.transform = 'rotateX(' + RestoreRotateX + 'deg)';
+    stage.style.transform = 'translateY(' + RestoreStageY + 'px)';
+    if (savedPos === 'edge') document.body.classList.add('kb-at-edge');
     // Force a reflow so the browser commits the transform at this position,
     // then re-enable transitions synchronously — no async gap for clicks to fall into.
     void panel.offsetWidth;
@@ -1351,12 +1518,12 @@ function applyOsMode(os) {
   if (gameState === 'playing') {
     const newPool = shuffleArray(buildPool());
     const currentStillValid = newPool.some(s =>
-      s.shortcut === currentAnswer && s.display === titleEl.textContent
+      GetActiveShortcutString(s) === currentAnswer && s.display === titleEl.textContent
     );
     if (!currentStillValid) {
       questionPool = newPool;
       questionIndex = 0;
-      currentAnswer = questionPool[0].shortcut;
+      currentAnswer = GetActiveShortcutString(questionPool[0]) || "";
       titleEl.className = '';
       titleEl.textContent = (questionPool[0].display || '').replace(/\\\\/g, '\\');
     } else {
@@ -1369,6 +1536,10 @@ function applyOsMode(os) {
 // Session-level flag: once the "recommend a keyboard" pill has been visible
 // for a cumulative 60 seconds, it is permanently hidden for this session.
 var _pillDismissedThisSession = false;
+
+// Gates showToast until the UI is fully built and initial modals are dismissed.
+// Prevents stray toasts appearing at position (0,0) / left-edge during boot.
+var _uiReady = false;
 var _pillAutoHideTimer        = null;
 
 function _startPillAutoHideTimer() {
@@ -1554,6 +1725,7 @@ function _revealPageContent() {
   // Show phone toolbar if applicable (not hidden by .page-initially-hidden
   // since it must also respond to game state)
   if (ForceNoKeyboard) _syncPhoneToolbarVisibility();
+  _uiReady = true;
 }
 
 var DomReady = new Promise(function(resolve) {
@@ -1580,129 +1752,416 @@ var SkeletonAnimationComplete = new Promise(function(resolve) {
 Promise.all([DomReady, StylesheetReady, SkeletonAnimationComplete]).then(function() {
   _revealPageContent();
   _initialiseLayout();
+  _initialiseStageDragListeners();
   if (activeSettings !== null) _spAlignPanel();
 });
 /* ══════════════════════════════════════
-   SHORTCUT → KEY CODES
-   CHANGE 1: extended for new shortcuts
+   SHORTCUT PARSING SYSTEM
+   NormaliseToken       — resolves synonyms to canonical form
+   ParseShortcutString  — splits token string into structured object
+   GetActiveShortcutString — picks mac_sc or pc_sc for current OS
+   ShortcutToKeyCodes   — returns browser key codes for lighting
+   ShortcutMatchesEvent — checks a keyboard event against a token string
+   IsKeyPartOfCurrentShortcut — used by the lighting system
 ══════════════════════════════════════ */
-function shortcutToCodes(s) {
-  const u = s.toUpperCase();
-  const CMD  = currentOs === 'pc' ? ['ControlLeft','ControlRight'] : ['MetaLeft','MetaRight'];
-  const OPT  = ['AltLeft','AltRight'];
-  const SH   = ['ShiftLeft','ShiftRight'];
 
-  if (u === 'SPACE')     return ['Space'];
-  if (u === 'TAB')       return ['Tab'];
-  if (u === 'HOME')      return ['Home'];
-  if (u === 'END')       return ['End'];
-  if (u === 'DEL')       return ['Backspace', 'Delete'];
-  if (u === 'GRAVE')     return ['Backquote'];
-  if (u === 'BACKSLASH') return ['Backslash'];
-  if (u === 'PAGEUP')    return ['PageUp'];
-  if (u === 'PAGEDOWN')  return ['PageDown'];
-  if (u === 'CMD')       return CMD;
-  if (u === 'CTRL')      return ['ControlLeft', 'ControlRight'];
-  if (u === 'SHIFT')     return SH;
-  if (u === 'OPTION')    return OPT;
+/* ── Token → browser key code map ──────────────────────────────────────────
+   Maps every canonical token to its browser KeyboardEvent.code string(s).
+   Modifiers return arrays (L+R variants). Keys return a single string.
+   Returns null for tokens that have no direct code mapping (should not occur
+   with valid input). ── */
+const TOKEN_TO_BROWSER_CODE = {
+  // Modifiers — arrays because L and R variants are interchangeable
+  'CMD':     () => currentOs === 'pc' ? ['ControlLeft','ControlRight'] : ['MetaLeft','MetaRight'],
+  'SHIFT':   () => ['ShiftLeft','ShiftRight'],
+  'OPTION':  () => ['AltLeft','AltRight'],
+  'CONTROL': () => ['ControlLeft','ControlRight'],
+  'WIN':     () => ['MetaLeft','MetaRight'],
+  // Named keys
+  'RETURN':    'Enter',
+  'TAB':       'Tab',
+  'SPACE':     'Space',
+  'BACKSPACE': ['Backspace','Delete'],
+  'DELETE':    'Delete',
+  'ESCAPE':    'Escape',
+  'CAPSLOCK':  'CapsLock',
+  'ARROWUP':    'ArrowUp',
+  'ARROWDOWN':  'ArrowDown',
+  'ARROWLEFT':  'ArrowLeft',
+  'ARROWRIGHT': 'ArrowRight',
+  'HOME':     'Home',
+  'END':      'End',
+  'PAGEUP':   'PageUp',
+  'PAGEDOWN': 'PageDown',
+  'INSERT':      'Insert',
+  'PRINTSCREEN': 'PrintScreen',
+  'SCROLLLOCK':  'ScrollLock',
+  'PAUSE':       'Pause',
+  'FN':          'Fn',
+  // Punctuation
+  'EQUAL':        'Equal',
+  'MINUS':        'Minus',
+  'BRACKETLEFT':  'BracketLeft',
+  'BRACKETRIGHT': 'BracketRight',
+  'BACKSLASH':    'Backslash',
+  'SEMICOLON':    'Semicolon',
+  'QUOTE':        'Quote',
+  'COMMA':        'Comma',
+  'PERIOD':       'Period',
+  'SLASH':        'Slash',
+  'GRAVE':        'Backquote',
+  // Numpad
+  'NUMPAD0': 'Numpad0', 'NUMPAD1': 'Numpad1', 'NUMPAD2': 'Numpad2',
+  'NUMPAD3': 'Numpad3', 'NUMPAD4': 'Numpad4', 'NUMPAD5': 'Numpad5',
+  'NUMPAD6': 'Numpad6', 'NUMPAD7': 'Numpad7', 'NUMPAD8': 'Numpad8',
+  'NUMPAD9': 'Numpad9',
+  'NUMPADADD':      'NumpadAdd',
+  'NUMPADSUBTRACT': 'NumpadSubtract',
+  'NUMPADMULTIPLY': 'NumpadMultiply',
+  'NUMPADDIVIDE':   'NumpadDivide',
+  'NUMPADDECIMAL':  'NumpadDecimal',
+  'NUMPADENTER':    'NumpadEnter',
+  // Function keys
+  'F1':'F1','F2':'F2','F3':'F3','F4':'F4',
+  'F5':'F5','F6':'F6','F7':'F7','F8':'F8',
+  'F9':'F9','F10':'F10','F11':'F11','F12':'F12',
+};
 
-  // Arrow keys bare
-  if (u === 'ARROWLEFT')  return ['ArrowLeft'];
-  if (u === 'ARROWRIGHT') return ['ArrowRight'];
-  if (u === 'ARROWUP')    return ['ArrowUp'];
-  if (u === 'ARROWDOWN')  return ['ArrowDown'];
+/* ── Synonym map — every accepted alias → canonical token ───────────────── */
+const TOKEN_SYNONYM_MAP = {
+  'COMMAND':     'CMD',
+  'CTRL':        'CMD',
+  'OPT':         'OPTION',
+  'ALT':         'OPTION',
+  'WINDOWS':     'WIN',
+  'FUNCTION':    'FN',
+  'ENTER':       'RETURN',
+  'SPACEBAR':    'SPACE',
+  'DEL':         'BACKSPACE',
+  'BACKDELETE':  'BACKSPACE',
+  'ESC':         'ESCAPE',
+  'PLUS':        'EQUAL',
+  'EQUALS':      'EQUAL',
+  'LESSTHAN':    'COMMA',
+  'MORETHAN':    'PERIOD',
+  'QUESTION':    'SLASH',
+  'TILDE':       'GRAVE',
+  'BACKTICK':    'GRAVE',
+  'PIPE':        'BACKSLASH',
+  'UNDERSCORE':  'MINUS',
+  'COLON':       'SEMICOLON',
+  'DOUBLEQUOTE': 'QUOTE',
+  'OPENBRACE':   'BRACKETLEFT',
+  'CLOSEBRACE':  'BRACKETRIGHT',
+  'OPENBRACKET': 'BRACKETLEFT',
+  'CLOSEBRACKET':'BRACKETRIGHT',
+  'EXCLAMATION': 'DIGIT1',
+  'AT':          'DIGIT2',
+  'HASH':        'DIGIT3',
+  'DOLLAR':      'DIGIT4',
+  'PERCENT':     'DIGIT5',
+  'CARET':       'DIGIT6',
+  'AMPERSAND':   'DIGIT7',
+  'ASTERISK':    'DIGIT8',
+  'OPENPAREN':   'DIGIT9',
+  'CLOSEPAREN':  'DIGIT0',
+  'UP':          'ARROWUP',
+  'DOWN':        'ARROWDOWN',
+  'LEFT':        'ARROWLEFT',
+  'RIGHT':       'ARROWRIGHT',
+  '=':  'EQUAL',
+  '-':  'MINUS',
+  '[':  'BRACKETLEFT',
+  ']':  'BRACKETRIGHT',
+  '\\': 'BACKSLASH',
+  ';':  'SEMICOLON',
+  "'":  'QUOTE',
+  ',':  'COMMA',
+  '.':  'PERIOD',
+  '/':  'SLASH',
+  '`':  'GRAVE',
+  '<':  'COMMA',
+  '>':  'PERIOD',
+  '+':  'EQUAL',
+  '~':  'GRAVE',
+};
 
-  // SHIFT + arrow
-  if (u === 'SHIFT+ARROWLEFT')  return [...SH, 'ArrowLeft'];
-  if (u === 'SHIFT+ARROWRIGHT') return [...SH, 'ArrowRight'];
-  if (u === 'SHIFT+ARROWUP')    return [...SH, 'ArrowUp'];
-  if (u === 'SHIFT+ARROWDOWN')  return [...SH, 'ArrowDown'];
-
-  // SHIFT + letter (e.g. SHIFT+A)
-  if (u.startsWith('SHIFT+') && !u.includes('CMD') && !u.includes('OPTION')) {
-    const key = charToCode(u.slice(6));
-    return [...SH, key].filter(Boolean);
-  }
-
-  // OPTION + arrow
-  if (u === 'OPTION+ARROWLEFT')  return [...OPT, 'ArrowLeft'];
-  if (u === 'OPTION+ARROWRIGHT') return [...OPT, 'ArrowRight'];
-  if (u === 'OPTION+ARROWUP')    return [...OPT, 'ArrowUp'];
-  if (u === 'OPTION+ARROWDOWN')  return [...OPT, 'ArrowDown'];
-
-  // OPTION + bracket (AE layer in/out)
-  if (u === 'OPTION+[') return [...OPT, 'BracketLeft'];
-  if (u === 'OPTION+]') return [...OPT, 'BracketRight'];
-  if (u.startsWith('OPTION+')) {
-    const key = charToCode(u.slice(7));
-    return [...OPT, key].filter(Boolean);
-  }
-
-  // SHIFT + OPTION + key (prefix variant)
-  if (u.startsWith('SHIFT+OPTION+')) {
-    const key = charToCode(u.slice(13));
-    return [...SH, ...OPT, key].filter(Boolean);
-  }
-
-  // OPTION + SHIFT + key (AE keyframe shortcuts)
-  if (u.startsWith('OPTION+SHIFT+')) {
-    const key = charToCode(u.slice(13));
-    return [...OPT, ...SH, key].filter(Boolean);
-  }
-
-  // CMD + OPTION + SHIFT + key
-  if (u.startsWith('CMD+SHIFT+OPTION+') || u.startsWith('CMD+OPTION+SHIFT+')) {
-    const rest = u.startsWith('CMD+SHIFT+OPTION+') ? u.slice(17) : u.slice(17);
-    const key = charToCode(rest);
-    return [...CMD, ...SH, ...OPT, key].filter(Boolean);
-  }
-
-  // CMD + OPTION + key
-  if (u.startsWith('CMD+OPTION+')) {
-    const key = charToCode(u.slice(11));
-    return [...CMD, ...OPT, key].filter(Boolean);
-  }
-
-  // CMD + SHIFT + key
-  if (u.startsWith('CMD+SHIFT+')) {
-    const key = charToCode(u.slice(10));
-    return [...CMD, ...SH, key].filter(Boolean);
-  }
-
-  // CMD + key
-  if (u.startsWith('CMD+')) {
-    const key = charToCode(u.slice(4));
-    return [...CMD, key].filter(Boolean);
-  }
-
-  // Bare single character (letter, digit, punctuation)
-  const c = charToCode(u);
-  return c ? [c] : [];
+/* ── NormaliseToken ─────────────────────────────────────────────────────────
+   Converts any accepted token or synonym to its canonical uppercase form.
+   Called by ParseShortcutString before anything else. ── */
+function NormaliseToken(RawToken) {
+  var UpperToken = RawToken.trim().toUpperCase();
+  return TOKEN_SYNONYM_MAP[UpperToken] || UpperToken;
 }
 
-function charToCode(ch) {
-  const map = {
-'RETURN':'Enter','ENTER':'Enter',
-';':'Semicolon','=':'Equal','-':'Minus',"'":"Quote",
-    '[':'BracketLeft',']':'BracketRight',
-    '/':'Slash','.':'Period',',':'Comma',
-    '<':'Comma','>':'Period',
-    '0':'Digit0','1':'Digit1','2':'Digit2','3':'Digit3',
-    '4':'Digit4','5':'Digit5','6':'Digit6','7':'Digit7',
-    '8':'Digit8','9':'Digit9',
-    'ARROWLEFT':'ArrowLeft','ARROWRIGHT':'ArrowRight',
-    'ARROWUP':'ArrowUp','ARROWDOWN':'ArrowDown',
-    'HOME':'Home','END':'End',
-    'PAGEUP':'PageUp','PAGEDOWN':'PageDown',
-    'GRAVE':'Backquote','BACKSLASH':'Backslash',
-    'TAB':'Tab','SPACE':'Space','DEL':'Backspace','DELETE':'Delete',
-    'F1':'F1','F2':'F2','F3':'F3','F4':'F4',
-    'F5':'F5','F6':'F6','F7':'F7','F8':'F8',
-    'F9':'F9','F10':'F10','F11':'F11','F12':'F12',
+/* ── ParseShortcutString ────────────────────────────────────────────────────
+   Splits a token string (e.g. "CMD+SHIFT+Z") on + and returns a structured
+   object describing which modifiers are required and what the key token is.
+   Handles the pipe-separated alternates format: only the first alternative
+   is parsed here; the caller iterates alternates when needed. ── */
+function ParseShortcutString(ShortcutString) {
+  if (!ShortcutString) return null;
+  // Use only the first alternative for parsing (pipe = alternates)
+  var PrimaryAlternative = ShortcutString.split('|')[0];
+  var RawTokens = PrimaryAlternative.split('+').map(NormaliseToken).filter(Boolean);
+
+  var RequiresCmd     = false;
+  var RequiresShift   = false;
+  var RequiresOption  = false;
+  var RequiresControl = false;
+  var RequiresWin     = false;
+  var KeyToken        = null;
+
+  RawTokens.forEach(function(Token) {
+    if      (Token === 'CMD')     RequiresCmd     = true;
+    else if (Token === 'SHIFT')   RequiresShift   = true;
+    else if (Token === 'OPTION')  RequiresOption  = true;
+    else if (Token === 'CONTROL') RequiresControl = true;
+    else if (Token === 'WIN')     RequiresWin     = true;
+    else                          KeyToken        = Token;
+  });
+
+  return {
+    requiresCmd:     RequiresCmd,
+    requiresShift:   RequiresShift,
+    requiresOption:  RequiresOption,
+    requiresControl: RequiresControl,
+    requiresWin:     RequiresWin,
+    keyToken:        KeyToken,
+    rawTokens:       RawTokens,
   };
-  if (map[ch]) return map[ch];
-  if (ch.length === 1 && ch >= 'A' && ch <= 'Z') return 'Key' + ch;
-  return null;
+}
+
+/* ── GetActiveShortcutString ────────────────────────────────────────────────
+   Returns the correct token string for the current OS from a shortcut entry.
+   Falls back to the legacy shortcut field if neither platform field exists.
+   Returns null if this shortcut does not exist on the current platform. ── */
+/* ── GetActiveShortcutString ────────────────────────────────────────────────
+   Returns the token string for the current OS from a shortcut entry.
+   Returns null if the platform field is absent, empty, or 'none'. ── */
+function GetActiveShortcutString(ShortcutEntry) {
+  var CandidateString = currentOs === 'pc'
+    ? ShortcutEntry.pc_sc
+    : ShortcutEntry.mac_sc;
+
+  if (CandidateString !== null && CandidateString !== undefined
+      && CandidateString !== 'none' && CandidateString !== '') {
+    // Old display strings contain Unicode key symbols — detect and skip them
+    if (!/[⌘⇧⌥⌃⊞↩↵⌫⌦⎋⇥⇪⇞⇟←→↑↓]/.test(CandidateString)) {
+      return CandidateString;
+    }
+  }
+
+    return null;
+
+}
+
+/* ── GetAllAlternatives ─────────────────────────────────────────────────────
+   Returns all pipe-separated alternatives from a token string as an array. ── */
+function GetAllAlternatives(ShortcutString) {
+  if (!ShortcutString) return [];
+  return ShortcutString.split('|').map(function(s) { return s.trim(); }).filter(Boolean);
+}
+
+/* ── TokenToBrowserCode ─────────────────────────────────────────────────────
+   Resolves a single canonical token to its browser key code string(s).
+   Letters return 'KeyA' etc. Digits return 'Digit0' etc.
+   Modifier tokens return arrays. Everything else uses TOKEN_TO_BROWSER_CODE. ── */
+function TokenToBrowserCode(Token) {
+  // Modifier tokens with dynamic resolution
+  if (TOKEN_TO_BROWSER_CODE[Token] && typeof TOKEN_TO_BROWSER_CODE[Token] === 'function') {
+    return TOKEN_TO_BROWSER_CODE[Token]();
+  }
+  if (TOKEN_TO_BROWSER_CODE[Token]) {
+    var Mapped = TOKEN_TO_BROWSER_CODE[Token];
+    return Array.isArray(Mapped) ? Mapped : [Mapped];
+  }
+  // Single letter A–Z
+  if (Token.length === 1 && Token >= 'A' && Token <= 'Z') return ['Key' + Token];
+  // Single digit 0–9
+  if (Token.length === 1 && Token >= '0' && Token <= '9') return ['Digit' + Token];
+  return [];
+}
+
+/* ── ShortcutToKeyCodes ─────────────────────────────────────────────────────
+   Takes a token string and returns the flat array of browser key codes needed
+   to light those keys on the graphical keyboard. Handles alternates by using
+   the first alternative only (the canonical one shown in chips). ── */
+function ShortcutToKeyCodes(ShortcutString) {
+  var Parsed = ParseShortcutString(ShortcutString);
+  if (!Parsed) return [];
+  var AllCodes = [];
+  Parsed.rawTokens.forEach(function(Token) {
+    var Codes = TokenToBrowserCode(Token);
+    Codes.forEach(function(Code) {
+      if (Code && AllCodes.indexOf(Code) === -1) AllCodes.push(Code);
+    });
+  });
+  return AllCodes;
+}
+
+// Legacy alias — keeps existing call sites working during transition
+function shortcutToCodes(s) { return ShortcutToKeyCodes(s); }
+
+/* ── ShortcutMatchesEvent ───────────────────────────────────────────────────
+   Takes a token string and a browser KeyboardEvent.
+   Returns true if the event satisfies the shortcut.
+   Checks all pipe-separated alternatives. ── */
+function ShortcutMatchesEvent(ShortcutString, KeyboardEvent) {
+  if (!ShortcutString) return false;
+  var Alternatives = GetAllAlternatives(ShortcutString);
+  return Alternatives.some(function(Alternative) {
+    return _MatchesSingleAlternative(Alternative, KeyboardEvent);
+  });
+}
+
+// Legacy alias
+function matchesShortcut(event, str) { return ShortcutMatchesEvent(str, event); }
+
+/* ── _MatchesSingleAlternative ──────────────────────────────────────────────
+   Internal — checks one alternative (no pipes) against a keyboard event. ── */
+function _MatchesSingleAlternative(ShortcutString, Event) {
+  var Parsed = ParseShortcutString(ShortcutString);
+  if (!Parsed) return false;
+
+  // Modifier state from the event
+  var EventHasCmd     = currentOs === 'pc' ? Event.ctrlKey  : Event.metaKey;
+  var EventHasNoCmd   = currentOs === 'pc' ? (!Event.ctrlKey && !Event.metaKey) : (!Event.metaKey && !Event.ctrlKey);
+  var EventHasOption  = Event.altKey;
+  var EventHasShift   = Event.shiftKey;
+  var EventHasControl = Event.ctrlKey; // literal Control on Mac (alongside Meta)
+
+  // Modifier requirements must match exactly
+  if (Parsed.requiresCmd     !== EventHasCmd)    return false;
+  if (Parsed.requiresShift   !== EventHasShift)  return false;
+  if (Parsed.requiresOption  !== EventHasOption) return false;
+  // CONTROL on Mac: require ctrlKey but only when metaKey is also present
+  // (to avoid clashing with CMD-only checks where ctrl is the CMD key on PC)
+  if (Parsed.requiresControl) {
+    if (currentOs === 'pc') return false; // CONTROL token is Mac-only
+    if (!Event.ctrlKey) return false;
+  }
+  if (Parsed.requiresWin) {
+    if (currentOs !== 'pc') return false;
+    if (!Event.metaKey) return false;
+  }
+
+  // Bare modifier shortcuts — no key token, just check the modifier key itself was pressed
+  if (!Parsed.keyToken) {
+    var ModifierKeyName = Event.key;
+    if (Parsed.requiresCmd && !Parsed.requiresShift && !Parsed.requiresOption) {
+      return currentOs === 'pc'
+        ? (ModifierKeyName === 'Control' && !EventHasShift && !EventHasOption)
+        : (ModifierKeyName === 'Meta'    && !EventHasShift && !EventHasOption);
+    }
+    if (Parsed.requiresShift && !Parsed.requiresCmd && !Parsed.requiresOption) {
+      return ModifierKeyName === 'Shift';
+    }
+    if (Parsed.requiresOption && !Parsed.requiresCmd && !Parsed.requiresShift) {
+      return ModifierKeyName === 'Alt';
+    }
+    return false;
+  }
+
+  // Key matching — physical key code takes priority over event.key
+  return _KeyTokenMatchesEvent(Parsed.keyToken, Event);
+}
+
+/* ── _KeyTokenMatchesEvent ──────────────────────────────────────────────────
+   Checks whether the physical key pressed matches a key token.
+   Uses event.code for layout-independence, with event.key as a fallback
+   for shifted-punctuation edge cases on non-English keyboards. ── */
+function _KeyTokenMatchesEvent(KeyToken, Event) {
+  var EventCode = Event.code || '';
+  var EventKey  = (Event.key || '').toUpperCase();
+
+  // Derive a layout-independent physical char from event.code
+  var PhysicalChar = null;
+  if (EventCode.startsWith('Key'))   PhysicalChar = EventCode.slice(3);
+  if (EventCode.startsWith('Digit')) PhysicalChar = EventCode.slice(5);
+  var PunctuationCodeMap = {
+    'BracketLeft':'[', 'BracketRight':']', 'Semicolon':';', 'Quote':"'",
+    'Equal':'=', 'Minus':'-', 'Slash':'/', 'Backslash':'\\',
+    'Backquote':'`', 'Period':'.', 'Comma':',',
+  };
+  if (!PhysicalChar && PunctuationCodeMap[EventCode]) PhysicalChar = PunctuationCodeMap[EventCode];
+
+  // Get expected browser codes for this token
+  var ExpectedCodes = TokenToBrowserCode(KeyToken);
+
+  // Primary: event.code is in the expected set
+  if (ExpectedCodes.indexOf(EventCode) !== -1) return true;
+
+  // Accept NumpadEnter for RETURN
+  if (KeyToken === 'RETURN' && EventCode === 'NumpadEnter') return true;
+
+  // Accept Quote as Backquote on some PC keyboard layouts
+  if (KeyToken === 'GRAVE' && EventCode === 'Quote') return true;
+
+  // EQUAL/PLUS: match either = or + regardless of shift, match = key code
+  if (KeyToken === 'EQUAL') {
+    if (EventCode === 'Equal') return true;
+    if (EventCode === 'NumpadAdd') return true;
+    if (EventKey === '=' || EventKey === '+') return true;
+  }
+
+  // Fallback: physical char derived from code matches a single-char token
+  if (PhysicalChar && PhysicalChar.toUpperCase() === KeyToken) return true;
+
+  // Fallback: event.key matches for keys that produce their token directly
+  if (EventKey === KeyToken) return true;
+
+  // Special: arrow / nav keys via event.key
+  var EventKeyToToken = {
+    'ARROWLEFT':'ARROWLEFT','ARROWRIGHT':'ARROWRIGHT',
+    'ARROWUP':'ARROWUP','ARROWDOWN':'ARROWDOWN',
+    'HOME':'HOME','END':'END','PAGEUP':'PAGEUP','PAGEDOWN':'PAGEDOWN',
+    'TAB':'TAB',' ':'SPACE','ENTER':'RETURN',
+    'BACKSPACE':'BACKSPACE','DELETE':'DELETE','ESCAPE':'ESCAPE',
+  };
+  if (EventKeyToToken[EventKey] === KeyToken) return true;
+  if (Event.key === ' ' && KeyToken === 'SPACE') return true;
+  if (Event.key === 'Enter' && KeyToken === 'RETURN') return true;
+
+  return false;
+}
+
+/* ── IsKeyPartOfCurrentShortcut ─────────────────────────────────────────────
+   Used by the keyboard lighting system. Returns true if this key event
+   presses one of the required keys for the current question's shortcut
+   (including all pipe alternatives). ── */
+function IsKeyPartOfCurrentShortcut(KeyboardEvent, ShortcutString) {
+  if (!ShortcutString) return false;
+  var Alternatives = GetAllAlternatives(ShortcutString);
+  return Alternatives.some(function(Alternative) {
+    return _IsKeyPartOfAlternative(KeyboardEvent, Alternative);
+  });
+}
+
+// Legacy alias
+function isKeyPartOfShortcut(e, token) { return IsKeyPartOfCurrentShortcut(e, token); }
+
+function _IsKeyPartOfAlternative(Event, ShortcutString) {
+  var Parsed = ParseShortcutString(ShortcutString);
+  if (!Parsed) return false;
+  var EventCode = Event.code || '';
+
+  // Check if this event is pressing a required modifier
+  var IsCmdKey     = currentOs === 'pc'
+    ? (EventCode === 'ControlLeft' || EventCode === 'ControlRight')
+    : (EventCode === 'MetaLeft'    || EventCode === 'MetaRight');
+  var IsShiftKey   = EventCode === 'ShiftLeft'   || EventCode === 'ShiftRight';
+  var IsOptionKey  = EventCode === 'AltLeft'      || EventCode === 'AltRight';
+  var IsControlKey = EventCode === 'ControlLeft'  || EventCode === 'ControlRight';
+
+  if (IsCmdKey    && Parsed.requiresCmd)     return true;
+  if (IsShiftKey  && Parsed.requiresShift)   return true;
+  if (IsOptionKey && Parsed.requiresOption)  return true;
+  if (IsControlKey && Parsed.requiresControl && currentOs === 'mac') return true;
+
+  // Check if this event is pressing the required key
+  if (Parsed.keyToken) return _KeyTokenMatchesEvent(Parsed.keyToken, Event);
+  return false;
 }
 
 /* ══════════════════════════════════════
@@ -1818,87 +2277,13 @@ function fadeKeyOut(code) {
 function checkStickyShortcut() {
   // All required codes must be green-toggled on; no orange key may be active.
   if ([...stickyLit.values()].includes('orange')) return false;
-  // Primary path: check the canonical shortcut codes
-  const needed = shortcutToCodes(currentAnswer);
-  if (neededSatisfied(needed)) return true;
-  // Alternate path: if this shortcut has alternates (e.g. H → Space),
-  // check whether the green-held keys satisfy any alternate instead.
-  const alts = SHORTCUT_ALTERNATES[currentAnswer.toUpperCase()];
-  if (alts) {
-    for (const alt of alts) {
-      if (neededSatisfied(shortcutToCodes(alt))) return true;
-    }
-  }
-  return false;
-}
-
-function isKeyPartOfShortcut(e, token) {
-  // Returns true if this key event is one of the required keys for the token.
-  // Uses the same modifier-flag logic as matchesShortcut so they stay in sync.
-  const u = token.toUpperCase();
-  const code = e.code;
-  // Check alternates — if any alternate matches, treat as correct
-  const alts = SHORTCUT_ALTERNATES[u];
-  if (alts) {
-    for (const alt of alts) {
-      if (isKeyPartOfShortcut(e, alt)) return true;
-    }
-  }
-
-  // Determine which modifiers the token needs
-  const needsCmd   = u.includes('CMD');
-  const needsShift = u.includes('SHIFT');
-  const needsOpt   = u.includes('OPTION');
-
-  // Is this key press a modifier key that the shortcut requires?
-  // On Mac, CMD = Meta only. On PC, CMD = Ctrl only. Control on Mac is never CMD.
-  const isCmdKey   = currentOs === 'pc'
-    ? (code === 'ControlLeft'  || code === 'ControlRight')
-    : (code === 'MetaLeft'     || code === 'MetaRight');
-  const isShiftKey = code === 'ShiftLeft'   || code === 'ShiftRight';
-  const isOptKey   = code === 'AltLeft'     || code === 'AltRight';
-
-  if (isCmdKey   && (needsCmd   || u === 'CMD'))   return true;
-  if (isShiftKey && (u === 'SHIFT' || (u.includes('SHIFT') && needsShift))) return true;
-  if (isOptKey   && (u === 'OPTION' || (u.includes('OPTION') && needsOpt))) return true;
-
-  // Bare modifier questions — no character key involved
-  if (u === 'CMD' || u === 'SHIFT' || u === 'OPTION') return false;
-
-  // Is this the character key? Use shortcutToCodes to get the expected code
-  // but also cross-check via e.key for shifted-character edge cases
-  const needed = shortcutToCodes(token);
-  const charCodes = needed.filter(c =>
-    !['MetaLeft','MetaRight','ControlLeft','ControlRight',
-      'ShiftLeft','ShiftRight','AltLeft','AltRight'].includes(c)
-  );
-  if (charCodes.length === 0) return false;
-
-  // Primary check: e.code matches
-  if (charCodes.includes(code)) return true;
-
-  // Quote key can fire for Backquote on some PC keyboard layouts
-  if (charCodes.includes('Backquote') && code === 'Quote') return true;
-
-  // Fallback: e.key normalised matches (handles shifted punctuation etc.)
-  const ku = e.key.toUpperCase();
-  return charCodes.some(c => {
-    const codeToKey = {
-      'BracketLeft':'[','BracketRight':']','Semicolon':';','Equal':'=',
-      'Minus':'-','Slash':'/','Period':'.','Comma':',',
-      'ArrowLeft':'ARROWLEFT','ArrowRight':'ARROWRIGHT',
-      'ArrowUp':'ARROWUP','ArrowDown':'ARROWDOWN',
-      'Home':'HOME','End':'END','Enter':'RETURN','Space':' ','Tab':'TAB',
-      'Backspace':'DEL','Delete':'DEL','Backquote':'GRAVE','Backslash':'BACKSLASH',
-    };
-    // Accept Quote as matching Backquote (international PC keyboards)
-    if (c === 'Backquote' && (ku === "'" || ku === '`')) return true;
-    if (codeToKey[c]) return ku === codeToKey[c].toUpperCase();
-    if (c.startsWith('Key'))   return ku === c.slice(3);
-    if (c.startsWith('Digit')) return ku === c.slice(5);
-    return false;
+  // Check all pipe-separated alternatives — any one satisfied = correct
+  var Alternatives = GetAllAlternatives(currentAnswer);
+  return Alternatives.some(function(Alternative) {
+    return neededSatisfied(ShortcutToKeyCodes(Alternative));
   });
 }
+
 
 // Extended key labels for the ghost pill
 const EXT_KEY_LABELS = {
@@ -1906,7 +2291,7 @@ const EXT_KEY_LABELS = {
   'PageUp': 'pg up', 'PageDown': 'pg dn',
   'Insert': 'insert', 'Delete': 'del',
   'PrintScreen': 'prt sc', 'ScrollLock': 'scr lk', 'Pause': 'pause',
-  'NumLock': 'num lk',
+  'NumLock': 'clear',
 };
 const extKeyPillEl = document.getElementById('extKeyPill');
 let extKeyPillTimer = null;
@@ -1922,17 +2307,13 @@ function showExtKeyPill(code, state) {
 }
 
 function hideExtKeyPill() {
-  // Linger then fade, matching real key behaviour
   clearTimeout(extKeyPillTimer);
   extKeyPillEl.classList.add('lit-fading');
-  requestAnimationFrame(() => requestAnimationFrame(() => {
-    extKeyPillEl.classList.remove('lit-green', 'lit-orange');
-    extKeyPillTimer = setTimeout(() => {
-      extKeyPillEl.classList.remove('lit-fading');
-      extKeyPillEl.style.display = 'none';
-    }, 900);
-  }));
-}
+  extKeyPillTimer = setTimeout(() => {
+    extKeyPillEl.classList.remove('lit-fading', 'lit-green', 'lit-orange');
+    extKeyPillEl.style.display = 'none';
+  }, 900);
+ }
 
 // Numpad → main keyboard code remapping for lighting
 const NUMPAD_MAP = {
@@ -2067,7 +2448,7 @@ function updateKeyboardLighting(e, isDown) {
 let gameState = 'idle';
 let currentMedal = null;
 let _confirmFromFinished  = false;
-let _padlockSavedTitle = '';
+let _cheatsheetSavedTitle = '';
 let _confirmFromPause     = false; // true when confirm-reset entered from active paused game
 let _welcomeIsReturning   = false; // true when the returning-visitor landing screen is showing
 let _pendingDifficulty   = null;  // difficulty mode awaiting confirmation
@@ -2318,7 +2699,7 @@ function _closeAllModals() {
 function mainButtonClick() {
   mainBtn.blur();
   if (gameState === 'welcome') { _startFromWelcome(); return; }
-  if (gameState === 'idle' || gameState === 'finished') { _closeAllModals(); beginCountdown(); return; }
+  if (gameState === 'idle' || gameState === 'finished') { _closeAllModalsInstant(); beginCountdown(); return; }
   if (gameState === 'counting')      { cancelCountdown(); return; }
   if (gameState === 'playing')       { skipShortcut(); return; }
   if (gameState === 'readyToUnpause') {
@@ -2358,6 +2739,7 @@ const IMPROVEMENT_TIPS = [
   'Pause the game to reflect on a miss.',
   'The help button isn’t to cheat. It’s to learn.',
   'Celebrate streaks. How many can you do in a row?',
+  'Some actions have more than one possible shortcut.',
   'Compare your scores over time to see your progress.',
   'Share scores with classmates for friendly rivalry.',
   'Eyes on work, not the keys. Trust the muscle memory.',
@@ -2374,7 +2756,7 @@ const IMPROVEMENT_TIPS = [
 function helpButtonClick() {
   helpBtn.blur();
   resetEndScreenInactivityTimer();
-  if (gameState === 'idle')           { titleEl.textContent = bestRecord.time !== null ? 'To reset your score, press the lock key on the keyboard.' : 'Press start to begin.'; return; }
+  if (gameState === 'idle')           { titleEl.textContent = bestRecord.time !== null ? 'You can reset your score from the pause screen.' : 'Press start to begin.'; return; }
   if (gameState === 'playing')        { toggleHelp(); return; }
   if (gameState === 'readyToUnpause') { _enterReadyToUnpauseCleanup(); enterPause(); enterConfirmQuit(); return; }
   if (gameState === 'paused')         { enterConfirmQuit(); return; }
@@ -2431,50 +2813,61 @@ if (transitioning && gameState !== 'finished') return;
 /* ══════════════════════════════════════
    HELP — auto-fades after 3s
 ══════════════════════════════════════ */
-const KEY_DISPLAY_MAC = {
-  'CMD':        { sym: '⌘', name: '' },
-  'SHIFT':      { sym: '⇧', name: 'Shift' },
-  'OPTION':     { sym: '⌥', name: 'Option' },
-  'RETURN':     { sym: '↩', name: 'Return' },
-  'ARROWLEFT':  { sym: '←', name: 'Left' },
-  'ARROWRIGHT': { sym: '→', name: 'Right' },
-  'ARROWUP':    { sym: '↑', name: 'Up' },
-  'ARROWDOWN':  { sym: '↓', name: 'Down' },
-  'HOME':       { sym: '↖', name: 'Home' },
-  'END':        { sym: '⇥', name: 'End' },
-  'SPACE':      { sym: '␣', name: 'Space' },
-  'TAB':        { sym: '⇥', name: 'Tab' },
-  'BACKSLASH':  { sym: '\\', name: '' },
-  'GRAVE':      { sym: '`', name: '' },
-};
-const KEY_DISPLAY_PC = {
-  'CMD':        { sym: 'Ctrl', name: '' },
-  'SHIFT':      { sym: '⇧', name: 'Shift' },
-  'OPTION':     { sym: 'Alt', name: '' },
-  'RETURN':     { sym: '↵', name: 'Enter' },
-  'ARROWLEFT':  { sym: '←', name: 'Left' },
-  'ARROWRIGHT': { sym: '→', name: 'Right' },
-  'ARROWUP':    { sym: '↑', name: 'Up' },
-  'ARROWDOWN':  { sym: '↓', name: 'Down' },
-  'HOME':       { sym: '↖', name: 'Home' },
-  'END':        { sym: '⇥', name: 'End' },
-  'SPACE':      { sym: '␣', name: 'Space' },
-  'TAB':        { sym: '⇥', name: 'Tab' },
-  'BACKSLASH':  { sym: '\\', name: '' },
-  'GRAVE':      { sym: '`', name: '' },
-};
+/* ── ShowHintToast ───────────────────────────────────────────────────────────
+   Renders the current answer as key chips inside the stats-row toast.
+   Uses BuildShortcutKeyChips so alternates, symbols, and ordering are all
+   handled by the single unified chip system. ── */
+/* colour: 'green' | 'orange' | null (unstyled)
+   Toast chips are rendered larger than report-card chips but stay
+   position:absolute so they never push layout height. */
+function ShowHintToast(TokenString, colour) {
+  kbToastEl.innerHTML = '';
+  var ChipsWrapper = BuildShortcutKeyChips(TokenString, false);
 
-function pillHTML(token, bg) {
-  const map = currentOs === 'pc' ? KEY_DISPLAY_PC : KEY_DISPLAY_MAC;
-  const k = map[token.toUpperCase()];
-  const label = k ? (k.name ? k.sym + ' ' + k.name : k.sym) : token;
-  const colour = bg || '#f59e0b';
-  return '<span style="display:inline-block;background:' + colour + ';color:white;font-weight:700;font-size:12px;padding:3px 10px;border-radius:10px;white-space:nowrap;">' + label + '</span>';
-}
+  // ── Make toast chips larger ───────────────────────────────────────────────
+  // Override the 10px report-card size. The toast is position:absolute
+  // inside statsRow so no layout height is added.
+  ChipsWrapper.querySelectorAll('.sp-report-chip-key').forEach(function(Chip) {
+    Chip.style.fontSize     = '13px';
+    Chip.style.padding      = '2px 7px 1px';
+    Chip.style.borderRadius = '4px';
+  });
+  // Separator + signs grow proportionally
+  ChipsWrapper.querySelectorAll('span:not(.sp-report-chip-key)').forEach(function(Sep) {
+    Sep.style.fontSize = '13px';
+    Sep.style.margin   = '0 2px';
+  });
 
-function buildHintHTML(shortcut, bg) {
-  const parts = shortcut.toUpperCase().split('+');
-  return parts.map(t => pillHTML(t, bg)).join(' <span style="color:#6b7280;font-weight:700;">+</span> ');
+  // ── Colour the chips ──────────────────────────────────────────────────────
+  if (colour) {
+    var IsGreen    = (colour === 'green');
+    var IsYellow   = (colour === 'yellow');
+    var ChipBg     = IsGreen ? '#10b981' : IsYellow ? '#f59e0b' : '#f97316';
+    var ChipBorder = IsGreen ? '#059669' : IsYellow ? '#d97706' : '#c2410c';
+    var ChipShadow = IsGreen ? '0 0 6px rgba(16,185,129,0.45)' : IsYellow ? '0 0 6px rgba(245,158,11,0.45)' : '0 0 6px rgba(249,115,22,0.45)';
+    var SepColour  = IsGreen ? '#059669' : IsYellow ? '#d97706' : '#c2410c';    
+    ChipsWrapper.querySelectorAll('.sp-report-chip-key').forEach(function(Chip) {
+      Chip.style.background  = ChipBg;
+      Chip.style.color       = 'white';
+      Chip.style.borderColor = ChipBorder;
+      Chip.style.boxShadow   = ChipShadow;
+    });
+    ChipsWrapper.querySelectorAll('span:not(.sp-report-chip-key)').forEach(function(Sep) {
+      Sep.style.color = SepColour;
+    });
+  }
+
+  // ── Safari inline-flex fix ────────────────────────────────────────────────
+  // BuildShortcutKeyChips returns an inline-flex span. When appended as the
+  // sole child of a block element (kbToastEl), Safari collapses the inline
+  // formatting context and merges chips. Switching to block-level flex on
+  // the wrapper — scoped to the toast only — fixes this without affecting
+  // report-card or cheat-sheet contexts where the wrapper stays inline-flex.
+  ChipsWrapper.style.display        = 'flex';
+  ChipsWrapper.style.justifyContent = 'center';
+  ChipsWrapper.style.marginLeft     = '0';
+
+  kbToastEl.appendChild(ChipsWrapper);
 }
 
 function toggleHelp() {
@@ -2487,7 +2880,7 @@ function toggleHelp() {
 }
 
     // Show hint in the stats-row toast pill — below the game panel, always readable
-    kbToastEl.innerHTML = buildHintHTML(currentAnswer.replace(/\\\\/g, '\\'), '#10b981');
+    ShowHintToast(currentAnswer, 'green');
     kbToastEl.classList.add('show');
     clearTimeout(_kwToastTimer);
     // Suppress the "Ready?" prompt while the hint is on screen
@@ -2524,7 +2917,7 @@ function toggleHelp() {
   }
 }
 function showAutoHintToast() {
-    kbToastEl.innerHTML = buildHintHTML(currentAnswer.replace(/\\\\/g, '\\'), '#f97316');
+    ShowHintToast(currentAnswer, 'orange');
     kbToastEl.classList.add('show');
     clearTimeout(_kwToastTimer);
     clearTimeout(_kbToastAutoHideTimer);
@@ -2532,10 +2925,20 @@ function showAutoHintToast() {
 }
 
 function showSuccessHintToast() {
-    kbToastEl.innerHTML = buildHintHTML(currentAnswer.replace(/\\\\/g, '\\'), '#10b981');
+    ShowHintToast(currentAnswer, 'green');
     kbToastEl.classList.add('show');
     clearTimeout(_kbToastAutoHideTimer);
     _kbToastAutoHideTimer = setTimeout(function() { kbToastEl.classList.remove('show'); }, 1200);
+}
+
+/* Called when the player presses the correct answer in the 2s near-miss window
+   after the question timer has expired. Shows orange chips (they were too slow,
+   but they knew the answer) and briefly extends the toast so it reads clearly. */
+function showNearMissHintToast() {
+    ShowHintToast(nearMissAnswer, 'yellow');
+    kbToastEl.classList.add('show');
+    clearTimeout(_kbToastAutoHideTimer);
+    _kbToastAutoHideTimer = setTimeout(function() { kbToastEl.classList.remove('show'); }, 1600);
 }
 
 
@@ -2548,19 +2951,29 @@ function clearHelp() {
 
 /* ══════════════════════════════════════
    PAUSE / EASTER EGG
-══════════════════════════════════════ */function openPadlockPanel() {
+══════════════════════════════════════ */function openCheatSheetPanel(e) {
+  if (e) e.stopPropagation();
   if (transitioning) return;
   if (gameState === 'counting') return;
-  // If the padlock panel is already open, close it.
+  // If the cheat sheet panel is already open, close it.
   if (activeSettings === 'panelCheatSheet') { closeSettings(); return; }
-  // Save title text then show cheat sheet heading in the game div
-  _padlockSavedTitle = titleEl.textContent;
-  // Open the panel first so enterPause does not auto-open panelPause on top.
+  // Suppress the drag affordance during the flip+panel-fade transition (~1400ms).
+  var aff = document.getElementById('kbHandleAffordance');
+  if (aff) {
+    aff.classList.remove('handle-hover', 'handle-active');
+    aff.style.opacity = '0';
+    aff.style.pointerEvents = 'none';
+    setTimeout(function() { aff.style.opacity = ''; aff.style.pointerEvents = ''; }, 1500);
+  }
+  // Save title text before pausing (enterPause may overwrite it).
+  _cheatsheetSavedTitle = titleEl.textContent;
+  // Pause first so enterPause's setKbPosition('edge') fires before openSettings
+  // overrides it with 'partial'. Order matters here.
+  if (gameState === 'readyToUnpause') { _enterReadyToUnpauseCleanup(); enterPause(); }
+  else if (gameState === 'playing')   { enterPause(); }
+  // Open panel after pausing so it wins the keyboard position.
   openSettings('panelCheatSheet');
-  if (gameState === 'counting')        { cancelCountdown(); }
-  else if (gameState === 'readyToUnpause') { _enterReadyToUnpauseCleanup(); enterPause(); }
-  else if (gameState === 'playing')    { enterPause(); }
-  // Always set title + tagline last, overwriting any blur/text from enterPause
+  // Always set title + tagline last, overwriting any blur/text from enterPause.
   titleEl.className = '';
   titleEl.textContent = 'Cheat Sheet';
   var tagline = document.getElementById('welcomeTagline');
@@ -2766,7 +3179,7 @@ function unpause() {
   if (questionPool.length > 0 && (!titleEl.textContent || titleEl.textContent === '')) {
     titleEl.className = '';
     titleEl.textContent = (questionPool[questionIndex]?.display || '').replace(/\\\\/g, '\\');
-    currentAnswer = questionPool[questionIndex]?.shortcut || '';
+    currentAnswer = GetActiveShortcutString(questionPool[questionIndex]) || '';
   }
   titleEl.classList.remove('blurred');
   questionCountEl.classList.remove('blurred');
@@ -3170,11 +3583,10 @@ function confirmDiffChangeNo() {
   helpBtn.textContent = 'Quit';
   helpBtn.style.background = '#6b7280';
   helpBtn.style.color = 'white';
-  // Restore stage pointer-events so the kb and browser icons remain clickable.
+  // Restore stage pointer-events so the kb and conflicts icons remain clickable.
   // openSettings set them to none; since we're staying on this panel (not
   // navigating away), nothing else would restore them.
   var stage = document.getElementById('kbFlipStage');
-  if (stage) stage.style.pointerEvents = '';
   _startPauseInactivityTimer();
 }
 
@@ -3316,205 +3728,7 @@ function resetToIdle() {
 ══════════════════════════════════════ */
 // Alternate accepted answers: pressing any of these counts as correct
 // for questions whose shortcut token matches the key.
-let SHORTCUT_ALTERNATES = {
-  'H':       ['SPACE'],     // Hand tool — Space bar temporarily activates it
-  'SHIFT++': ['SHIFT+-'],   // Ps blend mode cycle — both + and - work
-  'I':       ['CTRL+C'],    // Fi Eyedropper — legacy Ctrl+C shortcut also works
-};
-
-
-function matchesShortcut(event, str) {
-  const s    = str.toUpperCase();
-  // Check alternates first
-  const alts = SHORTCUT_ALTERNATES[s];
-  if (alts) {
-    for (const alt of alts) {
-      if (matchesShortcut(event, alt)) return true;
-    }
-  }
-  const cmd  = currentOs === 'pc' ? event.ctrlKey  : event.metaKey;
-  const nocmd= currentOs === 'pc' ? !event.ctrlKey && !event.metaKey : !event.metaKey && !event.ctrlKey;
-  const opt  = event.altKey;
-  const sh   = event.shiftKey;
-  const k    = event.key;
-  const ku   = k.toUpperCase();
-  // e.code gives the physical key regardless of modifier remapping.
-  // e.g. Option+C fires event.key='ç' but event.code='KeyC'.
-  // We derive a plain char from e.code for Option-combo matching.
-  // codeChar: physical key char regardless of modifier remapping.
-  // Covers letters (KeyC→C), digits (Digit2→2), and punctuation (BracketRight→]).
-  const codeChar = (() => {
-    const c = event.code;
-    if (!c) return null;
-    if (c.startsWith('Key'))   return c.slice(3);      // 'KeyC' → 'C'
-    if (c.startsWith('Digit')) return c.slice(5);      // 'Digit2' → '2'
-    // Punctuation keys whose e.key changes under modifiers on various layouts
-    const punctMap = {
-      'BracketLeft':'[', 'BracketRight':']', 'Semicolon':';', 'Quote':"'",
-      'Equal':'=', 'Minus':'-', 'Slash':'/', 'Backslash':'\\',
-      'Backquote':'`', 'Period':'.', 'Comma':',',
-    };
-    return punctMap[c] || null;
-  })();
-
-  // Helper: does the event key match the expected bare char/token?
-  function keyIs(exp) {
-    if (exp === 'RETURN' || exp === 'ENTER') return k === 'Enter' || event.code === 'Enter' || event.code === 'NumpadEnter';
-    if (exp === 'ARROWLEFT')  return k === 'ArrowLeft';
-    if (exp === 'ARROWRIGHT') return k === 'ArrowRight';
-    if (exp === 'ARROWUP')    return k === 'ArrowUp';
-    if (exp === 'ARROWDOWN')  return k === 'ArrowDown';
-    if (exp === 'HOME')       return k === 'Home'     || event.code === 'Home';
-    if (exp === 'END')        return k === 'End'      || event.code === 'End';
-    if (exp === 'PAGEUP')     return k === 'PageUp'   || event.code === 'PageUp';
-    if (exp === 'PAGEDOWN')   return k === 'PageDown' || event.code === 'PageDown';
-    if (exp === 'BACKSLASH')  return event.code === 'Backslash';
-    if (exp === 'GRAVE')      return event.code === 'Backquote';
-    if (exp === '[')  return k === '[' || (k === '{' && sh) || codeChar === '[';
-    if (exp === ']')  return k === ']' || (k === '}' && sh) || codeChar === ']';
-    if (exp === '=')  return k === '=' || k === '+' || codeChar === '=';
-    if (exp === '-')  return k === '-' || k === '_' || codeChar === '-';
-    if (exp === '/')  return k === '/' || k === '?' || codeChar === '/';
-    if (exp === '.')  return k === '.' || codeChar === '.';
-    if (exp === ',')  return k === ',' || codeChar === ',';
-    if (exp === ';')  return k === ';' || k === ':' || k === '\u2026' || codeChar === ';';
-    if (exp === "'")  return k === "'" || k === '"' || codeChar === "'";
-    if (exp === '<')  return k === '<' || (k === ',' && sh) || codeChar === ',';
-    if (exp === '>')  return k === '>' || (k === '.' && sh) || codeChar === '.';
-    if (exp === '2')  return k === '2' || k === '\u2122';
-    if (exp === '3')  return k === '3' || k === '\u00a3';
-    if (exp === '8')  return k === '8' || k === '\u2022';
-    if (exp === 'A' && s.startsWith('SHIFT+A') && !s.includes('CMD') && !s.includes('OPTION')) {
-      return ku === 'A';
-    }
-    if (codeChar && codeChar === exp) return true;
-    return ku === exp;
-  }
-
-  // ── Bare modifiers ─────────────────────────────────────────────────────────
-  if (s === 'SHIFT')  return k === 'Shift' && nocmd && !opt;
-  if (s === 'OPTION') return k === 'Alt'   && nocmd && !sh;
-  if (s === 'CMD')    return currentOs === 'pc'
-    ? (k === 'Control' && !sh && !opt)
-    : (k === 'Meta'    && !sh && !opt);
-
-  // ── Bare non-modifier keys ─────────────────────────────────────────────────
-  if (s === 'SPACE')  return k === ' '          && nocmd && !opt && !sh;
-  if (s === 'TAB')    return k === 'Tab'         && nocmd && !opt && !sh;
-  if (s === 'HOME')   return k === 'Home'        && nocmd && !opt && !sh;
-  if (s === 'DEL')    return k === 'Backspace'    && nocmd && !opt && !sh;
-  if (s === 'END')    return k === 'End'         && nocmd && !opt && !sh;
-  if (s === 'PAGEUP')   return k === 'PageUp'      && nocmd && !opt && !sh;
-  if (s === 'PAGEDOWN') return k === 'PageDown'    && nocmd && !opt && !sh;
-  if (s === 'ENTER')  return k === 'Enter'       && nocmd && !opt && !sh;
-  if (s === 'GRAVE')  return event.code === 'Backquote' && nocmd && !opt && !sh;
-  if (s === '[')      return (k === '[' || codeChar === '[') && nocmd && !opt && !sh;
-  if (s === ']')      return (k === ']' || codeChar === ']') && nocmd && !opt && !sh;
-  if (s === '.')      return k === '.'           && nocmd && !opt && !sh;
-  if (s === ',')      return k === ','           && nocmd && !opt && !sh;
-  if (s === '=')      return (k === '=' || k === '+') && nocmd && !opt && !sh;
-  if (s === '+')      return (k === '+' || k === '=') && nocmd && !opt && !sh;
-  if (s === '-')      return k === '-'            && nocmd && !opt && !sh;
-  if (s === ';')      return (k === ';' || k === ':') && nocmd && !opt && !sh;
-  if (s === '/')      return (k === '/' || k === '?') && nocmd && !opt && !sh;
-  if (s === '~')      return (k === '~' || k === '`') && nocmd && !opt && !sh;
-
-  // ── Arrow keys bare ────────────────────────────────────────────────────────
-  if (s === 'ARROWLEFT')  return k === 'ArrowLeft'  && nocmd && !opt && !sh;
-  if (s === 'ARROWRIGHT') return k === 'ArrowRight' && nocmd && !opt && !sh;
-  if (s === 'ARROWUP')    return k === 'ArrowUp'    && nocmd && !opt && !sh;
-  if (s === 'ARROWDOWN')  return k === 'ArrowDown'  && nocmd && !opt && !sh;
-
-  // ── SHIFT + arrow ──────────────────────────────────────────────────────────
-  if (s === 'SHIFT+ENTER')       return k === 'Enter'      && sh && nocmd && !opt;
-  if (s === 'SHIFT+ARROWLEFT')  return k === 'ArrowLeft'  && sh && nocmd && !opt;
-  if (s === 'SHIFT+ARROWRIGHT') return k === 'ArrowRight' && sh && nocmd && !opt;
-  if (s === 'SHIFT+ARROWUP')    return k === 'ArrowUp'    && sh && nocmd && !opt;
-  if (s === 'SHIFT+ARROWDOWN')  return k === 'ArrowDown'  && sh && nocmd && !opt;
-
-  if (s === 'SHIFT+GRAVE') return event.code === 'Backquote' && sh && !cmd && !opt;
-  if (s === "SHIFT+'")     return event.code === 'Quote'     && sh && !cmd && !opt;
-  if (s === 'SHIFT++' || s === 'SHIFT+=') return (k === '+' || k === '=' || codeChar === '=') && sh && !cmd && !opt;
-  if (s === 'SHIFT+-') return (k === '-' || codeChar === '-') && sh && !cmd && !opt;
-  if (s === 'SHIFT+~') return event.code === 'Backquote'     && sh && !cmd && !opt;
-
-  // ── OPTION + arrow ─────────────────────────────────────────────────────────
-  if (s === 'OPTION+ARROWLEFT')  return k === 'ArrowLeft'  && opt && nocmd && !sh;
-  if (s === 'OPTION+ARROWRIGHT') return k === 'ArrowRight' && opt && nocmd && !sh;
-  if (s === 'OPTION+ARROWUP')    return k === 'ArrowUp'    && opt && nocmd && !sh;
-  if (s === 'OPTION+ARROWDOWN')  return k === 'ArrowDown'  && opt && nocmd && !sh;
-
-  // ── SHIFT+OPTION + arrow ─────────────────────────────────────────
-  if (s === 'SHIFT+OPTION+ARROWLEFT')  return k === 'ArrowLeft'  && sh && opt && !cmd;
-  if (s === 'SHIFT+OPTION+ARROWRIGHT') return k === 'ArrowRight' && sh && opt && !cmd;
-  if (s === 'SHIFT+OPTION+ARROWUP')    return k === 'ArrowUp'    && sh && opt && !cmd;
-  if (s === 'SHIFT+OPTION+ARROWDOWN')  return k === 'ArrowDown'  && sh && opt && !cmd;
-
-  // ── CMD + special keys ───────────────────────────────────────────
-  if (s === 'CMD+DEL')              return (k === 'Backspace' || k === 'Delete') && cmd && !opt && !sh;
-  if (s === 'CMD+GRAVE')            return (k === "'" || k === '`' || e.code === 'Backquote') && cmd && !opt && !sh;
-  if (s === 'CMD+OPTION+GRAVE')     return (k === "'" || k === '`' || event.code === 'Backquote') && cmd && opt && !sh;
-  if (s === 'CMD+BACKSLASH')        return (k === '\\' || event.code === 'Backslash') && cmd && !opt && !sh;
-  if (s === 'CMD+SHIFT+BACKSLASH')  return (k === '\\' || event.code === 'Backslash') && cmd && sh && !opt;
-  if (s === 'CMD+OPTION+BACKSLASH') return (k === '\\' || e.code === 'Backslash') && cmd && opt && !sh;
-
-  // ── CTRL+C (Fi Eyedropper legacy) ─────────────────────────────────
-  if (s === 'CTRL+C') return event.ctrlKey && !event.metaKey && k.toUpperCase() === 'C' && !sh && !opt;
-
-  // ── CMD+CTRL (Ae Render Queue) ─────────────────────────────────
-  if (s === 'CMD+CTRL+M') {
-    return currentOs === 'pc'
-      ? (event.ctrlKey && event.altKey && k.toUpperCase() === 'M')
-      : (event.metaKey && event.ctrlKey && k.toUpperCase() === 'M');
-  }
-
-  // ── SHIFT + letter (e.g. SHIFT+A for Figma Auto Layout) ───────────────────
-  if (s.startsWith('SHIFT+') && !s.includes('CMD') && !s.includes('OPTION')) {
-    const exp = s.slice(6);
-    return sh && !cmd && !opt && keyIs(exp);
-  }
-
-  // ── OPTION + bracket ───────────────────────────────────────────────────────
-  if (s === 'OPTION+[') return (k === '[' || codeChar === '[') && opt && nocmd && !sh;
-  if (s === 'OPTION+]') return (k === ']' || codeChar === ']') && opt && nocmd && !sh;
-  if (s.startsWith('OPTION+') && !s.includes('SHIFT') && !s.includes('CMD') && !s.includes('ARROW')) {
-    const exp = s.slice(7);
-    return opt && nocmd && !sh && keyIs(exp);
-  }
-  // ── OPTION + SHIFT + key ───────────────────────────────────────────────────
-  if (s.startsWith('OPTION+SHIFT+')) {
-    const exp = s.slice(13);
-    return opt && sh && nocmd && keyIs(exp);
-  }
-
-  // ── CMD + SHIFT + OPTION + key ─────────────────────────────────────────────
-  if (s.startsWith('CMD+SHIFT+OPTION+') || s.startsWith('CMD+OPTION+SHIFT+')) {
-    const exp = s.startsWith('CMD+SHIFT+OPTION+') ? s.slice(17) : s.slice(17);
-    return cmd && sh && opt && keyIs(exp);
-  }
-
-  // ── CMD + OPTION + key ─────────────────────────────────────────────────────
-  if (s.startsWith('CMD+OPTION+')) {
-    const exp = s.slice(11);
-    return cmd && opt && !sh && keyIs(exp);
-  }
-
-  // ── CMD + SHIFT + key ──────────────────────────────────────────────────────
-  if (s.startsWith('CMD+SHIFT+')) {
-    const exp = s.slice(10);
-    return cmd && sh && !opt && keyIs(exp);
-  }
-
-  // ── CMD + key ──────────────────────────────────────────────────────────────
-  if (s.startsWith('CMD+')) {
-    const exp = s.slice(4);
-    return cmd && !sh && !opt && keyIs(exp);
-  }
-
-  // ── Bare single key ────────────────────────────────────────────────────────
-  if (cmd || opt || sh) return false;
-  return keyIs(s);
-}
+// SHORTCUT_ALTERNATES removed — alternates now live in mac_sc/pc_sc as pipe-separated values
 
 /* ══════════════════════════════════════
    APP SELECTOR
@@ -3686,7 +3900,6 @@ function _AnimateWrenchDot(RadioSpanElement, GoingActive) {
   void DotEl.offsetWidth;
 
   if (GoingActive) {
-    // OFF → ON: ring goes dark immediately, both spin clockwise, dot fades in
     RingEl.setAttribute('stroke', '#374151');
     DotEl.style.opacity = '0';
     DotEl.classList.add('animating-in');
@@ -3727,7 +3940,7 @@ function _buildWrenchPickerRows() {
     Row.className = 'app-option app-option-wrench-picker'
       + (IsInShortList ? ' wrench-picker-active' : ' wrench-picker-inactive');
     Row.dataset.appLabel = AppEntry.label;
-    Row.style.cssText = 'display:flex;align-items:center;height:24px;padding:0 10px 0 0;cursor:pointer;';
+    Row.style.cssText = 'display:flex;align-items:center;height:24px;padding:0 5px 0 0;cursor:pointer;';
     Row.draggable = true;
     _attachWrenchRowDragListeners(Row);
 
@@ -3744,7 +3957,7 @@ function _buildWrenchPickerRows() {
     LabelSpan.textContent = AppEntry.label + (IsBetaApp ? ' (beta)' : '');
 
     var DragHandle = document.createElement('span');
-    DragHandle.style.cssText = 'display:flex;align-items:center;padding:0 2px 0 4px;opacity:0.25;flex-shrink:0;cursor:grab;touch-action:none;margin-left:auto;';
+    DragHandle.style.cssText = 'display:flex;align-items:center;opacity:0.25;flex-shrink:0;cursor:grab;touch-action:none;margin-left:auto;';
     DragHandle.innerHTML = '<svg width="8" height="12" viewBox="0 0 8 12" fill="currentColor"><circle cx="2" cy="2" r="1.2"/><circle cx="6" cy="2" r="1.2"/><circle cx="2" cy="6" r="1.2"/><circle cx="6" cy="6" r="1.2"/><circle cx="2" cy="10" r="1.2"/><circle cx="6" cy="10" r="1.2"/></svg>';
 
     Row.appendChild(IconColumn);
@@ -4186,16 +4399,6 @@ function _AppPillCalculateOpenGeometry(OpenHeight, PillRect) {
     var SelectedIndex = Math.max(0, appsShortList.indexOf(currentApp));
     var SpacerHeight = 0;
 
-    // The closed pill always shows the selected row at PillRect.top (via scrollTop).
-    // On open, the selected row is at offset SelectedIndex*ROW_H from the pill top.
-    // To keep the selected row at PillRect.top we must shift pill UP by that amount.
-    // But "up" means the pill top moves to PillRect.top - SelectedIndex*ROW_H,
-    // which requires a NEGATIVE translateY... except translateY moves the element
-    // in screen space, so moving the pill UP (smaller Y) = negative translateY.
-    // However if SelectedIndex is 0 we want TranslateY = 0 (no movement).
-    // If SelectedIndex is 1 we want the pill to move UP by ROW_H so the second
-    // row sits where the first row was = TranslateY = -ROW_H... 
-    // BUT: that would hide the first row above the osRow.
     var SpacerHeight = 0;
     var TranslateY = 0;
 
@@ -4251,6 +4454,7 @@ function openAppPill() {
     var PillRect = appPillEl.getBoundingClientRect();
 
     appPillEl.classList.add('open');
+    titleEl.classList.add('app-pill-open');
     var OpenHeight = _AppPillMeasureNaturalHeight();
     var PillRect = appPillEl.getBoundingClientRect();
     var Geometry = _AppPillCalculateOpenGeometry(OpenHeight, PillRect);
@@ -4264,6 +4468,7 @@ function closeAppPill() {
      var selectorLabel = document.getElementById('appSelectorLabel');
      if (selectorLabel) selectorLabel.textContent = 'now training on';
     appPillEl.classList.remove('open');
+    titleEl.classList.remove('app-pill-open');
 
     var Spring = _AppPillSpring;
     if (Spring.AnimationFrame) {
@@ -4361,7 +4566,7 @@ function setTouchEnabled(on) {
     const CapsLockKeyElement = keyEls['CapsLock'];
     if (CapsLockKeyElement) CapsLockKeyElement.classList.remove('lit-caps-active');
   }
-  var radio = document.getElementById('touchRadio');
+  varradio = document.getElementById('touchRadio');
   if (radio) radio.classList.toggle('on', on);
   if (activeSettings === 'panelConflicts') _refreshBrowserContent();
   if (on) {
@@ -4499,6 +4704,9 @@ function setKeyboardDisplayMode(mode) {
   var KeyboardPanelElement = document.getElementById('keyboardPanel');
   if (KeyboardPanelElement) KeyboardPanelElement.classList.toggle('ghost-mode', mode === 'ghost');
 
+  // Ghost lock hint: visible when ghost mode is on and no settings panel is open
+  _setGhostLockHint(mode === 'ghost' && activeSettings === null);
+
   // Touch: only available in graphical mode. Sticky: available in graphical and ghost modes.
   var TouchRowElement  = document.getElementById('touchRow');
   var StickyRowElement = document.getElementById('stickyRow');
@@ -4518,7 +4726,9 @@ function setKeyboardDisplayMode(mode) {
   if (GoingToNone) {
     var SettingsPageToReopen = activeSettings;
     if (SettingsPageToReopen !== null) _closeAllModalsInstant();
-    setKbPosition('edge');
+    // Move to partial so the keyboard visibly reacts to the toggle
+    // without burying the panel content at edge position.
+    setKbPosition('partial');
     setTimeout(function() {
       ForceNoKeyboard = true;
       updateKeyboardMode();
@@ -4536,8 +4746,16 @@ function setKeyboardDisplayMode(mode) {
       if (SettingsPageToReopen !== null) openSettings(SettingsPageToReopen);
     }, 100);
   } else if (mode === 'ghost' || previous === 'ghost') {
-    // Ghost ↔ graphical: keyboard stays present, just re-align the panel
-    if (activeSettings !== null) _spAlignPanel();
+    // Ghost ↔ graphical: apply angle immediately and refresh affordance visibility.
+    if (activeSettings !== null) {
+      if (mode === 'ghost') {
+        _animateToPartialAngle(47);
+      } else {
+        _animateToPartialAngle(GetPanelKeyboardAngle(activeSettings));
+      }
+      _spAlignPanel();
+    }
+    _repositionAffordance();
   }
 
   // Keyboard layout toggles: pointless when there is no keyboard to show
@@ -4659,11 +4877,7 @@ function onStickyKeysToggle() {
   }
 }
 
-
-// ── Keyboard variant picker ───────────────────────────────────────────────────
-
-
-// ── Keyboard layout toggles in modal ─────────────────────────────────────────
+// ── Keyboard layout toggles  ─────────────────────────────────────────
 function activeVariantKey() {
   if (currentOs === 'mac') {
     if (kbLeftCount === 3) return 'mac-3key';
@@ -4918,7 +5132,7 @@ function _phoneOpenSettings(Page) {
   var PreviousPage   = activeSettings;
   activeSettings     = Page;
 
-  // Clean up padlock tagline if navigating away from it
+  // Clean up Cheat Sheet tagline if navigating away from it
   if (PreviousPage === 'panelCheatSheet' && Page !== 'panelCheatSheet') {
     var TaglineElement = document.getElementById('welcomeTagline');
     if (TaglineElement) {
@@ -4969,7 +5183,7 @@ function _phoneCloseSettings() {
   _phoneCollapsePanel();
   _syncPhoneToolbarActiveState(null);
 
-  // Clean up padlock tagline
+  // Clean up CheatSheet tagline
   if (ClosingPage === 'panelCheatSheet') {
     var TaglineElement = document.getElementById('welcomeTagline');
     if (TaglineElement) {
@@ -4980,13 +5194,14 @@ function _phoneCloseSettings() {
 
   // Game state routing -- mirrors desktop closeSettings without keyboard movement
   if (gameState === 'finished') {
-    if (ClosingPage !== 'panelEndGameReportCard') { openSettings('panelEndGameReportCard'); return; }
+    if (closingPage === 'panelEndGameHistoryRecord') { openSettings('panelEndGameReportCard'); return; }
+    if (closingPage !== 'panelEndGameReportCard') { openSettings('panelEndGameReportCard'); return; }
     return;
   }
   if (gameState === 'paused') {
     if (ClosingPage === 'panelCheatSheet' || ClosingPage === 'panelKeyboard' ||
         ClosingPage === 'panelConflicts' || ClosingPage === 'panelDifficultySettings') {
-      if (ClosingPage === 'panelCheatSheet') titleEl.textContent = _padlockSavedTitle;
+      if (ClosingPage === 'panelCheatSheet') titleEl.textContent = _cheatsheetSavedTitle;
       openSettings('panelPause');
       return;
     }
@@ -5015,6 +5230,12 @@ function _spAlignPanel() {
   var width = panel.offsetWidth;
   inner.style.left  = left + 'px';
   inner.style.width = width + 'px';
+  // left/width for affordance set now so horizontal position is immediate
+  var affordance = document.getElementById('kbHandleAffordance');
+  if (affordance) {
+    affordance.style.left  = left + 'px';
+    affordance.style.width = width + 'px';
+  }
   // Grow the wrap so the tilted keyboard sits below the settings content.
   // Two rAFs: first lets the browser lay out the content at its new width,
   // second reads the settled scrollHeight after reflow.
@@ -5022,12 +5243,17 @@ function _spAlignPanel() {
     requestAnimationFrame(function() {
       var contentH = inner.scrollHeight;
       var stageH   = stage.offsetHeight;
-      // Edge-position panels (report, cheat sheet, pause, browser, difficulty) sit
+      // Position affordance using the sentinel inside keyboardPanel —
+      // it lives in the same 3D transform space so its BCR.top is the
+      // keyboard's true visual top edge, regardless of rotateX angle.
+      if (affordance) _repositionAffordance();
+      // Edge-position panels (report, cheat sheet, pause, conflicts, difficulty) sit
       // above a fully folded keyboard. Only the content height matters; the stage
       // height is already accounted for by the fold. Add a small buffer only.
       var IsEdgePanel = (activeSettings === 'panelEndGameReportCard' || activeSettings === 'panelCheatSheet' ||
                          activeSettings === 'panelPause'  || activeSettings === 'panelConflicts' ||
-                         activeSettings === 'panelDifficultySettings');
+                         activeSettings === 'panelDifficultySettings' || activeSettings === 'panelEndGameHistoryRecord' ||
+                         activeSettings === 'panelKeyboard');
       var needed = IsEdgePanel
         ? contentH + 8
         : (contentH > stageH ? contentH + stageH + 24 : contentH + 16);
@@ -5118,7 +5344,8 @@ var _PANEL_TIPS = {
       'does your keyboard have a number pad?',
       'sticky keys help when modifier chords feel awkward',
       'ghost mode is great for testing your memory',
-      'the PC layout trains Ctrl muscle memory',
+      'the touch enabled virtual keyboard allows you to practice conflicted shortcuts',
+      'cross-training PC on Mac works better than Mac on PC',
     ];
     return pool;
   },
@@ -5208,6 +5435,9 @@ function openSettings(page) {
   var prevPage = activeSettings;
   activeSettings = page;
 
+  // Ghost lock hint: hide while any settings panel is open (keyboard is folded down)
+  _setGhostLockHint(false);
+
   // If navigating away from the cheat sheet without going through
   // closeSettings, clear the tagline it set so it doesn't bleed into
   // the destination panel.
@@ -5219,9 +5449,8 @@ function openSettings(page) {
     }
   }
 
-  // Update kbPos — partial for most panels; edge for browser and pause
-  var pos = (page === 'panelConflicts' || page === 'panelPause' || page === 'panelCheatSheet' || page === 'panelDifficultySettings' || page === 'panelEndGameReportCard') ? 'edge' : 'partial';
-  setKbPosition(pos);
+  // Keyboard positioning: all panels use a configured angle via SetKeyboardPositionForPanel.
+  // Angles are defined in PanelKeyboardPositions and tuned per panel per device type.
 
   // Pause game if needed (not for pause panel or when on welcome screen)
   if (page !== 'panelPause' && gameState !== 'welcome') {
@@ -5238,8 +5467,11 @@ function openSettings(page) {
   if (page === 'panelEndGameReportCard')     _refreshReportPanel();
   if (page === 'panelCheatSheet')    _refreshCheatSheet();
 
-  // Align panel width to keyboard
+  // Align panel width to keyboard and set the configured keyboard fold angle.
   _spAlignPanel();
+  SetKeyboardPositionForPanel(page);
+  // Re-align affordance vertical position after padding-top transition completes (550ms).
+  setTimeout(function() { if (activeSettings !== null) _spAlignPanel(); }, 580);
 
   // Show/activate the right page
   SP_PAGE_ORDER.forEach(function(p) {
@@ -5268,11 +5500,8 @@ function openSettings(page) {
   // Open panel
   var sp = document.getElementById('settingsPanel');
   if (sp) sp.classList.add('sp-open');
-
-  // Disable pointer-events on the keyboard stage so the tilted panel
-  // doesn't intercept clicks on diffIcon and other elements below it
-  var stage = document.getElementById('kbFlipStage');
-  if (stage) stage.style.pointerEvents = 'none';
+  var kbWrap = document.getElementById('keyboardWrap');
+  if (kbWrap) kbWrap.classList.add('settings-open');
 
   // Pin tooltip only for the three true settings pages
   var isPinnableSettings = (page === 'panelKeyboard' || page === 'panelConflicts' || page === 'panelDifficultySettings');
@@ -5301,11 +5530,12 @@ function closeSettings() {
 
   var sp = document.getElementById('settingsPanel');
   if (sp) {
-    // Apply closing class first so content fades out before keyboard moves up
     sp.classList.add('sp-closing');
     setTimeout(function() { sp.classList.remove('sp-closing'); }, 250);
     sp.classList.remove('sp-open');
   }
+  var kbWrap = document.getElementById('keyboardWrap');
+  if (kbWrap) kbWrap.classList.remove('settings-open');
 
   // Hide all pages
   SP_PAGE_ORDER.forEach(function(p) {
@@ -5314,12 +5544,8 @@ function closeSettings() {
   });
 
   _unpinTooltip();
-  // Only restore stage pointer-events if the keyboard is returning to face position.
-  // If another openSettings call follows immediately (e.g. returnToPause, readyToUnpause),
-  // that call will re-set pointerEvents = 'none' correctly.
-  // Restoring here while the keyboard is still tilted was causing the icons to fire through the stage.
+  // Note: stage pointer-events are intentionally NOT restored here.
   var stage = document.getElementById('kbFlipStage');
-  if (stage && _kbPos === 'face') stage.style.pointerEvents = '';
   // If the cheat sheet was open, clear the tagline it added
   if (closingPage === 'panelCheatSheet') {
     var tagline = document.getElementById('welcomeTagline');
@@ -5328,28 +5554,17 @@ function closeSettings() {
       tagline.innerHTML = '<em>Your keyboard shortcuts coach &amp; personal trainer.</em>';
     }
   }
-  // Reset wrap height
-  var wrap = document.getElementById('keyboardWrap');
-  if (wrap) wrap.style.minHeight = '';
-  // If paused mid-game and the user closes a settings panel, enter readyToUnpause
-  // rather than immediately showing the pause screen — the keyboard comes back up
-  // and the unpause button pulses as the CTA.
+
   if (gameState === 'finished') {
-  var welcomePage = 'panelEndGameReportCard';
-  if (closingPage !== welcomePage) {
-    openSettings(welcomePage);
+    if (closingPage === 'panelEndGameHistoryRecord') { openSettings('panelEndGameReportCard'); return; }
+    if (closingPage !== 'panelEndGameReportCard') { openSettings('panelEndGameReportCard'); return; }
     return;
   }
-  setKbPosition('face');
-  return;
-}
+
   if (gameState === 'paused') {
-    // The cheat sheet and other panels opened while paused should close
-    // quietly -- the keyboard stays at edge and the game stays paused.
-    // Only raise the keyboard (readyToUnpause) when the pause panel itself is closed.
-    if (closingPage === 'panelCheatSheet' || closingPage === 'panelKeyboard' || closingPage === 'panelConflicts' || closingPage === 'panelDifficultySettings') {
+    if (closingPage === 'panelCheatSheet' || closingPage === 'panelKeyboard' || closingPage === 'panelConflicts' || closingPage === 'panelDifficultySettings' || closingPage === 'panelEndGameHistoryRecord') {
       if (closingPage === 'panelCheatSheet') {
-        titleEl.textContent = _padlockSavedTitle;
+        titleEl.textContent = _cheatsheetSavedTitle;
       }
       openSettings('panelPause');
       return;
@@ -5358,7 +5573,7 @@ function closeSettings() {
     return;
   }
   
-  // If on a landing screen and the user closed a *different* panel (e.g. keyboard/browser
+  // If on a landing screen and the user closed a *different* panel (e.g. keyboard/conflicts
   // settings opened on top of the welcome panel), restore the welcome panel.
   // If the welcome panel itself was closed, let it close normally.
   if (gameState === 'welcome') {
@@ -5370,6 +5585,8 @@ function closeSettings() {
   }
   // Only snap keyboard to face if not mid-countdown — that flow handles it itself
   if (gameState !== 'counting') {
+    // Ghost lock hint: restore if ghost mode is still active
+    _setGhostLockHint(keyboardDisplayMode === 'ghost');
     setKbPosition('face');
   }
 }
@@ -5402,16 +5619,13 @@ function _closeAllModalsInstant() {
     if (el) el.classList.remove('sp-active', 'sp-wipe-in', 'sp-wipe-in-left', 'sp-wipe-in-up');
   });
   _unpinTooltip();
-  // Note: stage pointer-events are intentionally NOT restored here.
-  // They are restored by setKbPosition when the keyboard returns to face,
-  // so confirm states that follow immediately don't expose the icons.
   var wrap2 = document.getElementById('keyboardWrap');
-  if (wrap2) wrap2.style.minHeight = '';
+  if (wrap2) { wrap2.classList.remove('settings-open'); wrap2.style.minHeight = ''; }
 }
 
 // Legacy aliases — kept so remaining call sites compile
 function toggleKbModal()     { activeSettings === 'panelKeyboard' ? closeSettings() : openSettings('panelKeyboard'); }
-function toggleBrowserModal(){ activeSettings === 'panelConflicts'  ? closeSettings() : openSettings('panelConflicts');  }
+function toggleConflictsModal(){ activeSettings === 'panelConflicts'  ? closeSettings() : openSettings('panelConflicts');  }
 function _renderKeyChips(label) {
   var em      = '\u2014';
   var dashIdx = label.indexOf(' ' + em + ' ');
@@ -5454,15 +5668,15 @@ function _renderKeyChips(label) {
   return frag;
 }
 
-// ── Browser conflict shortcut verification via keypress ───────────────────────
-// When the browser panel is open, listens for the user successfully pressing
+// ── Conflicted shortcut verification via keypress ───────────────────────
+// When the conflicts panel is open, listens for the user successfully pressing
 // a listed shortcut. If it fires without a blur, the shortcut is auto-unblocked.
-var _browserPanelKeydownHandler = null;
+var _conflictsPanelKeydownHandler = null;
 
-function _attachBrowserPanelKeypressVerifier() {
-  _detachBrowserPanelKeypressVerifier();
-  _browserPanelKeydownHandler = function(e) {
-    if (activeSettings !== 'panelConflicts') { _detachBrowserPanelKeypressVerifier(); return; }
+function _attachconflictsPanelKeypressVerifier() {
+  _detachconflictsPanelKeypressVerifier();
+  _conflictsPanelKeydownHandler = function(e) {
+    if (activeSettings !== 'panelConflicts') { _detachconflictsPanelKeypressVerifier(); return; }
     // Check every item in the conflict list against this keypress
     var ul = document.getElementById('browserCompatList');
     if (!ul) return;
@@ -5479,13 +5693,13 @@ function _attachBrowserPanelKeypressVerifier() {
       showToast('Shortcut working');
     });
   };
-  document.addEventListener('keydown', _browserPanelKeydownHandler);
+  document.addEventListener('keydown', _conflictsPanelKeydownHandler);
 }
 
-function _detachBrowserPanelKeypressVerifier() {
-  if (_browserPanelKeydownHandler) {
-    document.removeEventListener('keydown', _browserPanelKeydownHandler);
-    _browserPanelKeydownHandler = null;
+function _detachconflictsPanelKeypressVerifier() {
+  if (_conflictsPanelKeydownHandler) {
+    document.removeEventListener('keydown', _conflictsPanelKeydownHandler);
+    _conflictsPanelKeydownHandler = null;
   }
 }
 
@@ -5505,9 +5719,9 @@ if (gameState !== 'playing' && gameState !== 'paused' && gameState !== 'readyToU
   // Refresh the clear overrides pill state
   var ClearBtn = document.querySelector('#browserCompatFooter .score-pill-seg');
   if (ClearBtn) {
-    var NowHasOverrides = _hasBrowserOverrides();
+    var NowHasOverrides = _hasconflictsOverrides();
     ClearBtn.classList.toggle('score-pill-inactive', !NowHasOverrides);
-    ClearBtn.onclick = NowHasOverrides ? _clearBrowserOverrides : null;
+    ClearBtn.onclick = NowHasOverrides ? _clearconflictsOverrides : null;
   }
 
   if (!liEl) return;
@@ -5538,7 +5752,7 @@ function _makeConflictRadio(canonicalKey) {
   return wrap;
 }
 
-// Converts a browser conflict label like "Cmd+T — opens new tab" into
+// Converts a conflict label like "Cmd+T — opens new tab" into
 // a display string where the shortcut tokens use the same symbols as the
 // Report Card and Cheat Sheet, and the descriptor follows as plain text.
 function _BuildBrowserConflictLabel(RawLabel) {
@@ -5575,7 +5789,7 @@ function _BuildBrowserConflictLabel(RawLabel) {
   return { displayShortcut: DisplayShortcut, descriptor: DescriptorPart };
 }
 
-function _hasBrowserOverrides() {
+function _hasconflictsOverrides() {
   // Returns true if any toggles differ from the auto-blocked default,
   // or any diagnostic-added entries exist.
   var DefaultBrowserKeys = new Set(getBrowserConflicts().keys);
@@ -5593,7 +5807,7 @@ function _hasBrowserOverrides() {
   return HasManualUnblock;
 }
 
-function _clearBrowserOverrides() {
+function _clearconflictsOverrides() {
   // Remove all diagnostic-added entries
   var DefaultBrowserKeys = new Set(getBrowserConflicts().keys);
   var KeysToRemove = [];
@@ -5633,7 +5847,7 @@ function _refreshBrowserContent() {
   var intro = document.getElementById('browserCompatIntro');
   if (intro) {
     if (touchEnabled) {
-      intro.textContent = 'Touch mode is active, so browser conflicts are bypassed and all shortcuts are available. Your saved settings here are preserved for when you switch back.';
+      intro.textContent = 'Touch mode is active, so conflicts are bypassed and all shortcuts are available. Your saved settings here are preserved for when you switch back.';
     } else if (d.labels.length > 0) {
       intro.textContent = 'But, your browser owns some shortcuts and may interrupt us. We will try not to ask you any questions that use those indicated here. You can also test them now. Any working ones will unblock automatically.';
     } else {
@@ -5649,7 +5863,7 @@ function _refreshBrowserContent() {
   if (ul) {
     ul.innerHTML = '';
 
-   // Auto-block standard browser conflicts on first encounter
+   // Auto-block standard conflicts on first encounter
     d.keys.forEach(function(canonicalKey) {
       if (!dismissedConflicts.has(canonicalKey)) {
         dismissedConflicts.add(canonicalKey);
@@ -5711,7 +5925,7 @@ function _refreshBrowserContent() {
       var DescEl = document.createElement('span');
       DescEl.className = 'conflict-desc';
       DescEl.style.cssText = 'margin-left:5px;color:#6b7280;font-size:11px;vertical-align:middle;';
-      DescEl.textContent = 'owned by OS / Browser / Plugin';
+      DescEl.textContent = 'user reported owned by OS/Browser/Plugin';
       label.appendChild(DescEl);
 
       li.appendChild(label);
@@ -5723,19 +5937,19 @@ function _refreshBrowserContent() {
     });
   }
 
-  _attachBrowserPanelKeypressVerifier();
+  _attachconflictsPanelKeypressVerifier();
 
    var rightCol = document.querySelector('#panelConflicts .sp-col-right');
   if (rightCol) {
     var ExistingPill = rightCol.querySelector('.score-clear-pill');
     if (ExistingPill) rightCol.removeChild(ExistingPill);
-    var HasOverrides = _hasBrowserOverrides();
+    var HasOverrides = _hasconflictsOverrides();
     var ClearPill = document.createElement('div');
     ClearPill.className = 'score-clear-pill';
     ClearPill.style.cssText = 'margin-top: 8px; flex-shrink: 0;';
     var ClearBtn = document.createElement('button');
     ClearBtn.className = 'score-pill-seg score-pill-full' + (HasOverrides ? '' : ' score-pill-inactive');
-    ClearBtn.onclick = HasOverrides ? _clearBrowserOverrides : null;
+    ClearBtn.onclick = HasOverrides ? _clearconflictsOverrides : null;
     ClearBtn.innerHTML = '<span class="diff-btn-text">clear overrides</span>';
     ClearPill.appendChild(ClearBtn);
     rightCol.appendChild(ClearPill);
@@ -5756,7 +5970,7 @@ document.getElementById('brIconWrap').addEventListener('pointerdown', function(e
   e.preventDefault();
 if (transitioning && gameState !== 'finished') return;
   resetEndScreenInactivityTimer();
-  toggleBrowserModal();
+  toggleConflictsModal();
 
 });
 
@@ -5854,29 +6068,37 @@ document.getElementById('gameContainer').addEventListener('click', function(e) {
 });
 
 
-// ── Debug overlay — Esc hold 2s to show, single Esc to hide ─────────────────
-// ── Debug overlay — Esc hold 2s to show, single Esc to hide ─────────────────
+// ── Debug overlay — Esc hold to show, single Esc to hide ─────────────────────
+// Shared logic used by both the physical keyboard and the virtual esc key.
 let escHoldTimer = null;
 let escHoldFired = false;
 
-document.addEventListener('keydown', e => {
-  if (e.key !== 'Escape' || e.repeat) return;
-  if (document.getElementById('debugOverlay').style.display !== 'none') return;
+function _debugOverlayOpen() {
+  const dbg = document.getElementById('debugOverlay');
+  dbg.style.display = 'flex';
+  document.getElementById('dbgAnswer').textContent = 'debug on — press a key during play';
+  document.getElementById('dbgQuestion').textContent = '';
+  document.getElementById('dbgKey').textContent = '';
+  document.getElementById('dbgMatch').textContent = '';
+  dbgRefreshCtx(); dbgRefreshAccuracy(); dbgRefreshAngle();
+}
+
+function _debugOverlayClose() {
+  const dbg = document.getElementById('debugOverlay');
+  dbg.style.display = 'none';
+}
+
+function _debugEscHoldStart() {
+  const dbg = document.getElementById('debugOverlay');
+  if (dbg.style.display !== 'none') return;
   escHoldFired = false;
   escHoldTimer = setTimeout(() => {
     escHoldFired = true;
-    const dbg = document.getElementById('debugOverlay');
-    dbg.style.display = 'flex';
-    document.getElementById('dbgAnswer').textContent = 'debug on — press a key during play';
-    document.getElementById('dbgQuestion').textContent = '';
-    document.getElementById('dbgKey').textContent = '';
-    document.getElementById('dbgMatch').textContent = '';
-    dbgRefreshCtx(); dbgRefreshAccuracy();
-  }, 2000);
-});
+    _debugOverlayOpen();
+  }, 1000);
+}
 
-document.addEventListener('keyup', e => {
-  if (e.key !== 'Escape') return;
+function _debugEscHoldCancel() {
   clearTimeout(escHoldTimer);
   escHoldTimer = null;
   if (escHoldFired) {
@@ -5884,7 +6106,18 @@ document.addEventListener('keyup', e => {
     return;
   }
   const dbg = document.getElementById('debugOverlay');
-  if (dbg.style.display !== 'none') dbg.style.display = 'none';
+  if (dbg.style.display !== 'none') _debugOverlayClose();
+}
+
+// Physical keyboard: hold Escape to open, tap Escape to close
+document.addEventListener('keydown', e => {
+  if (e.key !== 'Escape' || e.repeat) return;
+  _debugEscHoldStart();
+});
+
+document.addEventListener('keyup', e => {
+  if (e.key !== 'Escape') return;
+  _debugEscHoldCancel();
 });
 
 // ── Debug context display ────────────────────────────────────────────────────
@@ -5939,7 +6172,7 @@ function dbgBuildReport() {
     'kbLayout:'      + (currentOs === 'pc' ? kbVariantPc : kbVariantMac),
     'kbFlags:'       + KeyboardFlags,
     'gameState:'     + gameState + '  Q:' + QuestionString,
-    CurrentQuestion  ? 'answer:'  + CurrentQuestion.shortcut  : '',
+    CurrentQuestion  ? 'answer:'  + (GetActiveShortcutString(CurrentQuestion) || '') : '',
     CurrentQuestion  ? 'display:' + CurrentQuestion.display    : '',
     CurrentQuestion  ? 'difficulty:' + CurrentQuestion.difficulty : '',
   ];
@@ -6029,11 +6262,27 @@ function dbgRefreshAccuracy() {
   }
 }
 
+// ── Debug keyboard angle display ──────────────────────────────────────────────
+function dbgRefreshAngle() {
+  var AngleElement = document.getElementById('dbgKbAngle');
+  if (!AngleElement) return;
+  if (_kbPos === 'face') {
+    AngleElement.innerHTML = '0&deg;';
+    AngleElement.style.color = '#888';
+  } else if (_kbPos === 'edge') {
+    AngleElement.innerHTML = EdgeAngle + '&deg;';
+    AngleElement.style.color = '#fa0';
+  } else {
+    AngleElement.innerHTML = Math.round(_kbPartialAngle) + '&deg;';
+    AngleElement.style.color = '#0f0';
+  }
+}
+
 // ── Debug navigation ──────────────────────────────────────────────────────
 function dbgPrevQuestion() {
   if (questionPool.length === 0) return;
   questionIndex = (questionIndex - 1 + questionPool.length) % questionPool.length;
-  currentAnswer = questionPool[questionIndex].shortcut;
+  currentAnswer = GetActiveShortcutString(questionPool[questionIndex]) || "";
   titleEl.className = '';
   titleEl.textContent = (questionPool[questionIndex].display || '').replace(/\\\\/g, '\\');
   clearAllLit(); heldKeys.clear();
@@ -6043,7 +6292,7 @@ function dbgPrevQuestion() {
 function dbgNextQuestion() {
   if (questionPool.length === 0) return;
   questionIndex = (questionIndex + 1) % questionPool.length;
-  currentAnswer = questionPool[questionIndex].shortcut;
+  currentAnswer = GetActiveShortcutString(questionPool[questionIndex]) || "";
   titleEl.className = '';
   titleEl.textContent = (questionPool[questionIndex].display || '').replace(/\\\\/g, '\\');
   clearAllLit(); heldKeys.clear();
@@ -6058,7 +6307,7 @@ function dbgNextQuestion() {
 ══════════════════════════════════════ */
 function getBrowserConflicts() {
   var ua      = navigator.userAgent || '';
-  // Use the real detected OS, not the UI toggle — browser shortcuts are a physical
+  // Use the real detected OS, not the UI toggle — conflicted shortcuts are a physical
   // fact about the machine, unaffected by which platform the user is practising.
   var isMacOs = (detectedOs === 'mac' || detectedOs === 'mobile');
 
@@ -6067,11 +6316,12 @@ function getBrowserConflicts() {
   if (detectedOs === 'mobile') {
     return {
       name:   'Safari on iOS/iPadOS',
-      keys:   ['CMD+T', 'CMD+SHIFT+N', 'CMD+1'],
+      keys:   ['CMD+T', 'CMD+SHIFT+N', 'CMD+1', 'Cmd+R'],
       labels: [
         'Cmd+T \u2014 opens a new tab',
         'Cmd+Shift+N \u2014 opens a Private tab',
         'Cmd+1 \u2014 switches to the first tab',
+        'Cmd+R \u2014 reload tab',
       ],
     };
   }
@@ -6090,7 +6340,7 @@ function getBrowserConflicts() {
   var mac = {
     Edge:    ['CMD+T','CMD+SHIFT+N'],
     Firefox: ['CMD+T','CMD+SHIFT+P'],
-    Safari:  ['CMD+T','CMD+N','CMD+SHIFT+N','CMD+O'],
+    Safari:  ['CMD+T','CMD+N','CMD+SHIFT+N','CMD+O', 'CMD+1', 'Cmd+R'],
     Opera:   ['CMD+T','CMD+SHIFT+N'],
     Chrome:  ['CMD+T','CMD+SHIFT+N'],
   };
@@ -6117,6 +6367,8 @@ function getBrowserConflicts() {
       'Cmd+N \u2014 opens new window',
       'Cmd+Shift+N \u2014 opens Private window',
       'Cmd+O \u2014 open a file',
+      'Cmd+1 \u2014 switches to the first tab',
+      'Cmd+R \u2014 reload tab',
     ],
     Opera: [
       'Cmd+T \u2014 opens new tab',
@@ -6362,7 +6614,7 @@ function playerLivesBtnClick(value) {
 }
 
 /* ── Fibonacci Slider ────────────────────────────────────────────────────────
-   Stop positions as % of track width (Fibonacci gaps 1:2:3:5):
+   Stop positions as % of track width (Fibonacci with first two terms omitted results in gaps 1:2:3:5):
    0%, 9.1%, 27.3%, 54.5%, 100%
    Values at stops: 1, 3, 5, 10, null (∞)
 ──────────────────────────────────────────────────────────────────────────── */
@@ -6962,7 +7214,7 @@ function _reportImpossibleQuestion() {
     'kbLayout:'    + (currentOs === 'pc' ? kbVariantPc : kbVariantMac),
     'kbFlags:'     + KeyboardFlags,
     'gameState:'   + gameState + '  Q:' + QuestionString,
-    CurrentQuestion ? 'answer:'     + CurrentQuestion.shortcut    : '',
+    CurrentQuestion ? 'answer:'     + (GetActiveShortcutString(CurrentQuestion) || '') : '',
     CurrentQuestion ? 'display:'    + CurrentQuestion.display     : '',
     CurrentQuestion ? 'difficulty:' + CurrentQuestion.difficulty  : '',
   ];
@@ -7365,32 +7617,38 @@ const UNSTABLE_PUNCTUATION_TOKENS = new Set([
 
 function buildPool() {
   var maxDiff = DIFF_MAX[currentDifficulty] || 3;
-  const browserSkip   = getBrowserConflictSet();
-  const allShortcuts  = UNIVERSAL_SHORTCUTS.concat(loadedAppShortcuts);
-var filtered = allShortcuts.filter(s => {
-    // Ctrl+Alt combinations on Windows trigger AltGr / system dialogs — exclude all CMD+OPTION shortcuts on PC
-    if (currentOs === 'pc' && s.shortcut.toUpperCase().includes('OPTION')) return false;
-    // keyboard_conflict: true means the shortcut only appears when touch mode bypasses browser/OS conflicts
-    if (s.keyboard_conflict && !touchEnabled) return false;
-    // OS-specific exclusion: pc_sc or mac_sc set to "none" signals this shortcut
-    // does not exist on that OS and should be excluded from the pool entirely.
-    if (currentOs === 'pc'  && s.pc_sc  === 'none') return false;
-    if (currentOs === 'mac' && s.mac_sc === 'none') return false;
-    if (s.difficulty > maxDiff) return false;
-    if ((touchEnabled || !hasFullKeyboard) && requiresExtKey(s.shortcut)) return false;
-    if (!touchEnabled && browserSkip.has(s.shortcut)) return false;
-    if (!touchEnabled && dismissedConflicts.has(s.shortcut)) return false;
-    if (killPunctuationOn && UNSTABLE_PUNCTUATION_TOKENS.has(s.shortcut)) return false;
+  var browserSkip = getBrowserConflictSet();
+  var allShortcuts = UNIVERSAL_SHORTCUTS.concat(loadedAppShortcuts);
+
+  var filtered = allShortcuts.filter(function(ShortcutEntry) {
+    var ActiveString = GetActiveShortcutString(ShortcutEntry);
+
+    // No token string for this platform — exclude
+    if (!ActiveString) return false;
+
+    // Difficulty cap
+    if (ShortcutEntry.difficulty > maxDiff) return false;
+
+    // Browser conflict exclusion — check primary alternative only
+    var PrimaryString = ActiveString.split('|')[0];
+    if (!touchEnabled && browserSkip.has(PrimaryString)) return false;
+    if (!touchEnabled && dismissedConflicts.has(PrimaryString)) return false;
+
+    // Extended key exclusion for compact keyboards or touch
+    if ((touchEnabled || !hasFullKeyboard) && requiresExtKey(ActiveString)) return false;
+
+    // Kill punctuation
+    if (killPunctuationOn && UNSTABLE_PUNCTUATION_TOKENS.has(PrimaryString)) return false;
+
     return true;
   });
 
-  // Cap: no more than 2 questions from the same named group per pool.
-  // Entries with an empty/falsy group string are never capped.
+  // Cap: no more than 2 questions from the same named group per pool
   var groupCounts = {};
-  return filtered.filter(function(s) {
-    if (!s.group) return true;
-    groupCounts[s.group] = (groupCounts[s.group] || 0) + 1;
-    return groupCounts[s.group] <= 2;
+  return filtered.filter(function(ShortcutEntry) {
+    if (!ShortcutEntry.group) return true;
+    groupCounts[ShortcutEntry.group] = (groupCounts[ShortcutEntry.group] || 0) + 1;
+    return groupCounts[ShortcutEntry.group] <= 2;
   });
 }
 
@@ -7420,16 +7678,8 @@ function loadAppShortcutsIfNeeded(appKey, onReady) {
     .then(function(shortcuts) {
       console.log('[Shortcuts] Loaded', shortcuts.length, 'shortcuts for', appKey);
       if (thisLoadSequence === loadSequenceNumber) {
-         loadedAppShortcuts = shortcuts;
+        loadedAppShortcuts = shortcuts;
         loadedAppName      = appKey;
-        // Rebuild SHORTCUT_ALTERNATES from all currently loaded shortcuts
-        // (UNIVERSAL_SHORTCUTS + newly loaded app shortcuts)
-        var allLoaded = UNIVERSAL_SHORTCUTS.concat(shortcuts);
-        allLoaded.forEach(function(s) {
-          if (s.alternates && Array.isArray(s.alternates) && s.alternates.length > 0) {
-            SHORTCUT_ALTERNATES[s.shortcut.toUpperCase()] = s.alternates.map(function(a) { return a.toUpperCase(); });
-          }
-        });
         onReady();      } else {
         console.log('[Shortcuts] Stale response ignored (sequence mismatch)');
       }
@@ -7884,16 +8134,24 @@ function loseLife() {
 const DEFEAT_MESSAGES = [
   // answersLeft 9--8: barely started
   [ "Try again. Every rep you put in counts.",
+    "Let's go again, but this time use the help button.",
+    "Start another round and then press the padlock key.",
+    "Don't quit. Keep practicing. You're sure to see the difference it makes.",
     "No shame in an early exit. Get right back up!",
     "Keep trying." ],
   // answersLeft 7--5: got going but ran out
   [ "You were just finding your rhythm! Give it another go?",
+    "Give it another shot.",
+    "Don't quit. Keep practicing. You're sure to see the difference it makes.",
     "Halfway there. The shortcuts are sticking, keep going." ],
   // answersLeft 4--2: close
   [ "So close! A few more questions and you'd have had it.",
+    "Good try. Keep going.",
+    "Let's go again!",
     "That was a solid run. One more attempt might crack it." ],
   // answersLeft 1: tantalizingly close
   [ "One question away. You know the material. Trust it.",
+    "Unbelievable. You were so close!",
     "Ooof. Well, that last shortcut will be automatic next time!" ],
 ];
 
@@ -7964,7 +8222,7 @@ function enterDefeat() {
   // Show the report card if at least 3 questions were answered (answersLeft <= 7)
   // This gives the coach enough data to say something useful
   var QuestionsAnswered = 10 - answersLeft;
-  if (QuestionsAnswered >= 3) {
+  if (QuestionsAnswered >= 1) {
     var DefeatRun = runData.slice();
     runData.length = 0;
     lastCompletedReport = finalizeRunData(DefeatRun, questionPool, NewDefeatCount);
@@ -7996,7 +8254,7 @@ questionPool = adaptivePool || shuffleArray(buildPool());  if (currentApp === 'A
   questionIndex = 0;
   answersLeft = 10;
   _wasPlaying = true;
-  currentAnswer = questionPool[0].shortcut;
+  currentAnswer = GetActiveShortcutString(questionPool[0]) || "";
   helpActive = false;
 
   mainBtn.textContent = 'Skip';
@@ -8132,7 +8390,7 @@ function advanceQuestion() {
     }
     questionIndex = 0;
   }
-  currentAnswer = questionPool[questionIndex].shortcut;
+  currentAnswer = GetActiveShortcutString(questionPool[questionIndex]) || "";
   titleEl.className = '';
   void titleEl.offsetWidth; // flush so animation restarts
   titleEl.textContent = (questionPool[questionIndex].display || '').replace(/\\\\/g, '\\');
@@ -8206,13 +8464,13 @@ function endGameMessage(time, accuracy, record, wasFirst) {
       ? _pickEndGameFallback(['New time record!', 'Fastest yet. Keep that up.', 'A new personal best for speed.'])
       : _pickEndGameFallback([
           'New time record! Can you raise the accuracy too?',
-          'Your fastest yet. Now sharpen the accuracy.',
+          'Your fastest run on record.\nNow sharpen the accuracy.',
           'Time is down. Accuracy is next.',
         ]);
   }
   if (newBestAcc) {
     return _pickEndGameFallback([
-      'Best accuracy yet!\nNow push that time down.',
+      'Your best accuracy yet!\nNow push that time down.',
       'Highest accuracy so far.\nYour speed will follow.',
       'An accuracy record!\nKeep building on that.',
     ]);
@@ -8222,7 +8480,9 @@ function endGameMessage(time, accuracy, record, wasFirst) {
       'Excellent accuracy.',
       'Perfect round.',
       'Flawless.',
+      'Impressive.',
       'A clean sweep.',
+      'Might be time to ramp up the difficulty.',
     ]);
   }
   if (time < record.time + 10 && accuracy > (record.accuracy ?? 0) - 5) {
@@ -8236,6 +8496,7 @@ function endGameMessage(time, accuracy, record, wasFirst) {
   if (accuracy > (record.accuracy ?? 0)) {
     return _pickEndGameFallback([
       'Your Accuracy is improving. Keep up the pace.',
+      'Great to see you are making progress.',
       'More accurate than last time. That shows progress.',
       'Awesome. Your accuracy is trending up.',
     ]);
@@ -8243,6 +8504,8 @@ function endGameMessage(time, accuracy, record, wasFirst) {
   if (!hasTrophy && time < record.time + 15) {
     return _pickEndGameFallback([
       "Try again. You're almost there.",
+      'That was a good run. Keep training.',
+      "Your consistency is good. Don't stop now.",
       'Close to your best. Another run might get you there.',
     ]);
   }
@@ -8595,7 +8858,7 @@ function finalizeRunData(completedRun, currentPool, DefeatCount) {
     return {
       displayText,
       shortcut,
-      shortcutToken: question ? question.shortcut : '',
+      shortcutToken: question ? (GetActiveShortcutString(question) || '') : '',
       partialNudgeFired: entry.partialNudgeFired || false,
       partialCorrectKey: entry.partialCorrectKey || false,
       timeToAnswerMs: entry.timeToAnswerMs,
@@ -9129,7 +9392,8 @@ function finalizeRunData(completedRun, currentPool, DefeatCount) {
 }
 
 
-function _toggleEndGameHistory() {
+function _toggleEndGameHistory(e) {
+  if (e) e.stopPropagation();
   if (activeSettings === 'panelEndGameHistoryRecord') {
     openSettings('panelEndGameReportCard');
   } else {
@@ -9332,7 +9596,7 @@ function _refreshCheatSheet() {
   runData.forEach(function(OutcomeEntry) {
     var OutcomeQ = questionPool[OutcomeEntry.questionIndex];
     if (!OutcomeQ) return;
-    var OutcomeToken = OutcomeQ.shortcut;
+    var OutcomeToken = GetActiveShortcutString(OutcomeQ) || OutcomeQ.shortcut || '';
     var Colour;
     if (OutcomeEntry.endType === 'success' && OutcomeEntry.wrongKeyCount === 0 && OutcomeEntry.hintUsedAtMs === null) {
       Colour = '#10b981'; // green: clean success
@@ -9348,7 +9612,7 @@ var AnsweredTimingMap = {};
   runData.forEach(function(TimingEntry) {
     var TimingQ = questionPool[TimingEntry.questionIndex];
     if (!TimingQ) return;
-    var TimingToken = TimingQ.shortcut;
+    var TimingToken = GetActiveShortcutString(TimingQ) || TimingQ.shortcut || '';
     var TimeDisplay;
     var TimeIsStrikethrough = false;
     if (TimingEntry.endType === 'skip') {
@@ -9384,16 +9648,18 @@ var AnsweredTimingMap = {};
 
   if (IsActiveGame && runData.length > 0) {
     var SeenTokens = new Set();
-    for (var ri = runData.length - 1; ri >= 0 && AnsweredQuestions.length < 5; ri--) {
+    for (var ri = runData.length - 1; ri >= 0 && AnsweredQuestions.length < 15; ri--) {
       var Entry = runData[ri];
       var AnsweredQ = questionPool[Entry.questionIndex];
-      if (AnsweredQ && !SeenTokens.has(AnsweredQ.shortcut)) {
-        SeenTokens.add(AnsweredQ.shortcut);
+      var AnsweredKey = AnsweredQ ? (GetActiveShortcutString(AnsweredQ) || AnsweredQ.shortcut || '') : '';
+      if (AnsweredQ && !SeenTokens.has(AnsweredKey)) {
+        SeenTokens.add(AnsweredKey);
         AnsweredQuestions.push(AnsweredQ);
       }
     }
     for (var ui = 0; ui < OrderedPool.length && UpcomingQuestions.length < 5; ui++) {
-      if (!SeenTokens.has(OrderedPool[ui].shortcut)) {
+      var UpcomingKey = GetActiveShortcutString(OrderedPool[ui]) || OrderedPool[ui].shortcut || '';
+      if (!SeenTokens.has(UpcomingKey)) {
         UpcomingQuestions.push(OrderedPool[ui]);
       }
     }
@@ -9409,7 +9675,10 @@ var AnsweredTimingMap = {};
     if (Entry.endType === 'success') {
       SuccessCounter++;
       var EntryQuestion = questionPool[Entry.questionIndex];
-      if (EntryQuestion) SuccessOrderNumberMap[EntryQuestion.shortcut] = SuccessCounter;
+      if (EntryQuestion) {
+        var EntryKey = GetActiveShortcutString(EntryQuestion) || EntryQuestion.shortcut || '';
+        SuccessOrderNumberMap[EntryKey] = SuccessCounter;
+      }
     }
   });
 
@@ -9422,18 +9691,20 @@ var AnsweredTimingMap = {};
   } else {
     AnsweredQuestions.forEach(function(Question) {
       var MatchingEntry = null;
+      var QuestionActiveKey = GetActiveShortcutString(Question) || Question.shortcut || '';
       for (var ri = runData.length - 1; ri >= 0; ri--) {
         var EntryQuestion = questionPool[runData[ri].questionIndex];
-        if (EntryQuestion && EntryQuestion.shortcut === Question.shortcut) {
+        var EntryKey = EntryQuestion ? (GetActiveShortcutString(EntryQuestion) || EntryQuestion.shortcut || '') : '';
+        if (EntryKey && EntryKey === QuestionActiveKey) {
           MatchingEntry = runData[ri];
           break;
         }
       }
-      var QuestionNumber = SuccessOrderNumberMap[Question.shortcut] || null;
+      var QuestionNumber = SuccessOrderNumberMap[QuestionActiveKey] || null;
       var SummaryItem = {
         displayText:       (Question.display || '').replace(/\\\\/g, '\\'),
-        shortcut:          currentOs === 'pc' ? Question.pc_sc : Question.mac_sc,
-        shortcutToken:     Question.shortcut,
+        shortcut:          GetActiveShortcutString(Question) || '',
+        shortcutToken:     GetActiveShortcutString(Question) || Question.shortcut || '',
         endType:           MatchingEntry ? MatchingEntry.endType : 'success',
         timeToAnswerMs:    MatchingEntry ? MatchingEntry.timeToAnswerMs : null,
         hintUsed:          MatchingEntry ? MatchingEntry.hintUsedAtMs !== null : false,
@@ -9457,7 +9728,7 @@ var AnsweredTimingMap = {};
       var ShortcutDisplay = currentOs === 'pc' ? Question.pc_sc : Question.mac_sc;
       var li = document.createElement('li');
       li.style.alignItems = 'flex-start';
-      li.dataset.shortcutToken = Question.shortcut;
+      li.dataset.shortcutToken = GetActiveShortcutString(Question) || Question.shortcut || '';
 
       var dot = document.createElement('span');
       dot.className = 'sp-report-dot';
@@ -9532,28 +9803,163 @@ function HighlightReportListItems(ShortcutToken) {
   });
 }
 
-function BuildShortcutKeyChips(DisplayString, IsWeakness) {
-  DisplayString = (DisplayString || '').replace(/\\\\/g, '\\');
+function BuildShortcutKeyChips(TokenString, IsWeakness) {
+  TokenString = (TokenString || '').replace(/\\\\/g, '\\');
+
+  var PrimaryString = TokenString.split('|')[0].trim();
+
+  // Display symbols that should be preserved from the raw JSON token,
+  // consulted before NormaliseToken strips them to their base key.
+  var RawDisplayOverrideMap = {
+    'PLUS':        '+',        
+    'TILDE':       '~',
+    'LESSTHAN':    '<',
+    'LESSTHAN':    '<',
+    'MORETHAN':    '>',
+    'QUESTION':    '?',
+    'PIPE':        '|',
+    'UNDERSCORE':  '_',
+    'COLON':       ':',
+    'DOUBLEQUOTE': '"',
+    'OPENBRACE':   '{',
+    'CLOSEBRACE':  '}',
+    'EXCLAMATION': '!',
+    'AT':          '@',
+    'HASH':        '#',
+    'DOLLAR':      '$',
+    'PERCENT':     '%',
+    'CARET':       '^',
+    'AMPERSAND':   '&',
+    'ASTERISK':    '*',
+    'OPENPAREN':   '(',
+    'CLOSEPAREN':  ')',
+  };
+  
+  // Symbol display maps per platform
+  var MacChipSymbols = {
+    'CMD':'⌘','SHIFT':'⇧','OPTION':'⌥','CONTROL':'⌃','FN':'fn',
+    'RETURN':'↩','TAB':'⇥','SPACE':'Space','ESCAPE':'Esc',
+    'BACKSPACE':'⌫','DELETE':'⌦','CAPSLOCK':'⇪',
+    'ARROWUP':'↑','ARROWDOWN':'↓','ARROWLEFT':'←','ARROWRIGHT':'→',
+    'HOME':'↖','END':'↘','PAGEUP':'⇞','PAGEDOWN':'⇟',
+    'NUMLOCK':'clear',
+    'EQUAL':'=','MINUS':'-','BRACKETLEFT':'[','BRACKETRIGHT':']',
+    'BACKSLASH':'\\','SEMICOLON':';','QUOTE':"'",'COMMA':',',
+    'PERIOD':'.','SLASH':'/','GRAVE':'`',
+  };
+  var PcChipSymbols = {
+    'CMD':'Ctrl','SHIFT':'⇧','OPTION':'Alt','CONTROL':'Ctrl','WIN':'Win','FN':'FN',
+    'RETURN':'↵','TAB':'Tab','SPACE':'Space','ESCAPE':'Esc',
+    'BACKSPACE':'⌫','DELETE':'⌦','CAPSLOCK':'Caps',
+    'ARROWUP':'↑','ARROWDOWN':'↓','ARROWLEFT':'←','ARROWRIGHT':'→',
+    'HOME':'Home','END':'End','PAGEUP':'PgUp','PAGEDOWN':'PgDn',
+    'NUMLOCK':'NumLk',
+    'EQUAL':'=','MINUS':'-','BRACKETLEFT':'[','BRACKETRIGHT':']',
+    'BACKSLASH':'\\','SEMICOLON':';','QUOTE':"'",'COMMA':',',
+    'PERIOD':'.','SLASH':'/','GRAVE':'`',
+  };
+  var ChipSymbols = currentOs === 'pc' ? PcChipSymbols : MacChipSymbols;
+
+  // Canonical modifier rendering order
+  var ModifierOrder = ['CMD','CONTROL','WIN','OPTION','SHIFT','FN'];
+
+  // Parse tokens
+  var RawTokens = PrimaryString.split('+').map(NormaliseToken).filter(Boolean);
+  var ModifierTokens = [];
+  var KeyToken = null;
+  RawTokens.forEach(function(Token) {
+    if (ModifierOrder.indexOf(Token) !== -1) {
+      ModifierTokens.push(Token);
+    } else {
+      KeyToken = Token;
+    }
+  });
+
+  // Sort modifiers into canonical order
+  ModifierTokens.sort(function(A, B) {
+    return ModifierOrder.indexOf(A) - ModifierOrder.indexOf(B);
+  });
+
+  // Build display labels
+  // Long-form rule: if there are ≤ 2 total tokens (e.g. just SHIFT, or SHIFT+Z),
+  // non-CMD modifiers get their word label appended. CMD is always symbol-only.
+  var TotalTokenCount = ModifierTokens.length + (KeyToken ? 1 : 0);
+  var UseLongForm = TotalTokenCount <= 2;
+
+  // Long-form labels for non-CMD modifiers (symbol + word)
+  var MacLongForm = { 'SHIFT': '⇧ Shift', 'OPTION': '⌥ Option', 'CONTROL': '⌃ Control', 'FN': 'fn', 'RETURN':'↩ return','TAB':'⇥ tab','HOME': '↖ home' , 'END' : "↘ end" ,'PAGEUP':'⇞ page up','PAGEDOWN':'⇟ page down'};
+  var PcLongForm  = { 'SHIFT': '⇧ Shift', 'OPTION': 'Alt',      'CONTROL': 'Ctrl',       'FN': 'Fn'  };
+  var LongFormMap = currentOs === 'pc' ? PcLongForm : MacLongForm;
+// Split without normalising so display overrides can read the raw token name.
+  var RawSplitTokens = PrimaryString.split('+').map(function(T) { return T.trim().toUpperCase(); }).filter(Boolean);
+// Parse tokens -- keep both raw (for display overrides) and normalised (for symbol lookup).
+  var RawSplitTokens = PrimaryString.split('+').map(function(T) { return T.trim().toUpperCase(); }).filter(Boolean);
+  var NormalisedTokens = RawSplitTokens.map(NormaliseToken);
+
+  var ModifierOrder = ['CMD','CONTROL','WIN','OPTION','SHIFT','FN'];
+  var ModifierTokens    = [];
+  var ModifierRawTokens = [];
+  var KeyToken    = null;
+  var KeyRawToken = null;
+
+  NormalisedTokens.forEach(function(Token, Index) {
+    if (ModifierOrder.indexOf(Token) !== -1) {
+      ModifierTokens.push(Token);
+      ModifierRawTokens.push(RawSplitTokens[Index]);
+    } else {
+      KeyToken    = Token;
+      KeyRawToken = RawSplitTokens[Index];
+    }
+  });
+
+  ModifierTokens.sort(function(A, B) {
+    return ModifierOrder.indexOf(A) - ModifierOrder.indexOf(B);
+  });
+
+  var TotalTokenCount = ModifierTokens.length + (KeyToken ? 1 : 0);
+  var UseLongForm = TotalTokenCount <= 2;
+
+  var DisplayTokens = [];
+  ModifierTokens.forEach(function(Mod, Index) {
+    var RawMod = ModifierRawTokens[Index];
+    var Symbol;
+    if (RawDisplayOverrideMap[RawMod]) {
+      Symbol = RawDisplayOverrideMap[RawMod];
+    } else if (UseLongForm && Mod !== 'CMD' && LongFormMap[Mod]) {
+      Symbol = LongFormMap[Mod];
+    } else {
+      Symbol = ChipSymbols[Mod];
+    }
+    if (Symbol !== null && Symbol !== undefined) DisplayTokens.push(Symbol);
+  });
+
+  if (KeyToken) {
+    var KeySymbol;
+    if (RawDisplayOverrideMap[KeyRawToken]) {
+      KeySymbol = RawDisplayOverrideMap[KeyRawToken];
+    } else if (UseLongForm && LongFormMap[KeyToken]) {
+      KeySymbol = LongFormMap[KeyToken];
+    } else {
+      KeySymbol = ChipSymbols[KeyToken];
+    }
+    if (KeySymbol !== null && KeySymbol !== undefined) {
+      DisplayTokens.push(KeySymbol);
+    } else if (KeyToken.startsWith('NUMPAD')) {
+      DisplayTokens.push(KeyToken.replace('NUMPAD',''));
+    } else if (KeyToken.length === 1) {
+      DisplayTokens.push(KeyToken);
+    } else {
+      DisplayTokens.push(KeyToken);
+    }
+  }
+
+  // Build DOM
   var Wrapper = document.createElement('span');
   Wrapper.dataset.chipsWrapper = '1';
   Wrapper.style.cssText = 'flex-shrink:0;margin-left:6px;display:inline-flex;align-items:center;flex-wrap:nowrap;';
-  // Split on spaces, then merge modifier symbols (⌘⇧⌥⌃) with a following word label
-  // e.g. '⇧ Shift' → ['⇧ Shift'] (one chip), '⌘ Z' → ['⌘', 'Z'] (two chips)
-  var WordLabels = new Set(['shift','option','opt','control','ctrl','command','alt','fn']);
-  var RawTokens = DisplayString.trim().split(/\s+/).filter(function(t) { return t.length > 0; });
-  var Tokens = [];
-  var ModifierSymbols = /^[⌘⇧⌥⌃]$/;
-  for (var ti = 0; ti < RawTokens.length; ti++) {
-    var tok = RawTokens[ti];
-    if (ModifierSymbols.test(tok) && ti + 1 < RawTokens.length && WordLabels.has(RawTokens[ti + 1].toLowerCase())) {
-      Tokens.push(tok + '\u00a0' + RawTokens[ti + 1]);
-      ti++; // skip the word label, it's been merged
-    } else {
-      Tokens.push(tok);
-    }
-  }
-  Tokens.forEach(function(Token, TokenIndex) {
-    if (TokenIndex > 0) {
+
+  DisplayTokens.forEach(function(Label, Index) {
+    if (Index > 0) {
       var Separator = document.createElement('span');
       Separator.textContent = '+';
       Separator.style.cssText = 'margin:0 1px;color:#9ca3af;font-size:10px;line-height:1;vertical-align:middle;';
@@ -9561,7 +9967,7 @@ function BuildShortcutKeyChips(DisplayString, IsWeakness) {
     }
     var Chip = document.createElement('span');
     Chip.className = 'sp-report-chip-key';
-    Chip.textContent = Token;
+    Chip.textContent = Label;
     var ChipStyles = [
       'display:inline-block',
       'font-family:inherit',
@@ -10097,6 +10503,9 @@ function runCountdown(onComplete) {
   // countdown duration (~2.7s) to complete the 850ms transition.
   setKbPosition('face');
 
+  // Ghost lock hint: restore now that the keyboard is heading back to face position
+  _setGhostLockHint(keyboardDisplayMode === 'ghost');
+
   // Close any open settings panel (including pause screen)
   _closeAllModalsInstant();
 
@@ -10147,19 +10556,20 @@ document.addEventListener('keydown', handleKeydown);
 document.addEventListener('keyup',   handleKeyup);
 
 document.getElementById('keyboardWrap').addEventListener('click', function(e) {
-  // If a settings panel is open, the keyboard is not truly resting idle --
-  // ignore the click so it does not trigger unpausing beneath the panel.
+  // The icon wraps have their own pointer handlers — do not intercept those.
+  if (e.target.closest('#kbIconWrap, #brIconWrap, #diffIconWrap')) return;
+
+  // Drag and tap are handled by the kbDragHandle listeners.
+  // This click handler covers non-panel game-state actions only.
+
   if (activeSettings !== null) return;
+
   if (gameState === 'readyToUnpause') {
-    // Any click in the keyboard area folds it away to the pause screen
     _enterReadyToUnpauseCleanup();
     gameState = 'paused';
     enterPause();
     return;
   }
-
-  // When the keyboard is folded and touch is not enabled, clicking it raises it back up.
-  // In paused/finished states this enters the readyToUnpause / face position.
   if (_kbPos !== 'face' && !touchEnabled) {
     if (gameState === 'paused') {
       _enterReadyToUnpause();
@@ -10301,6 +10711,7 @@ updateKeyboardLighting(e, true);
   if (transitioning && nearMissAnswer && nearMissEntry && nearMissEntry.timeToAnswerMs === null) {
     if (matchesShortcut(e, nearMissAnswer)) {
       nearMissEntry.timeToAnswerMs = performance.now() - startTime - accumulatedPauseMs;
+      showNearMissHintToast();
       e.preventDefault();
       return;
     }
@@ -10311,6 +10722,8 @@ updateKeyboardLighting(e, true);
   const isCorrect = stickyKeysOn ? checkStickyShortcut() : matchesShortcut(e, currentAnswer);
   if (isCorrect) {
     transitioning = true;
+    resetPartialShortcutNudgeTimers();
+    clearToast();
     clearHelp();
     showSuccessHintToast();
     hideQuestionTimerArc();
@@ -10425,19 +10838,17 @@ function _blurDiagnosticReplaceQuestion() {
   var FullPool = shuffleArray(buildPool());
   var PreviousDisplay = questionPool[questionIndex] ? questionPool[questionIndex].display : null;
   var ReplacementQuestion = FullPool.find(function(Question) {
-    return Question.shortcut !== _blurDiagnosticShortcutToken &&
+    return (GetActiveShortcutString(Question) || Question.shortcut || '') !== _blurDiagnosticShortcutToken &&
            Question.display !== PreviousDisplay;
   });
   if (ReplacementQuestion) {
     questionPool[questionIndex] = ReplacementQuestion;
-    currentAnswer = ReplacementQuestion.shortcut;
+    currentAnswer = GetActiveShortcutString(ReplacementQuestion) || "";
   }
-  // Remove this question's entry from runData if it was recorded (it shouldn't be yet,
-  // but guard just in case to keep report card clean)
   runData = runData.filter(function(entry) {
     return !(entry.questionIndex === questionIndex &&
              questionPool[entry.questionIndex] &&
-             questionPool[entry.questionIndex].shortcut === _blurDiagnosticShortcutToken);
+             (GetActiveShortcutString(questionPool[entry.questionIndex]) || questionPool[entry.questionIndex].shortcut || '') === _blurDiagnosticShortcutToken);
   });
 }
 
@@ -10489,53 +10900,8 @@ function _blurDiagnosticFindQuestion() {
   // so a mid-transition blur cannot return the wrong question.
   if (!_blurDiagnosticShortcutToken) return null;
   return questionPool.find(function(Question) {
-    return Question.shortcut === _blurDiagnosticShortcutToken;
+    return (GetActiveShortcutString(Question) || Question.shortcut || '') === _blurDiagnosticShortcutToken;
   }) || null;
-}
-
-function _blurDiagnosticBuildSymbolChips(ShortcutToken) {
-  // Produces compact symbol-only chips from the shortcut token string,
-  // e.g. "CMD+SHIFT+E" → ⌘ + ⇧ + E chips. Falls back gracefully for PC mode.
-  var MacSymbols = { 'CMD': '⌘', 'SHIFT': '⇧', 'OPTION': '⌥', 'CTRL': '⌃', 'BACKSLASH': '\\',
-                     'ARROWLEFT': '←', 'ARROWRIGHT': '→', 'ARROWUP': '↑', 'ARROWDOWN': '↓',
-                     'RETURN': '↩', 'ENTER': '↩', 'SPACE': '␣', 'TAB': '⇥',
-                     'DEL': '⌫', 'BACKSPACE': '⌫', 'ESCAPE': '⎋' };
-  var PcSymbols  = { 'CMD': 'Ctrl', 'SHIFT': '⇧', 'OPTION': 'Alt', 'BACKSLASH': '\\',
-                     'ARROWLEFT': '←', 'ARROWRIGHT': '→', 'ARROWUP': '↑', 'ARROWDOWN': '↓',
-                     'RETURN': '↵', 'ENTER': '↵', 'SPACE': '␣', 'TAB': '⇥',
-                     'DEL': '⌫', 'BACKSPACE': '⌫', 'ESCAPE': 'Esc' };
-  var SymbolMap = currentOs === 'pc' ? PcSymbols : MacSymbols;
-  var Tokens = ShortcutToken.toUpperCase().split('+').map(function(Token) {
-    return SymbolMap[Token] || Token;
-  });
-  var Wrapper = document.createElement('span');
-  Wrapper.style.cssText = 'display:inline-flex;align-items:center;flex-wrap:nowrap;max-width:100%;overflow:hidden;';
-  var TotalWidth = 0;
-  var Truncated = false;
-  Tokens.forEach(function(Token, Index) {
-    if (Truncated) return;
-    if (Index > 0) {
-      var Sep = document.createElement('span');
-      Sep.textContent = '+';
-      Sep.style.cssText = 'margin:0 1px;color:#9ca3af;font-size:10px;line-height:1;vertical-align:middle;flex-shrink:0;';
-      Wrapper.appendChild(Sep);
-      TotalWidth += 12;
-    }
-    var Chip = document.createElement('span');
-    Chip.className = 'sp-report-chip-key';
-    // Estimate whether this chip will overflow -- rough heuristic: 8px per character + 8px padding
-    var EstimatedWidth = Token.length * 8 + 8;
-    if (TotalWidth + EstimatedWidth > 120) {
-      Chip.textContent = '…';
-      Truncated = true;
-    } else {
-      Chip.textContent = Token;
-      TotalWidth += EstimatedWidth;
-    }
-    Chip.style.cssText = 'display:inline-block;font-family:inherit;font-size:10px;font-weight:600;color:#1e3a5f;border:1px solid #d1d5db;border-radius:3px;padding:1px 4px 0;line-height:1.6;white-space:nowrap;vertical-align:middle;background:#f3f4f6;box-shadow:0 1.5px 0 #c9cdd3;flex-shrink:0;';
-    Wrapper.appendChild(Chip);
-  });
-  return Wrapper;
 }
 
 function _activateBlurPauseScreen() {
@@ -10652,7 +11018,9 @@ function _deactivateBlurPauseScreen() {
   var ChipsArea = document.getElementById('blurDiagnosticChipsArea');
   if (ChipsArea) {
     ChipsArea.innerHTML = '';
-    var ChipWrapper = _blurDiagnosticBuildSymbolChips(_blurDiagnosticShortcutToken);
+    var _diagQuestion = questionPool.find(function(q) { return q.shortcut === _blurDiagnosticShortcutToken; });
+    var _diagDisplay  = _diagQuestion ? (currentOs === 'pc' ? _diagQuestion.pc_sc : _diagQuestion.mac_sc) : _blurDiagnosticShortcutToken;
+    var ChipWrapper = BuildShortcutKeyChips(_diagDisplay, true);
     ChipWrapper.style.cssText = 'display:inline-flex;align-items:center;gap:4px;';
     ChipsArea.appendChild(ChipWrapper);
     ChipsArea.style.display = 'flex';
@@ -10802,7 +11170,7 @@ function _blurDiagnosticSecondBlur() {
   Pill.appendChild(RightBtn);
 
   // Sub-notes: two-column grid aligned under their respective pill halves
-  // Left: plain text + browser icon, pointerdown pulses the pill, no hyperlink
+  // Left: plain text + conflicts icon, pointerdown pulses the pill, no hyperlink
   var ManageNoteEl = document.createElement('div');
   ManageNoteEl.style.cssText = 'display:inline-flex;align-items:center;gap:6px;cursor:pointer;padding-top:8px;';
     ManageNoteEl.addEventListener('click', function() {
@@ -10894,16 +11262,94 @@ function handleKeyup(e) {
 }
 
 /* ── Keyboard flip ────────────────────────────────── */
-var _kbPos     = 'face'; // 'face' | 'partial' | 'edge'
-var _kbFlipped = false;  // kept for applyOsMode compatibility — true when pos is 'edge'
-var _flipSeq   = 0;      // still used by the show/hide icon timing
+// ── Keyboard position state ───────────────────────────────────────────────────
+// _kbPos: 'face' | 'partial' | 'edge'
+// ── Per-panel keyboard fold angle config ─────────────────────────────────────
+// Each panel has a desktop and tablet angle (rotateX in degrees).
+// Desktop = non-touch devices. Tablet = touch devices (detectedOs === 'mobile').
+// These are interim values. Wednesday will tune each panel individually
+// based on observation across devices.
+var PanelKeyboardPositions = {
+  panelKeyboard:             { desktop: 58, tablet: 58 },
+  panelConflicts:            { desktop: 62, tablet: 76 },
+  panelDifficultySettings:   { desktop: 74, tablet: 76 },
+  panelPause:                { desktop: 67, tablet: 67 },
+  panelEndGameReportCard:    { desktop: 80, tablet: 80 },
+  panelEndGameHistoryRecord: { desktop: 80, tablet: 80 },
+  panelCheatSheet:           { desktop: 47, tablet: 76 },
+  panelLandingReturning:     { desktop: 47, tablet: 58 },
+  panelLandingWelcome:       { desktop: 47, tablet: 58 },
+}; 
 
-// KB position targets
-var KB_POS = {
-  face:    { stage: 'translateY(0px)',   panel: 'rotateX(0deg)'  },
-  partial: { stage: 'translateY(89px)',  panel: 'rotateX(62deg)' },
-  edge:    { stage: 'translateY(118px)', panel: 'rotateX(82deg)' },
+function GetPanelKeyboardAngle(PanelName) {
+  var Config = PanelKeyboardPositions[PanelName];
+  if (!Config) return 45;
+  return detectedOs === 'mobile' ? Config.tablet : Config.desktop;
+}
+
+// Low angle used for tablet tap-toggle and ghost mode.
+var TabletKeyboardLowAngle = 80;
+
+function SetKeyboardPositionForPanel(PanelName) {
+  if (ForceNoKeyboard) return;
+  // Ghost mode: always flat at 47, no dragging or toggling.
+  if (keyboardDisplayMode === 'ghost') { _animateToPartialAngle(47); return; }
+  // Tablet: animate to the panel's tablet angle; tap-toggle is handled separately.
+  var Angle = GetPanelKeyboardAngle(PanelName);
+  _animateToPartialAngle(Angle);
+  // Reset tablet toggle state whenever a panel opens so it starts at the panel default.
+  _tabletKbToggleAtLow = false;
+}
+
+// Tablet tap-toggle state: tracks whether we've toggled down to the low angle.
+var _tabletKbToggleAtLow = false;
+
+function _onTabletKeyboardTap() {
+  if (detectedOs !== 'mobile') return;
+  if (!activeSettings) return;
+  if (keyboardDisplayMode === 'ghost') return;
+  if (_kbDragActive) return;  // ignore taps that are actually drag releases
+  _tabletKbToggleAtLow = !_tabletKbToggleAtLow;
+  if (_tabletKbToggleAtLow) {
+    _animateToPartialAngle(TabletKeyboardLowAngle);
+  } else {
+    _animateToPartialAngle(GetPanelKeyboardAngle(activeSettings));
+  }
+}
+
+// 'partial' covers any angle between PartialDragMinAngle and PartialDragMaxAngle.
+// The exact rotateX within that range is stored in _kbPartialAngle.
+// 'edge' is a discrete state beyond the draggable range (82°) with its own decorations.
+var _kbPos          = 'face';
+var _kbFlipped      = false; // true whenever pos is not 'face'
+var _kbPartialAngle = 62;    // current rotateX within the partial range (degrees)
+var _flipSeq        = 0;
+
+// Angle constants (degrees of rotateX on the keyboard panel).
+var FaceAngle           = 0;
+var PartialDragMinAngle = 10;  // shallowest fold in the draggable range
+var PartialDragMaxAngle = 80;  // deepest fold before the edge state
+var EdgeAngle           = 82;  // discrete edge state, just beyond drag range
+
+// Named position definitions used by setKbPosition for face and edge only.
+// Partial uses _interpolateStageY against _kbPartialAngle directly.
+var KbNamedPositions = {
+  face: { stageTranslateY: 0,   panelRotateX: 0  },
+  edge: { stageTranslateY: 118, panelRotateX: 82 },
 };
+
+// ── Drag state ────────────────────────────────────────────────────────────────
+var _kbDragActive             = false;
+var _kbDragPointerId          = null;
+var _kbDragStartClientY       = 0;
+var _kbDragStartAngle         = 0;
+var _kbDragStartClientX       = 0;
+var _kbDragDirectionConfirmed = false;
+
+// Pixels of pointer movement required before committing to a drag.
+var DragThresholdPixels = 6;
+// Degrees the drag can overshoot the min/max angle before snapping back on release.
+var DragOvershootDegrees = 3;
 
 function _touchModalVisible() {
   var gyro = document.getElementById('gyroModal');
@@ -10912,79 +11358,346 @@ function _touchModalVisible() {
          (kb   && kb.classList.contains('visible'));
 }
 
+// Interpolate stageTranslateY for any rotateX angle, using face and edge as anchors
+// with the original partial position (62°→89px) as a midpoint reference.
+function _interpolateStageY(RotateXDegrees) {
+  var AnchorPartialAngle = 62;
+  var AnchorPartialY     = 89;
+  var AnchorEdgeAngle    = EdgeAngle;
+  var AnchorEdgeY        = 118;
+  if (RotateXDegrees <= 0) return 0;
+  if (RotateXDegrees >= AnchorEdgeAngle) return AnchorEdgeY;
+  if (RotateXDegrees <= AnchorPartialAngle) {
+    var Fraction = RotateXDegrees / AnchorPartialAngle;
+    return Math.round(Fraction * AnchorPartialY);
+  }
+  var Fraction = (RotateXDegrees - AnchorPartialAngle) / (AnchorEdgeAngle - AnchorPartialAngle);
+  return Math.round(AnchorPartialY + Fraction * (AnchorEdgeY - AnchorPartialY));
+}
+
+var _AffordanceCloseOffset = 18; // px toward keyboard top edge
+
+function _repositionAffordance() {
+  var affordance = document.getElementById('kbHandleAffordance');
+  if (!affordance) return;
+  // No affordance on tablet (tap-toggle instead) or in ghost mode (fixed angle).
+  var suppress = (detectedOs === 'mobile') || (keyboardDisplayMode === 'ghost');
+  affordance.style.visibility = suppress ? 'hidden' : '';
+  if (suppress) return;
+  var sentinel = document.getElementById('kbTopSentinel');
+  var wrap     = document.getElementById('keyboardWrap');
+  if (!sentinel || !wrap) return;
+
+  // Vertical position: sentinel is inside the 3D keyboard so its BCR.top
+  // always reflects the true visual top edge of the keyboard.
+  var affH      = affordance.offsetHeight || 80;
+  var wrapRect  = wrap.getBoundingClientRect();
+  var anchorTop = sentinel.getBoundingClientRect().top - wrapRect.top + wrap.scrollTop;
+  affordance.style.top      = (anchorTop - affH + _AffordanceCloseOffset) + 'px';
+  affordance.style.transform = '0.1'; // no 3D slant on the container
+
+  // Arrow rotation: based on the sentinel's position in the viewport.
+  // Mid-screen = 0deg (as designed). Higher on screen (smaller top) = anticlockwise.
+  // Lower on screen (larger top) = clockwise, ramped more aggressively downward.
+  var arrow = document.getElementById('kbAffordanceArrow');
+  if (!arrow) return;
+
+  var sentinelMidY = sentinel.getBoundingClientRect().top;
+  var viewMid      = window.innerHeight * 0.45; // neutral point ~45% down
+  var delta        = sentinelMidY - viewMid;    // negative = above mid, positive = below
+
+  var arrowDeg;
+  if (delta <= 0) {
+    // Above midpoint: gentle anticlockwise — linear, small range
+    arrowDeg = delta * 0.12 + 1;
+  } else {
+    // Below midpoint: clockwise, power-ramped so it grows faster near the bottom
+    arrowDeg = Math.pow(delta, 1.45) * 0.01;
+  }
+
+// Apply global clockwise offset
+arrowDeg += 9;
+
+  arrow.style.transform = 'rotate(' + arrowDeg + 'deg)';
+}
+
+// Callers are responsible for clamping -- this function applies whatever angle it receives.
+function _applyPartialAngleInstant(RotateXDegrees) {
+  var StageY = _interpolateStageY(RotateXDegrees);
+  var panel        = document.getElementById('keyboardPanel');
+  var stage        = document.getElementById('kbFlipStage');
+  var wrap         = document.getElementById('keyboardWrap');
+  if (!panel || !stage || !wrap) return;
+
+  _kbPartialAngle = RotateXDegrees;
+  _kbPos          = 'partial';
+  _kbFlipped      = true;
+
+  panel.style.transition = 'none';
+  stage.style.transition = 'none';
+  panel.style.transform  = 'rotateX(' + RotateXDegrees + 'deg)';
+  stage.style.transform  = 'translateY(' + StageY + 'px)';
+
+  panel.classList.add('kb-edged');
+  panel.classList.remove('kb-edges-visible', 'kb-partial');
+  stage.classList.remove('kb-show-base');
+  wrap.classList.remove('kb-at-face');
+  wrap.classList.add('kb-flipping');
+  document.body.classList.remove('kb-at-edge');
+  dbgRefreshAngle();
+  _repositionAffordance();
+}
+
+// Animate to a partial angle with the standard CSS transition
+// (used after drag release, auto-settle, and the edge-tap-to-partial gesture).
+function _animateToPartialAngle(RotateXDegrees) {
+  var ClampedAngle = Math.max(PartialDragMinAngle, Math.min(PartialDragMaxAngle, RotateXDegrees));
+  var StageY       = _interpolateStageY(ClampedAngle);
+  var panel        = document.getElementById('keyboardPanel');
+  var stage        = document.getElementById('kbFlipStage');
+  var wrap         = document.getElementById('keyboardWrap');
+  if (!panel || !stage || !wrap) return;
+
+  _kbPartialAngle = ClampedAngle;
+  _kbPos          = 'partial';
+  _kbFlipped      = true;
+
+  panel.style.transition = '';
+  stage.style.transition = '';
+  panel.style.transform  = 'rotateX(' + ClampedAngle + 'deg)';
+  stage.style.transform  = 'translateY(' + StageY + 'px)';
+
+  panel.classList.add('kb-edged');
+  panel.classList.remove('kb-edges-visible', 'kb-partial');
+  stage.classList.remove('kb-show-base');
+  wrap.classList.remove('kb-at-face');
+  wrap.classList.add('kb-flipping');
+  document.body.classList.remove('kb-at-edge');
+  dbgRefreshAngle();
+  // Reposition immediately (start of animation) and again after the
+  // 850ms CSS transition settles so the affordance tracks the final resting spot.
+  _repositionAffordance();
+  setTimeout(_repositionAffordance, 870);
+}
+
 function setKbPosition(pos) {
   if (ForceNoKeyboard) return;
-  if (_touchModalVisible()) { _kbPos = pos; _kbFlipped = (pos === 'edge'); return; }
+  if (_touchModalVisible()) { _kbPos = pos; _kbFlipped = (pos !== 'face'); return; }
+
+  if (pos === 'partial') {
+    // Animate to the stored partial angle (or 62° default on first use).
+    _animateToPartialAngle(_kbPartialAngle);
+    return;
+  }
+
   var seq = ++_flipSeq;
   _kbPos     = pos;
-  _kbFlipped = (pos === 'edge');
+  _kbFlipped = (pos !== 'face');
+
+  var NamedPos = KbNamedPositions[pos];
+  if (!NamedPos) { console.warn('setKbPosition: unknown position "' + pos + '"'); return; }
 
   var panel = document.getElementById('keyboardPanel');
   var stage = document.getElementById('kbFlipStage');
   var wrap  = document.getElementById('keyboardWrap');
 
-  // ── Apply the CSS transforms immediately so the transition starts right away ──
-  stage.style.transform = KB_POS[pos].stage;
-  panel.style.transform = KB_POS[pos].panel;
+  panel.style.transition = '';
+  stage.style.transition = '';
+  stage.style.transform  = 'translateY(' + NamedPos.stageTranslateY + 'px)';
+  panel.style.transform  = 'rotateX(' + NamedPos.panelRotateX + 'deg)';
 
-  // ── kb-edged controls wall and shadow visibility via CSS.
-  //    It must be set immediately and unconditionally so those elements are
-  //    never in the wrong state regardless of how quickly positions change. ──
   if (pos === 'face') {
-    // Snap key colours back instantly before removing the edged class
     panel.classList.add('no-key-transition');
     panel.classList.remove('kb-edged', 'kb-edges-visible', 'kb-partial');
     stage.classList.remove('kb-show-base');
     requestAnimationFrame(function() { panel.classList.remove('no-key-transition'); });
   } else {
-    // Both partial and edge need the edged appearance immediately
     panel.classList.add('kb-edged');
-    panel.classList.toggle('kb-partial', pos === 'partial');
+    panel.classList.remove('kb-partial');
   }
 
-  // ── kb-flipping hides the icon tooltips while the keyboard is away from face ──
   if (pos === 'face') {
     wrap.classList.add('kb-at-face');
-    // Restore pointer-events and flipping class only after the transition settles
+    document.body.classList.remove('kb-at-edge');
+    dbgRefreshAngle();
     setTimeout(function() {
       if (_flipSeq !== seq) return;
       wrap.classList.remove('kb-flipping');
-      stage.style.pointerEvents = '';
     }, 900);
   } else {
     wrap.classList.remove('kb-at-face');
     wrap.classList.add('kb-flipping');
   }
 
-  // ── Edge-only decorations: base highlight and edge detail reveal.
-  //    These are purely additive cosmetic details so no seq guard needed. ──
   if (pos === 'edge') {
     setTimeout(function() { panel.classList.add('kb-edges-visible'); }, 400);
     setTimeout(function() { stage.classList.add('kb-show-base'); },    650);
-    // Clear stuck keys once fully settled
     setTimeout(function() {
       if (_flipSeq !== seq) return;
+      document.body.classList.add('kb-at-edge');
       clearAllLit();
       heldKeys.clear();
       stickyLit.clear();
     }, 900);
   } else {
+    document.body.classList.remove('kb-at-edge');
     panel.classList.remove('kb-edges-visible');
     stage.classList.remove('kb-show-base');
   }
 }
 
+// ── Keyboard drag handle listeners ───────────────────────────────────────────
+// All drag interaction lives on #kbDragHandle — a thin strip at the top of
+// the keyboard panel. This keeps the keyboard body from intercepting clicks
+// on the settings content behind it when a panel is open.
+
+function _onDragHandlePointerDown(Event) {
+  if (!Event.isPrimary) return;
+  if (_kbPos === 'face') return;
+  // No drag on tablet (tap-toggle handles it) or in ghost mode (fixed angle).
+  if (detectedOs === 'mobile') return;
+  if (keyboardDisplayMode === 'ghost') return;
+
+  _kbDragActive             = false;
+  _kbDragDirectionConfirmed = false;
+  _kbDragPointerId          = Event.pointerId;
+  _kbDragStartClientY       = Event.clientY;
+  _kbDragStartClientX       = Event.clientX;
+  _kbDragStartAngle         = (_kbPos === 'edge') ? EdgeAngle : _kbPartialAngle;
+
+  // Kill the tilt transition so affordance tracks drag instantly
+  var aff = document.getElementById('kbHandleAffordance');
+  if (aff) { aff.style.transition = 'opacity 0.22s ease'; aff.classList.add('dragging'); }
+
+  var handle = document.getElementById('kbDragHandle');
+  if (handle) handle.setPointerCapture(Event.pointerId);
+  Event.preventDefault();
+}
+
+function _onDragHandlePointerMove(Event) {
+  if (Event.pointerId !== _kbDragPointerId) return;
+
+  var DeltaY      = Event.clientY - _kbDragStartClientY;
+  var DeltaX      = Event.clientX - _kbDragStartClientX;
+  var TotalTravel = Math.sqrt(DeltaX * DeltaX + DeltaY * DeltaY);
+
+  if (!_kbDragActive) {
+    if (TotalTravel < DragThresholdPixels) return;
+    if (Math.abs(DeltaX) > Math.abs(DeltaY)) return;
+    _kbDragActive = true;
+  }
+
+  var DegreesPerPixel = 0.5;
+  var NewAngle        = _kbDragStartAngle + DeltaY * DegreesPerPixel;
+
+  // Allow DragOvershootDegrees beyond each extreme during live drag.
+  var ClampedAngle = Math.max(
+    PartialDragMinAngle - DragOvershootDegrees,
+    Math.min(EdgeAngle + DragOvershootDegrees, NewAngle)
+  );
+
+  _applyPartialAngleInstant(ClampedAngle);
+  Event.preventDefault();
+}
+
+function _onDragHandlePointerUp(Event) {
+  if (Event.pointerId !== _kbDragPointerId) return;
+
+  var WasDrag = _kbDragActive;
+  _kbDragActive    = false;
+  _kbDragPointerId = null;
+
+  var panel = document.getElementById('keyboardPanel');
+  var stage = document.getElementById('kbFlipStage');
+  if (panel) panel.style.transition = '';
+  if (stage) stage.style.transition = '';
+
+  // Restore affordance tilt transition for the animated snap-back
+  var aff = document.getElementById('kbHandleAffordance');
+  if (aff) { aff.style.transition = ''; aff.classList.remove('dragging'); }
+
+  if (!WasDrag) return;
+
+  // Snap to the nearest extreme if the drag overshot, otherwise animate to the
+  // clamped partial angle (which may have been updated during the drag).
+  if (_kbPartialAngle <= PartialDragMinAngle) {
+    _animateToPartialAngle(PartialDragMinAngle);
+  } else if (_kbPartialAngle >= PartialDragMaxAngle) {
+    setKbPosition('edge');
+  } else {
+    _animateToPartialAngle(_kbPartialAngle);
+  }
+
+  Event.preventDefault();
+}
+
+function _initialiseStageDragListeners() {
+  var handle = document.getElementById('kbDragHandle');
+  if (!handle) return;
+  handle.addEventListener('pointerdown',   _onDragHandlePointerDown);
+  handle.addEventListener('pointermove',   _onDragHandlePointerMove);
+  handle.addEventListener('pointerup',     _onDragHandlePointerUp);
+
+  // Tablet tap-toggle: tap the keyboard body (not just the drag handle)
+  // to toggle between the panel's default angle and the low angle (80°).
+  var stage = document.getElementById('kbFlipStage');
+  if (stage) {
+    stage.addEventListener('click', function(e) {
+      if (detectedOs !== 'mobile') return;
+      if (keyboardDisplayMode === 'ghost') return;
+      if (!activeSettings) return;
+      _onTabletKeyboardTap();
+    });
+  }
+  handle.addEventListener('pointercancel', function(Event) {
+    if (Event.pointerId !== _kbDragPointerId) return;
+    _kbDragActive    = false;
+    _kbDragPointerId = null;
+    var panel = document.getElementById('keyboardPanel');
+    var stage = document.getElementById('kbFlipStage');
+    if (panel) panel.style.transition = '';
+    if (stage) stage.style.transition = '';
+    // Snap back to the nearest valid extreme on cancel too.
+    if (_kbPartialAngle <= PartialDragMinAngle) {
+      _animateToPartialAngle(PartialDragMinAngle);
+    } else if (_kbPartialAngle >= PartialDragMaxAngle) {
+      setKbPosition('edge');
+    }
+  });
+  // Affordance hover: show/hide via class so CSS can transition it
+  handle.addEventListener('mouseenter', function() {
+    var aff = document.getElementById('kbHandleAffordance');
+    if (aff) aff.classList.add('handle-hover');
+  });
+  handle.addEventListener('mouseleave', function() {
+    var aff = document.getElementById('kbHandleAffordance');
+    if (aff) aff.classList.remove('handle-hover', 'handle-active');
+  });
+  handle.addEventListener('mousedown', function() {
+    var aff = document.getElementById('kbHandleAffordance');
+    if (aff) { aff.classList.remove('handle-hover'); aff.classList.add('handle-active'); }
+  });
+  handle.addEventListener('mouseup', function() {
+    var aff = document.getElementById('kbHandleAffordance');
+    if (aff) { aff.classList.remove('handle-active'); aff.classList.add('handle-hover'); }
+  });
+}
+
 function _resetFlipState() {
-  // Instantly snaps to face — used by applyOsMode when rebuilding the keyboard
+  // Instantly snaps to face — used by applyOsMode when rebuilding the keyboard.
   _flipSeq++;
-  _kbPos     = 'face';
-  _kbFlipped = false;
+  _kbPos          = 'face';
+  _kbPartialAngle = 62;
+  _kbFlipped      = false;
+  _kbDragActive   = false;
+  _kbDragPointerId = null;
   var panel = document.getElementById('keyboardPanel');
   var stage = document.getElementById('kbFlipStage');
   var wrap  = document.getElementById('keyboardWrap');
-  if (panel) { panel.classList.remove('kb-edged', 'kb-edges-visible', 'kb-partial'); panel.style.transform = ''; }
-  if (stage) { stage.classList.remove('kb-show-base'); stage.style.transform = ''; }
+  if (panel) { panel.classList.remove('kb-edged', 'kb-edges-visible', 'kb-partial'); panel.style.transform = ''; panel.style.transition = ''; }
+  if (stage) { stage.classList.remove('kb-show-base'); stage.style.transform = ''; stage.style.transition = ''; }
   if (wrap)  { wrap.classList.remove('kb-flipping'); wrap.classList.add('kb-at-face'); }
+  document.body.classList.remove('kb-at-edge');
 }
 
 /* ── Difficulty needle states ── */
@@ -11085,6 +11798,7 @@ function HideGyroModal() {
 }
 
 function onGyroAllow() {
+  _uiReady = true;
   HideGyroModal();
   var NeedsPermission = typeof DeviceOrientationEvent !== 'undefined' &&
                         typeof DeviceOrientationEvent.requestPermission === 'function';
@@ -11104,6 +11818,7 @@ function onGyroAllow() {
 }
 
 function onGyroDeny() {
+  _uiReady = true;
   try { localStorage.setItem('kw_gyro', 'denied'); } catch(StorageError) {}
   HideGyroModal();
   ShowKeyboardRecommendModal();
@@ -11122,6 +11837,7 @@ function HideKeyboardRecommendModal() {
 }
 
 function onKeyboardRecommendHaveOne() {
+  _uiReady = true;
   HideKeyboardRecommendModal();
   _setHasKeyboard();
   // Physical keyboard connected: behave like desktop mode
@@ -11134,6 +11850,7 @@ function onKeyboardRecommendHaveOne() {
 }
 
 function onKeyboardRecommendTouchOnly() {
+  _uiReady = true;
   HideKeyboardRecommendModal();
   // Touch only: enable sticky and touch modes
   setTouchEnabled(true);
@@ -11168,6 +11885,7 @@ function HidePhoneWarningModal() {
 }
 
 function OnPhoneWarningDismiss() {
+  _uiReady = true;
   HidePhoneWarningModal();
   // Reverse the touch defaults set at startup -- phone plays without
   // the graphical keyboard and without on-screen key input.

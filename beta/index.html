@@ -2832,16 +2832,34 @@ if (transitioning && gameState !== 'finished') return;
    Renders the current answer as key chips inside the stats-row toast.
    Uses BuildShortcutKeyChips so alternates, symbols, and ordering are all
    handled by the single unified chip system. ── */
-/* colour: 'green' | 'amber' | null (unstyled) */
+/* colour: 'green' | 'orange' | null (unstyled)
+   Toast chips are rendered larger than report-card chips but stay
+   position:absolute so they never push layout height. */
 function ShowHintToast(TokenString, colour) {
   kbToastEl.innerHTML = '';
   var ChipsWrapper = BuildShortcutKeyChips(TokenString, false);
+
+  // ── Make toast chips larger ───────────────────────────────────────────────
+  // Override the 10px report-card size. The toast is position:absolute
+  // inside statsRow so no layout height is added.
+  ChipsWrapper.querySelectorAll('.sp-report-chip-key').forEach(function(Chip) {
+    Chip.style.fontSize     = '13px';
+    Chip.style.padding      = '2px 7px 1px';
+    Chip.style.borderRadius = '4px';
+  });
+  // Separator + signs grow proportionally
+  ChipsWrapper.querySelectorAll('span:not(.sp-report-chip-key)').forEach(function(Sep) {
+    Sep.style.fontSize = '13px';
+    Sep.style.margin   = '0 2px';
+  });
+
+  // ── Colour the chips ──────────────────────────────────────────────────────
   if (colour) {
-    var IsGreen    = colour === 'green';
-    var ChipBg     = IsGreen ? '#10b981' : '#f59e0b';
-    var ChipBorder = IsGreen ? '#059669' : '#d97706';
-    var ChipShadow = IsGreen ? '0 0 6px rgba(16,185,129,0.45)' : '0 0 6px rgba(245,158,11,0.45)';
-    var SepColour  = IsGreen ? '#059669' : '#d97706';
+    var IsGreen    = (colour === 'green');
+    var ChipBg     = IsGreen ? '#10b981' : '#f97316';
+    var ChipBorder = IsGreen ? '#059669' : '#c2410c';
+    var ChipShadow = IsGreen ? '0 0 6px rgba(16,185,129,0.45)' : '0 0 6px rgba(249,115,22,0.45)';
+    var SepColour  = IsGreen ? '#059669' : '#c2410c';
     ChipsWrapper.querySelectorAll('.sp-report-chip-key').forEach(function(Chip) {
       Chip.style.background  = ChipBg;
       Chip.style.color       = 'white';
@@ -2852,6 +2870,17 @@ function ShowHintToast(TokenString, colour) {
       Sep.style.color = SepColour;
     });
   }
+
+  // ── Safari inline-flex fix ────────────────────────────────────────────────
+  // BuildShortcutKeyChips returns an inline-flex span. When appended as the
+  // sole child of a block element (kbToastEl), Safari collapses the inline
+  // formatting context and merges chips. Switching to block-level flex on
+  // the wrapper — scoped to the toast only — fixes this without affecting
+  // report-card or cheat-sheet contexts where the wrapper stays inline-flex.
+  ChipsWrapper.style.display        = 'flex';
+  ChipsWrapper.style.justifyContent = 'center';
+  ChipsWrapper.style.marginLeft     = '0';
+
   kbToastEl.appendChild(ChipsWrapper);
 }
 
@@ -2902,7 +2931,7 @@ function toggleHelp() {
   }
 }
 function showAutoHintToast() {
-    ShowHintToast(currentAnswer, 'amber');
+    ShowHintToast(currentAnswer, 'orange');
     kbToastEl.classList.add('show');
     clearTimeout(_kwToastTimer);
     clearTimeout(_kbToastAutoHideTimer);
@@ -2914,6 +2943,16 @@ function showSuccessHintToast() {
     kbToastEl.classList.add('show');
     clearTimeout(_kbToastAutoHideTimer);
     _kbToastAutoHideTimer = setTimeout(function() { kbToastEl.classList.remove('show'); }, 1200);
+}
+
+/* Called when the player presses the correct answer in the 2s near-miss window
+   after the question timer has expired. Shows orange chips (they were too slow,
+   but they knew the answer) and briefly extends the toast so it reads clearly. */
+function showNearMissHintToast() {
+    ShowHintToast(nearMissAnswer, 'orange');
+    kbToastEl.classList.add('show');
+    clearTimeout(_kbToastAutoHideTimer);
+    _kbToastAutoHideTimer = setTimeout(function() { kbToastEl.classList.remove('show'); }, 1600);
 }
 
 
@@ -10611,6 +10650,7 @@ updateKeyboardLighting(e, true);
   if (transitioning && nearMissAnswer && nearMissEntry && nearMissEntry.timeToAnswerMs === null) {
     if (matchesShortcut(e, nearMissAnswer)) {
       nearMissEntry.timeToAnswerMs = performance.now() - startTime - accumulatedPauseMs;
+      showNearMissHintToast();
       e.preventDefault();
       return;
     }

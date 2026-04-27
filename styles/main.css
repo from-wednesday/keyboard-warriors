@@ -2608,6 +2608,11 @@ li.conflict-dismissed .conflict-desc {
   transition: none;
 }
 
+#kbHandleAffordance.aff-transitioning {
+  opacity: 0 !important;
+  pointer-events: none !important;
+}
+
 /* Show on hover via .handle-hover class toggled by JS on #kbDragHandle */
 #kbHandleAffordance.handle-hover {
   opacity: 1;

@@ -1,14 +1,14 @@
 [
   {
-    "display": "press <",
-    "mac_sc": "LESSTHAN",
-    "pc_sc": "LESSTHAN",
+    "display": "press >",
+    "mac_sc": "MORETAN",
+    "pc_sc": "MORETHAN",
     "difficulty": 1
   },
     {
 "display": "Increase font size",
-    "mac_sc": "CMD+SHIFT+GREATERTHAN",
-    "pc_sc": "CTRL+SHIFT+GREATERTHAN",
+    "mac_sc": "CMD+SHIFT+MORETHAN",
+    "pc_sc": "CTRL+SHIFT+MORETHAN",
     "difficulty": 3
   },
   {
@@ -66,9 +66,9 @@
     "difficulty": 1
   },
   {
-    "display": "press \\",
-    "mac_sc": "BACKSLASH",
-    "pc_sc": "BACKSLASH",
+    "display": "press $",
+    "mac_sc": "DOLLAR",
+    "pc_sc": "DOLLAR",
     "difficulty": 1
   }
 ]

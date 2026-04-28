@@ -2095,10 +2095,8 @@ function _KeyTokenMatchesEvent(KeyToken, Event) {
   // Accept NumpadEnter for RETURN
   if (KeyToken === 'RETURN' && EventCode === 'NumpadEnter') return true;
 
-  // Accept Quote as Backquote on some PC keyboard layouts
-  if (KeyToken === 'GRAVE' && EventCode === 'Quote') return true;
-
-  // EQUAL/PLUS: match either = or + regardless of shift, match = key code
+  // EQUAL/PLUS
+: match either = or + regardless of shift, match = key code
   if (KeyToken === 'EQUAL') {
     if (EventCode === 'Equal') return true;
     if (EventCode === 'NumpadAdd') return true;
@@ -9845,7 +9843,8 @@ function BuildShortcutKeyChips(TokenString, IsWeakness) {
     'EQUAL':'=','MINUS':'-','BRACKETLEFT':'[','BRACKETRIGHT':']',
     'BACKSLASH':'\\','SEMICOLON':';','QUOTE':"'",'COMMA':',',
     'PERIOD':'.','SLASH':'/','GRAVE':'`',
-  };
+    'LESSTHAN':'<','GREATERTHAN':'>',
+  };  };
   var PcChipSymbols = {
     'CMD':'Ctrl','SHIFT':'⇧','OPTION':'Alt','CONTROL':'Ctrl','WIN':'Win','FN':'FN',
     'RETURN':'↵','TAB':'Tab','SPACE':'Space','ESCAPE':'Esc',
@@ -9856,7 +9855,8 @@ function BuildShortcutKeyChips(TokenString, IsWeakness) {
     'EQUAL':'=','MINUS':'-','BRACKETLEFT':'[','BRACKETRIGHT':']',
     'BACKSLASH':'\\','SEMICOLON':';','QUOTE':"'",'COMMA':',',
     'PERIOD':'.','SLASH':'/','GRAVE':'`',
-  };
+    'LESSTHAN':'<','GREATERTHAN':'>',
+  };  };
   var ChipSymbols = currentOs === 'pc' ? PcChipSymbols : MacChipSymbols;
 
   // Canonical modifier rendering order

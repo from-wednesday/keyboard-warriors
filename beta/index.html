@@ -2095,8 +2095,7 @@ function _KeyTokenMatchesEvent(KeyToken, Event) {
   // Accept NumpadEnter for RETURN
   if (KeyToken === 'RETURN' && EventCode === 'NumpadEnter') return true;
 
-  // EQUAL/PLUS
-: match either = or + regardless of shift, match = key code
+  // EQUAL/PLUS : match either = or + regardless of shift, match = key code
   if (KeyToken === 'EQUAL') {
     if (EventCode === 'Equal') return true;
     if (EventCode === 'NumpadAdd') return true;

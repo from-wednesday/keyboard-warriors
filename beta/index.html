@@ -941,9 +941,17 @@ function buildKey(cfg, isMini) {
       el.classList.add('fn');
       el.innerHTML = `<span class="fn-lbl">${cfg.label}</span>`;
       if (cfg.id === 'Escape') {
-        el.addEventListener('pointerdown',  function(ev) { ev.preventDefault(); _debugEscHoldStart(); });
-        el.addEventListener('pointerup',    function(ev) { ev.preventDefault(); _debugEscHoldCancel(); });
-        el.addEventListener('pointerleave', function(ev) { _debugEscHoldCancel(); });
+        el.addEventListener('pointerdown',  function(ev) {
+          ev.preventDefault();
+          if (touchEnabled) updateKeyboardLighting({code:'Escape',key:'Escape',preventDefault:function(){},shiftKey:false,altKey:false,metaKey:false,ctrlKey:false}, true);
+          _debugEscHoldStart();
+        });
+        el.addEventListener('pointerup',    function(ev) {
+          ev.preventDefault();
+          updateKeyboardLighting({code:'Escape',key:'Escape',preventDefault:function(){},shiftKey:false,altKey:false,metaKey:false,ctrlKey:false}, false);
+          _debugEscHoldCancel();
+        });
+        el.addEventListener('pointerleave', function(ev) { if (!escHoldFired) _debugEscHoldCancel(); });
       } else {
         el.addEventListener('mousedown', function(ev){ touchEnabled ? handleKeyTouch(ev, el) : showKbToast(ev); });
       }
@@ -6091,11 +6099,22 @@ function _debugOverlayOpen() {
   document.getElementById('dbgKey').textContent = '';
   document.getElementById('dbgMatch').textContent = '';
   dbgRefreshCtx(); dbgRefreshAccuracy(); dbgRefreshAngle();
+  if (detectedOs === 'mobile') {
+    var diag = document.getElementById('gyroDiag');
+    if (diag) {
+      diag.style.display = 'block';
+      diag.style.pointerEvents = 'auto';
+      diag.innerHTML = 'Gyro diag active...';
+      diag.addEventListener('click', function() { diag.style.display = 'none'; }, { once: true });
+    }
+  }
 }
 
 function _debugOverlayClose() {
   const dbg = document.getElementById('debugOverlay');
   dbg.style.display = 'none';
+  var diag = document.getElementById('gyroDiag');
+  if (diag) diag.style.display = 'none';
 }
 
 function _debugEscHoldStart() {
@@ -6174,6 +6193,12 @@ function dbgBuildReport() {
   var TimerDisplay  = questionTimer === null ? '∞' : String(questionTimer) + 's';
   var LivesDisplay  = playerLives   === null ? '∞' : String(playerLives);
   var BuildDevice   = typeof DBG_DEVICE !== 'undefined' ? DBG_DEVICE : 'unknown';
+  var HeldKeysDisplay  = heldKeys.size  > 0 ? Array.from(heldKeys).join(', ')  : '(none)';
+  var GreenHeldDisplay = greenHeld.size > 0 ? Array.from(greenHeld).join(', ') : '(none)';
+  var StickyDisplay    = stickyLit.size > 0
+    ? Array.from(stickyLit.entries()).map(function(e) { return e[0] + ':' + e[1]; }).join(', ')
+    : '(none)';
+
   var Lines = [
     'build:'         + BuildDevice,
     OsLine,
@@ -6182,11 +6207,14 @@ function dbgBuildReport() {
     'kbLayout:'      + (currentOs === 'pc' ? kbVariantPc : kbVariantMac),
     'kbFlags:'       + KeyboardFlags,
     'gameState:'     + gameState + '  Q:' + QuestionString,
-    CurrentQuestion  ? 'answer:'  + (GetActiveShortcutString(CurrentQuestion) || '') : '',
-    CurrentQuestion  ? 'display:' + CurrentQuestion.display    : '',
+    CurrentQuestion  ? 'answer:'     + (GetActiveShortcutString(CurrentQuestion) || '') : '',
+    CurrentQuestion  ? 'display:'    + CurrentQuestion.display    : '',
     CurrentQuestion  ? 'difficulty:' + CurrentQuestion.difficulty : '',
+    'heldKeys:'      + HeldKeysDisplay,
+    'greenHeld:'     + GreenHeldDisplay,
+    stickyKeysOn     ? 'stickyLit:'  + StickyDisplay : null,
   ];
-  return Lines.filter(function(Line) { return Line.trim(); }).join('\n');
+  return Lines.filter(function(Line) { return Line && Line.trim(); }).join('\n');
 }
 
 function dbgCopy() {
@@ -10756,7 +10784,9 @@ updateKeyboardLighting(e, true);
     document.getElementById('dbgKey').textContent =
       'key=' + JSON.stringify(e.key) + ' code=' + e.code +
       ' cmd=' + (currentOs==='pc'?e.ctrlKey:e.metaKey) +
-      ' sh=' + e.shiftKey + ' opt=' + e.altKey;
+      ' sh=' + e.shiftKey + ' opt=' + e.altKey +
+      ' | held:[' + Array.from(heldKeys).join(',') + ']' +
+      ' green:[' + Array.from(greenHeld).join(',') + ']';
     const matchResult = matchesShortcut(e, currentAnswer);
     const includesResult = needed.includes(e.code);
     const dbgMatchEl = document.getElementById('dbgMatch');
@@ -11888,18 +11918,7 @@ function InitialiseGyroOrientationListener() {
 var _gyroEventCount = 0;
 
 // Show gyro diagnostic overlay on mobile automatically
-if (typeof detectedOs !== 'undefined' ? detectedOs === 'mobile' : navigator.maxTouchPoints > 1) {
-  document.addEventListener('DOMContentLoaded', function() {
-    var diag = document.getElementById('gyroDiag');
-    if (diag) {
-      diag.style.display = 'block';
-      diag.innerHTML = 'Gyro diag loading...';
-      // Tap overlay to dismiss
-      diag.style.pointerEvents = 'auto';
-      diag.addEventListener('click', function() { diag.style.display = 'none'; });
-    }
-  });
-}
+
 
 function OnDeviceOrientationChange(OrientationEvent) {
   _gyroEventCount++;

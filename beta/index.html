@@ -494,10 +494,15 @@
     <!-- ── Difficulty Settings ──────────────────────────── -->
     <div id="panelDifficultySettings" class="sp-page">
       <p class="sp-title" style="margin-bottom:10px;">Question Difficulty</p>
-      <div class="sp-seg-pill sp-seg-pill-three" id="difficultyPill">
+      <div id="difficultyPillWrapper" style="position:relative;width:100%;">
+        <div id="difficultyCaretEl" aria-hidden="true" style="position:absolute;top:0;left:0;transform:translate(-50%,-50%);pointer-events:none;z-index:2;transition:left 0.32s cubic-bezier(0.34,1.2,0.64,1);">
+          <svg viewBox="0 0 7 7" width="7" height="7" fill="#374151" xmlns="http://www.w3.org/2000/svg" style="display:block;transform:rotate(90deg);"><path d="M1.5 1 L6 3.5 L1.5 6 Z"/></svg>
+        </div>
+        <div class="sp-seg-pill sp-seg-pill-three" id="difficultyPill" onclick="_onDifficultyPillClick(event)">
         <button class="sp-seg-btn diff-btn" data-mode="fundamentals" onclick="diffBtnClick('fundamentals')"><span class="diff-btn-text">Fundamentals</span></button>
         <button class="sp-seg-btn diff-btn" data-mode="normal" onclick="diffBtnClick('normal')"><span class="diff-btn-text">Normal</span></button>
         <button class="sp-seg-btn diff-btn diff-btn-inactive" data-mode="hardcore" onclick="diffBtnClick('hardcore')"><span class="diff-btn-text">Hardcore</span></button>
+      </div>
       </div>
       <p id="diffSubtitle" class="diff-subtitle">&nbsp;</p>
       <div class="diff-advanced-panel" id="diffAdvancedPanel">
@@ -543,10 +548,15 @@
     <!-- ── Welcome Landing ──────────────────────────────── -->
    <div id="panelLandingWelcome" class="sp-page">
     <p class="sp-title" style="margin-bottom:10px;">Question Difficulty</p>
-      <div class="sp-seg-pill sp-seg-pill-three" id="welcomeDifficultyPill">
+      <div id="welcomeDifficultyPillWrapper" style="position:relative;width:100%;">
+        <div id="welcomeDifficultyCaretEl" aria-hidden="true" style="position:absolute;top:0;left:0;transform:translate(-50%,-50%);pointer-events:none;z-index:2;transition:left 0.32s cubic-bezier(0.34,1.2,0.64,1);">
+          <svg viewBox="0 0 7 7" width="7" height="7" fill="#374151" xmlns="http://www.w3.org/2000/svg" style="display:block;transform:rotate(90deg);"><path d="M1.5 1 L6 3.5 L1.5 6 Z"/></svg>
+        </div>
+        <div class="sp-seg-pill sp-seg-pill-three" id="welcomeDifficultyPill" onclick="_onWelcomeDifficultyPillClick(event)">
         <button class="sp-seg-btn diff-btn" data-mode="fundamentals" onclick="diffBtnClick('fundamentals')"><span class="diff-btn-text">Fundamentals</span></button>
         <button class="sp-seg-btn diff-btn" data-mode="normal" onclick="diffBtnClick('normal')"><span class="diff-btn-text">Normal</span></button>
         <button class="sp-seg-btn diff-btn diff-btn-inactive" data-mode="hardcore" onclick="diffBtnClick('hardcore')"><span class="diff-btn-text">Hardcore</span></button>
+      </div>
       </div>
       <p id="welcomeDiffSubtitle" class="diff-subtitle">&nbsp;</p>
       <p class="sp-returning-privacy" style="text-align:center;"><strong>Skill-set loaded:</strong><br>You are currently training with <strong>Graphic Design</strong> applications.<br><em class="sp-returning-tagline">Other skill-sets coming soon.</em></p>
@@ -3562,12 +3572,13 @@ function confirmDiffChangeYes() {
 function confirmDiffChangeNo() {
   _exitDiffConfirm();
   // Restore difficulty and needle to the game that is still active
-  var modeMap = { fundamentals: -1, normal: 0, hardcore: 1 };
+  var modeMap = { fundamentals: -1, 'fundamentals-plus': -0.5, normal: 0, 'normal-plus': 0.5, hardcore: 1 };
   currentDifficulty  = _prevDifficulty;
   _diffFirst = true;
   setDiffState(modeMap[_prevDifficulty] !== undefined ? modeMap[_prevDifficulty] : 0);
   _updateDiffBtnStyles(currentDifficulty);
-  _updateDiffSubtitle(currentDifficulty);
+  _updateDiffSubtitle(currentDifficulty, null);
+  _moveDifficultyCaretToMode(currentDifficulty);
   _pendingDifficulty = null;
   _prevDifficulty    = null;
   // Stay on the difficulty panel -- the overlay has already been removed by
@@ -6467,8 +6478,9 @@ function _showWelcomeScreen() {
   _diffFirst = true;
   setDiffState(-1);
   _updateDiffBtnStyles('fundamentals');
-  _updateDiffSubtitle('fundamentals');
+  _updateDiffSubtitle('fundamentals', null);
   openSettings('panelLandingWelcome');
+  requestAnimationFrame(function() { _placeDifficultyCaretInstant('fundamentals'); });
 }
 
 // Shared handler for both the welcome panel and the difficulty settings panel
@@ -6479,7 +6491,9 @@ function diffBtnClick(mode) {
     return;
   }
 
-  var modeMap = { fundamentals: -1, normal: 0, hardcore: 1 };
+  var modeMap = { fundamentals: -1, 'fundamentals-plus': -0.5, normal: 0, 'normal-plus': 0.5, hardcore: 1 };
+  var VisualSegmentMap = { 'fundamentals-plus': 'fundamentals', 'normal-plus': 'normal' };
+  var PreviousMode = currentDifficulty;
 
   // If a game is in progress (playing or paused with time elapsed),
   // require confirmation before changing difficulty.
@@ -6488,11 +6502,12 @@ function diffBtnClick(mode) {
   if (gameIsInProgress) {
     _prevDifficulty    = currentDifficulty;
     _pendingDifficulty = mode;
-    // Move needle and update button styles immediately so the player sees the pending choice
+    // Move needle, caret, and button styles immediately so the player sees the pending choice
     _diffFirst = true;
-    setDiffState(modeMap[mode]);
+    setDiffState(modeMap[mode] !== undefined ? modeMap[mode] : 0);
     _updateDiffBtnStyles(mode);
-    _updateDiffSubtitle(mode);
+    _updateDiffSubtitle(mode, PreviousMode);
+    _moveDifficultyCaretToMode(mode);
     enterConfirmDiffChange();
     return;
   }
@@ -6500,11 +6515,13 @@ function diffBtnClick(mode) {
   // No active game — apply immediately
   currentDifficulty = mode;
   _diffFirst = true;
-  setDiffState(modeMap[mode]);
+  setDiffState(modeMap[mode] !== undefined ? modeMap[mode] : 0);
   _updateDiffBtnStyles(mode);
-  _updateDiffSubtitle(mode);
-  // Pop the newly active button label so the change is visually confirmed
-  var activeBtn = document.querySelector('#difficultyPill .diff-btn[data-mode="' + mode + '"], #welcomeDifficultyPill .diff-btn[data-mode="' + mode + '"]');
+  _updateDiffSubtitle(mode, PreviousMode);
+  _moveDifficultyCaretToMode(mode);
+  // Pop the visually active segment label
+  var VisualSegment = VisualSegmentMap[mode] || mode;
+  var activeBtn = document.querySelector('#difficultyPill .diff-btn[data-mode="' + VisualSegment + '"], #welcomeDifficultyPill .diff-btn[data-mode="' + VisualSegment + '"]');
   _popDiffLabel(activeBtn);
   try { localStorage.setItem('kw_difficulty', currentDifficulty); } catch(e) {}
 runData.length = 0; lastCompletedReport = null; CoachAdviceAccepted = false;
@@ -6535,12 +6552,20 @@ function _popDiffLabel(btnEl) {
 
 function _updateDiffBtnStyles(activeMode) {
   var hardcoreUnlocked = hasTrophy;
+  var VisualSegmentMap = {
+    'fundamentals':      'fundamentals',
+    'fundamentals-plus': 'fundamentals',
+    'normal':            'normal',
+    'normal-plus':       'normal',
+    'hardcore':          'hardcore',
+  };
+  var VisualActiveSegment = VisualSegmentMap[activeMode] || activeMode;
   var btns = document.querySelectorAll('#panelDifficultySettings .diff-btn, #panelLandingWelcome .diff-btn');
   btns.forEach(function(btn) {
     var m = btn.getAttribute('data-mode');
     var isLocked = (m === 'hardcore' && !hardcoreUnlocked);
     btn.classList.toggle('diff-btn-inactive', isLocked);
-    btn.classList.toggle('diff-btn-active', !isLocked && m === activeMode);
+    btn.classList.toggle('diff-btn-active', !isLocked && m === VisualActiveSegment);
   });
 }
 
@@ -6565,12 +6590,13 @@ function _applyDifficultyPresets(mode) {
 
 function _refreshDifficultyPanel() {
   var displayMode = _pendingDifficulty !== null ? _pendingDifficulty : currentDifficulty;
-  var modeToState = { fundamentals: -1, normal: 0, hardcore: 1 };
+  var modeToState = { fundamentals: -1, 'fundamentals-plus': -0.5, normal: 0, 'normal-plus': 0.5, hardcore: 1 };
   _diffFirst = true;
   setDiffState(modeToState[displayMode] !== undefined ? modeToState[displayMode] : 0);
   _updateDiffBtnStyles(displayMode);
-  _updateDiffSubtitle(displayMode);
+  _updateDiffSubtitle(displayMode, null);
   _syncAdvancedPanelState();
+  requestAnimationFrame(function() { _placeDifficultyCaretInstant(displayMode); });
   // Locked panel always shows ∞ -- the advanced settings are not yet available
   var showAsInfinity = !hasTrophy;
   _syncSliderToValue('timer', showAsInfinity ? null : questionTimer);
@@ -6858,6 +6884,7 @@ function _initSliders() {
           if (newValue !== questionTimer) {
             questionTimer = newValue;
             try { localStorage.setItem('kw_timer', String(newValue)); } catch(ex) {}
+            syncDiffNeedle();
           }
         } else {
           if (newValue !== playerLives) {
@@ -6902,6 +6929,7 @@ function _initSliders() {
       if (sliderType === 'timer') {
         questionTimer = newValue;
         try { localStorage.setItem('kw_timer', String(newValue)); } catch(ex) {}
+        syncDiffNeedle();
       } else {
         playerLives = newValue;
         try { localStorage.setItem('kw_lives', String(newValue)); } catch(ex) {}
@@ -6964,6 +6992,7 @@ document.addEventListener('DOMContentLoaded', function() {
       if (sliderType === 'timer') {
         questionTimer = newValue;
         try { localStorage.setItem('kw_timer', String(newValue)); } catch(ex) {}
+        syncDiffNeedle();
       } else {
         playerLives = newValue;
         try { localStorage.setItem('kw_lives', String(newValue)); } catch(ex) {}
@@ -6975,13 +7004,26 @@ document.addEventListener('DOMContentLoaded', function() {
   _initSliders();
 });
 
-function _updateDiffSubtitle(mode) {
-  var subtitles = {
+function _updateDiffSubtitle(mode, previousMode) {
+  var FixedSubtitles = {
     fundamentals: 'Mild. We will only ask things you really should know.',
-    normal:       '',
-    hardcore:     'Spicy! We have thrown in some tricky questions.'
+    hardcore:     'Spicy! We have thrown in some tricky questions.',
   };
-  var text = subtitles[mode] !== undefined ? subtitles[mode] : '';
+  var text = '';
+  if (FixedSubtitles[mode] !== undefined) {
+    text = FixedSubtitles[mode];
+  } else {
+    if (previousMode !== undefined && previousMode !== null && Math.random() < 0.5) {
+      var SubtitleRankMap = { fundamentals: 0, 'fundamentals-plus': 0.5, normal: 1, 'normal-plus': 1.5, hardcore: 2 };
+      var PreviousRank = SubtitleRankMap[previousMode] !== undefined ? SubtitleRankMap[previousMode] : -1;
+      var NewRank      = SubtitleRankMap[mode]         !== undefined ? SubtitleRankMap[mode]         : -1;
+      if (PreviousRank >= 0 && NewRank > PreviousRank) {
+        text = 'Good. Keep pushing.';
+      } else if (PreviousRank >= 0 && NewRank < PreviousRank) {
+        text = 'Keep practising and try the higher difficulty again when you are ready.';
+      }
+    }
+  }
   ['diffSubtitle', 'welcomeDiffSubtitle'].forEach(function(id) {
     var el = document.getElementById(id);
     if (el) el.textContent = text || '\u00a0';
@@ -7584,10 +7626,10 @@ var currentDifficulty = 'fundamentals';
 (function() {
   try {
     var saved = localStorage.getItem('kw_difficulty');
-    if (saved === 'fundamentals' || saved === 'normal' || saved === 'hardcore') {
+    if (saved === 'fundamentals' || saved === 'fundamentals-plus' || saved === 'normal' || saved === 'normal-plus' || saved === 'hardcore') {
       currentDifficulty = saved;
       // Restore needle to match saved difficulty
-      var stateMap = { fundamentals: -1, normal: 0, hardcore: 1 };
+      var stateMap = { fundamentals: -1, 'fundamentals-plus': -0.5, normal: 0, 'normal-plus': 0.5, hardcore: 1 };
       _diffFirst = true;
       setDiffState(stateMap[saved]);
     }
@@ -7595,7 +7637,7 @@ var currentDifficulty = 'fundamentals';
 })();
 
 // Max difficulty value included per mode
-var DIFF_MAX = { fundamentals: 1, normal: 3, hardcore: 5 };
+var DIFF_MAX = { fundamentals: 1, 'fundamentals-plus': 2, normal: 3, 'normal-plus': 4, hardcore: 5 };
 
 // Shortcut tokens that are unreliable across international QWERTY variants.
 // These involve keys whose physical position or character output differs
@@ -8670,7 +8712,8 @@ _refreshReportPanel()
         _diffFirst = true;
         setDiffState(0);
         _updateDiffBtnStyles('normal');
-        _updateDiffSubtitle('normal');
+        _updateDiffSubtitle('normal', null);
+        _moveDifficultyCaretToMode('normal');
         // Pop the newly active label
         var normalBtn = document.querySelector('#difficultyPill .diff-btn[data-mode="normal"]');
         if (normalBtn) _popDiffLabel(normalBtn);
@@ -8958,7 +9001,7 @@ function finalizeRunData(completedRun, currentPool, DefeatCount) {
           { type: 'difficulty', fromValue: currentDifficulty, toValue: PreviousSuggestion.fromValue });
       } else if (ignored) {
         // Check if the conditions that triggered the suggestion still apply
-        var DifficultyRank      = { fundamentals: 0, normal: 1, hardcore: 2 };
+        var DifficultyRank      = { fundamentals: 0, 'fundamentals-plus': 0.5, normal: 1, 'normal-plus': 1.5, hardcore: 2 };
         var CurrentRank         = DifficultyRank[currentDifficulty] || 0;
         var SuggestedRank       = DifficultyRank[PreviousSuggestion.toValue] || 0;
         var StillWorthGoing     = SuggestedRank > CurrentRank
@@ -9075,7 +9118,7 @@ function finalizeRunData(completedRun, currentPool, DefeatCount) {
   var TimerAndLivesMessages = [];
   var DifficultyMessages    = [];
   {
-    var DifficultyRank = { fundamentals: 0, normal: 1, hardcore: 2 };
+    var DifficultyRank = { fundamentals: 0, 'fundamentals-plus': 0.5, normal: 1, 'normal-plus': 1.5, hardcore: 2 };
     var CurrentRank    = DifficultyRank[currentDifficulty] || 0;
 
     // ── Timer and lives (trophy required) ──────────────────────────────
@@ -9842,7 +9885,7 @@ function BuildShortcutKeyChips(TokenString, IsWeakness) {
     'EQUAL':'=','MINUS':'-','BRACKETLEFT':'[','BRACKETRIGHT':']',
     'BACKSLASH':'\\','SEMICOLON':';','QUOTE':"'",'COMMA':',',
     'PERIOD':'.','SLASH':'/','GRAVE':'`',
-    'LESSTHAN':'<','GREATERTHAN':'>',
+    'LESSTHAN':'<','GREATERTHAN':'>','MORETHAN':'>',
   };  
   var PcChipSymbols = {
     'CMD':'Ctrl','SHIFT':'⇧','OPTION':'Alt','CONTROL':'Ctrl','WIN':'Win','FN':'FN',
@@ -9854,7 +9897,7 @@ function BuildShortcutKeyChips(TokenString, IsWeakness) {
     'EQUAL':'=','MINUS':'-','BRACKETLEFT':'[','BRACKETRIGHT':']',
     'BACKSLASH':'\\','SEMICOLON':';','QUOTE':"'",'COMMA':',',
     'PERIOD':'.','SLASH':'/','GRAVE':'`',
-    'LESSTHAN':'<','GREATERTHAN':'>',
+    'LESSTHAN':'<','GREATERTHAN':'>','MORETHAN':'>',
   };
   var ChipSymbols = currentOs === 'pc' ? PcChipSymbols : MacChipSymbols;
 
@@ -10187,7 +10230,7 @@ function _applyCoachSuggestionsWithAnimation(SuggestionsArray) {
   var PanelOpenDelayMs = 1400;
 
   function AnimateSuggestion(Suggestion, OnComplete) {
-    var DifficultyRankMap = { fundamentals: -1, normal: 0, hardcore: 1 };
+    var DifficultyRankMap = { fundamentals: -1, 'fundamentals-plus': -0.5, normal: 0, 'normal-plus': 0.5, hardcore: 1 };
 
     if (Suggestion.type === 'difficulty') {
       currentDifficulty = Suggestion.toValue;
@@ -10197,8 +10240,11 @@ function _applyCoachSuggestionsWithAnimation(SuggestionsArray) {
       _diffFirst = true;
       setDiffState(DifficultyRankMap[Suggestion.toValue] !== undefined ? DifficultyRankMap[Suggestion.toValue] : 0);
       _updateDiffBtnStyles(Suggestion.toValue);
-      _updateDiffSubtitle(Suggestion.toValue);
-      var ActivePillButton = document.querySelector('#difficultyPill .diff-btn[data-mode="' + Suggestion.toValue + '"]');
+      _updateDiffSubtitle(Suggestion.toValue, currentDifficulty);
+      _moveDifficultyCaretToMode(Suggestion.toValue);
+      var CoachVisualSegmentMap = { 'fundamentals-plus': 'fundamentals', 'normal-plus': 'normal' };
+      var CoachVisualSegment = CoachVisualSegmentMap[Suggestion.toValue] || Suggestion.toValue;
+      var ActivePillButton = document.querySelector('#difficultyPill .diff-btn[data-mode="' + CoachVisualSegment + '"]');
       if (ActivePillButton) _popDiffLabel(ActivePillButton);
       setTimeout(function() {
         PillButtons.forEach(function(Button) { Button.classList.remove('diff-btn-transitioning'); });
@@ -10208,6 +10254,7 @@ function _applyCoachSuggestionsWithAnimation(SuggestionsArray) {
     } else if (Suggestion.type === 'timer') {
       questionTimer = Suggestion.toValue;
       try { localStorage.setItem('kw_timer', String(Suggestion.toValue)); } catch (StorageError) {}
+      syncDiffNeedle();
       var TimerSliderElement = document.getElementById('questionTimerSlider');
       if (TimerSliderElement) {
         var TimerSpring = _sliderSprings['timer'];
@@ -11701,7 +11748,7 @@ function _resetFlipState() {
 /* ── Difficulty needle states ── */
 var _diffState = -1;   // -1 = fundamentals, 0 = normal, 1 = hardcore
 var _diffFirst = false;
-var DIFF_ANGLES = { '-1': -60, '0': 0, '1': 60 };
+var DIFF_ANGLES = { '-1': -60, '-0.5': -30, '0': 0, '0.5': 30, '1': 60 };
 function setDiffState(newState) {
   _diffState = newState;
   var needle = document.querySelector('#diffIcon #Needle');
@@ -11710,10 +11757,11 @@ function setDiffState(newState) {
 }
 
 function syncDiffNeedle() {
-  var stateMap = { fundamentals: -1, normal: 0, hardcore: 1 };
+  var stateMap = { fundamentals: -1, 'fundamentals-plus': -0.5, normal: 0, 'normal-plus': 0.5, hardcore: 1 };
   var state = stateMap[currentDifficulty] !== undefined ? stateMap[currentDifficulty] : 0;
   var needle = document.querySelector('#diffIcon #Needle');
-  if (needle) needle.style.transform = 'rotate(' + DIFF_ANGLES[String(state)] + 'deg)';
+  var needleAngle = (questionTimer === 1) ? 100 : (DIFF_ANGLES[String(state)] !== undefined ? DIFF_ANGLES[String(state)] : 0);
+  if (needle) needle.style.transform = 'rotate(' + needleAngle + 'deg)';
   _diffState = state;
 }
 
@@ -11967,6 +12015,108 @@ function OnLayoutChange() {
 
 window.addEventListener('resize',            OnLayoutChange, { passive: true });
 window.addEventListener('orientationchange', OnLayoutChange, { passive: true });
+
+/* ══════════════════════════════════════
+   DIFFICULTY CARET
+   A downward-pointing triangle that slides
+   horizontally above the difficulty pill to
+   indicate the active difficulty state,
+   including two intermediate states that sit
+   on the dividing lines between segments.
+══════════════════════════════════════ */
+
+function _getDifficultyCaretXForMode(Mode, PillElement) {
+  if (!PillElement) return null;
+  var PillRect = PillElement.getBoundingClientRect();
+  var PillLeft = PillRect.left;
+  var Buttons  = PillElement.querySelectorAll('.diff-btn');
+  if (Buttons.length < 3) return PillRect.width / 2;
+  var FundamentalsRect    = Buttons[0].getBoundingClientRect();
+  var NormalRect          = Buttons[1].getBoundingClientRect();
+  var HardcoreRect        = Buttons[2].getBoundingClientRect();
+  var FundamentalsCentreX = (FundamentalsRect.left + FundamentalsRect.width / 2) - PillLeft;
+  var NormalCentreX       = (NormalRect.left       + NormalRect.width       / 2) - PillLeft;
+  var HardcoreCentreX     = (HardcoreRect.left     + HardcoreRect.width     / 2) - PillLeft;
+  var FirstDividerX       = (FundamentalsRect.right - PillLeft + NormalRect.left    - PillLeft) / 2;
+  var SecondDividerX      = (NormalRect.right       - PillLeft + HardcoreRect.left  - PillLeft) / 2;
+  var PositionMap = {
+    'fundamentals':      FundamentalsCentreX,
+    'fundamentals-plus': FirstDividerX,
+    'normal':            NormalCentreX,
+    'normal-plus':       SecondDividerX,
+    'hardcore':          HardcoreCentreX,
+  };
+  return PositionMap[Mode] !== undefined ? PositionMap[Mode] : NormalCentreX;
+}
+
+function _moveDifficultyCaretToMode(Mode) {
+  _moveSingleCaretToMode('difficultyCaretEl',        'difficultyPill',        Mode);
+  _moveSingleCaretToMode('welcomeDifficultyCaretEl', 'welcomeDifficultyPill', Mode);
+}
+
+function _moveSingleCaretToMode(CaretId, PillId, Mode) {
+  var CaretElement = document.getElementById(CaretId);
+  var PillElement  = document.getElementById(PillId);
+  if (!CaretElement || !PillElement) return;
+  var TargetX      = _getDifficultyCaretXForMode(Mode, PillElement);
+  if (TargetX === null) return;
+  var PreviousLeft  = parseFloat(CaretElement.style.left) || 0;
+  var PillWidth     = PillElement.getBoundingClientRect().width;
+  var IsExtremeJump = Math.abs(TargetX - PreviousLeft) > PillWidth * 0.55;
+  CaretElement.style.transition = IsExtremeJump
+    ? 'left 0.42s cubic-bezier(0.34,1.45,0.64,1)'
+    : 'left 0.32s cubic-bezier(0.34,1.2,0.64,1)';
+  CaretElement.style.left = TargetX + 'px';
+}
+
+function _placeDifficultyCaretInstant(Mode) {
+  _placeSingleCaretInstant('difficultyCaretEl',        'difficultyPill',        Mode);
+  _placeSingleCaretInstant('welcomeDifficultyCaretEl', 'welcomeDifficultyPill', Mode);
+}
+
+function _placeSingleCaretInstant(CaretId, PillId, Mode) {
+  var CaretElement = document.getElementById(CaretId);
+  var PillElement  = document.getElementById(PillId);
+  if (!CaretElement || !PillElement) return;
+  var TargetX = _getDifficultyCaretXForMode(Mode, PillElement);
+  if (TargetX === null) return;
+  CaretElement.style.transition = 'none';
+  CaretElement.style.left = TargetX + 'px';
+  requestAnimationFrame(function() {
+    requestAnimationFrame(function() {
+      if (CaretElement) CaretElement.style.transition = 'left 0.32s cubic-bezier(0.34,1.2,0.64,1)';
+    });
+  });
+}
+
+function _handleDiffPillBoundaryClick(ClickEvent, PillElement) {
+  if (!PillElement) return false;
+  var PillRect   = PillElement.getBoundingClientRect();
+  var ClickX     = ClickEvent.clientX - PillRect.left;
+  var PillWidth  = PillRect.width;
+  var FirstDivX  = PillWidth / 3;
+  var SecondDivX = (PillWidth / 3) * 2;
+  var Threshold  = 5;
+  if (Math.abs(ClickX - FirstDivX) <= Threshold) {
+    ClickEvent.stopPropagation();
+    diffBtnClick('fundamentals-plus');
+    return true;
+  }
+  if (Math.abs(ClickX - SecondDivX) <= Threshold) {
+    ClickEvent.stopPropagation();
+    diffBtnClick('normal-plus');
+    return true;
+  }
+  return false;
+}
+
+function _onDifficultyPillClick(ClickEvent) {
+  _handleDiffPillBoundaryClick(ClickEvent, document.getElementById('difficultyPill'));
+}
+
+function _onWelcomeDifficultyPillClick(ClickEvent) {
+  _handleDiffPillBoundaryClick(ClickEvent, document.getElementById('welcomeDifficultyPill'));
+}
 </script>
 </body>
 </html>

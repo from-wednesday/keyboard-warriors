@@ -2309,7 +2309,7 @@ function checkStickyShortcut() {
 // Maps browser key codes for extended (non-graphical-keyboard) keys to their token strings.
 // Used to detect extended key presses and render them as chips in #extKeyPill.
 const ExtendedKeyCodeToToken = {
-  'Home': 'home', 'End': 'end',
+  'Home': 'HOME', 'End': 'END',
   'PageUp': 'PAGEUP', 'PageDown': 'PAGEDOWN',
   'Insert': 'INSERT', 'Delete': 'DELETE',
   'PrintScreen': 'PRINTSCREEN', 'ScrollLock': 'SCROLLLOCK', 'Pause': 'PAUSE',
@@ -4625,12 +4625,12 @@ function setTouchEnabled(on) {
   if (radio) radio.classList.toggle('on', on);
   if (activeSettings === 'panelConflicts') _refreshBrowserContent();
   if (on) {
-    setKbSizeToggle(false);
     setSoundEnabled(true);   // audible on by default when touch activates
   } else {
-    setKbSizeToggle(true);
     setSoundEnabled(false);
   }
+  // Keep hasFullKeyboard independent of touch mode — update UI only
+  updateKbSizeToggle();
   // Audible row: enabled only when touch is on
   var audibleRow = document.getElementById('audibleRow');
   if (audibleRow) audibleRow.classList.toggle('disabled', !on);

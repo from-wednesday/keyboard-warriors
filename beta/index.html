@@ -8849,7 +8849,7 @@ function SaveCoachMemory(messageKey, settingSuggested, defeatCount, previousRece
   // Prepend the new key and keep only the most recent 3
   var UpdatedRecentKeys = [messageKey].concat((previousRecentKeys || []).filter(function(Key) {
     return Key !== messageKey;
-  })).slice(0, 3);
+  })).slice(0, 2);
   try {
     localStorage.setItem('kw_coach_memory', JSON.stringify({
       messageKey: messageKey,
@@ -9284,7 +9284,7 @@ function finalizeRunData(completedRun, currentPool, DefeatCount) {
       var UpThreshold = IsHalfStep ? 90 : 95;
       var UpMessageKey = 'cat4_diff_up_' + currentDifficulty;
 
-      if (accuracyPercent >= UpThreshold && hintCount === 0 && skipCount === 0 && timeoutCount === 0) {
+      if (accuracyPercent >= UpThreshold && hintCount === 0 && skipCount  <= 1 && timeoutCount <= 2) {
         var UpMessages = IsHalfStep
           ? [
               "You're handling the current question difficulty well. I'd like to raise it slightly -- to " + NextLabel + ". Ok?",
@@ -9478,10 +9478,10 @@ function finalizeRunData(completedRun, currentPool, DefeatCount) {
 
   var PrimaryMessage = PickRandom(NearMissMessages)
     || PickRandom(MemoryAwareMessages)
+    || PickRandom(DifficultyMessages)
     || PickRandom(TimerAndLivesMessages)
     || SpecificOrTimerLives
     || PickRandom(LiteracyMessages)
-    || PickRandom(DifficultyMessages)
     || PickRandom(GeneralMessages);
 
 

@@ -876,6 +876,9 @@
 
 <div id="kwToast"></div>
 
+<!-- Gyro diagnostic overlay — remove once gyro is confirmed working -->
+<div id="gyroDiag" style="display:none;position:fixed;bottom:12px;left:12px;background:rgba(0,0,0,0.82);color:#0f0;font-family:monospace;font-size:12px;line-height:1.7;padding:10px 14px;border-radius:10px;z-index:9999;pointer-events:none;min-width:200px;"></div>
+
 <script>
 /* ══════════════════════════════════════
    UNIVERSAL_SHORTCUTS — shortcuts that apply to all apps,
@@ -11882,19 +11885,52 @@ function InitialiseGyroOrientationListener() {
   window.addEventListener('deviceorientation', OnDeviceOrientationChange);
 }
 
+var _gyroEventCount = 0;
+
+// Show gyro diagnostic overlay on mobile automatically
+if (typeof detectedOs !== 'undefined' ? detectedOs === 'mobile' : navigator.maxTouchPoints > 1) {
+  document.addEventListener('DOMContentLoaded', function() {
+    var diag = document.getElementById('gyroDiag');
+    if (diag) {
+      diag.style.display = 'block';
+      diag.innerHTML = 'Gyro diag loading...';
+      // Tap overlay to dismiss
+      diag.style.pointerEvents = 'auto';
+      diag.addEventListener('click', function() { diag.style.display = 'none'; });
+    }
+  });
+}
+
 function OnDeviceOrientationChange(OrientationEvent) {
+  _gyroEventCount++;
+
+  // Update diagnostic overlay if present
+  var diag = document.getElementById('gyroDiag');
+  if (diag) {
+    var orient = (typeof window.orientation !== 'undefined') ? window.orientation : 'n/a';
+    diag.innerHTML =
+      'events: ' + _gyroEventCount + '<br>' +
+      'alpha: ' + (OrientationEvent.alpha !== null ? OrientationEvent.alpha.toFixed(1) : 'null') + '<br>' +
+      'beta: '  + (OrientationEvent.beta  !== null ? OrientationEvent.beta.toFixed(1)  : 'null') + '<br>' +
+      'gamma: ' + (OrientationEvent.gamma !== null ? OrientationEvent.gamma.toFixed(1) : 'null') + '<br>' +
+      'orient: ' + orient + '<br>' +
+      'medal: ' + (currentMedal || 'none') + '<br>' +
+      'rimTarget: ' + rimTarget.toFixed(2);
+  }
+
   if (!currentMedal) return;
-  // Choose the correct tilt axis based on screen orientation.
-  // Portrait:  gamma = left/right tilt (-90..90)
-  // Landscape: beta  = left/right tilt; sign flips in reverse landscape
-  var OrientationAngle = (typeof window.orientation !== 'undefined') ? window.orientation : 0;
+
+  // Use the correct tilt axis depending on screen orientation.
+  // Portrait  (0/180): gamma = left/right tilt
+  // Landscape (±90):   beta  = left/right tilt; negate for reverse landscape
+  var orient = (typeof window.orientation !== 'undefined') ? window.orientation : 0;
   var TiltDegrees;
-  if (OrientationAngle === 90 || OrientationAngle === -90) {
-    TiltDegrees = (OrientationEvent.beta || 0) * (OrientationAngle === -90 ? -1 : 1);
+  if (orient === 90 || orient === -90) {
+    TiltDegrees = (OrientationEvent.beta || 0) * (orient === -90 ? -1 : 1);
   } else {
     TiltDegrees = OrientationEvent.gamma || 0;
   }
-  // ±30 degrees of physical tilt maps to the full rim range -- wide enough to feel responsive
+  // ±30 degrees of physical tilt maps to the full rim range
   rimTarget = Math.max(-15, Math.min(15, (TiltDegrees / 30) * 15));
   if (!rimRafId) rimRafId = requestAnimationFrame(rimTick);
 }
@@ -12016,6 +12052,16 @@ function HidePhoneWarningModal() {
   HideTouchModal('phoneWarningBackdrop', 'phoneWarningModal');
 }
 
+// Returns true when the device needs to be asked for DeviceOrientation permission.
+// Shows the prompt unless permission was already explicitly granted.
+function _requiresGyroPrompt() {
+  var SavedGyroDecision = null;
+  try { SavedGyroDecision = localStorage.getItem('kw_gyro'); } catch(e) {}
+  return SavedGyroDecision !== 'granted' &&
+    typeof DeviceOrientationEvent !== 'undefined' &&
+    typeof DeviceOrientationEvent.requestPermission === 'function';
+}
+
 function OnPhoneWarningDismiss() {
   _uiReady = true;
   HidePhoneWarningModal();
@@ -12028,16 +12074,10 @@ function OnPhoneWarningDismiss() {
   // Force the keyboard panel permanently hidden regardless of screen width
   ForceNoKeyboard = true;
   updateKeyboardMode();
-  // Chain to gyro prompt on iOS if not yet decided; otherwise done
+  // Chain to gyro prompt on iOS if permission not yet granted
   var IsIos = /iPad|iPhone|iPod/.test(navigator.userAgent) ||
               (navigator.maxTouchPoints > 1 && /Mac/.test(navigator.userAgent));
-  var SavedGyroDecision = null;
-  try { SavedGyroDecision = localStorage.getItem('kw_gyro'); } catch(StorageError) {}
-  var RequiresExplicitGyroPrompt = IsIos &&
-    SavedGyroDecision !== 'granted' &&
-    typeof DeviceOrientationEvent !== 'undefined' &&
-    typeof DeviceOrientationEvent.requestPermission === 'function';
-  if (RequiresExplicitGyroPrompt) {
+  if (IsIos && _requiresGyroPrompt()) {
     setTimeout(ShowGyroModal, 300);
   }
 }
@@ -12056,19 +12096,14 @@ function OnPhoneWarningDismiss() {
   var IsIos = /iPad|iPhone|iPod/.test(navigator.userAgent) ||
               (navigator.maxTouchPoints > 1 && /Mac/.test(navigator.userAgent));
 
-  var RequiresExplicitGyroPrompt = IsIos &&
-    SavedGyroDecision !== 'granted' &&
-    typeof DeviceOrientationEvent !== 'undefined' &&
-    typeof DeviceOrientationEvent.requestPermission === 'function';
-
   // Phone screens get the size warning first; it handles all subsequent chaining
   if (IsPhoneScreen()) {
     setTimeout(ShowPhoneWarningModal, 400);
     return;
   }
 
-  // Tablet/large touch devices: gyro then keyboard recommendation as before
-  if (RequiresExplicitGyroPrompt) {
+  // Tablet/large touch devices: gyro then keyboard recommendation
+  if (IsIos && _requiresGyroPrompt()) {
     setTimeout(ShowGyroModal, 600);
   } else {
     setTimeout(ShowKeyboardRecommendModal, 400);

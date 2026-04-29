@@ -48,27 +48,27 @@
     "difficulty": 1
   },
   {
-    "display": "press +",
-    "mac_sc": "PLUS",
-    "pc_sc": "PLUS",
+    "display": "press END",
+    "mac_sc": "END",
+    "pc_sc": "END",
     "difficulty": 1
   },
   {
-    "display": "press -",
-    "mac_sc": "MINUS",
-    "pc_sc": "MINUS",
+    "display": "press PAGEUP",
+    "mac_sc": "PAGEUP",
+    "pc_sc": "PAGEUP",
     "difficulty": 1
   },
   {
-    "display": "press Tab",
-    "mac_sc": "TAB",
-    "pc_sc": "TAB",
+    "display": "press PAGEDOWN",
+    "mac_sc": "PAGEDOWN",
+    "pc_sc": "PAGEDOWN",
     "difficulty": 1
   },
   {
-    "display": "press $",
-    "mac_sc": "DOLLAR",
-    "pc_sc": "DOLLAR",
+    "display": "CLEAR/NumLOCK",
+    "mac_sc": "CLEAR",
+    "pc_sc": "NUMLOCK",
     "difficulty": 1
   }
 ]

@@ -1818,6 +1818,7 @@ const TOKEN_TO_BROWSER_CODE = {
   'PRINTSCREEN': 'PrintScreen',
   'SCROLLLOCK':  'ScrollLock',
   'PAUSE':       'Pause',
+  'NUMLOCK':     'NumLock',
   'FN':          'Fn',
   // Punctuation
   'EQUAL':        'Equal',
@@ -2337,6 +2338,17 @@ function ShowExtendedKeyPill(BrowserCode, ColourState) {
   ExtendedKeyPillElement.innerHTML = '';
   var ChipsWrapper = BuildShortcutKeyChips(Token, false);
   ChipsWrapper.style.cssText = 'display:inline-flex;align-items:center;justify-content:center;';
+
+  // Match the larger toast chip size
+  ChipsWrapper.querySelectorAll('.sp-report-chip-key').forEach(function(Chip) {
+    Chip.style.fontSize     = '13px';
+    Chip.style.padding      = '2px 7px 1px';
+    Chip.style.borderRadius = '4px';
+  });
+  ChipsWrapper.querySelectorAll('span:not(.sp-report-chip-key)').forEach(function(Sep) {
+    Sep.style.fontSize = '13px';
+    Sep.style.margin   = '0 2px';
+  });
 
   if (EffectiveColour === 'green') {
     ChipsWrapper.querySelectorAll('.sp-report-chip-key').forEach(function(Chip) {

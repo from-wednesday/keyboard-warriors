@@ -8991,7 +8991,9 @@ function finalizeRunData(completedRun, currentPool, DefeatCount) {
       }
     }
     if (PreviousSuggestion.type === 'difficulty' && PreviousSuggestion.toValue !== PreviousSuggestion.fromValue) {
-      var wentHarder = (PreviousSuggestion.toValue === 'hardcore' || PreviousSuggestion.toValue === 'normal');
+      var HarderModes = ['fundamentals-plus', 'normal', 'normal-plus', 'hardcore'];
+      var wentHarder  = HarderModes.indexOf(PreviousSuggestion.toValue) >
+                        HarderModes.indexOf(PreviousSuggestion.fromValue);
       if (acted && wentHarder && accuracyPercent >= 75) {
         AddMessage(MemoryAwareMessages, 'mem_diff_up_held',
           'You took the difficulty up and held your own. Good call.');
@@ -9118,8 +9120,33 @@ function finalizeRunData(completedRun, currentPool, DefeatCount) {
   var TimerAndLivesMessages = [];
   var DifficultyMessages    = [];
   {
-    var DifficultyRank = { fundamentals: 0, 'fundamentals-plus': 0.5, normal: 1, 'normal-plus': 1.5, hardcore: 2 };
-    var CurrentRank    = DifficultyRank[currentDifficulty] || 0;
+    var DifficultyRank = {
+      ubiquitous:          0,
+      fundamentals:        1,
+      'fundamentals-plus': 2,
+      normal:              3,
+      'normal-plus':       4,
+      hardcore:            5,
+    };
+    var DifficultyRampOrder = [
+      'ubiquitous',
+      'fundamentals',
+      'fundamentals-plus',
+      'normal',
+      'normal-plus',
+      'hardcore',
+    ];
+    var DifficultyLabels = {
+      ubiquitous:          'Ubiquitous',
+      fundamentals:        'Fundamentals',
+      'fundamentals-plus': "between 'Fundamentals' and 'Normal'",
+      normal:              'Normal',
+      'normal-plus':       "between 'Normal' and 'Hardcore'",
+      hardcore:            'Hardcore',
+    };
+    var CurrentRank = DifficultyRank[currentDifficulty] !== undefined
+      ? DifficultyRank[currentDifficulty]
+      : 3;
 
     // ── Timer and lives (trophy required) ──────────────────────────────
     if (hasTrophy) {
@@ -9228,29 +9255,68 @@ function finalizeRunData(completedRun, currentPool, DefeatCount) {
       }
     } // end hasTrophy
 
-    // ── Difficulty (lower priority, fires only when timer/lives have nothing to say) ──
+    // ── Difficulty suggestions: one step at a time up or down the ramp ──────
+    // Up: smaller jumps need a lower threshold than larger ones.
+    // Down: suggest the next step down when clearly struggling.
+    // Fundamentals is the floor for downward suggestions.
 
-    // Raise difficulty: only suggest Hardcore if already on Normal and truly clean
-    if (accuracyPercent >= 95 && hintCount === 0 && skipCount === 0) {
-      if (CurrentRank < 2) {
-        var NextMode  = CurrentRank === 0 ? 'normal' : 'hardcore';
-        var NextLabel = CurrentRank === 0 ? 'Normal'  : 'Hardcore';
-        ForceAddMessage(DifficultyMessages, 'cat4_diff_up',
-          'You are performing very well. Consider raising the difficulty to ' + NextLabel + '.',
+    var CurrentRampIndex = DifficultyRampOrder.indexOf(currentDifficulty);
+
+    // Upward suggestion
+    if (CurrentRampIndex < DifficultyRampOrder.length - 1) {
+      var NextMode    = DifficultyRampOrder[CurrentRampIndex + 1];
+      var NextLabel   = DifficultyLabels[NextMode];
+      var IsHalfStep  = (CurrentRampIndex % 2 === 0);
+      var UpThreshold = IsHalfStep ? 90 : 95;
+      var UpMessageKey = 'cat4_diff_up_' + currentDifficulty;
+
+      if (accuracyPercent >= UpThreshold && hintCount === 0 && skipCount === 0 && timeoutCount === 0) {
+        var UpMessages = IsHalfStep
+          ? [
+              "You're handling the current question difficulty well. I'd like to raise it slightly -- to " + NextLabel + ". Ok?",
+              'Clean round. I think you are ready for a slightly harder question difficulty. Want to try ' + NextLabel + '?',
+              "That was comfortable. Ready to nudge the question difficulty up to " + NextLabel + "?",
+            ]
+          : [
+              "You're performing very well. I'd like to set your question difficulty to " + NextLabel + ". Ok?",
+              'A strong round. Consider raising your question difficulty to ' + NextLabel + '.',
+              "Impressive consistency. Time to raise the question difficulty to " + NextLabel + "?",
+            ];
+        var UpText = UpMessages[Math.floor(Math.random() * UpMessages.length)];
+        ForceAddMessage(DifficultyMessages, UpMessageKey, UpText,
           { type: 'difficulty', fromValue: currentDifficulty, toValue: NextMode });
       }
     }
 
-    // Drop difficulty: genuinely struggling
-    if (accuracyPercent < 60 && (skipCount >= 4 || timeoutCount >= 4)) {
-      if (CurrentRank > 0) {
-        var PrevMode  = CurrentRank === 2 ? 'normal' : 'fundamentals';
-        var PrevLabel = CurrentRank === 2 ? 'Normal'  : 'Fundamentals';
-        ForceAddMessage(DifficultyMessages, 'cat4_diff_down',
-          'This round was genuinely challenging. Dropping to ' + PrevLabel + ' may help consolidate your learning.',
+    // Downward suggestion -- fundamentals is the floor, never suggest ubiquitous
+    if (CurrentRampIndex > 1) {
+      var PrevMode       = DifficultyRampOrder[CurrentRampIndex - 1];
+      var PrevLabel      = DifficultyLabels[PrevMode];
+      var IsHalfStepDown = (CurrentRampIndex % 2 === 0);
+      var DownMessageKey = 'cat4_diff_down_' + currentDifficulty;
+
+      var DownThresholdAccuracy = IsHalfStepDown ? 65 : 60;
+      var DownThresholdMisses   = IsHalfStepDown ? 3  : 4;
+
+      if (accuracyPercent < DownThresholdAccuracy
+          && (skipCount >= DownThresholdMisses || timeoutCount >= DownThresholdMisses)) {
+        var DownMessages = IsHalfStepDown
+          ? [
+              "This question difficulty is stretching you a bit far. I'd like to bring it back to " + PrevLabel + " for a while. Ok?",
+              'No shame in stepping back. I think ' + PrevLabel + ' question difficulty will serve you better right now.',
+              "Let's consolidate at " + PrevLabel + " question difficulty before pushing further.",
+            ]
+          : [
+              "That was a tough round. I'd like to drop your question difficulty to " + PrevLabel + " for a while -- just to build a stronger base. Ok?",
+              'I think dropping the question difficulty to ' + PrevLabel + ' will help you progress faster. Want to try it?',
+              "Let's take the question difficulty back to " + PrevLabel + " and rebuild from there.",
+            ];
+        var DownText = DownMessages[Math.floor(Math.random() * DownMessages.length)];
+        ForceAddMessage(DifficultyMessages, DownMessageKey, DownText,
           { type: 'difficulty', fromValue: currentDifficulty, toValue: PrevMode });
       }
     }
+
   } // end Cat 4 block
 
   // ── Cat 1 + 2: General and contextual encouragement ───────────────────────
@@ -10231,6 +10297,7 @@ function _applyCoachSuggestionsWithAnimation(SuggestionsArray) {
 
   function AnimateSuggestion(Suggestion, OnComplete) {
     var DifficultyRankMap = { fundamentals: -1, 'fundamentals-plus': -0.5, normal: 0, 'normal-plus': 0.5, hardcore: 1 };
+    // Note: this map drives the needle animation angle only, not ramp logic.
 
     if (Suggestion.type === 'difficulty') {
       currentDifficulty = Suggestion.toValue;

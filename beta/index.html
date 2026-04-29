@@ -9287,7 +9287,7 @@ function finalizeRunData(completedRun, currentPool, DefeatCount) {
       if (accuracyPercent >= UpThreshold && hintCount === 0 && skipCount  <= 1 && timeoutCount <= 2) {
         var UpMessages = IsHalfStep
           ? [
-              "You're handling the current question difficulty well. I'd like to raise it slightly -- to " + NextLabel + ". Ok?",
+              "You're handling these questions well. We should raise the difficulty to " + NextLabel + ". You with me?",
               'Clean round. I think you are ready for a slightly harder question difficulty. Want to try ' + NextLabel + '?',
               "That was comfortable. Ready to nudge the question difficulty up to " + NextLabel + "?",
             ]
@@ -11951,7 +11951,6 @@ function onGyroAllow() {
 
 function onGyroDeny() {
   _uiReady = true;
-  try { localStorage.setItem('kw_gyro', 'denied'); } catch(StorageError) {}
   HideGyroModal();
   ShowKeyboardRecommendModal();
 }
@@ -12028,7 +12027,7 @@ function OnPhoneWarningDismiss() {
   var SavedGyroDecision = null;
   try { SavedGyroDecision = localStorage.getItem('kw_gyro'); } catch(StorageError) {}
   var RequiresExplicitGyroPrompt = IsIos &&
-    SavedGyroDecision === null &&
+    SavedGyroDecision !== 'granted' &&
     typeof DeviceOrientationEvent !== 'undefined' &&
     typeof DeviceOrientationEvent.requestPermission === 'function';
   if (RequiresExplicitGyroPrompt) {
@@ -12051,7 +12050,7 @@ function OnPhoneWarningDismiss() {
               (navigator.maxTouchPoints > 1 && /Mac/.test(navigator.userAgent));
 
   var RequiresExplicitGyroPrompt = IsIos &&
-    SavedGyroDecision === null &&
+    SavedGyroDecision !== 'granted' &&
     typeof DeviceOrientationEvent !== 'undefined' &&
     typeof DeviceOrientationEvent.requestPermission === 'function';
 

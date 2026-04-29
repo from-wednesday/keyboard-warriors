@@ -1,15 +1,15 @@
 [
   {
-    "display": "press >",
-    "mac_sc": "MORETHAN",
-    "pc_sc": "MORETHAN",
-    "difficulty": 1
+    "display": "insert nonbreaking hyphen (US_)",
+    "mac_sc": "CMD+SHIFT+UNDERSCORE",
+    "pc_sc": "CTRL+SHIFT+UNDERSCORE",
+    "difficulty": 5
   },
     {
-"display": "Increase font size",
-    "mac_sc": "CMD+SHIFT+MORETHAN",
-    "pc_sc": "CTRL+SHIFT+MORETHAN",
-    "difficulty": 3
+"display": "insert nonbreaking hyphen (Minus-)",
+    "mac_sc": "CMD+SHIFT+MINUS",
+    "pc_sc": "CTRL+SHIFT+MINUS",
+    "difficulty": 5
   },
   {
 "display": "Decrease font size",

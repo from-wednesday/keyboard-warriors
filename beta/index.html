@@ -11884,10 +11884,18 @@ function InitialiseGyroOrientationListener() {
 
 function OnDeviceOrientationChange(OrientationEvent) {
   if (!currentMedal) return;
-  // gamma: negative = tilted left, positive = right
-  var GammaDegrees = OrientationEvent.gamma || 0;
-  // ±10 degrees of physical tilt maps to the full ±15 degree rim range
-  rimTarget = Math.max(-15, Math.min(15, (GammaDegrees / 10) * 15));
+  // Choose the correct tilt axis based on screen orientation.
+  // Portrait:  gamma = left/right tilt (-90..90)
+  // Landscape: beta  = left/right tilt; sign flips in reverse landscape
+  var OrientationAngle = (typeof window.orientation !== 'undefined') ? window.orientation : 0;
+  var TiltDegrees;
+  if (OrientationAngle === 90 || OrientationAngle === -90) {
+    TiltDegrees = (OrientationEvent.beta || 0) * (OrientationAngle === -90 ? -1 : 1);
+  } else {
+    TiltDegrees = OrientationEvent.gamma || 0;
+  }
+  // ±30 degrees of physical tilt maps to the full rim range -- wide enough to feel responsive
+  rimTarget = Math.max(-15, Math.min(15, (TiltDegrees / 30) * 15));
   if (!rimRafId) rimRafId = requestAnimationFrame(rimTick);
 }
 
@@ -11938,8 +11946,7 @@ function onGyroAllow() {
     DeviceOrientationEvent.requestPermission().then(function(PermissionState) {
       try { localStorage.setItem('kw_gyro', PermissionState); } catch(StorageError) {}
       if (PermissionState === 'granted') InitialiseGyroOrientationListener();
-    }).catch(function() {
-      try { localStorage.setItem('kw_gyro', 'denied'); } catch(StorageError) {}
+      // No .catch -- a dismissed system dialog should not permanently block the prompt
     });
   } else {
     // Android and other non-permission browsers: wire up directly
@@ -12009,16 +12016,6 @@ function HidePhoneWarningModal() {
   HideTouchModal('phoneWarningBackdrop', 'phoneWarningModal');
 }
 
-// Returns true when iOS needs to be asked for DeviceOrientation permission.
-// Prompt is shown unless permission was already granted this device.
-function _requiresGyroPrompt() {
-  var SavedGyroDecision = null;
-  try { SavedGyroDecision = localStorage.getItem('kw_gyro'); } catch(e) {}
-  return SavedGyroDecision !== 'granted' &&
-    typeof DeviceOrientationEvent !== 'undefined' &&
-    typeof DeviceOrientationEvent.requestPermission === 'function';
-}
-
 function OnPhoneWarningDismiss() {
   _uiReady = true;
   HidePhoneWarningModal();
@@ -12031,10 +12028,16 @@ function OnPhoneWarningDismiss() {
   // Force the keyboard panel permanently hidden regardless of screen width
   ForceNoKeyboard = true;
   updateKeyboardMode();
-  // Chain to gyro prompt on iOS if permission not yet granted; otherwise done
+  // Chain to gyro prompt on iOS if not yet decided; otherwise done
   var IsIos = /iPad|iPhone|iPod/.test(navigator.userAgent) ||
               (navigator.maxTouchPoints > 1 && /Mac/.test(navigator.userAgent));
-  if (IsIos && _requiresGyroPrompt()) {
+  var SavedGyroDecision = null;
+  try { SavedGyroDecision = localStorage.getItem('kw_gyro'); } catch(StorageError) {}
+  var RequiresExplicitGyroPrompt = IsIos &&
+    SavedGyroDecision !== 'granted' &&
+    typeof DeviceOrientationEvent !== 'undefined' &&
+    typeof DeviceOrientationEvent.requestPermission === 'function';
+  if (RequiresExplicitGyroPrompt) {
     setTimeout(ShowGyroModal, 300);
   }
 }
@@ -12053,6 +12056,11 @@ function OnPhoneWarningDismiss() {
   var IsIos = /iPad|iPhone|iPod/.test(navigator.userAgent) ||
               (navigator.maxTouchPoints > 1 && /Mac/.test(navigator.userAgent));
 
+  var RequiresExplicitGyroPrompt = IsIos &&
+    SavedGyroDecision !== 'granted' &&
+    typeof DeviceOrientationEvent !== 'undefined' &&
+    typeof DeviceOrientationEvent.requestPermission === 'function';
+
   // Phone screens get the size warning first; it handles all subsequent chaining
   if (IsPhoneScreen()) {
     setTimeout(ShowPhoneWarningModal, 400);
@@ -12060,7 +12068,7 @@ function OnPhoneWarningDismiss() {
   }
 
   // Tablet/large touch devices: gyro then keyboard recommendation as before
-  if (IsIos && _requiresGyroPrompt()) {
+  if (RequiresExplicitGyroPrompt) {
     setTimeout(ShowGyroModal, 600);
   } else {
     setTimeout(ShowKeyboardRecommendModal, 400);

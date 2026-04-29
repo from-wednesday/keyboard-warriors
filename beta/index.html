@@ -12009,6 +12009,16 @@ function HidePhoneWarningModal() {
   HideTouchModal('phoneWarningBackdrop', 'phoneWarningModal');
 }
 
+// Returns true when iOS needs to be asked for DeviceOrientation permission.
+// Prompt is shown unless permission was already granted this device.
+function _requiresGyroPrompt() {
+  var SavedGyroDecision = null;
+  try { SavedGyroDecision = localStorage.getItem('kw_gyro'); } catch(e) {}
+  return SavedGyroDecision !== 'granted' &&
+    typeof DeviceOrientationEvent !== 'undefined' &&
+    typeof DeviceOrientationEvent.requestPermission === 'function';
+}
+
 function OnPhoneWarningDismiss() {
   _uiReady = true;
   HidePhoneWarningModal();
@@ -12021,16 +12031,10 @@ function OnPhoneWarningDismiss() {
   // Force the keyboard panel permanently hidden regardless of screen width
   ForceNoKeyboard = true;
   updateKeyboardMode();
-  // Chain to gyro prompt on iOS if not yet decided; otherwise done
+  // Chain to gyro prompt on iOS if permission not yet granted; otherwise done
   var IsIos = /iPad|iPhone|iPod/.test(navigator.userAgent) ||
               (navigator.maxTouchPoints > 1 && /Mac/.test(navigator.userAgent));
-  var SavedGyroDecision = null;
-  try { SavedGyroDecision = localStorage.getItem('kw_gyro'); } catch(StorageError) {}
-  var RequiresExplicitGyroPrompt = IsIos &&
-    SavedGyroDecision !== 'granted' &&
-    typeof DeviceOrientationEvent !== 'undefined' &&
-    typeof DeviceOrientationEvent.requestPermission === 'function';
-  if (RequiresExplicitGyroPrompt) {
+  if (IsIos && _requiresGyroPrompt()) {
     setTimeout(ShowGyroModal, 300);
   }
 }
@@ -12049,11 +12053,6 @@ function OnPhoneWarningDismiss() {
   var IsIos = /iPad|iPhone|iPod/.test(navigator.userAgent) ||
               (navigator.maxTouchPoints > 1 && /Mac/.test(navigator.userAgent));
 
-  var RequiresExplicitGyroPrompt = IsIos &&
-    SavedGyroDecision !== 'granted' &&
-    typeof DeviceOrientationEvent !== 'undefined' &&
-    typeof DeviceOrientationEvent.requestPermission === 'function';
-
   // Phone screens get the size warning first; it handles all subsequent chaining
   if (IsPhoneScreen()) {
     setTimeout(ShowPhoneWarningModal, 400);
@@ -12061,7 +12060,7 @@ function OnPhoneWarningDismiss() {
   }
 
   // Tablet/large touch devices: gyro then keyboard recommendation as before
-  if (RequiresExplicitGyroPrompt) {
+  if (IsIos && _requiresGyroPrompt()) {
     setTimeout(ShowGyroModal, 600);
   } else {
     setTimeout(ShowKeyboardRecommendModal, 400);

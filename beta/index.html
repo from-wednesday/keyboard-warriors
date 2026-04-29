@@ -225,7 +225,7 @@
 </div>
 <div id="statsRow" class="page-initially-hidden">
   <span id="statLeft"></span>
-  <div id="kbToast">This keyboard is for display only. Play with an actual Mac keyboard.</div>
+  <div id="kbToast"></div>
   <div id="extKeyPill"></div>
   <span id="statRight"></span>
 </div>
@@ -2262,9 +2262,11 @@ function clearAllLit() {
     }
   });
 
-  clearTimeout(extKeyPillTimer);
-  extKeyPillEl.className = '';
-  extKeyPillEl.style.display = 'none';
+  clearTimeout(ExtendedKeyPillTimer);
+  ExtendedKeyPillElement.style.opacity = '';
+  ExtendedKeyPillElement.style.transition = '';
+  ExtendedKeyPillElement.style.display = 'none';
+  ExtendedKeyPillElement.innerHTML = '';
   greenHeld.clear();
   stickyLit.clear();
 }
@@ -2304,32 +2306,67 @@ function checkStickyShortcut() {
 
 
 // Extended key labels for the ghost pill
-const EXT_KEY_LABELS = {
+// Maps browser key codes for extended (non-graphical-keyboard) keys to their token strings.
+// Used to detect extended key presses and render them as chips in #extKeyPill.
+const ExtendedKeyCodeToToken = {
   'Home': 'home', 'End': 'end',
-  'PageUp': 'pg up', 'PageDown': 'pg dn',
-  'Insert': 'insert', 'Delete': 'del',
-  'PrintScreen': 'prt sc', 'ScrollLock': 'scr lk', 'Pause': 'pause',
-  'NumLock': 'clear',
+  'PageUp': 'PAGEUP', 'PageDown': 'PAGEDOWN',
+  'Insert': 'INSERT', 'Delete': 'DELETE',
+  'PrintScreen': 'PRINTSCREEN', 'ScrollLock': 'SCROLLLOCK', 'Pause': 'PAUSE',
+  'NumLock': 'NUMLOCK',
 };
-const extKeyPillEl = document.getElementById('extKeyPill');
-let extKeyPillTimer = null;
+const ExtendedKeyPillElement = document.getElementById('extKeyPill');
+let ExtendedKeyPillTimer = null;
 
-function showExtKeyPill(code, state) {
-  const label = EXT_KEY_LABELS[code];
-  if (!label) return;
-  clearTimeout(extKeyPillTimer);
-  extKeyPillEl.textContent = label;
-  extKeyPillEl.className = '';          // clear lit classes
-  extKeyPillEl.style.display = 'flex';
-  if (state) extKeyPillEl.classList.add('lit-' + state);
+function ShowExtendedKeyPill(BrowserCode, ColourState) {
+  var Token = ExtendedKeyCodeToToken[BrowserCode];
+  if (!Token) return;
+
+  // Determine the effective colour from game state, overriding the passed ColourState
+  // when the game timer is not actively counting.
+  // During active play: green = correct key, orange = wrong key (ColourState from caller).
+  // In all other states (paused, end screen, panels open etc.): unstyled — key is acknowledged
+  // but there is no active question to judge it against, except in special panel contexts
+  // where the chip highlights are handled by their own listeners (cheat sheet, report card etc.).
+  var EffectiveColour = null;
+  if (gameState === 'playing' && !transitioning) {
+    EffectiveColour = ColourState; // 'green' or 'orange' from updateKeyboardLighting
 }
 
-function hideExtKeyPill() {
-  clearTimeout(extKeyPillTimer);
-  extKeyPillEl.classList.add('lit-fading');
-  extKeyPillTimer = setTimeout(() => {
-    extKeyPillEl.classList.remove('lit-fading', 'lit-green', 'lit-orange');
-    extKeyPillEl.style.display = 'none';
+  clearTimeout(ExtendedKeyPillTimer);
+  ExtendedKeyPillElement.innerHTML = '';
+  var ChipsWrapper = BuildShortcutKeyChips(Token, false);
+  ChipsWrapper.style.cssText = 'display:inline-flex;align-items:center;justify-content:center;';
+
+  if (EffectiveColour === 'green') {
+    ChipsWrapper.querySelectorAll('.sp-report-chip-key').forEach(function(Chip) {
+      Chip.style.background  = '#10b981';
+      Chip.style.color       = 'white';
+      Chip.style.borderColor = '#059669';
+      Chip.style.boxShadow   = '0 0 6px rgba(16,185,129,0.45)';
+    });
+  } else if (EffectiveColour === 'orange') {
+    ChipsWrapper.querySelectorAll('.sp-report-chip-key').forEach(function(Chip) {
+      Chip.style.background  = '#f97316';
+      Chip.style.color       = 'white';
+      Chip.style.borderColor = '#c2410c';
+      Chip.style.boxShadow   = '0 0 6px rgba(249,115,22,0.45)';
+    });
+  }
+  // Unstyled: chips render with their default appearance (no background fill)
+
+  ExtendedKeyPillElement.style.display = 'flex';
+  ExtendedKeyPillElement.style.opacity = '1';
+}
+
+function HideExtendedKeyPill() {
+  clearTimeout(ExtendedKeyPillTimer);
+  ExtendedKeyPillElement.style.transition = 'opacity 0.8s ease';
+  ExtendedKeyPillElement.style.opacity = '0';
+  ExtendedKeyPillTimer = setTimeout(function() {
+    ExtendedKeyPillElement.style.display = 'none';
+    ExtendedKeyPillElement.style.transition = '';
+    ExtendedKeyPillElement.innerHTML = '';
   }, 900);
  }
 
@@ -2361,7 +2398,7 @@ function updateKeyboardLighting(e, isDown) {
     return;
   }
   const code = NUMPAD_MAP[e.code] || e.code;
-  const isExtKey   = code in EXT_KEY_LABELS;
+  const isExtKey   = code in ExtendedKeyCodeToToken;
   const isModifier = code === 'MetaLeft'    || code === 'MetaRight'   ||
                      code === 'ControlLeft' || code === 'ControlRight' ||
                      code === 'ShiftLeft'   || code === 'ShiftRight'   ||
@@ -2387,12 +2424,12 @@ function updateKeyboardLighting(e, isDown) {
     stickyLit.set(code, colour);
     if (isCorrect) {
       greenHeld.add(code);
-      if (isExtKey) showExtKeyPill(code, 'green');
+      if (isExtKey) ShowExtendedKeyPill(code, 'green');
       else          setKeyLit(code, 'green-down');
       if ((!isModifier || isBareModifierQuestion) && !isSilent) { greenHits++; totalHits++; updateAccuracyDisplay(); }
       checkAndArmPartialShortcutNudge();
     } else {
-      if (isExtKey) showExtKeyPill(code, 'orange');
+      if (isExtKey) ShowExtendedKeyPill(code, 'orange');
       else          setKeyLit(code, 'orange-down');
       if ((!isModifier || isBareModifierQuestion) && !isSilent) { totalHits++; updateAccuracyDisplay(); }
       resetPartialShortcutNudgeTimers();
@@ -2406,18 +2443,18 @@ function updateKeyboardLighting(e, isDown) {
     heldKeys.add(code);
     if (gameState !== 'playing') {
       greenHeld.add(code);
-      if (isExtKey) showExtKeyPill(code, 'green');
+      if (isExtKey) ShowExtendedKeyPill(code, null);
       else          setKeyLit(code, 'green-down');
     } else {
       const isCorrect = isKeyPartOfShortcut(e, currentAnswer);
       if (isCorrect) {
         greenHeld.add(code);
-        if (isExtKey) showExtKeyPill(code, 'green');
+        if (isExtKey) ShowExtendedKeyPill(code, 'green');
         else          setKeyLit(code, 'green-down');
         if (!alreadyHeld && (!isModifier || isBareModifierQuestion) && !isSilent) { greenHits++; totalHits++; updateAccuracyDisplay(); }
         checkAndArmPartialShortcutNudge();
       } else {
-        if (isExtKey) showExtKeyPill(code, 'orange');
+        if (isExtKey) ShowExtendedKeyPill(code, 'orange');
         else          setKeyLit(code, 'orange-down');
         if (!alreadyHeld && (!isModifier || isBareModifierQuestion) && !isSilent) { totalHits++; updateAccuracyDisplay(); }
         resetPartialShortcutNudgeTimers();
@@ -2447,7 +2484,7 @@ function updateKeyboardLighting(e, isDown) {
       checkAndArmPartialShortcutNudge();
     }
     if (isExtKey) {
-      hideExtKeyPill();
+      HideExtendedKeyPill();
     } else {
       const el = keyEls[code];
       if (el) {
@@ -7644,11 +7681,11 @@ positionIcons();
     });
 })();
 // Codes that only exist on the extended keyboard (not on the graphical layout)
-const EXT_CODES = new Set(Object.keys(EXT_KEY_LABELS));
+const ExtendedKeyCodes = new Set(Object.keys(ExtendedKeyCodeToToken));
 
 function requiresExtKey(shortcut) {
   // Returns true if any code needed for this shortcut is an extended key
-  return shortcutToCodes(shortcut).some(c => EXT_CODES.has(c));
+  return shortcutToCodes(shortcut).some(c => ExtendedKeyCodes.has(c));
 }
 
 // Current difficulty mode: 'fundamentals' | 'normal' | 'hardcore'

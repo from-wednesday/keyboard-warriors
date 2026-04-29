@@ -1,5 +1,17 @@
 [
   {
+"display": "delete the character to the right of the cursor",
+    "mac_sc": "DELETE",
+    "pc_sc": "DELETE",
+    "difficulty": 3
+  },
+  {
+"display": "delete the character before the cursor",
+    "mac_sc": "BACKSPACE",
+    "pc_sc": "BACKSPACE",
+    "difficulty": 0
+  },
+  {
 "display": "cut selection",
     "mac_sc": "CMD+X",
     "pc_sc": "CTRL+X",

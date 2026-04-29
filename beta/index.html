@@ -4573,7 +4573,7 @@ function setTouchEnabled(on) {
     const CapsLockKeyElement = keyEls['CapsLock'];
     if (CapsLockKeyElement) CapsLockKeyElement.classList.remove('lit-caps-active');
   }
-  varradio = document.getElementById('touchRadio');
+  var radio = document.getElementById('touchRadio');
   if (radio) radio.classList.toggle('on', on);
   if (activeSettings === 'panelConflicts') _refreshBrowserContent();
   if (on) {

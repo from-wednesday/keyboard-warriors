@@ -10926,7 +10926,7 @@ updateKeyboardLighting(e, true);
     resetPartialShortcutNudgeTimers();
     clearToast();
     clearHelp();
-    showSuccessHintToast();
+    if (!requiresExtKey(currentAnswer)) showSuccessHintToast();
     hideQuestionTimerArc();
     clearInterval(timerInterval);
     const AnswerTimestampMs = performance.now() - startTime - accumulatedPauseMs;

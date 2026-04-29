@@ -9162,14 +9162,28 @@ function finalizeRunData(completedRun, currentPool, DefeatCount) {
           { type: 'timer', fromValue: questionTimer, toValue: LongerTimerValue });
       }
 
-      // Shorter timer: strong run with room to push
+      // Shorter timer: strong run with room to push -- never suggest 1 second via this path
       if (timeoutCount === 0 && allFast && accuracyPercent >= 90 && hintCount === 0 && CurrentTimerIndex > 0) {
         var ShorterTimerValue = TimerStops[CurrentTimerIndex - 1];
-        if (ShorterTimerValue !== null) {
+        if (ShorterTimerValue !== null && ShorterTimerValue > 1) {
           ForceAddMessage(TimerAndLivesMessages, 'cat4_timer_down',
             'You handled that comfortably. Try a shorter timer to raise the challenge.',
             { type: 'timer', fromValue: questionTimer, toValue: ShorterTimerValue });
         }
+      }
+
+      // 1-second timer: only for truly blazing performance at Normal difficulty or above
+      var DifficultyIsNormalOrAbove = (CurrentRank !== undefined ? CurrentRank : 0) >= 3;
+      if (questionTimer === 3
+          && timeoutCount === 0
+          && hintCount === 0
+          && skipCount === 0
+          && DifficultyIsNormalOrAbove
+          && medianTime !== null
+          && medianTime < 1300) {
+        ForceAddMessage(TimerAndLivesMessages, 'cat4_timer_one_second',
+          'You are answering incredibly quickly. I think you could handle a 1-second question timer. Want to try it?',
+          { type: 'timer', fromValue: questionTimer, toValue: 1 });
       }
 
       // Average answer time near a timer stop: suggest calibrating the timer to match natural pace.
@@ -9188,7 +9202,7 @@ function finalizeRunData(completedRun, currentPool, DefeatCount) {
         var AllTimesForAverage  = successTimes.concat(TimeoutEstimates);
         var AverageAnswerTimeMs = AllTimesForAverage.reduce(function(Sum, T) { return Sum + T; }, 0) / AllTimesForAverage.length;
         var AverageAnswerTimeSeconds = AverageAnswerTimeMs / 1000;
-        var FiniteTimerStops = [1, 3, 5, 10];
+        var FiniteTimerStops = [3, 5, 10];
         var NearestStop = null;
         var SmallestDistance = Infinity;
         FiniteTimerStops.forEach(function(Stop) {
@@ -9397,6 +9411,9 @@ function finalizeRunData(completedRun, currentPool, DefeatCount) {
     { key: 'enc_plateau',
       text: 'A plateau is not a ceiling. It is your brain consolidating before the next jump.',
       condition: true },
+    { key: 'enc_ramp_difficulty',
+      text: 'I think you are ready to ramp up your question difficulty.',
+      condition: accuracyPercent >= 95 && hintCount === 0 && skipCount === 0 },
        { key: 'enc_cheat_sheet',
       text: 'During play, press the lock key on the graphical keyboard to reveal a \'Cheat Sheet\'. #Spoiler',
       condition: accuracyPercent <= 85 },
@@ -10217,7 +10234,8 @@ function _refreshReportPanel() {
   if (adviceContainer) {
     adviceContainer.innerHTML = '';
     var HasSettingsSuggestion = Array.isArray(lastCompletedReport.trainerSettingSuggested)
-      && lastCompletedReport.trainerSettingSuggested.length > 0;
+      && lastCompletedReport.trainerSettingSuggested.length > 0
+      && trainerAdvice.length > 0;
 
     if (trainerAdvice.length > 0) {
       // Two-column layout when button is present, single column otherwise

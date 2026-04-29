@@ -11752,7 +11752,8 @@ var DIFF_ANGLES = { '-1': -60, '-0.5': -30, '0': 0, '0.5': 30, '1': 60 };
 function setDiffState(newState) {
   _diffState = newState;
   var needle = document.querySelector('#diffIcon #Needle');
-  if (needle) needle.style.transform = 'rotate(' + DIFF_ANGLES[String(newState)] + 'deg)';
+  var needleAngle = (questionTimer === 1) ? 100 : (DIFF_ANGLES[String(newState)] !== undefined ? DIFF_ANGLES[String(newState)] : 0);
+  if (needle) needle.style.transform = 'rotate(' + needleAngle + 'deg)';
   _diffFirst = false;
 }
 

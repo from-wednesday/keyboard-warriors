@@ -6572,6 +6572,9 @@ function _showWelcomeScreen() {
   _updateDiffBtnStyles('fundamentals');
   _updateDiffSubtitle('fundamentals', null);
   openSettings('panelLandingWelcome');
+  // Hide caret until user makes a selection
+  var wCaret = document.getElementById('welcomeDifficultyCaretEl');
+  if (wCaret) wCaret.style.visibility = 'hidden';
   requestAnimationFrame(function() { _placeDifficultyCaretInstant('fundamentals'); });
 }
 
@@ -6689,6 +6692,9 @@ function _refreshDifficultyPanel() {
   _updateDiffSubtitle(displayMode, null);
   _syncAdvancedPanelState();
   requestAnimationFrame(function() { _placeDifficultyCaretInstant(displayMode); });
+  // Ensure the caret is visible on the full difficulty settings panel
+  var wCaret = document.getElementById('welcomeDifficultyCaretEl');
+  if (wCaret) wCaret.style.visibility = '';
   // Locked panel always shows ∞ -- the advanced settings are not yet available
   var showAsInfinity = !hasTrophy;
   _syncSliderToValue('timer', showAsInfinity ? null : questionTimer);

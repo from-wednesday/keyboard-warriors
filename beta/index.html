@@ -548,13 +548,13 @@
     <!-- ── Welcome Landing ──────────────────────────────── -->
    <div id="panelLandingWelcome" class="sp-page">
    <div style="text-align:center;margin-top:10px;">
-        <div style="display:inline-flex;align-items:center;gap:8px;font-family:'Lato',system-ui,sans-serif;font-size:12px;color:#374151;">
-          <span style="white-space:nowrap;font-weight:600;">Skill-set loaded:</span>
-          <div id="skillsetPill" style="position:relative;border-radius:10px;border:1.5px solid #9ca3af;background:white;overflow:hidden;cursor:pointer;user-select:none;width:192px;min-width:192px;height:27px;box-sizing:border-box;" onclick="skillsetPillClick()">
+        <div style="display:inline-flex;align-items:left;gap:8px;font-family:'Lato',system-ui,sans-serif;font-size:12px;color:#374151;">
+          <span style="white-space:nowrap;font-weight:600;">Skill-set loaded</span>
+          <div id="skillsetPill" style="position:relative;border-radius:10px;border:1.5px solid #9ca3af;background:white;overflow:hidden;cursor:pointer;user-select:none;width:192px;min-width:192px;height:27px;box-sizing:border-box;" onclick="skillsetPillClick(event)">
             <!-- Options rendered by JS -->
           </div>
         </div>
-      </div>
+      </div></br>
       <div id="welcomeDifficultyPillWrapper" style="position:relative;width:100%;margin-top:32px;">
         <div id="welcomeDifficultyCaretEl" aria-hidden="true" style="position:absolute;bottom:calc(100% + 6px);left:50%;transform:translateX(-50%);pointer-events:none;z-index:2;transition:left 0.32s cubic-bezier(0.34,1.2,0.64,1);display:flex;flex-direction:column;align-items:center;gap:4px;">
           <p class="sp-title" style="margin:0;white-space:nowrap;">Question Difficulty</p>
@@ -12454,7 +12454,8 @@ function _applySkillset(skillsetLabel) {
   CoachAdviceAccepted = false;
 }
 
-function skillsetPillClick() {
+function skillsetPillClick(event) {
+  if (event) event.stopPropagation();
   if (skillsetPillOpen) { _closeSkillsetPill(); return; }
   _openSkillsetPill();
 }

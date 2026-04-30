@@ -3829,12 +3829,14 @@ var APP_JSON_FILE_PATH = {};
 const ROW_H = 24; // px — must match CSS height: 24px on .app-option
 
 var currentApp = 'Photoshop (Ps)'; // placeholder; overwritten by _onAppsLoaded once APPS is known
+var _appListInitialised = false;
 
 const appPillEl = document.getElementById('appPill');
 
 var AppPillWrenchOpen = false;
 
 function _saveAppsShortList() {
+  if (!_appListInitialised) return;
   try { localStorage.setItem('kw_apps_short_list', JSON.stringify(appsShortList)); } catch (StorageError) {}
 }
 
@@ -7719,10 +7721,10 @@ function _onAppsLoaded(AllAppsFromJson) {
     currentApp = FallbackApp;
   }
 
-
-buildAppPill();
-positionIcons();
-_initSkillsetPillAfterAppsLoad();
+  _appListInitialised = true;
+  buildAppPill();
+  positionIcons();
+  _initSkillsetPillAfterAppsLoad();
 }
 
 

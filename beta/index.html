@@ -549,7 +549,7 @@
    <div id="panelLandingWelcome" class="sp-page">
    <div style="text-align:center;margin-top:10px;">
         <div style="display:inline-flex;align-items:center;gap:8px;font-family:'Lato',system-ui,sans-serif;font-size:12px;color:#374151;">
-            <span id="appSelectorLabel" style="white-space:nowrap;font-weight:600;">Skill-set loaded</span>
+          <span style="white-space:nowrap;font-weight:600;">Skill-set loaded</span>
           <div id="skillsetPill" style="position:relative;border-radius:10px;border:1.5px solid #9ca3af;background:white;overflow:visible;cursor:pointer;user-select:none;width:192px;min-width:192px;height:27px;box-sizing:border-box;pointer-events:auto;" onclick="skillsetPillClick()">
             <!-- Options rendered by JS -->
           </div>
@@ -12358,8 +12358,7 @@ function _buildSkillsetPill() {
   // Render the selected label in the closed pill
   pill.innerHTML = '';
   var selectedRow = document.createElement('div');
-  selectedRow.className = 'app-option selected';
-    selectedRow.style.cssText = 'pointer-events:auto;';
+  selectedRow.style.cssText = "display:flex;align-items:center;height:24px;line-height:1;font-family:'Lato',system-ui,sans-serif;font-size:12px;color:#6b7280;font-weight:500;white-space:nowrap;box-sizing:border-box;cursor:pointer;padding:0 2px;";
   var caretCol = document.createElement('span');
   caretCol.style.cssText = 'flex-shrink:0;width:22px;display:flex;align-items:center;justify-content:center;';
   var caretSvg = document.createElementNS('http://www.w3.org/2000/svg','svg');
@@ -12381,12 +12380,12 @@ function _buildSkillsetPill() {
     drop.id = 'skillsetDrop';
     var pillRect = document.getElementById('skillsetPill').getBoundingClientRect();
     var dropHeight = SKILLSET_DEFS.length * 24;
-    drop.style.cssText = 'position:fixed;left:' + pillRect.left + 'px;top:' + (pillRect.top + pillRect.height / 2 - dropHeight / 2) + 'px;width:' + pillRect.width + 'px;border:1.5px solid #9ca3af;border-radius:10px;overflow:hidden;z-index:601;box-shadow:0 4px 12px rgba(0,0,0,0.12);';
+    drop.style.cssText = 'position:fixed;left:' + pillRect.left + 'px;top:' + (pillRect.top + pillRect.height / 2 - dropHeight / 2) + 'px;width:' + pillRect.width + 'px;background:white;border:1.5px solid #9ca3af;border-radius:10px;overflow:hidden;z-index:601;box-shadow:0 4px 12px rgba(0,0,0,0.12);';
     document.body.appendChild(drop);
     SKILLSET_DEFS.forEach(function(def) {
       var isSelected = (def.label === currentSkillset);
       var row = document.createElement('div');
-      row.className = 'app-option' + (isSelected ? ' selected' : '');
+      row.style.cssText = "display:flex;align-items:center;height:24px;line-height:1;font-family:'Lato',system-ui,sans-serif;font-size:12px;color:" + (isSelected ? '#6b7280':'#9ca3af') + ";font-weight:" + (isSelected ? '500':'400') + ";white-space:nowrap;box-sizing:border-box;cursor:pointer;padding:0 2px;";
       row.addEventListener('mouseenter', function() { row.style.background = '#f0f9ff'; row.style.color = '#374151'; });
       row.addEventListener('mouseleave',  function() { row.style.background = ''; row.style.color = isSelected ? '#6b7280':'#9ca3af'; });
       var c2 = document.createElement('span'); c2.style.cssText = 'flex-shrink:0;width:22px;display:flex;align-items:center;justify-content:center;';

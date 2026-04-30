@@ -11407,7 +11407,7 @@ function _blurDiagnosticSecondBlur() {
   var EnvelopeSvg = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="13" height="13" style="vertical-align:middle;flex-shrink:0;"><rect x="2" y="4" width="20" height="16" rx="2"/><polyline points="2,4 12,13 22,4"/></svg>';
 
   // Build left pill button with chip clone
-  var ChipClone = _blurDiagnosticBuildSymbolChips(_blurDiagnosticShortcutToken);
+  var ChipClone = BuildShortcutKeyChips(_blurDiagnosticShortcutToken, true);
   ChipClone.style.cssText = 'display:inline-flex;align-items:center;flex-wrap:nowrap;flex-shrink:1;min-width:0;overflow:hidden;vertical-align:middle;';
 
   var LeftLabel = document.createElement('span');

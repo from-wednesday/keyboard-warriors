@@ -12442,7 +12442,16 @@ function skillsetPillClick() {
 function _openSkillsetPill() {
   skillsetPillOpen = true;
   _buildSkillsetPill();
-}
+  setTimeout(function() {
+    document.addEventListener('click', function handler(e) {
+    var pill = document.getElementById('skillsetPill');
+    if (pill && !pill.contains(e.target)) {
+    _closeSkillsetPill();
+    document.removeEventListener('click', handler);
+          }
+        });
+      }, 0);
+    }
 
 function _closeSkillsetPill() {
   skillsetPillOpen = false;
@@ -12451,15 +12460,6 @@ function _closeSkillsetPill() {
   _buildSkillsetPill();
 }
 
-// Close on outside click
-setTimeout(function() {
-  document.addEventListener('click', function(e) {
-    var pill = document.getElementById('skillsetPill');
-    if (pill && !pill.contains(e.target) && skillsetPillOpen) {
-      _closeSkillsetPill();
-    }
-  });
-}, 0);
 
 var _skillsetPillInitialised = false;
 function _initSkillsetPillAfterAppsLoad() {

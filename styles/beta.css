@@ -1593,6 +1593,24 @@ li.conflict-dismissed .conflict-desc {
 }
 #osMismatchPill.show { opacity: 1; }
 #osMismatchPill.show.clickable { pointer-events: auto; cursor: pointer; }
+.skillset-pill-row {
+  display: flex;
+  align-items: center;
+  height: 24px;
+  line-height: 1;
+  font-family: 'Lato', system-ui, sans-serif;
+  font-size: 12px;
+  color: #9ca3af;
+  white-space: nowrap;
+  box-sizing: border-box;
+  cursor: pointer;
+  padding: 0 2px;
+}
+/* ══════════════════════════════════════
+   SKILLSET SELECTOR 
+══════════════════════════════════════ */
+.skillset-pill-row-selected { color: #6b7280; font-weight: 500; }
+.skillset-pill-row:hover { background: #f0f9ff; color: #374151; }
 /* ══════════════════════════════════════
    APP SELECTOR — in osRow, right-aligned
    "now training on:" label inline-left

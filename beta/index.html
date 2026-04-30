@@ -549,7 +549,7 @@
    <div id="panelLandingWelcome" class="sp-page">
    <div style="text-align:center;margin-top:10px;">
         <div style="display:inline-flex;align-items:center;gap:8px;font-family:'Lato',system-ui,sans-serif;font-size:12px;color:#374151;">
-            <span id="appSelectorLabel" style="white-space:nowrap;font-weight:600;">Skill Set loaded</span>
+            <span id="appSelectorLabel" style="white-space:nowrap;font-weight:600;">Skill-set loaded</span>
           <div id="skillsetPill" style="position:relative;border-radius:10px;border:1.5px solid #9ca3af;background:white;overflow:visible;cursor:pointer;user-select:none;width:192px;min-width:192px;height:27px;box-sizing:border-box;pointer-events:auto;" onclick="skillsetPillClick()">
             <!-- Options rendered by JS -->
           </div>
@@ -12333,9 +12333,9 @@ function _onWelcomeDifficultyPillClick(ClickEvent) {
   _handleDiffPillBoundaryClick(ClickEvent, document.getElementById('welcomeDifficultyPill'));
 }
 /* ══════════════════════════════════════
-   SKILL SET PILL
+   SKILL-SET PILL
    Three options: Graphic Design, Video & Motion, Office & Productivity.
-   Selecting one updates appsShortList to the apps whose skill set array
+   Selecting one updates appsShortList to the apps whose skillset array
    contains a matching tag (defined in keyboard-warriors-apps.json).
    The pill lives only in panelLandingWelcome.
    Width 192px fits the longest label "Office & Productivity" at 12px Lato.
@@ -12357,9 +12357,9 @@ function _buildSkillsetPill() {
 
   // Render the selected label in the closed pill
   pill.innerHTML = '';
-    var selectedRow = document.createElement('div');
-    selectedRow.className = 'skillset-pill-row';
-      selectedRow.style.cssText = skillsetPillOpen ? 'opacity:0;' : '';
+  var selectedRow = document.createElement('div');
+  selectedRow.className = 'app-option selected';
+    selectedRow.style.cssText = 'pointer-events:auto;';
   var caretCol = document.createElement('span');
   caretCol.style.cssText = 'flex-shrink:0;width:22px;display:flex;align-items:center;justify-content:center;';
   var caretSvg = document.createElementNS('http://www.w3.org/2000/svg','svg');
@@ -12386,7 +12386,7 @@ function _buildSkillsetPill() {
     SKILLSET_DEFS.forEach(function(def) {
       var isSelected = (def.label === currentSkillset);
       var row = document.createElement('div');
-      row.className = 'skillset-pill-row' + (isSelected ? ' skillset-pill-row-selected' : '');
+      row.className = 'app-option' + (isSelected ? ' selected' : '');
       row.addEventListener('mouseenter', function() { row.style.background = '#f0f9ff'; row.style.color = '#374151'; });
       row.addEventListener('mouseleave',  function() { row.style.background = ''; row.style.color = isSelected ? '#6b7280':'#9ca3af'; });
       var c2 = document.createElement('span'); c2.style.cssText = 'flex-shrink:0;width:22px;display:flex;align-items:center;justify-content:center;';

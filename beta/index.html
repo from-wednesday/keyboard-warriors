@@ -7767,7 +7767,14 @@ var currentDifficulty = 'fundamentals';
 })();
 
 // Max difficulty value included per mode
-var DIFF_MAX = { ubiquitous: 0, fundamentals: 1, 'fundamentals-plus': 2, normal: 3, 'normal-plus': 4, hardcore: 5 };
+var DIFF_RANGE = {
+  ubiquitous:          { min: 0, max: 0 },
+  fundamentals:        { min: 0, max: 1 },
+  'fundamentals-plus': { min: 0, max: 2 },
+  normal:              { min: 0, max: 3 },
+  'normal-plus':       { min: 1, max: 4 },
+  hardcore:            { min: 2, max: 5 },
+};
 
 // Shortcut tokens that are unreliable across international QWERTY variants.
 // These involve keys whose physical position or character output differs
@@ -7784,7 +7791,7 @@ const UNSTABLE_PUNCTUATION_TOKENS = new Set([
 ]);
 
 function buildPool() {
-  var maxDiff = DIFF_MAX[currentDifficulty] || 3;
+  var diffRange = DIFF_RANGE[currentDifficulty] || { min: 0, max: 3 };
   var browserSkip = getBrowserConflictSet();
   var allShortcuts = UNIVERSAL_SHORTCUTS.concat(loadedAppShortcuts);
 
@@ -7795,7 +7802,8 @@ function buildPool() {
     if (!ActiveString) return false;
 
     // Difficulty cap
-    if (ShortcutEntry.difficulty > maxDiff) return false;
+    var d = ShortcutEntry.difficulty;
+    if (d < diffRange.min || d > diffRange.max) return false;
 
     // Browser conflict exclusion — check primary alternative only
     var PrimaryString = ActiveString.split('|')[0];

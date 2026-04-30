@@ -12444,6 +12444,8 @@ function _openSkillsetPill() {
 
 function _closeSkillsetPill() {
   skillsetPillOpen = false;
+  var existingDrop = document.getElementById('skillsetDrop');
+  if (existingDrop) existingDrop.remove();
   _buildSkillsetPill();
 }
 

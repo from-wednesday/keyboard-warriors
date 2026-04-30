@@ -2330,9 +2330,10 @@ function ShowExtendedKeyPill(BrowserCode, ColourState) {
   // but there is no active question to judge it against, except in special panel contexts
   // where the chip highlights are handled by their own listeners (cheat sheet, report card etc.).
   var EffectiveColour = null;
-  if (gameState === 'playing' && !transitioning) {
+  if (gameState === 'playing') {
+    if (transitioning) return; // keep the already-rendered green chip; don't overwrite with unstyled
     EffectiveColour = ColourState; // 'green' or 'orange' from updateKeyboardLighting
-}
+  }
 
   clearTimeout(ExtendedKeyPillTimer);
   ExtendedKeyPillElement.innerHTML = '';
@@ -2374,14 +2375,16 @@ function ShowExtendedKeyPill(BrowserCode, ColourState) {
 
 function HideExtendedKeyPill() {
   clearTimeout(ExtendedKeyPillTimer);
-  ExtendedKeyPillElement.style.transition = 'opacity 0.8s ease';
-  ExtendedKeyPillElement.style.opacity = '0';
   ExtendedKeyPillTimer = setTimeout(function() {
-    ExtendedKeyPillElement.style.display = 'none';
-    ExtendedKeyPillElement.style.transition = '';
-    ExtendedKeyPillElement.innerHTML = '';
-  }, 900);
- }
+    ExtendedKeyPillElement.style.transition = 'opacity 0.9s ease';
+    ExtendedKeyPillElement.style.opacity = '0';
+    ExtendedKeyPillTimer = setTimeout(function() {
+      ExtendedKeyPillElement.style.display = 'none';
+      ExtendedKeyPillElement.style.transition = '';
+      ExtendedKeyPillElement.innerHTML = '';
+    }, 900);
+  }, LINGER_MS);
+}
 
 // Numpad → main keyboard code remapping for lighting
 const NUMPAD_MAP = {

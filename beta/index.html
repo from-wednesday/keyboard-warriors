@@ -12319,7 +12319,7 @@ function _handleDiffPillBoundaryClick(ClickEvent, PillElement) {
   var SecondDivX = (PillWidth / 3) * 2;
   var Threshold  = 5;
   // Ubiquitous: click within 10px to the left of the pill
-  if (ClickX >= -10 && ClickX < 0) {
+  if (ClickX >= -10 && ClickX < 5) {
     ClickEvent.stopPropagation();
     diffBtnClick('ubiquitous');
     return true;

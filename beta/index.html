@@ -12378,7 +12378,10 @@ function _buildSkillsetPill() {
   if (skillsetPillOpen) {
     var drop = document.createElement('div');
     drop.id = 'skillsetDrop';
-    drop.style.cssText = 'position:absolute;top:0;left:0;width:100%;background:white;border:1.5px solid #9ca3af;border-radius:10px;overflow:hidden;z-index:601;box-shadow:0 4px 12px rgba(0,0,0,0.12);';
+    var pillRect = document.getElementById('skillsetPill').getBoundingClientRect();
+    var dropHeight = SKILLSET_DEFS.length * 24;
+    drop.style.cssText = 'position:fixed;left:' + pillRect.left + 'px;top:' + (pillRect.top + pillRect.height / 2 - dropHeight / 2) + 'px;width:' + pillRect.width + 'px;background:white;border:1.5px solid #9ca3af;border-radius:10px;overflow:hidden;z-index:601;box-shadow:0 4px 12px rgba(0,0,0,0.12);';
+    document.body.appendChild(drop);
     SKILLSET_DEFS.forEach(function(def) {
       var isSelected = (def.label === currentSkillset);
       var row = document.createElement('div');
@@ -12405,7 +12408,6 @@ function _buildSkillsetPill() {
       });
       drop.appendChild(row);
     });
-    pill.appendChild(drop);
   }
 }
 
@@ -12446,12 +12448,14 @@ function _closeSkillsetPill() {
 }
 
 // Close on outside click
-document.addEventListener('click', function(e) {
-  var pill = document.getElementById('skillsetPill');
-  if (pill && !pill.contains(e.target) && skillsetPillOpen) {
-    _closeSkillsetPill();
-  }
-});
+setTimeout(function() {
+  document.addEventListener('click', function(e) {
+    var pill = document.getElementById('skillsetPill');
+    if (pill && !pill.contains(e.target) && skillsetPillOpen) {
+      _closeSkillsetPill();
+    }
+  }, { once: true });
+}, 0);
 
 var _skillsetPillInitialised = false;
 function _initSkillsetPillAfterAppsLoad() {

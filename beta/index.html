@@ -7572,6 +7572,7 @@ function _returningStartOver() {
       _closeSkillsetPill();
       var activeBtn = document.querySelector('#welcomeDifficultyPill .diff-btn-active');
   if (activeBtn) _popDiffLabel(activeBtn);
+  setAppSelectorGameActive(false);
   _welcomeIsReturning = false;
   setTimeout(function() {
     var tagline = document.getElementById('welcomeTagline');

@@ -493,7 +493,7 @@
 
     <!-- ── Difficulty Settings ──────────────────────────── -->
     <div id="panelDifficultySettings" class="sp-page">
-      <div id="difficultyPillWrapper" style="position:relative;width:100%;margin-top:32px;">
+      <div id="difficultyPillWrapper" style="position:relative;width:100%;margin-top:32px;" onclick="_onDifficultyPillClick(event)">
         <div id="difficultyCaretEl" aria-hidden="true" style="position:absolute;bottom:calc(100% + 6px);left:50%;transform:translateX(-50%);pointer-events:none;z-index:2;transition:left 0.32s cubic-bezier(0.34,1.2,0.64,1);display:flex;flex-direction:column;align-items:center;gap:4px;">
           <p class="sp-title" style="margin:0;white-space:nowrap;">Question Difficulty</p>
           <svg viewBox="0 0 7 7" width="7" height="7" fill="#374151" xmlns="http://www.w3.org/2000/svg" style="display:block;transform:rotate(90deg);"><path d="M1.5 1 L6 3.5 L1.5 6 Z"/></svg>
@@ -555,7 +555,7 @@
           </div>
         </div>
       </div></br>
-      <div id="welcomeDifficultyPillWrapper" style="position:relative;width:100%;margin-top:32px;">
+      <div id="welcomeDifficultyPillWrapper" style="position:relative;width:100%;margin-top:32px;" onclick="_onWelcomeDifficultyPillClick(event)">
         <div id="welcomeDifficultyCaretEl" aria-hidden="true" style="position:absolute;bottom:calc(100% + 6px);left:50%;transform:translateX(-50%);pointer-events:none;z-index:2;transition:left 0.32s cubic-bezier(0.34,1.2,0.64,1);display:flex;flex-direction:column;align-items:center;gap:4px;">
           <p class="sp-title" style="margin:0;white-space:nowrap;">Question Difficulty</p>
           <svg viewBox="0 0 7 7" width="7" height="7" fill="#374151" xmlns="http://www.w3.org/2000/svg" style="display:block;transform:rotate(90deg);"><path d="M1.5 1 L6 3.5 L1.5 6 Z"/></svg>
@@ -3624,7 +3624,7 @@ function confirmDiffChangeYes() {
   try { localStorage.setItem('kw_difficulty', currentDifficulty); } catch(e) {}
   syncDiffNeedle();
 
-  var diffRank = { fundamentals: 0, normal: 1, hardcore: 2 };
+  var diffRank = { ubiquitous: -1, fundamentals: 0, normal: 1, hardcore: 2 };
   var isUpgrade = (diffRank[currentDifficulty] || 0) > (diffRank[prevDiff] || 0);
   var hasRecord = bestRecord.time !== null || bestRecord.accuracy !== null;
   var label = currentDifficulty.charAt(0).toUpperCase() + currentDifficulty.slice(1);
@@ -3644,7 +3644,7 @@ function confirmDiffChangeYes() {
 function confirmDiffChangeNo() {
   _exitDiffConfirm();
   // Restore difficulty and needle to the game that is still active
-  var modeMap = { fundamentals: -1, 'fundamentals-plus': -0.5, normal: 0, 'normal-plus': 0.5, hardcore: 1 };
+  var modeMap = { ubiquitous: -1.5, fundamentals: -1, 'fundamentals-plus': -0.5, normal: 0, 'normal-plus': 0.5, hardcore: 1 };
   currentDifficulty  = _prevDifficulty;
   _diffFirst = true;
   setDiffState(modeMap[_prevDifficulty] !== undefined ? modeMap[_prevDifficulty] : 0);
@@ -6586,7 +6586,7 @@ function diffBtnClick(mode) {
     return;
   }
 
-  var modeMap = { fundamentals: -1, 'fundamentals-plus': -0.5, normal: 0, 'normal-plus': 0.5, hardcore: 1 };
+  var modeMap = { ubiquitous: -1.5, fundamentals: -1, 'fundamentals-plus': -0.5, normal: 0, 'normal-plus': 0.5, hardcore: 1 };
   var VisualSegmentMap = { 'fundamentals-plus': 'fundamentals', 'normal-plus': 'normal' };
   var PreviousMode = currentDifficulty;
 
@@ -6647,6 +6647,7 @@ function _popDiffLabel(btnEl) {
 
 function _updateDiffBtnStyles(activeMode) {
   var hardcoreUnlocked = hasTrophy;
+  var IsUbiquitous = (activeMode === 'ubiquitous');
   var VisualSegmentMap = {
     'fundamentals':      'fundamentals',
     'fundamentals-plus': 'fundamentals',
@@ -6658,7 +6659,7 @@ function _updateDiffBtnStyles(activeMode) {
   var btns = document.querySelectorAll('#panelDifficultySettings .diff-btn, #panelLandingWelcome .diff-btn');
   btns.forEach(function(btn) {
     var m = btn.getAttribute('data-mode');
-    var isLocked = (m === 'hardcore' && !hardcoreUnlocked);
+    var isLocked = (m === 'hardcore' && !hardcoreUnlocked) || IsUbiquitous;
     btn.classList.toggle('diff-btn-inactive', isLocked);
     btn.classList.toggle('diff-btn-active', !isLocked && m === VisualActiveSegment);
   });
@@ -6685,7 +6686,7 @@ function _applyDifficultyPresets(mode) {
 
 function _refreshDifficultyPanel() {
   var displayMode = _pendingDifficulty !== null ? _pendingDifficulty : currentDifficulty;
-  var modeToState = { fundamentals: -1, 'fundamentals-plus': -0.5, normal: 0, 'normal-plus': 0.5, hardcore: 1 };
+  var modeToState = { ubiquitous: -1.5, fundamentals: -1, 'fundamentals-plus': -0.5, normal: 0, 'normal-plus': 0.5, hardcore: 1 };
   _diffFirst = true;
   setDiffState(modeToState[displayMode] !== undefined ? modeToState[displayMode] : 0);
   _updateDiffBtnStyles(displayMode);
@@ -7104,6 +7105,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
 function _updateDiffSubtitle(mode, previousMode) {
   var FixedSubtitles = {
+    ubiquitous:  'Asking basic ubiquitous shortcuts only.',
     fundamentals: 'Mild. We will only ask things you really should know.',
     hardcore:     'Spicy! We have thrown in some tricky questions.',
   };
@@ -7504,7 +7506,7 @@ function _showReturningScreen() {
   titleEl.textContent = 'Thanks for coming back.';
   var tagline = document.getElementById('welcomeTagline');
   if (tagline) tagline.style.display = 'none';
-  var modeMap = { fundamentals: -1, normal: 0, hardcore: 1 };
+  var modeMap = { ubiquitous: -1.5, fundamentals: -1, normal: 0, hardcore: 1 };
   _diffFirst = true;
   setDiffState(modeMap[currentDifficulty] !== undefined ? modeMap[currentDifficulty] : 0);
   _updateDiffBtnStyles(currentDifficulty);
@@ -7728,10 +7730,10 @@ var currentDifficulty = 'fundamentals';
 (function() {
   try {
     var saved = localStorage.getItem('kw_difficulty');
-    if (saved === 'fundamentals' || saved === 'fundamentals-plus' || saved === 'normal' || saved === 'normal-plus' || saved === 'hardcore') {
+    if (saved === 'ubiquitous' || saved === 'fundamentals' || saved === 'fundamentals-plus' || saved === 'normal' || saved === 'normal-plus' || saved === 'hardcore') {
       currentDifficulty = saved;
       // Restore needle to match saved difficulty
-      var stateMap = { fundamentals: -1, 'fundamentals-plus': -0.5, normal: 0, 'normal-plus': 0.5, hardcore: 1 };
+      var stateMap = { ubiquitous: -1.5, fundamentals: -1, 'fundamentals-plus': -0.5, normal: 0, 'normal-plus': 0.5, hardcore: 1 };
       _diffFirst = true;
       setDiffState(stateMap[saved]);
     }
@@ -7739,7 +7741,7 @@ var currentDifficulty = 'fundamentals';
 })();
 
 // Max difficulty value included per mode
-var DIFF_MAX = { fundamentals: 1, 'fundamentals-plus': 2, normal: 3, 'normal-plus': 4, hardcore: 5 };
+var DIFF_MAX = { ubiquitous: 0, fundamentals: 1, 'fundamentals-plus': 2, normal: 3, 'normal-plus': 4, hardcore: 5 };
 
 // Shortcut tokens that are unreliable across international QWERTY variants.
 // These involve keys whose physical position or character output differs
@@ -11943,7 +11945,7 @@ function _resetFlipState() {
 /* ── Difficulty needle states ── */
 var _diffState = -1;   // -1 = fundamentals, 0 = normal, 1 = hardcore
 var _diffFirst = false;
-var DIFF_ANGLES = { '-1': -60, '-0.5': -30, '0': 0, '0.5': 30, '1': 60 };
+var DIFF_ANGLES = { '-1.5': -90, '-1': -60, '-0.5': -30, '0': 0, '0.5': 30, '1': 60 };
 function setDiffState(newState) {
   _diffState = newState;
   var needle = document.querySelector('#diffIcon #Needle');
@@ -12256,7 +12258,9 @@ function _getDifficultyCaretXForMode(Mode, PillElement) {
   var HardcoreCentreX     = (HardcoreRect.left     + HardcoreRect.width     / 2) - PillLeft;
   var FirstDividerX       = (FundamentalsRect.right - PillLeft + NormalRect.left    - PillLeft) / 2;
   var SecondDividerX      = (NormalRect.right       - PillLeft + HardcoreRect.left  - PillLeft) / 2;
+  var UbiquitousX          = 0; // left edge of the pill
   var PositionMap = {
+    'ubiquitous':        UbiquitousX,
     'fundamentals':      FundamentalsCentreX,
     'fundamentals-plus': FirstDividerX,
     'normal':            NormalCentreX,
@@ -12314,6 +12318,12 @@ function _handleDiffPillBoundaryClick(ClickEvent, PillElement) {
   var FirstDivX  = PillWidth / 3;
   var SecondDivX = (PillWidth / 3) * 2;
   var Threshold  = 5;
+  // Ubiquitous: click within 10px to the left of the pill
+  if (ClickX >= -10 && ClickX < 0) {
+    ClickEvent.stopPropagation();
+    diffBtnClick('ubiquitous');
+    return true;
+  }
   if (Math.abs(ClickX - FirstDivX) <= Threshold) {
     ClickEvent.stopPropagation();
     diffBtnClick('fundamentals-plus');
@@ -12333,8 +12343,7 @@ function _onDifficultyPillClick(ClickEvent) {
 
 function _onWelcomeDifficultyPillClick(ClickEvent) {
   _handleDiffPillBoundaryClick(ClickEvent, document.getElementById('welcomeDifficultyPill'));
-}
-/* ══════════════════════════════════════
+}/* ══════════════════════════════════════
    SKILL SET PILL
    Currently Three options: Graphic Design, Video & Motion, Office & Productivity.
    Selecting one updates appsShortList to the apps whose skillset array

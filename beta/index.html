@@ -7681,19 +7681,12 @@ function _onAppsLoaded(AllAppsFromJson) {
   } catch (StorageError) {}
 
   // URL param ?skillset= seeds the short list only when no stored preference exists.
-  // It is stripped from the URL immediately so subsequent loads are unaffected.
+  // The param is left in the URL — it is harmless on subsequent loads because
+  // PersistedLabels will be non-null after the first visit and the block below is skipped.
   var SkillsetParam = null;
   try {
     var UrlParams = new URLSearchParams(window.location.search);
     SkillsetParam = UrlParams.get('skillset');
-    if (SkillsetParam) {
-      // Remove param immediately — it must not persist across reloads
-      UrlParams.delete('skillset');
-      var NewUrl = window.location.pathname
-        + (UrlParams.toString() ? '?' + UrlParams.toString() : '')
-        + window.location.hash;
-      history.replaceState(null, '', NewUrl);
-    }
   } catch (UrlError) {}
 
   var SkillsetDefaultLabels = null;

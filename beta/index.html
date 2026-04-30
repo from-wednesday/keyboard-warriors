@@ -7677,7 +7677,37 @@ function _onAppsLoaded(AllAppsFromJson) {
     }
   } catch (StorageError) {}
 
-  appsShortList = PersistedLabels || DefaultShortListLabels;
+  // URL param ?skillset= seeds the short list only when no stored preference exists.
+  // It is stripped from the URL immediately so subsequent loads are unaffected.
+  var SkillsetParam = null;
+  try {
+    var UrlParams = new URLSearchParams(window.location.search);
+    SkillsetParam = UrlParams.get('skillset');
+    if (SkillsetParam) {
+      // Remove param immediately — it must not persist across reloads
+      UrlParams.delete('skillset');
+      var NewUrl = window.location.pathname
+        + (UrlParams.toString() ? '?' + UrlParams.toString() : '')
+        + window.location.hash;
+      history.replaceState(null, '', NewUrl);
+    }
+  } catch (UrlError) {}
+
+  var SkillsetDefaultLabels = null;
+  if (SkillsetParam && !PersistedLabels) {
+    // Only apply if the user has no stored preference
+    var SkillsetUpper = SkillsetParam.toLowerCase();
+    var MatchingApps = AllAppsFromJson.filter(function(App) {
+      return Array.isArray(App.skillset) && App.skillset.some(function(S) {
+        return S.toLowerCase() === SkillsetUpper;
+      });
+    });
+    if (MatchingApps.length > 0) {
+      SkillsetDefaultLabels = MatchingApps.map(function(App) { return App.label; });
+    }
+  }
+
+  appsShortList = PersistedLabels || SkillsetDefaultLabels || DefaultShortListLabels;
   APPS = appsLongList;
 
   var FallbackApp = appsShortList[0] || (appsLongList[0] ? appsLongList[0].label : 'Photoshop (Ps)');

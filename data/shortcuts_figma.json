@@ -1,4 +1,28 @@
 [
+       {
+"display": "Cut the selection",
+    "mac_sc": "CMD+X",
+    "pc_sc": "CTRL+X",
+    "difficulty": 0
+  },
+  {
+"display": "Copy the selection",
+    "mac_sc": "CMD+C",
+    "pc_sc": "CTRL+C",
+    "difficulty": 0
+  },
+      {
+"display": "Paste",
+    "mac_sc": "CMD+V",
+    "pc_sc": "CTRL+V",
+    "difficulty": 0
+  },
+          {
+"display": "Save As",
+    "mac_sc": "CMD+SHIFT+S",
+    "pc_sc": "CTRL+SHIFT+S",
+    "difficulty": 1
+  },
  {
 "display": "open keyboard shortcuts",
     "mac_sc": "CMD+SHIFT+SLASH",
@@ -186,6 +210,12 @@
     "mac_sc": "SHIFT+A",
     "pc_sc": "SHIFT+A",
     "difficulty": 1
+  },
+   {
+"display": "remove Auto Layout",
+    "mac_sc": "OPT+SHIFT+A",
+    "pc_sc": "ALT+SHIFT+A",
+    "difficulty": 3
   },
   {
 "display": "Increase font size",
@@ -445,7 +475,7 @@
     "group": "opacity"
   },
   {
-"display": "Save version history checkpoint with note",
+"display": "Save version history checkpoint",
     "mac_sc": "CMD+OPT+S",
     "pc_sc": "CTRL+ALT+S",
     "difficulty": 5
@@ -622,18 +652,6 @@
 "display": "CUT!",
     "mac_sc": "CMD+X",
     "pc_sc": "CTRL+X",
-    "difficulty": 1
-  },
-  {
-"display": "Copy",
-    "mac_sc": "CMD+C",
-    "pc_sc": "CTRL+C",
-    "difficulty": 1
-  },
-  {
-"display": "Paste",
-    "mac_sc": "CMD+V",
-    "pc_sc": "CTRL+V",
     "difficulty": 1
   },
   {

@@ -549,7 +549,7 @@
    <div id="panelLandingWelcome" class="sp-page">
    <div style="text-align:center;margin-top:10px;">
         <div style="display:inline-flex;align-items:center;gap:8px;font-family:'Lato',system-ui,sans-serif;font-size:12px;color:#374151;">
-          <span style="white-space:nowrap;font-weight:600;">Skill-set loaded</span>
+          <span style="white-space:nowrap;font-weight:600;">Skill Set loaded</span>
           <div id="skillsetPill" style="position:relative;border-radius:10px;border:1.5px solid #9ca3af;background:white;overflow:visible;cursor:pointer;user-select:none;width:192px;min-width:192px;height:27px;box-sizing:border-box;pointer-events:auto;" onclick="skillsetPillClick()">
             <!-- Options rendered by JS -->
           </div>
@@ -7566,8 +7566,9 @@ function _returningStartOver() {
   }, 500); // hold after pop before fading
 }
 
-function _dismissWelcome() {
-  var activeBtn = document.querySelector('#welcomeDifficultyPill .diff-btn-active');
+    function _dismissWelcome() {
+      _closeSkillsetPill();
+      var activeBtn = document.querySelector('#welcomeDifficultyPill .diff-btn-active');
   if (activeBtn) _popDiffLabel(activeBtn);
   _welcomeIsReturning = false;
   setTimeout(function() {
@@ -7585,8 +7586,9 @@ function _dismissWelcome() {
   }, 1750);
 }
 
-function _startFromWelcome() {
-  // Start pressed without choosing a difficulty -- default to Normal.
+    function _startFromWelcome() {
+      _closeSkillsetPill();
+      // Start pressed without choosing a difficulty
   if (!_welcomeIsReturning) {
     currentDifficulty = 'fundamentals';
     try { localStorage.setItem('kw_difficulty', currentDifficulty); } catch(e) {}
@@ -12333,8 +12335,8 @@ function _onWelcomeDifficultyPillClick(ClickEvent) {
   _handleDiffPillBoundaryClick(ClickEvent, document.getElementById('welcomeDifficultyPill'));
 }
 /* ══════════════════════════════════════
-   SKILL-SET PILL
-   Three options: Graphic Design, Video & Motion, Office & Productivity.
+   SKILL SET PILL
+   Currently Three options: Graphic Design, Video & Motion, Office & Productivity.
    Selecting one updates appsShortList to the apps whose skillset array
    contains a matching tag (defined in keyboard-warriors-apps.json).
    The pill lives only in panelLandingWelcome.
@@ -12456,7 +12458,7 @@ setTimeout(function() {
     if (pill && !pill.contains(e.target) && skillsetPillOpen) {
       _closeSkillsetPill();
     }
-  }, { once: true });
+  });
 }, 0);
 
 var _skillsetPillInitialised = false;

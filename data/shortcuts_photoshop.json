@@ -1,4 +1,40 @@
 [
+       {
+"display": "Cut the selection",
+    "mac_sc": "CMD+X",
+    "pc_sc": "CTRL+X",
+    "difficulty": 0
+  },
+  {
+"display": "Copy the selection",
+    "mac_sc": "CMD+C",
+    "pc_sc": "CTRL+C",
+    "difficulty": 0
+  },
+      {
+"display": "Paste",
+    "mac_sc": "CMD+V",
+    "pc_sc": "CTRL+V",
+    "difficulty": 0
+  },
+        {
+"display": "Save your document",
+    "mac_sc": "CMD+S",
+    "pc_sc": "CTRL+S",
+    "difficulty": 0
+  },
+          {
+"display": "Print",
+    "mac_sc": "CMD+P",
+    "pc_sc": "CTRL+P",
+    "difficulty": 0
+  },
+          {
+"display": "Save As",
+    "mac_sc": "CMD+SHIFT+S",
+    "pc_sc": "CTRL+SHIFT+S",
+    "difficulty": 1
+  },
   {
 "display": "view at 100% zoom",
     "mac_sc": "CMD+1",
@@ -313,8 +349,8 @@
   },
   {
 "display": "Increase font size",
-    "mac_sc": "CMD+SHIFT+GREATERTHAN",
-    "pc_sc": "CTRL+SHIFT+GREATERTHAN",
+    "mac_sc": "CMD+SHIFT+MORETHAN",
+    "pc_sc": "CTRL+SHIFT+MORETHAN",
     "difficulty": 3
   },
   {
@@ -614,27 +650,9 @@
     "difficulty": 4
   },
   {
-"display": "Cut the selection",
-    "mac_sc": "CMD+X",
-    "pc_sc": "CTRL+X",
-    "difficulty": 1
-  },
-  {
-"display": "Copy the selection",
-    "mac_sc": "CMD+C",
-    "pc_sc": "CTRL+C",
-    "difficulty": 1
-  },
-  {
 "display": "Copy Merged (copy all visible layers within the selection)",
     "mac_sc": "CMD+SHIFT+C",
     "pc_sc": "CTRL+SHIFT+C",
-    "difficulty": 1
-  },
-  {
-"display": "Paste",
-    "mac_sc": "CMD+V",
-    "pc_sc": "CTRL+V",
     "difficulty": 1
   },
     {

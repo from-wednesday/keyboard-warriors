@@ -559,7 +559,14 @@
       </div>
       </div>
       <p id="welcomeDiffSubtitle" class="diff-subtitle">&nbsp;</p>
-      <p class="sp-returning-privacy" style="text-align:center;"><strong>Skill-set loaded:</strong><br>You are currently training with <strong>Graphic Design</strong> applications.<br><em class="sp-returning-tagline">Other skill-sets coming soon.</em></p>
+     <div style="text-align:center;margin-top:10px;">
+        <div style="display:inline-flex;align-items:center;gap:8px;font-family:'Lato',system-ui,sans-serif;font-size:12px;color:#374151;">
+          <span style="white-space:nowrap;font-weight:600;">Skill-set loaded:</span>
+          <div id="skillsetPill" style="position:relative;border-radius:10px;border:1.5px solid #9ca3af;background:white;overflow:hidden;cursor:pointer;user-select:none;width:192px;min-width:192px;height:27px;box-sizing:border-box;" onclick="skillsetPillClick()">
+            <!-- Options rendered by JS -->
+          </div>
+        </div>
+      </div>
     </div>
 
  <!-- ── Keyboard Settings ────────────────────────────── -->
@@ -7673,7 +7680,9 @@ function _onAppsLoaded(AllAppsFromJson) {
 
 buildAppPill();
 positionIcons();
+_initSkillsetPillAfterAppsLoad();
 }
+
 
 
 // Fetch the apps manifest on startup. Falls back to a minimal built-in list if the
@@ -12310,6 +12319,174 @@ function _onDifficultyPillClick(ClickEvent) {
 function _onWelcomeDifficultyPillClick(ClickEvent) {
   _handleDiffPillBoundaryClick(ClickEvent, document.getElementById('welcomeDifficultyPill'));
 }
+/* ══════════════════════════════════════
+   SKILL-SET PILL
+   Three options: Graphic Design, Film & Motion, Office & Productivity.
+   Selecting one updates appsShortList to the apps whose skillset array
+   contains a matching tag (defined in keyboard-warriors-apps.json).
+   The pill lives only in panelLandingWelcome.
+   Width 192px fits the longest label "Office & Productivity" at 12px Lato.
+══════════════════════════════════════ */
+
+var SKILLSET_DEFS = [
+  { label: 'Graphic Design',        tags: ['Graphics']     },
+  { label: 'Film & Motion',         tags: ['Motion']       },
+  { label: 'Office & Productivity', tags: ['Productivity'] },
+];
+
+var currentSkillset   = 'Graphic Design';
+var skillsetPillOpen  = false;
+
+function _buildSkillsetPill() {
+  var pill = document.getElementById('skillsetPill');
+  if (!pill) return;
+  pill.innerHTML = '';
+
+  SKILLSET_DEFS.forEach(function(def) {
+    var isSelected = (def.label === currentSkillset);
+
+    var row = document.createElement('div');
+    row.style.cssText = [
+      'display:flex',
+      'align-items:center',
+      'height:24px',
+      'line-height:1',
+      "font-family:'Lato',system-ui,sans-serif",
+      'font-size:12px',
+      'color:' + (isSelected ? '#6b7280' : '#9ca3af'),
+      'font-weight:' + (isSelected ? '500' : '400'),
+      'white-space:nowrap',
+      'box-sizing:border-box',
+      'cursor:pointer',
+      'transition:background 0.1s',
+      'opacity:' + (skillsetPillOpen || isSelected ? '1' : '0'),
+      'pointer-events:' + (skillsetPillOpen || isSelected ? 'auto' : 'none'),
+    ].join(';');
+
+    row.addEventListener('mouseenter', function() {
+      if (skillsetPillOpen) row.style.background = '#f0f9ff';
+    });
+    row.addEventListener('mouseleave', function() {
+      row.style.background = '';
+    });
+
+    // Caret column (matches app pill pattern)
+    var caretCol = document.createElement('span');
+    caretCol.style.cssText = 'flex-shrink:0;width:22px;display:flex;align-items:center;justify-content:center;';
+
+    var caretSvg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
+    caretSvg.setAttribute('viewBox', '0 0 7 7');
+    caretSvg.setAttribute('width', '7');
+    caretSvg.setAttribute('height', '7');
+    caretSvg.setAttribute('fill', 'currentColor');
+    caretSvg.style.cssText = [
+      'display:block',
+      'color:#9ca3af',
+      'flex-shrink:0',
+      'opacity:' + (isSelected ? '1' : '0'),
+      'transition:transform 0.2s ease,opacity 0.15s ease',
+      'transform:' + (skillsetPillOpen && isSelected ? 'rotate(90deg)' : 'none'),
+    ].join(';');
+
+    var caretPath = document.createElementNS('http://www.w3.org/2000/svg', 'path');
+    caretPath.setAttribute('d', 'M1.5 1 L6 3.5 L1.5 6 Z');
+    caretSvg.appendChild(caretPath);
+    caretCol.appendChild(caretSvg);
+
+    // Label column
+    var labelCol = document.createElement('span');
+    labelCol.style.cssText = 'flex:1;text-align:left;';
+    labelCol.textContent = def.label;
+
+    row.appendChild(caretCol);
+    row.appendChild(labelCol);
+
+    row.addEventListener('click', function(e) {
+      e.stopPropagation();
+      if (def.label === currentSkillset && skillsetPillOpen) {
+        _closeSkillsetPill();
+        return;
+      }
+      if (def.label !== currentSkillset) {
+        currentSkillset = def.label;
+        _applySkillset(def.label);
+      }
+      _closeSkillsetPill();
+    });
+
+    pill.appendChild(row);
+  });
+
+  // Scroll so selected row is visible in the closed (27px) state
+  var selIdx = SKILLSET_DEFS.findIndex(function(d) { return d.label === currentSkillset; });
+  if (selIdx >= 0) pill.scrollTop = selIdx * 24;
+}
+
+function _applySkillset(skillsetLabel) {
+  var def = SKILLSET_DEFS.find(function(d) { return d.label === skillsetLabel; });
+  if (!def || appsLongList.length === 0) return;
+
+  var matching = appsLongList
+    .filter(function(app) {
+      if (!Array.isArray(app.skillset)) return false;
+      return def.tags.some(function(tag) { return app.skillset.indexOf(tag) !== -1; });
+    })
+    .map(function(app) { return app.label; });
+
+  if (matching.length > 0) {
+    appsShortList = matching;
+    if (appsShortList.indexOf(currentApp) === -1) {
+      currentApp = appsShortList[0];
+      try { localStorage.setItem('kw_app', currentApp); } catch(e) {}
+    }
+    _saveAppsShortList();
+    buildAppPill();
+  }
+  runData.length = 0;
+  lastCompletedReport = null;
+  CoachAdviceAccepted = false;
+}
+
+function skillsetPillClick() {
+  if (skillsetPillOpen) { _closeSkillsetPill(); return; }
+  _openSkillsetPill();
+}
+
+function _openSkillsetPill() {
+  skillsetPillOpen = true;
+  var pill = document.getElementById('skillsetPill');
+  if (!pill) return;
+  // Expand to fit all rows, no spring needed — it's a small fixed list
+  pill.style.transition = 'height 0.18s ease';
+  pill.style.height = (SKILLSET_DEFS.length * 24 + 3) + 'px';
+  _buildSkillsetPill();
+}
+
+function _closeSkillsetPill() {
+  skillsetPillOpen = false;
+  var pill = document.getElementById('skillsetPill');
+  if (!pill) return;
+  pill.style.height = '27px';
+  _buildSkillsetPill();
+}
+
+// Close on outside click
+document.addEventListener('click', function(e) {
+  var pill = document.getElementById('skillsetPill');
+  if (pill && !pill.contains(e.target) && skillsetPillOpen) {
+    _closeSkillsetPill();
+  }
+});
+
+// Called once apps are loaded to initialise the pill and apply the default skillset
+var _skillsetPillInitialised = false;
+function _initSkillsetPillAfterAppsLoad() {
+  if (_skillsetPillInitialised) return;
+  _skillsetPillInitialised = true;
+  _applySkillset(currentSkillset);
+  _buildSkillsetPill();
+}
+
 </script>
 </body>
 </html>

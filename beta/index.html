@@ -12357,9 +12357,9 @@ function _buildSkillsetPill() {
 
   // Render the selected label in the closed pill
   pill.innerHTML = '';
-  var selectedRow = document.createElement('div');
-  selectedRow.className = 'app-option selected';
-    selectedRow.style.cssText = 'pointer-events:auto;';
+    var selectedRow = document.createElement('div');
+    selectedRow.className = 'app-option selected';
+    selectedRow.style.cssText = 'pointer-events:auto;' + (skillsetPillOpen ? 'opacity:0;' : '');
   var caretCol = document.createElement('span');
   caretCol.style.cssText = 'flex-shrink:0;width:22px;display:flex;align-items:center;justify-content:center;';
   var caretSvg = document.createElementNS('http://www.w3.org/2000/svg','svg');

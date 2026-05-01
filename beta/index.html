@@ -3148,10 +3148,47 @@ function _stopReadyPromptTimer() {
   _clearReadyPromptFromTitle();
 }
 
+function enterPause(instantBlur) {
+  gameState = 'paused';
+  if (pauseStartTime === null) pauseStartTime = performance.now();
+  clearInterval(timerInterval);
+  clearTimeout(penaltyTimeout);
+  pauseQuestionTimerArc();   // freeze arc at its current position
+  transitioning = false; // clear skip-in-progress if pause interrupts it
+  clearHelp();
+  resetPartialShortcutNudgeTimers();
+  _exitScoreClearConfirm();
+  _exitDiffConfirm();
+  // Show the phone toolbar before opening any panel inside it
+  _syncPhoneToolbarVisibility();
+  // Settings panel sets its own position before calling enterPause; only move
+  // to edge if no settings screen is already driving a different position.
   if (activeSettings === null) {
     if (!_blurDiagnosticFoldPending) setKbPosition('edge');
     openSettings('panelPause');
-
+    titleEl.classList.add('blur-instant');
+    questionCountEl.classList.add('blur-instant');
+    // Remove the instant flag next frame so future transitions are restored
+    requestAnimationFrame(function() {
+      titleEl.classList.remove('blur-instant');
+      questionCountEl.classList.remove('blur-instant');
+    });
+  }
+  // Do not blur the title if a panel tip is currently showing there.
+  if (!_panelTipInTitle) titleEl.classList.add('blurred');
+  questionCountEl.classList.add('blurred');
+  document.getElementById('livesRow').classList.add('blurred');
+  titleEl.classList.remove('strike','hidden');
+  timerDiv.innerHTML = '<svg width="26" height="26" viewBox="0 0 26 26" style="display:block;vertical-align:top;" xmlns="http://www.w3.org/2000/svg"><rect x="6" y="2" width="4" height="22" rx="1.5" fill="white"/><rect x="16" y="2" width="4" height="22" rx="1.5" fill="white"/></svg>';
+  setTimerState('paused');
+  mainBtn.textContent = 'Unpause';
+  helpBtn.textContent = 'Quit';
+  helpBtn.style.background = '#6b7280';
+  helpBtn.style.color = 'white';
+  if (lockKeyEl) lockKeyEl.classList.add('active');
+  _modalWasOpenOnPause = (activeSettings !== null);
+  _startPauseInactivityTimer();
+}
 
 function enterConfirmQuit() {
   // Overlay on pause panel -- title stays blurred, question shown as toast.

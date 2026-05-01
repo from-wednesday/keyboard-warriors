@@ -11261,15 +11261,11 @@ function _activateBlurPauseScreen() {
 // Register keydown listener for shortcut verification
   document.addEventListener('keydown', _blurDiagnosticKeydownHandler);
 
-  // Reposition the drag affordance now the panel content has changed height
-setTimeout(function() {
-    _repositionAffordance();
+  // Reposition the drag affordance after the panel content has changed height
+  setTimeout(function() {
+  _repositionAffordance();
   }, 300);
-    requestAnimationFrame(function() {
-      _repositionAffordance();
-    });
-  });
-}
+   
 
 
 function _deactivateBlurPauseScreen() {

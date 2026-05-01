@@ -11122,7 +11122,8 @@ document.addEventListener('visibilitychange', function() {
   } else {
     if (_blurDiagnosticFoldPending) {
       _blurDiagnosticFoldPending = false;
-      setTimeout(function() { SetKeyboardPositionForPanel('panelPause'); }, 150);
+     setTimeout(function() { SetKeyboardPositionForPanel('panelPause'); }, 600);
+      setTimeout(_repositionAffordance, 1100);
     }
   }
 });

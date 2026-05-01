@@ -11262,7 +11262,9 @@ function _activateBlurPauseScreen() {
   document.addEventListener('keydown', _blurDiagnosticKeydownHandler);
 
   // Reposition the drag affordance now the panel content has changed height
-  requestAnimationFrame(function() {
+setTimeout(function() {
+    _repositionAffordance();
+  }, 300);
     requestAnimationFrame(function() {
       _repositionAffordance();
     });

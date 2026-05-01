@@ -6,10 +6,10 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Keyboard Warriors</title>
+<title>beta</title>
 <script>
   const DefaultTitle = 'Keyboard Warriors';
-  const VersionLabel   = '0026';
+  const VersionLabel   = '0027';
   const TitlePrefix  = document.title !== DefaultTitle ? document.title.trim() + '_' : '';
   const DBG_DEVICE   = TitlePrefix + VersionLabel;
 </script>
@@ -225,7 +225,7 @@
 </div>
 <div id="statsRow" class="page-initially-hidden">
   <span id="statLeft"></span>
-  <div id="kbToast">This keyboard is for display only. Play with an actual Mac keyboard.</div>
+  <div id="kbToast"></div>
   <div id="extKeyPill"></div>
   <span id="statRight"></span>
 </div>
@@ -493,11 +493,16 @@
 
     <!-- ── Difficulty Settings ──────────────────────────── -->
     <div id="panelDifficultySettings" class="sp-page">
-      <p class="sp-title" style="margin-bottom:10px;">Question Difficulty</p>
-      <div class="sp-seg-pill sp-seg-pill-three" id="difficultyPill">
+      <div id="difficultyPillWrapper" style="position:relative;width:100%;margin-top:32px;" onclick="_onDifficultyPillClick(event)">
+        <div id="difficultyCaretEl" aria-hidden="true" style="position:absolute;bottom:calc(100% + 6px);left:50%;transform:translateX(-50%);pointer-events:none;z-index:2;transition:left 0.32s cubic-bezier(0.34,1.2,0.64,1);display:flex;flex-direction:column;align-items:center;gap:4px;">
+          <p class="sp-title" style="margin:0;white-space:nowrap;">Question Difficulty</p>
+          <svg viewBox="0 0 7 7" width="7" height="7" fill="#374151" xmlns="http://www.w3.org/2000/svg" style="display:block;transform:rotate(90deg);"><path d="M1.5 1 L6 3.5 L1.5 6 Z"/></svg>
+        </div>
+        <div class="sp-seg-pill sp-seg-pill-three" id="difficultyPill" onclick="_onDifficultyPillClick(event)">
         <button class="sp-seg-btn diff-btn" data-mode="fundamentals" onclick="diffBtnClick('fundamentals')"><span class="diff-btn-text">Fundamentals</span></button>
         <button class="sp-seg-btn diff-btn" data-mode="normal" onclick="diffBtnClick('normal')"><span class="diff-btn-text">Normal</span></button>
         <button class="sp-seg-btn diff-btn diff-btn-inactive" data-mode="hardcore" onclick="diffBtnClick('hardcore')"><span class="diff-btn-text">Hardcore</span></button>
+      </div>
       </div>
       <p id="diffSubtitle" class="diff-subtitle">&nbsp;</p>
       <div class="diff-advanced-panel" id="diffAdvancedPanel">
@@ -542,14 +547,27 @@
 
     <!-- ── Welcome Landing ──────────────────────────────── -->
    <div id="panelLandingWelcome" class="sp-page">
-    <p class="sp-title" style="margin-bottom:10px;">Question Difficulty</p>
-      <div class="sp-seg-pill sp-seg-pill-three" id="welcomeDifficultyPill">
+   <div style="text-align:center;margin-top:10px;">
+        <div style="display:inline-flex;align-items:center;gap:8px;font-family:'Lato',system-ui,sans-serif;font-size:12px;color:#374151;">
+          <span style="white-space:nowrap;font-weight:600;">Skill Set loaded</span>
+          <div id="skillsetPill" style="position:relative;border-radius:10px;border:1.5px solid #9ca3af;background:white;overflow:visible;cursor:pointer;user-select:none;width:192px;min-width:192px;height:27px;box-sizing:border-box;pointer-events:auto;" onclick="skillsetPillClick()">
+            <!-- Options rendered by JS -->
+          </div>
+        </div>
+      </div></br>
+      <div id="welcomeDifficultyPillWrapper" style="position:relative;width:100%;margin-top:32px;" onclick="_onWelcomeDifficultyPillClick(event)">
+        <div id="welcomeDifficultyCaretEl" aria-hidden="true" style="position:absolute;bottom:calc(100% + 6px);left:50%;transform:translateX(-50%);pointer-events:none;z-index:2;transition:left 0.32s cubic-bezier(0.34,1.2,0.64,1);display:flex;flex-direction:column;align-items:center;gap:4px;">
+          <p class="sp-title" style="margin:0;white-space:nowrap;">Question Difficulty</p>
+          <svg viewBox="0 0 7 7" width="7" height="7" fill="#374151" xmlns="http://www.w3.org/2000/svg" style="display:block;transform:rotate(90deg);"><path d="M1.5 1 L6 3.5 L1.5 6 Z"/></svg>
+        </div>
+        <div class="sp-seg-pill sp-seg-pill-three" id="welcomeDifficultyPill" onclick="_onWelcomeDifficultyPillClick(event)">
         <button class="sp-seg-btn diff-btn" data-mode="fundamentals" onclick="diffBtnClick('fundamentals')"><span class="diff-btn-text">Fundamentals</span></button>
         <button class="sp-seg-btn diff-btn" data-mode="normal" onclick="diffBtnClick('normal')"><span class="diff-btn-text">Normal</span></button>
         <button class="sp-seg-btn diff-btn diff-btn-inactive" data-mode="hardcore" onclick="diffBtnClick('hardcore')"><span class="diff-btn-text">Hardcore</span></button>
       </div>
+      </div>
       <p id="welcomeDiffSubtitle" class="diff-subtitle">&nbsp;</p>
-      <p class="sp-returning-privacy" style="text-align:center;"><strong>Skill-set loaded:</strong><br>You are currently training with <strong>Graphic Design</strong> applications.<br><em class="sp-returning-tagline">Other skill-sets coming soon.</em></p>
+     
     </div>
 
  <!-- ── Keyboard Settings ────────────────────────────── -->
@@ -866,6 +884,9 @@
 
 <div id="kwToast"></div>
 
+<!-- Gyro diagnostic overlay — remove once gyro is confirmed working -->
+<div id="gyroDiag" style="display:none;position:fixed;bottom:12px;left:12px;background:rgba(0,0,0,0.82);color:#0f0;font-family:monospace;font-size:12px;line-height:1.7;padding:10px 14px;border-radius:10px;z-index:9999;pointer-events:none;min-width:200px;"></div>
+
 <script>
 /* ══════════════════════════════════════
    UNIVERSAL_SHORTCUTS — shortcuts that apply to all apps,
@@ -928,9 +949,17 @@ function buildKey(cfg, isMini) {
       el.classList.add('fn');
       el.innerHTML = `<span class="fn-lbl">${cfg.label}</span>`;
       if (cfg.id === 'Escape') {
-        el.addEventListener('pointerdown',  function(ev) { ev.preventDefault(); _debugEscHoldStart(); });
-        el.addEventListener('pointerup',    function(ev) { ev.preventDefault(); _debugEscHoldCancel(); });
-        el.addEventListener('pointerleave', function(ev) { _debugEscHoldCancel(); });
+        el.addEventListener('pointerdown',  function(ev) {
+          ev.preventDefault();
+          if (touchEnabled) updateKeyboardLighting({code:'Escape',key:'Escape',preventDefault:function(){},shiftKey:false,altKey:false,metaKey:false,ctrlKey:false}, true);
+          _debugEscHoldStart();
+        });
+        el.addEventListener('pointerup',    function(ev) {
+          ev.preventDefault();
+          updateKeyboardLighting({code:'Escape',key:'Escape',preventDefault:function(){},shiftKey:false,altKey:false,metaKey:false,ctrlKey:false}, false);
+          _debugEscHoldCancel();
+        });
+        el.addEventListener('pointerleave', function(ev) { if (!escHoldFired) _debugEscHoldCancel(); });
       } else {
         el.addEventListener('mousedown', function(ev){ touchEnabled ? handleKeyTouch(ev, el) : showKbToast(ev); });
       }
@@ -1797,6 +1826,7 @@ const TOKEN_TO_BROWSER_CODE = {
   'PRINTSCREEN': 'PrintScreen',
   'SCROLLLOCK':  'ScrollLock',
   'PAUSE':       'Pause',
+  'NUMLOCK':     'NumLock',
   'FN':          'Fn',
   // Punctuation
   'EQUAL':        'Equal',
@@ -2095,8 +2125,8 @@ function _KeyTokenMatchesEvent(KeyToken, Event) {
   // Accept NumpadEnter for RETURN
   if (KeyToken === 'RETURN' && EventCode === 'NumpadEnter') return true;
 
-  // EQUAL/PLUS: match either = or + regardless of shift, match = key code
-    if (KeyToken === 'EQUAL') {
+  // EQUAL/PLUS : match either = or + regardless of shift, match = key code
+  if (KeyToken === 'EQUAL') {
     if (EventCode === 'Equal') return true;
     if (EventCode === 'NumpadAdd') return true;
     if (EventKey === '=' || EventKey === '+') return true;
@@ -2241,9 +2271,11 @@ function clearAllLit() {
     }
   });
 
-  clearTimeout(extKeyPillTimer);
-  extKeyPillEl.className = '';
-  extKeyPillEl.style.display = 'none';
+  clearTimeout(ExtendedKeyPillTimer);
+  ExtendedKeyPillElement.style.opacity = '';
+  ExtendedKeyPillElement.style.transition = '';
+  ExtendedKeyPillElement.style.display = 'none';
+  ExtendedKeyPillElement.innerHTML = '';
   greenHeld.clear();
   stickyLit.clear();
 }
@@ -2283,34 +2315,84 @@ function checkStickyShortcut() {
 
 
 // Extended key labels for the ghost pill
-const EXT_KEY_LABELS = {
+// Maps browser key codes for extended (non-graphical-keyboard) keys to their token strings.
+// Used to detect extended key presses and render them as chips in #extKeyPill.
+const ExtendedKeyCodeToToken = {
   'Home': 'home', 'End': 'end',
-  'PageUp': 'pg up', 'PageDown': 'pg dn',
-  'Insert': 'insert', 'Delete': 'del',
-  'PrintScreen': 'prt sc', 'ScrollLock': 'scr lk', 'Pause': 'pause',
-  'NumLock': 'clear',
+  'PageUp': 'PAGEUP', 'PageDown': 'PAGEDOWN',
+  'Insert': 'INSERT', 'Delete': 'DELETE',
+  'PrintScreen': 'PRINTSCREEN', 'ScrollLock': 'SCROLLLOCK', 'Pause': 'PAUSE',
+  'NumLock': 'NUMLOCK',
 };
-const extKeyPillEl = document.getElementById('extKeyPill');
-let extKeyPillTimer = null;
+const ExtendedKeyPillElement = document.getElementById('extKeyPill');
+let ExtendedKeyPillTimer = null;
 
-function showExtKeyPill(code, state) {
-  const label = EXT_KEY_LABELS[code];
-  if (!label) return;
-  clearTimeout(extKeyPillTimer);
-  extKeyPillEl.textContent = label;
-  extKeyPillEl.className = '';          // clear lit classes
-  extKeyPillEl.style.display = 'flex';
-  if (state) extKeyPillEl.classList.add('lit-' + state);
+function ShowExtendedKeyPill(BrowserCode, ColourState) {
+  var Token = ExtendedKeyCodeToToken[BrowserCode];
+  if (!Token) return;
+
+  // Determine the effective colour from game state, overriding the passed ColourState
+  // when the game timer is not actively counting.
+  // During active play: green = correct key, orange = wrong key (ColourState from caller).
+  // In all other states (paused, end screen, panels open etc.): unstyled — key is acknowledged
+  // but there is no active question to judge it against, except in special panel contexts
+  // where the chip highlights are handled by their own listeners (cheat sheet, report card etc.).
+  var EffectiveColour = null;
+  if (gameState === 'playing') {
+    if (transitioning) return; // keep the already-rendered green chip; don't overwrite with unstyled
+    EffectiveColour = ColourState; // 'green' or 'orange' from updateKeyboardLighting
+  }
+
+  clearTimeout(ExtendedKeyPillTimer);
+  ExtendedKeyPillElement.innerHTML = '';
+  var ChipsWrapper = BuildShortcutKeyChips(Token, false);
+  ChipsWrapper.style.cssText = 'display:inline-flex;align-items:center;justify-content:center;';
+
+  // Match the larger toast chip size
+  ChipsWrapper.querySelectorAll('.sp-report-chip-key').forEach(function(Chip) {
+    Chip.style.fontSize     = '13px';
+    Chip.style.padding      = '2px 7px 1px';
+    Chip.style.borderRadius = '4px';
+  });
+  ChipsWrapper.querySelectorAll('span:not(.sp-report-chip-key)').forEach(function(Sep) {
+    Sep.style.fontSize = '13px';
+    Sep.style.margin   = '0 2px';
+  });
+
+  if (EffectiveColour === 'green') {
+    ChipsWrapper.querySelectorAll('.sp-report-chip-key').forEach(function(Chip) {
+      Chip.style.background  = '#10b981';
+      Chip.style.color       = 'white';
+      Chip.style.borderColor = '#059669';
+      Chip.style.boxShadow   = '0 0 6px rgba(16,185,129,0.45)';
+    });
+  } else if (EffectiveColour === 'orange') {
+    ChipsWrapper.querySelectorAll('.sp-report-chip-key').forEach(function(Chip) {
+      Chip.style.background  = '#f97316';
+      Chip.style.color       = 'white';
+      Chip.style.borderColor = '#c2410c';
+      Chip.style.boxShadow   = '0 0 6px rgba(249,115,22,0.45)';
+    });
+  }
+  // Unstyled: chips render with their default appearance (no background fill)
+
+  ExtendedKeyPillElement.appendChild(ChipsWrapper);
+  ExtendedKeyPillElement.style.display = 'flex';
+  ExtendedKeyPillElement.style.opacity = '1';
 }
 
-function hideExtKeyPill() {
-  clearTimeout(extKeyPillTimer);
-  extKeyPillEl.classList.add('lit-fading');
-  extKeyPillTimer = setTimeout(() => {
-    extKeyPillEl.classList.remove('lit-fading', 'lit-green', 'lit-orange');
-    extKeyPillEl.style.display = 'none';
-  }, 900);
- }
+function HideExtendedKeyPill() {
+  clearTimeout(ExtendedKeyPillTimer);
+  ExtendedKeyPillTimer = setTimeout(function() {
+    ExtendedKeyPillElement.style.transition = 'opacity 0.9s ease';
+    ExtendedKeyPillElement.style.opacity = '0';
+    ExtendedKeyPillTimer = setTimeout(function() {
+      ExtendedKeyPillElement.style.display = 'none';
+      ExtendedKeyPillElement.style.transition = '';
+      ExtendedKeyPillElement.innerHTML = '';
+    }, 900);
+  }, LINGER_MS);
+}
 
 // Numpad → main keyboard code remapping for lighting
 const NUMPAD_MAP = {
@@ -2340,7 +2422,7 @@ function updateKeyboardLighting(e, isDown) {
     return;
   }
   const code = NUMPAD_MAP[e.code] || e.code;
-  const isExtKey   = code in EXT_KEY_LABELS;
+  const isExtKey   = code in ExtendedKeyCodeToToken;
   const isModifier = code === 'MetaLeft'    || code === 'MetaRight'   ||
                      code === 'ControlLeft' || code === 'ControlRight' ||
                      code === 'ShiftLeft'   || code === 'ShiftRight'   ||
@@ -2366,12 +2448,12 @@ function updateKeyboardLighting(e, isDown) {
     stickyLit.set(code, colour);
     if (isCorrect) {
       greenHeld.add(code);
-      if (isExtKey) showExtKeyPill(code, 'green');
+      if (isExtKey) ShowExtendedKeyPill(code, 'green');
       else          setKeyLit(code, 'green-down');
       if ((!isModifier || isBareModifierQuestion) && !isSilent) { greenHits++; totalHits++; updateAccuracyDisplay(); }
       checkAndArmPartialShortcutNudge();
     } else {
-      if (isExtKey) showExtKeyPill(code, 'orange');
+      if (isExtKey) ShowExtendedKeyPill(code, 'orange');
       else          setKeyLit(code, 'orange-down');
       if ((!isModifier || isBareModifierQuestion) && !isSilent) { totalHits++; updateAccuracyDisplay(); }
       resetPartialShortcutNudgeTimers();
@@ -2385,18 +2467,18 @@ function updateKeyboardLighting(e, isDown) {
     heldKeys.add(code);
     if (gameState !== 'playing') {
       greenHeld.add(code);
-      if (isExtKey) showExtKeyPill(code, 'green');
+      if (isExtKey) ShowExtendedKeyPill(code, null);
       else          setKeyLit(code, 'green-down');
     } else {
       const isCorrect = isKeyPartOfShortcut(e, currentAnswer);
       if (isCorrect) {
         greenHeld.add(code);
-        if (isExtKey) showExtKeyPill(code, 'green');
+        if (isExtKey) ShowExtendedKeyPill(code, 'green');
         else          setKeyLit(code, 'green-down');
         if (!alreadyHeld && (!isModifier || isBareModifierQuestion) && !isSilent) { greenHits++; totalHits++; updateAccuracyDisplay(); }
         checkAndArmPartialShortcutNudge();
       } else {
-        if (isExtKey) showExtKeyPill(code, 'orange');
+        if (isExtKey) ShowExtendedKeyPill(code, 'orange');
         else          setKeyLit(code, 'orange-down');
         if (!alreadyHeld && (!isModifier || isBareModifierQuestion) && !isSilent) { totalHits++; updateAccuracyDisplay(); }
         resetPartialShortcutNudgeTimers();
@@ -2426,7 +2508,7 @@ function updateKeyboardLighting(e, isDown) {
       checkAndArmPartialShortcutNudge();
     }
     if (isExtKey) {
-      hideExtKeyPill();
+      HideExtendedKeyPill();
     } else {
       const el = keyEls[code];
       if (el) {
@@ -3542,7 +3624,7 @@ function confirmDiffChangeYes() {
   try { localStorage.setItem('kw_difficulty', currentDifficulty); } catch(e) {}
   syncDiffNeedle();
 
-  var diffRank = { fundamentals: 0, normal: 1, hardcore: 2 };
+  var diffRank = { ubiquitous: -1, fundamentals: 0, normal: 1, hardcore: 2 };
   var isUpgrade = (diffRank[currentDifficulty] || 0) > (diffRank[prevDiff] || 0);
   var hasRecord = bestRecord.time !== null || bestRecord.accuracy !== null;
   var label = currentDifficulty.charAt(0).toUpperCase() + currentDifficulty.slice(1);
@@ -3562,12 +3644,13 @@ function confirmDiffChangeYes() {
 function confirmDiffChangeNo() {
   _exitDiffConfirm();
   // Restore difficulty and needle to the game that is still active
-  var modeMap = { fundamentals: -1, normal: 0, hardcore: 1 };
+  var modeMap = { ubiquitous: -1.5, fundamentals: -1, 'fundamentals-plus': -0.5, normal: 0, 'normal-plus': 0.5, hardcore: 1 };
   currentDifficulty  = _prevDifficulty;
   _diffFirst = true;
   setDiffState(modeMap[_prevDifficulty] !== undefined ? modeMap[_prevDifficulty] : 0);
   _updateDiffBtnStyles(currentDifficulty);
-  _updateDiffSubtitle(currentDifficulty);
+  _updateDiffSubtitle(currentDifficulty, null);
+  _moveDifficultyCaretToMode(currentDifficulty);
   _pendingDifficulty = null;
   _prevDifficulty    = null;
   // Stay on the difficulty panel -- the overlay has already been removed by
@@ -3603,6 +3686,17 @@ function showConfirmHeading(text, blurTitle, showBracket) {
   document.getElementById('livesRow').classList.add('blurred');
   var lp = document.querySelector('.leftPanel');
   if (lp) lp.classList.toggle('showing-confirm', showBracket === true);
+
+  // Sequential ripple: bracket appears, then green button pulses, then grey button
+  if (showBracket === true) {
+    setTimeout(function() {
+      pulseBtn(mainBtn);
+      mainBtn.addEventListener('animationend', function onMainDone() {
+        mainBtn.removeEventListener('animationend', onMainDone);
+        setTimeout(function() { pulseBtn(helpBtn); }, 80);
+      }, { once: true });
+    }, 180);
+  }
 }
 
 function hideConfirmHeading() {
@@ -3746,12 +3840,14 @@ var APP_JSON_FILE_PATH = {};
 const ROW_H = 24; // px — must match CSS height: 24px on .app-option
 
 var currentApp = 'Photoshop (Ps)'; // placeholder; overwritten by _onAppsLoaded once APPS is known
+var _appListInitialised = false;
 
 const appPillEl = document.getElementById('appPill');
 
 var AppPillWrenchOpen = false;
 
 function _saveAppsShortList() {
+  if (!_appListInitialised) return;
   try { localStorage.setItem('kw_apps_short_list', JSON.stringify(appsShortList)); } catch (StorageError) {}
 }
 
@@ -4562,7 +4658,7 @@ function setTouchEnabled(on) {
     const CapsLockKeyElement = keyEls['CapsLock'];
     if (CapsLockKeyElement) CapsLockKeyElement.classList.remove('lit-caps-active');
   }
-  varradio = document.getElementById('touchRadio');
+  var radio = document.getElementById('touchRadio');
   if (radio) radio.classList.toggle('on', on);
   if (activeSettings === 'panelConflicts') _refreshBrowserContent();
   if (on) {
@@ -6077,11 +6173,22 @@ function _debugOverlayOpen() {
   document.getElementById('dbgKey').textContent = '';
   document.getElementById('dbgMatch').textContent = '';
   dbgRefreshCtx(); dbgRefreshAccuracy(); dbgRefreshAngle();
+  if (detectedOs === 'mobile') {
+    var diag = document.getElementById('gyroDiag');
+    if (diag) {
+      diag.style.display = 'block';
+      diag.style.pointerEvents = 'auto';
+      diag.innerHTML = 'Gyro diag active...';
+      diag.addEventListener('click', function() { diag.style.display = 'none'; }, { once: true });
+    }
+  }
 }
 
 function _debugOverlayClose() {
   const dbg = document.getElementById('debugOverlay');
   dbg.style.display = 'none';
+  var diag = document.getElementById('gyroDiag');
+  if (diag) diag.style.display = 'none';
 }
 
 function _debugEscHoldStart() {
@@ -6160,6 +6267,12 @@ function dbgBuildReport() {
   var TimerDisplay  = questionTimer === null ? '∞' : String(questionTimer) + 's';
   var LivesDisplay  = playerLives   === null ? '∞' : String(playerLives);
   var BuildDevice   = typeof DBG_DEVICE !== 'undefined' ? DBG_DEVICE : 'unknown';
+  var HeldKeysDisplay  = heldKeys.size  > 0 ? Array.from(heldKeys).join(', ')  : '(none)';
+  var GreenHeldDisplay = greenHeld.size > 0 ? Array.from(greenHeld).join(', ') : '(none)';
+  var StickyDisplay    = stickyLit.size > 0
+    ? Array.from(stickyLit.entries()).map(function(e) { return e[0] + ':' + e[1]; }).join(', ')
+    : '(none)';
+
   var Lines = [
     'build:'         + BuildDevice,
     OsLine,
@@ -6168,11 +6281,14 @@ function dbgBuildReport() {
     'kbLayout:'      + (currentOs === 'pc' ? kbVariantPc : kbVariantMac),
     'kbFlags:'       + KeyboardFlags,
     'gameState:'     + gameState + '  Q:' + QuestionString,
-    CurrentQuestion  ? 'answer:'  + (GetActiveShortcutString(CurrentQuestion) || '') : '',
-    CurrentQuestion  ? 'display:' + CurrentQuestion.display    : '',
+    CurrentQuestion  ? 'answer:'     + (GetActiveShortcutString(CurrentQuestion) || '') : '',
+    CurrentQuestion  ? 'display:'    + CurrentQuestion.display    : '',
     CurrentQuestion  ? 'difficulty:' + CurrentQuestion.difficulty : '',
+    'heldKeys:'      + HeldKeysDisplay,
+    'greenHeld:'     + GreenHeldDisplay,
+    stickyKeysOn     ? 'stickyLit:'  + StickyDisplay : null,
   ];
-  return Lines.filter(function(Line) { return Line.trim(); }).join('\n');
+  return Lines.filter(function(Line) { return Line && Line.trim(); }).join('\n');
 }
 
 function dbgCopy() {
@@ -6467,8 +6583,12 @@ function _showWelcomeScreen() {
   _diffFirst = true;
   setDiffState(-1);
   _updateDiffBtnStyles('fundamentals');
-  _updateDiffSubtitle('fundamentals');
+  _updateDiffSubtitle('fundamentals', null);
   openSettings('panelLandingWelcome');
+  // Hide caret until user makes a selection
+  var wCaret = document.getElementById('welcomeDifficultyCaretEl');
+  if (wCaret) wCaret.style.visibility = 'hidden';
+  requestAnimationFrame(function() { _placeDifficultyCaretInstant('fundamentals'); });
 }
 
 // Shared handler for both the welcome panel and the difficulty settings panel
@@ -6479,7 +6599,9 @@ function diffBtnClick(mode) {
     return;
   }
 
-  var modeMap = { fundamentals: -1, normal: 0, hardcore: 1 };
+  var modeMap = { ubiquitous: -1.5, fundamentals: -1, 'fundamentals-plus': -0.5, normal: 0, 'normal-plus': 0.5, hardcore: 1 };
+  var VisualSegmentMap = { 'fundamentals-plus': 'fundamentals', 'normal-plus': 'normal' };
+  var PreviousMode = currentDifficulty;
 
   // If a game is in progress (playing or paused with time elapsed),
   // require confirmation before changing difficulty.
@@ -6488,11 +6610,12 @@ function diffBtnClick(mode) {
   if (gameIsInProgress) {
     _prevDifficulty    = currentDifficulty;
     _pendingDifficulty = mode;
-    // Move needle and update button styles immediately so the player sees the pending choice
+    // Move needle, caret, and button styles immediately so the player sees the pending choice
     _diffFirst = true;
-    setDiffState(modeMap[mode]);
+    setDiffState(modeMap[mode] !== undefined ? modeMap[mode] : 0);
     _updateDiffBtnStyles(mode);
-    _updateDiffSubtitle(mode);
+    _updateDiffSubtitle(mode, PreviousMode);
+    _moveDifficultyCaretToMode(mode);
     enterConfirmDiffChange();
     return;
   }
@@ -6500,11 +6623,13 @@ function diffBtnClick(mode) {
   // No active game — apply immediately
   currentDifficulty = mode;
   _diffFirst = true;
-  setDiffState(modeMap[mode]);
+  setDiffState(modeMap[mode] !== undefined ? modeMap[mode] : 0);
   _updateDiffBtnStyles(mode);
-  _updateDiffSubtitle(mode);
-  // Pop the newly active button label so the change is visually confirmed
-  var activeBtn = document.querySelector('#difficultyPill .diff-btn[data-mode="' + mode + '"], #welcomeDifficultyPill .diff-btn[data-mode="' + mode + '"]');
+  _updateDiffSubtitle(mode, PreviousMode);
+  _moveDifficultyCaretToMode(mode);
+  // Pop the visually active segment label
+  var VisualSegment = VisualSegmentMap[mode] || mode;
+  var activeBtn = document.querySelector('#difficultyPill .diff-btn[data-mode="' + VisualSegment + '"], #welcomeDifficultyPill .diff-btn[data-mode="' + VisualSegment + '"]');
   _popDiffLabel(activeBtn);
   try { localStorage.setItem('kw_difficulty', currentDifficulty); } catch(e) {}
 runData.length = 0; lastCompletedReport = null; CoachAdviceAccepted = false;
@@ -6535,12 +6660,21 @@ function _popDiffLabel(btnEl) {
 
 function _updateDiffBtnStyles(activeMode) {
   var hardcoreUnlocked = hasTrophy;
+  var IsUbiquitous = (activeMode === 'ubiquitous');
+  var VisualSegmentMap = {
+    'fundamentals':      'fundamentals',
+    'fundamentals-plus': 'fundamentals',
+    'normal':            'normal',
+    'normal-plus':       'normal',
+    'hardcore':          'hardcore',
+  };
+  var VisualActiveSegment = VisualSegmentMap[activeMode] || activeMode;
   var btns = document.querySelectorAll('#panelDifficultySettings .diff-btn, #panelLandingWelcome .diff-btn');
   btns.forEach(function(btn) {
     var m = btn.getAttribute('data-mode');
-    var isLocked = (m === 'hardcore' && !hardcoreUnlocked);
+    var isLocked = (m === 'hardcore' && !hardcoreUnlocked) || IsUbiquitous;
     btn.classList.toggle('diff-btn-inactive', isLocked);
-    btn.classList.toggle('diff-btn-active', !isLocked && m === activeMode);
+    btn.classList.toggle('diff-btn-active', !isLocked && m === VisualActiveSegment);
   });
 }
 
@@ -6565,12 +6699,16 @@ function _applyDifficultyPresets(mode) {
 
 function _refreshDifficultyPanel() {
   var displayMode = _pendingDifficulty !== null ? _pendingDifficulty : currentDifficulty;
-  var modeToState = { fundamentals: -1, normal: 0, hardcore: 1 };
+  var modeToState = { ubiquitous: -1.5, fundamentals: -1, 'fundamentals-plus': -0.5, normal: 0, 'normal-plus': 0.5, hardcore: 1 };
   _diffFirst = true;
   setDiffState(modeToState[displayMode] !== undefined ? modeToState[displayMode] : 0);
   _updateDiffBtnStyles(displayMode);
-  _updateDiffSubtitle(displayMode);
+  _updateDiffSubtitle(displayMode, null);
   _syncAdvancedPanelState();
+  requestAnimationFrame(function() { _placeDifficultyCaretInstant(displayMode); });
+  // Ensure the caret is visible on the full difficulty settings panel
+  var wCaret = document.getElementById('welcomeDifficultyCaretEl');
+  if (wCaret) wCaret.style.visibility = '';
   // Locked panel always shows ∞ -- the advanced settings are not yet available
   var showAsInfinity = !hasTrophy;
   _syncSliderToValue('timer', showAsInfinity ? null : questionTimer);
@@ -6858,6 +6996,7 @@ function _initSliders() {
           if (newValue !== questionTimer) {
             questionTimer = newValue;
             try { localStorage.setItem('kw_timer', String(newValue)); } catch(ex) {}
+            syncDiffNeedle();
           }
         } else {
           if (newValue !== playerLives) {
@@ -6902,6 +7041,7 @@ function _initSliders() {
       if (sliderType === 'timer') {
         questionTimer = newValue;
         try { localStorage.setItem('kw_timer', String(newValue)); } catch(ex) {}
+        syncDiffNeedle();
       } else {
         playerLives = newValue;
         try { localStorage.setItem('kw_lives', String(newValue)); } catch(ex) {}
@@ -6964,6 +7104,7 @@ document.addEventListener('DOMContentLoaded', function() {
       if (sliderType === 'timer') {
         questionTimer = newValue;
         try { localStorage.setItem('kw_timer', String(newValue)); } catch(ex) {}
+        syncDiffNeedle();
       } else {
         playerLives = newValue;
         try { localStorage.setItem('kw_lives', String(newValue)); } catch(ex) {}
@@ -6975,13 +7116,27 @@ document.addEventListener('DOMContentLoaded', function() {
   _initSliders();
 });
 
-function _updateDiffSubtitle(mode) {
-  var subtitles = {
+function _updateDiffSubtitle(mode, previousMode) {
+  var FixedSubtitles = {
+    ubiquitous:  'Asking basic ubiquitous shortcuts only.',
     fundamentals: 'Mild. We will only ask things you really should know.',
-    normal:       '',
-    hardcore:     'Spicy! We have thrown in some tricky questions.'
+    hardcore:     'Spicy! We have thrown in some tricky questions.',
   };
-  var text = subtitles[mode] !== undefined ? subtitles[mode] : '';
+  var text = '';
+  if (FixedSubtitles[mode] !== undefined) {
+    text = FixedSubtitles[mode];
+  } else {
+    if (previousMode !== undefined && previousMode !== null && Math.random() < 0.5) {
+      var SubtitleRankMap = { fundamentals: 0, 'fundamentals-plus': 0.5, normal: 1, 'normal-plus': 1.5, hardcore: 2 };
+      var PreviousRank = SubtitleRankMap[previousMode] !== undefined ? SubtitleRankMap[previousMode] : -1;
+      var NewRank      = SubtitleRankMap[mode]         !== undefined ? SubtitleRankMap[mode]         : -1;
+      if (PreviousRank >= 0 && NewRank > PreviousRank) {
+        text = 'Good. Keep pushing.';
+      } else if (PreviousRank >= 0 && NewRank < PreviousRank) {
+        text = 'Keep practising and try the higher difficulty again when you are ready.';
+      }
+    }
+  }
   ['diffSubtitle', 'welcomeDiffSubtitle'].forEach(function(id) {
     var el = document.getElementById(id);
     if (el) el.textContent = text || '\u00a0';
@@ -7364,7 +7519,7 @@ function _showReturningScreen() {
   titleEl.textContent = 'Thanks for coming back.';
   var tagline = document.getElementById('welcomeTagline');
   if (tagline) tagline.style.display = 'none';
-  var modeMap = { fundamentals: -1, normal: 0, hardcore: 1 };
+  var modeMap = { ubiquitous: -1.5, fundamentals: -1, normal: 0, hardcore: 1 };
   _diffFirst = true;
   setDiffState(modeMap[currentDifficulty] !== undefined ? modeMap[currentDifficulty] : 0);
   _updateDiffBtnStyles(currentDifficulty);
@@ -7426,9 +7581,11 @@ function _returningStartOver() {
   }, 500); // hold after pop before fading
 }
 
-function _dismissWelcome() {
-  var activeBtn = document.querySelector('#welcomeDifficultyPill .diff-btn-active');
+    function _dismissWelcome() {
+      _closeSkillsetPill();
+      var activeBtn = document.querySelector('#welcomeDifficultyPill .diff-btn-active');
   if (activeBtn) _popDiffLabel(activeBtn);
+  setAppSelectorGameActive(false);
   _welcomeIsReturning = false;
   setTimeout(function() {
     var tagline = document.getElementById('welcomeTagline');
@@ -7445,8 +7602,9 @@ function _dismissWelcome() {
   }, 1750);
 }
 
-function _startFromWelcome() {
-  // Start pressed without choosing a difficulty -- default to Normal.
+    function _startFromWelcome() {
+      _closeSkillsetPill();
+      // Start pressed without choosing a difficulty
   if (!_welcomeIsReturning) {
     currentDifficulty = 'fundamentals';
     try { localStorage.setItem('kw_difficulty', currentDifficulty); } catch(e) {}
@@ -7533,7 +7691,30 @@ function _onAppsLoaded(AllAppsFromJson) {
     }
   } catch (StorageError) {}
 
-  appsShortList = PersistedLabels || DefaultShortListLabels;
+  // URL param ?skillset= seeds the short list only when no stored preference exists.
+  // The param is left in the URL — it is harmless on subsequent loads because
+  // PersistedLabels will be non-null after the first visit and the block below is skipped.
+  var SkillsetParam = null;
+  try {
+    var UrlParams = new URLSearchParams(window.location.search);
+    SkillsetParam = UrlParams.get('skillset');
+  } catch (UrlError) {}
+
+  var SkillsetDefaultLabels = null;
+  if (SkillsetParam && !PersistedLabels) {
+    // Only apply if the user has no stored preference
+    var SkillsetUpper = SkillsetParam.toLowerCase();
+    var MatchingApps = AllAppsFromJson.filter(function(App) {
+      return Array.isArray(App.skillset) && App.skillset.some(function(S) {
+        return S.toLowerCase() === SkillsetUpper;
+      });
+    });
+    if (MatchingApps.length > 0) {
+      SkillsetDefaultLabels = MatchingApps.map(function(App) { return App.label; });
+    }
+  }
+
+  appsShortList = PersistedLabels || SkillsetDefaultLabels || DefaultShortListLabels;
   APPS = appsLongList;
 
   var FallbackApp = appsShortList[0] || (appsLongList[0] ? appsLongList[0].label : 'Photoshop (Ps)');
@@ -7544,10 +7725,12 @@ function _onAppsLoaded(AllAppsFromJson) {
     currentApp = FallbackApp;
   }
 
-
-buildAppPill();
-positionIcons();
+  _appListInitialised = true;
+  buildAppPill();
+  positionIcons();
+  _initSkillsetPillAfterAppsLoad();
 }
+
 
 
 // Fetch the apps manifest on startup. Falls back to a minimal built-in list if the
@@ -7571,11 +7754,11 @@ positionIcons();
     });
 })();
 // Codes that only exist on the extended keyboard (not on the graphical layout)
-const EXT_CODES = new Set(Object.keys(EXT_KEY_LABELS));
+const ExtendedKeyCodes = new Set(Object.keys(ExtendedKeyCodeToToken));
 
 function requiresExtKey(shortcut) {
   // Returns true if any code needed for this shortcut is an extended key
-  return shortcutToCodes(shortcut).some(c => EXT_CODES.has(c));
+  return shortcutToCodes(shortcut).some(c => ExtendedKeyCodes.has(c));
 }
 
 // Current difficulty mode: 'fundamentals' | 'normal' | 'hardcore'
@@ -7584,10 +7767,10 @@ var currentDifficulty = 'fundamentals';
 (function() {
   try {
     var saved = localStorage.getItem('kw_difficulty');
-    if (saved === 'fundamentals' || saved === 'normal' || saved === 'hardcore') {
+    if (saved === 'ubiquitous' || saved === 'fundamentals' || saved === 'fundamentals-plus' || saved === 'normal' || saved === 'normal-plus' || saved === 'hardcore') {
       currentDifficulty = saved;
       // Restore needle to match saved difficulty
-      var stateMap = { fundamentals: -1, normal: 0, hardcore: 1 };
+      var stateMap = { ubiquitous: -1.5, fundamentals: -1, 'fundamentals-plus': -0.5, normal: 0, 'normal-plus': 0.5, hardcore: 1 };
       _diffFirst = true;
       setDiffState(stateMap[saved]);
     }
@@ -7595,7 +7778,14 @@ var currentDifficulty = 'fundamentals';
 })();
 
 // Max difficulty value included per mode
-var DIFF_MAX = { fundamentals: 1, normal: 3, hardcore: 5 };
+var DIFF_RANGE = {
+  ubiquitous:          { min: 0, max: 0 },
+  fundamentals:        { min: 0, max: 1 },
+  'fundamentals-plus': { min: 0, max: 2 },
+  normal:              { min: 0, max: 3 },
+  'normal-plus':       { min: 1, max: 4 },
+  hardcore:            { min: 2, max: 5 },
+};
 
 // Shortcut tokens that are unreliable across international QWERTY variants.
 // These involve keys whose physical position or character output differs
@@ -7612,7 +7802,7 @@ const UNSTABLE_PUNCTUATION_TOKENS = new Set([
 ]);
 
 function buildPool() {
-  var maxDiff = DIFF_MAX[currentDifficulty] || 3;
+  var diffRange = DIFF_RANGE[currentDifficulty] || { min: 0, max: 3 };
   var browserSkip = getBrowserConflictSet();
   var allShortcuts = UNIVERSAL_SHORTCUTS.concat(loadedAppShortcuts);
 
@@ -7623,7 +7813,8 @@ function buildPool() {
     if (!ActiveString) return false;
 
     // Difficulty cap
-    if (ShortcutEntry.difficulty > maxDiff) return false;
+    var d = ShortcutEntry.difficulty;
+    if (d < diffRange.min || d > diffRange.max) return false;
 
     // Browser conflict exclusion — check primary alternative only
     var PrimaryString = ActiveString.split('|')[0];
@@ -8670,7 +8861,8 @@ _refreshReportPanel()
         _diffFirst = true;
         setDiffState(0);
         _updateDiffBtnStyles('normal');
-        _updateDiffSubtitle('normal');
+        _updateDiffSubtitle('normal', null);
+        _moveDifficultyCaretToMode('normal');
         // Pop the newly active label
         var normalBtn = document.querySelector('#difficultyPill .diff-btn[data-mode="normal"]');
         if (normalBtn) _popDiffLabel(normalBtn);
@@ -8806,7 +8998,7 @@ function SaveCoachMemory(messageKey, settingSuggested, defeatCount, previousRece
   // Prepend the new key and keep only the most recent 3
   var UpdatedRecentKeys = [messageKey].concat((previousRecentKeys || []).filter(function(Key) {
     return Key !== messageKey;
-  })).slice(0, 3);
+  })).slice(0, 2);
   try {
     localStorage.setItem('kw_coach_memory', JSON.stringify({
       messageKey: messageKey,
@@ -8948,7 +9140,9 @@ function finalizeRunData(completedRun, currentPool, DefeatCount) {
       }
     }
     if (PreviousSuggestion.type === 'difficulty' && PreviousSuggestion.toValue !== PreviousSuggestion.fromValue) {
-      var wentHarder = (PreviousSuggestion.toValue === 'hardcore' || PreviousSuggestion.toValue === 'normal');
+      var HarderModes = ['fundamentals-plus', 'normal', 'normal-plus', 'hardcore'];
+      var wentHarder  = HarderModes.indexOf(PreviousSuggestion.toValue) >
+                        HarderModes.indexOf(PreviousSuggestion.fromValue);
       if (acted && wentHarder && accuracyPercent >= 75) {
         AddMessage(MemoryAwareMessages, 'mem_diff_up_held',
           'You took the difficulty up and held your own. Good call.');
@@ -8958,7 +9152,7 @@ function finalizeRunData(completedRun, currentPool, DefeatCount) {
           { type: 'difficulty', fromValue: currentDifficulty, toValue: PreviousSuggestion.fromValue });
       } else if (ignored) {
         // Check if the conditions that triggered the suggestion still apply
-        var DifficultyRank      = { fundamentals: 0, normal: 1, hardcore: 2 };
+        var DifficultyRank      = { fundamentals: 0, 'fundamentals-plus': 0.5, normal: 1, 'normal-plus': 1.5, hardcore: 2 };
         var CurrentRank         = DifficultyRank[currentDifficulty] || 0;
         var SuggestedRank       = DifficultyRank[PreviousSuggestion.toValue] || 0;
         var StillWorthGoing     = SuggestedRank > CurrentRank
@@ -9075,8 +9269,33 @@ function finalizeRunData(completedRun, currentPool, DefeatCount) {
   var TimerAndLivesMessages = [];
   var DifficultyMessages    = [];
   {
-    var DifficultyRank = { fundamentals: 0, normal: 1, hardcore: 2 };
-    var CurrentRank    = DifficultyRank[currentDifficulty] || 0;
+    var DifficultyRank = {
+      ubiquitous:          0,
+      fundamentals:        1,
+      'fundamentals-plus': 2,
+      normal:              3,
+      'normal-plus':       4,
+      hardcore:            5,
+    };
+    var DifficultyRampOrder = [
+      'ubiquitous',
+      'fundamentals',
+      'fundamentals-plus',
+      'normal',
+      'normal-plus',
+      'hardcore',
+    ];
+    var DifficultyLabels = {
+      ubiquitous:          'Ubiquitous',
+      fundamentals:        'Fundamentals',
+      'fundamentals-plus': "between 'Fundamentals' and 'Normal'",
+      normal:              'Normal',
+      'normal-plus':       "between 'Normal' and 'Hardcore'",
+      hardcore:            'Hardcore',
+    };
+    var CurrentRank = DifficultyRank[currentDifficulty] !== undefined
+      ? DifficultyRank[currentDifficulty]
+      : 3;
 
     // ── Timer and lives (trophy required) ──────────────────────────────
     if (hasTrophy) {
@@ -9092,14 +9311,28 @@ function finalizeRunData(completedRun, currentPool, DefeatCount) {
           { type: 'timer', fromValue: questionTimer, toValue: LongerTimerValue });
       }
 
-      // Shorter timer: strong run with room to push
+      // Shorter timer: strong run with room to push -- never suggest 1 second via this path
       if (timeoutCount === 0 && allFast && accuracyPercent >= 90 && hintCount === 0 && CurrentTimerIndex > 0) {
         var ShorterTimerValue = TimerStops[CurrentTimerIndex - 1];
-        if (ShorterTimerValue !== null) {
+        if (ShorterTimerValue !== null && ShorterTimerValue > 1) {
           ForceAddMessage(TimerAndLivesMessages, 'cat4_timer_down',
             'You handled that comfortably. Try a shorter timer to raise the challenge.',
             { type: 'timer', fromValue: questionTimer, toValue: ShorterTimerValue });
         }
+      }
+
+      // 1-second timer: only for truly blazing performance at Normal difficulty or above
+      var DifficultyIsNormalOrAbove = (CurrentRank !== undefined ? CurrentRank : 0) >= 3;
+      if (questionTimer === 3
+          && timeoutCount === 0
+          && hintCount === 0
+          && skipCount === 0
+          && DifficultyIsNormalOrAbove
+          && medianTime !== null
+          && medianTime < 1300) {
+        ForceAddMessage(TimerAndLivesMessages, 'cat4_timer_one_second',
+          'You are answering incredibly quickly. I think you could handle a 1-second question timer. Want to try it?',
+          { type: 'timer', fromValue: questionTimer, toValue: 1 });
       }
 
       // Average answer time near a timer stop: suggest calibrating the timer to match natural pace.
@@ -9118,7 +9351,7 @@ function finalizeRunData(completedRun, currentPool, DefeatCount) {
         var AllTimesForAverage  = successTimes.concat(TimeoutEstimates);
         var AverageAnswerTimeMs = AllTimesForAverage.reduce(function(Sum, T) { return Sum + T; }, 0) / AllTimesForAverage.length;
         var AverageAnswerTimeSeconds = AverageAnswerTimeMs / 1000;
-        var FiniteTimerStops = [1, 3, 5, 10];
+        var FiniteTimerStops = [3, 5, 10];
         var NearestStop = null;
         var SmallestDistance = Infinity;
         FiniteTimerStops.forEach(function(Stop) {
@@ -9185,29 +9418,68 @@ function finalizeRunData(completedRun, currentPool, DefeatCount) {
       }
     } // end hasTrophy
 
-    // ── Difficulty (lower priority, fires only when timer/lives have nothing to say) ──
+    // ── Difficulty suggestions: one step at a time up or down the ramp ──────
+    // Up: smaller jumps need a lower threshold than larger ones.
+    // Down: suggest the next step down when clearly struggling.
+    // Fundamentals is the floor for downward suggestions.
 
-    // Raise difficulty: only suggest Hardcore if already on Normal and truly clean
-    if (accuracyPercent >= 95 && hintCount === 0 && skipCount === 0) {
-      if (CurrentRank < 2) {
-        var NextMode  = CurrentRank === 0 ? 'normal' : 'hardcore';
-        var NextLabel = CurrentRank === 0 ? 'Normal'  : 'Hardcore';
-        ForceAddMessage(DifficultyMessages, 'cat4_diff_up',
-          'You are performing very well. Consider raising the difficulty to ' + NextLabel + '.',
+    var CurrentRampIndex = DifficultyRampOrder.indexOf(currentDifficulty);
+
+    // Upward suggestion
+    if (CurrentRampIndex < DifficultyRampOrder.length - 1) {
+      var NextMode    = DifficultyRampOrder[CurrentRampIndex + 1];
+      var NextLabel   = DifficultyLabels[NextMode];
+      var IsHalfStep  = (CurrentRampIndex % 2 === 0);
+      var UpThreshold = IsHalfStep ? 90 : 95;
+      var UpMessageKey = 'cat4_diff_up_' + currentDifficulty;
+
+      if (accuracyPercent >= UpThreshold && hintCount === 0 && skipCount  <= 1 && timeoutCount <= 2) {
+        var UpMessages = IsHalfStep
+          ? [
+              "You're handling these questions well. We should raise the difficulty to " + NextLabel + ". You with me?",
+              'Clean round. I think you are ready for a slightly harder question difficulty. Want to try ' + NextLabel + '?',
+              "That was comfortable. Ready to nudge the question difficulty up to " + NextLabel + "?",
+            ]
+          : [
+              "You're performing very well. I'd like to set your question difficulty to " + NextLabel + ". Ok?",
+              'A strong round. Consider raising your question difficulty to ' + NextLabel + '.',
+              "Impressive consistency. Time to raise the question difficulty to " + NextLabel + "?",
+            ];
+        var UpText = UpMessages[Math.floor(Math.random() * UpMessages.length)];
+        ForceAddMessage(DifficultyMessages, UpMessageKey, UpText,
           { type: 'difficulty', fromValue: currentDifficulty, toValue: NextMode });
       }
     }
 
-    // Drop difficulty: genuinely struggling
-    if (accuracyPercent < 60 && (skipCount >= 4 || timeoutCount >= 4)) {
-      if (CurrentRank > 0) {
-        var PrevMode  = CurrentRank === 2 ? 'normal' : 'fundamentals';
-        var PrevLabel = CurrentRank === 2 ? 'Normal'  : 'Fundamentals';
-        ForceAddMessage(DifficultyMessages, 'cat4_diff_down',
-          'This round was genuinely challenging. Dropping to ' + PrevLabel + ' may help consolidate your learning.',
+    // Downward suggestion -- fundamentals is the floor, never suggest ubiquitous
+    if (CurrentRampIndex > 1) {
+      var PrevMode       = DifficultyRampOrder[CurrentRampIndex - 1];
+      var PrevLabel      = DifficultyLabels[PrevMode];
+      var IsHalfStepDown = (CurrentRampIndex % 2 === 0);
+      var DownMessageKey = 'cat4_diff_down_' + currentDifficulty;
+
+      var DownThresholdAccuracy = IsHalfStepDown ? 65 : 60;
+      var DownThresholdMisses   = IsHalfStepDown ? 3  : 4;
+
+      if (accuracyPercent < DownThresholdAccuracy
+          && (skipCount >= DownThresholdMisses || timeoutCount >= DownThresholdMisses)) {
+        var DownMessages = IsHalfStepDown
+          ? [
+              "This question difficulty is stretching you a bit far. I'd like to bring it back to " + PrevLabel + " for a while. Ok?",
+              'No shame in stepping back. I think ' + PrevLabel + ' question difficulty will serve you better right now.',
+              "Let's consolidate at " + PrevLabel + " question difficulty before pushing further.",
+            ]
+          : [
+              "That was a tough round. I'd like to drop your question difficulty to " + PrevLabel + " for a while -- just to build a stronger base. Ok?",
+              'I think dropping the question difficulty to ' + PrevLabel + ' will help you progress faster. Want to try it?',
+              "Let's take the question difficulty back to " + PrevLabel + " and rebuild from there.",
+            ];
+        var DownText = DownMessages[Math.floor(Math.random() * DownMessages.length)];
+        ForceAddMessage(DifficultyMessages, DownMessageKey, DownText,
           { type: 'difficulty', fromValue: currentDifficulty, toValue: PrevMode });
       }
     }
+
   } // end Cat 4 block
 
   // ── Cat 1 + 2: General and contextual encouragement ───────────────────────
@@ -9288,6 +9560,9 @@ function finalizeRunData(completedRun, currentPool, DefeatCount) {
     { key: 'enc_plateau',
       text: 'A plateau is not a ceiling. It is your brain consolidating before the next jump.',
       condition: true },
+    { key: 'enc_ramp_difficulty',
+      text: 'I think you are ready to ramp up your question difficulty.',
+      condition: accuracyPercent >= 95 && hintCount === 0 && skipCount === 0 },
        { key: 'enc_cheat_sheet',
       text: 'During play, press the lock key on the graphical keyboard to reveal a \'Cheat Sheet\'. #Spoiler',
       condition: accuracyPercent <= 85 },
@@ -9352,10 +9627,10 @@ function finalizeRunData(completedRun, currentPool, DefeatCount) {
 
   var PrimaryMessage = PickRandom(NearMissMessages)
     || PickRandom(MemoryAwareMessages)
+    || PickRandom(DifficultyMessages)
     || PickRandom(TimerAndLivesMessages)
     || SpecificOrTimerLives
     || PickRandom(LiteracyMessages)
-    || PickRandom(DifficultyMessages)
     || PickRandom(GeneralMessages);
 
 
@@ -9842,7 +10117,7 @@ function BuildShortcutKeyChips(TokenString, IsWeakness) {
     'EQUAL':'=','MINUS':'-','BRACKETLEFT':'[','BRACKETRIGHT':']',
     'BACKSLASH':'\\','SEMICOLON':';','QUOTE':"'",'COMMA':',',
     'PERIOD':'.','SLASH':'/','GRAVE':'`',
-    'LESSTHAN':'<','GREATERTHAN':'>',
+    'LESSTHAN':'<','GREATERTHAN':'>','MORETHAN':'>',
   };  
   var PcChipSymbols = {
     'CMD':'Ctrl','SHIFT':'⇧','OPTION':'Alt','CONTROL':'Ctrl','WIN':'Win','FN':'FN',
@@ -9854,7 +10129,7 @@ function BuildShortcutKeyChips(TokenString, IsWeakness) {
     'EQUAL':'=','MINUS':'-','BRACKETLEFT':'[','BRACKETRIGHT':']',
     'BACKSLASH':'\\','SEMICOLON':';','QUOTE':"'",'COMMA':',',
     'PERIOD':'.','SLASH':'/','GRAVE':'`',
-    'LESSTHAN':'<','GREATERTHAN':'>',
+    'LESSTHAN':'<','GREATERTHAN':'>','MORETHAN':'>',
   };
   var ChipSymbols = currentOs === 'pc' ? PcChipSymbols : MacChipSymbols;
 
@@ -10108,7 +10383,8 @@ function _refreshReportPanel() {
   if (adviceContainer) {
     adviceContainer.innerHTML = '';
     var HasSettingsSuggestion = Array.isArray(lastCompletedReport.trainerSettingSuggested)
-      && lastCompletedReport.trainerSettingSuggested.length > 0;
+      && lastCompletedReport.trainerSettingSuggested.length > 0
+      && trainerAdvice.length > 0;
 
     if (trainerAdvice.length > 0) {
       // Two-column layout when button is present, single column otherwise
@@ -10187,7 +10463,8 @@ function _applyCoachSuggestionsWithAnimation(SuggestionsArray) {
   var PanelOpenDelayMs = 1400;
 
   function AnimateSuggestion(Suggestion, OnComplete) {
-    var DifficultyRankMap = { fundamentals: -1, normal: 0, hardcore: 1 };
+    var DifficultyRankMap = { fundamentals: -1, 'fundamentals-plus': -0.5, normal: 0, 'normal-plus': 0.5, hardcore: 1 };
+    // Note: this map drives the needle animation angle only, not ramp logic.
 
     if (Suggestion.type === 'difficulty') {
       currentDifficulty = Suggestion.toValue;
@@ -10197,8 +10474,11 @@ function _applyCoachSuggestionsWithAnimation(SuggestionsArray) {
       _diffFirst = true;
       setDiffState(DifficultyRankMap[Suggestion.toValue] !== undefined ? DifficultyRankMap[Suggestion.toValue] : 0);
       _updateDiffBtnStyles(Suggestion.toValue);
-      _updateDiffSubtitle(Suggestion.toValue);
-      var ActivePillButton = document.querySelector('#difficultyPill .diff-btn[data-mode="' + Suggestion.toValue + '"]');
+      _updateDiffSubtitle(Suggestion.toValue, currentDifficulty);
+      _moveDifficultyCaretToMode(Suggestion.toValue);
+      var CoachVisualSegmentMap = { 'fundamentals-plus': 'fundamentals', 'normal-plus': 'normal' };
+      var CoachVisualSegment = CoachVisualSegmentMap[Suggestion.toValue] || Suggestion.toValue;
+      var ActivePillButton = document.querySelector('#difficultyPill .diff-btn[data-mode="' + CoachVisualSegment + '"]');
       if (ActivePillButton) _popDiffLabel(ActivePillButton);
       setTimeout(function() {
         PillButtons.forEach(function(Button) { Button.classList.remove('diff-btn-transitioning'); });
@@ -10208,6 +10488,7 @@ function _applyCoachSuggestionsWithAnimation(SuggestionsArray) {
     } else if (Suggestion.type === 'timer') {
       questionTimer = Suggestion.toValue;
       try { localStorage.setItem('kw_timer', String(Suggestion.toValue)); } catch (StorageError) {}
+      syncDiffNeedle();
       var TimerSliderElement = document.getElementById('questionTimerSlider');
       if (TimerSliderElement) {
         var TimerSpring = _sliderSprings['timer'];
@@ -10621,7 +10902,9 @@ updateKeyboardLighting(e, true);
     document.getElementById('dbgKey').textContent =
       'key=' + JSON.stringify(e.key) + ' code=' + e.code +
       ' cmd=' + (currentOs==='pc'?e.ctrlKey:e.metaKey) +
-      ' sh=' + e.shiftKey + ' opt=' + e.altKey;
+      ' sh=' + e.shiftKey + ' opt=' + e.altKey +
+      ' | held:[' + Array.from(heldKeys).join(',') + ']' +
+      ' green:[' + Array.from(greenHeld).join(',') + ']';
     const matchResult = matchesShortcut(e, currentAnswer);
     const includesResult = needed.includes(e.code);
     const dbgMatchEl = document.getElementById('dbgMatch');
@@ -10723,7 +11006,13 @@ updateKeyboardLighting(e, true);
     resetPartialShortcutNudgeTimers();
     clearToast();
     clearHelp();
-    showSuccessHintToast();
+    if (requiresExtKey(currentAnswer)) {
+      // Hard-clear the toast immediately — extKeyPill handles the visual,
+      // and a fading kbToast in the same position would create a double chip.
+      kbToastEl.innerHTML = '';
+    } else {
+      showSuccessHintToast();
+    }
     hideQuestionTimerArc();
     clearInterval(timerInterval);
     const AnswerTimestampMs = performance.now() - startTime - accumulatedPauseMs;
@@ -10801,10 +11090,11 @@ function releaseAllKeys() {
   greenHeld.clear();
 }
 
-var _blurPauseActive = false;
+var _blurPauseActive              = false;
+var _blurDiagnosticFoldPending    = false;
 var _blurDiagnosticAnswerRevealed = false;
-var _blurDiagnosticShortcutToken = null;
-var _blurDiagnosticFlowComplete = false;
+var _blurDiagnosticShortcutToken  = null;
+var _blurDiagnosticFlowComplete   = false;
 
 window.addEventListener('blur', function() {
   releaseAllKeys();
@@ -10821,12 +11111,20 @@ window.addEventListener('blur', function() {
   }
 });
 document.addEventListener('visibilitychange', function() {
-  if (!document.hidden) return;
-  releaseAllKeys();
-  if (gameState === 'playing') {
-    _blurPauseActive = true;
-    enterPause();
-    _activateBlurPauseScreen();
+  if (document.hidden) {
+    releaseAllKeys();
+    if (gameState === 'playing') {
+      _blurPauseActive = true;
+      _blurDiagnosticFoldPending = true;
+      enterPause();
+      _activateBlurPauseScreen();
+    }
+  } else {
+    if (_blurDiagnosticFoldPending) {
+      _blurDiagnosticFoldPending = false;
+     setTimeout(function() { SetKeyboardPositionForPanel('panelPause'); }, 600);
+      setTimeout(_repositionAffordance, 1100);
+    }
   }
 });
 
@@ -10978,6 +11276,7 @@ function _deactivateBlurPauseScreen() {
   _blurDiagnosticAnswerRevealed = false;
   _blurDiagnosticShortcutToken = null;
   _blurDiagnosticFlowComplete = false;
+  _blurDiagnosticFoldPending = false;
   document.removeEventListener('keydown', _blurDiagnosticKeydownHandler);
   var PausePanelEl = document.getElementById('panelPause');
   if (PausePanelEl) PausePanelEl.classList.remove('blur-pause-active');
@@ -11129,7 +11428,7 @@ function _blurDiagnosticSecondBlur() {
   var EnvelopeSvg = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="13" height="13" style="vertical-align:middle;flex-shrink:0;"><rect x="2" y="4" width="20" height="16" rx="2"/><polyline points="2,4 12,13 22,4"/></svg>';
 
   // Build left pill button with chip clone
-  var ChipClone = _blurDiagnosticBuildSymbolChips(_blurDiagnosticShortcutToken);
+  var ChipClone = BuildShortcutKeyChips(_blurDiagnosticShortcutToken, true);
   ChipClone.style.cssText = 'display:inline-flex;align-items:center;flex-wrap:nowrap;flex-shrink:1;min-width:0;overflow:hidden;vertical-align:middle;';
 
   var LeftLabel = document.createElement('span');
@@ -11701,19 +12000,21 @@ function _resetFlipState() {
 /* ── Difficulty needle states ── */
 var _diffState = -1;   // -1 = fundamentals, 0 = normal, 1 = hardcore
 var _diffFirst = false;
-var DIFF_ANGLES = { '-1': -60, '0': 0, '1': 60 };
+var DIFF_ANGLES = { '-1.5': -90, '-1': -60, '-0.5': -30, '0': 0, '0.5': 30, '1': 60 };
 function setDiffState(newState) {
   _diffState = newState;
   var needle = document.querySelector('#diffIcon #Needle');
-  if (needle) needle.style.transform = 'rotate(' + DIFF_ANGLES[String(newState)] + 'deg)';
+  var needleAngle = (questionTimer === 1) ? 100 : (DIFF_ANGLES[String(newState)] !== undefined ? DIFF_ANGLES[String(newState)] : 0);
+  if (needle) needle.style.transform = 'rotate(' + needleAngle + 'deg)';
   _diffFirst = false;
 }
 
 function syncDiffNeedle() {
-  var stateMap = { fundamentals: -1, normal: 0, hardcore: 1 };
+  var stateMap = { fundamentals: -1, 'fundamentals-plus': -0.5, normal: 0, 'normal-plus': 0.5, hardcore: 1 };
   var state = stateMap[currentDifficulty] !== undefined ? stateMap[currentDifficulty] : 0;
   var needle = document.querySelector('#diffIcon #Needle');
-  if (needle) needle.style.transform = 'rotate(' + DIFF_ANGLES[String(state)] + 'deg)';
+  var needleAngle = (questionTimer === 1) ? 100 : (DIFF_ANGLES[String(state)] !== undefined ? DIFF_ANGLES[String(state)] : 0);
+  if (needle) needle.style.transform = 'rotate(' + needleAngle + 'deg)';
   _diffState = state;
 }
 
@@ -11748,12 +12049,42 @@ function InitialiseGyroOrientationListener() {
   window.addEventListener('deviceorientation', OnDeviceOrientationChange);
 }
 
+var _gyroEventCount = 0;
+
+// Show gyro diagnostic overlay on mobile automatically
+
+
 function OnDeviceOrientationChange(OrientationEvent) {
+  _gyroEventCount++;
+
+  // Update diagnostic overlay if present
+  var diag = document.getElementById('gyroDiag');
+  if (diag) {
+    var orient = (typeof window.orientation !== 'undefined') ? window.orientation : 'n/a';
+    diag.innerHTML =
+      'events: ' + _gyroEventCount + '<br>' +
+      'alpha: ' + (OrientationEvent.alpha !== null ? OrientationEvent.alpha.toFixed(1) : 'null') + '<br>' +
+      'beta: '  + (OrientationEvent.beta  !== null ? OrientationEvent.beta.toFixed(1)  : 'null') + '<br>' +
+      'gamma: ' + (OrientationEvent.gamma !== null ? OrientationEvent.gamma.toFixed(1) : 'null') + '<br>' +
+      'orient: ' + orient + '<br>' +
+      'medal: ' + (currentMedal || 'none') + '<br>' +
+      'rimTarget: ' + rimTarget.toFixed(2);
+  }
+
   if (!currentMedal) return;
-  // gamma: negative = tilted left, positive = right
-  var GammaDegrees = OrientationEvent.gamma || 0;
-  // ±10 degrees of physical tilt maps to the full ±15 degree rim range
-  rimTarget = Math.max(-15, Math.min(15, (GammaDegrees / 10) * 15));
+
+  // Use the correct tilt axis depending on screen orientation.
+  // Portrait  (0/180): gamma = left/right tilt
+  // Landscape (±90):   beta  = left/right tilt; negate for reverse landscape
+  var orient = (typeof window.orientation !== 'undefined') ? window.orientation : 0;
+  var TiltDegrees;
+  if (orient === 90 || orient === -90) {
+    TiltDegrees = (OrientationEvent.beta || 0) * (orient === -90 ? -1 : 1);
+  } else {
+    TiltDegrees = OrientationEvent.gamma || 0;
+  }
+  // ±30 degrees of physical tilt maps to the full rim range
+  rimTarget = Math.max(-15, Math.min(15, (TiltDegrees / 30) * 15));
   if (!rimRafId) rimRafId = requestAnimationFrame(rimTick);
 }
 
@@ -11804,8 +12135,7 @@ function onGyroAllow() {
     DeviceOrientationEvent.requestPermission().then(function(PermissionState) {
       try { localStorage.setItem('kw_gyro', PermissionState); } catch(StorageError) {}
       if (PermissionState === 'granted') InitialiseGyroOrientationListener();
-    }).catch(function() {
-      try { localStorage.setItem('kw_gyro', 'denied'); } catch(StorageError) {}
+      // No .catch -- a dismissed system dialog should not permanently block the prompt
     });
   } else {
     // Android and other non-permission browsers: wire up directly
@@ -11817,7 +12147,6 @@ function onGyroAllow() {
 
 function onGyroDeny() {
   _uiReady = true;
-  try { localStorage.setItem('kw_gyro', 'denied'); } catch(StorageError) {}
   HideGyroModal();
   ShowKeyboardRecommendModal();
 }
@@ -11838,12 +12167,6 @@ function onKeyboardRecommendHaveOne() {
   _uiReady = true;
   HideKeyboardRecommendModal();
   _setHasKeyboard();
-  // Physical keyboard connected: behave like desktop mode
-  setTouchEnabled(false);
-  setStickyKeys(false);
-  var StickyRow = document.getElementById('stickyRow');
-  if (StickyRow) StickyRow.classList.remove('disabled');
-  // Hide the mismatch pill — the keyboard recommendation it was showing is resolved
   osMismatchEl.classList.remove('show', 'clickable');
 }
 
@@ -11882,6 +12205,16 @@ function HidePhoneWarningModal() {
   HideTouchModal('phoneWarningBackdrop', 'phoneWarningModal');
 }
 
+// Returns true when the device needs to be asked for DeviceOrientation permission.
+// Shows the prompt unless permission was already explicitly granted.
+function _requiresGyroPrompt() {
+  var SavedGyroDecision = null;
+  try { SavedGyroDecision = localStorage.getItem('kw_gyro'); } catch(e) {}
+  return SavedGyroDecision !== 'granted' &&
+    typeof DeviceOrientationEvent !== 'undefined' &&
+    typeof DeviceOrientationEvent.requestPermission === 'function';
+}
+
 function OnPhoneWarningDismiss() {
   _uiReady = true;
   HidePhoneWarningModal();
@@ -11894,16 +12227,10 @@ function OnPhoneWarningDismiss() {
   // Force the keyboard panel permanently hidden regardless of screen width
   ForceNoKeyboard = true;
   updateKeyboardMode();
-  // Chain to gyro prompt on iOS if not yet decided; otherwise done
+  // Chain to gyro prompt on iOS if permission not yet granted
   var IsIos = /iPad|iPhone|iPod/.test(navigator.userAgent) ||
               (navigator.maxTouchPoints > 1 && /Mac/.test(navigator.userAgent));
-  var SavedGyroDecision = null;
-  try { SavedGyroDecision = localStorage.getItem('kw_gyro'); } catch(StorageError) {}
-  var RequiresExplicitGyroPrompt = IsIos &&
-    SavedGyroDecision === null &&
-    typeof DeviceOrientationEvent !== 'undefined' &&
-    typeof DeviceOrientationEvent.requestPermission === 'function';
-  if (RequiresExplicitGyroPrompt) {
+  if (IsIos && _requiresGyroPrompt()) {
     setTimeout(ShowGyroModal, 300);
   }
 }
@@ -11922,19 +12249,14 @@ function OnPhoneWarningDismiss() {
   var IsIos = /iPad|iPhone|iPod/.test(navigator.userAgent) ||
               (navigator.maxTouchPoints > 1 && /Mac/.test(navigator.userAgent));
 
-  var RequiresExplicitGyroPrompt = IsIos &&
-    SavedGyroDecision === null &&
-    typeof DeviceOrientationEvent !== 'undefined' &&
-    typeof DeviceOrientationEvent.requestPermission === 'function';
-
   // Phone screens get the size warning first; it handles all subsequent chaining
   if (IsPhoneScreen()) {
     setTimeout(ShowPhoneWarningModal, 400);
     return;
   }
 
-  // Tablet/large touch devices: gyro then keyboard recommendation as before
-  if (RequiresExplicitGyroPrompt) {
+  // Tablet/large touch devices: gyro then keyboard recommendation
+  if (IsIos && _requiresGyroPrompt()) {
     setTimeout(ShowGyroModal, 600);
   } else {
     setTimeout(ShowKeyboardRecommendModal, 400);
@@ -11967,6 +12289,264 @@ function OnLayoutChange() {
 
 window.addEventListener('resize',            OnLayoutChange, { passive: true });
 window.addEventListener('orientationchange', OnLayoutChange, { passive: true });
+
+/* ══════════════════════════════════════
+   DIFFICULTY CARET
+   A downward-pointing triangle that slides
+   horizontally above the difficulty pill to
+   indicate the active difficulty state,
+   including two intermediate states that sit
+   on the dividing lines between segments.
+══════════════════════════════════════ */
+
+function _getDifficultyCaretXForMode(Mode, PillElement) {
+  if (!PillElement) return null;
+  var PillRect = PillElement.getBoundingClientRect();
+  var PillLeft = PillRect.left;
+  var Buttons  = PillElement.querySelectorAll('.diff-btn');
+  if (Buttons.length < 3) return PillRect.width / 2;
+  var FundamentalsRect    = Buttons[0].getBoundingClientRect();
+  var NormalRect          = Buttons[1].getBoundingClientRect();
+  var HardcoreRect        = Buttons[2].getBoundingClientRect();
+  var FundamentalsCentreX = (FundamentalsRect.left + FundamentalsRect.width / 2) - PillLeft;
+  var NormalCentreX       = (NormalRect.left       + NormalRect.width       / 2) - PillLeft;
+  var HardcoreCentreX     = (HardcoreRect.left     + HardcoreRect.width     / 2) - PillLeft;
+  var FirstDividerX       = (FundamentalsRect.right - PillLeft + NormalRect.left    - PillLeft) / 2;
+  var SecondDividerX      = (NormalRect.right       - PillLeft + HardcoreRect.left  - PillLeft) / 2;
+  var UbiquitousX          = 0; // left edge of the pill
+  var PositionMap = {
+    'ubiquitous':        UbiquitousX,
+    'fundamentals':      FundamentalsCentreX,
+    'fundamentals-plus': FirstDividerX,
+    'normal':            NormalCentreX,
+    'normal-plus':       SecondDividerX,
+    'hardcore':          HardcoreCentreX,
+  };
+  return PositionMap[Mode] !== undefined ? PositionMap[Mode] : NormalCentreX;
+}
+
+function _moveDifficultyCaretToMode(Mode) {
+  _moveSingleCaretToMode('difficultyCaretEl',        'difficultyPill',        Mode);
+  _moveSingleCaretToMode('welcomeDifficultyCaretEl', 'welcomeDifficultyPill', Mode);
+}
+
+function _moveSingleCaretToMode(CaretId, PillId, Mode) {
+  var CaretElement = document.getElementById(CaretId);
+  var PillElement  = document.getElementById(PillId);
+  if (!CaretElement || !PillElement) return;
+  var TargetX      = _getDifficultyCaretXForMode(Mode, PillElement);
+  if (TargetX === null) return;
+  var PreviousLeft  = parseFloat(CaretElement.style.left) || 0;
+  var PillWidth     = PillElement.getBoundingClientRect().width;
+  var IsExtremeJump = Math.abs(TargetX - PreviousLeft) > PillWidth * 0.55;
+  CaretElement.style.transition = IsExtremeJump
+    ? 'left 0.42s cubic-bezier(0.34,1.45,0.64,1)'
+    : 'left 0.32s cubic-bezier(0.34,1.2,0.64,1)';
+  CaretElement.style.left = TargetX + 'px';
+}
+
+function _placeDifficultyCaretInstant(Mode) {
+  _placeSingleCaretInstant('difficultyCaretEl',        'difficultyPill',        Mode);
+  _placeSingleCaretInstant('welcomeDifficultyCaretEl', 'welcomeDifficultyPill', Mode);
+}
+
+function _placeSingleCaretInstant(CaretId, PillId, Mode) {
+  var CaretElement = document.getElementById(CaretId);
+  var PillElement  = document.getElementById(PillId);
+  if (!CaretElement || !PillElement) return;
+  var TargetX = _getDifficultyCaretXForMode(Mode, PillElement);
+  if (TargetX === null) return;
+  CaretElement.style.transition = 'none';
+  CaretElement.style.left = TargetX + 'px';
+  requestAnimationFrame(function() {
+    requestAnimationFrame(function() {
+      if (CaretElement) CaretElement.style.transition = 'left 0.32s cubic-bezier(0.34,1.2,0.64,1)';
+    });
+  });
+}
+
+function _handleDiffPillBoundaryClick(ClickEvent, PillElement) {
+  if (!PillElement) return false;
+  var PillRect   = PillElement.getBoundingClientRect();
+  var ClickX     = ClickEvent.clientX - PillRect.left;
+  var PillWidth  = PillRect.width;
+  var FirstDivX  = PillWidth / 3;
+  var SecondDivX = (PillWidth / 3) * 2;
+  var Threshold  = 5;
+  // Ubiquitous: click within 10px to the left of the pill
+  if (ClickX >= -10 && ClickX < 5) {
+    ClickEvent.stopPropagation();
+    diffBtnClick('ubiquitous');
+    return true;
+  }
+  if (Math.abs(ClickX - FirstDivX) <= Threshold) {
+    ClickEvent.stopPropagation();
+    diffBtnClick('fundamentals-plus');
+    return true;
+  }
+  if (Math.abs(ClickX - SecondDivX) <= Threshold) {
+    ClickEvent.stopPropagation();
+    diffBtnClick('normal-plus');
+    return true;
+  }
+  return false;
+}
+
+function _onDifficultyPillClick(ClickEvent) {
+  _handleDiffPillBoundaryClick(ClickEvent, document.getElementById('difficultyPill'));
+}
+
+function _onWelcomeDifficultyPillClick(ClickEvent) {
+  _handleDiffPillBoundaryClick(ClickEvent, document.getElementById('welcomeDifficultyPill'));
+}/* ══════════════════════════════════════
+   SKILL SET PILL
+   Currently Three options: Graphic Design, Video & Motion, Office & Productivity.
+   Selecting one updates appsShortList to the apps whose skillset array
+   contains a matching tag (defined in keyboard-warriors-apps.json).
+   The pill lives only in panelLandingWelcome.
+   Width 192px fits the longest label "Office & Productivity" at 12px Lato.
+══════════════════════════════════════ */
+
+var currentSkillset   = 'Graphic Design';
+var SKILLSET_DEFS = [
+  { label: 'Graphic Design',         tags: ['Graphics']     },
+  { label: 'Video & Motion',         tags: ['Motion']       },
+  { label: 'Office Productivity',    tags: ['Productivity'] },
+];
+
+var currentSkillset   = 'Graphic Design';
+var skillsetPillOpen  = false;
+
+function _buildSkillsetPill() {
+  var pill = document.getElementById('skillsetPill');
+  if (!pill) return;
+
+  // Render the selected label in the closed pill
+  pill.innerHTML = '';
+  var selectedRow = document.createElement('div');
+  selectedRow.style.cssText = "display:flex;align-items:center;height:24px;line-height:1;font-family:'Lato',system-ui,sans-serif;font-size:12px;color:#6b7280;font-weight:500;white-space:nowrap;box-sizing:border-box;cursor:pointer;padding:0 2px;";
+  var caretCol = document.createElement('span');
+  caretCol.style.cssText = 'flex-shrink:0;width:22px;display:flex;align-items:center;justify-content:center;';
+  var caretSvg = document.createElementNS('http://www.w3.org/2000/svg','svg');
+  caretSvg.setAttribute('viewBox','0 0 7 7'); caretSvg.setAttribute('width','7'); caretSvg.setAttribute('height','7');
+  caretSvg.setAttribute('fill','currentColor');
+  caretSvg.style.cssText = 'display:block;color:#9ca3af;flex-shrink:0;transition:transform 0.2s ease;transform:' + (skillsetPillOpen ? 'rotate(90deg)' : 'none') + ';';
+  var cp = document.createElementNS('http://www.w3.org/2000/svg','path'); cp.setAttribute('d','M1.5 1 L6 3.5 L1.5 6 Z');
+  caretSvg.appendChild(cp); caretCol.appendChild(caretSvg);
+  var labelCol = document.createElement('span'); labelCol.style.cssText = 'flex:1;text-align:left;'; labelCol.textContent = currentSkillset;
+  selectedRow.appendChild(caretCol); selectedRow.appendChild(labelCol);
+  pill.appendChild(selectedRow);
+
+  // If open, render a floating dropdown
+  var existingDrop = document.getElementById('skillsetDrop');
+  if (existingDrop) existingDrop.remove();
+
+  if (skillsetPillOpen) {
+    var drop = document.createElement('div');
+    drop.id = 'skillsetDrop';
+    var pillRect = document.getElementById('skillsetPill').getBoundingClientRect();
+    var dropHeight = SKILLSET_DEFS.length * 24;
+    drop.style.cssText = 'position:fixed;left:' + pillRect.left + 'px;top:' + (pillRect.top + pillRect.height / 2 - dropHeight / 2) + 'px;width:' + pillRect.width + 'px;background:white;border:1.5px solid #9ca3af;border-radius:10px;overflow:hidden;z-index:601;box-shadow:0 4px 12px rgba(0,0,0,0.12);';
+    document.body.appendChild(drop);
+    SKILLSET_DEFS.forEach(function(def) {
+      var isSelected = (def.label === currentSkillset);
+      var row = document.createElement('div');
+      row.style.cssText = "display:flex;align-items:center;height:24px;line-height:1;font-family:'Lato',system-ui,sans-serif;font-size:12px;color:" + (isSelected ? '#6b7280':'#9ca3af') + ";font-weight:" + (isSelected ? '500':'400') + ";white-space:nowrap;box-sizing:border-box;cursor:pointer;padding:0 2px;";
+      row.addEventListener('mouseenter', function() { row.style.background = '#f0f9ff'; row.style.color = '#374151'; });
+      row.addEventListener('mouseleave',  function() { row.style.background = ''; row.style.color = isSelected ? '#6b7280':'#9ca3af'; });
+      var c2 = document.createElement('span'); c2.style.cssText = 'flex-shrink:0;width:22px;display:flex;align-items:center;justify-content:center;';
+      var s2 = document.createElementNS('http://www.w3.org/2000/svg','svg');
+      s2.setAttribute('viewBox','0 0 7 7'); s2.setAttribute('width','7'); s2.setAttribute('height','7'); s2.setAttribute('fill','currentColor');
+      s2.style.cssText = 'display:block;color:#9ca3af;opacity:' + (isSelected ? '1':'0') + ';';
+      var p2 = document.createElementNS('http://www.w3.org/2000/svg','path'); p2.setAttribute('d','M1.5 1 L6 3.5 L1.5 6 Z');
+      s2.appendChild(p2); c2.appendChild(s2);
+      var l2 = document.createElement('span'); l2.style.cssText='flex:1;text-align:left;'; l2.textContent = def.label;
+      row.appendChild(c2); row.appendChild(l2);
+      row.addEventListener('click', function(e) {
+        e.stopPropagation();
+        currentSkillset = def.label;
+        _applySkillset(def.label);
+        _closeSkillsetPill();
+        // Show the welcome caret now that a selection has been made
+        var wCaret = document.getElementById('welcomeDifficultyCaretEl');
+        if (wCaret) wCaret.style.visibility = '';
+        _moveDifficultyCaretToMode(currentDifficulty);
+      });
+      drop.appendChild(row);
+    });
+  }
+}
+
+function _applySkillset(skillsetLabel) {
+  var def = SKILLSET_DEFS.find(function(d) { return d.label === skillsetLabel; });
+  if (!def || appsLongList.length === 0) return;
+  var matching = appsLongList
+    .filter(function(app) {
+      if (!Array.isArray(app.skillset)) return false;
+      return def.tags.some(function(tag) { return app.skillset.indexOf(tag) !== -1; });
+    })
+    .map(function(app) { return app.label; });
+  if (matching.length > 0) {
+    appsShortList = matching;
+    if (appsShortList.indexOf(currentApp) === -1) {
+      currentApp = appsShortList[0];
+      try { localStorage.setItem('kw_app', currentApp); } catch(e) {}
+    }
+    _saveAppsShortList();
+    buildAppPill();
+  }
+  runData.length = 0; lastCompletedReport = null; CoachAdviceAccepted = false;
+}
+
+function skillsetPillClick() {
+  if (skillsetPillOpen) { _closeSkillsetPill(); return; }
+  _openSkillsetPill();
+}
+
+function _openSkillsetPill() {
+  skillsetPillOpen = true;
+  _buildSkillsetPill();
+  setTimeout(function() {
+    document.addEventListener('click', function handler(e) {
+    var pill = document.getElementById('skillsetPill');
+    if (pill && !pill.contains(e.target)) {
+    _closeSkillsetPill();
+    document.removeEventListener('click', handler);
+          }
+        });
+      }, 0);
+    }
+
+function _closeSkillsetPill() {
+  skillsetPillOpen = false;
+  var existingDrop = document.getElementById('skillsetDrop');
+  if (existingDrop) existingDrop.remove();
+  _buildSkillsetPill();
+}
+
+
+var _skillsetPillInitialised = false;
+function _initSkillsetPillAfterAppsLoad() {
+  if (_skillsetPillInitialised) return;
+  _skillsetPillInitialised = true;
+
+  // Read ?skillset= URL param
+  try {
+    var urlParams = new URLSearchParams(window.location.search);
+    var urlSkillset = urlParams.get('skillset');
+    if (urlSkillset) {
+      var matchedDef = SKILLSET_DEFS.find(function(d) {
+        return d.label.toLowerCase() === urlSkillset.toLowerCase() ||
+               d.tags.some(function(t) { return t.toLowerCase() === urlSkillset.toLowerCase(); });
+      });
+      if (matchedDef) currentSkillset = matchedDef.label;
+    }
+  } catch(e) {}
+
+  _applySkillset(currentSkillset);
+  _buildSkillsetPill();
+}
+
 </script>
 </body>
 </html>

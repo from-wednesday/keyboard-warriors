@@ -11258,9 +11258,17 @@ function _activateBlurPauseScreen() {
   var BottomRow = document.getElementById('blurDiagnosticBottomRow');
   if (BottomRow) { BottomRow.style.display = 'none'; BottomRow.style.padding = ''; BottomRow.innerHTML = ''; }
 
-  // Register keydown listener for shortcut verification
+// Register keydown listener for shortcut verification
   document.addEventListener('keydown', _blurDiagnosticKeydownHandler);
+
+  // Reposition the drag affordance now the panel content has changed height
+  requestAnimationFrame(function() {
+    requestAnimationFrame(function() {
+      _repositionAffordance();
+    });
+  });
 }
+
 
 function _deactivateBlurPauseScreen() {
   _blurPauseActive = false;

@@ -11258,15 +11258,9 @@ function _activateBlurPauseScreen() {
   var BottomRow = document.getElementById('blurDiagnosticBottomRow');
   if (BottomRow) { BottomRow.style.display = 'none'; BottomRow.style.padding = ''; BottomRow.innerHTML = ''; }
 
-// Register keydown listener for shortcut verification
+  // Register keydown listener for shortcut verification
   document.addEventListener('keydown', _blurDiagnosticKeydownHandler);
-
-  // Reposition the drag affordance after the panel content has changed height
-  setTimeout(function() {
-  _repositionAffordance();
-  }, 300);
-   
-
+}
 
 function _deactivateBlurPauseScreen() {
   _blurPauseActive = false;

@@ -11090,10 +11090,11 @@ function releaseAllKeys() {
   greenHeld.clear();
 }
 
-var _blurPauseActive = false;
+var _blurPauseActive              = false;
+var _blurDiagnosticFoldPending    = false;
 var _blurDiagnosticAnswerRevealed = false;
-var _blurDiagnosticShortcutToken = null;
-var _blurDiagnosticFlowComplete = false;
+var _blurDiagnosticShortcutToken  = null;
+var _blurDiagnosticFlowComplete   = false;
 
 window.addEventListener('blur', function() {
   releaseAllKeys();
@@ -11110,12 +11111,19 @@ window.addEventListener('blur', function() {
   }
 });
 document.addEventListener('visibilitychange', function() {
-  if (!document.hidden) return;
-  releaseAllKeys();
-  if (gameState === 'playing') {
-    _blurPauseActive = true;
-    enterPause();
-    _activateBlurPauseScreen();
+  if (document.hidden) {
+    releaseAllKeys();
+    if (gameState === 'playing') {
+      _blurPauseActive = true;
+      _blurDiagnosticFoldPending = true;
+      enterPause();
+      _activateBlurPauseScreen();
+    }
+  } else {
+    if (_blurDiagnosticFoldPending) {
+      _blurDiagnosticFoldPending = false;
+      setTimeout(function() { SetKeyboardPositionForPanel('panelPause'); }, 150);
+    }
   }
 });
 
@@ -11267,6 +11275,7 @@ function _deactivateBlurPauseScreen() {
   _blurDiagnosticAnswerRevealed = false;
   _blurDiagnosticShortcutToken = null;
   _blurDiagnosticFlowComplete = false;
+  _blurDiagnosticFoldPending = false;
   document.removeEventListener('keydown', _blurDiagnosticKeydownHandler);
   var PausePanelEl = document.getElementById('panelPause');
   if (PausePanelEl) PausePanelEl.classList.remove('blur-pause-active');

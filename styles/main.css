@@ -4,7 +4,6 @@
    Do not reorder major sections.
    ═══════════════════════════════════════════════════ */
 
-/* ── Google Fonts (must be first rule) ─────────────── */
 @import url('https://fonts.googleapis.com/css2?family=Lato:wght@400;700&display=swap');
 
 * { margin:0; padding:0; box-sizing:border-box; }
@@ -14,8 +13,6 @@
   opacity: 1;
   transition: opacity 0.3s ease;
 }
-
-
 
 body {
   font-family: system-ui, -apple-system, sans-serif;
@@ -522,46 +519,21 @@ body {
 
 /* Extended key ghost pill — appears in statsRow when a key not on the
    graphical keyboard is held. Styled to match the current keyboard mode. */
+/* Extended key chip pill: centred in #statsRow, shows chip-format feedback
+   for keys not present on the graphical keyboard (Home, End, PageUp etc.).
+   Background and colour are applied directly to the chip children by JS. */
 #extKeyPill {
   position: absolute;
   left: 50%;
-  transform: translate(-50%, -50%);
   top: 50%;
-  background: #f5f5f7;
-  color: #1d1d1f;
-  font-family: system-ui, sans-serif;
-  font-size: 11px;
-  font-weight: 500;
-  padding: 0 14px;
-  height: 32px;
-  min-width: 48px;
+  transform: translate(-50%, -50%);
   display: none;
   align-items: center;
   justify-content: center;
-  border-radius: 4px;           /* Mac style by default */
-  box-shadow: 0 2px 0 #8a9099, inset 0 -1px 0 rgba(0,0,0,0.08);
   pointer-events: none;
   z-index: 11;
-  transition: background 0.07s, box-shadow 0.07s, color 0.07s;
   white-space: nowrap;
-}
-/* PC mode: circular/pill */
-body.pc-mode #extKeyPill {
-  border-radius: 40px;
-}
-/* Lit states mirror real keys */
-#extKeyPill.lit-green {
-  background: #10b981 !important;
-  box-shadow: 0 2px 0 #059669, 0 0 8px rgba(16,185,129,0.5) !important;
-  color: white !important;
-}
-#extKeyPill.lit-orange {
-  background: #f97316 !important;
-  box-shadow: 0 2px 0 #c2410c, 0 0 8px rgba(249,115,22,0.5) !important;
-  color: white !important;
-}
-#extKeyPill.lit-fading {
-  transition: background 0.8s ease, box-shadow 0.8s ease, color 0.8s ease !important;
+  transition: opacity 0.8s ease;
 }
 
 
@@ -1668,9 +1640,9 @@ li.conflict-dismissed .conflict-desc {
 .app-option-wrench {
   border-top: 1px solid rgba(0,0,0,0.05);
   opacity: 0.3;
-  height: 28px; /* slightly taller for more space below the wrench */
-  align-items: flex-start;
-  padding-top: 5px;
+  height: 28px;
+  align-items: center;
+  padding-top: 0;
   padding-left: 0;
 }
 .app-option-wrench:hover { opacity: 1; }

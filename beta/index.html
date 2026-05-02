@@ -10335,7 +10335,9 @@ function BuildShortcutKeyChips(TokenString, IsWeakness) {
     Chip.className = 'sp-report-chip-key';
     Chip.textContent = Label;
     var ChipStyles = [
-      'display:inline-block',
+      'display:inline-flex',
+      'align-items:center',
+      'justify-content:center',
       'font-family:inherit',
       'font-size:10px',
       'font-weight:600',
@@ -10344,8 +10346,11 @@ function BuildShortcutKeyChips(TokenString, IsWeakness) {
       'border-radius:3px',
       'padding:1px 4px 0',
       'line-height:1.6',
+      'min-height:18px',
+      'min-width:18px',
       'white-space:nowrap',
       'vertical-align:middle',
+      'text-align:center',
     ];
     if (IsWeakness) {
       ChipStyles.push('background:#f3f4f6');

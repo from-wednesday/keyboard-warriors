@@ -10324,6 +10324,14 @@ function BuildShortcutKeyChips(TokenString, IsWeakness) {
   Wrapper.dataset.chipsWrapper = '1';
   Wrapper.style.cssText = 'flex-shrink:0;margin-left:6px;display:inline-flex;align-items:center;flex-wrap:nowrap;';
 
+  // Characters that are visually small at 10px and need a larger font size
+  // inside the chip. Padding is reduced to keep the overall chip dimensions the same.
+  var CHIP_LARGE_SYMBOL_SET = new Set([
+    '`', '~', ';', ':', "'", '"', ',', '.', '/', '\\',
+    '[', ']', '{', '}', '-', '_', '=', '+', '<', '>',
+    '|', '!', '@', '#', '$', '%', '^', '&', '*', '(', ')',
+  ]);
+
   DisplayTokens.forEach(function(Label, Index) {
     if (Index > 0) {
       var Separator = document.createElement('span');
@@ -10334,18 +10342,22 @@ function BuildShortcutKeyChips(TokenString, IsWeakness) {
     var Chip = document.createElement('span');
     Chip.className = 'sp-report-chip-key';
     Chip.textContent = Label;
+    // Single-character labels that are in the large-symbol set get a bigger
+    // font size so they read clearly. Padding is tightened to keep the chip
+    // the same overall height and approximate width.
+    var IsLargeSymbol = Label.length === 1 && CHIP_LARGE_SYMBOL_SET.has(Label);
     var ChipStyles = [
       'display:inline-flex',
       'align-items:center',
       'justify-content:center',
       'font-family:inherit',
-      'font-size:10px',
+      IsLargeSymbol ? 'font-size:14px' : 'font-size:10px',
       'font-weight:600',
       'color:#1e3a5f',
       'border:1px solid #d1d5db',
       'border-radius:3px',
-      'padding:1px 4px 0',
-      'line-height:1.6',
+      IsLargeSymbol ? 'padding:0 3px' : 'padding:1px 4px 0',
+      IsLargeSymbol ? 'line-height:1' : 'line-height:1.6',
       'min-height:18px',
       'min-width:18px',
       'white-space:nowrap',

@@ -1,8 +1,23 @@
 {
   "os_conflicts": [
-    { "bad": "CMD+SHIFT+3", "action": "screenshot to file" },
-    { "bad": "CMD+SHIFT+4", "action": "screenshot with selection" },
-    { "bad": "CMD+Q",       "action": "quit application", "sus": true }
+    { "bad": "CMD+TAB",       "action": "switch app" },
+    { "bad": "CMD+W",       "action": "zzzzzzzzz" },
+        { "bad": "CMD+SHIFT+3", "action": "screenshot to file" },
+        { "bad": "CMD+SHIFT+4", "action": "screenshot with selection" },
+        { "bad": "CMD+SHIFT+5", "action": "advanced screenshot" },
+    { "bad": "CMD+Q",       "action": "quit application" },
+        { "bad": "F2",       "action": "descrease brightness" },
+        { "bad": "F2",       "action": "increase brightness" },
+        { "bad": "F3",       "action": "mission control" },
+        { "bad": "F4",       "action": "spotlight" },
+    { "bad": "F5",       "action": "brighten keyboard", "sus": true },
+    { "bad": "F6",       "action": "dim keyboard", "sus": true },
+        { "bad": "F7",       "action": "rewind media" },
+        { "bad": "F8",       "action": "play/pause media" },
+        { "bad": "F9",       "action": "forward media" },
+        { "bad": "F10",      "action": "mute audio" },
+        { "bad": "F11",      "action": "volume down" },
+        { "bad": "F12",      "action": "volume up" }
   ],
   "browser_conflicts": {
     "Chrome":  [
@@ -11,10 +26,16 @@
     ],
     "Safari":  [
       { "bad": "CMD+T",         "action": "new tab" },
-      { "bad": "CMD+N",         "action": "new window", "sus": true }
+      { "bad": "CMD+N",         "action": "new window", "sus": true },
+            { "bad": "CMD+R",         "action": "reload tab" },
+            { "bad": "CMD+O",         "action": "zzzzzzzzzzzzzzzzzzzzz" },
+            { "bad": "CMD+1",         "action": "zzzzzzzzzzzzzzzb" },
+            { "bad": "CMD+OPT+LEFT",  "action": "move to left tab" },
+            { "bad": "CMD+OPT+RIGHT", "action": "move to right tab" }
     ],
     "Firefox": [
-      { "bad": "CMD+T",         "action": "new tab" }
+      { "bad": "CMD+T",         "action": "new tab" },
+      { "bad": "CMD+SHIFT+P",   "action": "zzzzzzzzzzzzzzzzzzz" }
     ],
     "Opera":   [
       { "bad": "CMD+T",         "action": "new tab" }

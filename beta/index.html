@@ -2349,15 +2349,7 @@ function ShowExtendedKeyPill(BrowserCode, ColourState) {
   ChipsWrapper.style.cssText = 'display:inline-flex;align-items:center;justify-content:center;';
 
   // Match the larger toast chip size
-  ChipsWrapper.querySelectorAll('.sp-report-chip-key').forEach(function(Chip) {
-    Chip.style.fontSize     = '13px';
-    Chip.style.padding      = '2px 7px 1px';
-    Chip.style.borderRadius = '4px';
-  });
-  ChipsWrapper.querySelectorAll('span:not(.sp-report-chip-key)').forEach(function(Sep) {
-    Sep.style.fontSize = '13px';
-    Sep.style.margin   = '0 2px';
-  });
+  ResizeChips(ChipsWrapper, 28);
 
   if (EffectiveColour === 'green') {
     ChipsWrapper.querySelectorAll('.sp-report-chip-key').forEach(function(Chip) {
@@ -2921,19 +2913,8 @@ function ShowHintToast(TokenString, colour) {
   kbToastEl.innerHTML = '';
   var ChipsWrapper = BuildShortcutKeyChips(TokenString, false);
 
-  // ── Make toast chips larger ───────────────────────────────────────────────
-  // Override the 10px report-card size. The toast is position:absolute
-  // inside statsRow so no layout height is added.
-  ChipsWrapper.querySelectorAll('.sp-report-chip-key').forEach(function(Chip) {
-    Chip.style.fontSize     = '13px';
-    Chip.style.padding      = '2px 7px 1px';
-    Chip.style.borderRadius = '4px';
-  });
-  // Separator + signs grow proportionally
-  ChipsWrapper.querySelectorAll('span:not(.sp-report-chip-key)').forEach(function(Sep) {
-    Sep.style.fontSize = '13px';
-    Sep.style.margin   = '0 2px';
-  });
+  // ── Scale toast chips to 28px height (larger than report-card chips) ────────
+  ResizeChips(ChipsWrapper, 28);
 
   // ── Colour the chips ──────────────────────────────────────────────────────
   if (colour) {
@@ -10334,36 +10315,83 @@ function BuildShortcutKeyChips(TokenString, IsWeakness) {
     var Chip = document.createElement('span');
     Chip.className = 'sp-report-chip-key';
     Chip.textContent = Label;
-    // Height is always 20px. Width is min 20px, grows with content via padding.
-    // Font size scales with label length so longer words stay legible while
-    // single characters fill the square comfortably.
-    var FontSize = Label.length <= 1 ? 13 : Label.length <= 3 ? 11 : 10;
-    var ChipStyles = [
-      'display:inline-flex',
-      'align-items:center',
-      'justify-content:center',
-      'font-family:inherit',
-      'font-size:' + FontSize + 'px',
-      'font-weight:600',
-      'color:#1e3a5f',
-      'border:1px solid #d1d5db',
-      'border-radius:3px',
-      'height:20px',
-      'min-width:20px',
-      'padding:0 4px',
-      'box-sizing:border-box',
-      'line-height:1',
-      'white-space:nowrap',
-      'vertical-align:middle',
-    ];
-    if (IsWeakness) {
-      ChipStyles.push('background:#f3f4f6');
-      ChipStyles.push('box-shadow:0 1.5px 0 #c9cdd3');
-    }
-    Chip.style.cssText = ChipStyles.join(';');
+    Chip.style.cssText = _ChipStylesForSize(Label, 20, IsWeakness).join(';');
     Wrapper.appendChild(Chip);
   });
   return Wrapper;
+}
+
+/* ── _ChipStylesForSize ──────────────────────────────────────────────────────
+   Returns a cssText-ready style array for a chip of exactly TargetPx height.
+   Width is min TargetPx and grows wider via padding for longer labels.
+   Font size and padding scale proportionally to TargetPx.
+   Single punctuation/symbol characters that sit optically low get a 1px
+   padding-bottom nudge so they appear visually centred.
+──────────────────────────────────────────────────────────────────────────── */
+function _ChipStylesForSize(Label, TargetPx, IsWeakness) {
+  var FontPx = Math.round(TargetPx * (
+    Label.length <= 1 ? 0.65 :
+    Label.length <= 3 ? 0.55 : 0.50
+  ));
+  var SidePad = Math.round(TargetPx * 0.20);
+  var Radius  = Math.round(TargetPx * 0.15);
+
+  // Characters that sit optically low in the em-square get a small nudge
+  var LOW_SYMBOLS = new Set([
+    ';', ':', "'", '"', ',', '.', '`', '~', '-', '_',
+    '/', '\\', '|', '!', '@', '#', '$', '%', '^', '&',
+    '*', '(', ')', '[', ']', '{', '}', '<', '>', '=', '+',
+  ]);
+  var PbNudge = (Label.length === 1 && LOW_SYMBOLS.has(Label)) ? '1px' : '0';
+
+  var styles = [
+    'display:inline-flex',
+    'align-items:center',
+    'justify-content:center',
+    'font-family:inherit',
+    'font-size:' + FontPx + 'px',
+    'font-weight:600',
+    'color:#1e3a5f',
+    'border:1px solid #d1d5db',
+    'border-radius:' + Radius + 'px',
+    'height:' + TargetPx + 'px',
+    'min-width:' + TargetPx + 'px',
+    'padding:0 ' + SidePad + 'px ' + PbNudge,
+    'box-sizing:border-box',
+    'line-height:1',
+    'white-space:nowrap',
+    'vertical-align:middle',
+  ];
+  if (IsWeakness) {
+    styles.push('background:#f3f4f6');
+    styles.push('box-shadow:0 1.5px 0 #c9cdd3');
+  }
+  return styles;
+}
+
+/* ── ResizeChips ─────────────────────────────────────────────────────────────
+   Re-applies _ChipStylesForSize at a different TargetPx to every chip inside
+   a wrapper returned by BuildShortcutKeyChips, preserving any colour overrides
+   already applied. Call this instead of manually setting fontSize/padding.
+──────────────────────────────────────────────────────────────────────────── */
+function ResizeChips(Wrapper, TargetPx) {
+  Wrapper.querySelectorAll('.sp-report-chip-key').forEach(function(Chip) {
+    var SavedBg     = Chip.style.background;
+    var SavedColor  = Chip.style.color;
+    var SavedBorder = Chip.style.borderColor;
+    var SavedShadow = Chip.style.boxShadow;
+    Chip.style.cssText = _ChipStylesForSize(Chip.textContent, TargetPx, false).join(';');
+    if (SavedBg)     Chip.style.background  = SavedBg;
+    if (SavedColor)  Chip.style.color       = SavedColor;
+    if (SavedBorder) Chip.style.borderColor = SavedBorder;
+    if (SavedShadow) Chip.style.boxShadow   = SavedShadow;
+  });
+  var SepFontPx = Math.round(TargetPx * 0.55);
+  var SepMargin = Math.round(TargetPx * 0.08);
+  Wrapper.querySelectorAll('span:not(.sp-report-chip-key)').forEach(function(Sep) {
+    Sep.style.fontSize = SepFontPx + 'px';
+    Sep.style.margin   = '0 ' + SepMargin + 'px';
+  });
 }
 
 function _refreshReportPanel() {
@@ -11426,15 +11454,7 @@ function _deactivateBlurPauseScreen() {
     ChipsArea.style.alignItems = 'center';
     ChipsArea.style.justifyContent = 'center';
     ChipsArea.style.minHeight = Math.max(ButtonHeight, 32) + 'px';
-    ChipsArea.querySelectorAll('.sp-report-chip-key').forEach(function(Chip) {
-      Chip.style.fontSize = '16px';
-      Chip.style.padding = '4px 10px';
-      Chip.style.borderRadius = '5px';
-      Chip.style.lineHeight = '1.4';
-    });
-    ChipsArea.querySelectorAll('span:not(.sp-report-chip-key)').forEach(function(Sep) {
-      Sep.style.fontSize = '14px';
-    });
+    ResizeChips(ChipWrapper, 32);
   }
 }
 

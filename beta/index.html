@@ -9,7 +9,7 @@
 <title>beta</title>
 <script>
   const DefaultTitle = 'Keyboard Warriors';
-  const VersionLabel   = '0027';
+  const VersionLabel   = '0028';
   const TitlePrefix  = document.title !== DefaultTitle ? document.title.trim() + '_' : '';
   const DBG_DEVICE   = TitlePrefix + VersionLabel;
 </script>
@@ -2471,58 +2471,61 @@ function updateKeyboardLighting(e, isDown) {
   }
 
   // ── Normal (non-sticky) mode ──────────────────────────────────────────────
-if (isDown) {
-  const alreadyHeld = heldKeys.has(code);
-  heldKeys.add(code);
-  if (gameState !== 'playing') {
-    greenHeld.add(code);
-    if (isExtKey) ShowExtendedKeyPill(ResolvedCode, null);
-    else setKeyLit(ResolvedCode, 'green-down');
-  } else {
-    const isCorrect = isKeyPartOfShortcut(e, currentAnswer);
-    if (isCorrect) {
+  if (isDown) {
+    const alreadyHeld = heldKeys.has(code);
+    heldKeys.add(code);
+    if (gameState !== 'playing') {
       greenHeld.add(code);
-      if (isExtKey) ShowExtendedKeyPill(code, 'green');
-      else setKeyLit(code, 'green-down');
-      if (!alreadyHeld && (!isModifier || isBareModifierQuestion) && !isSilent) { greenHits++; totalHits++; updateAccuracyDisplay(); }
-      checkAndArmPartialShortcutNudge();
+      if (isExtKey) ShowExtendedKeyPill(ResolvedCode, null);
+      else          setKeyLit(ResolvedCode, 'green-down');
     } else {
-      if (isExtKey) ShowExtendedKeyPill(code, 'orange');
-      else setKeyLit(code, 'orange-down');
-      if (!alreadyHeld && (!isModifier || isBareModifierQuestion) && !isSilent) { totalHits++; updateAccuracyDisplay(); }
-      resetPartialShortcutNudgeTimers();
-    }
-  }
-} else {
-  heldKeys.delete(code);
-  greenHeld.delete(code);
-
-  if (gameState === 'playing' && !transitioning && greenHeld.size === 0 && !neededSatisfied(shortcutToCodes(currentAnswer))) {
-    const wasGreen = keyEls[code] && (keyEls[code].classList.contains('lit-green-down') || keyEls[code].classList.contains('lit-green-up'));
-    if (wasGreen) {
-      partialCorrectKeyPressedThisQuestion = true;
-      if (!partialNudgeFiredThisQuestion) {
-        partialNudgeFiredThisQuestion = true;
-        showToast("The shortcut isn't complete yet");
+      const isCorrect = isKeyPartOfShortcut(e, currentAnswer);
+      if (isCorrect) {
+        greenHeld.add(code);
+        if (isExtKey) ShowExtendedKeyPill(ResolvedCode, 'green');
+        else          setKeyLit(ResolvedCode, 'green-down');
+        if (!alreadyHeld && (!isModifier || isBareModifierQuestion) && !isSilent) { greenHits++; totalHits++; updateAccuracyDisplay(); }
+        checkAndArmPartialShortcutNudge();
+      } else {
+        if (isExtKey) ShowExtendedKeyPill(ResolvedCode, 'orange');
+        else          setKeyLit(ResolvedCode, 'orange-down');
+        if (!alreadyHeld && (!isModifier || isBareModifierQuestion) && !isSilent) { totalHits++; updateAccuracyDisplay(); }
+        resetPartialShortcutNudgeTimers();
       }
     }
-  }
-
-  if (!isPartialCorrectState()) {
-    resetPartialShortcutNudgeTimers();
   } else {
-    checkAndArmPartialShortcutNudge();
-  }
-
-  if (isExtKey) {
-    HideExtendedKeyPill();
-  } else {
-    const el = keyEls[ResolvedCode];
-    if (el) {
-      if (el.classList.contains('lit-green-down')) setKeyLit(code, 'green-up');
-      else if (el.classList.contains('lit-orange-down')) setKeyLit(code, 'orange-up');
+    heldKeys.delete(code);
+    greenHeld.delete(code);
+    // If a green key is released mid-partial (correct key pressed but shortcut not completed),
+    // record that a partial attempt happened and show an immediate nudge if the toast hasn't fired yet.
+    if (gameState === 'playing' && !transitioning && greenHeld.size === 0 && !neededSatisfied(shortcutToCodes(currentAnswer))) {
+      const wasGreen = keyEls[ResolvedCode] && (keyEls[ResolvedCode].classList.contains('lit-green-down') || keyEls[ResolvedCode].classList.contains('lit-green-up'));
+      if (wasGreen) {
+        partialCorrectKeyPressedThisQuestion = true;
+        if (!partialNudgeFiredThisQuestion) {
+          partialNudgeFiredThisQuestion = true;
+          showToast("The shortcut isn't complete yet");
+        }
+      }
     }
-    fadeKeyOut(code);
+    // Only reset the nudge timers if we are no longer in a partial correct state.
+    // If the player released a correct key but other correct keys are still lit
+    // (sticky mode), or the question still has required keys unmet, keep the nudge armed.
+    if (!isPartialCorrectState()) {
+    resetPartialShortcutNudgeTimers();
+    } else {
+      checkAndArmPartialShortcutNudge();
+    }
+    if (isExtKey) {
+      HideExtendedKeyPill();
+    } else {
+      const el = keyEls[ResolvedCode];
+      if (el) {
+        if (el.classList.contains('lit-green-down'))  setKeyLit(ResolvedCode, 'green-up');
+        else if (el.classList.contains('lit-orange-down')) setKeyLit(ResolvedCode, 'orange-up');
+      }
+      fadeKeyOut(ResolvedCode);
+    }
   }
 }
 

@@ -2837,6 +2837,15 @@ function helpButtonClick() {
   resetEndScreenInactivityTimer();
   if (gameState === 'idle')           { titleEl.textContent = bestRecord.time !== null ? 'You can reset your score from the pause screen.' : 'Press start to begin.'; return; }
   if (gameState === 'playing')        { toggleHelp(); return; }
+  // Difficulty panel: refresh the footer message
+  if ((gameState === 'idle' || gameState === 'welcome' || gameState === 'paused' || gameState === 'finished') && activeSettings === 'panelDifficultySettings' && !_trophySequenceActive) {
+    var footer = document.getElementById('diffAdvancedFooter');
+    if (footer && footer.classList.contains('diff-advanced-footer-visible')) {
+      footer.textContent = _pickDiffPanelFooterMessage();
+      _popDiffLabel(footer);
+    }
+      return; 
+  }
   if (gameState === 'readyToUnpause') { _enterReadyToUnpauseCleanup(); enterPause(); enterConfirmQuit(); return; }
   if (gameState === 'paused')         { enterConfirmQuit(); return; }
   if (gameState === 'confirm-reset')           { confirmResetNo(); return; }
@@ -6696,6 +6705,81 @@ function _applyDifficultyPresets(mode) {
   try { localStorage.setItem('kw_timer', String(questionTimer)); } catch(e) {}
   try { localStorage.setItem('kw_lives', String(playerLives));   } catch(e) {}
 }
+/* ── Difficulty panel footer messages ────────────────────────────────────────
+   Shown in the footer of the advanced panel when no coach/trophy message is
+   active. Rotates through a contextual pool; refreshes when the player presses
+   the Help button while this panel is open.
+   Groups: 1=safe player, 2=panic player, 3=plateau player, 4=neutral/general.
+   Context is inferred from lastCompletedReport when available.
+── */
+var _diffFooterLastKey = null;
+
+function _pickDiffPanelFooterMessage() {
+  var MESSAGES = [
+    // Group 1 — High accuracy / slow speed
+    { key: 'df_safe_a',    condition: _diffFooterIsSafePlayer,    text: 'Push your boundaries by reducing the timer or increasing difficulty. Real speed is built just outside your comfort zone.' },
+    { key: 'df_safe_b',    condition: _diffFooterIsSafePlayer,    text: 'Speed is nothing without precision, but once you have the basics down, lower your lives to test your grit.' },
+    // Group 2 — Fast speed / low accuracy
+    { key: 'df_panic_a',   condition: _diffFooterIsPanicPlayer,   text: 'A true Keyboard Warrior balances speed with composure. Adjust the timer to practise staying calm while the clock is ticking.' },
+    { key: 'df_panic_b',   condition: _diffFooterIsPanicPlayer,   text: 'Start steady to build accuracy, then tighten the constraints to master muscle memory under pressure.' },
+    // Group 3 — Plateau / comfort zone
+    { key: 'df_plateau_a', condition: _diffFooterIsPlateauPlayer, text: "Increase Question Difficulty to learn new inputs, then tighten the Timer and Lives to sharpen your execution of the ones you've met." },
+    { key: 'df_plateau_b', condition: _diffFooterIsPlateauPlayer, text: "Challenge your mind by increasing Difficulty for a wider vocabulary, then challenge your hands by reducing the time allowed for each response." },
+    { key: 'df_plateau_c', condition: _diffFooterIsPlateauPlayer, text: "Boost Difficulty to encounter fresh challenges. Once you recognise them, lower the Timer to ensure you can recall them without hesitation." },
+    // Group 4 — Neutral / general (always eligible)
+    { key: 'df_neutral_a', condition: null, text: "Fine-tune these settings to find your flow. Aim for a challenge that keeps you sharp without causing frustration." },
+    { key: 'df_neutral_b', condition: null, text: "Think of Difficulty as your curriculum and the Timer and Lives as your exam. Adjust both to find a balance between learning and speed." },
+  ];
+
+  var eligible = MESSAGES.filter(function(m) {
+    if (m.key === _diffFooterLastKey) return false;
+    if (m.condition === null) return true;
+    try { return m.condition(); } catch(e) { return false; }
+  });
+
+  // Fallback: if filtering removed everything, allow the last key to repeat
+  if (eligible.length === 0) eligible = MESSAGES.filter(function(m) { return m.condition === null || (function(){ try { return m.condition(); } catch(e) { return false; } }()); });
+  if (eligible.length === 0) eligible = MESSAGES;
+
+  var picked = eligible[Math.floor(Math.random() * eligible.length)];
+  _diffFooterLastKey = picked.key;
+  return picked.text;
+}
+
+function _diffFooterIsSafePlayer() {
+  if (!lastCompletedReport) return false;
+  var acc = calcAccuracy();
+  if (acc === null) return false;
+  var qs  = lastCompletedReport.questionSummaries || [];
+  var successes = qs.filter(function(s) { return s.endType === 'success'; });
+  if (successes.length < 4) return false;
+  var slowCount = successes.filter(function(s) { return s.isSlow; }).length;
+  return acc >= 80 && slowCount >= Math.ceil(successes.length * 0.4);
+}
+
+function _diffFooterIsPanicPlayer() {
+  if (!lastCompletedReport) return false;
+  var acc = calcAccuracy();
+  if (acc === null) return false;
+  var qs      = lastCompletedReport.questionSummaries || [];
+  var wrongs  = qs.reduce(function(sum, s) { return sum + (s.wrongKeyCount || 0); }, 0);
+  var skips   = qs.filter(function(s) { return s.endType === 'skip'; }).length;
+  var successes = qs.filter(function(s) { return s.endType === 'success'; });
+  var fastCount = successes.filter(function(s) { return !s.isSlow; }).length;
+  return acc < 70 && (wrongs >= 3 || skips >= 2) && fastCount >= Math.ceil(successes.length * 0.5);
+}
+
+function _diffFooterIsPlateauPlayer() {
+  if (!lastCompletedReport) return false;
+  var acc = calcAccuracy();
+  if (acc === null) return false;
+  var PreviousMemory = LoadCoachMemory();
+  var PreviousMessage = PreviousMemory.messageKey || '';
+  // Plateau signal: strong performance but no recent difficulty or timer suggestion accepted
+  var noRecentChallenge = PreviousMessage.indexOf('cat4_diff') === -1 &&
+                          PreviousMessage.indexOf('cat4_timer') === -1;
+  return acc >= 75 && noRecentChallenge;
+}
 
 function _refreshDifficultyPanel() {
   var displayMode = _pendingDifficulty !== null ? _pendingDifficulty : currentDifficulty;
@@ -6718,8 +6802,8 @@ function _refreshDifficultyPanel() {
   if (!_trophySequenceActive) {
     var footer = document.getElementById('diffAdvancedFooter');
     if (footer && footer.classList.contains('diff-advanced-footer-visible')) {
-      footer.textContent = 'Changing \'Question Difficulty\' will suggest settings here, but you have complete control over these features.';
-}
+      footer.textContent = _pickDiffPanelFooterMessage();
+    }
   }
 }
 

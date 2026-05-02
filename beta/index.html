@@ -2422,7 +2422,16 @@ function updateKeyboardLighting(e, isDown) {
     return;
   }
   const code = NUMPAD_MAP[e.code] || e.code;
-  const isExtKey   = code in ExtendedKeyCodeToToken;
+  const RightToLeftKeyFallback = {
+    'MetaRight':    'MetaLeft',
+    'AltRight':     'AltLeft',
+    'ShiftRight':   'ShiftLeft',
+    'ControlRight': 'ControlLeft',
+  };
+  const ResolvedCode = (!keyEls[code] && RightToLeftKeyFallback[code])
+    ? RightToLeftKeyFallback[code]
+    : code;
+  const isExtKey   = ResolvedCode in ExtendedKeyCodeToToken;
   const isModifier = code === 'MetaLeft'    || code === 'MetaRight'   ||
                      code === 'ControlLeft' || code === 'ControlRight' ||
                      code === 'ShiftLeft'   || code === 'ShiftRight'   ||
@@ -2448,13 +2457,13 @@ function updateKeyboardLighting(e, isDown) {
     stickyLit.set(code, colour);
     if (isCorrect) {
       greenHeld.add(code);
-      if (isExtKey) ShowExtendedKeyPill(code, 'green');
-      else          setKeyLit(code, 'green-down');
+      if (isExtKey) ShowExtendedKeyPill(ResolvedCode, 'green');
+      else          setKeyLit(ResolvedCode, 'green-down');
       if ((!isModifier || isBareModifierQuestion) && !isSilent) { greenHits++; totalHits++; updateAccuracyDisplay(); }
       checkAndArmPartialShortcutNudge();
     } else {
-      if (isExtKey) ShowExtendedKeyPill(code, 'orange');
-      else          setKeyLit(code, 'orange-down');
+      if (isExtKey) ShowExtendedKeyPill(ResolvedCode, 'orange');
+      else          setKeyLit(ResolvedCode, 'orange-down');
       if ((!isModifier || isBareModifierQuestion) && !isSilent) { totalHits++; updateAccuracyDisplay(); }
       resetPartialShortcutNudgeTimers();
     }
@@ -2467,8 +2476,8 @@ function updateKeyboardLighting(e, isDown) {
     heldKeys.add(code);
     if (gameState !== 'playing') {
       greenHeld.add(code);
-      if (isExtKey) ShowExtendedKeyPill(code, null);
-      else          setKeyLit(code, 'green-down');
+      if (isExtKey) ShowExtendedKeyPill(ResolvedCode, null);
+      else          setKeyLit(ResolvedCode, 'green-down');
     } else {
       const isCorrect = isKeyPartOfShortcut(e, currentAnswer);
       if (isCorrect) {
@@ -2507,10 +2516,9 @@ function updateKeyboardLighting(e, isDown) {
     } else {
       checkAndArmPartialShortcutNudge();
     }
-    if (isExtKey) {
-      HideExtendedKeyPill();
+    if (isExtKey) HideExtendedKeyPill();
     } else {
-      const el = keyEls[code];
+      const el = keyEls[ResolvedCode];
       if (el) {
         if (el.classList.contains('lit-green-down'))  setKeyLit(code, 'green-up');
         else if (el.classList.contains('lit-orange-down')) setKeyLit(code, 'orange-up');

@@ -1827,6 +1827,7 @@ const TOKEN_TO_BROWSER_CODE = {
   'SCROLLLOCK':  'ScrollLock',
   'PAUSE':       'Pause',
   'NUMLOCK':     'NumLock',
+  'CLEAR':       'NumLock',
   'FN':          'Fn',
   // Punctuation
   'EQUAL':        'Equal',
@@ -1865,6 +1866,7 @@ const TOKEN_SYNONYM_MAP = {
   'ALT':         'OPTION',
   'WINDOWS':     'WIN',
   'FUNCTION':    'FN',
+  'CLEAR':       'NUMLOCK',
   'ENTER':       'RETURN',
   'SPACEBAR':    'SPACE',
   'DEL':         'BACKSPACE',
@@ -2322,7 +2324,7 @@ const ExtendedKeyCodeToToken = {
   'PageUp': 'PAGEUP', 'PageDown': 'PAGEDOWN',
   'Insert': 'INSERT', 'Delete': 'DELETE',
   'PrintScreen': 'PRINTSCREEN', 'ScrollLock': 'SCROLLLOCK', 'Pause': 'PAUSE',
-  'NumLock': 'NUMLOCK',
+  'NumLock': 'NUMLOCK', 'Clear': 'NUMLOCK',
 };
 const ExtendedKeyPillElement = document.getElementById('extKeyPill');
 let ExtendedKeyPillTimer = null;
@@ -10089,7 +10091,14 @@ var AnsweredTimingMap = {};
       li.appendChild(BuildShortcutKeyChips(ShortcutDisplay, true));
       ListRight.appendChild(li);
     });
+
+    if (UpcomingQuestions.length === 0 && IsActiveGame) {
+      var EmptyStateMessage = document.createElement('p');
+      EmptyStateMessage.style.cssText = 'margin:0;font-size:11px;font-style:italic;color:#9ca3af;line-height:1.5;';
+      EmptyStateMessage.textContent = 'You have seen every question in the current pool and they are now repeating.';
+      ListRight.appendChild(EmptyStateMessage);
   }
+}
 }
 
 function CheckAndHighlightCheatSheetFromKeyEvent(KeyboardEvent) {
@@ -10199,7 +10208,7 @@ function BuildShortcutKeyChips(TokenString, IsWeakness) {
     'BACKSPACE':'⌫','DELETE':'⌦','CAPSLOCK':'Caps',
     'ARROWUP':'↑','ARROWDOWN':'↓','ARROWLEFT':'←','ARROWRIGHT':'→',
     'HOME':'Home','END':'End','PAGEUP':'PgUp','PAGEDOWN':'PgDn',
-    'NUMLOCK':'NumLk',
+    'NUMLOCK':'Number Lock',
     'EQUAL':'=','MINUS':'-','BRACKETLEFT':'[','BRACKETRIGHT':']',
     'BACKSLASH':'\\','SEMICOLON':';','QUOTE':"'",'COMMA':',',
     'PERIOD':'.','SLASH':'/','GRAVE':'`',

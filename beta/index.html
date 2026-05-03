@@ -542,7 +542,7 @@
           </div>
         </div>
       </div>
-<p id="diffAdvancedFooter" style="color: #f0f4f8;" ><em>Full controls unlocked.</em> <small>Use <strong>Difficulty</strong> to expand your knowledge. Use <strong>Timer &amp; Lives</strong> to convert them to &lsquo;muscle memory&rsquo;.</small></p>
+<p id="diffAdvancedFooter" style="color: #f0f4f8;" ><small><em>Full controls unlocked.</em> Use <strong>Difficulty</strong> to expand your knowledge. Use <strong>Timer &amp; Lives</strong> to convert them to &lsquo;muscle memory&rsquo;.</small></p>
     </div>
 
     <!-- ── Welcome Landing ──────────────────────────────── -->
@@ -550,7 +550,7 @@
    <div style="text-align:center;margin-top:10px;">
         <div style="display:inline-flex;align-items:center;gap:8px;font-family:'Lato',system-ui,sans-serif;font-size:12px;color:#374151;">
           <span style="white-space:nowrap;font-weight:600;">Skill Set loaded</span>
-          <div id="skillsetPill" style="position:relative;border-radius:10px;border:1.5px solid #9ca3af;background:white;overflow:visible;cursor:pointer;user-select:none;width:192px;min-width:192px;height:27px;box-sizing:border-box;pointer-events:auto;" onclick="skillsetPillClick()">
+          <div id="skillsetPill" style="position:relative;border-radius:10px;border:1.5px solid #9ca3af;background:white;overflow:visible;cursor:pointer;user-select:none;width:192px;min-width:192px;height:27px;box-sizing:border-box;pointer-events:auto;" onclick="skillsetPillClick(event)">
             <!-- Options rendered by JS -->
           </div>
         </div>
@@ -12629,7 +12629,8 @@ function _applySkillset(skillsetLabel) {
   runData.length = 0; lastCompletedReport = null; CoachAdviceAccepted = false;
 }
 
-function skillsetPillClick() {
+function skillsetPillClick(ClickEvent) {
+  if (ClickEvent) ClickEvent.stopPropagation();
   if (skillsetPillOpen) { _closeSkillsetPill(); return; }
   _openSkillsetPill();
 }

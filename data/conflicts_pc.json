@@ -1,22 +1,32 @@
 {
   "os_conflicts": [
-    { "bad": "CTRL+SHIFT+3", "action": "screenshot to file" },
-    { "bad": "CTRL+SHIFT+4", "action": "screenshot with selection" },
-    { "bad": "CTRL+Q",       "action": "quit application", "sus": true }
+
+    { "bad": "CTRL+ALT+DEL",    "action": "security interupt" },
+    { "bad": "ALT+F4",   "action": "quit the application!" },
+    { "bad": "WIN+A",    "action": "quick settings" },
+    { "bad": "WIN+D",    "action": "show/hide desktop" },
+    { "bad": "WIN+E",    "action": "file explorer" },
+           { "bad": "WIN+F",    "action": "feedback hub", "sus": true }
   ],
   "browser_conflicts": {
     "Chrome":  [
       { "bad": "CTRL+T",         "action": "new tab" },
+      { "bad": "CTRL+W",         "action": "close tab" },
+      { "bad": "CTRL+N",         "action": "new window" },
+      { "bad": "SHIFT+ESC",      "action": "task manger" },
       { "bad": "CTRL+SHIFT+N",   "action": "new incognito window" }
     ],
     "Safari":  [
       { "bad": "CTRL+T",         "action": "new tab" },
+      { "bad": "CTRL+W",         "action": "close tab" },
       { "bad": "CTRL+N",         "action": "new window", "sus": true }
     ],
     "Firefox": [
-      { "bad": "CTRL+T",         "action": "new tab" }
+      { "bad": "CTRL+T",         "action": "new tab" },
+      { "bad": "CTRL+SHIFT+P",   "action": "open private window" }
     ],
     "Edge":    [
+      { "bad": "SHIFT+ESC",      "action": "task manger" },
       { "bad": "CTRL+T",         "action": "new tab" }
     ],
     "Opera":   [

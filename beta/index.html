@@ -12654,18 +12654,32 @@ function _initSkillsetPillAfterAppsLoad() {
 
   // Read ?skillset= URL param
   try {
-    var urlParams = new URLSearchParams(window.location.search);
-    var urlSkillset = urlParams.get('skillset');
-    if (urlSkillset) {
-      var matchedDef = SKILLSET_DEFS.find(function(d) {
-        return d.label.toLowerCase() === urlSkillset.toLowerCase() ||
-               d.tags.some(function(t) { return t.toLowerCase() === urlSkillset.toLowerCase(); });
+    var UrlParams = new URLSearchParams(window.location.search);
+    var UrlSkillset = UrlParams.get('skillset');
+    if (UrlSkillset) {
+      var MatchedDefinition = SKILLSET_DEFS.find(function(Definition) {
+        return Definition.label.toLowerCase() === UrlSkillset.toLowerCase() ||
+               Definition.tags.some(function(Tag) { return Tag.toLowerCase() === UrlSkillset.toLowerCase(); });
       });
-      if (matchedDef) currentSkillset = matchedDef.label;
+      if (MatchedDefinition) currentSkillset = MatchedDefinition.label;
     }
   } catch(e) {}
 
-  _applySkillset(currentSkillset);
+  // Only apply a skillset default when the player has no persisted short list.
+  // Returning players must keep their own customised list intact.
+  var HasPersistedShortList = false;
+  try {
+    var SavedShortList = localStorage.getItem('kw_apps_short_list');
+    if (SavedShortList) {
+      var ParsedShortList = JSON.parse(SavedShortList);
+      HasPersistedShortList = Array.isArray(ParsedShortList) && ParsedShortList.length > 0;
+    }
+  } catch(e) {}
+
+  if (!HasPersistedShortList) {
+    _applySkillset(currentSkillset);
+  }
+
   _buildSkillsetPill();
 }
 

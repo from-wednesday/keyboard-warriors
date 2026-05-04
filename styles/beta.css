@@ -3635,9 +3635,26 @@ body.returning-screen #diffIconWrap .icon-tip { display: none; }
   white-space: nowrap;
 }
 
-/* Keyboard segment: SVG inherits button colour */
+/* Keyboard segment: larger icon, tighter padding than text segments */
+.conflict-filter-keyboard {
+  padding: 0 2px;
+}
+
+.conflict-filter-keyboard .diff-btn-text {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  height: 100%;
+}
+
 .conflict-filter-keyboard svg {
+  width: 30px;
+  height: 30px;
+  max-width: none;
   fill: currentColor;
+  stroke: none;
+  flex: 0 0 auto;
 }
 
 /* Border radii — override score-clear-pill's child selectors */

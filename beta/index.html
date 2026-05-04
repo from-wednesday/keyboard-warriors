@@ -12050,15 +12050,9 @@ function _onDragHandlePointerUp(Event) {
 
   if (!WasDrag) return;
 
-  // Snap to the nearest extreme if the drag overshot, otherwise animate to the
-  // clamped partial angle (which may have been updated during the drag).
-  if (_kbPartialAngle <= PartialDragMinAngle) {
-    _animateToPartialAngle(PartialDragMinAngle);
-  } else if (_kbPartialAngle >= PartialDragMaxAngle) {
-    setKbPosition('edge');
-  } else {
-    _animateToPartialAngle(_kbPartialAngle);
-  }
+  // Clamp to the valid partial range and stay exactly where the user released.
+  // No settle — the angle they dragged to is the angle they get.
+  _animateToPartialAngle(Math.max(PartialDragMinAngle, Math.min(PartialDragMaxAngle, _kbPartialAngle)));
 
   Event.preventDefault();
 }

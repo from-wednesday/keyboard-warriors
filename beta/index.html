@@ -1729,6 +1729,7 @@ requestAnimationFrame(function() {
     if (Wall) Wall.style.transition = '';
     if (Edge) Edge.style.transition = '';
     _layoutFlipDone = true;
+    _revealPageContent();
   });
 });
 
@@ -1751,12 +1752,6 @@ var KeyboardPanelResizeObserver = new ResizeObserver(function(ObservedEntries) {
 var _layoutFlipDone = false;
 
 function _revealPageContent() {
-  // Wait for the silent flip cycle in _initialiseLayout to finish so the
-  // front wall is never caught hidden when the page first becomes visible.
-  if (!_layoutFlipDone) {
-    requestAnimationFrame(_revealPageContent);
-    return;
-  }
   var SkeletonWrapper = document.getElementById('skeletonWrapper');
   if (SkeletonWrapper) {
     SkeletonWrapper.style.transition = 'opacity 0.35s ease';
@@ -1798,7 +1793,6 @@ var SkeletonAnimationComplete = new Promise(function(resolve) {
 });
 
 Promise.all([DomReady, StylesheetReady, SkeletonAnimationComplete]).then(function() {
-  _revealPageContent();
   _initialiseLayout();
   _initialiseStageDragListeners();
   if (activeSettings !== null) _spAlignPanel();

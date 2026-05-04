@@ -1705,19 +1705,26 @@ function _initialiseLayout() {
 
   // Force a silent flip cycle to establish the 3D stacking context correctly,
   // preventing wall elements from bleeding through rounded corners on first render.
+  // _layoutFlipDone gates _revealPageContent so the wall is never caught hidden
+  // when the page first becomes visible.
+  _layoutFlipDone = false;
 requestAnimationFrame(function() {
   var Panel = document.getElementById('keyboardPanel');
   var Stage = document.getElementById('kbFlipStage');
   var Wall  = document.getElementById('kb-wall-bottom');
+  var Edge  = document.getElementById('kb-base-edge');
   Panel.style.transition = 'none';
   Stage.style.transition = 'none';
   if (Wall) Wall.style.display = 'none';
+  if (Edge) Edge.style.display = 'none';
   Panel.classList.add('kb-edged');
   requestAnimationFrame(function() {
     Panel.classList.remove('kb-edged');
     Panel.style.transition = '';
     Stage.style.transition = '';
     if (Wall) Wall.style.display = '';
+    if (Edge) Edge.style.display = '';
+    _layoutFlipDone = true;
   });
 });
 
@@ -1737,7 +1744,15 @@ var KeyboardPanelResizeObserver = new ResizeObserver(function(ObservedEntries) {
   });
 }
 
+var _layoutFlipDone = false;
+
 function _revealPageContent() {
+  // Wait for the silent flip cycle in _initialiseLayout to finish so the
+  // front wall is never caught hidden when the page first becomes visible.
+  if (!_layoutFlipDone) {
+    requestAnimationFrame(_revealPageContent);
+    return;
+  }
   var SkeletonWrapper = document.getElementById('skeletonWrapper');
   if (SkeletonWrapper) {
     SkeletonWrapper.style.transition = 'opacity 0.35s ease';

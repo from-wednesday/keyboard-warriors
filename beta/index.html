@@ -5999,6 +5999,30 @@ function _syncConflictFilterPillStyles() {
 }
 
 
+function _refreshBrowserContent() {
+  var d     = getBrowserConflicts();
+  var bname = d.name;
+  var knownBrowser = (bname !== 'your browser');
+
+  _initConflictFilterPill();
+
+  var h = document.getElementById('browserCompatHeading');
+  if (h) {
+    h.innerHTML = '';
+    var t1 = document.createElement('strong');
+    t1.style.color = '#1e3a5f';
+    t1.textContent = 'Keyboard Warriors';
+    h.appendChild(t1);
+    if (knownBrowser) {
+      h.appendChild(document.createTextNode(', the shortcuts coach, is compatible with your browser, '));
+      var t3 = document.createElement('strong');
+      t3.textContent = bname + '.';
+      h.appendChild(t3);
+    } else {
+      h.appendChild(document.createTextNode(', the shortcuts coach, is compatible with your browser.'));
+    }
+  }
+
   var intro = document.getElementById('browserCompatIntro');
   if (intro) {
     if (touchEnabled) {
@@ -6135,8 +6159,6 @@ document.getElementById('diffIconWrap').addEventListener('pointerdown', function
 if (transitioning && gameState !== 'finished') return;
   diffIconClick();
 });
-
-var ExistingPill = rightCol.querySelector('.score-clear-pill:not(#cfFilterPill)');
 
 // ── Outside-click: app pill blocked during play, settings unaffected ─────────
 document.addEventListener('click', function(e) {

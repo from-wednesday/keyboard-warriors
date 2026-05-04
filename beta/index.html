@@ -53,6 +53,14 @@
   #keyboardPanel.ghost-mode .key.lit-orange-up   .key-glyph-sym,
   #keyboardPanel.ghost-mode .key.lit-orange-down .key-glyph-sym { opacity: 1 !important; }
 
+  /* Applied for the first two rAF frames to prevent #kb-wall-bottom flashing
+     visible during 3D stacking-context setup, regardless of kb-edged state. */
+  #keyboardPanel.kb-wall-init #kb-wall-bottom {
+    opacity: 0 !important;
+    visibility: hidden !important;
+    transition: none !important;
+  }
+
   @keyframes SkeletonGrow {
     from { width: 18px; border-radius: 9px; }
     to   { width: 100%; border-radius: 16px; }
@@ -1703,35 +1711,20 @@ function _initialiseLayout() {
   updateMismatchPill();
   document.getElementById('keyboardPanel').classList.toggle('pc-keys', currentOs === 'pc');
 
-  // Force a silent flip cycle to establish the 3D stacking context correctly,
-  // preventing wall elements from bleeding through rounded corners on first render.
-  // Wall/edge use opacity+visibility (not display) for their CSS transitions, so
-  // we suppress ALL transitions on them during the cycle rather than toggling
-  // display, which would bypass their visibility system and cause a flash.
-  // _layoutFlipDone gates _revealPageContent so the page is never revealed
-  // while the cycle is in progress.
-  _layoutFlipDone = false;
-requestAnimationFrame(function() {
+  // Suppress the wall's visibility for the first two animation frames.
+  // This prevents it flashing during the 3D stacking-context setup, even if
+  // concurrent code (e.g. the 80ms welcome-screen timer) adds kb-edged
+  // before the first paint settles. The class is defined inline in the <style>
+  // block and forces opacity:0 + transition:none on #kb-wall-bottom regardless
+  // of kb-edged state.
   var Panel = document.getElementById('keyboardPanel');
-  var Stage = document.getElementById('kbFlipStage');
-  var Wall  = document.getElementById('kb-wall-bottom');
-  var Edge  = document.getElementById('kb-base-edge');
-  Panel.style.transition = 'none';
-  Stage.style.transition = 'none';
-  if (Wall) Wall.style.transition = 'none';
-  if (Edge) Edge.style.transition = 'none';
-  Panel.classList.add('kb-edged');
+  Panel.classList.add('kb-wall-init');
   requestAnimationFrame(function() {
-    Panel.classList.remove('kb-edged');
-    void Panel.offsetWidth;
-    Panel.style.transition = '';
-    Stage.style.transition = '';
-    if (Wall) Wall.style.transition = '';
-    if (Edge) Edge.style.transition = '';
-    _layoutFlipDone = true;
-    _revealPageContent();
+    requestAnimationFrame(function() {
+      Panel.classList.remove('kb-wall-init');
+      _revealPageContent();
+    });
   });
-});
 
 
 var KeyboardPanelResizeObserver = new ResizeObserver(function(ObservedEntries) {
@@ -1748,8 +1741,6 @@ var KeyboardPanelResizeObserver = new ResizeObserver(function(ObservedEntries) {
     positionIcons();
   });
 }
-
-var _layoutFlipDone = false;
 
 function _revealPageContent() {
   var SkeletonWrapper = document.getElementById('skeletonWrapper');

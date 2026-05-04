@@ -5998,7 +5998,6 @@ function _syncConflictFilterPillStyles() {
   });
 }
 
-var ExistingPill = rightCol.querySelector('.score-clear-pill:not(#cfFilterPill)');
 
   var intro = document.getElementById('browserCompatIntro');
   if (intro) {
@@ -6097,7 +6096,7 @@ var ExistingPill = rightCol.querySelector('.score-clear-pill:not(#cfFilterPill)'
 
    var rightCol = document.querySelector('#panelConflicts .sp-col-right');
   if (rightCol) {
-    var ExistingPill = rightCol.querySelector('.score-clear-pill');
+    var ExistingPill = rightCol.querySelector('.score-clear-pill:not(#cfFilterPill)');
     if (ExistingPill) rightCol.removeChild(ExistingPill);
     var HasOverrides = _hasconflictsOverrides();
     var ClearPill = document.createElement('div');
@@ -6137,28 +6136,7 @@ if (transitioning && gameState !== 'finished') return;
   diffIconClick();
 });
 
-// ── Phone toolbar icon listeners ─────────────────────────────────────────────
-document.getElementById('phoneKbIconWrap').addEventListener('pointerdown', function(e) {
-  e.stopPropagation();
-  e.preventDefault();
-  if (transitioning && gameState !== 'finished') return;
-  if (activeSettings === 'panelKeyboard') { closeSettings(); return; }
-  openSettings('panelKeyboard');
-});
-document.getElementById('phoneDiffIconWrap').addEventListener('pointerdown', function(e) {
-  e.stopPropagation();
-  e.preventDefault();
-  if (transitioning && gameState !== 'finished') return;
-  if (activeSettings === 'panelDifficultySettings') { closeSettings(); return; }
-  openSettings('panelDifficultySettings');
-});
-document.getElementById('phoneBrIconWrap').addEventListener('pointerdown', function(e) {
-  e.stopPropagation();
-  e.preventDefault();
-  if (transitioning && gameState !== 'finished') return;
-  if (activeSettings === 'panelConflicts') { closeSettings(); return; }
-  openSettings('panelConflicts');
-});
+var ExistingPill = rightCol.querySelector('.score-clear-pill:not(#cfFilterPill)');
 
 // ── Outside-click: app pill blocked during play, settings unaffected ─────────
 document.addEventListener('click', function(e) {

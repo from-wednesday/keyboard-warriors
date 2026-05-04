@@ -1705,8 +1705,11 @@ function _initialiseLayout() {
 
   // Force a silent flip cycle to establish the 3D stacking context correctly,
   // preventing wall elements from bleeding through rounded corners on first render.
-  // _layoutFlipDone gates _revealPageContent so the wall is never caught hidden
-  // when the page first becomes visible.
+  // Wall/edge use opacity+visibility (not display) for their CSS transitions, so
+  // we suppress ALL transitions on them during the cycle rather than toggling
+  // display, which would bypass their visibility system and cause a flash.
+  // _layoutFlipDone gates _revealPageContent so the page is never revealed
+  // while the cycle is in progress.
   _layoutFlipDone = false;
 requestAnimationFrame(function() {
   var Panel = document.getElementById('keyboardPanel');
@@ -1715,15 +1718,16 @@ requestAnimationFrame(function() {
   var Edge  = document.getElementById('kb-base-edge');
   Panel.style.transition = 'none';
   Stage.style.transition = 'none';
-  if (Wall) Wall.style.display = 'none';
-  if (Edge) Edge.style.display = 'none';
+  if (Wall) Wall.style.transition = 'none';
+  if (Edge) Edge.style.transition = 'none';
   Panel.classList.add('kb-edged');
   requestAnimationFrame(function() {
     Panel.classList.remove('kb-edged');
+    void Panel.offsetWidth;
     Panel.style.transition = '';
     Stage.style.transition = '';
-    if (Wall) Wall.style.display = '';
-    if (Edge) Edge.style.display = '';
+    if (Wall) Wall.style.transition = '';
+    if (Edge) Edge.style.transition = '';
     _layoutFlipDone = true;
   });
 });

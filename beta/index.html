@@ -7727,22 +7727,21 @@ function _returningStartOver() {
   }, 500); // hold after pop before fading
 }
 
-    function _dismissWelcome() {
-      _closeSkillsetPill();
-      var activeBtn = document.querySelector('#welcomeDifficultyPill .diff-btn-active');
+function _dismissWelcome() {
+  _closeSkillsetPill();
+  _welcomeScreenWasShown = false;
+  var activeBtn = document.querySelector('#welcomeDifficultyPill .diff-btn-active');
   if (activeBtn) _popDiffLabel(activeBtn);
   setAppSelectorGameActive(false);
   _welcomeIsReturning = false;
+  var tagline = document.getElementById('welcomeTagline');
+  if (tagline) tagline.style.display = 'none';
+  titleEl.className = '';
+  titleEl.textContent = 'Let\'s practise ' + currentApp + ' shortcuts.';
   setTimeout(function() {
-    var tagline = document.getElementById('welcomeTagline');
-    if (tagline) tagline.style.display = 'none';
     closeSettings();
     syncDiffNeedle();
     resetToIdle();
-    if (_welcomeScreenWasShown) {
-      _welcomeScreenWasShown = false;
-      titleEl.textContent = 'Ready to practise ' + currentApp + ' shortcuts.';
-    }
     // Pulse Start once the keyboard has fully risen (850ms), then every 5s
     setTimeout(function pulseAndReschedule() {
       if (gameState !== 'idle') return;
@@ -7752,9 +7751,9 @@ function _returningStartOver() {
   }, 1750);
 }
 
-    function _startFromWelcome() {
-      _closeSkillsetPill();
-      // Start pressed without choosing a difficulty
+function _startFromWelcome() {
+  _closeSkillsetPill();
+  _welcomeScreenWasShown = false;
   if (!_welcomeIsReturning) {
     currentDifficulty = 'fundamentals';
     try { localStorage.setItem('kw_difficulty', currentDifficulty); } catch(e) {}
@@ -7772,8 +7771,12 @@ function _returningStartOver() {
     if (panelInner) { panelInner.style.transition = ''; panelInner.style.opacity = ''; }
     if (tagline)    { tagline.style.transition = ''; tagline.style.opacity = ''; tagline.style.display = 'none'; }
     closeSettings();
-    resetToIdle();
-    beginCountdown();
+    titleEl.className = '';
+    titleEl.textContent = 'Let\'s practise ' + currentApp + ' shortcuts.';
+    setTimeout(function() {
+      resetToIdle();
+      beginCountdown();
+    }, 2000);
   }, 480);
 }
 
@@ -12695,6 +12698,9 @@ function _applySkillset(skillsetLabel) {
     buildAppPill();
   }
   runData.length = 0; lastCompletedReport = null; CoachAdviceAccepted = false;
+  if (gameState === 'welcome') {
+    openAppPill();
+  }
 }
 
 function skillsetPillClick(ClickEvent) {

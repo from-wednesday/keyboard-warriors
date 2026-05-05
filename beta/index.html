@@ -12644,6 +12644,8 @@ function _buildSkillsetPill() {
         currentSkillset = def.label;
         _applySkillset(def.label);
         _closeSkillsetPill();
+        var _selRow = appPillEl.querySelector('.app-option.selected');
+        pulseBtn(_selRow || appPillEl);
         // Show the welcome caret now that a selection has been made
         var wCaret = document.getElementById('welcomeDifficultyCaretEl');
         if (wCaret) wCaret.style.visibility = '';

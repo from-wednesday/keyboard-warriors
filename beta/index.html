@@ -1679,7 +1679,11 @@ function onOsToggle() {
   if (activeSettings === 'panelConflicts')  _refreshBrowserContent();
   if (activeSettings === 'panelEndGameReportCard')     _refreshReportPanel();
   if (activeSettings === 'panelCheatSheet')    _refreshCheatSheet();
-  runData.length = 0; lastCompletedReport = null; CoachAdviceAccepted = false;
+  runData.length = 0; buildAppPill();
+closeAppPill();
+runData.length = 0; lastCompletedReport = null; CoachAdviceAccepted = false;
+        var _selectedRow = appPillEl.querySelector('.app-option.selected');
+        pulseBtn(_selectedRow || appPillEl);= false;
 }
 
 // On mobile: auto-enable sticky + touch modes, show updated message

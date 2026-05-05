@@ -2566,6 +2566,7 @@ let _confirmFromFinished  = false;
 let _cheatsheetSavedTitle = '';
 let _confirmFromPause     = false; // true when confirm-reset entered from active paused game
 let _welcomeIsReturning   = false; // true when the returning-visitor landing screen is showing
+let _welcomeScreenWasShown = false; // true when the welcome screen was shown this session
 let _pendingDifficulty   = null;  // difficulty mode awaiting confirmation
 let _prevDifficulty      = null;  // difficulty to restore on cancel
 let _clearTarget         = null;  // 'time' | 'accuracy' | 'both' — which record the pending reset affects
@@ -4591,8 +4592,10 @@ function openAppPill() {
 
 function closeAppPill() {
     AppPillWrenchOpen = false;
-     var selectorLabel = document.getElementById('appSelectorLabel');
-     if (selectorLabel) selectorLabel.textContent = 'now training on';
+    var selectorLabel = document.getElementById('appSelectorLabel');
+    if (selectorLabel) selectorLabel.textContent = 'now training on';
+    var AppHasChanged = appPillEl.dataset.previousApp !== undefined && appPillEl.dataset.previousApp !== currentApp;
+    appPillEl.dataset.previousApp = currentApp;
     appPillEl.classList.remove('open');
     titleEl.classList.remove('app-pill-open');
 
@@ -4607,6 +4610,9 @@ function closeAppPill() {
     _AppPillAnimateTo(27, 0, 0);
 
     setTimeout(scrollPillToSelected, 500);
+    if (AppHasChanged && (gameState === 'idle' || gameState === 'finished')) {
+      titleEl.textContent = 'Ready to practise ' + currentApp + ' shortcuts.';
+    }
 }
 
 // Close on outside click -- also commits wrench picker if open
@@ -6639,6 +6645,7 @@ function getBrowserConflictSet() {
 
 function _showWelcomeScreen() {
   _welcomeIsReturning = false;
+  _welcomeScreenWasShown = true;
   gameState = 'welcome';
   titleEl.textContent = 'Welcome to Keyboard Warriors';
   var tagline = document.getElementById('welcomeTagline');
@@ -7732,6 +7739,10 @@ function _returningStartOver() {
     closeSettings();
     syncDiffNeedle();
     resetToIdle();
+    if (_welcomeScreenWasShown) {
+      _welcomeScreenWasShown = false;
+      titleEl.textContent = 'Ready to practise ' + currentApp + ' shortcuts.';
+    }
     // Pulse Start once the keyboard has fully risen (850ms), then every 5s
     setTimeout(function pulseAndReschedule() {
       if (gameState !== 'idle') return;

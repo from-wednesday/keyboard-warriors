@@ -4545,8 +4545,10 @@ function _AppPillCalculateOpenGeometry(OpenHeight, PillRect) {
 
 function openAppPill() {
     AppPillWrenchOpen = false;
-     var selectorLabel = document.getElementById('appSelectorLabel');
-     if (selectorLabel) selectorLabel.textContent = 'choose app to train in next';
+    var selectorLabel = document.getElementById('appSelectorLabel');
+    if (selectorLabel) selectorLabel.textContent = 'choose app to train in next';
+    var tagline = document.getElementById('welcomeTagline');
+    if (tagline) tagline.style.display = 'none';
     _EnsureAppPillSpacer();
 
     // Cancel any running spring animation so its RAF doesn't fight us
@@ -7736,12 +7738,12 @@ function _dismissWelcome() {
   _welcomeIsReturning = false;
   var tagline = document.getElementById('welcomeTagline');
   if (tagline) tagline.style.display = 'none';
-  titleEl.className = '';
-  titleEl.textContent = 'Let\'s practise ' + currentApp + ' shortcuts.';
   setTimeout(function() {
     closeSettings();
     syncDiffNeedle();
     resetToIdle();
+    titleEl.className = '';
+    titleEl.textContent = 'Let\'s practise ' + currentApp + ' shortcuts.';
     // Pulse Start once the keyboard has fully risen (850ms), then every 5s
     setTimeout(function pulseAndReschedule() {
       if (gameState !== 'idle') return;
@@ -7771,12 +7773,12 @@ function _startFromWelcome() {
     if (panelInner) { panelInner.style.transition = ''; panelInner.style.opacity = ''; }
     if (tagline)    { tagline.style.transition = ''; tagline.style.opacity = ''; tagline.style.display = 'none'; }
     closeSettings();
+    resetToIdle();
     titleEl.className = '';
     titleEl.textContent = 'Let\'s practise ' + currentApp + ' shortcuts.';
     setTimeout(function() {
-      resetToIdle();
       beginCountdown();
-    }, 2000);
+    }, 2250);
   }, 480);
 }
 

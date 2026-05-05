@@ -1,0 +1,30 @@
+{
+  "os_conflicts": [
+    { "bad": "ALT+F4",   "action": "quit the application!" },
+  ],
+  "browser_conflicts": {
+    "Chrome":  [
+      { "bad": "CTRL+T",         "action": "new tab" },
+      { "bad": "CTRL+W",         "action": "close tab" },
+      { "bad": "CTRL+N",         "action": "new window" },
+      { "bad": "SHIFT+ESC",      "action": "task manger" },
+      { "bad": "CTRL+SHIFT+N",   "action": "new incognito window" }
+    ],
+    "Safari":  [
+      { "bad": "CTRL+T",         "action": "new tab" },
+      { "bad": "CTRL+W",         "action": "close tab" },
+      { "bad": "CTRL+N",         "action": "new window", "sus": true }
+    ],
+    "Firefox": [
+      { "bad": "CTRL+T",         "action": "new tab" },
+      { "bad": "CTRL+SHIFT+P",   "action": "open private window" }
+    ],
+    "Edge":    [
+      { "bad": "SHIFT+ESC",      "action": "task manger" },
+      { "bad": "CTRL+T",         "action": "new tab" }
+    ],
+    "Opera":   [
+      { "bad": "CTRL+T",         "action": "new tab" }
+    ]
+  }
+}

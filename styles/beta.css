@@ -914,7 +914,12 @@ body.kb-at-edge #keyboardPanel #kb-shadow {
 #mainBtn.pulse {
   animation: btnPulse 0.45s cubic-bezier(0.25, 0.46, 0.45, 0.94);
 }
-
+#appPill.pulse {
+  animation: btnPulse 0.45s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+}
+.app-option.pulse {
+  animation: btnPulse 0.45s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+}
 
 #kbToast {
   position: absolute;

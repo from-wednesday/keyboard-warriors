@@ -2567,7 +2567,6 @@ let _cheatsheetSavedTitle = '';
 let _confirmFromPause     = false; // true when confirm-reset entered from active paused game
 let _welcomeIsReturning   = false; // true when the returning-visitor landing screen is showing
 let _welcomeScreenWasShown = false; // true when the welcome screen was shown this session
-let SuppressIdleTitleReset = false; // true when resetToIdle() should not overwrite the title
 let _pendingDifficulty   = null;  // difficulty mode awaiting confirmation
 let _prevDifficulty      = null;  // difficulty to restore on cancel
 let _clearTarget         = null;  // 'time' | 'accuracy' | 'both' — which record the pending reset affects
@@ -3828,8 +3827,6 @@ function resetToIdle() {
   helpBtn.style.color = '';
   if (lockKeyEl) lockKeyEl.classList.remove('active');
   titleEl.className = '';
-  if (!SuppressIdleTitleReset) titleEl.textContent = 'Play Keyboard Warriors';
-  SuppressIdleTitleReset = false;
   questionCountEl.classList.remove('blurred', 'blur-instant');
   document.getElementById('livesRow').classList.remove('blurred', 'blur-instant');
   questionCountEl.innerHTML = ''; dotEls = [];
@@ -7743,10 +7740,9 @@ function _dismissWelcome() {
   setTimeout(function() {
     closeSettings();
     syncDiffNeedle();
-    SuppressIdleTitleReset = true;
     resetToIdle();
-    titleEl.className = '';
-    titleEl.textContent = 'Let\'s practise ' + currentApp + ' shortcuts.';
+    var tagline = document.getElementById('welcomeTagline');
+    if (tagline) { tagline.textContent = 'Let\'s practise ' + currentApp + ' shortcuts.'; tagline.style.display = 'block'; }
     // Pulse Start once the keyboard has fully risen (850ms), then every 5s
     setTimeout(function pulseAndReschedule() {
       if (gameState !== 'idle') return;
@@ -7776,13 +7772,12 @@ function _startFromWelcome() {
     if (panelInner) { panelInner.style.transition = ''; panelInner.style.opacity = ''; }
     if (tagline)    { tagline.style.transition = ''; tagline.style.opacity = ''; tagline.style.display = 'none'; }
     closeSettings();
-    SuppressIdleTitleReset = true;
     resetToIdle();
-    titleEl.className = '';
-    titleEl.textContent = 'Let\'s practise ' + currentApp + ' shortcuts.';
+    var tagline = document.getElementById('welcomeTagline');
+    if (tagline) { tagline.textContent = 'Let\'s practise ' + currentApp + ' shortcuts.'; tagline.style.display = 'block'; }
     setTimeout(function() {
       beginCountdown();
-    }, 2250);
+    }, 2000);
   }, 480);
 }
 

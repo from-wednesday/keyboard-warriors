@@ -2566,7 +2566,6 @@ let _confirmFromFinished  = false;
 let _cheatsheetSavedTitle = '';
 let _confirmFromPause     = false; // true when confirm-reset entered from active paused game
 let _welcomeIsReturning   = false; // true when the returning-visitor landing screen is showing
-let _welcomeScreenWasShown = false; // true when the welcome screen was shown this session
 let _pendingDifficulty   = null;  // difficulty mode awaiting confirmation
 let _prevDifficulty      = null;  // difficulty to restore on cancel
 let _clearTarget         = null;  // 'time' | 'accuracy' | 'both' — which record the pending reset affects
@@ -3827,6 +3826,7 @@ function resetToIdle() {
   helpBtn.style.color = '';
   if (lockKeyEl) lockKeyEl.classList.remove('active');
   titleEl.className = '';
+  titleEl.textContent = 'Play Keyboard Warriors';
   questionCountEl.classList.remove('blurred', 'blur-instant');
   document.getElementById('livesRow').classList.remove('blurred', 'blur-instant');
   questionCountEl.innerHTML = ''; dotEls = [];
@@ -3931,11 +3931,12 @@ function buildAppPill() {
       ClickEvent.stopPropagation();
       if (gameState === 'playing' || gameState === 'paused'
           || gameState === 'confirm-reset' || gameState === 'confirm-quit') return;
-      currentApp = AppLabel;
-      try { localStorage.setItem('kw_app', currentApp); } catch (StorageError) {}
-      buildAppPill();
-      closeAppPill();
-      runData.length = 0; lastCompletedReport = null; CoachAdviceAccepted = false;
+currentApp = AppLabel;
+try { localStorage.setItem('kw_app', currentApp); } catch (StorageError) {}
+buildAppPill();
+closeAppPill();
+runData.length = 0; lastCompletedReport = null; CoachAdviceAccepted = false;
+pulseBtn(appPillEl);
     });
 
     appPillEl.appendChild(Row);
@@ -4544,10 +4545,8 @@ function _AppPillCalculateOpenGeometry(OpenHeight, PillRect) {
 
 function openAppPill() {
     AppPillWrenchOpen = false;
-    var selectorLabel = document.getElementById('appSelectorLabel');
-    if (selectorLabel) selectorLabel.textContent = 'choose app to train in next';
-    var tagline = document.getElementById('welcomeTagline');
-    if (tagline) tagline.style.display = 'none';
+     var selectorLabel = document.getElementById('appSelectorLabel');
+     if (selectorLabel) selectorLabel.textContent = 'choose app to train in next';
     _EnsureAppPillSpacer();
 
     // Cancel any running spring animation so its RAF doesn't fight us
@@ -4593,10 +4592,8 @@ function openAppPill() {
 
 function closeAppPill() {
     AppPillWrenchOpen = false;
-    var selectorLabel = document.getElementById('appSelectorLabel');
-    if (selectorLabel) selectorLabel.textContent = 'now training on';
-    var AppHasChanged = appPillEl.dataset.previousApp !== undefined && appPillEl.dataset.previousApp !== currentApp;
-    appPillEl.dataset.previousApp = currentApp;
+     var selectorLabel = document.getElementById('appSelectorLabel');
+     if (selectorLabel) selectorLabel.textContent = 'now training on';
     appPillEl.classList.remove('open');
     titleEl.classList.remove('app-pill-open');
 
@@ -4611,9 +4608,6 @@ function closeAppPill() {
     _AppPillAnimateTo(27, 0, 0);
 
     setTimeout(scrollPillToSelected, 500);
-    if (AppHasChanged && (gameState === 'idle' || gameState === 'finished')) {
-      titleEl.textContent = 'Ready to practise ' + currentApp + ' shortcuts.';
-    }
 }
 
 // Close on outside click -- also commits wrench picker if open
@@ -6646,7 +6640,6 @@ function getBrowserConflictSet() {
 
 function _showWelcomeScreen() {
   _welcomeIsReturning = false;
-  _welcomeScreenWasShown = true;
   gameState = 'welcome';
   titleEl.textContent = 'Welcome to Keyboard Warriors';
   var tagline = document.getElementById('welcomeTagline');
@@ -7728,21 +7721,18 @@ function _returningStartOver() {
   }, 500); // hold after pop before fading
 }
 
-function _dismissWelcome() {
-  _closeSkillsetPill();
-  _welcomeScreenWasShown = false;
-  var activeBtn = document.querySelector('#welcomeDifficultyPill .diff-btn-active');
+    function _dismissWelcome() {
+      _closeSkillsetPill();
+      var activeBtn = document.querySelector('#welcomeDifficultyPill .diff-btn-active');
   if (activeBtn) _popDiffLabel(activeBtn);
   setAppSelectorGameActive(false);
   _welcomeIsReturning = false;
-  var tagline = document.getElementById('welcomeTagline');
-  if (tagline) tagline.style.display = 'none';
   setTimeout(function() {
+    var tagline = document.getElementById('welcomeTagline');
+    if (tagline) tagline.style.display = 'none';
     closeSettings();
     syncDiffNeedle();
     resetToIdle();
-    var tagline = document.getElementById('welcomeTagline');
-    if (tagline) { tagline.textContent = 'Let\'s practise ' + currentApp + ' shortcuts.'; tagline.style.display = 'block'; }
     // Pulse Start once the keyboard has fully risen (850ms), then every 5s
     setTimeout(function pulseAndReschedule() {
       if (gameState !== 'idle') return;
@@ -7752,9 +7742,9 @@ function _dismissWelcome() {
   }, 1750);
 }
 
-function _startFromWelcome() {
-  _closeSkillsetPill();
-  _welcomeScreenWasShown = false;
+    function _startFromWelcome() {
+      _closeSkillsetPill();
+      // Start pressed without choosing a difficulty
   if (!_welcomeIsReturning) {
     currentDifficulty = 'fundamentals';
     try { localStorage.setItem('kw_difficulty', currentDifficulty); } catch(e) {}
@@ -7773,11 +7763,7 @@ function _startFromWelcome() {
     if (tagline)    { tagline.style.transition = ''; tagline.style.opacity = ''; tagline.style.display = 'none'; }
     closeSettings();
     resetToIdle();
-    var tagline = document.getElementById('welcomeTagline');
-    if (tagline) { tagline.textContent = 'Let\'s practise ' + currentApp + ' shortcuts.'; tagline.style.display = 'block'; }
-    setTimeout(function() {
-      beginCountdown();
-    }, 2000);
+    beginCountdown();
   }, 480);
 }
 
@@ -12668,7 +12654,7 @@ function _buildSkillsetPill() {
       row.addEventListener('click', function(e) {
         e.stopPropagation();
         currentSkillset = def.label;
-        _applySkillset(def.label, true);
+        _applySkillset(def.label);
         _closeSkillsetPill();
         // Show the welcome caret now that a selection has been made
         var wCaret = document.getElementById('welcomeDifficultyCaretEl');
@@ -12680,7 +12666,7 @@ function _buildSkillsetPill() {
   }
 }
 
-function _applySkillset(skillsetLabel, OpenAppPillAfterApply) {
+function _applySkillset(skillsetLabel) {
   var def = SKILLSET_DEFS.find(function(d) { return d.label === skillsetLabel; });
   if (!def || appsLongList.length === 0) return;
   var matching = appsLongList
@@ -12699,9 +12685,6 @@ function _applySkillset(skillsetLabel, OpenAppPillAfterApply) {
     buildAppPill();
   }
   runData.length = 0; lastCompletedReport = null; CoachAdviceAccepted = false;
-  if (OpenAppPillAfterApply) {
-    openAppPill();
-  }
 }
 
 function skillsetPillClick(ClickEvent) {

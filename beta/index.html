@@ -2567,6 +2567,7 @@ let _cheatsheetSavedTitle = '';
 let _confirmFromPause     = false; // true when confirm-reset entered from active paused game
 let _welcomeIsReturning   = false; // true when the returning-visitor landing screen is showing
 let _welcomeScreenWasShown = false; // true when the welcome screen was shown this session
+let SuppressIdleTitleReset = false; // true when resetToIdle() should not overwrite the title
 let _pendingDifficulty   = null;  // difficulty mode awaiting confirmation
 let _prevDifficulty      = null;  // difficulty to restore on cancel
 let _clearTarget         = null;  // 'time' | 'accuracy' | 'both' — which record the pending reset affects
@@ -3827,7 +3828,8 @@ function resetToIdle() {
   helpBtn.style.color = '';
   if (lockKeyEl) lockKeyEl.classList.remove('active');
   titleEl.className = '';
-  titleEl.textContent = 'Play Keyboard Warriors';
+  if (!SuppressIdleTitleReset) titleEl.textContent = 'Play Keyboard Warriors';
+  SuppressIdleTitleReset = false;
   questionCountEl.classList.remove('blurred', 'blur-instant');
   document.getElementById('livesRow').classList.remove('blurred', 'blur-instant');
   questionCountEl.innerHTML = ''; dotEls = [];
@@ -7741,6 +7743,7 @@ function _dismissWelcome() {
   setTimeout(function() {
     closeSettings();
     syncDiffNeedle();
+    SuppressIdleTitleReset = true;
     resetToIdle();
     titleEl.className = '';
     titleEl.textContent = 'Let\'s practise ' + currentApp + ' shortcuts.';
@@ -7773,6 +7776,7 @@ function _startFromWelcome() {
     if (panelInner) { panelInner.style.transition = ''; panelInner.style.opacity = ''; }
     if (tagline)    { tagline.style.transition = ''; tagline.style.opacity = ''; tagline.style.display = 'none'; }
     closeSettings();
+    SuppressIdleTitleReset = true;
     resetToIdle();
     titleEl.className = '';
     titleEl.textContent = 'Let\'s practise ' + currentApp + ' shortcuts.';
@@ -12669,7 +12673,7 @@ function _buildSkillsetPill() {
       row.addEventListener('click', function(e) {
         e.stopPropagation();
         currentSkillset = def.label;
-        _applySkillset(def.label);
+        _applySkillset(def.label, true);
         _closeSkillsetPill();
         // Show the welcome caret now that a selection has been made
         var wCaret = document.getElementById('welcomeDifficultyCaretEl');
@@ -12681,7 +12685,7 @@ function _buildSkillsetPill() {
   }
 }
 
-function _applySkillset(skillsetLabel) {
+function _applySkillset(skillsetLabel, OpenAppPillAfterApply) {
   var def = SKILLSET_DEFS.find(function(d) { return d.label === skillsetLabel; });
   if (!def || appsLongList.length === 0) return;
   var matching = appsLongList
@@ -12700,7 +12704,7 @@ function _applySkillset(skillsetLabel) {
     buildAppPill();
   }
   runData.length = 0; lastCompletedReport = null; CoachAdviceAccepted = false;
-  if (gameState === 'welcome') {
+  if (OpenAppPillAfterApply) {
     openAppPill();
   }
 }

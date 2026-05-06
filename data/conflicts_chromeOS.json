@@ -1,0 +1,36 @@
+{
+  "os_conflicts": [
+    { "bad": "CTRL+SHIFT+Q", "action": "sign out", "sus": true },
+    { "bad": "SEARCH+L", "action": "lock screen" },
+    { "bad": "CTRL+SEARCH+S", "action": "show keyboard shortcuts" },
+    { "bad": "ALT+SHIFT+M", "action": "files app", "sus": true },
+    { "bad": "SHIFT+ALT+N", "action": "notifications", "sus": true },
+    { "bad": "SEARCH", "action": "open launcher", "sus": true },
+    { "bad": "CTRL+ALT+/", "action": "show keyboard shortcuts", "sus": true }
+  ],
+  "browser_conflicts": {
+    "Chrome": [
+      { "bad": "CTRL+T", "action": "new tab" },
+      { "bad": "CTRL+W", "action": "close tab" },
+      { "bad": "CTRL+L", "action": "focus address bar" },
+      { "bad": "CTRL+SHIFT+T", "action": "reopen closed tab", "sus": true },
+      { "bad": "CTRL+SHIFT+I", "action": "dev tools", "sus": true },
+      { "bad": "SEARCH+ESC", "action": "task manager", "sus": true },
+      { "bad": "F11", "action": "fullscreen", "sus": true }
+    ],
+    "Firefox": [
+      { "bad": "CTRL+T", "action": "new tab" },
+      { "bad": "CTRL+W", "action": "close tab" },
+      { "bad": "CTRL+L", "action": "focus address bar" },
+      { "bad": "CTRL+SHIFT+P", "action": "open private window", "sus": true },
+      { "bad": "F11", "action": "fullscreen", "sus": true }
+    ],
+    "Edge": [
+      { "bad": "CTRL+T", "action": "new tab" },
+      { "bad": "CTRL+W", "action": "close tab" },
+      { "bad": "CTRL+L", "action": "focus address bar" },
+      { "bad": "F12", "action": "dev tools", "sus": true },
+      { "bad": "F11", "action": "fullscreen", "sus": true }
+    ]
+  }
+}

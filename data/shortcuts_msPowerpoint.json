@@ -42,36 +42,6 @@
     "difficulty": 3
   },
   {
-    "display": "undo",
-    "mac_sc": "CMD+Z",
-    "pc_sc": "CTRL+Z",
-    "difficulty": 0
-  },
-  {
-    "display": "redo",
-    "mac_sc": "SHIFT+CMD+Z",
-    "pc_sc": "CTRL+Y",
-    "difficulty": 1
-  },
-  {
-    "display": "cut selection",
-    "mac_sc": "CMD+X",
-    "pc_sc": "CTRL+X",
-    "difficulty": 1
-  },
-  {
-    "display": "copy selection",
-    "mac_sc": "CMD+C",
-    "pc_sc": "CTRL+C",
-    "difficulty": 1
-  },
-  {
-    "display": "paste",
-    "mac_sc": "CMD+V",
-    "pc_sc": "CTRL+V",
-    "difficulty": 1
-  },
-  {
     "display": "paste special",
     "mac_sc": "CONTROL+CMD+V",
     "pc_sc": "CTRL+ALT+V",
@@ -117,18 +87,6 @@
     "display": "delete selected slide",
     "mac_sc": "DELETE",
     "pc_sc": "DELETE",
-    "difficulty": 1
-  },
-  {
-    "display": "go to next slide",
-    "mac_sc": "PAGEDOWN",
-    "pc_sc": "PAGEDOWN",
-    "difficulty": 1
-  },
-  {
-    "display": "go to previous slide",
-    "mac_sc": "PAGEUP",
-    "pc_sc": "PAGEUP",
     "difficulty": 1
   },
   {
@@ -381,6 +339,186 @@
     "display": "open help",
     "mac_sc": "CMD+QUESTION",
     "pc_sc": "F1",
+    "difficulty": 2
+  },
+  {
+    "display": "redo",
+    "mac_sc": "CMD+SHIFT+Z",
+    "pc_sc": "CTRL+Y",
+    "difficulty": 1
+  },
+  {
+    "display": "cut",
+    "mac_sc": "CMD+X",
+    "pc_sc": "CTRL+X",
+    "difficulty": 0
+  },
+  {
+    "display": "copy",
+    "mac_sc": "CMD+C",
+    "pc_sc": "CTRL+C",
+    "difficulty": 0
+  },
+  {
+    "display": "paste",
+    "mac_sc": "CMD+V",
+    "pc_sc": "CTRL+V",
+    "difficulty": 0
+  },
+  {
+    "display": "duplicate object",
+    "mac_sc": "CMD+D",
+    "pc_sc": "CTRL+D",
+    "difficulty": 1
+  },
+  {
+    "display": "replace",
+    "mac_sc": "CMD+SHIFT+H",
+    "pc_sc": "CTRL+H",
+    "difficulty": 2
+  },
+  {
+    "display": "end slideshow",
+    "mac_sc": "ESC",
+    "pc_sc": "ESC",
+    "difficulty": 1
+  },
+  {
+    "display": "next slide",
+    "mac_sc": "RIGHT|PAGEDOWN",
+    "pc_sc": "RIGHT|PAGEDOWN",
+    "difficulty": 1
+  },
+  {
+    "display": "previous slide",
+    "mac_sc": "LEFT|PAGEUP",
+    "pc_sc": "LEFT|PAGEUP",
+    "difficulty": 1
+  },
+  {
+    "display": "black screen",
+    "mac_sc": "B",
+    "pc_sc": "B",
+    "difficulty": 2
+  },
+  {
+    "display": "white screen",
+    "mac_sc": "W",
+    "pc_sc": "W",
+    "difficulty": 2
+  },
+  {
+    "display": "insert new slide",
+    "mac_sc": "CMD+SHIFT+N",
+    "pc_sc": "CTRL+M",
+    "difficulty": 2
+  },
+  {
+    "display": "duplicate slide",
+    "mac_sc": "CMD+SHIFT+D",
+    "pc_sc": "CTRL+SHIFT+D",
+    "difficulty": 2
+  },
+  {
+    "display": "delete slide",
+    "mac_sc": "DELETE|BACKSPACE",
+    "pc_sc": "DELETE|BACKSPACE",
+    "difficulty": 1
+  },
+  {
+    "display": "move slide up",
+    "mac_sc": "CMD+UP",
+    "pc_sc": "CTRL+UP",
+    "difficulty": 2
+  },
+  {
+    "display": "move slide down",
+    "mac_sc": "CMD+DOWN",
+    "pc_sc": "CTRL+DOWN",
+    "difficulty": 2
+  },
+  {
+    "display": "insert hyperlink",
+    "mac_sc": "CMD+K",
+    "pc_sc": "CTRL+K",
+    "difficulty": 2
+  },
+  {
+    "display": "bold",
+    "mac_sc": "CMD+B",
+    "pc_sc": "CTRL+B",
+    "difficulty": 1
+  },
+  {
+    "display": "italic",
+    "mac_sc": "CMD+I",
+    "pc_sc": "CTRL+I",
+    "difficulty": 1
+  },
+  {
+    "display": "underline",
+    "mac_sc": "CMD+U",
+    "pc_sc": "CTRL+U",
+    "difficulty": 1
+  },
+  {
+    "display": "increase font size",
+    "mac_sc": "CMD+SHIFT+>",
+    "pc_sc": "CTRL+SHIFT+>",
+    "difficulty": 2
+  },
+  {
+    "display": "decrease font size",
+    "mac_sc": "CMD+SHIFT+<",
+    "pc_sc": "CTRL+SHIFT+<",
+    "difficulty": 2
+  },
+  {
+    "display": "align left",
+    "mac_sc": "CMD+L",
+    "pc_sc": "CTRL+L",
+    "difficulty": 1
+  },
+  {
+    "display": "align center",
+    "mac_sc": "CMD+E",
+    "pc_sc": "CTRL+E",
+    "difficulty": 1
+  },
+  {
+    "display": "align right",
+    "mac_sc": "CMD+R",
+    "pc_sc": "CTRL+R",
+    "difficulty": 1
+  },
+  {
+    "display": "justify",
+    "mac_sc": "CMD+J",
+    "pc_sc": "CTRL+J",
+    "difficulty": 2
+  },
+  {
+    "display": "bring forward",
+    "mac_sc": "CMD+SHIFT+]",
+    "pc_sc": "CTRL+SHIFT+]",
+    "difficulty": 2
+  },
+  {
+    "display": "send backward",
+    "mac_sc": "CMD+SHIFT+[",
+    "pc_sc": "CTRL+SHIFT+[",
+    "difficulty": 2
+  },
+  {
+    "display": "group",
+    "mac_sc": "CMD+G",
+    "pc_sc": "CTRL+G",
+    "difficulty": 2
+  },
+  {
+    "display": "ungroup",
+    "mac_sc": "CMD+SHIFT+G",
+    "pc_sc": "CTRL+SHIFT+G",
     "difficulty": 2
   }
 ]

@@ -4373,93 +4373,40 @@ function scrollPillToSelected() {
   appPillEl.scrollTop = SelectedIndex * ROW_H;
 }
 
-function _AppPillCalculateOpenGeometry(OpenHeight, PillRect) {
-    var ViewportMargin = 12;
-    var SelectedIndex = Math.max(0, appsShortList.indexOf(currentApp));
-    var SpacerHeight = 0;
-    var TranslateY = 0;
-    var PillTopOnScreen = PillRect.top;
-    var PillBottomOnScreen = PillTopOnScreen + OpenHeight;
-    var BottomOvershoot = PillBottomOnScreen - (window.innerHeight - ViewportMargin);
-    if (BottomOvershoot > 0) {
-        TranslateY = -Math.min(BottomOvershoot, PillTopOnScreen - ViewportMargin);
-    }
-    return { TranslateY: TranslateY, SpacerHeight: SpacerHeight };
-}
-
-function openAppPill() {
+function closeAppPill() {
     AppPillWrenchOpen = false;
     var selectorLabel = document.getElementById('appSelectorLabel');
-    if (selectorLabel) selectorLabel.textContent = 'choose app to train in next';
-    var tagline = document.getElementById('welcomeTagline');
-    if (tagline) {
-      tagline.style.transition = 'opacity 0.4s ease';
-      tagline.style.opacity = '0';
-      setTimeout(function() {
-        tagline.style.display = 'none';
-        tagline.style.transition = '';
-        tagline.style.opacity = '';
-      }, 400);
-    }
-    _EnsureAppPillSpacer();
+    if (selectorLabel) selectorLabel.textContent = 'now training on';
+    appPillEl.classList.remove('open');
+    titleEl.classList.remove('app-pill-open');
+
     var Spring = _AppPillSpring;
     if (Spring.AnimationFrame) {
         cancelAnimationFrame(Spring.AnimationFrame);
         Spring.AnimationFrame = null;
     }
-    appPillEl.style.transition = 'none';
-    appPillEl.style.transform  = '';
-    appPillEl.style.height     = '27px';
-    appPillEl.style.overflow   = 'hidden';
-    if (_AppPillSpacer) _AppPillSpacer.style.height = '0px';
-    Spring.CurrentHeight       = 27;
-    Spring.TargetHeight        = 27;
-    Spring.CurrentTranslateY   = 0;
-    Spring.TargetTranslateY    = 0;
-    Spring.CurrentSpacerHeight = 0;
-    Spring.TargetSpacerHeight  = 0;
-    Spring.HeightVelocity      = 0;
-    Spring.TranslateVelocity   = 0;
-    Spring.SpacerVelocity      = 0;
-    void appPillEl.offsetHeight;
-    var PillRect = appPillEl.getBoundingClientRect();
-    appPillEl.classList.add('open');
-    titleEl.classList.add('app-pill-open');
-    var OpenHeight = _AppPillMeasureNaturalHeight();
-    PillRect = appPillEl.getBoundingClientRect();
-    var Geometry = _AppPillCalculateOpenGeometry(OpenHeight, PillRect);
-    appPillEl.scrollTop = 0;
-    _AppPillAnimateTo(OpenHeight, Geometry.TranslateY, Geometry.SpacerHeight);
+    Spring.CurrentHeight = parseFloat(appPillEl.style.height) || Spring.CurrentHeight;
+    Spring.HeightVelocity = 0;
+
+    _AppPillAnimateTo(27, 0, 0);
+
+    setTimeout(scrollPillToSelected, 500);
 }
 
-function closeAppPill() {
+// Close on outside click -- also commits wrench picker if open
+document.addEventListener('click', function(ClickEvent) {
+  if (!appPillEl.contains(ClickEvent.target)) {
+    if (AppPillWrenchOpen) { _closeWrenchPicker(); } else { closeAppPill(); }
+  }
+});
+
+function setAppSelectorGameActive(active) {
+  appPillEl.classList.toggle('game-active', active);
+  if (active) closeAppPill();
+  _syncPhoneToolbarVisibility();
+}
+
 // ── Modal toggles ─────────────────────────────────────────────────────────────
-var stickyKeysOn = false;
-var touchEnabled     = false;
-var soundEnabled     = false; // enabled automatically when touch turns on
-var hasFullKeyboard  = true;  // false = tenkeyless/compact — skip extended key questions
-(function() {
-  try {
-    var savedFull = localStorage.getItem('kw_kb_full');
-    if (savedFull !== null) hasFullKeyboard = (savedFull === 'true');
-  } catch(e) {}
-})();
-
-function setStickyKeys(on) {
-  stickyKeysOn = on;
-  var radio = document.getElementById('stickyRadio');
-  if (!radio) return;
-  radio.classList.toggle('on', on);
-  // Leaving sticky mode: clear any stuck-on keys immediately
-  if (!on) { clearAllLit(); heldKeys.clear(); greenHeld.clear(); }
-}
-
-function setKbSizeToggle(full) {
-  hasFullKeyboard = full;
-  try { localStorage.setItem('kw_kb_full', String(full)); } catch(e) {}
-  updateKbSizeToggle();
-}
-
 function updateKbSizeToggle() {
   var row     = document.getElementById('modalKbSizeRow');
   var knob    = document.getElementById('modalKbSizeKnob');

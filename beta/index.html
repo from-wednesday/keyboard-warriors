@@ -12743,6 +12743,14 @@ function _applySkillset(skillsetLabel) {
     }
     _saveAppsShortList();
     buildAppPill();
+
+    // If the app pill is currently open, resize it to fit the new shortlist
+    if (appPillEl.classList.contains('open') && !AppPillWrenchOpen) {
+      var newHeight = _AppPillMeasureNaturalHeight();
+      var pillRect  = appPillEl.getBoundingClientRect();
+      var geometry  = _AppPillCalculateOpenGeometry(newHeight, pillRect);
+      _AppPillAnimateTo(newHeight, geometry.TranslateY, geometry.SpacerHeight);
+    }
   }
   runData.length = 0; lastCompletedReport = null; CoachAdviceAccepted = false;
 }

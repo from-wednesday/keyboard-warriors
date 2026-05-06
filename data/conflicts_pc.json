@@ -1,13 +1,15 @@
 {
-  "os_conflicts": [
-
-    { "bad": "CTRL+ALT+DEL",    "action": "security interupt" },
-    { "bad": "ALT+F4",   "action": "quit the application!" },
-    { "bad": "WIN+A",    "action": "quick settings" },
-    { "bad": "WIN+D",    "action": "show/hide desktop" },
-    { "bad": "WIN+E",    "action": "file explorer" },
-           { "bad": "WIN+F",    "action": "feedback hub", "sus": true }
+"os_conflicts": [
+  { "bad": "CTRL+ALT+DEL",    "action": "security interupt" },
+  { "bad": "CTRL+SHIFT+ESC", "action": "task manager" },
+  { "bad": "ALT+TAB",        "action": "switch apps" },
+  { "bad": "ALT+F4",   "action": "quit the application!" },
+  { "bad": "WIN+A",    "action": "quick settings" },
+  { "bad": "WIN+D",    "action": "show/hide desktop" },
+  { "bad": "WIN+E",    "action": "file explorer" },
+  { "bad": "WIN+F",    "action": "feedback hub", "sus": true }
   ],
+  
   "browser_conflicts": {
     "Chrome":  [
       { "bad": "CTRL+T",         "action": "new tab" },
@@ -27,10 +29,21 @@
     ],
     "Edge":    [
       { "bad": "SHIFT+ESC",      "action": "task manger" },
-      { "bad": "CTRL+T",         "action": "new tab" }
+      { "bad": "CTRL+SHIFT+DELETE",      "action": "clear browsing data" },
+      { "bad": "CTRL+T",         "action": "new tab" },
+      { "bad": "CTRL+SHIFT+R",   "action": "hard reload" }
+      { "bad": "F12",         "action": "dev tools", "sus": true }
     ],
+    "Comet": [
+  { "bad": "CTRL+T",         "action": "new tab" },
+  { "bad": "CTRL+W",         "action": "close tab" },
+  { "bad": "CTRL+L",         "action": "focus address bar", "sus": true  },
+  { "bad": "CTRL+SHIFT+S",   "action": "summarize page" },
+  { "bad": "CTRL+J",         "action": "toggle assistant" }
+]
     "Opera":   [
-      { "bad": "CTRL+T",         "action": "new tab" }
+      { "bad": "CTRL+T",         "action": "new tab" },
+      { "bad": "CTRL+SHIFT+I",         "action": "dev tools", "sus": true }
     ]
   }
 }

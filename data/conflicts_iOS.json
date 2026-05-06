@@ -1,43 +1,64 @@
 {
   "os_conflicts": [
-    { "bad": "CMD+SHIFT+3", "action": "screenshot to file" },
-    { "bad": "CMD+SHIFT+4", "action": "screenshot with selection" },
-    { "bad": "CMD+H",       "action": "return to homescreen" },
-    { "bad": "CMD+SPACE",       "action": "search" },
-    { "bad": "CMD+TAB",       "action": "app switcher" },
-    { "bad": "CMD+Q",       "action": "quit application", "sus": true }
-    { "bad": "CMD+R",         "action": "reload tab" },
-    { "bad": "CMD+N",         "action": "new window" },
+    { "bad": "CMD+SHIFT+3", "action": "screenshot to file", "sus": true },
+    { "bad": "CMD+SHIFT+4", "action": "screenshot and markup", "sus": true },
+    { "bad": "CMD+H", "action": "go to home screen" },
+    { "bad": "CMD+SPACE", "action": "search" },
+    { "bad": "CMD+TAB", "action": "app switcher" },
+    { "bad": "CMD+Q", "action": "quit application", "sus": true },
+    { "bad": "OPT+CMD+D", "action": "show dock", "sus": true }
   ],
   "browser_conflicts": {
-    "Chrome":  [
-      { "bad": "CMD+T",         "action": "new tab" },
-      { "bad": "CMD+SHIFT+N",   "action": "new incognito window" }
+    "Safari": [
+      { "bad": "CMD+T", "action": "new tab" },
+      { "bad": "CMD+W", "action": "close tab" },
+      { "bad": "CMD+L", "action": "focus address bar" },
+      { "bad": "CMD+R", "action": "reload tab" },
+      { "bad": "CMD+N", "action": "new window", "sus": true },
+      { "bad": "CMD+1", "action": "switch to first tab", "sus": true },
+      { "bad": "CMD+2", "action": "switch to second tab", "sus": true },
+      { "bad": "CMD+3", "action": "switch to third tab", "sus": true },
+      { "bad": "CMD+4", "action": "switch to fourth tab", "sus": true },
+      { "bad": "CMD+5", "action": "switch to fifth tab", "sus": true },
+      { "bad": "CMD+6", "action": "switch to sixth tab", "sus": true },
+      { "bad": "CMD+7", "action": "switch to seventh tab", "sus": true },
+      { "bad": "CMD+8", "action": "switch to eighth tab", "sus": true },
+      { "bad": "CMD+9", "action": "switch to ninth tab", "sus": true },
+      { "bad": "CMD+SHIFT+N", "action": "new private tab" },
+      { "bad": "CMD+SHIFT+T", "action": "reopen closed tab", "sus": true }
     ],
-        "Firefox": [
-      { "bad": "CMD+T",         "action": "new tab" },
-      { "bad": "CMD+SHIFT+P",   "action": "open private window" }
+    "Chrome": [
+      { "bad": "CMD+T", "action": "new tab" },
+      { "bad": "CMD+W", "action": "close tab" },
+      { "bad": "CMD+L", "action": "focus address bar" },
+      { "bad": "CMD+R", "action": "reload tab" },
+      { "bad": "CMD+SHIFT+N", "action": "new incognito tab" },
+      { "bad": "CMD+SHIFT+T", "action": "reopen closed tab", "sus": true },
+      { "bad": "CMD+N", "action": "new tab or new window", "sus": true }
     ],
-    "Safari":  [
-            { "bad": "CMD+T",         "action": "new tab" },
-            { "bad": "CMD+R",         "action": "reload tab" },
-      { "bad": "CMD+1",         "action": "switch to first tab" },
-      { "bad": "CMD+2",         "action": "switch to second tab", "sus": true },
-      { "bad": "CMD+3",         "action": "switch to third tab", "sus": true },
-      { "bad": "CMD+4",         "action": "switch to fourth tab", "sus": true },
-      { "bad": "CMD+5",         "action": "switch to fifth tab", "sus": true },
-      { "bad": "CMD+6",         "action": "switch to sixth tab", "sus": true },
-      { "bad": "CMD+7",         "action": "switch to seventh tab", "sus": true },
-      { "bad": "CMD+8",         "action": "switch to eighth tab", "sus": true },
-      { "bad": "CMD+9",         "action": "switch to ninth tab", "sus": true },
-            { "bad": "CMD+SHIFT+N",   "action": "new private window" }
+    "Firefox": [
+      { "bad": "CMD+T", "action": "new tab" },
+      { "bad": "CMD+W", "action": "close tab" },
+      { "bad": "CMD+L", "action": "focus address bar" },
+      { "bad": "CMD+R", "action": "reload tab" },
+      { "bad": "CMD+SHIFT+P", "action": "open private window", "sus": true },
+      { "bad": "CMD+SHIFT+N", "action": "new private tab", "sus": true },
+      { "bad": "CMD+SHIFT+T", "action": "reopen closed tab", "sus": true }
     ],
-         "Comet": [
-      { "bad": "CMD+T",         "action": "new tab" },
-      { "bad": "OPT+S",   "action": "summarize page" },
-      { "bad": "OPT+A",   "action": "toggle assistant" },
-      { "bad": "OPT+V",   "action": "voice input" },
-      { "bad": "OPT+S",   "action": "summarize page" }
+    "Edge": [
+      { "bad": "CMD+T", "action": "new tab", "sus": true },
+      { "bad": "CMD+W", "action": "close tab", "sus": true },
+      { "bad": "CMD+L", "action": "focus address bar", "sus": true },
+      { "bad": "CMD+R", "action": "reload tab", "sus": true },
+      { "bad": "CMD+SHIFT+N", "action": "new InPrivate tab", "sus": true },
+      { "bad": "CMD+SHIFT+T", "action": "reopen closed tab", "sus": true }
+    ],
+    "Comet": [
+      { "bad": "CMD+T", "action": "new tab", "sus": true },
+      { "bad": "CMD+W", "action": "close tab", "sus": true },
+      { "bad": "OPT+S", "action": "summarize page", "sus": true },
+      { "bad": "OPT+A", "action": "toggle assistant", "sus": true },
+      { "bad": "OPT+V", "action": "voice input", "sus": true }
     ]
   }
 }

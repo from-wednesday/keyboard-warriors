@@ -4533,6 +4533,8 @@ function openAppPill() {
     AppPillWrenchOpen = false;
      var selectorLabel = document.getElementById('appSelectorLabel');
      if (selectorLabel) selectorLabel.textContent = 'choose app to train in next';
+    var tagline = document.getElementById('welcomeTagline');
+    if (tagline) tagline.style.display = 'none';
     _EnsureAppPillSpacer();
 
     // Cancel any running spring animation so its RAF doesn't fight us

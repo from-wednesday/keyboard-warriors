@@ -145,13 +145,13 @@
   },
   {
     "display": "move to next worksheet",
-    "mac_sc": "OPTION+RIGHTARROW",
+    "mac_sc": "OPTION+ARROWRIGHT",
     "pc_sc": "CTRL+PAGEDOWN",
     "difficulty": 3
   },
   {
     "display": "move to previous worksheet",
-    "mac_sc": "OPTION+LEFTARROW",
+    "mac_sc": "OPTION+ARROWLEFT",
     "pc_sc": "CTRL+PAGEUP",
     "difficulty": 3
   },
@@ -284,13 +284,13 @@
   {
     "display": "enter array formula",
     "mac_sc": "CONTROL+SHIFT+RETURN",
-    "pc_sc": "CONTROL+SHIFT+ENTER",
+    "pc_sc": "CTRL+SHIFT+ENTER",
     "difficulty": 5
   },
   {
     "display": "show formulas",
-    "mac_sc": "CONTROL+QUOTE",
-    "pc_sc": "CONTROL+QUOTE",
+    "mac_sc": "CONTROL+GRAVE",
+    "pc_sc": "CTRL+GRAVE",
     "difficulty": 4
   },
   {
@@ -342,45 +342,21 @@
     "difficulty": 4
   },
   {
-    "display": "sort ascending",
-    "mac_sc": "OPTION+SHIFT+S",
-    "pc_sc": "NULL",
-    "difficulty": 5
-  },
-  {
-    "display": "sort descending",
-    "mac_sc": "OPTION+SHIFT+S",
-    "pc_sc": "NULL",
-    "difficulty": 5
-  },
-  {
-    "display": "apply filter",
+    "display": "toggle filter on or off",
     "mac_sc": "CMD+SHIFT+L",
     "pc_sc": "CTRL+SHIFT+L",
     "difficulty": 3
-  },
-  {
-    "display": "clear filter",
-    "mac_sc": "CMD+SHIFT+L",
-    "pc_sc": "CTRL+SHIFT+L",
-    "difficulty": 3
-  },
-  {
-    "display": "recalculate all worksheets",
-    "mac_sc": "F9",
-    "pc_sc": "F9",
-    "difficulty": 4
   },
   {
     "display": "insert worksheet row",
     "mac_sc": "CONTROL+SHIFT+PLUS",
-    "pc_sc": "CONTROL+SHIFT+PLUS",
+    "pc_sc": "CTRL+SHIFT+PLUS",
     "difficulty": 4
   },
   {
     "display": "delete worksheet row",
     "mac_sc": "CONTROL+MINUS",
-    "pc_sc": "CONTROL+MINUS",
+    "pc_sc": "CTRL+MINUS",
     "difficulty": 3
   },
   {

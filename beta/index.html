@@ -12641,6 +12641,8 @@ function _buildSkillsetPill() {
         e.stopPropagation();
         currentSkillset = def.label;
         _applySkillset(def.label);
+        currentApp = appsShortList[0];
+        try { localStorage.setItem('kw_app', currentApp); } catch (StorageError) {}
         _closeSkillsetPill();
         appPillEl.style.overflow = 'visible';
         pulseBtn(appPillEl);

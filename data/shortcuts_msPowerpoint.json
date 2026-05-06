@@ -1,0 +1,386 @@
+[
+  {
+    "display": "create a new presentation",
+    "mac_sc": "CMD+N",
+    "pc_sc": "CTRL+N",
+    "difficulty": 1
+  },
+  {
+    "display": "open a presentation",
+    "mac_sc": "CMD+O",
+    "pc_sc": "CTRL+O",
+    "difficulty": 1
+  },
+  {
+    "display": "save the presentation",
+    "mac_sc": "CMD+S",
+    "pc_sc": "CTRL+S",
+    "difficulty": 0
+  },
+  {
+    "display": "save as",
+    "mac_sc": "CMD+SHIFT+S",
+    "pc_sc": "F12",
+    "difficulty": 2
+  },
+  {
+    "display": "open the Print dialog",
+    "mac_sc": "CMD+P",
+    "pc_sc": "CTRL+P",
+    "difficulty": 1
+  },
+  {
+    "display": "close the presentation",
+    "mac_sc": "CMD+W",
+    "pc_sc": "CTRL+W",
+    "difficulty": 1
+  },
+  {
+    "display": "quit Microsoft PowerPoint",
+    "mac_sc": "CMD+Q",
+    "pc_sc": "ALT+F4",
+    "difficulty": 3
+  },
+  {
+    "display": "undo",
+    "mac_sc": "CMD+Z",
+    "pc_sc": "CTRL+Z",
+    "difficulty": 0
+  },
+  {
+    "display": "redo",
+    "mac_sc": "SHIFT+CMD+Z",
+    "pc_sc": "CTRL+Y",
+    "difficulty": 1
+  },
+  {
+    "display": "cut selection",
+    "mac_sc": "CMD+X",
+    "pc_sc": "CTRL+X",
+    "difficulty": 1
+  },
+  {
+    "display": "copy selection",
+    "mac_sc": "CMD+C",
+    "pc_sc": "CTRL+C",
+    "difficulty": 1
+  },
+  {
+    "display": "paste",
+    "mac_sc": "CMD+V",
+    "pc_sc": "CTRL+V",
+    "difficulty": 1
+  },
+  {
+    "display": "paste special",
+    "mac_sc": "CONTROL+CMD+V",
+    "pc_sc": "CTRL+ALT+V",
+    "difficulty": 3
+  },
+  {
+    "display": "find",
+    "mac_sc": "CMD+F",
+    "pc_sc": "CTRL+F",
+    "difficulty": 1
+  },
+  {
+    "display": "find next",
+    "mac_sc": "CMD+G",
+    "pc_sc": "F4",
+    "difficulty": 3
+  },
+  {
+    "display": "find and replace",
+    "mac_sc": "CMD+SHIFT+H",
+    "pc_sc": "CTRL+H",
+    "difficulty": 2
+  },
+  {
+    "display": "select all",
+    "mac_sc": "CMD+A",
+    "pc_sc": "CTRL+A",
+    "difficulty": 1
+  },
+  {
+    "display": "open a new slide",
+    "mac_sc": "CMD+SHIFT+N",
+    "pc_sc": "CTRL+M",
+    "difficulty": 2
+  },
+  {
+    "display": "duplicate selected slide",
+    "mac_sc": "CMD+SHIFT+D",
+    "pc_sc": "CTRL+D",
+    "difficulty": 2
+  },
+  {
+    "display": "delete selected slide",
+    "mac_sc": "DELETE",
+    "pc_sc": "DELETE",
+    "difficulty": 1
+  },
+  {
+    "display": "go to next slide",
+    "mac_sc": "PAGEDOWN",
+    "pc_sc": "PAGEDOWN",
+    "difficulty": 1
+  },
+  {
+    "display": "go to previous slide",
+    "mac_sc": "PAGEUP",
+    "pc_sc": "PAGEUP",
+    "difficulty": 1
+  },
+  {
+    "display": "start slideshow from beginning",
+    "mac_sc": "SHIFT+CMD+RETURN",
+    "pc_sc": "F5",
+    "difficulty": 3
+  },
+  {
+    "display": "start slideshow from current slide",
+    "mac_sc": "CMD+RETURN",
+    "pc_sc": "SHIFT+F5",
+    "difficulty": 3
+  },
+  {
+    "display": "end slideshow",
+    "mac_sc": "ESCAPE",
+    "pc_sc": "ESCAPE",
+    "difficulty": 1
+  },
+  {
+    "display": "open slide sorter view",
+    "mac_sc": "OPTION+CMD+2",
+    "pc_sc": "ALT+V+E",
+    "difficulty": 4
+  },
+  {
+    "display": "open normal view",
+    "mac_sc": "OPTION+CMD+1",
+    "pc_sc": "ALT+V+N",
+    "difficulty": 4
+  },
+  {
+    "display": "open outline view",
+    "mac_sc": "OPTION+CMD+3",
+    "pc_sc": "NULL",
+    "difficulty": 4
+  },
+  {
+    "display": "open notes page view",
+    "mac_sc": "OPTION+CMD+4",
+    "pc_sc": "NULL",
+    "difficulty": 4
+  },
+  {
+    "display": "toggle ruler",
+    "mac_sc": "OPTION+CMD+R",
+    "pc_sc": "ALT+V+R",
+    "difficulty": 3
+  },
+  {
+    "display": "toggle guides",
+    "mac_sc": "OPTION+CMD+G",
+    "pc_sc": "ALT+V+G",
+    "difficulty": 3
+  },
+  {
+    "display": "toggle gridlines",
+    "mac_sc": "OPTION+CMD+SHIFT+G",
+    "pc_sc": "ALT+W+L",
+    "difficulty": 4
+  },
+  {
+    "display": "toggle notes pane",
+    "mac_sc": "OPTION+CMD+SHIFT+N",
+    "pc_sc": "NULL",
+    "difficulty": 4
+  },
+  {
+    "display": "insert a new text box",
+    "mac_sc": "CMD+SHIFT+T",
+    "pc_sc": "ALT+N+X",
+    "difficulty": 3
+  },
+  {
+    "display": "insert a new slide",
+    "mac_sc": "CMD+SHIFT+N",
+    "pc_sc": "CTRL+M",
+    "difficulty": 2
+  },
+  {
+    "display": "duplicate object",
+    "mac_sc": "CMD+D",
+    "pc_sc": "CTRL+D",
+    "difficulty": 2
+  },
+  {
+    "display": "group objects",
+    "mac_sc": "CMD+OPTION+G",
+    "pc_sc": "CTRL+G",
+    "difficulty": 3
+  },
+  {
+    "display": "ungroup objects",
+    "mac_sc": "CMD+OPTION+SHIFT+G",
+    "pc_sc": "CTRL+SHIFT+G",
+    "difficulty": 4
+  },
+  {
+    "display": "bring to front",
+    "mac_sc": "SHIFT+CMD+F",
+    "pc_sc": "ALT+SHIFT+F",
+    "difficulty": 3
+  },
+  {
+    "display": "send to back",
+    "mac_sc": "SHIFT+CMD+B",
+    "pc_sc": "ALT+SHIFT+B",
+    "difficulty": 3
+  },
+  {
+    "display": "bring forward",
+    "mac_sc": "OPTION+CMD+F",
+    "pc_sc": "ALT+SHIFT+F",
+    "difficulty": 3
+  },
+  {
+    "display": "send backward",
+    "mac_sc": "OPTION+CMD+B",
+    "pc_sc": "ALT+SHIFT+B",
+    "difficulty": 3
+  },
+  {
+    "display": "align left",
+    "mac_sc": "OPTION+CMD+L",
+    "pc_sc": "CTRL+L",
+    "difficulty": 3
+  },
+  {
+    "display": "center align",
+    "mac_sc": "OPTION+CMD+E",
+    "pc_sc": "CTRL+E",
+    "difficulty": 3
+  },
+  {
+    "display": "align right",
+    "mac_sc": "OPTION+CMD+R",
+    "pc_sc": "CTRL+R",
+    "difficulty": 3
+  },
+  {
+    "display": "justify text",
+    "mac_sc": "OPTION+CMD+J",
+    "pc_sc": "CTRL+J",
+    "difficulty": 3
+  },
+  {
+    "display": "bold",
+    "mac_sc": "CMD+B",
+    "pc_sc": "CTRL+B",
+    "difficulty": 1
+  },
+  {
+    "display": "italic",
+    "mac_sc": "CMD+I",
+    "pc_sc": "CTRL+I",
+    "difficulty": 1
+  },
+  {
+    "display": "underline",
+    "mac_sc": "CMD+U",
+    "pc_sc": "CTRL+U",
+    "difficulty": 1
+  },
+  {
+    "display": "increase font size",
+    "mac_sc": "CMD+SHIFT+GREATERTHAN",
+    "pc_sc": "CTRL+SHIFT+GREATERTHAN",
+    "difficulty": 2
+  },
+  {
+    "display": "decrease font size",
+    "mac_sc": "CMD+SHIFT+LESSTHAN",
+    "pc_sc": "CTRL+SHIFT+LESSTHAN",
+    "difficulty": 2
+  },
+  {
+    "display": "increase indent",
+    "mac_sc": "CMD+OPTION+RIGHTARROW",
+    "pc_sc": "CTRL+M",
+    "difficulty": 3
+  },
+  {
+    "display": "decrease indent",
+    "mac_sc": "CMD+OPTION+LEFTARROW",
+    "pc_sc": "SHIFT+TAB",
+    "difficulty": 3
+  },
+  {
+    "display": "open font dialog",
+    "mac_sc": "CMD+T",
+    "pc_sc": "CTRL+T",
+    "difficulty": 2
+  },
+  {
+    "display": "open paragraph dialog",
+    "mac_sc": "CONTROL+OPTION+P",
+    "pc_sc": "CTRL+L",
+    "difficulty": 4
+  },
+  {
+    "display": "open format pane",
+    "mac_sc": "OPTION+CMD+1",
+    "pc_sc": "NULL",
+    "difficulty": 4
+  },
+  {
+    "display": "insert hyperlink",
+    "mac_sc": "CMD+K",
+    "pc_sc": "CTRL+K",
+    "difficulty": 2
+  },
+  {
+    "display": "insert comment",
+    "mac_sc": "CMD+OPTION+M",
+    "pc_sc": "CTRL+ALT+M",
+    "difficulty": 4
+  },
+  {
+    "display": "edit comment",
+    "mac_sc": "CMD+OPTION+E",
+    "pc_sc": "NULL",
+    "difficulty": 4
+  },
+  {
+    "display": "open spell check",
+    "mac_sc": "F7",
+    "pc_sc": "F7",
+    "difficulty": 2
+  },
+  {
+    "display": "open thesaurus",
+    "mac_sc": "SHIFT+F7",
+    "pc_sc": "SHIFT+F7",
+    "difficulty": 4
+  },
+  {
+    "display": "open the options dialog",
+    "mac_sc": "CMD+COMMA",
+    "pc_sc": "NULL",
+    "difficulty": 5
+  },
+  {
+    "display": "toggle ribbon",
+    "mac_sc": "CMD+OPTION+R",
+    "pc_sc": "CTRL+F1",
+    "difficulty": 5
+  },
+  {
+    "display": "open help",
+    "mac_sc": "CMD+QUESTION",
+    "pc_sc": "F1",
+    "difficulty": 2
+  }
+]

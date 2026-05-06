@@ -15,11 +15,11 @@
     "display": "save the workbook",
     "mac_sc": "CMD+S",
     "pc_sc": "CTRL+S",
-    "difficulty": 1
+    "difficulty": 0
   },
   {
     "display": "save as",
-    "mac_sc": "SHIFT+CMD+S",
+    "mac_sc": "CMD+SHIFT+S",
     "pc_sc": "F12",
     "difficulty": 2
   },
@@ -42,18 +42,6 @@
     "difficulty": 3
   },
   {
-    "display": "undo",
-    "mac_sc": "CMD+Z",
-    "pc_sc": "CTRL+Z",
-    "difficulty": 1
-  },
-  {
-    "display": "redo",
-    "mac_sc": "SHIFT+CMD+Z",
-    "pc_sc": "CTRL+Y",
-    "difficulty": 1
-  },
-  {
     "display": "cut selection",
     "mac_sc": "CMD+X",
     "pc_sc": "CTRL+X",
@@ -73,7 +61,7 @@
   },
   {
     "display": "paste special",
-    "mac_sc": "CTRL+CMD+V",
+    "mac_sc": "CONTROL+CMD+V",
     "pc_sc": "CTRL+ALT+V",
     "difficulty": 3
   },
@@ -97,14 +85,14 @@
   },
   {
     "display": "insert current date",
-    "mac_sc": "CTRL+;",
-    "pc_sc": "CTRL+;",
+    "mac_sc": "CONTROL+SEMICOLON",
+    "pc_sc": "CONTROL+SEMICOLON",
     "difficulty": 2
   },
   {
     "display": "insert current time",
-    "mac_sc": "CTRL+SHIFT+;",
-    "pc_sc": "CTRL+SHIFT+;",
+    "mac_sc": "CONTROL+SHIFT+SEMICOLON",
+    "pc_sc": "CONTROL+SHIFT+SEMICOLON",
     "difficulty": 2
   },
   {
@@ -121,7 +109,7 @@
   },
   {
     "display": "go to",
-    "mac_sc": "CTRL+G",
+    "mac_sc": "CONTROL+G",
     "pc_sc": "F5",
     "difficulty": 2
   },
@@ -145,25 +133,25 @@
   },
   {
     "display": "go to first cell in worksheet",
-    "mac_sc": "CTRL+HOME",
+    "mac_sc": "CONTROL+HOME",
     "pc_sc": "CTRL+HOME",
     "difficulty": 2
   },
   {
     "display": "go to last used cell",
-    "mac_sc": "CTRL+END",
+    "mac_sc": "CONTROL+END",
     "pc_sc": "CTRL+END",
     "difficulty": 2
   },
   {
     "display": "move to next worksheet",
-    "mac_sc": "CTRL+PAGEDOWN",
+    "mac_sc": "OPTION+RIGHTARROW",
     "pc_sc": "CTRL+PAGEDOWN",
     "difficulty": 3
   },
   {
     "display": "move to previous worksheet",
-    "mac_sc": "CTRL+PAGEUP",
+    "mac_sc": "OPTION+LEFTARROW",
     "pc_sc": "CTRL+PAGEUP",
     "difficulty": 3
   },
@@ -229,44 +217,44 @@
   },
   {
     "display": "increase font size",
-    "mac_sc": "CMD+SHIFT+>",
-    "pc_sc": "CTRL+SHIFT+>",
+    "mac_sc": "CMD+SHIFT+GREATERTHAN",
+    "pc_sc": "CTRL+SHIFT+GREATERTHAN",
     "difficulty": 2
   },
   {
     "display": "decrease font size",
-    "mac_sc": "CMD+SHIFT+<",
-    "pc_sc": "CTRL+SHIFT+<",
+    "mac_sc": "CMD+SHIFT+LESSTHAN",
+    "pc_sc": "CTRL+SHIFT+LESSTHAN",
     "difficulty": 2
   },
   {
     "display": "align left",
     "mac_sc": "CMD+L",
-    "pc_sc": "ALT+H, A, L",
+    "pc_sc": "NULL",
     "difficulty": 4
   },
   {
     "display": "center align",
     "mac_sc": "CMD+E",
-    "pc_sc": "ALT+H, A, C",
+    "pc_sc": "NULL",
     "difficulty": 4
   },
   {
     "display": "align right",
     "mac_sc": "CMD+R",
-    "pc_sc": "ALT+H, A, R",
+    "pc_sc": "NULL",
     "difficulty": 4
   },
   {
     "display": "merge and center",
     "mac_sc": "CMD+SHIFT+M",
-    "pc_sc": "ALT+H, M, C",
+    "pc_sc": "NULL",
     "difficulty": 5
   },
   {
     "display": "wrap text",
-    "mac_sc": "CTRL+OPT+RETURN",
-    "pc_sc": "ALT+H, W",
+    "mac_sc": "CONTROL+OPTION+RETURN",
+    "pc_sc": "NULL",
     "difficulty": 5
   },
   {
@@ -295,20 +283,20 @@
   },
   {
     "display": "enter array formula",
-    "mac_sc": "CTRL+SHIFT+RETURN",
-    "pc_sc": "CTRL+SHIFT+ENTER",
+    "mac_sc": "CONTROL+SHIFT+RETURN",
+    "pc_sc": "CONTROL+SHIFT+ENTER",
     "difficulty": 5
   },
   {
     "display": "show formulas",
-    "mac_sc": "CTRL+`",
-    "pc_sc": "CTRL+`",
+    "mac_sc": "CONTROL+QUOTE",
+    "pc_sc": "CONTROL+QUOTE",
     "difficulty": 4
   },
   {
     "display": "evaluate formula",
     "mac_sc": "CMD+SHIFT+F9",
-    "pc_sc": "ALT+M, V",
+    "pc_sc": "NULL",
     "difficulty": 6
   },
   {
@@ -326,7 +314,7 @@
   {
     "display": "track changes",
     "mac_sc": "CMD+SHIFT+E",
-    "pc_sc": "SHIFT+F10",
+    "pc_sc": "NULL",
     "difficulty": 5
   },
   {
@@ -344,25 +332,25 @@
   {
     "display": "increase indent",
     "mac_sc": "CMD+OPTION+TAB",
-    "pc_sc": "ALT+H, 6",
+    "pc_sc": "NULL",
     "difficulty": 4
   },
   {
     "display": "decrease indent",
     "mac_sc": "CMD+OPTION+SHIFT+TAB",
-    "pc_sc": "ALT+H, 5",
+    "pc_sc": "NULL",
     "difficulty": 4
   },
   {
     "display": "sort ascending",
     "mac_sc": "OPTION+SHIFT+S",
-    "pc_sc": "ALT+A, S, A",
+    "pc_sc": "NULL",
     "difficulty": 5
   },
   {
     "display": "sort descending",
     "mac_sc": "OPTION+SHIFT+S",
-    "pc_sc": "ALT+A, S, D",
+    "pc_sc": "NULL",
     "difficulty": 5
   },
   {
@@ -385,25 +373,25 @@
   },
   {
     "display": "insert worksheet row",
-    "mac_sc": "CTRL+SHIFT+PLUS",
-    "pc_sc": "CTRL+SHIFT+PLUS",
+    "mac_sc": "CONTROL+SHIFT+PLUS",
+    "pc_sc": "CONTROL+SHIFT+PLUS",
     "difficulty": 4
   },
   {
     "display": "delete worksheet row",
-    "mac_sc": "CTRL+MINUS",
-    "pc_sc": "CTRL+MINUS",
+    "mac_sc": "CONTROL+MINUS",
+    "pc_sc": "CONTROL+MINUS",
     "difficulty": 3
   },
   {
     "display": "select current region",
-    "mac_sc": "CMD+SHIFT+*",
-    "pc_sc": "CTRL+SHIFT+*",
+    "mac_sc": "CMD+SHIFT+ASTERISK",
+    "pc_sc": "CTRL+SHIFT+ASTERISK",
     "difficulty": 4
   },
   {
     "display": "toggle ribbon",
-    "mac_sc": "CTRL+OPT+R",
+    "mac_sc": "CMD+OPTION+R",
     "pc_sc": "CTRL+F1",
     "difficulty": 5
   },
@@ -415,20 +403,20 @@
   },
   {
     "display": "open the macro dialog",
-    "mac_sc": "OPT+F8",
-    "pc_sc": "ALT+F8",
+    "mac_sc": "OPTION+F8",
+    "pc_sc": "NULL",
     "difficulty": 5
   },
   {
     "display": "open the VBA editor",
-    "mac_sc": "OPT+F11",
-    "pc_sc": "ALT+F11",
+    "mac_sc": "OPTION+F11",
+    "pc_sc": "NULL",
     "difficulty": 5
   },
   {
     "display": "open Power Query editor",
-    "mac_sc": "OPT+F12",
-    "pc_sc": "ALT+F12",
+    "mac_sc": "OPTION+F12",
+    "pc_sc": "NULL",
     "difficulty": 6
   },
   {
@@ -463,25 +451,25 @@
   },
   {
     "display": "switch to next workbook",
-    "mac_sc": "CMD+`",
+    "mac_sc": "CMD+QUOTE",
     "pc_sc": "CTRL+TAB",
     "difficulty": 3
   },
   {
     "display": "switch to previous workbook",
-    "mac_sc": "SHIFT+CMD+`",
+    "mac_sc": "SHIFT+CMD+QUOTE",
     "pc_sc": "CTRL+SHIFT+TAB",
     "difficulty": 3
   },
   {
     "display": "open options",
-    "mac_sc": "CMD+,",
-    "pc_sc": "ALT+F,T",
+    "mac_sc": "CMD+COMMA",
+    "pc_sc": "NULL",
     "difficulty": 5
   },
   {
     "display": "open help",
-    "mac_sc": "CMD+/",
+    "mac_sc": "CMD+SLASH",
     "pc_sc": "F1",
     "difficulty": 2
   }

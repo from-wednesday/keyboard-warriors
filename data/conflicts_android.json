@@ -1,0 +1,28 @@
+{
+  "platform": "android",
+  "scope": "external keyboard only",
+  "hardware_keyboard_only": true,
+  "notes": "Draft list of shortcuts a web app often cannot reliably intercept on Android devices with external keyboards.",
+  "os_conflicts": [
+    { "bad": "ALT+TAB", "action": "switch apps", "sus": true },
+    { "bad": "ALT+ESC", "action": "switch apps", "sus": true },
+    { "bad": "WIN", "action": "open launcher or system UI", "sus": true }
+  ],
+  "browser_conflicts": {
+    "Chrome": [
+      { "bad": "CTRL+L", "action": "focus address bar", "sus": true },
+      { "bad": "CTRL+T", "action": "new tab", "sus": true },
+      { "bad": "CTRL+W", "action": "close tab", "sus": true },
+      { "bad": "CTRL+TAB", "action": "next tab", "sus": true }
+    ],
+    "Firefox": [
+      { "bad": "CTRL+L", "action": "focus address bar", "sus": true },
+      { "bad": "CTRL+T", "action": "new tab", "sus": true },
+      { "bad": "CTRL+W", "action": "close tab", "sus": true }
+    ],
+    "Edge": [
+      { "bad": "CTRL+L", "action": "focus address bar", "sus": true },
+      { "bad": "CTRL+T", "action": "new tab", "sus": true }
+    ]
+  }
+}

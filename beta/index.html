@@ -4373,10 +4373,215 @@ function scrollPillToSelected() {
   appPillEl.scrollTop = SelectedIndex * ROW_H;
 }
 
+// ── App pill spring animator ──────────────────────────────────────────────
+// Drives height, translateY (to pin selected row), and spacer height.
+// All three run in one loop for a unified, physical feel.
+
+var _AppPillSpacer = null;
+
+function _EnsureAppPillSpacer() {
+    if (_AppPillSpacer) return;
+    _AppPillSpacer = document.createElement('div');
+    _AppPillSpacer.id = 'appPillSpacer';
+    _AppPillSpacer.style.cssText = 'width:100%;height:0;overflow:hidden;flex-shrink:0;';
+    var OsRow = document.getElementById('osRow');
+    if (OsRow && OsRow.parentNode) {
+        OsRow.parentNode.insertBefore(_AppPillSpacer, OsRow);
+    }
+}
+
+var _AppPillSpring = {
+    // Pill height
+    CurrentHeight:  27,
+    TargetHeight:   27,
+    HeightVelocity: 0,
+    // Pill translateY (negative = moved up)
+    CurrentTranslateY:  0,
+    TargetTranslateY:   0,
+    TranslateVelocity:  0,
+    // Spacer height
+    CurrentSpacerHeight:  0,
+    TargetSpacerHeight:   0,
+    SpacerVelocity:       0,
+    AnimationFrame: null,
+};
+
+function _AppPillSpringTick() {
+    var Spring = _AppPillSpring;
+    var Settled = true;
+
+    // ── Height ──────────────────────────────────────────────────────────
+    var HeightDifference = Spring.TargetHeight - Spring.CurrentHeight;
+    if (Spring.CurrentHeight < Spring.TargetHeight) {
+        // Opening: spring with slight overshoot
+        Spring.HeightVelocity = Spring.HeightVelocity * 0.74 + HeightDifference * 0.052;
+        Spring.CurrentHeight += Spring.HeightVelocity;
+    } else {
+        // Closing: ease out
+        var ShrinkProgress = Math.abs(HeightDifference) / Math.max(Spring.TargetHeight, 27);
+        Spring.CurrentHeight += HeightDifference * (0.055 + ShrinkProgress * 0.11);
+        Spring.HeightVelocity = 0;
+    }
+    if (Math.abs(Spring.CurrentHeight - Spring.TargetHeight) > 0.5 || Math.abs(Spring.HeightVelocity) > 0.3) {
+        Settled = false;
+    } else {
+        Spring.CurrentHeight = Spring.TargetHeight;
+        Spring.HeightVelocity = 0;
+    }
+
+    // ── TranslateY ──────────────────────────────────────────────────────
+    var TranslateDifference = Spring.TargetTranslateY - Spring.CurrentTranslateY;
+    Spring.TranslateVelocity = Spring.TranslateVelocity * 0.74 + TranslateDifference * 0.052;
+    Spring.CurrentTranslateY += Spring.TranslateVelocity;
+    // Never overshoot past zero — prevents pill drifting above its resting position
+    if (Spring.TargetTranslateY === 0 && Spring.CurrentTranslateY < 0) {
+        Spring.CurrentTranslateY = 0;
+        Spring.TranslateVelocity = 0;
+    }
+    if (Math.abs(Spring.CurrentTranslateY - Spring.TargetTranslateY) > 0.3 || Math.abs(Spring.TranslateVelocity) > 0.2) {
+        Settled = false;
+    } else {
+        Spring.CurrentTranslateY = Spring.TargetTranslateY;
+        Spring.TranslateVelocity = 0;
+    }
+
+    // ── Spacer height ────────────────────────────────────────────────────
+    var SpacerDifference = Spring.TargetSpacerHeight - Spring.CurrentSpacerHeight;
+    if (Spring.CurrentSpacerHeight < Spring.TargetSpacerHeight) {
+        Spring.SpacerVelocity = Spring.SpacerVelocity * 0.74 + SpacerDifference * 0.052;
+        Spring.CurrentSpacerHeight += Spring.SpacerVelocity;
+    } else {
+        var SpacerShrinkProgress = Math.abs(SpacerDifference) / Math.max(Spring.TargetSpacerHeight, 1);
+        Spring.CurrentSpacerHeight += SpacerDifference * (0.055 + SpacerShrinkProgress * 0.11);
+        Spring.SpacerVelocity = 0;
+    }
+    if (Math.abs(Spring.CurrentSpacerHeight - Spring.TargetSpacerHeight) > 0.5 || Math.abs(Spring.SpacerVelocity) > 0.3) {
+        Settled = false;
+    } else {
+        Spring.CurrentSpacerHeight = Spring.TargetSpacerHeight;
+        Spring.SpacerVelocity = 0;
+    }
+
+    // ── Apply ────────────────────────────────────────────────────────────
+    appPillEl.style.height = Math.round(Spring.CurrentHeight * 10) / 10 + 'px';
+    appPillEl.style.transform = Spring.CurrentTranslateY !== 0
+        ? 'translateY(' + (Math.round(Spring.CurrentTranslateY * 10) / 10) + 'px)'
+        : '';
+    if (_AppPillSpacer) {
+        _AppPillSpacer.style.height = Math.round(Spring.CurrentSpacerHeight * 10) / 10 + 'px';
+    }
+
+    if (Settled) {
+        Spring.AnimationFrame = null;
+        if (Spring.TargetTranslateY === 0 && Math.abs(Spring.CurrentTranslateY) < 0.1) {
+            appPillEl.style.transform = '';
+        }
+        return;
+    }
+    Spring.AnimationFrame = requestAnimationFrame(_AppPillSpringTick);
+}
+
+function _AppPillAnimateTo(TargetHeightPixels, TargetTranslateY, TargetSpacerHeight) {
+    var Spring = _AppPillSpring;
+    Spring.TargetHeight = TargetHeightPixels;
+    Spring.TargetTranslateY = TargetTranslateY || 0;
+    Spring.TargetSpacerHeight = TargetSpacerHeight || 0;
+    if (Spring.AnimationFrame) return;
+    Spring.AnimationFrame = requestAnimationFrame(_AppPillSpringTick);
+}
+
+function _AppPillMeasureNaturalHeight() {
+    var PreviousOverflow = appPillEl.style.overflow;
+    var PreviousHeight   = appPillEl.style.height;
+    var PreviousTransform = appPillEl.style.transform;
+    appPillEl.style.overflow  = 'visible';
+    appPillEl.style.height    = 'auto';
+    appPillEl.style.transform = '';
+    var NaturalHeight = appPillEl.scrollHeight;
+    appPillEl.style.overflow  = PreviousOverflow;
+    appPillEl.style.height    = PreviousHeight;
+    appPillEl.style.transform = PreviousTransform;
+    return NaturalHeight;
+}
+
+
+function _AppPillCalculateOpenGeometry(OpenHeight, PillRect) {
+    var ViewportMargin = 12;
+    var SelectedIndex = Math.max(0, appsShortList.indexOf(currentApp));
+
+    var SelectedIndex = Math.max(0, appsShortList.indexOf(currentApp));
+    var SpacerHeight = 0;
+
+    var SpacerHeight = 0;
+    var TranslateY = 0;
+
+    // Expand downward from current position.
+    // If the bottom would go off screen, shift pill upward just enough to fit.
+    var PillTopOnScreen = PillRect.top;
+    var PillBottomOnScreen = PillTopOnScreen + OpenHeight;
+    var BottomOvershoot = PillBottomOnScreen - (window.innerHeight - ViewportMargin);
+    if (BottomOvershoot > 0) {
+        // Shift up, but never past the top margin
+        TranslateY = -Math.min(BottomOvershoot, PillTopOnScreen - ViewportMargin);
+    }
+
+    return { TranslateY: TranslateY, SpacerHeight: SpacerHeight };
+
+}
+
+function openAppPill() {
+    AppPillWrenchOpen = false;
+     var selectorLabel = document.getElementById('appSelectorLabel');
+     if (selectorLabel) selectorLabel.textContent = 'choose app to train in next';
+    var tagline = document.getElementById('welcomeTagline');
+    if (tagline) tagline.style.display = 'none';
+    _EnsureAppPillSpacer();
+
+    // Cancel any running spring animation so its RAF doesn't fight us
+    var Spring = _AppPillSpring;
+    if (Spring.AnimationFrame) {
+        cancelAnimationFrame(Spring.AnimationFrame);
+        Spring.AnimationFrame = null;
+    }
+
+    // Hard-reset pill and spacer to closed state before reading position
+    appPillEl.style.transition = 'none';
+    appPillEl.style.transform  = '';
+    appPillEl.style.height     = '27px';
+    appPillEl.style.overflow   = 'hidden';
+    if (_AppPillSpacer) _AppPillSpacer.style.height = '0px';
+
+    // Reset spring state to match
+    Spring.CurrentHeight       = 27;
+    Spring.TargetHeight        = 27;
+    Spring.CurrentTranslateY   = 0;
+    Spring.TargetTranslateY    = 0;
+    Spring.CurrentSpacerHeight = 0;
+    Spring.TargetSpacerHeight  = 0;
+    Spring.HeightVelocity      = 0;
+    Spring.TranslateVelocity   = 0;
+    Spring.SpacerVelocity      = 0;
+
+    // Force a reflow so the browser commits the above before we read position
+    void appPillEl.offsetHeight;
+
+    // Now read the true position — pill is 27px, no transform, no spacer
+    var PillRect = appPillEl.getBoundingClientRect();
+
+    appPillEl.classList.add('open');
+    titleEl.classList.add('app-pill-open');
+    var OpenHeight = _AppPillMeasureNaturalHeight();
+    var PillRect = appPillEl.getBoundingClientRect();
+    var Geometry = _AppPillCalculateOpenGeometry(OpenHeight, PillRect);
+
+    appPillEl.scrollTop = 0;
+    _AppPillAnimateTo(OpenHeight, Geometry.TranslateY, Geometry.SpacerHeight);
+}
+
 function closeAppPill() {
     AppPillWrenchOpen = false;
-    var selectorLabel = document.getElementById('appSelectorLabel');
-    if (selectorLabel) selectorLabel.textContent = 'now training on';
+     var selectorLabel = document.getElementById('appSelectorLabel');
+     if (selectorLabel) selectorLabel.textContent = 'now training on';
     appPillEl.classList.remove('open');
     titleEl.classList.remove('app-pill-open');
 
@@ -4406,7 +4611,34 @@ function setAppSelectorGameActive(active) {
   _syncPhoneToolbarVisibility();
 }
 
+
 // ── Modal toggles ─────────────────────────────────────────────────────────────
+var stickyKeysOn = false;
+var touchEnabled     = false;
+var soundEnabled     = false; // enabled automatically when touch turns on
+var hasFullKeyboard  = true;  // false = tenkeyless/compact — skip extended key questions
+(function() {
+  try {
+    var savedFull = localStorage.getItem('kw_kb_full');
+    if (savedFull !== null) hasFullKeyboard = (savedFull === 'true');
+  } catch(e) {}
+})();
+
+function setStickyKeys(on) {
+  stickyKeysOn = on;
+  var radio = document.getElementById('stickyRadio');
+  if (!radio) return;
+  radio.classList.toggle('on', on);
+  // Leaving sticky mode: clear any stuck-on keys immediately
+  if (!on) { clearAllLit(); heldKeys.clear(); greenHeld.clear(); }
+}
+
+function setKbSizeToggle(full) {
+  hasFullKeyboard = full;
+  try { localStorage.setItem('kw_kb_full', String(full)); } catch(e) {}
+  updateKbSizeToggle();
+}
+
 function updateKbSizeToggle() {
   var row     = document.getElementById('modalKbSizeRow');
   var knob    = document.getElementById('modalKbSizeKnob');
@@ -10768,39 +11000,17 @@ function runCountdown(onComplete) {
   var counts = [3, 2, 1];
   var step = 0;
 
-  // Move tagline into the questionRow for the countdown
-  var _qRow = document.getElementById('questionRow');
-  if (_cdTagline && _qRow) {
-    _qRow.innerHTML = '';
-    _qRow.appendChild(_cdTagline);
-    _cdTagline.style.fontSize = '11px';
-    _cdTagline.style.fontStyle = 'italic';
-    _cdTagline.style.color = '#6b7280';
-    _cdTagline.style.margin = '0';
-    _cdTagline.style.textAlign = 'center';
-  }
-
   function tick() {
     if (step >= counts.length) {
       numEl.className = '';
       numEl.textContent = '';
       titleEl.style.position = '';
-      if (_cdTagline && _qRow) {
+      if (_cdTagline) {
         _cdTagline.style.transition = 'opacity 0.4s ease';
         _cdTagline.style.opacity = '0';
         setTimeout(function() {
-          if (_cdTagline.parentNode === _qRow) _qRow.removeChild(_cdTagline);
-          document.getElementById('middlePanel') && document.querySelector('.middlePanel') && document.querySelector('.middlePanel').appendChild && (function(){
-            var mp = document.querySelector('.middlePanel > div');
-            if (mp && !mp.contains(_cdTagline)) mp.appendChild(_cdTagline);
-          })();
           _cdTagline.style.display = 'none';
           _cdTagline.style.transition = '';
-          _cdTagline.style.fontSize = '';
-          _cdTagline.style.margin = '';
-          _cdTagline.style.color = '';
-          _cdTagline.style.fontStyle = '';
-          _cdTagline.style.textAlign = '';
           _cdTagline.innerHTML = '<em>Your keyboard shortcuts coach &amp; personal trainer.</em>';
         }, 400);
       }
@@ -10820,7 +11030,7 @@ function runCountdown(onComplete) {
     void numEl.offsetWidth; // force reflow so animation restarts
     numEl.className = 'pop';
     step++;
-    _countdownTimer = setTimeout(tick, 1100);
+    _countdownTimer = setTimeout(tick, 900);
   }
   tick();
 }

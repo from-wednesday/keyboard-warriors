@@ -1,0 +1,43 @@
+{
+  "os_conflicts": [
+    { "bad": "ALT+TAB", "action": "switch apps", "sus": true },
+    { "bad": "ALT+F4", "action": "close window", "sus": true },
+    { "bad": "CTRL+ALT+DEL", "action": "logout or system action", "sus": true },
+    { "bad": "SUPER", "action": "open launcher or overview", "sus": true },
+    { "bad": "CTRL+ALT+ARROW", "action": "workspace switch", "sus": true },
+    { "bad": "PRINTSCREEN", "action": "screenshot tool", "sus": true }
+  ],
+  "browser_conflicts": {
+    "Chrome": [
+      { "bad": "CTRL+T", "action": "new tab" },
+      { "bad": "CTRL+W", "action": "close tab" },
+      { "bad": "CTRL+L", "action": "focus address bar" },
+      { "bad": "CTRL+SHIFT+N", "action": "new incognito window" },
+      { "bad": "CTRL+SHIFT+T", "action": "reopen closed tab", "sus": true },
+      { "bad": "F11", "action": "fullscreen", "sus": true }
+    ],
+    "Firefox": [
+      { "bad": "CTRL+T", "action": "new tab" },
+      { "bad": "CTRL+W", "action": "close tab" },
+      { "bad": "CTRL+L", "action": "focus address bar" },
+      { "bad": "CTRL+SHIFT+P", "action": "open private window", "sus": true },
+      { "bad": "CTRL+SHIFT+T", "action": "reopen closed tab", "sus": true },
+      { "bad": "F11", "action": "fullscreen", "sus": true }
+    ],
+    "Edge": [
+      { "bad": "CTRL+T", "action": "new tab" },
+      { "bad": "CTRL+W", "action": "close tab" },
+      { "bad": "CTRL+L", "action": "focus address bar" },
+      { "bad": "CTRL+SHIFT+DELETE", "action": "clear browsing data" },
+      { "bad": "F12", "action": "dev tools", "sus": true },
+      { "bad": "F11", "action": "fullscreen", "sus": true }
+    ],
+    "Brave": [
+      { "bad": "CTRL+T", "action": "new tab" },
+      { "bad": "CTRL+W", "action": "close tab" },
+      { "bad": "CTRL+SHIFT+N", "action": "new private window" },
+      { "bad": "CTRL+SHIFT+T", "action": "reopen closed tab", "sus": true },
+      { "bad": "F11", "action": "fullscreen", "sus": true }
+    ]
+  }
+}

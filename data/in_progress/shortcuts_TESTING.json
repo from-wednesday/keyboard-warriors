@@ -1,74 +1,14 @@
 [
-  {
-    "display": "insert nonbreaking hyphen (US_)",
-    "mac_sc": "CMD+SHIFT+UNDERSCORE",
-    "pc_sc": "CTRL+SHIFT+UNDERSCORE",
-    "difficulty": 5
-  },
     {
-"display": "insert nonbreaking hyphen (Minus-)",
-    "mac_sc": "CMD+SHIFT+MINUS",
-    "pc_sc": "CTRL+SHIFT+MINUS",
-    "difficulty": 5
+    "display": "open help (CMD+?)",
+    "mac_sc": "CMD+QUESTION",
+    "pc_sc": "F1",
+    "difficulty": 0
   },
-  {
-"display": "Decrease font size",
-    "mac_sc": "CMD+SHIFT+LESSTHAN",
-    "pc_sc": "CTRL+SHIFT+LESSTHAN",
-    "difficulty": 3
-  },
-  {
-    "display": "press ;",
-    "mac_sc": "SEMICOLON",
-    "pc_sc": "SEMICOLON",
-    "difficulty": 1
-  },
-  {
-    "display": "press Home",
-    "mac_sc": "HOME",
-    "pc_sc": "HOME",
-    "difficulty": 1
-  },
-  {
-    "display": "press :",
-    "mac_sc": "COLON",
-    "pc_sc": "COLON",
-    "difficulty": 1
-  },
-  {
-    "display": "press ~",
-    "mac_sc": "TILDE",
-    "pc_sc": "TILDE",
-    "difficulty": 1
-  },
-  {
-    "display": "press `",
-    "mac_sc": "GRAVE",
-    "pc_sc": "GRAVE",
-    "difficulty": 1
-  },
-  {
-    "display": "press END",
-    "mac_sc": "END",
-    "pc_sc": "END",
-    "difficulty": 1
-  },
-  {
-    "display": "press PAGEUP",
-    "mac_sc": "PAGEUP",
-    "pc_sc": "PAGEUP",
-    "difficulty": 1
-  },
-  {
-    "display": "press PAGEDOWN",
-    "mac_sc": "PAGEDOWN",
-    "pc_sc": "PAGEDOWN",
-    "difficulty": 1
-  },
-  {
-    "display": "CLEAR/NumLOCK",
-    "mac_sc": "CLEAR",
-    "pc_sc": "NUMLOCK",
-    "difficulty": 1
+ {
+    "display": "select current region (CMD+SHIFT+*)",
+    "mac_sc": "CMD+SHIFT+ASTERISK",
+    "pc_sc": "CTRL+SHIFT+ASTERISK",
+    "difficulty": 0
   }
 ]

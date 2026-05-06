@@ -31,7 +31,17 @@
       { "bad": "CMD+8",         "action": "switch to eighth tab", "sus": true },
       { "bad": "CMD+9",         "action": "switch to ninth tab", "sus": true },
             { "bad": "CMD+SHIFT+N",   "action": "new private window" }
-
+    ],
+         "Comet": [
+      { "bad": "CMD+T",         "action": "new tab" },
+      { "bad": "OPT+S",   "action": "summarize page" },
+      { "bad": "OPT+A",   "action": "toggle assistant" },
+      { "bad": "OPT+V",   "action": "voice input" },
+      { "bad": "OPT+S",   "action": "summarize page" },
+      { "bad": "OPT+S",   "action": "summarize page" },
+      { "bad": "OPT+S",   "action": "summarize page" },
+      { "bad": "OPT+S",   "action": "summarize page" },
+      { "bad": "OPT+S",   "action": "summarize page" }
     ]
   }
 }

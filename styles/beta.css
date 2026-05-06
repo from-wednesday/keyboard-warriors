@@ -2821,38 +2821,34 @@ body.returning-screen #diffIconWrap .icon-tip { display: none; }
   flex-shrink: 0;
 }
 
-/* EndGame header row: "REPORT CARD" label + magnifying glass inline */
+/* EndGame header row: tab toggle button label + magnifying glass inline */
 .sp-endgame-header-left {
   display: inline-flex;
   align-items: center;
   gap: 4px;
   cursor: pointer;
-  transition: color 0.15s ease;
+  transition: color 0.15s ease, background 0.15s ease;
   color: #9ca3af;
+  border: 1px solid #d1d5db;
+  border-radius: 20px;
+  padding: 3px 8px 3px 6px;
+  background: transparent;
+  user-select: none;
 }
 .sp-endgame-search-icon {
   display: block;
-  width: 12px;
-  height: 12px;
+  width: 11px;
+  height: 11px;
   flex-shrink: 0;
   stroke: currentColor;
   overflow: visible;
 }
 @media (hover: none) {
-  .sp-endgame-header-left:hover { color: #9ca3af; }
+  .sp-endgame-header-left:hover { color: #9ca3af; background: transparent; }
 }
 @media (hover: hover) {
-  .sp-endgame-header-left:hover { color: #374151; }
+  .sp-endgame-header-left:hover { color: #374151; background: #f0f4f8; }
   .sp-endgame-header-left:hover .sp-small-card-title { color: #374151; }
-}
-
-/* EndGame CheatSheet context label -- same resting colour as "REPORT CARD" */
-.sp-endgame-context-label {
-  font-size: 10px;
-  color: #9ca3af;
-  font-weight: 400;
-  margin: 0;
-  line-height: 1;
 }
 
 /* Column header row: "Report Card" + "Strengths" on left; "Needs Work" on right */
@@ -3124,14 +3120,11 @@ body.returning-screen #diffIconWrap .icon-tip { display: none; }
   cursor: pointer;
   user-select: none;
   color: #9ca3af;
-  transition: color 0.15s ease;
-}
-.sp-endgame-header-left:hover {
-  color: #374151;
-}
-.sp-endgame-header-left .sp-small-card-title {
-  color: inherit;
-  transition: color 0.15s ease;
+  transition: color 0.15s ease, background 0.15s ease;
+  border: 1px solid #d1d5db;
+  border-radius: 20px;
+  padding: 3px 8px 3px 6px;
+  background: transparent;
 }
 .sp-endgame-search-icon {
   width: 13px;
@@ -3175,6 +3168,16 @@ body.returning-screen #diffIconWrap .icon-tip { display: none; }
   }
   .sp-endgame-header-left:hover .sp-endgame-search-icon {
     opacity: 0.55;
+  }
+}
+
+@media (hover: hover) {
+  .sp-endgame-header-left:hover {
+    color: #374151;
+    background: #f0f4f8;
+  }
+  .sp-endgame-header-left:hover .sp-small-card-title {
+    color: #374151;
   }
 }
 

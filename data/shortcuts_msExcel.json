@@ -86,13 +86,13 @@
   {
     "display": "insert current date",
     "mac_sc": "CONTROL+SEMICOLON",
-    "pc_sc": "CONTROL+SEMICOLON",
+    "pc_sc": "CTRL+SEMICOLON",
     "difficulty": 2
   },
   {
     "display": "insert current time",
     "mac_sc": "CONTROL+SHIFT+SEMICOLON",
-    "pc_sc": "CONTROL+SHIFT+SEMICOLON",
+    "pc_sc": "CTRL+SHIFT+SEMICOLON",
     "difficulty": 2
   },
   {
@@ -157,7 +157,7 @@
   },
   {
     "display": "insert a new worksheet",
-    "mac_sc": "SHIFT+F11",
+    "mac_sc": "SHIFT+FN+F11",
     "pc_sc": "SHIFT+F11",
     "difficulty": 2
   },
@@ -427,7 +427,7 @@
   },
   {
     "display": "select entire column",
-    "mac_sc": "CMD+SPACE",
+    "mac_sc": "CONTROL+SPACE",
     "pc_sc": "CTRL+SPACE",
     "difficulty": 2
   },

@@ -12641,8 +12641,13 @@ function _buildSkillsetPill() {
         e.stopPropagation();
         currentSkillset = def.label;
         _applySkillset(def.label);
-        currentApp = appsShortList[0];
+        var _exclusive = appsShortList.find(function(l) {
+          var _entry = appsLongList.find(function(a) { return a.label === l; });
+          return _entry && Array.isArray(_entry.skillset) && _entry.skillset.length === 1;
+        });
+        currentApp = _exclusive || appsShortList[0];
         try { localStorage.setItem('kw_app', currentApp); } catch (StorageError) {}
+        buildAppPill();
         _closeSkillsetPill();
         appPillEl.style.overflow = 'visible';
         pulseBtn(appPillEl);

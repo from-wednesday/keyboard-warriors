@@ -10987,6 +10987,16 @@ function runCountdown(onComplete) {
   titleEl.textContent = '';
   titleEl.style.position = 'relative';
 
+  // Build the context tagline for the countdown
+  var _cdTagline = document.getElementById('welcomeTagline');
+  var _osLabel = currentOs === 'pc' ? 'PC' : 'Mac';
+  if (_cdTagline) {
+    _cdTagline.textContent = '10 questions on shortcuts for ' + currentApp + ' on ' + _osLabel;
+    _cdTagline.style.display = 'block';
+    _cdTagline.style.opacity = '0';
+    _cdTagline.style.transition = 'opacity 0.4s ease';
+  }
+
   var counts = [3, 2, 1];
   var step = 0;
 
@@ -10995,9 +11005,25 @@ function runCountdown(onComplete) {
       numEl.className = '';
       numEl.textContent = '';
       titleEl.style.position = '';
+      if (_cdTagline) {
+        _cdTagline.style.transition = 'opacity 0.4s ease';
+        _cdTagline.style.opacity = '0';
+        setTimeout(function() {
+          _cdTagline.style.display = 'none';
+          _cdTagline.style.transition = '';
+          _cdTagline.innerHTML = '<em>Your keyboard shortcuts coach &amp; personal trainer.</em>';
+        }, 400);
+      }
       _countdownTimer = null;
       onComplete();
       return;
+    }
+    if (step === 0 && _cdTagline) {
+      _cdTagline.style.opacity = '1';
+    }
+    if (step === 2 && _cdTagline) {
+      _cdTagline.style.transition = 'opacity 0.6s ease';
+      _cdTagline.style.opacity = '0';
     }
     numEl.textContent = counts[step];
     numEl.className = '';

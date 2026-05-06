@@ -3924,9 +3924,7 @@ try { localStorage.setItem('kw_app', currentApp); } catch (StorageError) {}
 buildAppPill();
 closeAppPill();
 runData.length = 0; lastCompletedReport = null; CoachAdviceAccepted = false;
-pulseBtn(appPillEl);
     });
-
     appPillEl.appendChild(Row);
   });
 
@@ -12644,8 +12642,12 @@ function _buildSkillsetPill() {
         currentSkillset = def.label;
         _applySkillset(def.label);
         _closeSkillsetPill();
-        var _selRow = appPillEl.querySelector('.app-option.selected');
-        pulseBtn(_selRow || appPillEl);
+        appPillEl.style.overflow = 'visible';
+        pulseBtn(appPillEl);
+        appPillEl.addEventListener('animationend', function _pillPulseEnd() {
+          appPillEl.style.overflow = '';
+          appPillEl.removeEventListener('animationend', _pillPulseEnd);
+        });
         // Show the welcome caret now that a selection has been made
         var wCaret = document.getElementById('welcomeDifficultyCaretEl');
         if (wCaret) wCaret.style.visibility = '';

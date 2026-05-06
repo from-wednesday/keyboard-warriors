@@ -11007,6 +11007,12 @@ function runCountdown(onComplete) {
 
   var counts = [3, 2, 1];
   var step = 0;
+  setTimeout(function() {
+    if (_cdTagline) {
+      _cdTagline.style.transition = 'opacity 0.4s ease';
+      _cdTagline.style.opacity = '1';
+    }
+  }, 700);
   var _qRow = document.getElementById('questionRow');
   if (_cdTagline && _qRow) {
     _qRow.innerHTML = '';
@@ -11047,7 +11053,6 @@ function runCountdown(onComplete) {
       return;
     }
     if (step === 0 && _cdTagline) {
-      _cdTagline.style.opacity = '1';
     }
     if (step === 2 && _cdTagline) {
       _cdTagline.style.transition = 'opacity 0.6s ease';

@@ -4373,9 +4373,6 @@ function scrollPillToSelected() {
   appPillEl.scrollTop = SelectedIndex * ROW_H;
 }
 
-return NaturalHeight;
-}
-
 function _AppPillCalculateOpenGeometry(OpenHeight, PillRect) {
     var ViewportMargin = 12;
     var SelectedIndex = Math.max(0, appsShortList.indexOf(currentApp));
@@ -10824,17 +10821,39 @@ function runCountdown(onComplete) {
   var counts = [3, 2, 1];
   var step = 0;
 
+  // Move tagline into the questionRow for the countdown
+  var _qRow = document.getElementById('questionRow');
+  if (_cdTagline && _qRow) {
+    _qRow.innerHTML = '';
+    _qRow.appendChild(_cdTagline);
+    _cdTagline.style.fontSize = '11px';
+    _cdTagline.style.fontStyle = 'italic';
+    _cdTagline.style.color = '#6b7280';
+    _cdTagline.style.margin = '0';
+    _cdTagline.style.textAlign = 'center';
+  }
+
   function tick() {
     if (step >= counts.length) {
       numEl.className = '';
       numEl.textContent = '';
       titleEl.style.position = '';
-      if (_cdTagline) {
+      if (_cdTagline && _qRow) {
         _cdTagline.style.transition = 'opacity 0.4s ease';
         _cdTagline.style.opacity = '0';
         setTimeout(function() {
+          if (_cdTagline.parentNode === _qRow) _qRow.removeChild(_cdTagline);
+          document.getElementById('middlePanel') && document.querySelector('.middlePanel') && document.querySelector('.middlePanel').appendChild && (function(){
+            var mp = document.querySelector('.middlePanel > div');
+            if (mp && !mp.contains(_cdTagline)) mp.appendChild(_cdTagline);
+          })();
           _cdTagline.style.display = 'none';
           _cdTagline.style.transition = '';
+          _cdTagline.style.fontSize = '';
+          _cdTagline.style.margin = '';
+          _cdTagline.style.color = '';
+          _cdTagline.style.fontStyle = '';
+          _cdTagline.style.textAlign = '';
           _cdTagline.innerHTML = '<em>Your keyboard shortcuts coach &amp; personal trainer.</em>';
         }, 400);
       }
@@ -10854,7 +10873,7 @@ function runCountdown(onComplete) {
     void numEl.offsetWidth; // force reflow so animation restarts
     numEl.className = 'pop';
     step++;
-    _countdownTimer = setTimeout(tick, 900);
+    _countdownTimer = setTimeout(tick, 1100);
   }
   tick();
 }

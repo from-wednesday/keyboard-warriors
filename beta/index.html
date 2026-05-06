@@ -10999,17 +10999,17 @@ function runCountdown(onComplete) {
   var _cdTagline = document.getElementById('welcomeTagline');
   var _osLabel = currentOs === 'pc' ? 'PC' : 'Mac';
   if (_cdTagline) {
-    _cdTagline.textContent = '10 questions on shortcuts for ' + currentApp + ' on ' + _osLabel;
+    _cdTagline.textContent = currentApp + ' on ' + _osLabel;
     _cdTagline.style.display = 'block';
     _cdTagline.style.opacity = '0';
-    _cdTagline.style.transition = 'opacity 0.4s ease';
+    _cdTagline.style.transition = 'opacity 0.2s ease';
   }
 
   var counts = [3, 2, 1];
   var step = 0;
   setTimeout(function() {
     if (_cdTagline) {
-      _cdTagline.style.transition = 'opacity 0.4s ease';
+      _cdTagline.style.transition = 'opacity 0.2s ease';
       _cdTagline.style.opacity = '1';
     }
   }, 700);
@@ -11019,7 +11019,7 @@ function runCountdown(onComplete) {
     _qRow.appendChild(_cdTagline);
     _cdTagline.style.fontSize = '11px';
     _cdTagline.style.fontStyle = 'none';
-    _cdTagline.style.color = '#6b7280';
+    _cdTagline.style.color = '#daeaf6';
     _cdTagline.style.margin = '0';
     _cdTagline.style.textAlign = 'center';
   }

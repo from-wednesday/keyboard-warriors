@@ -4529,7 +4529,16 @@ function _AppPillCalculateOpenGeometry(OpenHeight, PillRect) {
 
 }
 
-function openAppPill() {
+var tagline = document.getElementById('welcomeTagline');
+    if (tagline) {
+      tagline.style.transition = 'opacity 0.4s ease';
+      tagline.style.opacity = '0';
+      setTimeout(function() {
+        tagline.style.display = 'none';
+        tagline.style.transition = '';
+        tagline.style.opacity = '';
+      }, 400);
+    }
     AppPillWrenchOpen = false;
      var selectorLabel = document.getElementById('appSelectorLabel');
      if (selectorLabel) selectorLabel.textContent = 'choose app to train in next';

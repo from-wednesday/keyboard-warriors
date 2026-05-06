@@ -1,7 +1,8 @@
 {
   "os_conflicts": [
     { "bad": "CMD+TAB",       "action": "switch app" },
-    { "bad": "CMD+W",       "action": "zzzzzzzzz" },
+    { "bad": "CMD+W",       "action": "close tab" },
+    { "bad": "CMD+OPT+D",       "action": "open dock" },
         { "bad": "CMD+SHIFT+3", "action": "screenshot to file" },
         { "bad": "CMD+SHIFT+4", "action": "screenshot with selection" },
         { "bad": "CMD+SHIFT+5", "action": "advanced screenshot" },
@@ -26,19 +27,39 @@
     ],
     "Safari":  [
       { "bad": "CMD+T",         "action": "new tab" },
-      { "bad": "CMD+N",         "action": "new window", "sus": true },
+      { "bad": "CMD+N",         "action": "new window" },
             { "bad": "CMD+R",         "action": "reload tab" },
-            { "bad": "CMD+O",         "action": "zzzzzzzzzzzzzzzzzzzzz" },
-            { "bad": "CMD+1",         "action": "zzzzzzzzzzzzzzzb" },
+            { "bad": "CMD+1",         "action": "switch to first tab" },
+      { "bad": "CMD+2",         "action": "switch to second tab", "sus": true },
+      { "bad": "CMD+3",         "action": "switch to third tab", "sus": true },
+      { "bad": "CMD+4",         "action": "switch to fourth tab", "sus": true },
+      { "bad": "CMD+5",         "action": "switch to fifth tab", "sus": true },
+      { "bad": "CMD+6",         "action": "switch to sixth tab", "sus": true },
+      { "bad": "CMD+7",         "action": "switch to seventh tab", "sus": true },
+      { "bad": "CMD+8",         "action": "switch to eighth tab", "sus": true },
+      { "bad": "CMD+9",         "action": "switch to ninth tab", "sus": true },
             { "bad": "CMD+OPT+LEFT",  "action": "move to left tab" },
             { "bad": "CMD+OPT+RIGHT", "action": "move to right tab" }
     ],
     "Firefox": [
       { "bad": "CMD+T",         "action": "new tab" },
-      { "bad": "CMD+SHIFT+P",   "action": "zzzzzzzzzzzzzzzzzzz" }
+      { "bad": "CMD+SHIFT+P",   "action": "open private window" }
+    ],
+     "Comet": [
+      { "bad": "CMD+T",         "action": "new tab" },
+      { "bad": "OPT+S",   "action": "summarize page" },
+      { "bad": "OPT+A",   "action": "toggle assistant" },
+      { "bad": "OPT+V",   "action": "voice input" },
+      { "bad": "OPT+S",   "action": "summarize page" },
+      { "bad": "OPT+S",   "action": "summarize page" },
+      { "bad": "OPT+S",   "action": "summarize page" },
+      { "bad": "OPT+S",   "action": "summarize page" },
+      { "bad": "OPT+S",   "action": "summarize page" }
     ],
     "Opera":   [
-      { "bad": "CMD+T",         "action": "new tab" }
+      { "bad": "CMD+T",         "action": "new tab" },
+      { "bad": "CMD+SHIFT+N",   "action": "new private window" }
+
     ]
   }
 }

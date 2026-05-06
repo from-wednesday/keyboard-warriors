@@ -1,0 +1,488 @@
+[
+  {
+    "display": "create a new workbook",
+    "mac_sc": "CMD+N",
+    "pc_sc": "CTRL+N",
+    "difficulty": 1
+  },
+  {
+    "display": "open a workbook",
+    "mac_sc": "CMD+O",
+    "pc_sc": "CTRL+O",
+    "difficulty": 1
+  },
+  {
+    "display": "save the workbook",
+    "mac_sc": "CMD+S",
+    "pc_sc": "CTRL+S",
+    "difficulty": 1
+  },
+  {
+    "display": "save as",
+    "mac_sc": "SHIFT+CMD+S",
+    "pc_sc": "F12",
+    "difficulty": 2
+  },
+  {
+    "display": "open the Print dialog",
+    "mac_sc": "CMD+P",
+    "pc_sc": "CTRL+P",
+    "difficulty": 1
+  },
+  {
+    "display": "close the workbook",
+    "mac_sc": "CMD+W",
+    "pc_sc": "CTRL+W",
+    "difficulty": 1
+  },
+  {
+    "display": "quit Microsoft Excel",
+    "mac_sc": "CMD+Q",
+    "pc_sc": "ALT+F4",
+    "difficulty": 3
+  },
+  {
+    "display": "undo",
+    "mac_sc": "CMD+Z",
+    "pc_sc": "CTRL+Z",
+    "difficulty": 1
+  },
+  {
+    "display": "redo",
+    "mac_sc": "SHIFT+CMD+Z",
+    "pc_sc": "CTRL+Y",
+    "difficulty": 1
+  },
+  {
+    "display": "cut selection",
+    "mac_sc": "CMD+X",
+    "pc_sc": "CTRL+X",
+    "difficulty": 1
+  },
+  {
+    "display": "copy selection",
+    "mac_sc": "CMD+C",
+    "pc_sc": "CTRL+C",
+    "difficulty": 1
+  },
+  {
+    "display": "paste",
+    "mac_sc": "CMD+V",
+    "pc_sc": "CTRL+V",
+    "difficulty": 1
+  },
+  {
+    "display": "paste special",
+    "mac_sc": "CTRL+CMD+V",
+    "pc_sc": "CTRL+ALT+V",
+    "difficulty": 3
+  },
+  {
+    "display": "fill down",
+    "mac_sc": "CMD+D",
+    "pc_sc": "CTRL+D",
+    "difficulty": 2
+  },
+  {
+    "display": "fill right",
+    "mac_sc": "CMD+R",
+    "pc_sc": "CTRL+R",
+    "difficulty": 2
+  },
+  {
+    "display": "delete cell contents",
+    "mac_sc": "DELETE",
+    "pc_sc": "DELETE",
+    "difficulty": 0
+  },
+  {
+    "display": "insert current date",
+    "mac_sc": "CTRL+;",
+    "pc_sc": "CTRL+;",
+    "difficulty": 2
+  },
+  {
+    "display": "insert current time",
+    "mac_sc": "CTRL+SHIFT+;",
+    "pc_sc": "CTRL+SHIFT+;",
+    "difficulty": 2
+  },
+  {
+    "display": "find",
+    "mac_sc": "CMD+F",
+    "pc_sc": "CTRL+F",
+    "difficulty": 1
+  },
+  {
+    "display": "find next",
+    "mac_sc": "CMD+G",
+    "pc_sc": "F4",
+    "difficulty": 3
+  },
+  {
+    "display": "go to",
+    "mac_sc": "CTRL+G",
+    "pc_sc": "F5",
+    "difficulty": 2
+  },
+  {
+    "display": "select all cells",
+    "mac_sc": "CMD+A",
+    "pc_sc": "CTRL+A",
+    "difficulty": 1
+  },
+  {
+    "display": "go to beginning of row",
+    "mac_sc": "HOME",
+    "pc_sc": "HOME",
+    "difficulty": 1
+  },
+  {
+    "display": "go to end of row",
+    "mac_sc": "END",
+    "pc_sc": "END",
+    "difficulty": 1
+  },
+  {
+    "display": "go to first cell in worksheet",
+    "mac_sc": "CTRL+HOME",
+    "pc_sc": "CTRL+HOME",
+    "difficulty": 2
+  },
+  {
+    "display": "go to last used cell",
+    "mac_sc": "CTRL+END",
+    "pc_sc": "CTRL+END",
+    "difficulty": 2
+  },
+  {
+    "display": "move to next worksheet",
+    "mac_sc": "CTRL+PAGEDOWN",
+    "pc_sc": "CTRL+PAGEDOWN",
+    "difficulty": 3
+  },
+  {
+    "display": "move to previous worksheet",
+    "mac_sc": "CTRL+PAGEUP",
+    "pc_sc": "CTRL+PAGEUP",
+    "difficulty": 3
+  },
+  {
+    "display": "insert a new worksheet",
+    "mac_sc": "SHIFT+F11",
+    "pc_sc": "SHIFT+F11",
+    "difficulty": 2
+  },
+  {
+    "display": "toggle bold",
+    "mac_sc": "CMD+B",
+    "pc_sc": "CTRL+B",
+    "difficulty": 1
+  },
+  {
+    "display": "toggle italic",
+    "mac_sc": "CMD+I",
+    "pc_sc": "CTRL+I",
+    "difficulty": 1
+  },
+  {
+    "display": "toggle underline",
+    "mac_sc": "CMD+U",
+    "pc_sc": "CTRL+U",
+    "difficulty": 1
+  },
+  {
+    "display": "format cells dialog",
+    "mac_sc": "CMD+1",
+    "pc_sc": "CTRL+1",
+    "difficulty": 2
+  },
+  {
+    "display": "apply number format",
+    "mac_sc": "CMD+SHIFT+1",
+    "pc_sc": "CTRL+SHIFT+1",
+    "difficulty": 3
+  },
+  {
+    "display": "apply currency format",
+    "mac_sc": "CMD+SHIFT+4",
+    "pc_sc": "CTRL+SHIFT+4",
+    "difficulty": 3
+  },
+  {
+    "display": "apply percent format",
+    "mac_sc": "CMD+SHIFT+5",
+    "pc_sc": "CTRL+SHIFT+5",
+    "difficulty": 3
+  },
+  {
+    "display": "apply scientific format",
+    "mac_sc": "CMD+SHIFT+6",
+    "pc_sc": "CTRL+SHIFT+6",
+    "difficulty": 4
+  },
+  {
+    "display": "toggle borders",
+    "mac_sc": "CMD+SHIFT+7",
+    "pc_sc": "CTRL+SHIFT+7",
+    "difficulty": 3
+  },
+  {
+    "display": "increase font size",
+    "mac_sc": "CMD+SHIFT+>",
+    "pc_sc": "CTRL+SHIFT+>",
+    "difficulty": 2
+  },
+  {
+    "display": "decrease font size",
+    "mac_sc": "CMD+SHIFT+<",
+    "pc_sc": "CTRL+SHIFT+<",
+    "difficulty": 2
+  },
+  {
+    "display": "align left",
+    "mac_sc": "CMD+L",
+    "pc_sc": "ALT+H, A, L",
+    "difficulty": 4
+  },
+  {
+    "display": "center align",
+    "mac_sc": "CMD+E",
+    "pc_sc": "ALT+H, A, C",
+    "difficulty": 4
+  },
+  {
+    "display": "align right",
+    "mac_sc": "CMD+R",
+    "pc_sc": "ALT+H, A, R",
+    "difficulty": 4
+  },
+  {
+    "display": "merge and center",
+    "mac_sc": "CMD+SHIFT+M",
+    "pc_sc": "ALT+H, M, C",
+    "difficulty": 5
+  },
+  {
+    "display": "wrap text",
+    "mac_sc": "CTRL+OPT+RETURN",
+    "pc_sc": "ALT+H, W",
+    "difficulty": 5
+  },
+  {
+    "display": "calculate workbook",
+    "mac_sc": "F9",
+    "pc_sc": "F9",
+    "difficulty": 4
+  },
+  {
+    "display": "calculate active worksheet",
+    "mac_sc": "SHIFT+F9",
+    "pc_sc": "SHIFT+F9",
+    "difficulty": 4
+  },
+  {
+    "display": "insert function",
+    "mac_sc": "SHIFT+F3",
+    "pc_sc": "SHIFT+F3",
+    "difficulty": 3
+  },
+  {
+    "display": "toggle absolute and relative references",
+    "mac_sc": "F4",
+    "pc_sc": "F4",
+    "difficulty": 3
+  },
+  {
+    "display": "enter array formula",
+    "mac_sc": "CTRL+SHIFT+RETURN",
+    "pc_sc": "CTRL+SHIFT+ENTER",
+    "difficulty": 5
+  },
+  {
+    "display": "show formulas",
+    "mac_sc": "CTRL+`",
+    "pc_sc": "CTRL+`",
+    "difficulty": 4
+  },
+  {
+    "display": "evaluate formula",
+    "mac_sc": "CMD+SHIFT+F9",
+    "pc_sc": "ALT+M, V",
+    "difficulty": 6
+  },
+  {
+    "display": "check spelling",
+    "mac_sc": "F7",
+    "pc_sc": "F7",
+    "difficulty": 2
+  },
+  {
+    "display": "thesaurus",
+    "mac_sc": "SHIFT+F7",
+    "pc_sc": "SHIFT+F7",
+    "difficulty": 4
+  },
+  {
+    "display": "track changes",
+    "mac_sc": "CMD+SHIFT+E",
+    "pc_sc": "SHIFT+F10",
+    "difficulty": 5
+  },
+  {
+    "display": "insert comment",
+    "mac_sc": "SHIFT+F2",
+    "pc_sc": "SHIFT+F2",
+    "difficulty": 3
+  },
+  {
+    "display": "edit comment",
+    "mac_sc": "SHIFT+F2",
+    "pc_sc": "SHIFT+F2",
+    "difficulty": 3
+  },
+  {
+    "display": "increase indent",
+    "mac_sc": "CMD+OPTION+TAB",
+    "pc_sc": "ALT+H, 6",
+    "difficulty": 4
+  },
+  {
+    "display": "decrease indent",
+    "mac_sc": "CMD+OPTION+SHIFT+TAB",
+    "pc_sc": "ALT+H, 5",
+    "difficulty": 4
+  },
+  {
+    "display": "sort ascending",
+    "mac_sc": "OPTION+SHIFT+S",
+    "pc_sc": "ALT+A, S, A",
+    "difficulty": 5
+  },
+  {
+    "display": "sort descending",
+    "mac_sc": "OPTION+SHIFT+S",
+    "pc_sc": "ALT+A, S, D",
+    "difficulty": 5
+  },
+  {
+    "display": "apply filter",
+    "mac_sc": "CMD+SHIFT+L",
+    "pc_sc": "CTRL+SHIFT+L",
+    "difficulty": 3
+  },
+  {
+    "display": "clear filter",
+    "mac_sc": "CMD+SHIFT+L",
+    "pc_sc": "CTRL+SHIFT+L",
+    "difficulty": 3
+  },
+  {
+    "display": "recalculate all worksheets",
+    "mac_sc": "F9",
+    "pc_sc": "F9",
+    "difficulty": 4
+  },
+  {
+    "display": "insert worksheet row",
+    "mac_sc": "CTRL+SHIFT+PLUS",
+    "pc_sc": "CTRL+SHIFT+PLUS",
+    "difficulty": 4
+  },
+  {
+    "display": "delete worksheet row",
+    "mac_sc": "CTRL+MINUS",
+    "pc_sc": "CTRL+MINUS",
+    "difficulty": 3
+  },
+  {
+    "display": "select current region",
+    "mac_sc": "CMD+SHIFT+*",
+    "pc_sc": "CTRL+SHIFT+*",
+    "difficulty": 4
+  },
+  {
+    "display": "toggle ribbon",
+    "mac_sc": "CTRL+OPT+R",
+    "pc_sc": "CTRL+F1",
+    "difficulty": 5
+  },
+  {
+    "display": "new chart sheet",
+    "mac_sc": "F11",
+    "pc_sc": "F11",
+    "difficulty": 5
+  },
+  {
+    "display": "open the macro dialog",
+    "mac_sc": "OPT+F8",
+    "pc_sc": "ALT+F8",
+    "difficulty": 5
+  },
+  {
+    "display": "open the VBA editor",
+    "mac_sc": "OPT+F11",
+    "pc_sc": "ALT+F11",
+    "difficulty": 5
+  },
+  {
+    "display": "open Power Query editor",
+    "mac_sc": "OPT+F12",
+    "pc_sc": "ALT+F12",
+    "difficulty": 6
+  },
+  {
+    "display": "duplicate selected cells",
+    "mac_sc": "CMD+D",
+    "pc_sc": "CTRL+D",
+    "difficulty": 2
+  },
+  {
+    "display": "select entire column",
+    "mac_sc": "CMD+SPACE",
+    "pc_sc": "CTRL+SPACE",
+    "difficulty": 2
+  },
+  {
+    "display": "select entire row",
+    "mac_sc": "SHIFT+SPACE",
+    "pc_sc": "SHIFT+SPACE",
+    "difficulty": 2
+  },
+  {
+    "display": "move to next pane",
+    "mac_sc": "FN+F6",
+    "pc_sc": "F6",
+    "difficulty": 4
+  },
+  {
+    "display": "move to previous pane",
+    "mac_sc": "SHIFT+FN+F6",
+    "pc_sc": "SHIFT+F6",
+    "difficulty": 4
+  },
+  {
+    "display": "switch to next workbook",
+    "mac_sc": "CMD+`",
+    "pc_sc": "CTRL+TAB",
+    "difficulty": 3
+  },
+  {
+    "display": "switch to previous workbook",
+    "mac_sc": "SHIFT+CMD+`",
+    "pc_sc": "CTRL+SHIFT+TAB",
+    "difficulty": 3
+  },
+  {
+    "display": "open options",
+    "mac_sc": "CMD+,",
+    "pc_sc": "ALT+F,T",
+    "difficulty": 5
+  },
+  {
+    "display": "open help",
+    "mac_sc": "CMD+/",
+    "pc_sc": "F1",
+    "difficulty": 2
+  }
+]

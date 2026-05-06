@@ -1,8 +1,4 @@
 {
-  "platform": "android",
-  "scope": "external keyboard only",
-  "hardware_keyboard_only": true,
-  "notes": "Draft list of shortcuts a web app often cannot reliably intercept on Android devices with external keyboards.",
   "os_conflicts": [
     { "bad": "ALT+TAB", "action": "switch apps", "sus": true },
     { "bad": "ALT+ESC", "action": "switch apps", "sus": true },

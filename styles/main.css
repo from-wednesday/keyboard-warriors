@@ -914,7 +914,12 @@ body.kb-at-edge #keyboardPanel #kb-shadow {
 #mainBtn.pulse {
   animation: btnPulse 0.45s cubic-bezier(0.25, 0.46, 0.45, 0.94);
 }
-
+#appPill.pulse {
+  animation: btnPulse 0.45s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+}
+.app-option.pulse {
+  animation: btnPulse 0.45s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+}
 
 #kbToast {
   position: absolute;
@@ -2816,38 +2821,34 @@ body.returning-screen #diffIconWrap .icon-tip { display: none; }
   flex-shrink: 0;
 }
 
-/* EndGame header row: "REPORT CARD" label + magnifying glass inline */
+/* EndGame header row: tab toggle button label + magnifying glass inline */
 .sp-endgame-header-left {
   display: inline-flex;
   align-items: center;
   gap: 4px;
   cursor: pointer;
-  transition: color 0.15s ease;
+  transition: color 0.15s ease, background 0.15s ease;
   color: #9ca3af;
+  border: 1px solid #d1d5db;
+  border-radius: 20px;
+  padding: 3px 8px 3px 6px;
+  background: transparent;
+  user-select: none;
 }
 .sp-endgame-search-icon {
   display: block;
-  width: 12px;
-  height: 12px;
+  width: 11px;
+  height: 11px;
   flex-shrink: 0;
   stroke: currentColor;
   overflow: visible;
 }
 @media (hover: none) {
-  .sp-endgame-header-left:hover { color: #9ca3af; }
+  .sp-endgame-header-left:hover { color: #9ca3af; background: transparent; }
 }
 @media (hover: hover) {
-  .sp-endgame-header-left:hover { color: #374151; }
+  .sp-endgame-header-left:hover { color: #374151; background: #f0f4f8; }
   .sp-endgame-header-left:hover .sp-small-card-title { color: #374151; }
-}
-
-/* EndGame CheatSheet context label -- same resting colour as "REPORT CARD" */
-.sp-endgame-context-label {
-  font-size: 10px;
-  color: #9ca3af;
-  font-weight: 400;
-  margin: 0;
-  line-height: 1;
 }
 
 /* Column header row: "Report Card" + "Strengths" on left; "Needs Work" on right */
@@ -3119,14 +3120,11 @@ body.returning-screen #diffIconWrap .icon-tip { display: none; }
   cursor: pointer;
   user-select: none;
   color: #9ca3af;
-  transition: color 0.15s ease;
-}
-.sp-endgame-header-left:hover {
-  color: #374151;
-}
-.sp-endgame-header-left .sp-small-card-title {
-  color: inherit;
-  transition: color 0.15s ease;
+  transition: color 0.15s ease, background 0.15s ease;
+  border: 1px solid #d1d5db;
+  border-radius: 20px;
+  padding: 3px 8px 3px 6px;
+  background: transparent;
 }
 .sp-endgame-search-icon {
   width: 13px;
@@ -3170,6 +3168,16 @@ body.returning-screen #diffIconWrap .icon-tip { display: none; }
   }
   .sp-endgame-header-left:hover .sp-endgame-search-icon {
     opacity: 0.55;
+  }
+}
+
+@media (hover: hover) {
+  .sp-endgame-header-left:hover {
+    color: #374151;
+    background: #f0f4f8;
+  }
+  .sp-endgame-header-left:hover .sp-small-card-title {
+    color: #374151;
   }
 }
 
@@ -3587,3 +3595,59 @@ body.returning-screen #diffIconWrap .icon-tip { display: none; }
   #brIconWrap:not(.sp-icon-active):hover  .icon-tip  { opacity: 0; }
   #diffIconWrap:not(.sp-icon-active):hover .icon-tip { opacity: 0; }
 }
+
+/* ── Conflict source filter pill ─────────────────────────────────────────────
+   Four segments: OS (fixed), Browser (flex), Found (fixed), Keyboard (fixed).
+   The three fixed segments are sized at 56px — wide enough for the longest
+   possible OS label (Apple SVG + "iPhone") with comfortable padding.
+   Add these rules to the end of beta.css.
+   ─────────────────────────────────────────────────────────────────────────── */
+
+.conflict-filter-pill {
+  display: flex;
+  gap: 0;
+}
+
+/* All four segments share base sizing overrides on top of score-pill-seg */
+.conflict-filter-seg {
+  flex: 0 0 56px;
+  width: 56px;
+  min-width: 0;
+  padding: 0 6px;
+  height: 27px;
+  font-size: 11px;
+  box-sizing: border-box;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* Browser segment: flex-width, truncates with ellipsis */
+.conflict-filter-browser {
+  flex: 1 1 0;
+  width: auto;
+}
+.conflict-filter-browser .diff-btn-text {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  display: block;
+  text-align: center;
+}
+
+/* OS label: icon + text inline */
+.conflict-filter-os .diff-btn-text {
+  display: inline-flex;
+  align-items: center;
+  gap: 3px;
+  white-space: nowrap;
+}
+
+/* Keyboard segment: SVG inherits button colour */
+.conflict-filter-keyboard svg {
+  fill: currentColor;
+}
+
+/* Border radii — override score-clear-pill's child selectors */
+.conflict-filter-pill .conflict-filter-seg:first-child { border-radius: 18px 0 0 18px; }
+.conflict-filter-pill .conflict-filter-seg:last-child  { border-radius: 0 18px 18px 0; }

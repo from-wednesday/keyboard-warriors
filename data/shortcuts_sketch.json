@@ -1,0 +1,590 @@
+[
+  {
+    "display": "New document",
+    "mac_sc": "CMD+N",
+    "pc_sc": "NULL",
+    "difficulty": 0
+  },
+  {
+    "display": "Open document",
+    "mac_sc": "CMD+O",
+    "pc_sc": "NULL",
+    "difficulty": 0
+  },
+  {
+    "display": "Save document",
+    "mac_sc": "CMD+S",
+    "pc_sc": "NULL",
+    "difficulty": 0
+  },
+  {
+    "display": "Save As",
+    "mac_sc": "CMD+SHIFT+S",
+    "pc_sc": "NULL",
+    "difficulty": 1
+  },
+  {
+    "display": "Duplicate document",
+    "mac_sc": "CMD+SHIFT+D",
+    "pc_sc": "NULL",
+    "difficulty": 2
+  },
+  {
+    "display": "close document",
+    "mac_sc": "CMD+W",
+    "pc_sc": "NULL",
+    "difficulty": 1
+  },
+  {
+    "display": "redo",
+    "mac_sc": "CMD+SHIFT+Z",
+    "pc_sc": "NULL",
+    "difficulty": 1
+  },
+  {
+    "display": "cut",
+    "mac_sc": "CMD+X",
+    "pc_sc": "NULL",
+    "difficulty": 0
+  },
+  {
+    "display": "copy",
+    "mac_sc": "CMD+C",
+    "pc_sc": "NULL",
+    "difficulty": 0
+  },
+  {
+    "display": "paste",
+    "mac_sc": "CMD+V",
+    "pc_sc": "NULL",
+    "difficulty": 0
+  },
+  {
+    "display": "paste over",
+    "mac_sc": "CMD+SHIFT+V",
+    "pc_sc": "NULL",
+    "difficulty": 3
+  },
+  {
+    "display": "copy style",
+    "mac_sc": "CMD+OPT+C",
+    "pc_sc": "NULL",
+    "difficulty": 3
+  },
+  {
+    "display": "paste style",
+    "mac_sc": "CMD+OPT+V",
+    "pc_sc": "NULL",
+    "difficulty": 3
+  },
+  {
+    "display": "copy css attributes",
+    "mac_sc": "CMD+CONTROL+C",
+    "pc_sc": "NULL",
+    "difficulty": 4
+  },
+  {
+    "display": "zoom in",
+    "mac_sc": "CMD+PLUS",
+    "pc_sc": "NULL",
+    "difficulty": 1
+  },
+  {
+    "display": "zoom out",
+    "mac_sc": "CMD+MINUS",
+    "pc_sc": "NULL",
+    "difficulty": 1
+  },
+  {
+    "display": "zoom to actual size",
+    "mac_sc": "CMD+0",
+    "pc_sc": "NULL",
+    "difficulty": 2
+  },
+  {
+    "display": "zoom to selection",
+    "mac_sc": "CMD+2",
+    "pc_sc": "NULL",
+    "difficulty": 3
+  },
+  {
+    "display": "zoom to fit canvas",
+    "mac_sc": "CMD+1",
+    "pc_sc": "NULL",
+    "difficulty": 2
+  },
+  {
+    "display": "toggle pixel preview",
+    "mac_sc": "CMD+P",
+    "pc_sc": "NULL",
+    "difficulty": 3
+  },
+  {
+    "display": "toggle layout",
+    "mac_sc": "CONTROL+L",
+    "pc_sc": "NULL",
+    "difficulty": 3
+  },
+  {
+    "display": "toggle Rulers",
+    "mac_sc": "CONTROL+R",
+    "pc_sc": "NULL",
+    "difficulty": 1
+  },
+  {
+    "display": "toggle Grid",
+    "mac_sc": "CONTROL+G",
+    "pc_sc": "NULL",
+    "difficulty": 2
+  },
+  {
+    "display": "toggle Guides",
+    "mac_sc": "CONTROL+SEMICOLON",
+    "pc_sc": "NULL",
+    "difficulty": 2
+  },
+  {
+    "display": "show hide inspector",
+    "mac_sc": "CMD+OPT+I",
+    "pc_sc": "NULL",
+    "difficulty": 3
+  },
+  {
+    "display": "show hide Layers",
+    "mac_sc": "CMD+OPT+L",
+    "pc_sc": "NULL",
+    "difficulty": 3
+  },
+  {
+    "display": "show hide the Toolbar",
+    "mac_sc": "CMD+OPT+T",
+    "pc_sc": "NULL",
+    "difficulty": 3
+  },
+  {
+    "display": "insert Rectangle",
+    "mac_sc": "R",
+    "pc_sc": "NULL",
+    "difficulty": 2
+  },
+  {
+    "display": "insert Oval",
+    "mac_sc": "O",
+    "pc_sc": "NULL",
+    "difficulty": 2
+  },
+  {
+    "display": "insert Line",
+    "mac_sc": "L",
+    "pc_sc": "NULL",
+    "difficulty": 2
+  },
+  {
+    "display": "insert Vector",
+    "mac_sc": "V",
+    "pc_sc": "NULL",
+    "difficulty": 3
+  },
+  {
+    "display": "insert Pencil",
+    "mac_sc": "P",
+    "pc_sc": "NULL",
+    "difficulty": 2
+  },
+  {
+    "display": "insert Artboard",
+    "mac_sc": "A",
+    "pc_sc": "NULL",
+    "difficulty": 3
+  },
+  {
+    "display": "insert Slice",
+    "mac_sc": "S",
+    "pc_sc": "NULL",
+    "difficulty": 3
+  },
+  {
+    "display": "insert Text",
+    "mac_sc": "T",
+    "pc_sc": "NULL",
+    "difficulty": 2
+  },
+  {
+    "display": "insert image",
+    "mac_sc": "CMD+SHIFT+K",
+    "pc_sc": "NULL",
+    "difficulty": 3
+  },
+  {
+    "display": "Group Layers",
+    "mac_sc": "CMD+G",
+    "pc_sc": "NULL",
+    "difficulty": 2
+  },
+  {
+    "display": "Ungroup Layers",
+    "mac_sc": "CMD+SHIFT+G",
+    "pc_sc": "NULL",
+    "difficulty": 3
+  },
+  {
+    "display": "Lock Layer",
+    "mac_sc": "CMD+SHIFT+L",
+    "pc_sc": "NULL",
+    "difficulty": 3
+  },
+  {
+    "display": "unlock All layers",
+    "mac_sc": "CMD+OPT+SHIFT+L",
+    "pc_sc": "NULL",
+    "difficulty": 4
+  },
+  {
+    "display": "Hide Layer",
+    "mac_sc": "CMD+SHIFT+H",
+    "pc_sc": "NULL",
+    "difficulty": 4
+  },
+  {
+    "display": "Duplicate layer",
+    "mac_sc": "CMD+D",
+    "pc_sc": "NULL",
+    "difficulty": 1
+  },
+  {
+    "display": "delete layer",
+    "mac_sc": "BACKSPACE",
+    "pc_sc": "NULL",
+    "difficulty": 1
+  },
+  {
+    "display": "bring Forward",
+    "mac_sc": "CMD+OPT+UP",
+    "pc_sc": "NULL",
+    "difficulty": 3
+  },
+  {
+    "display": "send Backward",
+    "mac_sc": "CMD+OPT+DOWN",
+    "pc_sc": "NULL",
+    "difficulty": 3
+  },
+  {
+    "display": "bring to Front",
+    "mac_sc": "CMD+SHIFT+OPT+UP",
+    "pc_sc": "NULL",
+    "difficulty": 3
+  },
+  {
+    "display": "send to Back",
+    "mac_sc": "CMD+SHIFT+OPT+DOWN",
+    "pc_sc": "NULL",
+    "difficulty": 3
+  },
+  {
+    "display": "align left",
+    "mac_sc": "CMD+OPT+LEFT",
+    "pc_sc": "NULL",
+    "difficulty": 3
+  },
+  {
+    "display": "align right",
+    "mac_sc": "CMD+OPT+RIGHT",
+    "pc_sc": "NULL",
+    "difficulty": 3
+  },
+  {
+    "display": "align top",
+    "mac_sc": "CMD+OPT+UP",
+    "pc_sc": "NULL",
+    "difficulty": 3
+  },
+  {
+    "display": "align bottom",
+    "mac_sc": "CMD+OPT+DOWN",
+    "pc_sc": "NULL",
+    "difficulty": 3
+  },
+  {
+    "display": "align center horizontally",
+    "mac_sc": "CMD+SHIFT+H",
+    "pc_sc": "NULL",
+    "difficulty": 3
+  },
+  {
+    "display": "align center vertically",
+    "mac_sc": "CMD+SHIFT+V",
+    "pc_sc": "NULL",
+    "difficulty": 3
+  },
+  {
+    "display": "distribute horizontally",
+    "mac_sc": "CMD+CONTROL+H",
+    "pc_sc": "NULL",
+    "difficulty": 4
+  },
+  {
+    "display": "distribute vertically",
+    "mac_sc": "CMD+CONTROL+V",
+    "pc_sc": "NULL",
+    "difficulty": 4
+  },
+  {
+    "display": "flatten selection",
+    "mac_sc": "CMD+SHIFT+O",
+    "pc_sc": "NULL",
+    "difficulty": 3
+  },
+  {
+    "display": "boolean union",
+    "mac_sc": "CMD+OPT+U",
+    "pc_sc": "NULL",
+    "difficulty": 5
+  },
+  {
+    "display": "boolean subtract",
+    "mac_sc": "CMD+OPT+S",
+    "pc_sc": "NULL",
+    "difficulty": 5
+  },
+  {
+    "display": "boolean intersect",
+    "mac_sc": "CMD+OPT+I",
+    "pc_sc": "NULL",
+    "difficulty": 5
+  },
+  {
+    "display": "boolean difference",
+    "mac_sc": "CMD+OPT+X",
+    "pc_sc": "NULL",
+    "difficulty": 5
+  },
+  {
+    "display": "rotate 90 degrees clockwise",
+    "mac_sc": "CMD+OPT+R",
+    "pc_sc": "NULL",
+    "difficulty": 4
+  },
+  {
+    "display": "rotate 90 degrees counterclockwise",
+    "mac_sc": "CMD+OPT+SHIFT+R",
+    "pc_sc": "NULL",
+    "difficulty": 4
+  },
+  {
+    "display": "flip Horizontal",
+    "mac_sc": "CMD+SHIFT+H",
+    "pc_sc": "NULL",
+    "difficulty": 4
+  },
+  {
+    "display": "flip Vertical",
+    "mac_sc": "CMD+SHIFT+V",
+    "pc_sc": "NULL",
+    "difficulty": 4
+  },
+  {
+    "display": "edit Text",
+    "mac_sc": "ENTER",
+    "pc_sc": "NULL",
+    "difficulty": 2
+  },
+  {
+    "display": "exit Text editing",
+    "mac_sc": "ESC",
+    "pc_sc": "NULL",
+    "difficulty": 2
+  },
+  {
+    "display": "select All",
+    "mac_sc": "CMD+A",
+    "pc_sc": "NULL",
+    "difficulty": 1
+  },
+  {
+    "display": "select inverse",
+    "mac_sc": "CMD+SHIFT+I",
+    "pc_sc": "NULL",
+    "difficulty": 3
+  },
+  {
+    "display": "select Parent group",
+    "mac_sc": "ESC",
+    "pc_sc": "NULL",
+    "difficulty": 2
+  },
+  {
+    "display": "select Child layer",
+    "mac_sc": "ENTER",
+    "pc_sc": "NULL",
+    "difficulty": 2
+  },
+  {
+    "display": "nudge 1px Up",
+    "mac_sc": "UP",
+    "pc_sc": "NULL",
+    "difficulty": 0
+  },
+  {
+    "display": "nudge 10px Up",
+    "mac_sc": "SHIFT+UP",
+    "pc_sc": "NULL",
+    "difficulty": 1
+  },
+  {
+    "display": "nudge 1px Down",
+    "mac_sc": "DOWN",
+    "pc_sc": "NULL",
+    "difficulty": 0
+  },
+  {
+    "display": "nudge 10px Down",
+    "mac_sc": "SHIFT+DOWN",
+    "pc_sc": "NULL",
+    "difficulty": 1
+  },
+  {
+    "display": "nudge 1px Right",
+    "mac_sc": "RIGHT",
+    "pc_sc": "NULL",
+    "difficulty": 0
+  },
+  {
+    "display": "nudge 10px Right",
+    "mac_sc": "SHIFT+RIGHT",
+    "pc_sc": "NULL",
+    "difficulty": 1
+  },
+  {
+    "display": "nudge 1px Left",
+    "mac_sc": "LEFT",
+    "pc_sc": "NULL",
+    "difficulty": 0
+  },
+  {
+    "display": "nudge 10px Left",
+    "mac_sc": "SHIFT+LEFT",
+    "pc_sc": "NULL",
+    "difficulty": 1
+  },
+  {
+    "display": "duplicate via drag",
+    "mac_sc": "OPT",
+    "pc_sc": "NULL",
+    "difficulty": 1
+  },
+  {
+    "display": "constrain proportions",
+    "mac_sc": "SHIFT",
+    "pc_sc": "NULL",
+    "difficulty": 1
+  },
+  {
+    "display": "override Smart Guides",
+    "mac_sc": "CMD",
+    "pc_sc": "NULL",
+    "difficulty": 2
+  },
+  {
+    "display": "create Symbol",
+    "mac_sc": "CMD+Y",
+    "pc_sc": "NULL",
+    "difficulty": 3
+  },
+  {
+    "display": "detach Symbol",
+    "mac_sc": "CMD+SHIFT+Y",
+    "pc_sc": "NULL",
+    "difficulty": 5
+  },
+  {
+    "display": "swap Symbol",
+    "mac_sc": "CMD+OPT+Y",
+    "pc_sc": "NULL",
+    "difficulty": 4
+  },
+  {
+    "display": "open Components panel",
+    "mac_sc": "CMD+OPT+3",
+    "pc_sc": "NULL",
+    "difficulty": 3
+  },
+  {
+    "display": "open Layers panel",
+    "mac_sc": "CMD+OPT+1",
+    "pc_sc": "NULL",
+    "difficulty": 2
+  },
+  {
+    "display": "open inspector panel",
+    "mac_sc": "CMD+OPT+2",
+    "pc_sc": "NULL",
+    "difficulty": 2
+  },
+  {
+    "display": "preview Prototype",
+    "mac_sc": "CMD+P",
+    "pc_sc": "NULL",
+    "difficulty": 2
+  },
+  {
+    "display": "present Prototype",
+    "mac_sc": "CMD+OPT+P",
+    "pc_sc": "NULL",
+    "difficulty": 3
+  },
+  {
+    "display": "export selected",
+    "mac_sc": "CMD+E",
+    "pc_sc": "NULL",
+    "difficulty": 2
+  },
+  {
+    "display": "export Artboard",
+    "mac_sc": "CMD+SHIFT+E",
+    "pc_sc": "NULL",
+    "difficulty": 3
+  },
+  {
+    "display": "export All Slices",
+    "mac_sc": "CMD+OPT+E",
+    "pc_sc": "NULL",
+    "difficulty": 4
+  },
+  {
+    "display": "toggle fullscreen",
+    "mac_sc": "CMD+CONTROL+F",
+    "pc_sc": "NULL",
+    "difficulty": 2
+  },
+  {
+    "display": "show Document Settings",
+    "mac_sc": "CMD+SHIFT+D",
+    "pc_sc": "NULL",
+    "difficulty": 3
+  },
+  {
+    "display": "show Preferences",
+    "mac_sc": "CMD+COMMA",
+    "pc_sc": "NULL",
+    "difficulty": 2
+  },
+  {
+    "display": "open plugins menu",
+    "mac_sc": "CONTROL+P",
+    "pc_sc": "NULL",
+    "difficulty": 3
+  },
+  {
+    "display": "run last plugin",
+    "mac_sc": "CMD+CONTROL+R",
+    "pc_sc": "NULL",
+    "difficulty": 4
+  },
+  {
+    "display": "reload plugins",
+    "mac_sc": "CMD+OPT+CONTROL+R",
+    "pc_sc": "NULL",
+    "difficulty": 5
+  }
+]

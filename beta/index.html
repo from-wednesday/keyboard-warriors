@@ -12706,12 +12706,10 @@ function _buildSkillsetPill() {
         try { localStorage.setItem('kw_app', currentApp); } catch (StorageError) {}
         buildAppPill();
         _closeSkillsetPill();
-        appPillEl.style.overflow = 'visible';
+        // Pulse with overflow:hidden so the new rows never escape the pill boundary.
+        // The pulse animation operates on the pill border/shadow, not its contents,
+        // so clipping is fine here.
         pulseBtn(appPillEl);
-        appPillEl.addEventListener('animationend', function _pillPulseEnd() {
-          appPillEl.style.overflow = '';
-          appPillEl.removeEventListener('animationend', _pillPulseEnd);
-        });
         // Show the welcome caret now that a selection has been made
         var wCaret = document.getElementById('welcomeDifficultyCaretEl');
         if (wCaret) wCaret.style.visibility = '';
@@ -12736,28 +12734,14 @@ function _applySkillset(skillsetLabel) {
     currentApp = appsShortList[0];
     try { localStorage.setItem('kw_app', currentApp); } catch(e) {}
     _saveAppsShortList();
-
-    // If the pill is open, pin the spring to the current rendered height before
-    // rebuilding the DOM, so the new content never briefly escapes the container.
-    var PillIsOpen = appPillEl.classList.contains('open') && !AppPillWrenchOpen;
-    if (PillIsOpen) {
-      var CurrentRenderedHeight = parseFloat(appPillEl.style.height) || appPillEl.offsetHeight;
-      var Spring = _AppPillSpring;
-      if (Spring.AnimationFrame) { cancelAnimationFrame(Spring.AnimationFrame); Spring.AnimationFrame = null; }
-      Spring.CurrentHeight  = CurrentRenderedHeight;
-      Spring.TargetHeight   = CurrentRenderedHeight;
-      Spring.HeightVelocity = 0;
-      appPillEl.style.height = CurrentRenderedHeight + 'px';
-    }
-
     buildAppPill();
 
-    // Now animate to the new natural height
-    if (PillIsOpen) {
-      var NewHeight = _AppPillMeasureNaturalHeight();
-      var PillRect  = appPillEl.getBoundingClientRect();
-      var Geometry  = _AppPillCalculateOpenGeometry(NewHeight, PillRect);
-      _AppPillAnimateTo(NewHeight, Geometry.TranslateY, Geometry.SpacerHeight);
+    // If the app pill is currently open, resize it to fit the new shortlist
+    if (appPillEl.classList.contains('open') && !AppPillWrenchOpen) {
+      var newHeight = _AppPillMeasureNaturalHeight();
+      var pillRect  = appPillEl.getBoundingClientRect();
+      var geometry  = _AppPillCalculateOpenGeometry(newHeight, pillRect);
+      _AppPillAnimateTo(newHeight, geometry.TranslateY, geometry.SpacerHeight);
     }
   }
   runData.length = 0; lastCompletedReport = null; CoachAdviceAccepted = false;

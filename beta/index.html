@@ -12706,14 +12706,31 @@ function _applySkillset(SkillsetLabel) {
       return MatchedDef.tags.indexOf(Tag) !== -1;
     });
   }).map(function(App) { return App.label; });
-  if (NewShortList.length > 0) appsShortList = NewShortList;
+  if (NewShortList.length > 0) {
+    appsShortList = NewShortList;
+    if (appsShortList.indexOf(currentApp) === -1) {
+      currentApp = appsShortList[0];
+      try { localStorage.setItem('kw_app', currentApp); } catch(e) {}
+    }
+    _saveAppsShortList();
+    runData.length = 0; lastCompletedReport = null; CoachAdviceAccepted = false;
+    var _pillWasOpen = appPillEl.classList.contains('open');
+    if (_pillWasOpen) {
+      closeAppPill();
+      setTimeout(buildAppPill, 520);
+    } else {
+      buildAppPill();
+    }
+  }
 }
 
 function _initSkillsetPillAfterAppsLoad() {
+  if (_skillsetPillInitialised) return;
+  _skillsetPillInitialised = true;
+
   currentSkillset = _resolvePreferredSkillset();
-  var SkillsetPillEl = document.getElementById('skillsetPill');
-  if (!SkillsetPillEl) return;
-  _buildSkillsetPillOptions(SkillsetPillEl);
+  _applySkillset(currentSkillset);
+  _buildSkillsetPill();
 }
 
 var _skillsetPillOpen = false;
@@ -12752,24 +12769,19 @@ function _buildSkillsetPillOptions(PillEl) {
   }
 }
 
-function skillsetPillClick(e) {
-  e.stopPropagation();
-  if (_skillsetPillOpen) { _closeSkillsetPill(); return; }
-  _skillsetPillOpen = true;
-  var PillEl = document.getElementById('skillsetPill');
-  if (!PillEl) return;
-  PillEl.style.height = (SKILLSET_DEFS.length * 27) + 'px';
-  PillEl.style.overflow = 'hidden';
-  _buildSkillsetPillOptions(PillEl);
+function skillsetPillClick(ClickEvent) {
+  if (ClickEvent) ClickEvent.stopPropagation();
+  if (skillsetPillOpen) { _closeSkillsetPill(); return; }
+  _openSkillsetPill();
 }
 
 function _closeSkillsetPill() {
-  _skillsetPillOpen = false;
-  var PillEl = document.getElementById('skillsetPill');
-  if (!PillEl) return;
-  PillEl.style.height = '27px';
-  _buildSkillsetPillOptions(PillEl);
+  skillsetPillOpen = false;
+  var existingDrop = document.getElementById('skillsetDrop');
+  if (existingDrop) existingDrop.remove();
+  _buildSkillsetPill();
 }
+
 
 document.addEventListener('click', function(e) {
   var PillEl = document.getElementById('skillsetPill');

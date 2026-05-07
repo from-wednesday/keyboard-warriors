@@ -9,7 +9,7 @@
 <title>Keyboard Warriors</title>
 <script>
   const DefaultTitle = 'Keyboard Warriors';
-  const VersionLabel   = '0027';
+  const VersionLabel   = '0028';
   const TitlePrefix  = document.title !== DefaultTitle ? document.title.trim() + '_' : '';
   const DBG_DEVICE   = TitlePrefix + VersionLabel;
 </script>
@@ -52,6 +52,14 @@
   #keyboardPanel.ghost-mode .key.lit-green-down  .key-glyph-sym,
   #keyboardPanel.ghost-mode .key.lit-orange-up   .key-glyph-sym,
   #keyboardPanel.ghost-mode .key.lit-orange-down .key-glyph-sym { opacity: 1 !important; }
+
+  /* Applied for the first two rAF frames to prevent #kb-wall-bottom flashing
+     visible during 3D stacking-context setup, regardless of kb-edged state. */
+  #keyboardPanel.kb-wall-init #kb-wall-bottom {
+    opacity: 0 !important;
+    visibility: hidden !important;
+    transition: none !important;
+  }
 
   @keyframes SkeletonGrow {
     from { width: 18px; border-radius: 9px; }
@@ -282,7 +290,7 @@
   <div id="settingsPanel">
     <div id="settingsPanelInner">
 
-    <!-- ── Conflicts Settings ─────────────────────────────── -->
+    <!-- ── <div id="cfFilterPill" class="score-clear-pill" style="margin-bottom:8px;">s Settings ─────────────────────────────── -->
     <div id="panelConflicts" class="sp-page">
       <div class="sp-col sp-col-left">
         <p class="sp-body" id="browserCompatHeading"></p>
@@ -302,6 +310,21 @@
           </div>
         </span>
       </div>
+        <!-- ── Conflict source filter pill ───────────────── -->
+  <div id="cfFilterPill" class="score-clear-pill" style="margin-bottom:8px;">
+  <button id="cfBtnOs" class="score-pill-seg score-pill-quarter" onclick="setConflictFilter('os')" title="">
+    <span class="diff-btn-text" id="cfOsLabel"></span>
+  </button>
+  <button id="cfBtnBrowser" class="score-pill-seg score-pill-quarter" onclick="setConflictFilter('browser')">
+    <span class="diff-btn-text" id="cfBrowserLabel"></span>
+  </button>
+  <button id="cfBtnFound" class="score-pill-seg score-pill-quarter" onclick="setConflictFilter('found')">
+    <span class="diff-btn-text">user found</span>
+  </button>
+  <button id="cfBtnKeyboard" class="score-pill-seg score-pill-quarter" onclick="setConflictFilter('keyboard')" title="Keyboard conflicts">
+    <span class="diff-btn-text"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 110 101.8" style="width:22px;height:auto;fill:currentColor;display:block;"><path d="M98.6,32.4H11.4c-2.1,0-3.9,1.7-3.9,3.9v29.6c0,2.1,1.7,3.9,3.9,3.9h87.2c2.1,0,3.9-1.7,3.9-3.9v-29.6c0-2.1-1.7-3.9-3.9-3.9ZM99.9,65.9c0,.7-.6,1.3-1.3,1.3H11.4c-.7,0-1.3-.6-1.3-1.3v-29.6c0-.7.6-1.3,1.3-1.3h87.2c.7,0,1.3.6,1.3,1.3v29.6ZM15.2,42.1v-2.6c0-.5.4-.9.9-.9h5.9c.5,0,.9.4.9.9v2.6c0,.5-.4.9-.9.9h-5.9c-.5,0-.9-.4-.9-.9ZM15.2,48.9v-2.6c0-.5.4-.9.9-.9h7.4c.5,0,.9.4.9.9v2.6c0,.5-.4.9-.9.9h-7.4c-.5,0-.9-.4-.9-.9ZM95.9,46.4v2.6c0,.5-.4.9-.9.9h-7.4c-.5,0-.9-.4-.9-.9v-2.6c0-.5.4-.9.9-.9h7.4c.5,0,.9.4.9.9ZM15.2,55.7v-2.6c0-.5.4-.9.9-.9h10.8c.5,0,.9.4.9.9v2.6c0,.5-.4.9-.9.9h-10.8c-.5,0-.9-.4-.9-.9ZM65.8,59.9v2.6c0,.5-.4.9-.9.9h-26.9c-.5,0-.9-.4-.9-.9v-2.6c0-.5.4-.9.9-.9h26.9c.5,0,.9.4.9.9ZM95.9,53.2v2.6c0,.5-.4.9-.9.9h-10.8c-.5,0-.9-.4-.9-.9v-2.6c0-.5.4-.9.9-.9h10.8c.5,0,.9.4.9.9h0Z"/></svg></span>
+  </button>
+</div>
         <ul id="browserCompatList" class="sp-conflict-list"></ul>
     
       </div>
@@ -542,20 +565,34 @@
           </div>
         </div>
       </div>
-      <p id="diffAdvancedFooter" class="diff-advanced-footer">Changing 'Question Difficulty' will suggest settings here, but you have complete control over these features.</p>
+<p id="diffAdvancedFooter" style="color: #f0f4f8;" ><small><em>Full controls unlocked.</em> Use <strong>Difficulty</strong> to expand your knowledge. Use <strong>Timer &amp; Lives</strong> to convert them to &lsquo;muscle memory&rsquo;.</small></p>
     </div>
 
     <!-- ── Welcome Landing ──────────────────────────────── -->
    <div id="panelLandingWelcome" class="sp-page">
-   <div style="text-align:center;margin-top:10px;">
-        <div style="display:inline-flex;align-items:center;gap:8px;font-family:'Lato',system-ui,sans-serif;font-size:12px;color:#374151;">
-          <span style="white-space:nowrap;font-weight:600;">Skill Set loaded</span>
-          <div id="skillsetPill" style="position:relative;border-radius:10px;border:1.5px solid #9ca3af;background:white;overflow:visible;cursor:pointer;user-select:none;width:192px;min-width:192px;height:27px;box-sizing:border-box;pointer-events:auto;" onclick="skillsetPillClick()">
-            <!-- Options rendered by JS -->
-          </div>
-        </div>
-      </div></br>
-      <div id="welcomeDifficultyPillWrapper" style="position:relative;width:100%;margin-top:32px;" onclick="_onWelcomeDifficultyPillClick(event)">
+   <div style="display:flex;align-items:center;justify-content:center;width:100%;margin-top:10px;">
+     <div style="position:relative;display:flex;align-items:center;justify-content:center;border:1.5px solid #d1d5db;border-radius:20px;padding:8px 24px;box-shadow:inset 0 3px 0 rgba(0,0,0,0.04),inset 0 -3px 0 rgba(255,255,255,0.70);width:100%;">
+     <span style="position:absolute;left:25%;transform:translateX(-90%);white-space:nowrap;font-family:'Lato',system-ui,sans-serif;font-size:12px;font-weight:600;color:#374151;">
+  Skill Set loaded
+</span>
+         <span class="more-info-trigger" id="skillSetMoreInfoTrigger"
+      onclick="toggleMoreInfo('skillSetMoreInfo')"
+      style="position:absolute;left:75%;transform:translateX(-90%);display:inline-flex;align-items:center;color:#374151;">
+  <svg class="more-info-icon" viewBox="0 0 20 20" width="14" height="14" fill="none" stroke="currentColor" stroke-width="1.25" stroke-linecap="round">
+    <circle cx="10" cy="10" r="8.5"/>
+    <text x="10" y="15" text-anchor="middle" font-size="14" font-weight="720" font-family="system-ui,sans-serif" fill="currentColor" stroke="none">?</text>
+  </svg>
+  <div class="more-info-popup" id="skillSetMoreInfo">
+    <p class="more-info-body">This Skill Set choice will provide a preset collection of poplular apps to train for. Customise your list via the 'now training on' App selector in the top right.</p>
+  </div>
+</span>
+       <div id="skillsetPill" style="position:relative;border-radius:10px;border:1.5px solid #9ca3af;background:white;overflow:visible;cursor:pointer;user-select:none;width:192px;min-width:192px;height:27px;box-sizing:border-box;pointer-events:auto;" onclick="skillsetPillClick(event)">
+         <!-- Options rendered by JS -->
+       </div>
+     </div>
+   </div>
+   </br> </br>
+      <div id="welcomeDifficultyPillWrapper" style="position:relative;width:100%;margin-top:12px;" onclick="_onWelcomeDifficultyPillClick(event)">
         <div id="welcomeDifficultyCaretEl" aria-hidden="true" style="position:absolute;bottom:calc(100% + 6px);left:50%;transform:translateX(-50%);pointer-events:none;z-index:2;transition:left 0.32s cubic-bezier(0.34,1.2,0.64,1);display:flex;flex-direction:column;align-items:center;gap:4px;">
           <p class="sp-title" style="margin:0;white-space:nowrap;">Question Difficulty</p>
           <svg viewBox="0 0 7 7" width="7" height="7" fill="#374151" xmlns="http://www.w3.org/2000/svg" style="display:block;transform:rotate(90deg);"><path d="M1.5 1 L6 3.5 L1.5 6 Z"/></svg>
@@ -1436,8 +1473,8 @@ osMismatchEl.addEventListener('click', function() {
 const osKnobEl  = document.getElementById('osKnobEl');
 
 // MAC_SVG / PC_SVG inline strings for label rendering
-const MAC_ICON_SVG = '<svg width="10" height="12" viewBox="0 0 686.7 761.2" fill="#9ca3af" xmlns="http://www.w3.org/2000/svg"><path d="M563.7,589c-27.7,41.3-57,81.7-101.7,82.3-44.7,1-59-26.3-109.7-26.3s-66.7,25.7-109,27.3c-43.7,1.7-76.7-44-104.7-84.3-57-82.3-100.7-234-42-336,29-50.7,81-82.7,137.3-83.7,42.7-.7,83.3,29,109.7,29s75.3-35.7,127-30.3c21.7,1,82.3,8.7,121.3,66-3,2-72.3,42.7-71.7,127,1,100.7,88.3,134.3,89.3,134.7-1,2.3-14,48-46,94.3h0ZM373.3,55.7c24.3-27.7,64.7-48.7,98-50,4.3,39-11.3,78.3-34.7,106.3-23,28.3-61,50.3-98.3,47.3-5-38.3,13.7-78.3,35-103.7h0Z"/></svg>';
-const PC_ICON_SVG  = '<svg width="11" height="11" viewBox="0 0 102.73 104.6" fill="#9ca3af" xmlns="http://www.w3.org/2000/svg"><path d="M16,50.4h26.6v-27.7l-26.6,6.3v21.4Z"/><path d="M86,12.6l-37,8.6v29.2h37V12.6Z"/><path d="M16,76.2l26.6,6.3v-25.6H16v19.3Z"/><path d="M49,84l37,8.6v-35.7h-37v27.1Z"/></svg>';
+const MAC_ICON_SVG = '<svg width="10" height="12" viewBox="0 0 686.7 761.2" fill="#9ca3af" style="vertical-align:middle;margin-bottom:1px;" xmlns="http://www.w3.org/2000/svg"><path d="M563.7,589c-27.7,41.3-57,81.7-101.7,82.3-44.7,1-59-26.3-109.7-26.3s-66.7,25.7-109,27.3c-43.7,1.7-76.7-44-104.7-84.3-57-82.3-100.7-234-42-336,29-50.7,81-82.7,137.3-83.7,42.7-.7,83.3,29,109.7,29s75.3-35.7,127-30.3c21.7,1,82.3,8.7,121.3,66-3,2-72.3,42.7-71.7,127,1,100.7,88.3,134.3,89.3,134.7-1,2.3-14,48-46,94.3h0ZM373.3,55.7c24.3-27.7,64.7-48.7,98-50,4.3,39-11.3,78.3-34.7,106.3-23,28.3-61,50.3-98.3,47.3-5-38.3,13.7-78.3,35-103.7h0Z"/></svg>';
+const PC_ICON_SVG  = '<svg width="11" height="11" viewBox="0 0 102.73 104.6" fill="#9ca3af" style="vertical-align:middle;margin-bottom:1px;" xmlns="http://www.w3.org/2000/svg"><path d="M16,50.4h26.6v-27.7l-26.6,6.3v21.4Z"/><path d="M86,12.6l-37,8.6v29.2h37V12.6Z"/><path d="M16,76.2l26.6,6.3v-25.6H16v19.3Z"/><path d="M49,84l37,8.6v-35.7h-37v27.1Z"/></svg>';
 
 function buildOsLabels() {
   // Detected device is always on the LEFT (white dot = current).
@@ -1633,18 +1670,6 @@ function updateMismatchPill() {
   }
 }
 
-function onOsToggle() {
-  const nativeMac = (detectedOs === 'mac' || detectedOs === 'mobile');
-  applyOsMode(osToggleEl.checked
-    ? (nativeMac ? 'pc'  : 'mac')
-    : (nativeMac ? 'mac' : 'pc'));
-  if (activeSettings === 'panelKeyboard') updateModalToggles();
-  if (activeSettings === 'panelConflicts')  _refreshBrowserContent();
-  if (activeSettings === 'panelEndGameReportCard')     _refreshReportPanel();
-  if (activeSettings === 'panelCheatSheet')    _refreshCheatSheet();
-  runData.length = 0; lastCompletedReport = null; CoachAdviceAccepted = false;
-}
-
 // On mobile: auto-enable sticky + touch modes, show updated message
 if (detectedOs === 'mobile') {
   var _mobileHasExternalKeyboard = false;
@@ -1703,23 +1728,20 @@ function _initialiseLayout() {
   updateMismatchPill();
   document.getElementById('keyboardPanel').classList.toggle('pc-keys', currentOs === 'pc');
 
-  // Force a silent flip cycle to establish the 3D stacking context correctly,
-  // preventing wall elements from bleeding through rounded corners on first render.
-requestAnimationFrame(function() {
+  // Suppress the wall's visibility for the first two animation frames.
+  // This prevents it flashing during the 3D stacking-context setup, even if
+  // concurrent code (e.g. the 80ms welcome-screen timer) adds kb-edged
+  // before the first paint settles. The class is defined inline in the <style>
+  // block and forces opacity:0 + transition:none on #kb-wall-bottom regardless
+  // of kb-edged state.
   var Panel = document.getElementById('keyboardPanel');
-  var Stage = document.getElementById('kbFlipStage');
-  var Wall  = document.getElementById('kb-wall-bottom');
-  Panel.style.transition = 'none';
-  Stage.style.transition = 'none';
-  if (Wall) Wall.style.display = 'none';
-  Panel.classList.add('kb-edged');
+  Panel.classList.add('kb-wall-init');
   requestAnimationFrame(function() {
-    Panel.classList.remove('kb-edged');
-    Panel.style.transition = '';
-    Stage.style.transition = '';
-    if (Wall) Wall.style.display = '';
+    requestAnimationFrame(function() {
+      Panel.classList.remove('kb-wall-init');
+      _revealPageContent();
+    });
   });
-});
 
 
 var KeyboardPanelResizeObserver = new ResizeObserver(function(ObservedEntries) {
@@ -1779,7 +1801,6 @@ var SkeletonAnimationComplete = new Promise(function(resolve) {
 });
 
 Promise.all([DomReady, StylesheetReady, SkeletonAnimationComplete]).then(function() {
-  _revealPageContent();
   _initialiseLayout();
   _initialiseStageDragListeners();
   if (activeSettings !== null) _spAlignPanel();
@@ -1827,10 +1848,12 @@ const TOKEN_TO_BROWSER_CODE = {
   'SCROLLLOCK':  'ScrollLock',
   'PAUSE':       'Pause',
   'NUMLOCK':     'NumLock',
+  'CLEAR':       'NumLock',
   'FN':          'Fn',
   // Punctuation
   'EQUAL':        'Equal',
   'MINUS':        'Minus',
+  'ASTERISK':     'DIGIT8',
   'BRACKETLEFT':  'BracketLeft',
   'BRACKETRIGHT': 'BracketRight',
   'BACKSLASH':    'Backslash',
@@ -1865,6 +1888,7 @@ const TOKEN_SYNONYM_MAP = {
   'ALT':         'OPTION',
   'WINDOWS':     'WIN',
   'FUNCTION':    'FN',
+  'CLEAR':       'NUMLOCK',
   'ENTER':       'RETURN',
   'SPACEBAR':    'SPACE',
   'DEL':         'BACKSPACE',
@@ -2322,7 +2346,7 @@ const ExtendedKeyCodeToToken = {
   'PageUp': 'PAGEUP', 'PageDown': 'PAGEDOWN',
   'Insert': 'INSERT', 'Delete': 'DELETE',
   'PrintScreen': 'PRINTSCREEN', 'ScrollLock': 'SCROLLLOCK', 'Pause': 'PAUSE',
-  'NumLock': 'NUMLOCK',
+  'NumLock': 'NUMLOCK', 'Clear': 'NUMLOCK',
 };
 const ExtendedKeyPillElement = document.getElementById('extKeyPill');
 let ExtendedKeyPillTimer = null;
@@ -2349,15 +2373,7 @@ function ShowExtendedKeyPill(BrowserCode, ColourState) {
   ChipsWrapper.style.cssText = 'display:inline-flex;align-items:center;justify-content:center;';
 
   // Match the larger toast chip size
-  ChipsWrapper.querySelectorAll('.sp-report-chip-key').forEach(function(Chip) {
-    Chip.style.fontSize     = '13px';
-    Chip.style.padding      = '2px 7px 1px';
-    Chip.style.borderRadius = '4px';
-  });
-  ChipsWrapper.querySelectorAll('span:not(.sp-report-chip-key)').forEach(function(Sep) {
-    Sep.style.fontSize = '13px';
-    Sep.style.margin   = '0 2px';
-  });
+  ResizeChips(ChipsWrapper, 28);
 
   if (EffectiveColour === 'green') {
     ChipsWrapper.querySelectorAll('.sp-report-chip-key').forEach(function(Chip) {
@@ -2422,7 +2438,16 @@ function updateKeyboardLighting(e, isDown) {
     return;
   }
   const code = NUMPAD_MAP[e.code] || e.code;
-  const isExtKey   = code in ExtendedKeyCodeToToken;
+  const RightToLeftKeyFallback = {
+    'MetaRight':    'MetaLeft',
+    'AltRight':     'AltLeft',
+    'ShiftRight':   'ShiftLeft',
+    'ControlRight': 'ControlLeft',
+  };
+  const ResolvedCode = (!keyEls[code] && RightToLeftKeyFallback[code])
+    ? RightToLeftKeyFallback[code]
+    : code;
+  const isExtKey   = ResolvedCode in ExtendedKeyCodeToToken;
   const isModifier = code === 'MetaLeft'    || code === 'MetaRight'   ||
                      code === 'ControlLeft' || code === 'ControlRight' ||
                      code === 'ShiftLeft'   || code === 'ShiftRight'   ||
@@ -2448,13 +2473,13 @@ function updateKeyboardLighting(e, isDown) {
     stickyLit.set(code, colour);
     if (isCorrect) {
       greenHeld.add(code);
-      if (isExtKey) ShowExtendedKeyPill(code, 'green');
-      else          setKeyLit(code, 'green-down');
+      if (isExtKey) ShowExtendedKeyPill(ResolvedCode, 'green');
+      else          setKeyLit(ResolvedCode, 'green-down');
       if ((!isModifier || isBareModifierQuestion) && !isSilent) { greenHits++; totalHits++; updateAccuracyDisplay(); }
       checkAndArmPartialShortcutNudge();
     } else {
-      if (isExtKey) ShowExtendedKeyPill(code, 'orange');
-      else          setKeyLit(code, 'orange-down');
+      if (isExtKey) ShowExtendedKeyPill(ResolvedCode, 'orange');
+      else          setKeyLit(ResolvedCode, 'orange-down');
       if ((!isModifier || isBareModifierQuestion) && !isSilent) { totalHits++; updateAccuracyDisplay(); }
       resetPartialShortcutNudgeTimers();
     }
@@ -2467,19 +2492,19 @@ function updateKeyboardLighting(e, isDown) {
     heldKeys.add(code);
     if (gameState !== 'playing') {
       greenHeld.add(code);
-      if (isExtKey) ShowExtendedKeyPill(code, null);
-      else          setKeyLit(code, 'green-down');
+      if (isExtKey) ShowExtendedKeyPill(ResolvedCode, null);
+      else          setKeyLit(ResolvedCode, 'green-down');
     } else {
       const isCorrect = isKeyPartOfShortcut(e, currentAnswer);
       if (isCorrect) {
         greenHeld.add(code);
-        if (isExtKey) ShowExtendedKeyPill(code, 'green');
-        else          setKeyLit(code, 'green-down');
+        if (isExtKey) ShowExtendedKeyPill(ResolvedCode, 'green');
+        else          setKeyLit(ResolvedCode, 'green-down');
         if (!alreadyHeld && (!isModifier || isBareModifierQuestion) && !isSilent) { greenHits++; totalHits++; updateAccuracyDisplay(); }
         checkAndArmPartialShortcutNudge();
       } else {
-        if (isExtKey) ShowExtendedKeyPill(code, 'orange');
-        else          setKeyLit(code, 'orange-down');
+        if (isExtKey) ShowExtendedKeyPill(ResolvedCode, 'orange');
+        else          setKeyLit(ResolvedCode, 'orange-down');
         if (!alreadyHeld && (!isModifier || isBareModifierQuestion) && !isSilent) { totalHits++; updateAccuracyDisplay(); }
         resetPartialShortcutNudgeTimers();
       }
@@ -2490,7 +2515,7 @@ function updateKeyboardLighting(e, isDown) {
     // If a green key is released mid-partial (correct key pressed but shortcut not completed),
     // record that a partial attempt happened and show an immediate nudge if the toast hasn't fired yet.
     if (gameState === 'playing' && !transitioning && greenHeld.size === 0 && !neededSatisfied(shortcutToCodes(currentAnswer))) {
-      const wasGreen = keyEls[code] && (keyEls[code].classList.contains('lit-green-down') || keyEls[code].classList.contains('lit-green-up'));
+      const wasGreen = keyEls[ResolvedCode] && (keyEls[ResolvedCode].classList.contains('lit-green-down') || keyEls[ResolvedCode].classList.contains('lit-green-up'));
       if (wasGreen) {
         partialCorrectKeyPressedThisQuestion = true;
         if (!partialNudgeFiredThisQuestion) {
@@ -2510,12 +2535,12 @@ function updateKeyboardLighting(e, isDown) {
     if (isExtKey) {
       HideExtendedKeyPill();
     } else {
-      const el = keyEls[code];
+      const el = keyEls[ResolvedCode];
       if (el) {
-        if (el.classList.contains('lit-green-down'))  setKeyLit(code, 'green-up');
-        else if (el.classList.contains('lit-orange-down')) setKeyLit(code, 'orange-up');
+        if (el.classList.contains('lit-green-down'))  setKeyLit(ResolvedCode, 'green-up');
+        else if (el.classList.contains('lit-orange-down')) setKeyLit(ResolvedCode, 'orange-up');
       }
-      fadeKeyOut(code);
+      fadeKeyOut(ResolvedCode);
     }
   }
 }
@@ -2837,6 +2862,15 @@ function helpButtonClick() {
   resetEndScreenInactivityTimer();
   if (gameState === 'idle')           { titleEl.textContent = bestRecord.time !== null ? 'You can reset your score from the pause screen.' : 'Press start to begin.'; return; }
   if (gameState === 'playing')        { toggleHelp(); return; }
+  // Difficulty panel: refresh the footer message
+  if ((gameState === 'idle' || gameState === 'welcome' || gameState === 'paused' || gameState === 'finished') && activeSettings === 'panelDifficultySettings' && !_trophySequenceActive) {
+    var footer = document.getElementById('diffAdvancedFooter');
+    if (footer && footer.classList.contains('diff-advanced-footer-visible')) {
+      footer.textContent = _pickDiffPanelFooterMessage();
+      _popDiffLabel(footer);
+    }
+      return; 
+  }
   if (gameState === 'readyToUnpause') { _enterReadyToUnpauseCleanup(); enterPause(); enterConfirmQuit(); return; }
   if (gameState === 'paused')         { enterConfirmQuit(); return; }
   if (gameState === 'confirm-reset')           { confirmResetNo(); return; }
@@ -2903,19 +2937,8 @@ function ShowHintToast(TokenString, colour) {
   kbToastEl.innerHTML = '';
   var ChipsWrapper = BuildShortcutKeyChips(TokenString, false);
 
-  // ── Make toast chips larger ───────────────────────────────────────────────
-  // Override the 10px report-card size. The toast is position:absolute
-  // inside statsRow so no layout height is added.
-  ChipsWrapper.querySelectorAll('.sp-report-chip-key').forEach(function(Chip) {
-    Chip.style.fontSize     = '13px';
-    Chip.style.padding      = '2px 7px 1px';
-    Chip.style.borderRadius = '4px';
-  });
-  // Separator + signs grow proportionally
-  ChipsWrapper.querySelectorAll('span:not(.sp-report-chip-key)').forEach(function(Sep) {
-    Sep.style.fontSize = '13px';
-    Sep.style.margin   = '0 2px';
-  });
+  // ── Scale toast chips to 28px height (larger than report-card chips) ────────
+  ResizeChips(ChipsWrapper, 28);
 
   // ── Colour the chips ──────────────────────────────────────────────────────
   if (colour) {
@@ -3164,7 +3187,7 @@ function enterPause(instantBlur) {
   // Settings panel sets its own position before calling enterPause; only move
   // to edge if no settings screen is already driving a different position.
   if (activeSettings === null) {
-    setKbPosition('edge');
+    if (!_blurDiagnosticFoldPending) setKbPosition('edge');
     openSettings('panelPause');
     titleEl.classList.add('blur-instant');
     questionCountEl.classList.add('blur-instant');
@@ -3897,13 +3920,12 @@ function buildAppPill() {
       ClickEvent.stopPropagation();
       if (gameState === 'playing' || gameState === 'paused'
           || gameState === 'confirm-reset' || gameState === 'confirm-quit') return;
-      currentApp = AppLabel;
-      try { localStorage.setItem('kw_app', currentApp); } catch (StorageError) {}
-      buildAppPill();
-      closeAppPill();
-      runData.length = 0; lastCompletedReport = null; CoachAdviceAccepted = false;
+currentApp = AppLabel;
+try { localStorage.setItem('kw_app', currentApp); } catch (StorageError) {}
+buildAppPill();
+closeAppPill();
+runData.length = 0; lastCompletedReport = null; CoachAdviceAccepted = false;
     });
-
     appPillEl.appendChild(Row);
   });
 
@@ -4512,6 +4534,16 @@ function openAppPill() {
     AppPillWrenchOpen = false;
      var selectorLabel = document.getElementById('appSelectorLabel');
      if (selectorLabel) selectorLabel.textContent = 'choose app to train in next';
+    var tagline = document.getElementById('welcomeTagline');
+    if (tagline) {
+      tagline.style.transition = 'opacity 0.4s ease';
+      tagline.style.opacity = '0';
+      setTimeout(function() {
+        tagline.style.display = 'none';
+        tagline.style.transition = '';
+        tagline.style.opacity = '';
+      }, 600);
+    }
     _EnsureAppPillSpacer();
 
     // Cancel any running spring animation so its RAF doesn't fight us
@@ -5914,10 +5946,63 @@ function _clearconflictsOverrides() {
   _refreshBrowserContent();
 }
 
+// ── Conflict source filter pill ───────────────────────────────────────────────
+// Tracks which filter tab is active. Content filtering wired in a later step.
+var _activeConflictFilter = 'browser'; // 'os' | 'browser' | 'found' | 'keyboard'
+
+function _initConflictFilterPill() {
+  // OS label — read detectedOs (already known) + existing MAC_ICON_SVG / PC_ICON_SVG strings
+  var OsLabelHtml;
+  if (detectedOs === 'mac') {
+    OsLabelHtml = MAC_ICON_SVG + '&nbsp;Mac';
+  } else if (detectedOs === 'mobile') {
+    var isIphone = /iPhone/.test(navigator.userAgent);
+    OsLabelHtml = MAC_ICON_SVG + '&nbsp;' + (isIphone ? 'iPhone' : 'iOS');
+  } else {
+    // 'pc', 'other' (Linux, ChromeOS etc.) — all Ctrl-based, use PC icon
+    OsLabelHtml = PC_ICON_SVG + '&nbsp;PC';
+  }
+  var OsLabelEl = document.getElementById('cfOsLabel');
+  if (OsLabelEl) OsLabelEl.innerHTML = OsLabelHtml;
+
+  // Browser label — reuse getBrowserConflicts() which already detects the browser name
+  var BrowserLabelEl = document.getElementById('cfBrowserLabel');
+  if (BrowserLabelEl) BrowserLabelEl.textContent = getBrowserConflicts().name;
+
+  _syncConflictFilterPillStyles();
+}
+
+function setConflictFilter(filter) {
+  _activeConflictFilter = filter;
+  _syncConflictFilterPillStyles();
+  // Content filtering (making each button change the list below) is wired in a later step
+}
+
+function _syncConflictFilterPillStyles() {
+  var btnIds = { os: 'cfBtnOs', browser: 'cfBtnBrowser', found: 'cfBtnFound', keyboard: 'cfBtnKeyboard' };
+  // 'found' segment is only active/available when diagnostic conflicts exist (_hasconflictsOverrides already checks this)
+  // 'keyboard' segment relevance is tied to hasFullKeyboard
+  var hasFound    = _hasconflictsOverrides();
+  var hasKeyboard = hasFullKeyboard;
+  Object.keys(btnIds).forEach(function(f) {
+    var btn = document.getElementById(btnIds[f]);
+    if (!btn) return;
+    var isActive = (f === _activeConflictFilter);
+    var hasContent = (f === 'os') || (f === 'browser')
+      || (f === 'found'    && hasFound)
+      || (f === 'keyboard' && hasKeyboard);
+    btn.classList.toggle('score-pill-active',   isActive);
+    btn.classList.toggle('score-pill-inactive', !hasContent && !isActive);
+  });
+}
+
+
 function _refreshBrowserContent() {
   var d     = getBrowserConflicts();
   var bname = d.name;
   var knownBrowser = (bname !== 'your browser');
+
+  _initConflictFilterPill();
 
   var h = document.getElementById('browserCompatHeading');
   if (h) {
@@ -6033,7 +6118,7 @@ function _refreshBrowserContent() {
 
    var rightCol = document.querySelector('#panelConflicts .sp-col-right');
   if (rightCol) {
-    var ExistingPill = rightCol.querySelector('.score-clear-pill');
+    var ExistingPill = rightCol.querySelector('.score-clear-pill:not(#cfFilterPill)');
     if (ExistingPill) rightCol.removeChild(ExistingPill);
     var HasOverrides = _hasconflictsOverrides();
     var ClearPill = document.createElement('div');
@@ -6071,29 +6156,6 @@ document.getElementById('diffIconWrap').addEventListener('pointerdown', function
   e.preventDefault();
 if (transitioning && gameState !== 'finished') return;
   diffIconClick();
-});
-
-// ── Phone toolbar icon listeners ─────────────────────────────────────────────
-document.getElementById('phoneKbIconWrap').addEventListener('pointerdown', function(e) {
-  e.stopPropagation();
-  e.preventDefault();
-  if (transitioning && gameState !== 'finished') return;
-  if (activeSettings === 'panelKeyboard') { closeSettings(); return; }
-  openSettings('panelKeyboard');
-});
-document.getElementById('phoneDiffIconWrap').addEventListener('pointerdown', function(e) {
-  e.stopPropagation();
-  e.preventDefault();
-  if (transitioning && gameState !== 'finished') return;
-  if (activeSettings === 'panelDifficultySettings') { closeSettings(); return; }
-  openSettings('panelDifficultySettings');
-});
-document.getElementById('phoneBrIconWrap').addEventListener('pointerdown', function(e) {
-  e.stopPropagation();
-  e.preventDefault();
-  if (transitioning && gameState !== 'finished') return;
-  if (activeSettings === 'panelConflicts') { closeSettings(); return; }
-  openSettings('panelConflicts');
 });
 
 // ── Outside-click: app pill blocked during play, settings unaffected ─────────
@@ -6427,7 +6489,7 @@ function getBrowserConflicts() {
   // uses WebKit under the hood). Return the Safari conflict set directly.
   if (detectedOs === 'mobile') {
     return {
-      name:   'Safari on iOS/iPadOS',
+      name:   'Safari',
       keys:   ['CMD+T', 'CMD+SHIFT+N', 'CMD+1', 'Cmd+R'],
       labels: [
         'Cmd+T \u2014 opens a new tab',
@@ -6696,6 +6758,81 @@ function _applyDifficultyPresets(mode) {
   try { localStorage.setItem('kw_timer', String(questionTimer)); } catch(e) {}
   try { localStorage.setItem('kw_lives', String(playerLives));   } catch(e) {}
 }
+/* ── Difficulty panel footer messages ────────────────────────────────────────
+   Shown in the footer of the advanced panel when no coach/trophy message is
+   active. Rotates through a contextual pool; refreshes when the player presses
+   the Help button while this panel is open.
+   Groups: 1=safe player, 2=panic player, 3=plateau player, 4=neutral/general.
+   Context is inferred from lastCompletedReport when available.
+── */
+var _diffFooterLastKey = null;
+
+function _pickDiffPanelFooterMessage() {
+  var MESSAGES = [
+    // Group 1 — High accuracy / slow speed
+    { key: 'df_safe_a',    condition: _diffFooterIsSafePlayer,    text: 'Push your boundaries by reducing the timer or increasing difficulty. Real speed is built just outside your comfort zone.' },
+    { key: 'df_safe_b',    condition: _diffFooterIsSafePlayer,    text: 'Speed is nothing without precision, but once you have the basics down, lower your lives to test your grit.' },
+    // Group 2 — Fast speed / low accuracy
+    { key: 'df_panic_a',   condition: _diffFooterIsPanicPlayer,   text: 'A true Keyboard Warrior balances speed with composure. Adjust the timer to practise staying calm while the clock is ticking.' },
+    { key: 'df_panic_b',   condition: _diffFooterIsPanicPlayer,   text: 'Start steady to build accuracy, then tighten the constraints to master muscle memory under pressure.' },
+    // Group 3 — Plateau / comfort zone
+    { key: 'df_plateau_a', condition: _diffFooterIsPlateauPlayer, text: "Increase Question Difficulty to learn new inputs, then tighten the Timer and Lives to sharpen your execution of the ones you've met." },
+    { key: 'df_plateau_b', condition: _diffFooterIsPlateauPlayer, text: "Challenge your mind by increasing Difficulty for a wider vocabulary, then challenge your hands by reducing the time allowed for each response." },
+    { key: 'df_plateau_c', condition: _diffFooterIsPlateauPlayer, text: "Boost Difficulty to encounter fresh challenges. Once you recognise them, lower the Timer to ensure you can recall them without hesitation." },
+    // Group 4 — Neutral / general (always eligible)
+    { key: 'df_neutral_a', condition: null, text: "Fine-tune these settings to find your flow. Aim for a challenge that keeps you sharp without causing frustration." },
+    { key: 'df_neutral_b', condition: null, text: "Think of Difficulty as your curriculum and the Timer and Lives as your exam. Adjust both to find a balance between learning and speed." },
+  ];
+
+  var eligible = MESSAGES.filter(function(m) {
+    if (m.key === _diffFooterLastKey) return false;
+    if (m.condition === null) return true;
+    try { return m.condition(); } catch(e) { return false; }
+  });
+
+  // Fallback: if filtering removed everything, allow the last key to repeat
+  if (eligible.length === 0) eligible = MESSAGES.filter(function(m) { return m.condition === null || (function(){ try { return m.condition(); } catch(e) { return false; } }()); });
+  if (eligible.length === 0) eligible = MESSAGES;
+
+  var picked = eligible[Math.floor(Math.random() * eligible.length)];
+  _diffFooterLastKey = picked.key;
+  return picked.text;
+}
+
+function _diffFooterIsSafePlayer() {
+  if (!lastCompletedReport) return false;
+  var acc = calcAccuracy();
+  if (acc === null) return false;
+  var qs  = lastCompletedReport.questionSummaries || [];
+  var successes = qs.filter(function(s) { return s.endType === 'success'; });
+  if (successes.length < 4) return false;
+  var slowCount = successes.filter(function(s) { return s.isSlow; }).length;
+  return acc >= 80 && slowCount >= Math.ceil(successes.length * 0.4);
+}
+
+function _diffFooterIsPanicPlayer() {
+  if (!lastCompletedReport) return false;
+  var acc = calcAccuracy();
+  if (acc === null) return false;
+  var qs      = lastCompletedReport.questionSummaries || [];
+  var wrongs  = qs.reduce(function(sum, s) { return sum + (s.wrongKeyCount || 0); }, 0);
+  var skips   = qs.filter(function(s) { return s.endType === 'skip'; }).length;
+  var successes = qs.filter(function(s) { return s.endType === 'success'; });
+  var fastCount = successes.filter(function(s) { return !s.isSlow; }).length;
+  return acc < 70 && (wrongs >= 3 || skips >= 2) && fastCount >= Math.ceil(successes.length * 0.5);
+}
+
+function _diffFooterIsPlateauPlayer() {
+  if (!lastCompletedReport) return false;
+  var acc = calcAccuracy();
+  if (acc === null) return false;
+  var PreviousMemory = LoadCoachMemory();
+  var PreviousMessage = PreviousMemory.messageKey || '';
+  // Plateau signal: strong performance but no recent difficulty or timer suggestion accepted
+  var noRecentChallenge = PreviousMessage.indexOf('cat4_diff') === -1 &&
+                          PreviousMessage.indexOf('cat4_timer') === -1;
+  return acc >= 75 && noRecentChallenge;
+}
 
 function _refreshDifficultyPanel() {
   var displayMode = _pendingDifficulty !== null ? _pendingDifficulty : currentDifficulty;
@@ -6718,8 +6855,8 @@ function _refreshDifficultyPanel() {
   if (!_trophySequenceActive) {
     var footer = document.getElementById('diffAdvancedFooter');
     if (footer && footer.classList.contains('diff-advanced-footer-visible')) {
-      footer.textContent = 'Changing \'Question Difficulty\' will suggest settings here, but you have complete control over these features.';
-}
+      footer.textContent = _pickDiffPanelFooterMessage();
+    }
   }
 }
 
@@ -7471,7 +7608,8 @@ function confirmStartOverYes() {
   setTimeout(function() {
     if (panelInner) { panelInner.style.transition = 'opacity 0.3s ease'; panelInner.style.opacity = '0'; }
     setTimeout(function() {
-      // Wipe all local data
+       // Wipe training data, preserve keyboard hardware settings,
+      // preferred skillset, and a granted gyro permission
       try { localStorage.removeItem('kw_best'); }         catch(e) {}
       try { localStorage.removeItem('kw_app'); }          catch(e) {}
       try { localStorage.removeItem('kw_difficulty'); }   catch(e) {}
@@ -7481,11 +7619,17 @@ function confirmStartOverYes() {
       try { localStorage.removeItem('kw_coach_memory'); } catch(e) {}
       try { localStorage.removeItem('kw_dismissed_conflicts'); } catch(e) {}
       try { localStorage.removeItem('kw_has_keyboard'); }        catch(e) {}
+      try { localStorage.removeItem('kw_apps_short_list'); }     catch(e) {}
       try { sessionStorage.removeItem('kw_welcomed'); }   catch(e) {}
+      try {
+        var GyroDecision = localStorage.getItem('kw_gyro');
+        if (GyroDecision !== 'granted') localStorage.removeItem('kw_gyro');
+      } catch(e) {}
       bestRecord = { time: null, accuracy: null };
       hasTrophy = false;
       questionTimer = null;
       playerLives   = null;
+      currentSkillset = _resolvePreferredSkillset();
       currentDifficulty = 'fundamentals';
       _diffFirst = true;
       setDiffState(-1);
@@ -7551,29 +7695,30 @@ function _returningStartOver() {
     setTimeout(function() {
       // Reset storage and state, then show the welcome screen
       document.body.classList.remove('returning-screen');
-      try { localStorage.removeItem('kw_best'); }         catch(e) {}
-      try { localStorage.removeItem('kw_app'); }          catch(e) {}
-      try { localStorage.removeItem('kw_difficulty'); }   catch(e) {}
-      try { localStorage.removeItem('kw_perfect'); }      catch(e) {}
-      try { localStorage.removeItem('kw_timer'); }        catch(e) {}
-      try { localStorage.removeItem('kw_lives'); }        catch(e) {}
-      try { localStorage.removeItem('kw_coach_memory'); } catch(e) {}
+      try { localStorage.removeItem('kw_best'); }               catch(e) {}
+      try { localStorage.removeItem('kw_app'); }                catch(e) {}
+      try { localStorage.removeItem('kw_apps_short_list'); }    catch(e) {}
+      try { localStorage.removeItem('kw_difficulty'); }         catch(e) {}
+      try { localStorage.removeItem('kw_perfect'); }            catch(e) {}
+      try { localStorage.removeItem('kw_timer'); }              catch(e) {}
+      try { localStorage.removeItem('kw_lives'); }              catch(e) {}
+      try { localStorage.removeItem('kw_coach_memory'); }       catch(e) {}
       try { localStorage.removeItem('kw_dismissed_conflicts'); } catch(e) {}
-      try { sessionStorage.removeItem('kw_welcomed'); }   catch(e) {}
-      try { localStorage.removeItem('kw_coach_memory'); } catch(e) {}
-      try { localStorage.removeItem('kw_dismissed_conflicts'); } catch(e) {}
-      try { sessionStorage.removeItem('kw_welcomed'); }   catch(e) {}
+      try { localStorage.removeItem('kw_has_keyboard'); }       catch(e) {}
+      try { sessionStorage.removeItem('kw_welcomed'); }         catch(e) {}
       bestRecord = { time: null, accuracy: null };
       hasTrophy = false;
       questionTimer = null;
       playerLives   = null;
       dismissedConflicts.clear();
-      '<svg width="11" height="12" viewBox="0 0 110 116" fill="#9ca3af" xmlns="http://www.w3.org/2000/svg" style="vertical-align:middle;margin-bottom:1px;">'
-  + '<path stroke="#9ca3af" stroke-width="14" stroke-linejoin="round" d="M94.2,26.8c-4.71-4.7-10.96-7.28-17.6-7.28s-12.89,2.59-17.61,7.29l-3.99,4-4.01-4c-4.7-4.7-10.95-7.29-17.6-7.29s-12.91,2.59-17.6,7.29c-9.71,9.71-9.71,25.5,0,35.21l38.04,38.04c.29.29.68.44,1.06.44h0s.11,0,.11,0c.41.04.85-.12,1.17-.44l38.04-38.03c4.71-4.7,7.3-10.95,7.3-17.6s-2.59-12.91-7.3-17.61ZM88.55,56.35l-33.55,33.55L21.44,56.35c-3.19-3.18-4.94-7.43-4.94-11.95s1.75-8.76,4.94-11.95c3.15-3.15,7.32-4.9,11.78-4.94h.17c4.52,0,8.76,1.75,11.95,4.94l5.06,5.07c1.23,1.23,2.86,1.9,4.6,1.9s3.39-.69,4.6-1.91l5.05-5.07c3.19-3.18,7.44-4.94,11.94-4.94s8.75,1.76,11.95,4.95c3.19,3.19,4.95,7.43,4.95,11.94s-1.76,8.75-4.95,11.94Z"/>'
-  + '</svg>';
+      currentSkillset = _resolvePreferredSkillset();
       updateBestDisplay();
       _syncSliderToValue('timer', null);
       _syncSliderToValue('lives', null);
+      // Reset the in-memory short list to the skillset default so the welcome
+      // screen reflects a clean state rather than the player's old custom list.
+      _applySkillset(currentSkillset);
+      buildAppPill();
       if (panelInner) { panelInner.style.transition = ''; panelInner.style.opacity = ''; }
       _resetToIdleSilently();
       _showWelcomeScreen();
@@ -10015,7 +10160,14 @@ var AnsweredTimingMap = {};
       li.appendChild(BuildShortcutKeyChips(ShortcutDisplay, true));
       ListRight.appendChild(li);
     });
+
+    if (UpcomingQuestions.length === 0 && IsActiveGame) {
+      var EmptyStateMessage = document.createElement('p');
+      EmptyStateMessage.style.cssText = 'margin:0;font-size:11px;font-style:italic;color:#9ca3af;line-height:1.5;';
+      EmptyStateMessage.textContent = 'You have seen every question in the current pool and they are now repeating.';
+      ListRight.appendChild(EmptyStateMessage);
   }
+}
 }
 
 function CheckAndHighlightCheatSheetFromKeyEvent(KeyboardEvent) {
@@ -10125,7 +10277,7 @@ function BuildShortcutKeyChips(TokenString, IsWeakness) {
     'BACKSPACE':'⌫','DELETE':'⌦','CAPSLOCK':'Caps',
     'ARROWUP':'↑','ARROWDOWN':'↓','ARROWLEFT':'←','ARROWRIGHT':'→',
     'HOME':'Home','END':'End','PAGEUP':'PgUp','PAGEDOWN':'PgDn',
-    'NUMLOCK':'NumLk',
+    'NUMLOCK':'Number Lock',
     'EQUAL':'=','MINUS':'-','BRACKETLEFT':'[','BRACKETRIGHT':']',
     'BACKSLASH':'\\','SEMICOLON':';','QUOTE':"'",'COMMA':',',
     'PERIOD':'.','SLASH':'/','GRAVE':'`',
@@ -10241,27 +10393,83 @@ function BuildShortcutKeyChips(TokenString, IsWeakness) {
     var Chip = document.createElement('span');
     Chip.className = 'sp-report-chip-key';
     Chip.textContent = Label;
-    var ChipStyles = [
-      'display:inline-block',
-      'font-family:inherit',
-      'font-size:10px',
-      'font-weight:600',
-      'color:#1e3a5f',
-      'border:1px solid #d1d5db',
-      'border-radius:3px',
-      'padding:1px 4px 0',
-      'line-height:1.6',
-      'white-space:nowrap',
-      'vertical-align:middle',
-    ];
-    if (IsWeakness) {
-      ChipStyles.push('background:#f3f4f6');
-      ChipStyles.push('box-shadow:0 1.5px 0 #c9cdd3');
-    }
-    Chip.style.cssText = ChipStyles.join(';');
+    Chip.style.cssText = _ChipStylesForSize(Label, 20, IsWeakness).join(';');
     Wrapper.appendChild(Chip);
   });
   return Wrapper;
+}
+
+/* ── _ChipStylesForSize ──────────────────────────────────────────────────────
+   Returns a cssText-ready style array for a chip of exactly TargetPx height.
+   Width is min TargetPx and grows wider via padding for longer labels.
+   Font size and padding scale proportionally to TargetPx.
+   Single punctuation/symbol characters that sit optically low get a 1px
+   padding-bottom nudge so they appear visually centred.
+──────────────────────────────────────────────────────────────────────────── */
+function _ChipStylesForSize(Label, TargetPx, IsWeakness) {
+  var FontPx = Math.round(TargetPx * (
+    Label.length <= 1 ? 0.65 :
+    Label.length <= 3 ? 0.55 : 0.50
+  ));
+  var SidePad = Math.round(TargetPx * 0.20);
+  var Radius  = Math.round(TargetPx * 0.15);
+
+  // Characters that sit optically low in the em-square get a small nudge
+  var LOW_SYMBOLS = new Set([
+    ';', ':', "'", '"', ',', '.', '`', '~', '-', '_',
+    '/', '\\', '|', '!', '@', '#', '$', '%', '^', '&',
+    '*', '(', ')', '[', ']', '{', '}', '<', '>', '=', '+',
+  ]);
+  var PbNudge = (Label.length === 1 && LOW_SYMBOLS.has(Label)) ? '1px' : '0';
+
+  var styles = [
+    'display:inline-flex',
+    'align-items:center',
+    'justify-content:center',
+    'font-family:inherit',
+    'font-size:' + FontPx + 'px',
+    'font-weight:600',
+    'color:#1e3a5f',
+    'border:1px solid #d1d5db',
+    'border-radius:' + Radius + 'px',
+    'height:' + TargetPx + 'px',
+    'min-width:' + TargetPx + 'px',
+    'padding:0 ' + SidePad + 'px ' + PbNudge,
+    'box-sizing:border-box',
+    'line-height:1',
+    'white-space:nowrap',
+    'vertical-align:middle',
+  ];
+  if (IsWeakness) {
+    styles.push('background:#f3f4f6');
+    styles.push('box-shadow:0 1.5px 0 #c9cdd3');
+  }
+  return styles;
+}
+
+/* ── ResizeChips ─────────────────────────────────────────────────────────────
+   Re-applies _ChipStylesForSize at a different TargetPx to every chip inside
+   a wrapper returned by BuildShortcutKeyChips, preserving any colour overrides
+   already applied. Call this instead of manually setting fontSize/padding.
+──────────────────────────────────────────────────────────────────────────── */
+function ResizeChips(Wrapper, TargetPx) {
+  Wrapper.querySelectorAll('.sp-report-chip-key').forEach(function(Chip) {
+    var SavedBg     = Chip.style.background;
+    var SavedColor  = Chip.style.color;
+    var SavedBorder = Chip.style.borderColor;
+    var SavedShadow = Chip.style.boxShadow;
+    Chip.style.cssText = _ChipStylesForSize(Chip.textContent, TargetPx, false).join(';');
+    if (SavedBg)     Chip.style.background  = SavedBg;
+    if (SavedColor)  Chip.style.color       = SavedColor;
+    if (SavedBorder) Chip.style.borderColor = SavedBorder;
+    if (SavedShadow) Chip.style.boxShadow   = SavedShadow;
+  });
+  var SepFontPx = Math.round(TargetPx * 0.55);
+  var SepMargin = Math.round(TargetPx * 0.08);
+  Wrapper.querySelectorAll('span:not(.sp-report-chip-key)').forEach(function(Sep) {
+    Sep.style.fontSize = SepFontPx + 'px';
+    Sep.style.margin   = '0 ' + SepMargin + 'px';
+  });
 }
 
 function _refreshReportPanel() {
@@ -10796,24 +11004,75 @@ function runCountdown(onComplete) {
   titleEl.textContent = '';
   titleEl.style.position = 'relative';
 
+  // Build the context tagline for the countdown
+  var _cdTagline = document.getElementById('welcomeTagline');
+  var _osLabel = currentOs === 'pc' ? 'PC' : 'Mac';
+  if (_cdTagline) {
+    _cdTagline.textContent = currentApp + ' on ' + _osLabel;
+    _cdTagline.style.display = 'block';
+    _cdTagline.style.opacity = '0';
+    _cdTagline.style.transition = 'opacity 0.2s ease';
+  }
+
   var counts = [3, 2, 1];
   var step = 0;
+  setTimeout(function() {
+    if (_cdTagline) {
+      _cdTagline.style.transition = 'opacity 0.2s ease';
+      _cdTagline.style.opacity = '1';
+    }
+  }, 700);
+  var _qRow = document.getElementById('questionRow');
+  if (_cdTagline && _qRow) {
+    _qRow.innerHTML = '';
+    _qRow.appendChild(_cdTagline);
+    _cdTagline.style.fontSize = '11px';
+    _cdTagline.style.fontStyle = 'none';
+    _cdTagline.style.color = '#b9c0cb';
+    _cdTagline.style.margin = '0';
+    _cdTagline.style.textAlign = 'center';
+  }
 
   function tick() {
     if (step >= counts.length) {
       numEl.className = '';
       numEl.textContent = '';
       titleEl.style.position = '';
+      if (_cdTagline && _qRow) {
+        _cdTagline.style.transition = 'opacity 0.4s ease';
+        _cdTagline.style.opacity = '0';
+        setTimeout(function() {
+          if (_cdTagline.parentNode === _qRow) _qRow.removeChild(_cdTagline);
+          document.getElementById('middlePanel') && document.querySelector('.middlePanel') && document.querySelector('.middlePanel').appendChild && (function(){
+            var mp = document.querySelector('.middlePanel > div');
+            if (mp && !mp.contains(_cdTagline)) mp.appendChild(_cdTagline);
+          })();
+          _cdTagline.style.display = 'none';
+          _cdTagline.style.transition = '';
+          _cdTagline.style.fontSize = '';
+          _cdTagline.style.margin = '';
+          _cdTagline.style.color = '';
+          _cdTagline.style.fontStyle = '';
+          _cdTagline.style.textAlign = '';
+          _cdTagline.innerHTML = '<em>Your keyboard shortcuts coach &amp; personal trainer.</em>';
+        }, 400);
+      }
       _countdownTimer = null;
       onComplete();
       return;
+    }
+    if (step === 0 && _cdTagline) {
+    }
+    if (step === 2 && _cdTagline) {
+      _cdTagline.style.transition = 'opacity 0.6s ease';
+      _cdTagline.style.opacity = '0';
     }
     numEl.textContent = counts[step];
     numEl.className = '';
     void numEl.offsetWidth; // force reflow so animation restarts
     numEl.className = 'pop';
     step++;
-    _countdownTimer = setTimeout(tick, 900);
+    _countdownTimer = setTimeout(tick, 1100);
   }
   tick();
 }
@@ -11324,15 +11583,7 @@ function _deactivateBlurPauseScreen() {
     ChipsArea.style.alignItems = 'center';
     ChipsArea.style.justifyContent = 'center';
     ChipsArea.style.minHeight = Math.max(ButtonHeight, 32) + 'px';
-    ChipsArea.querySelectorAll('.sp-report-chip-key').forEach(function(Chip) {
-      Chip.style.fontSize = '16px';
-      Chip.style.padding = '4px 10px';
-      Chip.style.borderRadius = '5px';
-      Chip.style.lineHeight = '1.4';
-    });
-    ChipsArea.querySelectorAll('span:not(.sp-report-chip-key)').forEach(function(Sep) {
-      Sep.style.fontSize = '14px';
-    });
+    ResizeChips(ChipWrapper, 32);
   }
 }
 
@@ -11370,13 +11621,14 @@ function _blurDiagnosticBlockAndReport() {
 }
 
 function _blurDiagnosticShowBlockedConfirmation() {
+  _blurDiagnosticFlowComplete = true;
   hideConfirmHeading();
   titleEl.classList.remove('blurred');
   titleEl.className = '';
-  titleEl.textContent = 'Do you want to block this?';
+  titleEl.textContent = 'Shortcut blocked. Ready to resume?';
   var RightTextEl = document.getElementById('blurDiagnosticRightText');
   if (RightTextEl) {
-    RightTextEl.textContent = 'Done. That shortcut has been blocked. You are free to continue your level.';
+    RightTextEl.textContent = 'Done. That shortcut has been blocked. You are free to continue your level. Blocked shortcuts can be managed in the \u2019Conflicted Shortcuts\u2019, \u2019User Found\u2019 tab.';
   }
   var PillEl = document.getElementById('blurDiagnosticBlockPill');
   if (PillEl) {
@@ -11915,15 +12167,9 @@ function _onDragHandlePointerUp(Event) {
 
   if (!WasDrag) return;
 
-  // Snap to the nearest extreme if the drag overshot, otherwise animate to the
-  // clamped partial angle (which may have been updated during the drag).
-  if (_kbPartialAngle <= PartialDragMinAngle) {
-    _animateToPartialAngle(PartialDragMinAngle);
-  } else if (_kbPartialAngle >= PartialDragMaxAngle) {
-    setKbPosition('edge');
-  } else {
-    _animateToPartialAngle(_kbPartialAngle);
-  }
+  // Clamp to the valid partial range and stay exactly where the user released.
+  // No settle — the angle they dragged to is the angle they get.
+  _animateToPartialAngle(Math.max(PartialDragMinAngle, Math.min(PartialDragMaxAngle, _kbPartialAngle)));
 
   Event.preventDefault();
 }
@@ -12466,7 +12712,20 @@ function _buildSkillsetPill() {
         e.stopPropagation();
         currentSkillset = def.label;
         _applySkillset(def.label);
+        var _exclusive = appsShortList.find(function(l) {
+          var _entry = appsLongList.find(function(a) { return a.label === l; });
+          return _entry && Array.isArray(_entry.skillset) && _entry.skillset.length === 1;
+        });
+        currentApp = _exclusive || appsShortList[0];
+        try { localStorage.setItem('kw_app', currentApp); } catch (StorageError) {}
+        buildAppPill();
         _closeSkillsetPill();
+        appPillEl.style.overflow = 'visible';
+        pulseBtn(appPillEl);
+        appPillEl.addEventListener('animationend', function _pillPulseEnd() {
+          appPillEl.style.overflow = '';
+          appPillEl.removeEventListener('animationend', _pillPulseEnd);
+        });
         // Show the welcome caret now that a selection has been made
         var wCaret = document.getElementById('welcomeDifficultyCaretEl');
         if (wCaret) wCaret.style.visibility = '';
@@ -12488,17 +12747,24 @@ function _applySkillset(skillsetLabel) {
     .map(function(app) { return app.label; });
   if (matching.length > 0) {
     appsShortList = matching;
-    if (appsShortList.indexOf(currentApp) === -1) {
-      currentApp = appsShortList[0];
-      try { localStorage.setItem('kw_app', currentApp); } catch(e) {}
-    }
+    currentApp = appsShortList[0];
+    try { localStorage.setItem('kw_app', currentApp); } catch(e) {}
     _saveAppsShortList();
     buildAppPill();
+
+    // If the app pill is currently open, resize it to fit the new shortlist
+    if (appPillEl.classList.contains('open') && !AppPillWrenchOpen) {
+      var newHeight = _AppPillMeasureNaturalHeight();
+      var pillRect  = appPillEl.getBoundingClientRect();
+      var geometry  = _AppPillCalculateOpenGeometry(newHeight, pillRect);
+      _AppPillAnimateTo(newHeight, geometry.TranslateY, geometry.SpacerHeight);
+    }
   }
   runData.length = 0; lastCompletedReport = null; CoachAdviceAccepted = false;
 }
 
-function skillsetPillClick() {
+function skillsetPillClick(ClickEvent) {
+  if (ClickEvent) ClickEvent.stopPropagation();
   if (skillsetPillOpen) { _closeSkillsetPill(); return; }
   _openSkillsetPill();
 }
@@ -12526,27 +12792,52 @@ function _closeSkillsetPill() {
 
 
 var _skillsetPillInitialised = false;
+
+function _resolvePreferredSkillset() {
+  var HardwiredDefault = 'Graphic Design';
+  var StoredPreference = null;
+  try { StoredPreference = localStorage.getItem('kw_preferred_skillset'); } catch (StorageError) {}
+
+  var UrlParamMatch = null;
+  try {
+    var UrlParameters = new URLSearchParams(window.location.search);
+    var UrlSkillsetParam = UrlParameters.get('skillset');
+    if (UrlSkillsetParam) {
+      var MatchedDefinition = SKILLSET_DEFS.find(function(Definition) {
+        return Definition.label.toLowerCase() === UrlSkillsetParam.toLowerCase() ||
+               Definition.tags.some(function(Tag) { return Tag.toLowerCase() === UrlSkillsetParam.toLowerCase(); });
+      });
+      if (MatchedDefinition) UrlParamMatch = MatchedDefinition.label;
+    }
+  } catch (UrlError) {}
+
+  // Param present: always update the stored preference
+  if (UrlParamMatch) {
+    try { localStorage.setItem('kw_preferred_skillset', UrlParamMatch); } catch (StorageError) {}
+    return UrlParamMatch;
+  }
+
+  // No param: use stored preference, or fall back to hardwired default
+  if (StoredPreference) {
+    var IsValidPreference = SKILLSET_DEFS.some(function(Definition) {
+      return Definition.label === StoredPreference;
+    });
+    if (IsValidPreference) return StoredPreference;
+  }
+
+  // First visit with no param: store the hardwired default
+  try { localStorage.setItem('kw_preferred_skillset', HardwiredDefault); } catch (StorageError) {}
+  return HardwiredDefault;
+}
+
 function _initSkillsetPillAfterAppsLoad() {
   if (_skillsetPillInitialised) return;
   _skillsetPillInitialised = true;
 
-  // Read ?skillset= URL param
-  try {
-    var urlParams = new URLSearchParams(window.location.search);
-    var urlSkillset = urlParams.get('skillset');
-    if (urlSkillset) {
-      var matchedDef = SKILLSET_DEFS.find(function(d) {
-        return d.label.toLowerCase() === urlSkillset.toLowerCase() ||
-               d.tags.some(function(t) { return t.toLowerCase() === urlSkillset.toLowerCase(); });
-      });
-      if (matchedDef) currentSkillset = matchedDef.label;
-    }
-  } catch(e) {}
-
+  currentSkillset = _resolvePreferredSkillset();
   _applySkillset(currentSkillset);
   _buildSkillsetPill();
 }
-
 </script>
 </body>
 </html>

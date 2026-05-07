@@ -1,13 +1,14 @@
 [
-  { "label": "[Ps] Photoshop",     "path": "/keyboard-warriors/data/shortcuts_photoshop.json",     "skillset":  ["Graphics", "Motion"] },
+  { "label": "[Ps] Photoshop",     "path": "/keyboard-warriors/data/shortcuts_photoshop.json",     "skillset":  ["Graphics",    "Motion"] },
   { "label": "[Ai] Illustrator",   "path": "/keyboard-warriors/data/shortcuts_illustrator.json",   "skillset":  ["Graphics"] },
   { "label": "[Id] InDesign",      "path": "/keyboard-warriors/data/shortcuts_inDesign.json",      "skillset":  ["Graphics"] },
-  { "label": "[Ae] After Effects", "path": "/keyboard-warriors/data/shortcuts_afterEffects.json",  "skillset":  ["Motion", "Graphics"] },
+  { "label": "[Ae] After Effects", "path": "/keyboard-warriors/data/shortcuts_afterEffects.json",  "skillset":    ["Motion",    "Graphics"] },
+  { "label": "[Pr] Premier Pro", "path": "/keyboard-warriors/data/shortcuts_premier.json",         "skillset":    ["Motion"] },
   { "label": "Figma",              "path": "/keyboard-warriors/data/shortcuts_figma.json",         "skillset":  ["Graphics"] },
   { "label": "Sketch",              "path": "/keyboard-warriors/data/shortcuts_sketch.json",       "skillset":  ["Graphics"] },
-  { "label": "MS Word",            "path": "/keyboard-warriors/data/shortcuts_msWord.json",        "skillset":  ["Productivity"] },
-  { "label": "MS Excel",           "path": "/keyboard-warriors/data/shortcuts_msExcel.json",       "skillset":  ["Productivity"] },
-  { "label": "MS PowerPoint",      "path": "/keyboard-warriors/data/shortcuts_msPowerpoint.json",  "skillset":  ["Productivity"] },
+  { "label": "MS Word",            "path": "/keyboard-warriors/data/shortcuts_msWord.json",        "skillset":    ["Productivity"] },
+  { "label": "MS Excel",           "path": "/keyboard-warriors/data/shortcuts_msExcel.json",       "skillset":    ["Productivity"] },
+  { "label": "MS PowerPoint",      "path": "/keyboard-warriors/data/shortcuts_msPowerpoint.json",  "skillset":    ["Productivity"] },
   { "label": "Testing Only",       "path": "/keyboard-warriors/data/in_progress/shortcuts_TESTING.json",        "beta": true },
   { "label": "Known Conflicts",    "path": "/keyboard-warriors/data/in_progress/shortcuts_CONFLICTS.json",      "beta": true }
   ]

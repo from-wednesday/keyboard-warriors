@@ -287,7 +287,7 @@
 <div id="phoneToolbar" style="display:none;">
   <div id="phoneToolbarIcons">
     <div class="phone-icon-btn" id="phoneKbIconWrap">
-      <svg width="36" viewBox="0 0 110 101.8" style="color:#9ca3af;"><use href="#IconKeyboard"/></svg>
+      <svg width="36" height="auto" style="color:#9ca3af;"><use href="#IconKeyboard"/></svg>
       <span class="phone-icon-label">Keyboard</span>
     </div>
     <div class="phone-icon-btn" id="phoneDiffIconWrap">
@@ -302,7 +302,7 @@
       <span class="phone-icon-label">Difficulty</span>
     </div>
     <div class="phone-icon-btn" id="phoneBrIconWrap">
-      <svg width="36" viewBox="0 0 86 64.1" style="color:#9ca3af;"><use href="#IconBrowser"/></svg>
+      <svg width="36" height="auto" style="color:#9ca3af;"><use href="#IconBrowser"/></svg>
       <span class="phone-icon-label">Conflicts</span>
     </div>
   </div>
@@ -1658,18 +1658,6 @@ function updateMismatchPill() {
   }
 }
 
-function onOsToggle() {
-  const nativeMac = (detectedOs === 'mac' || detectedOs === 'mobile');
-  applyOsMode(osToggleEl.checked
-    ? (nativeMac ? 'pc'  : 'mac')
-    : (nativeMac ? 'mac' : 'pc'));
-  if (activeSettings === 'panelKeyboard') updateModalToggles();
-  if (activeSettings === 'panelConflicts')  _refreshBrowserContent();
-  if (activeSettings === 'panelEndGameReportCard')     _refreshReportPanel();
-  if (activeSettings === 'panelCheatSheet')    _refreshCheatSheet();
-  runData.length = 0; lastCompletedReport = null; CoachAdviceAccepted = false;
-}
-
 // On mobile: auto-enable sticky + touch modes, show updated message
 if (detectedOs === 'mobile') {
   var _mobileHasExternalKeyboard = false;
@@ -1853,7 +1841,7 @@ const TOKEN_TO_BROWSER_CODE = {
   // Punctuation
   'EQUAL':        'Equal',
   'MINUS':        'Minus',
-  'ASTERISK':     'DIGIT8',
+  'ASTERISK':     '8',
   'BRACKETLEFT':  'BracketLeft',
   'BRACKETRIGHT': 'BracketRight',
   'BACKSLASH':    'Backslash',
@@ -3920,13 +3908,12 @@ function buildAppPill() {
       ClickEvent.stopPropagation();
       if (gameState === 'playing' || gameState === 'paused'
           || gameState === 'confirm-reset' || gameState === 'confirm-quit') return;
-      currentApp = AppLabel;
-      try { localStorage.setItem('kw_app', currentApp); } catch (StorageError) {}
-      buildAppPill();
-      closeAppPill();
-      runData.length = 0; lastCompletedReport = null; CoachAdviceAccepted = false;
+currentApp = AppLabel;
+try { localStorage.setItem('kw_app', currentApp); } catch (StorageError) {}
+buildAppPill();
+closeAppPill();
+runData.length = 0; lastCompletedReport = null; CoachAdviceAccepted = false;
     });
-
     appPillEl.appendChild(Row);
   });
 
@@ -7609,8 +7596,7 @@ function confirmStartOverYes() {
   setTimeout(function() {
     if (panelInner) { panelInner.style.transition = 'opacity 0.3s ease'; panelInner.style.opacity = '0'; }
     setTimeout(function() {
-       // Wipe training data, preserve keyboard hardware settings,
-      // preferred skillset, and a granted gyro permission
+      // Wipe all local data
       try { localStorage.removeItem('kw_best'); }         catch(e) {}
       try { localStorage.removeItem('kw_app'); }          catch(e) {}
       try { localStorage.removeItem('kw_difficulty'); }   catch(e) {}
@@ -7620,7 +7606,6 @@ function confirmStartOverYes() {
       try { localStorage.removeItem('kw_coach_memory'); } catch(e) {}
       try { localStorage.removeItem('kw_dismissed_conflicts'); } catch(e) {}
       try { localStorage.removeItem('kw_has_keyboard'); }        catch(e) {}
-      try { localStorage.removeItem('kw_apps_short_list'); }     catch(e) {}
       try { sessionStorage.removeItem('kw_welcomed'); }   catch(e) {}
       try {
         var GyroDecision = localStorage.getItem('kw_gyro');
@@ -12836,9 +12821,9 @@ function _initSkillsetPillAfterAppsLoad() {
   _skillsetPillInitialised = true;
 
   currentSkillset = _resolvePreferredSkillset();
-      _applySkillset(currentSkillset);
+  _applySkillset(currentSkillset);
   _buildSkillsetPill();
-      }
+}
 </script>
 </body>
 </html>

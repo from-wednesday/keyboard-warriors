@@ -2704,6 +2704,12 @@ li.conflict-dismissed .conflict-desc {
 #diffIcon #Needle {
   color: #9ca3af; transform-origin: 45px 50.9px; transform: rotate(-60deg);
 }
+#diffIcon #Needle path,
+#diffIcon #Needle circle {
+  fill: currentColor;
+} {
+  color: #9ca3af; transform-origin: 45px 50.9px; transform: rotate(-60deg);
+}
 
 /* ─── TOOLTIP ────────────────────────────────────────*/
 /* ─── ICON TOOLTIPS — pure CSS, anchored to each icon wrap ──────*/
@@ -3648,6 +3654,11 @@ body.returning-screen #diffIconWrap .icon-tip { display: none; }
 /* Keyboard segment: SVG inherits button colour */
 .conflict-filter-keyboard svg {
   fill: currentColor;
+}
+
+#cfBtnKeyboard {
+  padding-left: 4px;
+  padding-right: 4px;
 }
 
 /* Border radii — override score-clear-pill's child selectors */

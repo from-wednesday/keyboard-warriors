@@ -11621,13 +11621,14 @@ function _blurDiagnosticBlockAndReport() {
 }
 
 function _blurDiagnosticShowBlockedConfirmation() {
+  _blurDiagnosticFlowComplete = true;
   hideConfirmHeading();
   titleEl.classList.remove('blurred');
   titleEl.className = '';
-  titleEl.textContent = 'Do you want to block this?';
+  titleEl.textContent = 'Shortcut blocked. Ready to resume?';
   var RightTextEl = document.getElementById('blurDiagnosticRightText');
   if (RightTextEl) {
-    RightTextEl.textContent = 'Done. That shortcut has been blocked. You are free to continue your level.';
+    RightTextEl.textContent = 'Done. That shortcut has been blocked. You are free to continue your level. Blocked shortcuts can be managed in the \u2019Conflicted Shortcuts\u2019, \u2019User Found\u2019 tab.';
   }
   var PillEl = document.getElementById('blurDiagnosticBlockPill');
   if (PillEl) {

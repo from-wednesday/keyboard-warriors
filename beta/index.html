@@ -7608,7 +7608,8 @@ function confirmStartOverYes() {
   setTimeout(function() {
     if (panelInner) { panelInner.style.transition = 'opacity 0.3s ease'; panelInner.style.opacity = '0'; }
     setTimeout(function() {
-      // Wipe all local data
+       // Wipe training data, preserve keyboard hardware settings,
+      // preferred skillset, and a granted gyro permission
       try { localStorage.removeItem('kw_best'); }         catch(e) {}
       try { localStorage.removeItem('kw_app'); }          catch(e) {}
       try { localStorage.removeItem('kw_difficulty'); }   catch(e) {}
@@ -7618,11 +7619,17 @@ function confirmStartOverYes() {
       try { localStorage.removeItem('kw_coach_memory'); } catch(e) {}
       try { localStorage.removeItem('kw_dismissed_conflicts'); } catch(e) {}
       try { localStorage.removeItem('kw_has_keyboard'); }        catch(e) {}
+      try { localStorage.removeItem('kw_apps_short_list'); }     catch(e) {}
       try { sessionStorage.removeItem('kw_welcomed'); }   catch(e) {}
+      try {
+        var GyroDecision = localStorage.getItem('kw_gyro');
+        if (GyroDecision !== 'granted') localStorage.removeItem('kw_gyro');
+      } catch(e) {}
       bestRecord = { time: null, accuracy: null };
       hasTrophy = false;
       questionTimer = null;
       playerLives   = null;
+      currentSkillset = _resolvePreferredSkillset();
       currentDifficulty = 'fundamentals';
       _diffFirst = true;
       setDiffState(-1);
@@ -7704,6 +7711,7 @@ function _returningStartOver() {
       questionTimer = null;
       playerLives   = null;
       dismissedConflicts.clear();
+      currentSkillset = _resolvePreferredSkillset();
       updateBestDisplay();
       _syncSliderToValue('timer', null);
       _syncSliderToValue('lives', null);
@@ -12785,41 +12793,52 @@ function _closeSkillsetPill() {
 
 
 var _skillsetPillInitialised = false;
+
+function _resolvePreferredSkillset() {
+  var HardwiredDefault = 'Graphic Design';
+  var StoredPreference = null;
+  try { StoredPreference = localStorage.getItem('kw_preferred_skillset'); } catch (StorageError) {}
+
+  var UrlParamMatch = null;
+  try {
+    var UrlParameters = new URLSearchParams(window.location.search);
+    var UrlSkillsetParam = UrlParameters.get('skillset');
+    if (UrlSkillsetParam) {
+      var MatchedDefinition = SKILLSET_DEFS.find(function(Definition) {
+        return Definition.label.toLowerCase() === UrlSkillsetParam.toLowerCase() ||
+               Definition.tags.some(function(Tag) { return Tag.toLowerCase() === UrlSkillsetParam.toLowerCase(); });
+      });
+      if (MatchedDefinition) UrlParamMatch = MatchedDefinition.label;
+    }
+  } catch (UrlError) {}
+
+  // Param present: always update the stored preference
+  if (UrlParamMatch) {
+    try { localStorage.setItem('kw_preferred_skillset', UrlParamMatch); } catch (StorageError) {}
+    return UrlParamMatch;
+  }
+
+  // No param: use stored preference, or fall back to hardwired default
+  if (StoredPreference) {
+    var IsValidPreference = SKILLSET_DEFS.some(function(Definition) {
+      return Definition.label === StoredPreference;
+    });
+    if (IsValidPreference) return StoredPreference;
+  }
+
+  // First visit with no param: store the hardwired default
+  try { localStorage.setItem('kw_preferred_skillset', HardwiredDefault); } catch (StorageError) {}
+  return HardwiredDefault;
+}
+
 function _initSkillsetPillAfterAppsLoad() {
   if (_skillsetPillInitialised) return;
   _skillsetPillInitialised = true;
 
-  // Read ?skillset= URL param
-  try {
-    var UrlParams = new URLSearchParams(window.location.search);
-    var UrlSkillset = UrlParams.get('skillset');
-    if (UrlSkillset) {
-      var MatchedDefinition = SKILLSET_DEFS.find(function(Definition) {
-        return Definition.label.toLowerCase() === UrlSkillset.toLowerCase() ||
-               Definition.tags.some(function(Tag) { return Tag.toLowerCase() === UrlSkillset.toLowerCase(); });
-      });
-      if (MatchedDefinition) currentSkillset = MatchedDefinition.label;
-    }
-  } catch(e) {}
-
-  // Only apply a skillset default when the player has no persisted short list.
-  // Returning players must keep their own customised list intact.
-  var HasPersistedShortList = false;
-  try {
-    var SavedShortList = localStorage.getItem('kw_apps_short_list');
-    if (SavedShortList) {
-      var ParsedShortList = JSON.parse(SavedShortList);
-      HasPersistedShortList = Array.isArray(ParsedShortList) && ParsedShortList.length > 0;
-    }
-  } catch(e) {}
-
-  if (!HasPersistedShortList) {
-    _applySkillset(currentSkillset);
-  }
-
+  currentSkillset = _resolvePreferredSkillset();
+  _applySkillset(currentSkillset);
   _buildSkillsetPill();
 }
-
 </script>
 </body>
 </html>

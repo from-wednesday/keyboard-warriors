@@ -2704,18 +2704,6 @@ li.conflict-dismissed .conflict-desc {
 #diffIcon #Needle {
   color: #9ca3af; transform-origin: 45px 50.9px; transform: rotate(-60deg);
 }
-#diffIcon #Needle circle {
-  fill: currentColor;
-}
-#diffIcon #Needle path {
-  fill: none;
-  stroke: currentColor;
-  stroke-width: 2px;
-  stroke-linecap: round;
-  stroke-miterlimit: 10;
-} {
-  color: #9ca3af; transform-origin: 45px 50.9px; transform: rotate(-60deg);
-}
 
 /* ─── TOOLTIP ────────────────────────────────────────*/
 /* ─── ICON TOOLTIPS — pure CSS, anchored to each icon wrap ──────*/
@@ -3315,6 +3303,9 @@ body.returning-screen #diffIconWrap .icon-tip { display: none; }
 /* Difficulty gauge icon (was inline <style> inside #diffIconWrap SVG) */
 #diffIcon .gauge-stroke { fill:none; stroke:currentColor; stroke-width:2px; stroke-linecap:round; stroke-miterlimit:10; }
 #diffIcon #Needle { color:#9ca3af; transform-origin:45px 50.9px; transition:transform 0.35s cubic-bezier(0.34,1.56,0.64,1); }
+#diffIcon #Needle path:first-of-type { fill: none; stroke: currentColor; stroke-width: 2px; stroke-linecap: round; stroke-miterlimit: 10; }
+#diffIcon #Needle path:last-of-type { fill: currentColor; }
+#diffIcon #Needle circle { fill: currentColor; }
 /* ── Blur pause diagnostic panel ────────────────────────────────────────────
    Overrides the two-column grid to show a single full-width column.        */
 #panelPause.blur-pause-active.sp-active {
@@ -3634,15 +3625,4 @@ body.returning-screen #diffIconWrap .icon-tip { display: none; }
   display: flex;
   align-items: center;
   justify-content: center;
-}
-
-#diffIcon #Needle circle {
-  fill: currentColor;
-}
-#diffIcon #Needle path {
-  fill: none;
-  stroke: currentColor;
-  stroke-width: 2px;
-  stroke-linecap: round;
-  stroke-miterlimit: 10;
 }

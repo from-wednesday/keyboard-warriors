@@ -3626,3 +3626,39 @@ body.returning-screen #diffIconWrap .icon-tip { display: none; }
   align-items: center;
   justify-content: center;
 }
+
+/* Browser segment: flex-width, truncates with ellipsis */
+.conflict-filter-browser {
+  flex: 1 1 0;
+  width: auto;
+}
+.conflict-filter-browser .diff-btn-text {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  display: block;
+  text-align: center;
+}
+
+/* OS label: icon + text inline */
+.conflict-filter-os .diff-btn-text {
+  display: inline-flex;
+  align-items: center;
+  gap: 3px;
+  white-space: nowrap;
+}
+
+/* Keyboard segment: SVG inherits button colour */
+.conflict-filter-keyboard svg {
+  fill: currentColor;
+}
+#cfBtnKeyboard {
+  padding-left: 4px;
+  padding-right: 4px;
+}{
+  fill: currentColor;
+}
+
+/* Border radii — override score-clear-pill's child selectors */
+.conflict-filter-pill .conflict-filter-seg:first-child { border-radius: 18px 0 0 18px; }
+.conflict-filter-pill .conflict-filter-seg:last-child  { border-radius: 0 18px 18px 0; }

@@ -12668,8 +12668,7 @@ try {
     if (UrlParamMatch) {
       try { localStorage.setItem('kw_preferred_skillset', UrlParamMatch); } catch (StorageError) {}
       return UrlParamMatch;
-    }
-  } catch(e) {}
+  }
 
   // No param: use stored preference, or fall back to hardwired default
   if (StoredPreference) {

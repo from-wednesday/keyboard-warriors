@@ -335,7 +335,7 @@
             <text x="10" y="15" text-anchor="middle" font-size="14" font-weight="720" font-family="system-ui,sans-serif" fill="currentColor" stroke="none">?</text>
           </svg>
           <div class="more-info-popup" id="csTrackedConflictsMoreInfo">
-            <p class="more-info-body">If we detect you successfully press any of these shortcuts, we will add questions using them back into the pool. But be warned, they are here because we have reason to expect they won&#8217;t work on your system.</p>
+            <p class="more-info-body">If we detect you successfully press any of these shortcuts, we will add questions using them back into the pool. You can also manually toggle each if you know better than our predictive system.</p>
           </div>
         </span>
       </div>
@@ -348,7 +348,7 @@
     <span class="diff-btn-text" id="cfBrowserLabel"></span>
   </button>
   <button id="cfBtnFound" class="score-pill-seg score-pill-quarter" onclick="setConflictFilter('found')">
-    <span class="diff-btn-text">Found</span>
+    <span class="diff-btn-text">user found</span>
   </button>
   <button id="cfBtnKeyboard" class="score-pill-seg score-pill-quarter" onclick="setConflictFilter('keyboard')" title="Keyboard conflicts">
     <span class="diff-btn-text"><svg viewBox="0 0 110 101.8" style="width:37px;height:30px;display:block;"><use href="#IconKeyboard"/></svg></span>
@@ -594,7 +594,7 @@
     <text x="10" y="15" text-anchor="middle" font-size="14" font-weight="720" font-family="system-ui,sans-serif" fill="currentColor" stroke="none">?</text>
   </svg>
   <div class="more-info-popup" id="skillSetMoreInfo">
-    <p class="more-info-body">This Skill Set choice will provide a preset collection of poplular apps to train for. Customise your list via the App selector in the top right.</p>
+    <p class="more-info-body">This Skill Set choice will provide a preset collection of poplular apps to train for. Customise your list via the 'now training on' App selector in the top right.</p>
   </div>
 </span>
        <div id="skillsetPill" style="position:relative;border-radius:10px;border:1.5px solid #9ca3af;background:white;overflow:visible;cursor:pointer;user-select:none;width:192px;min-width:192px;height:27px;box-sizing:border-box;pointer-events:auto;" onclick="skillsetPillClick(event)">
@@ -684,7 +684,8 @@
               <text x="10" y="15" text-anchor="middle" font-size="14" font-weight="720" font-family="system-ui,sans-serif" fill="currentColor" stroke="none">?</text>
             </svg>
             <div class="more-info-popup" id="kbBehaviourMoreInfo">
-              <p class="more-info-body">Our Touch Enabled virtual keyboard permits you to train on tablet devices, as well as simulating conflicted shortcuts and other operating systems. Great to build knowledge, but touch is less effective than a real keyboard in building &#8216;muscle memory&#8217;.</p>
+              <p class="more-info-body">Our Touch Enabled virtual keyboard permits you to train on tablet devices, as well as simulating conflicted shortcuts and other operating systems.</p>
+              <p class="more-info-body">Great to build knowledge, but touch is less effective than a real keyboard in building &#8216;muscle memory&#8217;.</p>
             </div>
           </span>
         </div>
@@ -738,6 +739,7 @@
               <div class="more-info-popup" id="kbSizeMoreInfo">
                 <p class="more-info-body">While the on-screen display only shows a compact keyboard, the game also accepts input from full-sized keyboard&#8217;s extended keys.</p>
                 <p class="more-info-body">If you don&#8217;t have a full-sized keyboard you should let us know here. Then we won&#8217;t ask you any impossible questions.</p>
+                <p class="more-info-body">If you have another configuration, such as a 75% keyboard, you can toggle individual problem keys in the &#8217;Conflicted Shortcuts&#8217; keyboard tab.</p>
               </div>
             </span>
           </div>
@@ -1851,6 +1853,7 @@ const TOKEN_TO_BROWSER_CODE = {
   // Punctuation
   'EQUAL':        'Equal',
   'MINUS':        'Minus',
+  'ASTERISK':     'DIGIT8',
   'BRACKETLEFT':  'BracketLeft',
   'BRACKETRIGHT': 'BracketRight',
   'BACKSLASH':    'Backslash',
@@ -4532,6 +4535,16 @@ function openAppPill() {
     AppPillWrenchOpen = false;
      var selectorLabel = document.getElementById('appSelectorLabel');
      if (selectorLabel) selectorLabel.textContent = 'choose app to train in next';
+    var tagline = document.getElementById('welcomeTagline');
+    if (tagline) {
+      tagline.style.transition = 'opacity 0.4s ease';
+      tagline.style.opacity = '0';
+      setTimeout(function() {
+        tagline.style.display = 'none';
+        tagline.style.transition = '';
+        tagline.style.opacity = '';
+      }, 600);
+    }
     _EnsureAppPillSpacer();
 
     // Cancel any running spring animation so its RAF doesn't fight us
@@ -6477,7 +6490,7 @@ function getBrowserConflicts() {
   // uses WebKit under the hood). Return the Safari conflict set directly.
   if (detectedOs === 'mobile') {
     return {
-      name:   'Safari on iOS/iPadOS',
+      name:   'Safari',
       keys:   ['CMD+T', 'CMD+SHIFT+N', 'CMD+1', 'Cmd+R'],
       labels: [
         'Cmd+T \u2014 opens a new tab',
@@ -7596,7 +7609,8 @@ function confirmStartOverYes() {
   setTimeout(function() {
     if (panelInner) { panelInner.style.transition = 'opacity 0.3s ease'; panelInner.style.opacity = '0'; }
     setTimeout(function() {
-      // Wipe all local data
+       // Wipe training data, preserve keyboard hardware settings,
+      // preferred skillset, and a granted gyro permission
       try { localStorage.removeItem('kw_best'); }         catch(e) {}
       try { localStorage.removeItem('kw_app'); }          catch(e) {}
       try { localStorage.removeItem('kw_difficulty'); }   catch(e) {}
@@ -7606,11 +7620,17 @@ function confirmStartOverYes() {
       try { localStorage.removeItem('kw_coach_memory'); } catch(e) {}
       try { localStorage.removeItem('kw_dismissed_conflicts'); } catch(e) {}
       try { localStorage.removeItem('kw_has_keyboard'); }        catch(e) {}
+      try { localStorage.removeItem('kw_apps_short_list'); }     catch(e) {}
       try { sessionStorage.removeItem('kw_welcomed'); }   catch(e) {}
+      try {
+        var GyroDecision = localStorage.getItem('kw_gyro');
+        if (GyroDecision !== 'granted') localStorage.removeItem('kw_gyro');
+      } catch(e) {}
       bestRecord = { time: null, accuracy: null };
       hasTrophy = false;
       questionTimer = null;
       playerLives   = null;
+      currentSkillset = _resolvePreferredSkillset();
       currentDifficulty = 'fundamentals';
       _diffFirst = true;
       setDiffState(-1);
@@ -7692,6 +7712,7 @@ function _returningStartOver() {
       questionTimer = null;
       playerLives   = null;
       dismissedConflicts.clear();
+      currentSkillset = _resolvePreferredSkillset();
       updateBestDisplay();
       _syncSliderToValue('timer', null);
       _syncSliderToValue('lives', null);
@@ -10984,24 +11005,75 @@ function runCountdown(onComplete) {
   titleEl.textContent = '';
   titleEl.style.position = 'relative';
 
+  // Build the context tagline for the countdown
+  var _cdTagline = document.getElementById('welcomeTagline');
+  var _osLabel = currentOs === 'pc' ? 'PC' : 'Mac';
+  if (_cdTagline) {
+    _cdTagline.textContent = currentApp + ' on ' + _osLabel;
+    _cdTagline.style.display = 'block';
+    _cdTagline.style.opacity = '0';
+    _cdTagline.style.transition = 'opacity 0.2s ease';
+  }
+
   var counts = [3, 2, 1];
   var step = 0;
+  setTimeout(function() {
+    if (_cdTagline) {
+      _cdTagline.style.transition = 'opacity 0.2s ease';
+      _cdTagline.style.opacity = '1';
+    }
+  }, 700);
+  var _qRow = document.getElementById('questionRow');
+  if (_cdTagline && _qRow) {
+    _qRow.innerHTML = '';
+    _qRow.appendChild(_cdTagline);
+    _cdTagline.style.fontSize = '11px';
+    _cdTagline.style.fontStyle = 'none';
+    _cdTagline.style.color = '#b9c0cb';
+    _cdTagline.style.margin = '0';
+    _cdTagline.style.textAlign = 'center';
+  }
 
   function tick() {
     if (step >= counts.length) {
       numEl.className = '';
       numEl.textContent = '';
       titleEl.style.position = '';
+      if (_cdTagline && _qRow) {
+        _cdTagline.style.transition = 'opacity 0.4s ease';
+        _cdTagline.style.opacity = '0';
+        setTimeout(function() {
+          if (_cdTagline.parentNode === _qRow) _qRow.removeChild(_cdTagline);
+          document.getElementById('middlePanel') && document.querySelector('.middlePanel') && document.querySelector('.middlePanel').appendChild && (function(){
+            var mp = document.querySelector('.middlePanel > div');
+            if (mp && !mp.contains(_cdTagline)) mp.appendChild(_cdTagline);
+          })();
+          _cdTagline.style.display = 'none';
+          _cdTagline.style.transition = '';
+          _cdTagline.style.fontSize = '';
+          _cdTagline.style.margin = '';
+          _cdTagline.style.color = '';
+          _cdTagline.style.fontStyle = '';
+          _cdTagline.style.textAlign = '';
+          _cdTagline.innerHTML = '<em>Your keyboard shortcuts coach &amp; personal trainer.</em>';
+        }, 400);
+      }
       _countdownTimer = null;
       onComplete();
       return;
+    }
+    if (step === 0 && _cdTagline) {
+    }
+    if (step === 2 && _cdTagline) {
+      _cdTagline.style.transition = 'opacity 0.6s ease';
+      _cdTagline.style.opacity = '0';
     }
     numEl.textContent = counts[step];
     numEl.className = '';
     void numEl.offsetWidth; // force reflow so animation restarts
     numEl.className = 'pop';
     step++;
-    _countdownTimer = setTimeout(tick, 900);
+    _countdownTimer = setTimeout(tick, 1100);
   }
   tick();
 }
@@ -11550,13 +11622,14 @@ function _blurDiagnosticBlockAndReport() {
 }
 
 function _blurDiagnosticShowBlockedConfirmation() {
+  _blurDiagnosticFlowComplete = true;
   hideConfirmHeading();
   titleEl.classList.remove('blurred');
   titleEl.className = '';
-  titleEl.textContent = 'Do you want to block this?';
+  titleEl.textContent = 'Shortcut blocked. Ready to resume?';
   var RightTextEl = document.getElementById('blurDiagnosticRightText');
   if (RightTextEl) {
-    RightTextEl.textContent = 'Done. That shortcut has been blocked. You are free to continue your level.';
+    RightTextEl.textContent = 'Done. That shortcut has been blocked. You are free to continue your level. Blocked shortcuts can be managed in the \u2019Conflicted Shortcuts\u2019, \u2019User Found\u2019 tab.';
   }
   var PillEl = document.getElementById('blurDiagnosticBlockPill');
   if (PillEl) {
@@ -12640,7 +12713,20 @@ function _buildSkillsetPill() {
         e.stopPropagation();
         currentSkillset = def.label;
         _applySkillset(def.label);
+        var _exclusive = appsShortList.find(function(l) {
+          var _entry = appsLongList.find(function(a) { return a.label === l; });
+          return _entry && Array.isArray(_entry.skillset) && _entry.skillset.length === 1;
+        });
+        currentApp = _exclusive || appsShortList[0];
+        try { localStorage.setItem('kw_app', currentApp); } catch (StorageError) {}
+        buildAppPill();
         _closeSkillsetPill();
+        appPillEl.style.overflow = 'visible';
+        pulseBtn(appPillEl);
+        appPillEl.addEventListener('animationend', function _pillPulseEnd() {
+          appPillEl.style.overflow = '';
+          appPillEl.removeEventListener('animationend', _pillPulseEnd);
+        });
         // Show the welcome caret now that a selection has been made
         var wCaret = document.getElementById('welcomeDifficultyCaretEl');
         if (wCaret) wCaret.style.visibility = '';
@@ -12662,12 +12748,18 @@ function _applySkillset(skillsetLabel) {
     .map(function(app) { return app.label; });
   if (matching.length > 0) {
     appsShortList = matching;
-    if (appsShortList.indexOf(currentApp) === -1) {
       currentApp = appsShortList[0];
       try { localStorage.setItem('kw_app', currentApp); } catch(e) {}
-    }
     _saveAppsShortList();
     buildAppPill();
+
+    // If the app pill is currently open, resize it to fit the new shortlist
+    if (appPillEl.classList.contains('open') && !AppPillWrenchOpen) {
+      var newHeight = _AppPillMeasureNaturalHeight();
+      var pillRect  = appPillEl.getBoundingClientRect();
+      var geometry  = _AppPillCalculateOpenGeometry(newHeight, pillRect);
+      _AppPillAnimateTo(newHeight, geometry.TranslateY, geometry.SpacerHeight);
+  }
   }
   runData.length = 0; lastCompletedReport = null; CoachAdviceAccepted = false;
 }
@@ -12701,41 +12793,53 @@ function _closeSkillsetPill() {
 
 
 var _skillsetPillInitialised = false;
+
+function _resolvePreferredSkillset() {
+  var HardwiredDefault = 'Graphic Design';
+  var StoredPreference = null;
+  try { StoredPreference = localStorage.getItem('kw_preferred_skillset'); } catch (StorageError) {}
+
+  var UrlParamMatch = null;
+  try {
+    var UrlParameters = new URLSearchParams(window.location.search);
+    var UrlSkillsetParam = UrlParameters.get('skillset');
+    if (UrlSkillsetParam) {
+      var MatchedDefinition = SKILLSET_DEFS.find(function(Definition) {
+        return Definition.label.toLowerCase() === UrlSkillsetParam.toLowerCase() ||
+               Definition.tags.some(function(Tag) { return Tag.toLowerCase() === UrlSkillsetParam.toLowerCase(); });
+      });
+      if (MatchedDefinition) UrlParamMatch = MatchedDefinition.label;
+    }
+  } catch (UrlError) {}
+
+  // Param present: always update the stored preference
+  if (UrlParamMatch) {
+    try { localStorage.setItem('kw_preferred_skillset', UrlParamMatch); } catch (StorageError) {}
+    return UrlParamMatch;
+    }
+  } catch(e) {}
+
+  // No param: use stored preference, or fall back to hardwired default
+  if (StoredPreference) {
+    var IsValidPreference = SKILLSET_DEFS.some(function(Definition) {
+      return Definition.label === StoredPreference;
+    });
+    if (IsValidPreference) return StoredPreference;
+  }
+
+  // First visit with no param: store the hardwired default
+  try { localStorage.setItem('kw_preferred_skillset', HardwiredDefault); } catch (StorageError) {}
+  return HardwiredDefault;
+}
+
 function _initSkillsetPillAfterAppsLoad() {
   if (_skillsetPillInitialised) return;
   _skillsetPillInitialised = true;
 
-  // Read ?skillset= URL param
-  try {
-    var UrlParams = new URLSearchParams(window.location.search);
-    var UrlSkillset = UrlParams.get('skillset');
-    if (UrlSkillset) {
-      var MatchedDefinition = SKILLSET_DEFS.find(function(Definition) {
-        return Definition.label.toLowerCase() === UrlSkillset.toLowerCase() ||
-               Definition.tags.some(function(Tag) { return Tag.toLowerCase() === UrlSkillset.toLowerCase(); });
-      });
-      if (MatchedDefinition) currentSkillset = MatchedDefinition.label;
-    }
-  } catch(e) {}
-
-  // Only apply a skillset default when the player has no persisted short list.
-  // Returning players must keep their own customised list intact.
-  var HasPersistedShortList = false;
-  try {
-    var SavedShortList = localStorage.getItem('kw_apps_short_list');
-    if (SavedShortList) {
-      var ParsedShortList = JSON.parse(SavedShortList);
-      HasPersistedShortList = Array.isArray(ParsedShortList) && ParsedShortList.length > 0;
-    }
-  } catch(e) {}
-
-  if (!HasPersistedShortList) {
-    _applySkillset(currentSkillset);
-  }
-
+  currentSkillset = _resolvePreferredSkillset();
+  _applySkillset(currentSkillset);
   _buildSkillsetPill();
 }
-
 </script>
 </body>
 </html>

@@ -2704,9 +2704,15 @@ li.conflict-dismissed .conflict-desc {
 #diffIcon #Needle {
   color: #9ca3af; transform-origin: 45px 50.9px; transform: rotate(-60deg);
 }
-#diffIcon #Needle path,
 #diffIcon #Needle circle {
   fill: currentColor;
+}
+#diffIcon #Needle path {
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 2px;
+  stroke-linecap: round;
+  stroke-miterlimit: 10;
 } {
   color: #9ca3af; transform-origin: 45px 50.9px; transform: rotate(-60deg);
 }
@@ -3630,37 +3636,13 @@ body.returning-screen #diffIconWrap .icon-tip { display: none; }
   justify-content: center;
 }
 
-/* Browser segment: flex-width, truncates with ellipsis */
-.conflict-filter-browser {
-  flex: 1 1 0;
-  width: auto;
-}
-.conflict-filter-browser .diff-btn-text {
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
-  display: block;
-  text-align: center;
-}
-
-/* OS label: icon + text inline */
-.conflict-filter-os .diff-btn-text {
-  display: inline-flex;
-  align-items: center;
-  gap: 3px;
-  white-space: nowrap;
-}
-
-/* Keyboard segment: SVG inherits button colour */
-.conflict-filter-keyboard svg {
+#diffIcon #Needle circle {
   fill: currentColor;
 }
-
-#cfBtnKeyboard {
-  padding-left: 4px;
-  padding-right: 4px;
+#diffIcon #Needle path {
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 2px;
+  stroke-linecap: round;
+  stroke-miterlimit: 10;
 }
-
-/* Border radii — override score-clear-pill's child selectors */
-.conflict-filter-pill .conflict-filter-seg:first-child { border-radius: 18px 0 0 18px; }
-.conflict-filter-pill .conflict-filter-seg:last-child  { border-radius: 0 18px 18px 0; }

@@ -985,8 +985,8 @@ body.kb-at-edge #keyboardPanel #kb-shadow {
 #kbIcon {
   display: block;
   cursor: pointer;
-  fill: #9ca3af;
-  transition: fill 0.2s ease;
+  color: #9ca3af;
+  transition: color 0.2s ease;
 }
 @keyframes kbIconPulse {
   0%   { transform: scale(1); }
@@ -997,6 +997,7 @@ body.kb-at-edge #keyboardPanel #kb-shadow {
   animation: kbIconPulse 0.5s cubic-bezier(0.25, 0.46, 0.45, 0.94);
 }
 #kbIcon:hover {
+  color: #6b7280;
   transform: scale(1.12);
   transition: transform 0.18s ease;
 }
@@ -1010,8 +1011,8 @@ body.kb-at-edge #keyboardPanel #kb-shadow {
 #browserIcon {
   display: block;
   cursor: pointer;
-  fill: #9ca3af;
-  transition: fill 0.2s ease;
+  color: #9ca3af;
+  transition: color 0.2s ease;
 }
 @keyframes browserIconPulse {
   0%   { transform: scale(1); }
@@ -1022,6 +1023,7 @@ body.kb-at-edge #keyboardPanel #kb-shadow {
   animation: browserIconPulse 0.5s cubic-bezier(0.25, 0.46, 0.45, 0.94);
 }
 #browserIcon:hover {
+  color: #6b7280;
   transform: scale(1.12);
   transition: transform 0.18s ease;
 }
@@ -2695,12 +2697,12 @@ li.conflict-dismissed .conflict-desc {
   z-index: 3;
 }
 #diffIcon {
-  display: block; fill: #9ca3af; pointer-events: auto;
+  display: block; color: #9ca3af; pointer-events: auto;
   cursor: pointer; width: 44px; transition: transform 0.18s ease;
 }
 #diffIcon:hover { transform: scale(1.12); }
 #diffIcon #Needle {
-  fill: #9ca3af; transform-origin: 45px 50.9px; transform: rotate(-60deg);
+  color: #9ca3af; transform-origin: 45px 50.9px; transform: rotate(-60deg);
 }
 
 /* ─── TOOLTIP ────────────────────────────────────────*/
@@ -2791,11 +2793,11 @@ body.returning-screen #diffIconWrap {
 body.returning-screen #kbIconWrap  .icon-tip,
 body.returning-screen #brIconWrap  .icon-tip,
 body.returning-screen #diffIconWrap .icon-tip { display: none; }
-#kbIconWrap.sp-icon-active  #kbIcon      { fill: #374151; }
-#brIconWrap.sp-icon-active  #browserIcon { fill: #374151; }
-#diffIconWrap.sp-icon-active #diffIcon   { fill: #374151; }
+#kbIconWrap.sp-icon-active  #kbIcon      { color: #374151; }
+#brIconWrap.sp-icon-active  #browserIcon { color: #374151; }
+#diffIconWrap.sp-icon-active #diffIcon   { color: #374151; }
 #diffIconWrap.sp-icon-active #diffIcon .gauge-stroke { stroke: #374151; }
-#diffIconWrap.sp-icon-active #diffIcon #Needle        { fill:  #374151; }
+#diffIconWrap.sp-icon-active #diffIcon #Needle        { color: #374151; }
 /* ── Report Card panel ───────────────────────────── */
 
 /* Override the standard two-column grid to add a full-width bottom row */
@@ -3299,8 +3301,8 @@ body.returning-screen #diffIconWrap .icon-tip { display: none; }
 }
 
 /* Difficulty gauge icon (was inline <style> inside #diffIconWrap SVG) */
-#diffIcon .gauge-stroke { fill:none; stroke:#9ca3af; stroke-width:2px; stroke-linecap:round; stroke-miterlimit:10; }
-#diffIcon #Needle { fill:#9ca3af; transform-origin:45px 50.9px; transition:transform 0.35s cubic-bezier(0.34,1.56,0.64,1); }
+#diffIcon .gauge-stroke { fill:none; stroke:currentColor; stroke-width:2px; stroke-linecap:round; stroke-miterlimit:10; }
+#diffIcon #Needle { color:#9ca3af; transform-origin:45px 50.9px; transition:transform 0.35s cubic-bezier(0.34,1.56,0.64,1); }
 /* ── Blur pause diagnostic panel ────────────────────────────────────────────
    Overrides the two-column grid to show a single full-width column.        */
 #panelPause.blur-pause-active.sp-active {
@@ -3485,12 +3487,12 @@ body.returning-screen #diffIconWrap .icon-tip { display: none; }
 }
 
 .phone-icon-btn.sp-icon-active svg {
-  fill: #1f2937;
+  color: #1f2937;
 }
 
 .phone-gauge-stroke {
   fill: none;
-  stroke: #9ca3af;
+  stroke: currentColor;
   stroke-width: 2px;
   stroke-linecap: round;
   stroke-miterlimit: 10;
@@ -3585,9 +3587,9 @@ body.returning-screen #diffIconWrap .icon-tip { display: none; }
   .kb-variant-option:hover                    { border-color: transparent; }
   .app-option:hover                           { background: transparent; color: #9ca3af; }
   .sp-settings-nudge:hover:not(.sp-nudge-inactive) { opacity: 1; }
-  #kbIcon:hover                               { transform: none; transition: fill 0.2s ease; }
+  #kbIcon:hover                               { transform: none; transition: color 0.2s ease; }
   #kbIcon.pulse:hover                         { transform: none; transition: none; }
-  #browserIcon:hover                          { transform: none; transition: fill 0.2s ease; }
+  #browserIcon:hover                          { transform: none; transition: color 0.2s ease; }
   #browserIcon.pulse:hover                    { transform: none; transition: none; }
   #diffIcon:hover                             { transform: none; }
   .key.lock-key:hover                         { background: #f5f5f7; }

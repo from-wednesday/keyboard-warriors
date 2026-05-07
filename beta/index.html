@@ -355,7 +355,11 @@
   </button>
 </div>
         <ul id="browserCompatList" class="sp-conflict-list"></ul>
-    
+        <div id="cfFoundSubPanel" style="display:none;">
+          <div id="cfFoundClearWrap"></div>
+          <ul id="cfFoundList" class="sp-conflict-list"></ul>
+          <p id="cfFoundEmpty" style="display:none;font-size:11px;font-style:italic;color:#9ca3af;line-height:1.6;margin:0;">If we stumble upon any problem shortcuts during play, we will block them and they will appear here.</p>
+        </div>
       </div>
     </div>
 
@@ -5828,13 +5832,8 @@ if (gameState !== 'playing' && gameState !== 'paused' && gameState !== 'readyToU
     questionPool = shuffleArray(buildPool());
 }
 
-  // Refresh the clear overrides pill state
-  var ClearBtn = document.querySelector('#browserCompatFooter .score-pill-seg');
-  if (ClearBtn) {
-    var NowHasOverrides = _hasconflictsOverrides();
-    ClearBtn.classList.toggle('score-pill-inactive', !NowHasOverrides);
-    ClearBtn.onclick = NowHasOverrides ? _clearconflictsOverrides : null;
-  }
+  // Refresh the filter pill styles (found tab availability may have changed)
+  _syncConflictFilterPillStyles();
 
   if (!liEl) return;
   var radio = liEl.querySelector('.modal-radio');
@@ -5931,6 +5930,8 @@ function _clearconflictsOverrides() {
   DefaultBrowserKeys.forEach(function(Key) { dismissedConflicts.add(Key); });
   _saveCustomDismissedConflicts();
   questionPool = shuffleArray(buildPool());
+  // Switch back to browser tab and refresh
+  _activeConflictFilter = 'browser';
   _refreshBrowserContent();
 }
 
@@ -5963,21 +5964,17 @@ function _initConflictFilterPill() {
 function setConflictFilter(filter) {
   _activeConflictFilter = filter;
   _syncConflictFilterPillStyles();
-  // Content filtering (making each button change the list below) is wired in a later step
+  _refreshBrowserContent();
 }
 
 function _syncConflictFilterPillStyles() {
   var btnIds = { os: 'cfBtnOs', browser: 'cfBtnBrowser', found: 'cfBtnFound', keyboard: 'cfBtnKeyboard' };
-  // 'found' segment is only active/available when diagnostic conflicts exist (_hasconflictsOverrides already checks this)
-  // 'keyboard' segment relevance is tied to hasFullKeyboard
-  var hasFound    = _hasconflictsOverrides();
   var hasKeyboard = hasFullKeyboard;
   Object.keys(btnIds).forEach(function(f) {
     var btn = document.getElementById(btnIds[f]);
     if (!btn) return;
     var isActive = (f === _activeConflictFilter);
-    var hasContent = (f === 'os') || (f === 'browser')
-      || (f === 'found'    && hasFound)
+    var hasContent = (f === 'os') || (f === 'browser') || (f === 'found')
       || (f === 'keyboard' && hasKeyboard);
     btn.classList.toggle('score-pill-active',   isActive);
     btn.classList.toggle('score-pill-inactive', !hasContent && !isActive);
@@ -5992,6 +5989,7 @@ function _refreshBrowserContent() {
 
   _initConflictFilterPill();
 
+  // ── Left column: heading and intro ───────────────────────────────────────
   var h = document.getElementById('browserCompatHeading');
   if (h) {
     h.innerHTML = '';
@@ -6020,24 +6018,40 @@ function _refreshBrowserContent() {
     }
   }
 
-  // Clear overrides pill
-  var ft = document.getElementById('browserCompatFooter');
-  if (ft) ft.innerHTML = '';
-
-  var ul = document.getElementById('browserCompatList');
-  if (ul) {
-    ul.innerHTML = '';
-
-   // Auto-block standard conflicts on first encounter
-    d.keys.forEach(function(canonicalKey) {
-      if (!dismissedConflicts.has(canonicalKey)) {
-        dismissedConflicts.add(canonicalKey);
-      }
-    });
-    _saveCustomDismissedConflicts();
-    if (gameState !== 'playing' && gameState !== 'paused' && gameState !== 'readyToUnpause') {
-        questionPool = shuffleArray(buildPool());
+  // Auto-block standard conflicts on first encounter
+  d.keys.forEach(function(canonicalKey) {
+    if (!dismissedConflicts.has(canonicalKey)) {
+      dismissedConflicts.add(canonicalKey);
     }
+  });
+  _saveCustomDismissedConflicts();
+  if (gameState !== 'playing' && gameState !== 'paused' && gameState !== 'readyToUnpause') {
+    questionPool = shuffleArray(buildPool());
+  }
+
+  // Separate standard browser keys from user-found (diagnostic) keys
+  var BrowserConflictKeys = new Set(d.keys);
+  var UserFoundKeys = [];
+  dismissedConflicts.forEach(function(BlockedKey) {
+    if (!BrowserConflictKeys.has(BlockedKey)) UserFoundKeys.push(BlockedKey);
+  });
+
+  // ── Right column: tab-switched content ───────────────────────────────────
+  var ul        = document.getElementById('browserCompatList');
+  var foundPanel = document.getElementById('cfFoundSubPanel');
+  var foundList  = document.getElementById('cfFoundList');
+  var foundClear = document.getElementById('cfFoundClearWrap');
+  var foundEmpty = document.getElementById('cfFoundEmpty');
+
+  var showFound = (_activeConflictFilter === 'found');
+
+  // Toggle visibility of the two sub-areas
+  if (ul)         ul.style.display         = showFound ? 'none' : '';
+  if (foundPanel) foundPanel.style.display = showFound ? '' : 'none';
+
+  // ── Browser / OS / Keyboard tab: populate browserCompatList ──────────────
+  if (ul && !showFound) {
+    ul.innerHTML = '';
     d.labels.forEach(function(RawLabel, i) {
       var canonicalKey = d.keys[i];
       var isBlocked    = !touchEnabled && dismissedConflicts.has(canonicalKey);
@@ -6047,14 +6061,10 @@ function _refreshBrowserContent() {
       li.dataset.conflictKey = canonicalKey;
       li.style.cssText = 'margin-bottom:6px;display:flex;align-items:center;flex-wrap:nowrap;gap:0;line-height:1.6;cursor:pointer;';
       li.appendChild(_makeConflictRadio(canonicalKey));
-
       var label = document.createElement('span');
       label.className = 'conflict-label';
-
-      // Build chips from the symbol-translated shortcut string
       var ChipWrapper = _renderKeyChips(Parsed.displayShortcut);
       label.appendChild(ChipWrapper);
-
       if (Parsed.descriptor) {
         var DescEl = document.createElement('span');
         DescEl.className = 'conflict-desc';
@@ -6062,7 +6072,6 @@ function _refreshBrowserContent() {
         DescEl.textContent = Parsed.descriptor;
         label.appendChild(DescEl);
       }
-
       li.appendChild(label);
       li.addEventListener('click', function(e) {
         if (e.target.closest('.modal-radio')) return;
@@ -6070,57 +6079,57 @@ function _refreshBrowserContent() {
       });
       ul.appendChild(li);
     });
+  }
 
-    // Diagnostic-added entries (hidden when touch mode is active)
-    var BrowserConflictKeys = new Set(d.keys);
-    dismissedConflicts.forEach(function(BlockedKey) {
-      if (touchEnabled) return;
-      if (BrowserConflictKeys.has(BlockedKey)) return;
-      var li = document.createElement('li');
-      li.className = 'conflict-dismissed';
-      li.dataset.conflictKey = BlockedKey;
-      li.style.cssText = 'margin-bottom:6px;display:flex;align-items:center;flex-wrap:nowrap;gap:0;line-height:1.6;cursor:pointer;';
-      li.appendChild(_makeConflictRadio(BlockedKey));
+  // ── Found tab: clear button (above list) + user-found entries ────────────
+  if (showFound && foundList && foundClear && foundEmpty) {
+    foundList.innerHTML  = '';
+    foundClear.innerHTML = '';
 
-      var label = document.createElement('span');
-      label.className = 'conflict-label';
-      var ParsedDiagnosticLabel = _BuildBrowserConflictLabel(BlockedKey);
-      label.appendChild(_renderKeyChips(ParsedDiagnosticLabel.displayShortcut));
+    if (UserFoundKeys.length > 0 && !touchEnabled) {
+      // Clear button above the list
+      var ClearPill = document.createElement('div');
+      ClearPill.className = 'score-clear-pill';
+      ClearPill.style.cssText = 'margin-bottom:8px;flex-shrink:0;';
+      var ClearBtn = document.createElement('button');
+      ClearBtn.className = 'score-pill-seg score-pill-full';
+      ClearBtn.onclick = _clearconflictsOverrides;
+      ClearBtn.innerHTML = '<span class="diff-btn-text">clear overrides</span>';
+      ClearPill.appendChild(ClearBtn);
+      foundClear.appendChild(ClearPill);
 
-      var DescEl = document.createElement('span');
-      DescEl.className = 'conflict-desc';
-      DescEl.style.cssText = 'margin-left:5px;color:#6b7280;font-size:11px;vertical-align:middle;';
-      DescEl.textContent = 'user reported owned by OS/Browser/Plugin';
-      label.appendChild(DescEl);
-
-      li.appendChild(label);
-      li.addEventListener('click', function(e) {
-        if (e.target.closest('.modal-radio')) return;
-        li.querySelector('.modal-radio').click();
+      // User-found entries
+      UserFoundKeys.forEach(function(BlockedKey) {
+        var li = document.createElement('li');
+        li.className = 'conflict-dismissed';
+        li.dataset.conflictKey = BlockedKey;
+        li.style.cssText = 'margin-bottom:6px;display:flex;align-items:center;flex-wrap:nowrap;gap:0;line-height:1.6;cursor:pointer;';
+        li.appendChild(_makeConflictRadio(BlockedKey));
+        var label = document.createElement('span');
+        label.className = 'conflict-label';
+        var ParsedDiagnosticLabel = _BuildBrowserConflictLabel(BlockedKey);
+        label.appendChild(_renderKeyChips(ParsedDiagnosticLabel.displayShortcut));
+        var DescEl = document.createElement('span');
+        DescEl.className = 'conflict-desc';
+        DescEl.style.cssText = 'margin-left:5px;color:#6b7280;font-size:11px;vertical-align:middle;';
+        DescEl.textContent = 'user found';
+        label.appendChild(DescEl);
+        li.appendChild(label);
+        li.addEventListener('click', function(e) {
+          if (e.target.closest('.modal-radio')) return;
+          li.querySelector('.modal-radio').click();
+        });
+        foundList.appendChild(li);
       });
-      ul.appendChild(li);
-    });
+      foundEmpty.style.display = 'none';
+    } else {
+      // Empty state
+      foundEmpty.style.display = '';
+    }
   }
 
   _attachconflictsPanelKeypressVerifier();
-
-   var rightCol = document.querySelector('#panelConflicts .sp-col-right');
-  if (rightCol) {
-    var ExistingPill = rightCol.querySelector('.score-clear-pill:not(#cfFilterPill)');
-    if (ExistingPill) rightCol.removeChild(ExistingPill);
-    var HasOverrides = _hasconflictsOverrides();
-    var ClearPill = document.createElement('div');
-    ClearPill.className = 'score-clear-pill';
-    ClearPill.style.cssText = 'margin-top: 8px; flex-shrink: 0;';
-    var ClearBtn = document.createElement('button');
-    ClearBtn.className = 'score-pill-seg score-pill-full' + (HasOverrides ? '' : ' score-pill-inactive');
-    ClearBtn.onclick = HasOverrides ? _clearconflictsOverrides : null;
-    ClearBtn.innerHTML = '<span class="diff-btn-text">clear overrides</span>';
-    ClearPill.appendChild(ClearBtn);
-    rightCol.appendChild(ClearPill);
-  }
-  
-
+  _syncConflictFilterPillStyles();
 }
 // ── Unified icon click handlers ──────────────────────────────────────────────
 document.getElementById('kbIconWrap').addEventListener('pointerdown', function(e) {

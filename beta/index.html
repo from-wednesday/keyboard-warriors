@@ -12746,10 +12746,8 @@ function _applySkillset(skillsetLabel) {
     .map(function(app) { return app.label; });
   if (matching.length > 0) {
     appsShortList = matching;
-    if (appsShortList.indexOf(currentApp) === -1) {
-      currentApp = appsShortList[0];
-      try { localStorage.setItem('kw_app', currentApp); } catch(e) {}
-    }
+    currentApp = appsShortList[0];
+    try { localStorage.setItem('kw_app', currentApp); } catch(e) {}
     _saveAppsShortList();
     buildAppPill();
 

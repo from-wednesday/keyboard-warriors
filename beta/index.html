@@ -3890,7 +3890,8 @@ function _MakeAppPillCaretSvg() {
 
 
 function buildAppPill() {
-  appPillEl.innerHTML = '';
+    appPillEl,style.overflow = 'hidden';
+    appPillEl.innerHTML = '';
 
   if (AppPillWrenchOpen) {
     _buildWrenchPickerRows();

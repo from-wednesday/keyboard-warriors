@@ -4658,7 +4658,7 @@ function updateKbSizeToggle() {
   var cmpLabel = document.getElementById('kbSizeCompactLabel');
   if (extIcon)  extIcon.style.fill           = extendedColour;
   if (extLabel) { extLabel.style.color = extendedColour; extLabel.style.textDecoration = isCompact ? 'line-through' : ''; }
-  if (cmpIcon)  cmpIcon.style.fill           = compactColour;
+  if (cmpIcon)  cmpIcon.style.color          = compactColour;
   if (cmpLabel) { cmpLabel.style.color = compactColour; cmpLabel.style.textDecoration = isCompact ? '' : 'line-through'; }
 
   // Grey out and lock to compact when touch is enabled

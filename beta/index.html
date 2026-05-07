@@ -12664,169 +12664,27 @@ var SKILLSET_DEFS = [
 var currentSkillset   = 'Graphic Design';
 var skillsetPillOpen  = false;
 
-function _buildSkillsetPill() {
-  var pill = document.getElementById('skillsetPill');
-  if (!pill) return;
-
-  // Render the selected label in the closed pill
-  pill.innerHTML = '';
-  var selectedRow = document.createElement('div');
-  selectedRow.style.cssText = "display:flex;align-items:center;height:24px;line-height:1;font-family:'Lato',system-ui,sans-serif;font-size:12px;color:#6b7280;font-weight:500;white-space:nowrap;box-sizing:border-box;cursor:pointer;padding:0 2px;";
-  var caretCol = document.createElement('span');
-  caretCol.style.cssText = 'flex-shrink:0;width:22px;display:flex;align-items:center;justify-content:center;';
-  var caretSvg = document.createElementNS('http://www.w3.org/2000/svg','svg');
-  caretSvg.setAttribute('viewBox','0 0 7 7'); caretSvg.setAttribute('width','7'); caretSvg.setAttribute('height','7');
-  caretSvg.setAttribute('fill','currentColor');
-  caretSvg.style.cssText = 'display:block;color:#9ca3af;flex-shrink:0;transition:transform 0.2s ease;transform:' + (skillsetPillOpen ? 'rotate(90deg)' : 'none') + ';';
-  var cp = document.createElementNS('http://www.w3.org/2000/svg','path'); cp.setAttribute('d','M1.5 1 L6 3.5 L1.5 6 Z');
-  caretSvg.appendChild(cp); caretCol.appendChild(caretSvg);
-  var labelCol = document.createElement('span'); labelCol.style.cssText = 'flex:1;text-align:left;'; labelCol.textContent = currentSkillset;
-  selectedRow.appendChild(caretCol); selectedRow.appendChild(labelCol);
-  pill.appendChild(selectedRow);
-
-  // If open, render a floating dropdown
-  var existingDrop = document.getElementById('skillsetDrop');
-  if (existingDrop) existingDrop.remove();
-
-  if (skillsetPillOpen) {
-    var drop = document.createElement('div');
-    drop.id = 'skillsetDrop';
-    var pillRect = document.getElementById('skillsetPill').getBoundingClientRect();
-    var dropHeight = SKILLSET_DEFS.length * 24;
-    drop.style.cssText = 'position:fixed;left:' + pillRect.left + 'px;top:' + (pillRect.top + pillRect.height / 2 - dropHeight / 2) + 'px;width:' + pillRect.width + 'px;background:white;border:1.5px solid #9ca3af;border-radius:10px;overflow:hidden;z-index:601;box-shadow:0 4px 12px rgba(0,0,0,0.12);';
-    document.body.appendChild(drop);
-    SKILLSET_DEFS.forEach(function(def) {
-      var isSelected = (def.label === currentSkillset);
-      var row = document.createElement('div');
-      row.style.cssText = "display:flex;align-items:center;height:24px;line-height:1;font-family:'Lato',system-ui,sans-serif;font-size:12px;color:" + (isSelected ? '#6b7280':'#9ca3af') + ";font-weight:" + (isSelected ? '500':'400') + ";white-space:nowrap;box-sizing:border-box;cursor:pointer;padding:0 2px;";
-      row.addEventListener('mouseenter', function() { row.style.background = '#f0f9ff'; row.style.color = '#374151'; });
-      row.addEventListener('mouseleave',  function() { row.style.background = ''; row.style.color = isSelected ? '#6b7280':'#9ca3af'; });
-      var c2 = document.createElement('span'); c2.style.cssText = 'flex-shrink:0;width:22px;display:flex;align-items:center;justify-content:center;';
-      var s2 = document.createElementNS('http://www.w3.org/2000/svg','svg');
-      s2.setAttribute('viewBox','0 0 7 7'); s2.setAttribute('width','7'); s2.setAttribute('height','7'); s2.setAttribute('fill','currentColor');
-      s2.style.cssText = 'display:block;color:#9ca3af;opacity:' + (isSelected ? '1':'0') + ';';
-      var p2 = document.createElementNS('http://www.w3.org/2000/svg','path'); p2.setAttribute('d','M1.5 1 L6 3.5 L1.5 6 Z');
-      s2.appendChild(p2); c2.appendChild(s2);
-      var l2 = document.createElement('span'); l2.style.cssText='flex:1;text-align:left;'; l2.textContent = def.label;
-      row.appendChild(c2); row.appendChild(l2);
-      row.addEventListener('click', function(e) {
-        e.stopPropagation();
-        currentSkillset = def.label;
-        _applySkillset(def.label);
-        var _exclusive = appsShortList.find(function(l) {
-          var _entry = appsLongList.find(function(a) { return a.label === l; });
-          return _entry && Array.isArray(_entry.skillset) && _entry.skillset.length === 1;
-        });
-        currentApp = _exclusive || appsShortList[0];
-        try { localStorage.setItem('kw_app', currentApp); } catch (StorageError) {}
-        buildAppPill();
-        _closeSkillsetPill();
-        appPillEl.style.overflow = 'visible';
-        pulseBtn(appPillEl);
-        appPillEl.addEventListener('animationend', function _pillPulseEnd() {
-          appPillEl.style.overflow = '';
-          appPillEl.removeEventListener('animationend', _pillPulseEnd);
-        });
-        // Show the welcome caret now that a selection has been made
-        var wCaret = document.getElementById('welcomeDifficultyCaretEl');
-        if (wCaret) wCaret.style.visibility = '';
-        _moveDifficultyCaretToMode(currentDifficulty);
-      });
-      drop.appendChild(row);
-    });
-  }
-}
-
-function _applySkillset(skillsetLabel) {
-  var def = SKILLSET_DEFS.find(function(d) { return d.label === skillsetLabel; });
-  if (!def || appsLongList.length === 0) return;
-  var matching = appsLongList
-    .filter(function(app) {
-      if (!Array.isArray(app.skillset)) return false;
-      return def.tags.some(function(tag) { return app.skillset.indexOf(tag) !== -1; });
-    })
-    .map(function(app) { return app.label; });
-  if (matching.length > 0) {
-    appsShortList = matching;
-      currentApp = appsShortList[0];
-      try { localStorage.setItem('kw_app', currentApp); } catch(e) {}
-    _saveAppsShortList();
-    buildAppPill();
-
-    // If the app pill is currently open, resize it to fit the new shortlist
-    if (appPillEl.classList.contains('open') && !AppPillWrenchOpen) {
-      var newHeight = _AppPillMeasureNaturalHeight();
-      var pillRect  = appPillEl.getBoundingClientRect();
-      var geometry  = _AppPillCalculateOpenGeometry(newHeight, pillRect);
-      _AppPillAnimateTo(newHeight, geometry.TranslateY, geometry.SpacerHeight);
-  }
-  }
-  runData.length = 0; lastCompletedReport = null; CoachAdviceAccepted = false;
-}
-
-function skillsetPillClick(ClickEvent) {
-  if (ClickEvent) ClickEvent.stopPropagation();
-  if (skillsetPillOpen) { _closeSkillsetPill(); return; }
-  _openSkillsetPill();
-}
-
-function _openSkillsetPill() {
-  skillsetPillOpen = true;
-  _buildSkillsetPill();
-  setTimeout(function() {
-    document.addEventListener('click', function handler(e) {
-    var pill = document.getElementById('skillsetPill');
-    if (pill && !pill.contains(e.target)) {
-    _closeSkillsetPill();
-    document.removeEventListener('click', handler);
-          }
-        });
-      }, 0);
-    }
-
-function _closeSkillsetPill() {
-  skillsetPillOpen = false;
-  var existingDrop = document.getElementById('skillsetDrop');
-  if (existingDrop) existingDrop.remove();
-  _buildSkillsetPill();
-}
-
-
-var _skillsetPillInitialised = false;
-
-function _resolvePreferredSkillset() {
-  var HardwiredDefault = 'Graphic Design';
-  var StoredPreference = null;
-  try { StoredPreference = localStorage.getItem('kw_preferred_skillset'); } catch (StorageError) {}
-
-  var UrlParamMatch = null;
-  try {
-    var UrlParameters = new URLSearchParams(window.location.search);
-    var UrlSkillsetParam = UrlParameters.get('skillset');
-    if (UrlSkillsetParam) {
-      var MatchedDefinition = SKILLSET_DEFS.find(function(Definition) {
-        return Definition.label.toLowerCase() === UrlSkillsetParam.toLowerCase() ||
-               Definition.tags.some(function(Tag) { return Tag.toLowerCase() === UrlSkillsetParam.toLowerCase(); });
-      });
-      if (MatchedDefinition) UrlParamMatch = MatchedDefinition.label;
-    }
-  } catch (UrlError) {}
-
-  try {
+try {
     if (UrlParamMatch) {
       try { localStorage.setItem('kw_preferred_skillset', UrlParamMatch); } catch (StorageError) {}
       return UrlParamMatch;
     }
   } catch(e) {}
 
-function _initSkillsetPillAfterAppsLoad() {
-  if (_skillsetPillInitialised) return;
-  _skillsetPillInitialised = true;
+  // No param: use stored preference, or fall back to hardwired default
+  if (StoredPreference) {
+    var IsValidPreference = SKILLSET_DEFS.some(function(Definition) {
+      return Definition.label === StoredPreference;
+    });
+    if (IsValidPreference) return StoredPreference;
+  }
 
-  currentSkillset = _resolvePreferredSkillset();
-  _applySkillset(currentSkillset);
-  _buildSkillsetPill();
+  // First visit with no param: store the hardwired default
+  try { localStorage.setItem('kw_preferred_skillset', HardwiredDefault); } catch (StorageError) {}
+  return HardwiredDefault;
 }
+
+function _initSkillsetPillAfterAppsLoad() {
 </script>
 </body>
 </html>

@@ -5972,7 +5972,11 @@ function _initConflictFilterPill() {
 function setConflictFilter(filter) {
   _activeConflictFilter = filter;
   _syncConflictFilterPillStyles();
-  _refreshBrowserContent();
+  if (filter === 'keyboard') {
+    _renderKeyboardConflictTab();
+  } else {
+    _refreshBrowserContent();
+  }
 }
 
 function _syncConflictFilterPillStyles() {
@@ -6203,6 +6207,84 @@ function _refreshBrowserContent() {
   _attachconflictsPanelKeypressVerifier();
   _syncConflictFilterPillStyles();
 }
+function _renderKeyboardConflictTab() {
+  var ul = document.getElementById('browserCompatList');
+  if (!ul) return;
+  ul.innerHTML = '';
+  ul.style.cssText = 'display:grid;grid-template-columns:1fr 1fr;column-gap:16px;row-gap:0;list-style:none;padding:0;margin:0;overflow:visible;';
+
+  // Left column: navigation cluster, Right column: utility keys
+  // [token, display label, column: 'left'|'right']
+  var EXTENDED_KEYS = [
+    ['HOME',        '↖ home',       'left'],
+    ['END',         '↘ end',        'left'],
+    ['PAGEUP',      '⇞ page up',    'left'],
+    ['PAGEDOWN',    '⇟ page down',  'left'],
+    ['DELETE',      '⌦ delete',     'left'],
+    ['INSERT',      'INSERT',       'right'],
+    ['PRINTSCREEN', 'PRINTSCREEN',  'right'],
+    ['SCROLLLOCK',  'SCROLLLOCK',   'right'],
+    ['PAUSE',       'PAUSE',        'right'],
+    ['NUMLOCK',     currentOs === 'mac' ? 'CLEAR' : 'NUMLOCK', 'right'],
+  ];
+
+  // Build left items first, then right, so grid auto-flow fills correctly
+  var left  = EXTENDED_KEYS.filter(function(k) { return k[2] === 'left';  });
+  var right = EXTENDED_KEYS.filter(function(k) { return k[2] === 'right'; });
+
+  // Interleave: left[0], right[0], left[1], right[1] etc. so CSS grid rows align
+  var maxLen = Math.max(left.length, right.length);
+  for (var i = 0; i < maxLen; i++) {
+    [left[i], right[i]].forEach(function(entry) {
+      if (!entry) {
+        // Empty cell to keep grid aligned
+        var empty = document.createElement('li');
+        ul.appendChild(empty);
+        return;
+      }
+      var token      = entry[0];
+      var labelText  = entry[1];
+      var isBlocked  = !touchEnabled && dismissedConflicts.has(token);
+      var masterOff  = !hasFullKeyboard || touchEnabled; // master switch disables all
+
+      var li = document.createElement('li');
+      li.className = isBlocked ? 'conflict-dismissed' : '';
+      li.dataset.conflictKey = token;
+      li.style.cssText = 'display:flex;align-items:center;margin-bottom:6px;cursor:pointer;line-height:1.6;';
+      if (masterOff) {
+        li.style.opacity = '0.4';
+        li.style.pointerEvents = 'none';
+      }
+
+      li.appendChild(_makeConflictRadio(token));
+
+      var chip = document.createElement('span');
+      chip.style.cssText = [
+        'display:inline-block',
+        'font-family:inherit',
+        'font-size:10px',
+        'font-weight:600',
+        'color:#1e3a5f',
+        'border:1px solid #d1d5db',
+        'border-radius:3px',
+        'padding:1px 4px 0',
+        'line-height:1.6',
+        'white-space:nowrap',
+        'vertical-align:middle',
+        isBlocked ? '' : 'background:#f3f4f6;box-shadow:0 1.5px 0 #c9cdd3',
+      ].join(';');
+      chip.textContent = labelText;
+
+      li.appendChild(chip);
+      li.addEventListener('click', function(e) {
+        if (e.target.closest('.modal-radio')) return;
+        li.querySelector('.modal-radio').click();
+      });
+      ul.appendChild(li);
+    });
+  }
+}
+
 // ── Unified icon click handlers ──────────────────────────────────────────────
 document.getElementById('kbIconWrap').addEventListener('pointerdown', function(e) {
   e.stopPropagation();
@@ -12852,7 +12934,12 @@ function _applySkillset(skillsetLabel) {
     .map(function(app) { return app.label; });
   if (matching.length > 0) {
     appsShortList = matching;
-    currentApp = appsShortList[0];
+    var defaultApp = matching.find(function(label) {
+      var entry = appsLongList.find(function(a) { return a.label === label; });
+      return entry && Array.isArray(entry.skillset) && entry.skillset[0] &&
+             def.tags.indexOf(entry.skillset[0]) !== -1;
+    });
+    currentApp = defaultApp || matching[0];
     try { localStorage.setItem('kw_app', currentApp); } catch(e) {}
     _saveAppsShortList();
     buildAppPill();

@@ -5981,13 +5981,9 @@ function setConflictFilter(filter) {
 
 function _syncConflictFilterPillStyles() {
   var btnIds = { os: 'cfBtnOs', browser: 'cfBtnBrowser', found: 'cfBtnFound', keyboard: 'cfBtnKeyboard' };
-  var hasKeyboard = hasFullKeyboard;
-  Object.keys(btnIds).forEach(function(f) {
-    var btn = document.getElementById(btnIds[f]);
-    if (!btn) return;
-    var isActive = (f === _activeConflictFilter);
-    var hasContent = (f === 'os') || (f === 'browser') || (f === 'found')
-      || (f === 'keyboard' && hasKeyboard);
+  var hasContent = (f === 'os') || (f === 'browser')
+  || (f === 'found'    && hasFound)
+  || (f === 'keyboard');
     btn.classList.toggle('score-pill-active',   isActive);
     btn.classList.toggle('score-pill-inactive', !hasContent && !isActive);
   });
@@ -6000,6 +5996,9 @@ function _refreshBrowserContent() {
   var knownBrowser = (bname !== 'your browser');
 
   _initConflictFilterPill();
+
+  ul.classList.remove('keyboard-tab-active');
+  ul.style.cssText = '';
 
   // ── Left column: heading and intro ───────────────────────────────────────
   var h = document.getElementById('browserCompatHeading');
@@ -6211,7 +6210,8 @@ function _renderKeyboardConflictTab() {
   var ul = document.getElementById('browserCompatList');
   if (!ul) return;
   ul.innerHTML = '';
-  ul.style.cssText = 'display:grid;grid-template-columns:1fr 1fr;column-gap:16px;row-gap:0;list-style:none;padding:0;margin:0;overflow:visible;';
+ul.innerHTML = '';
+ul.classList.add('keyboard-tab-active');
 
   // Left column: navigation cluster, Right column: utility keys
   // [token, display label, column: 'left'|'right']
@@ -12930,7 +12930,7 @@ function _applySkillset(skillsetLabel) {
     .filter(function(app) {
       if (!Array.isArray(app.skillset)) return false;
       return def.tags.some(function(tag) { return app.skillset.indexOf(tag) !== -1; });
-    })
+    })<a href="index.html">beta</a>
     .map(function(app) { return app.label; });
   if (matching.length > 0) {
     appsShortList = matching;

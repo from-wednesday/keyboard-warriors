@@ -888,6 +888,15 @@ body.kb-at-edge #keyboardPanel #kb-shadow {
   cursor: pointer;
 }
 
+#browserCompatList.keyboard-tab-active {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  column-gap: 16px;
+}
+#browserCompatList.keyboard-tab-active li {
+  break-inside: avoid;
+}
+
 /* ── Page switch wipe animation ──────────────────── */
 @keyframes spWipeIn {
   from { opacity: 0; transform: translateY(12px); }

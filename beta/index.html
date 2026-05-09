@@ -6266,8 +6266,7 @@ function _renderKeyboardConflictTab(container) {
     keyEl.textContent = k.label;
     _cfApplyKeyStyle(keyEl, isBlocked);
 
-    keyEl.addEventListener('mousedown', function(e) {
-      e.preventDefault();
+    keyEl.addEventListener('mousedown', function() {
       var willBeBlocked = keyEl.dataset.blocked !== '1';
       if (willBeBlocked) {
         keyEl.style.background = '#f97316';

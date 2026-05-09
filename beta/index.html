@@ -6193,115 +6193,99 @@ function _renderKeyboardConflictTab(container) {
   intro.textContent = 'Specify exactly which extended keyboard keys you have:';
   panel.appendChild(intro);
 
-  // ── Key grid — mirrors the physical extended keyboard cluster ────────────
-  // Row 1: utility keys (4 cols, all standalone — full 3px rounding)
-  // Rows 2+3: nav cluster (3 cols) — each column is a vertically joined pair:
-  //   top key  → border-radius: 3px 3px 0 0  (square bottom corners)
-  //   bottom key → border-radius: 0 0 3px 3px  (square top corners)
-  //   no gap between top and bottom; the column gap provides spacing between pairs.
-
-  var utilRow = [
-    { token: 'NumLock',     label: currentOs === 'mac' ? 'CLEAR' : 'NUM LK', pairPos: 'solo' },
-    { token: 'PrintScreen', label: 'PRT SC',   pairPos: 'solo' },
-    { token: 'ScrollLock',  label: 'SCR LK',   pairPos: 'solo' },
-    { token: 'Pause',       label: 'PAUSE',    pairPos: 'solo' },
+  // ── Key-pair grid ─────────────────────────────────────────────────────────
+  // Keys use browser e.key codes (matching dismissedConflicts storage).
+  // Layout: 5 pairs across 3 columns (wraps to 2 rows of 3 + 1 row of 2).
+  // Each pair = top-half + bottom-half sharing one flat join edge.
+  // Outer corners: 3px. Inner join corners: 0px (perfectly square).
+  var KEY_PAIRS = [
+    ['Home',        '↖ home',   'End',        '↘ end'       ],
+    ['PageUp',      '⇞ pg up',  'PageDown',   '⇟ pg dn'     ],
+    ['Insert',      'INSERT',   'Delete',     '⌦ delete'    ],
+    ['PrintScreen', 'PRT SC',   'ScrollLock', 'SCR LK'      ],
+    ['Pause',       'PAUSE',    'NumLock',    currentOs === 'mac' ? 'CLEAR' : 'NUM LK'],
   ];
-  var navTopRow = [
-    { token: 'Insert',   label: 'INSERT',   pairPos: 'top' },
-    { token: 'Home',     label: '↖ home',   pairPos: 'top' },
-    { token: 'PageUp',   label: '⇞ pg up',  pairPos: 'top' },
-  ];
-  var navBotRow = [
-    { token: 'Delete',   label: '⌦ delete', pairPos: 'bottom' },
-    { token: 'End',      label: '↘ end',    pairPos: 'bottom' },
-    { token: 'PageDown', label: '⇟ pg dn',  pairPos: 'bottom' },
-  ];
-
-  function _makeKeyEl(k) {
-    var isBlocked = !touchEnabled && dismissedConflicts.has(k.token);
-    var keyEl = document.createElement('div');
-    keyEl.dataset.token   = k.token;
-    keyEl.dataset.blocked = isBlocked ? '1' : '0';
-    keyEl.dataset.pairPos = k.pairPos;
-    var r = k.pairPos === 'top' ? '3px 3px 0 0'
-          : k.pairPos === 'bottom' ? '0 0 3px 3px'
-          : '3px';
-    keyEl.style.cssText = [
-      'border-radius:' + r,
-      'padding:5px 4px',
-      'text-align:center',
-      'font-size:9px',
-      'font-weight:700',
-      'font-family:inherit',
-      'cursor:pointer',
-      'user-select:none',
-      'transition:background 0.08s,color 0.08s,box-shadow 0.08s',
-      'line-height:1.3',
-      'min-height:22px',
-      'display:flex',
-      'align-items:center',
-      'justify-content:center',
-      'white-space:nowrap',
-    ].join(';');
-    keyEl.textContent = k.label;
-    _cfApplyKeyStyle(keyEl, isBlocked);
-
-    keyEl.addEventListener('pointerdown', function(e) {
-      e.preventDefault();
-      var willBeBlocked = keyEl.dataset.blocked !== '1';
-      if (willBeBlocked) {
-        keyEl.style.background = '#f97316';
-        keyEl.style.color      = 'white';
-        keyEl.style.boxShadow  = 'inset 0 0 0 1px #c2410c,0 0 6px rgba(249,115,22,0.35)';
-      } else {
-        keyEl.style.background = '#10b981';
-        keyEl.style.color      = 'white';
-        keyEl.style.boxShadow  = 'inset 0 0 0 1px #059669,0 0 6px rgba(16,185,129,0.35)';
-      }
-    });
-
-    function _commitToggle() {
-      var nowBlocked = !dismissedConflicts.has(k.token);
-      dismissedConflicts[nowBlocked ? 'add' : 'delete'](k.token);
-      kbKeyOverrides.add(k.token);
-      _saveCustomDismissedConflicts();
-      _saveKbKeyOverrides();
-      if (gameState !== 'playing' && gameState !== 'paused' && gameState !== 'readyToUnpause') {
-        questionPool = shuffleArray(buildPool());
-      }
-      _syncConflictFilterPillStyles();
-      keyEl.dataset.blocked = nowBlocked ? '1' : '0';
-      _cfApplyKeyStyle(keyEl, nowBlocked);
-      showToast(nowBlocked ? 'Key blocked' : 'Key available');
-    }
-    keyEl.addEventListener('pointerup',    _commitToggle);
-    keyEl.addEventListener('pointerleave', function() {
-      _cfApplyKeyStyle(keyEl, dismissedConflicts.has(k.token));
-    });
-    return keyEl;
-  }
-
-  // Utility row — 4 equal columns, all solo keys
-  var utilGrid = document.createElement('div');
-  utilGrid.style.cssText = 'display:grid;grid-template-columns:repeat(4,1fr);gap:' + GAP + ';margin-bottom:' + GAP + ';';
-  utilRow.forEach(function(k) { utilGrid.appendChild(_makeKeyEl(k)); });
-
-  // Nav cluster — 3 columns of joined pairs (no gap within a pair, gap between columns)
-  var navGrid = document.createElement('div');
-  navGrid.style.cssText = 'display:grid;grid-template-columns:repeat(3,1fr);gap:' + GAP + ';';
-  for (var i = 0; i < 3; i++) {
-    var col = document.createElement('div');
-    col.style.cssText = 'display:flex;flex-direction:column;gap:0;';
-    col.appendChild(_makeKeyEl(navTopRow[i]));
-    col.appendChild(_makeKeyEl(navBotRow[i]));
-    navGrid.appendChild(col);
-  }
 
   var grid = document.createElement('div');
-  grid.style.marginBottom = '10px';
+  grid.style.cssText = 'display:grid;grid-template-columns:repeat(3,1fr);gap:' + GAP + ';margin-bottom:10px;';
   if (masterOff) { grid.style.opacity = '0.45'; grid.style.pointerEvents = 'none'; }
-  grid.appendChild(utilGrid);
-  grid.appendChild(navGrid);
+
+  KEY_PAIRS.forEach(function(pair) {
+    var pairWrap = document.createElement('div');
+    pairWrap.style.cssText = 'display:flex;flex-direction:column;gap:0;';
+
+    [
+      { token: pair[0], label: pair[1], isTop: true  },
+      { token: pair[2], label: pair[3], isTop: false }
+    ].forEach(function(k) {
+      var isBlocked = !touchEnabled && dismissedConflicts.has(k.token);
+      var keyEl = document.createElement('div');
+      keyEl.dataset.token   = k.token;
+      keyEl.dataset.blocked = isBlocked ? '1' : '0';
+      keyEl.dataset.isTop   = k.isTop ? '1' : '0';
+      // Outer corners 3px, inner join corners 0px
+      var radius = k.isTop ? '3px 3px 0 0' : '0 0 3px 3px';
+      // Separator line between top and bottom uses a slightly darker inner border tint
+      var borderBottom = k.isTop  ? 'border-bottom:1px solid rgba(0,0,0,0.08);' : '';
+      keyEl.style.cssText = [
+        'border-radius:' + radius,
+        'padding:5px 3px',
+        'text-align:center',
+        'font-size:9px',
+        'font-weight:700',
+        'font-family:inherit',
+        'cursor:pointer',
+        'user-select:none',
+        'transition:background 0.08s,color 0.08s,box-shadow 0.08s',
+        'line-height:1.3',
+        'min-height:22px',
+        'display:flex',
+        'align-items:center',
+        'justify-content:center',
+        borderBottom,
+      ].join(';');
+      _cfApplyKeyStyle(keyEl, isBlocked);
+
+      keyEl.addEventListener('pointerdown', function(e) {
+        e.preventDefault();
+        // Flash full-strength preview of the new state (what it will become on release)
+        var willBeBlocked = keyEl.dataset.blocked !== '1';
+        if (willBeBlocked) {
+          keyEl.style.background = '#f97316';
+          keyEl.style.color      = 'white';
+          keyEl.style.boxShadow  = 'inset 0 0 0 1px #c2410c,0 0 6px rgba(249,115,22,0.4)';
+        } else {
+          keyEl.style.background = '#10b981';
+          keyEl.style.color      = 'white';
+          keyEl.style.boxShadow  = 'inset 0 0 0 1px #059669,0 0 6px rgba(16,185,129,0.4)';
+        }
+      });
+
+      function _commitToggle() {
+        var nowBlocked = !dismissedConflicts.has(k.token);
+        dismissedConflicts[nowBlocked ? 'add' : 'delete'](k.token);
+        kbKeyOverrides.add(k.token);
+        _saveCustomDismissedConflicts();
+        _saveKbKeyOverrides();
+        if (gameState !== 'playing' && gameState !== 'paused' && gameState !== 'readyToUnpause') {
+          questionPool = shuffleArray(buildPool());
+        }
+        _syncConflictFilterPillStyles();
+        keyEl.dataset.blocked = nowBlocked ? '1' : '0';
+        _cfApplyKeyStyle(keyEl, nowBlocked);
+        showToast(nowBlocked ? 'Key blocked' : 'Key available');
+      }
+
+      keyEl.addEventListener('pointerup', _commitToggle);
+      keyEl.addEventListener('pointerleave', function() {
+        _cfApplyKeyStyle(keyEl, dismissedConflicts.has(k.token));
+      });
+
+      pairWrap.appendChild(keyEl);
+    });
+
+    grid.appendChild(pairWrap);
+  });
 
   panel.appendChild(grid);
 

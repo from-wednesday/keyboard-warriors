@@ -6413,18 +6413,20 @@ function _renderKeyboardConflictTab(container) {
 // Available (unblocked) = green tint. Blocked = orange tint.
 // At rest: 50% strength via semi-transparent background on a light base.
 function _cfApplyKeyStyle(keyEl, isBlocked) {
-  var isTop = keyEl.dataset.isTop === '1';
+  var pairPos = keyEl.dataset.pairPos; // 'top', 'bottom', or 'solo'
+  var isTop   = (pairPos === 'top');
+  var isBot   = (pairPos === 'bottom');
   if (isBlocked) {
-    keyEl.style.background  = 'rgba(249,115,22,0.14)';
-    keyEl.style.color       = '#9a3412';
-    keyEl.style.boxShadow   = isTop ? '' : '0 1.5px 0 rgba(194,65,12,0.4)';
-    keyEl.style.border      = '1px solid rgba(249,115,22,0.4)';
+    keyEl.style.background = 'rgba(249,115,22,0.14)';
+    keyEl.style.color      = '#9a3412';
+    keyEl.style.border     = '1px solid rgba(249,115,22,0.4)';
+    keyEl.style.boxShadow  = isBot ? '0 1.5px 0 rgba(194,65,12,0.4)' : '';
     if (isTop) keyEl.style.borderBottom = '1px solid rgba(0,0,0,0.08)';
   } else {
-    keyEl.style.background  = 'rgba(16,185,129,0.12)';
-    keyEl.style.color       = '#065f46';
-    keyEl.style.boxShadow   = isTop ? '' : '0 1.5px 0 rgba(5,150,105,0.4)';
-    keyEl.style.border      = '1px solid rgba(16,185,129,0.35)';
+    keyEl.style.background = 'rgba(16,185,129,0.12)';
+    keyEl.style.color      = '#065f46';
+    keyEl.style.border     = '1px solid rgba(16,185,129,0.35)';
+    keyEl.style.boxShadow  = isBot ? '0 1.5px 0 rgba(5,150,105,0.4)' : '';
     if (isTop) keyEl.style.borderBottom = '1px solid rgba(0,0,0,0.08)';
   }
 }

@@ -6372,7 +6372,7 @@ function _renderKeyboardConflictTab(container) {
     if (!inp) return;
     // checked = compact (same polarity as modalKbSizeToggle)
     inp.checked = !hasFullKeyboard;
-    if (knob) knob.style.transform = hasFullKeyboard ? 'translateX(22px)' : 'translateX(0)';
+    if (knob) knob.style.transform = hasFullKeyboard ? 'translateX(0)' : 'translateX(22px)';
     var activeCol   = '#374151';
     var inactiveCol = '#9ca3af';
     var extActive   = hasFullKeyboard;

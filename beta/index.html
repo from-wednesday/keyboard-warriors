@@ -6088,11 +6088,12 @@ function _refreshBrowserContent() {
     questionPool = shuffleArray(buildPool());
   }
 
-  // Separate standard browser keys from user-found (diagnostic) keys
+  // Separate standard browser keys from user-found (diagnostic) keys.
+  // Also exclude extended keyboard keys — those are managed in the keyboard tab.
   var BrowserConflictKeys = new Set(d.keys);
   var UserFoundKeys = [];
   dismissedConflicts.forEach(function(BlockedKey) {
-    if (!BrowserConflictKeys.has(BlockedKey)) UserFoundKeys.push(BlockedKey);
+    if (!BrowserConflictKeys.has(BlockedKey) && !ExtendedKeyCodeToToken[BlockedKey]) UserFoundKeys.push(BlockedKey);
   });
 
   // ── Right column: tab-switched content ───────────────────────────────────
@@ -6265,7 +6266,7 @@ function _renderKeyboardConflictTab(container) {
     keyEl.textContent = k.label;
     _cfApplyKeyStyle(keyEl, isBlocked);
 
-    keyEl.addEventListener('pointerdown', function(e) {
+    keyEl.addEventListener('mousedown', function(e) {
       e.preventDefault();
       var willBeBlocked = keyEl.dataset.blocked !== '1';
       if (willBeBlocked) {
@@ -6293,8 +6294,8 @@ function _renderKeyboardConflictTab(container) {
       _cfApplyKeyStyle(keyEl, nowBlocked);
       showToast(nowBlocked ? 'Key blocked' : 'Key available');
     }
-    keyEl.addEventListener('pointerup',    _commitToggle);
-    keyEl.addEventListener('pointerleave', function() {
+    keyEl.addEventListener('click', _commitToggle);
+    keyEl.addEventListener('mouseleave', function() {
       _cfApplyKeyStyle(keyEl, dismissedConflicts.has(k.token));
     });
     return keyEl;
@@ -6417,17 +6418,17 @@ function _cfApplyKeyStyle(keyEl, isBlocked) {
   var isTop   = (pairPos === 'top');
   var isBot   = (pairPos === 'bottom');
   if (isBlocked) {
-    keyEl.style.background = 'rgba(249,115,22,0.14)';
-    keyEl.style.color      = '#9a3412';
-    keyEl.style.border     = '1px solid rgba(249,115,22,0.4)';
-    keyEl.style.boxShadow  = isBot ? '0 1.5px 0 rgba(194,65,12,0.4)' : '';
-    if (isTop) keyEl.style.borderBottom = '1px solid rgba(0,0,0,0.08)';
+    keyEl.style.background   = 'rgba(249,115,22,0.14)';
+    keyEl.style.color        = '#9a3412';
+    keyEl.style.border       = '1px solid rgba(249,115,22,0.4)';
+    keyEl.style.borderBottom = isTop ? '1px solid rgba(0,0,0,0.08)' : '1px solid rgba(249,115,22,0.4)';
+    keyEl.style.boxShadow    = isBot ? '0 1.5px 0 rgba(194,65,12,0.4)' : '';
   } else {
-    keyEl.style.background = 'rgba(16,185,129,0.12)';
-    keyEl.style.color      = '#065f46';
-    keyEl.style.border     = '1px solid rgba(16,185,129,0.35)';
-    keyEl.style.boxShadow  = isBot ? '0 1.5px 0 rgba(5,150,105,0.4)' : '';
-    if (isTop) keyEl.style.borderBottom = '1px solid rgba(0,0,0,0.08)';
+    keyEl.style.background   = 'rgba(16,185,129,0.12)';
+    keyEl.style.color        = '#065f46';
+    keyEl.style.border       = '1px solid rgba(16,185,129,0.35)';
+    keyEl.style.borderBottom = isTop ? '1px solid rgba(0,0,0,0.08)' : '1px solid rgba(16,185,129,0.35)';
+    keyEl.style.boxShadow    = isBot ? '0 1.5px 0 rgba(5,150,105,0.4)' : '';
   }
 }
 

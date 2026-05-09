@@ -5980,11 +5980,26 @@ function setConflictFilter(filter) {
 }
 
 function _syncConflictFilterPillStyles() {
-  var btnIds = { os: 'cfBtnOs', browser: 'cfBtnBrowser', found: 'cfBtnFound', keyboard: 'cfBtnKeyboard' };
-  var hasContent = (f === 'os') || (f === 'browser')
-  || (f === 'found'    && hasFound)
-  || (f === 'keyboard');
-    btn.classList.toggle('score-pill-active',   isActive);
+  var btnIds = {
+    os: 'cfBtnOs',
+    browser: 'cfBtnBrowser',
+    found: 'cfBtnFound',
+    keyboard: 'cfBtnKeyboard'
+  };
+
+  Object.keys(btnIds).forEach(function (f) {
+    var btn = document.getElementById(btnIds[f]);
+    if (!btn) return;
+
+    var isActive = _activeConflictFilter === f;
+
+    var hasContent =
+      (f === 'os') ||
+      (f === 'browser') ||
+      (f === 'found' && hasFound) ||
+      (f === 'keyboard');
+
+    btn.classList.toggle('score-pill-active', isActive);
     btn.classList.toggle('score-pill-inactive', !hasContent && !isActive);
   });
 }

@@ -888,15 +888,6 @@ body.kb-at-edge #keyboardPanel #kb-shadow {
   cursor: pointer;
 }
 
-#browserCompatList.keyboard-tab-active {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  column-gap: 16px;
-}
-#browserCompatList.keyboard-tab-active li {
-  break-inside: avoid;
-}
-
 /* ── Page switch wipe animation ──────────────────── */
 @keyframes spWipeIn {
   from { opacity: 0; transform: translateY(12px); }
@@ -1955,8 +1946,8 @@ li.conflict-dismissed .conflict-desc {
   display: flex;
   align-items: center;
   justify-content: center;
-  min-height: 28px;
-  padding: 3px 0;
+  min-height: 32px;
+  padding: 7px 0;
   font-family: 'Lato', system-ui, sans-serif;
   font-size: 12px;
   font-weight: 600;

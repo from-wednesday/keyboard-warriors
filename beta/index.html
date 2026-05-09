@@ -5972,11 +5972,7 @@ function _initConflictFilterPill() {
 function setConflictFilter(filter) {
   _activeConflictFilter = filter;
   _syncConflictFilterPillStyles();
-  if (filter === 'keyboard') {
-    _renderKeyboardConflictTab();
-  } else {
-    _refreshBrowserContent();
-  }
+  _refreshBrowserContent();
 }
 
 function _syncConflictFilterPillStyles() {

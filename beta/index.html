@@ -5802,21 +5802,54 @@ function _attachconflictsPanelKeypressVerifier() {
   _detachconflictsPanelKeypressVerifier();
   _conflictsPanelKeydownHandler = function(e) {
     if (activeSettings !== 'panelConflicts') { _detachconflictsPanelKeypressVerifier(); return; }
-    // Check every item in the conflict list against this keypress
+
+    // ── Standard conflict list (OS / browser tabs) ───────────────────────
     var ul = document.getElementById('browserCompatList');
-    if (!ul) return;
-    var items = ul.querySelectorAll('li[data-conflict-key]');
-    items.forEach(function(li) {
-      var key = li.dataset.conflictKey;
-      if (!key) return;
-      // Only act on currently-blocked shortcuts (dismissed = blocked = radio on)
-      if (!dismissedConflicts.has(key)) return;
-      if (!matchesShortcut(e, key)) return;
-      // Keypress succeeded without blur — unblock it
-      e.preventDefault();
-      _setConflictBlocked(key, false, li);
-      showToast('Shortcut working');
-    });
+    if (ul) {
+      var items = ul.querySelectorAll('li[data-conflict-key]');
+      items.forEach(function(li) {
+        var key = li.dataset.conflictKey;
+        if (!key) return;
+        if (!dismissedConflicts.has(key)) return;
+        if (!matchesShortcut(e, key)) return;
+        e.preventDefault();
+        _setConflictBlocked(key, false, li);
+        showToast('Shortcut working');
+      });
+    }
+
+    // ── Keyboard tab key-grid: physical press confirms key is available ──
+    // Pressing a key sets it to unblocked (available). Does NOT toggle off.
+    if (_activeConflictFilter === 'keyboard' && ul) {
+      var browserCode = e.code || e.key; // e.g. 'Home', 'PageUp', 'Insert'
+      var token = ExtendedKeyCodeToToken[e.key]; // e.g. 'HOME', 'PAGEUP'
+      if (token) {
+        var keyEls = ul.querySelectorAll('[data-token]');
+        keyEls.forEach(function(keyEl) {
+          if (keyEl.dataset.token !== token) return;
+          if (keyEl.dataset.blocked !== '1') return; // already available
+          e.preventDefault();
+          // Flash green-down (key held)
+          keyEl.style.background = '#10b981';
+          keyEl.style.color = 'white';
+          keyEl.style.boxShadow = 'inset 0 0 0 1px #059669,0 0 6px rgba(16,185,129,0.4)';
+          // After a short delay, settle to tint
+          setTimeout(function() {
+            dismissedConflicts.delete(token);
+            kbKeyOverrides.add(token);
+            _saveCustomDismissedConflicts();
+            _saveKbKeyOverrides();
+            if (gameState !== 'playing' && gameState !== 'paused' && gameState !== 'readyToUnpause') {
+              questionPool = shuffleArray(buildPool());
+            }
+            _syncConflictFilterPillStyles();
+            keyEl.dataset.blocked = '0';
+            _cfApplyKeyStyle(keyEl, false);
+            showToast('Key available');
+          }, 180);
+        });
+      }
+    }
   };
   document.addEventListener('keydown', _conflictsPanelKeydownHandler);
 }
@@ -6208,77 +6241,176 @@ function _renderKeyboardConflictTab() {
   var ul = document.getElementById('browserCompatList');
   if (!ul) return;
   ul.innerHTML = '';
-  ul.style.cssText = 'display:grid;grid-template-columns:1fr 1fr;column-gap:16px;row-gap:0;list-style:none;padding:0;margin:0;overflow:visible;';
+  ul.style.cssText = 'list-style:none;padding:0;margin:0;overflow:visible;';
 
-  // Left column: navigation cluster, Right column: utility keys
-  // [token, display label, column: 'left'|'right']
-  var EXTENDED_KEYS = [
-    ['HOME',        '↖ home',       'left'],
-    ['END',         '↘ end',        'left'],
-    ['PAGEUP',      '⇞ page up',    'left'],
-    ['PAGEDOWN',    '⇟ page down',  'left'],
-    ['DELETE',      '⌦ delete',     'left'],
-    ['INSERT',      'INSERT',       'right'],
-    ['PRINTSCREEN', 'PRINTSCREEN',  'right'],
-    ['SCROLLLOCK',  'SCROLLLOCK',   'right'],
-    ['PAUSE',       'PAUSE',        'right'],
-    ['NUMLOCK',     currentOs === 'mac' ? 'CLEAR' : 'NUMLOCK', 'right'],
+  var masterOff = !hasFullKeyboard || touchEnabled;
+
+  // ── Keyboard-size mini-toggle (quick all-on / all-off) ───────────────────
+  var toggleRow = document.createElement('div');
+  toggleRow.style.cssText = 'display:flex;align-items:center;gap:8px;margin-bottom:10px;';
+  if (masterOff) toggleRow.style.opacity = '0.5';
+
+  var extIcon = document.createElement('span');
+  extIcon.style.cssText = 'display:flex;align-items:center;gap:3px;font-size:10px;font-weight:600;color:' + (!hasFullKeyboard ? '#9ca3af' : '#10b981') + ';text-decoration:' + (hasFullKeyboard ? '' : 'line-through') + ';cursor:pointer;user-select:none;';
+  extIcon.innerHTML = '<svg viewBox="0 0 167 101.8" style="width:40px;height:auto;"><path fill="currentColor" d="M142.1,32.4H24.9c-2.1,0-3.9,1.7-3.9,3.9v29.6c0,2.1,1.7,3.9,3.9,3.9h117.2c2.1,0,3.9-1.7,3.9-3.9v-29.6c0-2.1-1.7-3.9-3.9-3.9ZM143.4,65.9c0,.7-.6,1.3-1.3,1.3H24.9c-.7,0-1.3-.6-1.3-1.3v-29.6c0-.7.6-1.3,1.3-1.3h117.2c.7,0,1.3.6,1.3,1.3v29.6Z"/></svg>extended';
+
+  var switchLabel = document.createElement('label');
+  switchLabel.style.cssText = 'cursor:pointer;display:flex;align-items:center;';
+  switchLabel.title = 'Toggle extended keyboard';
+  switchLabel.innerHTML = '<svg width="36" height="14" viewBox="0 0 36 14" fill="none" xmlns="http://www.w3.org/2000/svg"><rect x="1" y="1" width="34" height="12" rx="6" stroke="#374151" stroke-width="1.25" fill="none"/><circle id="cfKbMiniKnob" cx="' + (hasFullKeyboard ? '29' : '7') + '" cy="7" r="3.5" stroke="#374151" stroke-width="1.25" fill="white" style="transition:transform 0.18s ease;"/></svg>';
+
+  var cmpIcon = document.createElement('span');
+  cmpIcon.style.cssText = 'display:flex;align-items:center;gap:3px;font-size:10px;font-weight:600;color:' + (hasFullKeyboard ? '#9ca3af' : '#374151') + ';text-decoration:' + (hasFullKeyboard ? 'line-through' : '') + ';cursor:pointer;user-select:none;';
+  cmpIcon.innerHTML = '<svg viewBox="0 0 110 101.8" style="width:27px;height:auto;"><use href="#IconKeyboard"/></svg>compact';
+
+  function _cfMiniToggle() {
+    if (touchEnabled) return;
+    var tog = document.getElementById('modalKbSizeToggle');
+    if (tog) { tog.checked = hasFullKeyboard; onKbSizeToggle(); }
+    else { setKbSizeToggle(!hasFullKeyboard); }
+    _renderKeyboardConflictTab();
+  }
+  switchLabel.addEventListener('click', _cfMiniToggle);
+  extIcon.addEventListener('click', _cfMiniToggle);
+  cmpIcon.addEventListener('click', _cfMiniToggle);
+  toggleRow.appendChild(extIcon);
+  toggleRow.appendChild(switchLabel);
+  toggleRow.appendChild(cmpIcon);
+  ul.appendChild(toggleRow);
+
+  // ── Key pairs layout ─────────────────────────────────────────────────────
+  // Each "pair" is an up-key + down-key sharing a flat join.
+  // Groups: navigation cluster (home/end, pgup/pgdn) | utility (insert/delete, etc.)
+  // [topToken, topLabel, bottomToken, bottomLabel]
+  var KEY_PAIRS = [
+    ['HOME',   '↖ home',   'END',      '↘ end'   ],
+    ['PAGEUP', '⇞ pg up',  'PAGEDOWN', '⇟ pg dn' ],
+    ['INSERT', 'INSERT',   'DELETE',   '⌦ delete'],
+    ['PRINTSCREEN', 'PRT SC', 'SCROLLLOCK', 'SCR LK'],
+    ['PAUSE',  'PAUSE',    'NUMLOCK',  currentOs === 'mac' ? 'CLEAR' : 'NUM LK'],
   ];
 
-  // Build left items first, then right, so grid auto-flow fills correctly
-  var left  = EXTENDED_KEYS.filter(function(k) { return k[2] === 'left';  });
-  var right = EXTENDED_KEYS.filter(function(k) { return k[2] === 'right'; });
+  var grid = document.createElement('div');
+  grid.style.cssText = 'display:grid;grid-template-columns:repeat(3,1fr);gap:6px;';
+  if (masterOff) { grid.style.opacity = '0.45'; grid.style.pointerEvents = 'none'; }
 
-  // Interleave: left[0], right[0], left[1], right[1] etc. so CSS grid rows align
-  var maxLen = Math.max(left.length, right.length);
-  for (var i = 0; i < maxLen; i++) {
-    [left[i], right[i]].forEach(function(entry) {
-      if (!entry) {
-        // Empty cell to keep grid aligned
-        var empty = document.createElement('li');
-        ul.appendChild(empty);
-        return;
-      }
-      var token      = entry[0];
-      var labelText  = entry[1];
-      var isBlocked  = !touchEnabled && dismissedConflicts.has(token);
-      var masterOff  = !hasFullKeyboard || touchEnabled; // master switch disables all
+  KEY_PAIRS.forEach(function(pair) {
+    var topToken    = pair[0];
+    var topLabel    = pair[1];
+    var bottomToken = pair[2];
+    var bottomLabel = pair[3];
 
-      var li = document.createElement('li');
-      li.className = isBlocked ? 'conflict-dismissed' : '';
-      li.dataset.conflictKey = token;
-      li.style.cssText = 'display:flex;align-items:center;margin-bottom:6px;cursor:pointer;line-height:1.6;';
-      if (masterOff) {
-        li.style.opacity = '0.4';
-        li.style.pointerEvents = 'none';
-      }
+    var pairWrap = document.createElement('div');
+    pairWrap.style.cssText = 'display:flex;flex-direction:column;';
 
-      li.appendChild(_makeConflictRadio(token));
+    [
+      { token: topToken, label: topLabel, isTop: true },
+      { token: bottomToken, label: bottomLabel, isTop: false }
+    ].forEach(function(k) {
+      var isBlocked = !touchEnabled && dismissedConflicts.has(k.token);
+      // Blocked = orange tint (key unavailable), unblocked = green tint (key available)
+      var baseGreen  = 'rgba(16,185,129,0.18)';
+      var baseOrange = 'rgba(249,115,22,0.18)';
+      var baseBg     = isBlocked ? baseOrange : baseGreen;
+      var baseColor  = isBlocked ? '#c2410c' : '#059669';
+      var baseBorder = isBlocked ? 'rgba(249,115,22,0.35)' : 'rgba(16,185,129,0.35)';
 
-      var chip = document.createElement('span');
-      chip.style.cssText = [
-        'display:inline-block',
+      var radius = k.isTop
+        ? '4px 4px 0 0'
+        : '0 0 4px 4px';
+
+      var keyEl = document.createElement('div');
+      keyEl.dataset.token = k.token;
+      keyEl.dataset.blocked = isBlocked ? '1' : '0';
+      keyEl.style.cssText = [
+        'border-radius:' + radius,
+        'background:' + baseBg,
+        'border:1px solid ' + baseBorder,
+        k.isTop ? 'border-bottom:none' : 'border-top:1px solid ' + (isBlocked ? 'rgba(249,115,22,0.2)' : 'rgba(16,185,129,0.2)'),
+        'padding:4px 3px',
+        'text-align:center',
+        'font-size:9px',
+        'font-weight:700',
         'font-family:inherit',
-        'font-size:10px',
-        'font-weight:600',
-        'color:#1e3a5f',
-        'border:1px solid #d1d5db',
-        'border-radius:3px',
-        'padding:1px 4px 0',
-        'line-height:1.6',
-        'white-space:nowrap',
-        'vertical-align:middle',
-        isBlocked ? '' : 'background:#f3f4f6;box-shadow:0 1.5px 0 #c9cdd3',
+        'color:' + baseColor,
+        'cursor:pointer',
+        'user-select:none',
+        'transition:background 0.08s,box-shadow 0.08s',
+        'line-height:1.3',
+        'min-height:22px',
+        'display:flex',
+        'align-items:center',
+        'justify-content:center',
       ].join(';');
-      chip.textContent = labelText;
+      keyEl.textContent = k.label;
 
-      li.appendChild(chip);
-      li.addEventListener('click', function(e) {
-        if (e.target.closest('.modal-radio')) return;
-        li.querySelector('.modal-radio').click();
+      // Pointer down: flash full-strength colour (like a real keypress)
+      keyEl.addEventListener('pointerdown', function(e) {
+        e.preventDefault();
+        var willBeBlocked = keyEl.dataset.blocked !== '1';
+        // Show full-strength preview of new state
+        if (willBeBlocked) {
+          keyEl.style.background = '#f97316';
+          keyEl.style.color = 'white';
+          keyEl.style.boxShadow = 'inset 0 0 0 1px #c2410c,0 0 6px rgba(249,115,22,0.4)';
+        } else {
+          keyEl.style.background = '#10b981';
+          keyEl.style.color = 'white';
+          keyEl.style.boxShadow = 'inset 0 0 0 1px #059669,0 0 6px rgba(16,185,129,0.4)';
+        }
       });
-      ul.appendChild(li);
+
+      // Pointer up: commit toggle, settle to 50% tint
+      function _commitToggle() {
+        var nowBlocked = !dismissedConflicts.has(k.token);
+        dismissedConflicts[nowBlocked ? 'add' : 'delete'](k.token);
+        kbKeyOverrides.add(k.token);
+        _saveCustomDismissedConflicts();
+        _saveKbKeyOverrides();
+        if (gameState !== 'playing' && gameState !== 'paused' && gameState !== 'readyToUnpause') {
+          questionPool = shuffleArray(buildPool());
+        }
+        _syncConflictFilterPillStyles();
+        keyEl.dataset.blocked = nowBlocked ? '1' : '0';
+        _cfApplyKeyStyle(keyEl, nowBlocked);
+        showToast(nowBlocked ? 'Key blocked' : 'Key available');
+      }
+
+      keyEl.addEventListener('pointerup',    _commitToggle);
+      keyEl.addEventListener('pointerleave', function() {
+        // If pointer left without committing (e.g. drag away), restore current state
+        var stillBlocked = dismissedConflicts.has(k.token);
+        _cfApplyKeyStyle(keyEl, stillBlocked);
+      });
+
+      pairWrap.appendChild(keyEl);
     });
+
+    grid.appendChild(pairWrap);
+  });
+
+  ul.appendChild(grid);
+
+  // ── Physical keypress confirms availability ──────────────────────────────
+  // Handled by _attachconflictsPanelKeypressVerifier extended below.
+}
+
+// Applies the resting 50%-tint style to a key element.
+function _cfApplyKeyStyle(keyEl, isBlocked) {
+  if (isBlocked) {
+    keyEl.style.background = 'rgba(249,115,22,0.18)';
+    keyEl.style.color       = '#c2410c';
+    keyEl.style.boxShadow   = '';
+    keyEl.style.border      = '1px solid rgba(249,115,22,0.35)';
+    var isTop = keyEl.style.borderRadius.startsWith('4px 4px 0');
+    if (!isTop) keyEl.style.borderTop = '1px solid rgba(249,115,22,0.2)';
+  } else {
+    keyEl.style.background = 'rgba(16,185,129,0.18)';
+    keyEl.style.color       = '#059669';
+    keyEl.style.boxShadow   = '';
+    keyEl.style.border      = '1px solid rgba(16,185,129,0.35)';
+    var isTop2 = keyEl.style.borderRadius.startsWith('4px 4px 0');
+    if (!isTop2) keyEl.style.borderTop = '1px solid rgba(16,185,129,0.2)';
   }
 }
 

@@ -5820,13 +5820,13 @@ function _attachconflictsPanelKeypressVerifier() {
 
     // ── Keyboard tab key-grid: physical press confirms key is available ──
     // Pressing a key sets it to unblocked (available). Does NOT toggle off.
-    if (_activeConflictFilter === 'keyboard' && ul) {
-      var browserCode = e.code || e.key; // e.g. 'Home', 'PageUp', 'Insert'
-      var token = ExtendedKeyCodeToToken[e.key]; // e.g. 'HOME', 'PAGEUP'
-      if (token) {
-        var keyEls = ul.querySelectorAll('[data-token]');
+    if (_activeConflictFilter === 'keyboard') {
+      var kbSubPanel = document.getElementById('cfKeyboardSubPanel');
+      var browserCode = e.key; // e.g. 'Home', 'PageUp', 'Insert'
+      if (kbSubPanel && ExtendedKeyCodeToToken[browserCode]) {
+        var keyEls = kbSubPanel.querySelectorAll('[data-token]');
         keyEls.forEach(function(keyEl) {
-          if (keyEl.dataset.token !== token) return;
+          if (keyEl.dataset.token !== browserCode) return;
           if (keyEl.dataset.blocked !== '1') return; // already available
           e.preventDefault();
           // Flash green-down (key held)
@@ -5835,8 +5835,8 @@ function _attachconflictsPanelKeypressVerifier() {
           keyEl.style.boxShadow = 'inset 0 0 0 1px #059669,0 0 6px rgba(16,185,129,0.4)';
           // After a short delay, settle to tint
           setTimeout(function() {
-            dismissedConflicts.delete(token);
-            kbKeyOverrides.add(token);
+            dismissedConflicts.delete(browserCode);
+            kbKeyOverrides.add(browserCode);
             _saveCustomDismissedConflicts();
             _saveKbKeyOverrides();
             if (gameState !== 'playing' && gameState !== 'paused' && gameState !== 'readyToUnpause') {
@@ -6170,78 +6170,20 @@ function _refreshBrowserContent() {
     }
   }
 
-  // ── Keyboard tab: extended key list with per-key radios ───────────────────
-  if (showKeyboard && kbList) {
-    kbList.innerHTML = '';
-    // Build a deduped ordered list of extended keys (skip 'Clear' alias)
-    var SeenKbTokens = new Set();
-    var ExtKeyEntries = [];
-    Object.keys(ExtendedKeyCodeToToken).forEach(function(BrowserCode) {
-      var Token = ExtendedKeyCodeToToken[BrowserCode];
-      if (SeenKbTokens.has(Token)) return;
-      SeenKbTokens.add(Token);
-      ExtKeyEntries.push({ code: BrowserCode, token: Token });
-    });
-
-    ExtKeyEntries.forEach(function(Entry) {
-      var isBlocked = dismissedConflicts.has(Entry.code);
-      var li = document.createElement('li');
-      li.className = isBlocked ? 'conflict-dismissed' : '';
-      li.dataset.conflictKey = Entry.code;
-      li.style.cssText = 'margin-bottom:6px;display:flex;align-items:center;flex-wrap:nowrap;gap:0;line-height:1.6;cursor:pointer;';
-
-      // Radio built inline for keyboard keys (uses same toggle logic as _makeConflictRadio
-      // but blocks/unblocks Entry.code directly and updates kbKeyOverrides)
-      var radio = document.createElement('span');
-      radio.className = 'modal-radio' + (isBlocked ? ' on' : '');
-      radio.style.cssText = 'flex-shrink:0;margin-right:7px;cursor:pointer;';
-      radio.innerHTML = '<svg class="modal-radio-dot" width="16" height="16" viewBox="0 0 19 19" xmlns="http://www.w3.org/2000/svg">'
-        + '<circle cx="9.5" cy="9.5" r="6.5" stroke="#374151" stroke-width="1.5" fill="none"/>'
-        + '<circle class="modal-radio-fill" cx="9.5" cy="9.5" r="3.5" fill="#374151"/>'
-        + '</svg>';
-
-      radio.addEventListener('click', function() {
-        var nowBlocked = !dismissedConflicts.has(Entry.code);
-        if (nowBlocked) {
-          dismissedConflicts.add(Entry.code);
-          kbKeyOverrides.add(Entry.code);
-        } else {
-          dismissedConflicts.delete(Entry.code);
-          kbKeyOverrides.add(Entry.code);
-        }
-        _saveCustomDismissedConflicts();
-        _saveKbKeyOverrides();
-        if (gameState !== 'playing' && gameState !== 'paused' && gameState !== 'readyToUnpause') {
-          questionPool = shuffleArray(buildPool());
-        }
-        radio.classList.toggle('on', nowBlocked);
-        li.classList.toggle('conflict-dismissed', nowBlocked);
-        showToast(nowBlocked ? 'Key blocked' : 'Key available');
-      });
-
-      li.appendChild(radio);
-
-      // Chip — use BuildShortcutKeyChips for consistent rendering
-      var ChipWrapper = BuildShortcutKeyChips(Entry.token, isBlocked);
-      ChipWrapper.style.marginLeft = '0';
-      li.appendChild(ChipWrapper);
-
-      li.addEventListener('click', function(e) {
-        if (e.target.closest('.modal-radio')) return;
-        radio.click();
-      });
-      kbList.appendChild(li);
-    });
+  // ── Keyboard tab: key grid ────────────────────────────────────────────────
+  if (showKeyboard && kbPanel) {
+    _renderKeyboardConflictTab(kbPanel);
   }
 
   _attachconflictsPanelKeypressVerifier();
   _syncConflictFilterPillStyles();
 }
-function _renderKeyboardConflictTab() {
-  var ul = document.getElementById('browserCompatList');
-  if (!ul) return;
-  ul.innerHTML = '';
-  ul.style.cssText = 'list-style:none;padding:0;margin:0;overflow:visible;';
+function _renderKeyboardConflictTab(container) {
+  var panel = container || document.getElementById('cfKeyboardSubPanel');
+  if (!panel) return;
+  // Clear everything except the static <p> intro (first child) — rebuild the rest
+  // Actually just wipe and rebuild the whole sub-panel content.
+  panel.innerHTML = '';
 
   var masterOff = !hasFullKeyboard || touchEnabled;
 
@@ -6276,18 +6218,18 @@ function _renderKeyboardConflictTab() {
   toggleRow.appendChild(extIcon);
   toggleRow.appendChild(switchLabel);
   toggleRow.appendChild(cmpIcon);
-  ul.appendChild(toggleRow);
+  panel.appendChild(toggleRow);
 
   // ── Key pairs layout ─────────────────────────────────────────────────────
   // Each "pair" is an up-key + down-key sharing a flat join.
-  // Groups: navigation cluster (home/end, pgup/pgdn) | utility (insert/delete, etc.)
-  // [topToken, topLabel, bottomToken, bottomLabel]
+  // Keys use browser e.key codes (matching dismissedConflicts storage).
+  // [topCode, topLabel, bottomCode, bottomLabel]
   var KEY_PAIRS = [
-    ['HOME',   '↖ home',   'END',      '↘ end'   ],
-    ['PAGEUP', '⇞ pg up',  'PAGEDOWN', '⇟ pg dn' ],
-    ['INSERT', 'INSERT',   'DELETE',   '⌦ delete'],
-    ['PRINTSCREEN', 'PRT SC', 'SCROLLLOCK', 'SCR LK'],
-    ['PAUSE',  'PAUSE',    'NUMLOCK',  currentOs === 'mac' ? 'CLEAR' : 'NUM LK'],
+    ['Home',        '↖ home',   'End',        '↘ end'   ],
+    ['PageUp',      '⇞ pg up',  'PageDown',   '⇟ pg dn' ],
+    ['Insert',      'INSERT',   'Delete',     '⌦ delete'],
+    ['PrintScreen', 'PRT SC',   'ScrollLock', 'SCR LK'  ],
+    ['Pause',       'PAUSE',    'NumLock',    currentOs === 'mac' ? 'CLEAR' : 'NUM LK'],
   ];
 
   var grid = document.createElement('div');
@@ -6389,7 +6331,7 @@ function _renderKeyboardConflictTab() {
     grid.appendChild(pairWrap);
   });
 
-  ul.appendChild(grid);
+  panel.appendChild(grid);
 
   // ── Physical keypress confirms availability ──────────────────────────────
   // Handled by _attachconflictsPanelKeypressVerifier extended below.
@@ -6399,18 +6341,14 @@ function _renderKeyboardConflictTab() {
 function _cfApplyKeyStyle(keyEl, isBlocked) {
   if (isBlocked) {
     keyEl.style.background = 'rgba(249,115,22,0.18)';
-    keyEl.style.color       = '#c2410c';
-    keyEl.style.boxShadow   = '';
-    keyEl.style.border      = '1px solid rgba(249,115,22,0.35)';
-    var isTop = keyEl.style.borderRadius.startsWith('4px 4px 0');
-    if (!isTop) keyEl.style.borderTop = '1px solid rgba(249,115,22,0.2)';
+    keyEl.style.color      = '#c2410c';
+    keyEl.style.boxShadow  = '';
+    keyEl.style.borderColor = 'rgba(249,115,22,0.35)';
   } else {
     keyEl.style.background = 'rgba(16,185,129,0.18)';
-    keyEl.style.color       = '#059669';
-    keyEl.style.boxShadow   = '';
-    keyEl.style.border      = '1px solid rgba(16,185,129,0.35)';
-    var isTop2 = keyEl.style.borderRadius.startsWith('4px 4px 0');
-    if (!isTop2) keyEl.style.borderTop = '1px solid rgba(16,185,129,0.2)';
+    keyEl.style.color      = '#059669';
+    keyEl.style.boxShadow  = '';
+    keyEl.style.borderColor = 'rgba(16,185,129,0.35)';
   }
 }
 

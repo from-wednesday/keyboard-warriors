@@ -4673,27 +4673,13 @@ function updateKbSizeToggle() {
   var extLabel = document.getElementById('kbSizeExtendedLabel');
   var cmpIcon  = document.getElementById('kbSizeCompactIcon');
   var cmpLabel = document.getElementById('kbSizeCompactLabel');
-  if (extIcon)  extIcon.style.color          = extendedColour;
+  if (extIcon)  extIcon.style.fill           = extendedColour;
   if (extLabel) { extLabel.style.color = extendedColour; extLabel.style.textDecoration = isCompact ? 'line-through' : ''; }
   if (cmpIcon)  cmpIcon.style.color          = compactColour;
   if (cmpLabel) { cmpLabel.style.color = compactColour; cmpLabel.style.textDecoration = isCompact ? '' : 'line-through'; }
 
   // Grey out and lock to compact when touch is enabled
   if (row) row.classList.toggle('disabled', touchEnabled);
-
-  // Keep the conflicts-panel mini-switch in sync if it exists
-  var cfKnob = document.getElementById('cfKbSizeKnob');
-  var cfInp  = document.getElementById('cfKbSizeToggle');
-  var cfExtL = document.getElementById('cfKbExtLabel');
-  var cfExtI = document.getElementById('cfKbExtIcon');
-  var cfCmpL = document.getElementById('cfKbCmpLabel');
-  var cfCmpI = document.getElementById('cfKbCmpIcon');
-  if (cfKnob) { cfKnob.style.transform = isCompact ? 'translateX(22px)' : 'translateX(0)'; cfKnob.setAttribute('fill', isCompact ? '#374151' : 'white'); }
-  if (cfInp)  cfInp.checked = isCompact;
-  if (cfExtL) { cfExtL.style.color = extendedColour; cfExtL.style.textDecoration = isCompact ? 'line-through' : ''; }
-  if (cfExtI) cfExtI.style.color = extendedColour;
-  if (cfCmpL) { cfCmpL.style.color = compactColour; cfCmpL.style.textDecoration = isCompact ? '' : 'line-through'; }
-  if (cfCmpI) cfCmpI.style.color = compactColour;
 }
 
 function onKbSizeToggle() {
@@ -6088,12 +6074,11 @@ function _refreshBrowserContent() {
     questionPool = shuffleArray(buildPool());
   }
 
-  // Separate standard browser keys from user-found (diagnostic) keys.
-  // Also exclude extended keyboard keys — those are managed in the keyboard tab.
+  // Separate standard browser keys from user-found (diagnostic) keys
   var BrowserConflictKeys = new Set(d.keys);
   var UserFoundKeys = [];
   dismissedConflicts.forEach(function(BlockedKey) {
-    if (!BrowserConflictKeys.has(BlockedKey) && !ExtendedKeyCodeToToken[BlockedKey]) UserFoundKeys.push(BlockedKey);
+    if (!BrowserConflictKeys.has(BlockedKey)) UserFoundKeys.push(BlockedKey);
   });
 
   // ── Right column: tab-switched content ───────────────────────────────────
@@ -6149,7 +6134,6 @@ function _refreshBrowserContent() {
   // ── Found tab: clear button (above list) + user-found entries ────────────
   if (showFound && foundList && foundClear && foundEmpty) {
     foundList.innerHTML  = '';
-    foundList.style.cssText = '';
     foundClear.innerHTML = '';
 
     if (UserFoundKeys.length > 0 && !touchEnabled) {
@@ -6164,8 +6148,7 @@ function _refreshBrowserContent() {
       ClearPill.appendChild(ClearBtn);
       foundClear.appendChild(ClearPill);
 
-      // User-found entries — two columns
-      foundList.style.cssText = 'display:grid;grid-template-columns:1fr 1fr;column-gap:8px;row-gap:0;';
+      // User-found entries — chips only, no descriptor
       UserFoundKeys.forEach(function(BlockedKey) {
         var li = document.createElement('li');
         li.className = 'conflict-dismissed';
@@ -6266,7 +6249,8 @@ function _renderKeyboardConflictTab(container) {
     keyEl.textContent = k.label;
     _cfApplyKeyStyle(keyEl, isBlocked);
 
-    keyEl.addEventListener('mousedown', function() {
+    keyEl.addEventListener('pointerdown', function(e) {
+      e.preventDefault();
       var willBeBlocked = keyEl.dataset.blocked !== '1';
       if (willBeBlocked) {
         keyEl.style.background = '#f97316';
@@ -6293,8 +6277,8 @@ function _renderKeyboardConflictTab(container) {
       _cfApplyKeyStyle(keyEl, nowBlocked);
       showToast(nowBlocked ? 'Key blocked' : 'Key available');
     }
-    keyEl.addEventListener('click', _commitToggle);
-    keyEl.addEventListener('mouseleave', function() {
+    keyEl.addEventListener('pointerup',    _commitToggle);
+    keyEl.addEventListener('pointerleave', function() {
       _cfApplyKeyStyle(keyEl, dismissedConflicts.has(k.token));
     });
     return keyEl;
@@ -6372,7 +6356,7 @@ function _renderKeyboardConflictTab(container) {
     if (!inp) return;
     // checked = compact (same polarity as modalKbSizeToggle)
     inp.checked = !hasFullKeyboard;
-    if (knob) knob.style.transform = hasFullKeyboard ? 'translateX(0)' : 'translateX(22px)';
+    if (knob) knob.style.transform = hasFullKeyboard ? 'translateX(22px)' : 'translateX(0)';
     var activeCol   = '#374151';
     var inactiveCol = '#9ca3af';
     var extActive   = hasFullKeyboard;
@@ -6413,21 +6397,19 @@ function _renderKeyboardConflictTab(container) {
 // Available (unblocked) = green tint. Blocked = orange tint.
 // At rest: 50% strength via semi-transparent background on a light base.
 function _cfApplyKeyStyle(keyEl, isBlocked) {
-  var pairPos = keyEl.dataset.pairPos; // 'top', 'bottom', or 'solo'
-  var isTop   = (pairPos === 'top');
-  var isBot   = (pairPos === 'bottom');
+  var isTop = keyEl.dataset.isTop === '1';
   if (isBlocked) {
-    keyEl.style.background   = 'rgba(249,115,22,0.14)';
-    keyEl.style.color        = '#9a3412';
-    keyEl.style.border       = '1px solid rgba(249,115,22,0.4)';
-    keyEl.style.borderBottom = isTop ? '1px solid rgba(0,0,0,0.08)' : '1px solid rgba(249,115,22,0.4)';
-    keyEl.style.boxShadow    = isBot ? '0 1.5px 0 rgba(194,65,12,0.4)' : '';
+    keyEl.style.background  = 'rgba(249,115,22,0.14)';
+    keyEl.style.color       = '#9a3412';
+    keyEl.style.boxShadow   = isTop ? '' : '0 1.5px 0 rgba(194,65,12,0.4)';
+    keyEl.style.border      = '1px solid rgba(249,115,22,0.4)';
+    if (isTop) keyEl.style.borderBottom = '1px solid rgba(0,0,0,0.08)';
   } else {
-    keyEl.style.background   = 'rgba(16,185,129,0.12)';
-    keyEl.style.color        = '#065f46';
-    keyEl.style.border       = '1px solid rgba(16,185,129,0.35)';
-    keyEl.style.borderBottom = isTop ? '1px solid rgba(0,0,0,0.08)' : '1px solid rgba(16,185,129,0.35)';
-    keyEl.style.boxShadow    = isBot ? '0 1.5px 0 rgba(5,150,105,0.4)' : '';
+    keyEl.style.background  = 'rgba(16,185,129,0.12)';
+    keyEl.style.color       = '#065f46';
+    keyEl.style.boxShadow   = isTop ? '' : '0 1.5px 0 rgba(5,150,105,0.4)';
+    keyEl.style.border      = '1px solid rgba(16,185,129,0.35)';
+    if (isTop) keyEl.style.borderBottom = '1px solid rgba(0,0,0,0.08)';
   }
 }
 

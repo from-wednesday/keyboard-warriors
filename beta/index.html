@@ -6148,6 +6148,7 @@ function _refreshBrowserContent() {
   // ── Found tab: clear button (above list) + user-found entries ────────────
   if (showFound && foundList && foundClear && foundEmpty) {
     foundList.innerHTML  = '';
+    foundList.style.cssText = '';
     foundClear.innerHTML = '';
 
     if (UserFoundKeys.length > 0 && !touchEnabled) {
@@ -6162,7 +6163,8 @@ function _refreshBrowserContent() {
       ClearPill.appendChild(ClearBtn);
       foundClear.appendChild(ClearPill);
 
-      // User-found entries — chips only, no descriptor
+      // User-found entries — two columns
+      foundList.style.cssText = 'display:grid;grid-template-columns:1fr 1fr;column-gap:8px;row-gap:0;';
       UserFoundKeys.forEach(function(BlockedKey) {
         var li = document.createElement('li');
         li.className = 'conflict-dismissed';

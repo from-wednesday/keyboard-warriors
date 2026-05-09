@@ -4673,13 +4673,27 @@ function updateKbSizeToggle() {
   var extLabel = document.getElementById('kbSizeExtendedLabel');
   var cmpIcon  = document.getElementById('kbSizeCompactIcon');
   var cmpLabel = document.getElementById('kbSizeCompactLabel');
-  if (extIcon)  extIcon.style.fill           = extendedColour;
+  if (extIcon)  extIcon.style.color          = extendedColour;
   if (extLabel) { extLabel.style.color = extendedColour; extLabel.style.textDecoration = isCompact ? 'line-through' : ''; }
   if (cmpIcon)  cmpIcon.style.color          = compactColour;
   if (cmpLabel) { cmpLabel.style.color = compactColour; cmpLabel.style.textDecoration = isCompact ? '' : 'line-through'; }
 
   // Grey out and lock to compact when touch is enabled
   if (row) row.classList.toggle('disabled', touchEnabled);
+
+  // Keep the conflicts-panel mini-switch in sync if it exists
+  var cfKnob = document.getElementById('cfKbSizeKnob');
+  var cfInp  = document.getElementById('cfKbSizeToggle');
+  var cfExtL = document.getElementById('cfKbExtLabel');
+  var cfExtI = document.getElementById('cfKbExtIcon');
+  var cfCmpL = document.getElementById('cfKbCmpLabel');
+  var cfCmpI = document.getElementById('cfKbCmpIcon');
+  if (cfKnob) { cfKnob.style.transform = isCompact ? 'translateX(22px)' : 'translateX(0)'; cfKnob.setAttribute('fill', isCompact ? '#374151' : 'white'); }
+  if (cfInp)  cfInp.checked = isCompact;
+  if (cfExtL) { cfExtL.style.color = extendedColour; cfExtL.style.textDecoration = isCompact ? 'line-through' : ''; }
+  if (cfExtI) cfExtI.style.color = extendedColour;
+  if (cfCmpL) { cfCmpL.style.color = compactColour; cfCmpL.style.textDecoration = isCompact ? '' : 'line-through'; }
+  if (cfCmpI) cfCmpI.style.color = compactColour;
 }
 
 function onKbSizeToggle() {

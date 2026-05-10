@@ -6360,8 +6360,8 @@ function _renderKeyboardConflictTab(container) {
   toggleWrap.appendChild(cmpSide);
   panel.appendChild(toggleWrap);
 
-  // Sync this mini-toggle's knob and label colours to match current state,
-  // then wire it so clicking it also updates the main modalKbSizeToggle.
+  // Sync this toggle's knob and label colours to match current state,
+  // clicking it also updates the main modalKbSizeToggle.
   function _cfSyncMiniSwitch() {
     var inp  = document.getElementById('cfKbSizeToggle');
     var knob = document.getElementById('cfKbSizeKnob');
@@ -6386,21 +6386,27 @@ function _renderKeyboardConflictTab(container) {
   var cfInp = document.getElementById('cfKbSizeToggle');
   if (cfInp) {
     cfInp.addEventListener('change', function() {
-      if (touchEnabled) return;
-      // Mirror to the main toggle and fire its handler
-      var mainTog = document.getElementById('modalKbSizeToggle');
-      if (mainTog) { mainTog.checked = cfInp.checked; onKbSizeToggle(); }
-      else { setKbSizeToggle(!cfInp.checked); }
-      _cfSyncMiniSwitch();
-      // Re-render the grid with updated blocked states
-      var gridDivs = panel.querySelectorAll('[data-token]');
-      gridDivs.forEach(function(el) {
-        el.dataset.blocked = (!touchEnabled && dismissedConflicts.has(el.dataset.token)) ? '1' : '0';
-        _cfApplyKeyStyle(el, el.dataset.blocked === '1');
-      });
-      var gridEl = panel.querySelector('[style*="grid-template-columns"]');
-      if (gridEl) gridEl.style.opacity = masterOff ? '0.45' : '';
-    });
+  if (touchEnabled) return;
+  var mainTog = document.getElementById('modalKbSizeToggle');
+  if (mainTog) { mainTog.checked = cfInp.checked; onKbSizeToggle(); }
+  else { setKbSizeToggle(!cfInp.checked); }
+  _cfSyncMiniSwitch();
+
+  var nowMasterOff = !hasFullKeyboard || touchEnabled;
+
+  var gridDivs = panel.querySelectorAll('[data-token]');
+  gridDivs.forEach(function(el) {
+    el.dataset.blocked = (!touchEnabled && dismissedConflicts.has(el.dataset.token)) ? '1' : '0';
+    _cfApplyKeyStyle(el, el.dataset.blocked === '1');
+  });
+
+  var gridEl = panel.querySelector('[style*="grid-template-columns"]')?.closest('[style*="margin-bottom"]');
+  if (gridEl) {
+    gridEl.style.opacity       = nowMasterOff ? '0.45' : '';
+    gridEl.style.pointerEvents = nowMasterOff ? 'none'  : '';
+  }
+});
+
   }
   [extSide, cmpSide].forEach(function(side) {
     side.addEventListener('click', function() {

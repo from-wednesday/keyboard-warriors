@@ -11828,13 +11828,14 @@ function _activateBlurPauseScreen() {
   // The guard is cleared when the player unpauses or resets to idle.
   if (_blurDiagnosticFlowComplete) return;
 
-  // Touch mode has no physical keyboard, so conflict diagnosis is meaningless.
-  // Show a simple neutral pause message and return.
+// Touch mode has no physical keyboard, so conflict diagnosis is meaningless.
+  // Show a simple neutral pause message, restore the keyboard to the panel angle, and return.
   if (touchEnabled) {
     hideConfirmHeading();
     titleEl.classList.remove('blurred');
     titleEl.className = '';
     titleEl.textContent = 'Lost you for a moment,\nso I paused your game.';
+    SetKeyboardPositionForPanel('panelPause');
     return;
   }
 

@@ -6285,7 +6285,11 @@ function _renderKeyboardConflictTab(container) {
       // extended keyboard — upgrade the toggle silently so the grid stays
       // enabled and the individual key change is applied in extended mode.
       if (!hasFullKeyboard) {
-        setKbSizeToggle(true);
+        // Upgrade to extended without resetting dismissedConflicts — the key
+        // the user just clicked must survive, so skip _syncExtendedKeysToBaseline.
+        hasFullKeyboard = true;
+        try { localStorage.setItem('kw_kb_full', 'true'); } catch(e) {}
+        updateKbSizeToggle();
         _cfSyncMiniSwitch();
         var gridEl = panel.querySelector('[data-kb-grid]');
         if (gridEl) { gridEl.style.opacity = ''; }

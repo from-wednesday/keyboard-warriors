@@ -6281,6 +6281,15 @@ function _renderKeyboardConflictTab(container) {
     });
 
     function _commitToggle() {
+      // Clicking any key button while compact is set means the user has an
+      // extended keyboard — upgrade the toggle silently so the grid stays
+      // enabled and the individual key change is applied in extended mode.
+      if (!hasFullKeyboard) {
+        setKbSizeToggle(true);
+        _cfSyncMiniSwitch();
+        var gridEl = panel.querySelector('[data-kb-grid]');
+        if (gridEl) { gridEl.style.opacity = ''; gridEl.style.pointerEvents = ''; }
+      }
       var nowBlocked = !dismissedConflicts.has(k.token);
       dismissedConflicts[nowBlocked ? 'add' : 'delete'](k.token);
       kbKeyOverrides.add(k.token);
@@ -11485,6 +11494,7 @@ function handleKeydown(e) {
   if (detectedOs === 'mobile' && e.isTrusted) {
     _setHasKeyboard();
   }
+
 updateKeyboardLighting(e, true);
   // Sync the CapsLock key indicator with the real OS CapsLock state.
   // getModifierState reads the OS-level state directly, so it never drifts.

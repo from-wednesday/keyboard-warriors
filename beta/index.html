@@ -6317,6 +6317,7 @@ function _renderKeyboardConflictTab(container) {
   }
 
   var grid = document.createElement('div');
+  grid.dataset.kbGrid = '1';
   grid.style.marginBottom = '10px';
   if (masterOff) { grid.style.opacity = '0.45'; grid.style.pointerEvents = 'none'; }
   grid.appendChild(utilGrid);
@@ -6386,26 +6387,31 @@ function _renderKeyboardConflictTab(container) {
   var cfInp = document.getElementById('cfKbSizeToggle');
   if (cfInp) {
     cfInp.addEventListener('change', function() {
-  if (touchEnabled) return;
-  var mainTog = document.getElementById('modalKbSizeToggle');
-  if (mainTog) { mainTog.checked = cfInp.checked; onKbSizeToggle(); }
-  else { setKbSizeToggle(!cfInp.checked); }
-  _cfSyncMiniSwitch();
+      if (touchEnabled) return;
+      // cfInp.checked === true means compact. Call setKbSizeToggle directly
+      // with the correct polarity — avoids the double-inversion in onKbSizeToggle().
+      setKbSizeToggle(!cfInp.checked);
 
-  var nowMasterOff = !hasFullKeyboard || touchEnabled;
+      _cfSyncMiniSwitch();
 
-  var gridDivs = panel.querySelectorAll('[data-token]');
-  gridDivs.forEach(function(el) {
-    el.dataset.blocked = (!touchEnabled && dismissedConflicts.has(el.dataset.token)) ? '1' : '0';
-    _cfApplyKeyStyle(el, el.dataset.blocked === '1');
-  });
+      // Re-evaluate from live state (hasFullKeyboard was just updated by setKbSizeToggle)
+      var nowMasterOff = !hasFullKeyboard || touchEnabled;
 
-  var gridEl = panel.querySelector('[style*="grid-template-columns"]')?.closest('[style*="margin-bottom"]');
-  if (gridEl) {
-    gridEl.style.opacity       = nowMasterOff ? '0.45' : '';
-    gridEl.style.pointerEvents = nowMasterOff ? 'none'  : '';
-  }
-});
+      // Update all key button states from the freshly-updated dismissedConflicts
+      var gridDivs = panel.querySelectorAll('[data-token]');
+      gridDivs.forEach(function(el) {
+        var blocked = !touchEnabled && dismissedConflicts.has(el.dataset.token);
+        el.dataset.blocked = blocked ? '1' : '0';
+        _cfApplyKeyStyle(el, blocked);
+      });
+
+      // Update the outer grid wrapper via the stable data attribute selector
+      var gridEl = panel.querySelector('[data-kb-grid]');
+      if (gridEl) {
+        gridEl.style.opacity       = nowMasterOff ? '0.45' : '';
+        gridEl.style.pointerEvents = nowMasterOff ? 'none'  : '';
+      }
+    });
 
   }
   [extSide, cmpSide].forEach(function(side) {

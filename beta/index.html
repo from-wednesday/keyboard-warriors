@@ -1339,7 +1339,8 @@ function showToast(msg, duration) {
     var inner = document.getElementById('settingsPanelInner');
     if (inner) {
       var r = inner.getBoundingClientRect();
-      left = Math.round(r.left + window.scrollX + r.width / 2);
+      var xOffset = (activeSettings === 'panelConflicts') ? -(r.width / 4) : 0;
+      left = Math.round(r.left + window.scrollX + r.width / 2 + xOffset);
       top  = Math.round(r.top  + window.scrollY + r.height / 2);
     }
   }

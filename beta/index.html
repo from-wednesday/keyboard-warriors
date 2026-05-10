@@ -5992,8 +5992,6 @@ function _clearconflictsOverrides() {
   DefaultBrowserKeys.forEach(function(Key) { dismissedConflicts.add(Key); });
   _saveCustomDismissedConflicts();
   questionPool = shuffleArray(buildPool());
-  // Switch back to browser tab and refresh
-  _activeConflictFilter = 'browser';
   _refreshBrowserContent();
 }
 
@@ -6148,13 +6146,7 @@ function _refreshBrowserContent() {
     });
   }
 
-  // ── Found tab: clear + report buttons, and user-found entries ───────────────
-  if (showFound && foundList && foundClear && foundEmpty) {
-    foundList.innerHTML = '';
-    foundList.style.cssText = '';
-    foundClear.innerHTML = '';
-    if (UserFoundKeys.length > 0 && !touchEnabled) {
-      // Split pill: clear overrides | report issues
+ // Clear button + report button above the list
       var ClearPill = document.createElement('div');
       ClearPill.className = 'score-clear-pill';
       ClearPill.style.cssText = 'margin-bottom:8px;flex-shrink:0;';
@@ -6166,17 +6158,15 @@ function _refreshBrowserContent() {
       ReportBtn.className = 'score-pill-seg score-pill-half';
       ReportBtn.onclick = function() {
         var OsName = currentOs === 'pc' ? 'PC/Windows' : 'Mac';
-        var UserAgent = navigator.userAgent;
-        var BrowserName = UserAgent.match(/Edg\//) ? 'Edge' :
-          UserAgent.match(/Firefox\//) ? 'Firefox' :
-          UserAgent.match(/Safari\//) && !UserAgent.match(/Chrome\//) ? 'Safari' :
-          UserAgent.match(/OPR\//) ? 'Opera' :
-          UserAgent.match(/Chrome\//) ? 'Chrome' : 'Unknown';
+        var BrowserName = navigator.userAgent.match(/Edg\//) ? 'Edge' :
+          navigator.userAgent.match(/Firefox\//) ? 'Firefox' :
+          navigator.userAgent.match(/Safari\//) && !navigator.userAgent.match(/Chrome\//) ? 'Safari' :
+          navigator.userAgent.match(/OPR\//) ? 'Opera' :
+          navigator.userAgent.match(/Chrome\//) ? 'Chrome' : 'Unknown';
         var ShortcutList = UserFoundKeys.join(', ');
         var EmailBody = '\n\nUser-reported conflict shortcuts:\n' + ShortcutList +
           '\n\nOS: ' + OsName +
-          '\nBrowser: ' + BrowserName +
-          '\nUser agent: ' + UserAgent;
+          '\nBrowser: ' + BrowserName;
         var Anchor = document.createElement('a');
         Anchor.href = 'mailto:Wednesday%20Dessauer%20%3Cddessauer%40swin.edu.au%3E' +
           '?subject=' + encodeURIComponent('Keyboard Warriors: user-found conflict report') +
@@ -6191,32 +6181,7 @@ function _refreshBrowserContent() {
       ClearPill.appendChild(ClearBtn);
       ClearPill.appendChild(ReportBtn);
       foundClear.appendChild(ClearPill);
-      // User-found entries
-      foundList.style.cssText = 'display:grid;grid-template-columns:1fr 1fr;column-gap:8px;row-gap:0;';
-      UserFoundKeys.forEach(function(BlockedKey) {
-        var li = document.createElement('li');
-        li.className = 'conflict-dismissed';
-        li.dataset.conflictKey = BlockedKey;
-        li.style.cssText = 'margin-bottom:6px;display:flex;align-items:center;flex-wrap:nowrap;gap:0;line-height:1.6;cursor:pointer;';
-        li.appendChild(_makeConflictRadio(BlockedKey));
-        var label = document.createElement('span');
-        label.className = 'conflict-label';
-        var ParsedDiagnosticLabel = _BuildBrowserConflictLabel(BlockedKey);
-        label.appendChild(_renderKeyChips(ParsedDiagnosticLabel.displayShortcut));
-        li.appendChild(label);
-        li.addEventListener('click', function(e) {
-          if (e.target.closest('.modal-radio')) return;
-          li.querySelector('.modal-radio').click();
-        });
-        foundList.appendChild(li);
-      });
-      foundEmpty.style.display = 'none';
-    } else {
-      foundEmpty.style.display = '';
-    }
-  }
-
-  
+      
   // ── Keyboard tab: key grid ────────────────────────────────────────────────
   if (showKeyboard && kbPanel) {
     _renderKeyboardConflictTab(kbPanel);

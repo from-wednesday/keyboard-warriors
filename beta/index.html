@@ -6167,17 +6167,10 @@ function _refreshBrowserContent() {
           UserAgent.match(/OPR\//) ? 'Opera' :
           UserAgent.match(/Chrome\//) ? 'Chrome' : 'Unknown';
         var ShortcutList = UserFoundKeys.join(', ');
-        var EmailBody = '
-
-User-reported conflict shortcuts:
-' + ShortcutList +
-          '
-
-OS: ' + OsName +
-          '
-Browser: ' + BrowserName +
-          '
-User agent: ' + UserAgent;
+        var EmailBody = '\n\nUser-reported conflict shortcuts:\n' + ShortcutList +
+          '\n\nOS: ' + OsName +
+          '\nBrowser: ' + BrowserName +
+          '\nUser agent: ' + UserAgent;
         var Anchor = document.createElement('a');
         Anchor.href = 'mailto:Wednesday%20Dessauer%20%3Cddessauer%40swin.edu.au%3E' +
           '?subject=' + encodeURIComponent('Keyboard Warriors: user-found conflict report') +

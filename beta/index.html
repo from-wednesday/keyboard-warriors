@@ -6288,7 +6288,7 @@ function _renderKeyboardConflictTab(container) {
         setKbSizeToggle(true);
         _cfSyncMiniSwitch();
         var gridEl = panel.querySelector('[data-kb-grid]');
-        if (gridEl) { gridEl.style.opacity = ''; gridEl.style.pointerEvents = ''; }
+        if (gridEl) { gridEl.style.opacity = ''; }
       }
       var nowBlocked = !dismissedConflicts.has(k.token);
       dismissedConflicts[nowBlocked ? 'add' : 'delete'](k.token);
@@ -6329,7 +6329,7 @@ function _renderKeyboardConflictTab(container) {
   var grid = document.createElement('div');
   grid.dataset.kbGrid = '1';
   grid.style.marginBottom = '10px';
-  if (masterOff) { grid.style.opacity = '0.45'; grid.style.pointerEvents = 'none'; }
+  if (masterOff) { grid.style.opacity = '0.45'; }  // pointerEvents left enabled so clicks trigger auto-upgrade
   grid.appendChild(utilGrid);
   grid.appendChild(navGrid);
 
@@ -6416,10 +6416,11 @@ function _renderKeyboardConflictTab(container) {
       });
 
       // Update the outer grid wrapper via the stable data attribute selector
+      // pointerEvents always enabled — compact clicks trigger auto-upgrade
       var gridEl = panel.querySelector('[data-kb-grid]');
       if (gridEl) {
         gridEl.style.opacity       = nowMasterOff ? '0.45' : '';
-        gridEl.style.pointerEvents = nowMasterOff ? 'none'  : '';
+        gridEl.style.pointerEvents = '';
       }
     });
 

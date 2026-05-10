@@ -6148,7 +6148,13 @@ function _refreshBrowserContent() {
     });
   }
 
- // Clear button + report button above the list
+  // ── Found tab: clear + report buttons, and user-found entries ───────────────
+  if (showFound && foundList && foundClear && foundEmpty) {
+    foundList.innerHTML = '';
+    foundList.style.cssText = '';
+    foundClear.innerHTML = '';
+    if (UserFoundKeys.length > 0 && !touchEnabled) {
+      // Split pill: clear overrides | report issues
       var ClearPill = document.createElement('div');
       ClearPill.className = 'score-clear-pill';
       ClearPill.style.cssText = 'margin-bottom:8px;flex-shrink:0;';
@@ -6185,7 +6191,32 @@ function _refreshBrowserContent() {
       ClearPill.appendChild(ClearBtn);
       ClearPill.appendChild(ReportBtn);
       foundClear.appendChild(ClearPill);
-      
+      // User-found entries
+      foundList.style.cssText = 'display:grid;grid-template-columns:1fr 1fr;column-gap:8px;row-gap:0;';
+      UserFoundKeys.forEach(function(BlockedKey) {
+        var li = document.createElement('li');
+        li.className = 'conflict-dismissed';
+        li.dataset.conflictKey = BlockedKey;
+        li.style.cssText = 'margin-bottom:6px;display:flex;align-items:center;flex-wrap:nowrap;gap:0;line-height:1.6;cursor:pointer;';
+        li.appendChild(_makeConflictRadio(BlockedKey));
+        var label = document.createElement('span');
+        label.className = 'conflict-label';
+        var ParsedDiagnosticLabel = _BuildBrowserConflictLabel(BlockedKey);
+        label.appendChild(_renderKeyChips(ParsedDiagnosticLabel.displayShortcut));
+        li.appendChild(label);
+        li.addEventListener('click', function(e) {
+          if (e.target.closest('.modal-radio')) return;
+          li.querySelector('.modal-radio').click();
+        });
+        foundList.appendChild(li);
+      });
+      foundEmpty.style.display = 'none';
+    } else {
+      foundEmpty.style.display = '';
+    }
+  }
+
+  
   // ── Keyboard tab: key grid ────────────────────────────────────────────────
   if (showKeyboard && kbPanel) {
     _renderKeyboardConflictTab(kbPanel);

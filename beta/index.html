@@ -4657,11 +4657,7 @@ function updateKbSizeToggle() {
   var row     = document.getElementById('modalKbSizeRow');
   var knob    = document.getElementById('modalKbSizeKnob');
   var tog     = document.getElementById('modalKbSizeToggle');
-  if (!knob) return;
   var isCompact = !hasFullKeyboard;
-  knob.style.transform = isCompact ? 'translateX(22px)' : 'translateX(0)';
-  knob.setAttribute('fill', isCompact ? '#374151' : 'white');
-  if (tog) tog.checked = isCompact;
 
   // Active side = dark grey; inactive side = mid-grey
   var activeColour   = '#374151';
@@ -4669,17 +4665,22 @@ function updateKbSizeToggle() {
   var extendedColour = isCompact ? inactiveColour : activeColour;
   var compactColour  = isCompact ? activeColour   : inactiveColour;
 
-  var extIcon  = document.getElementById('kbSizeExtendedIcon');
-  var extLabel = document.getElementById('kbSizeExtendedLabel');
-  var cmpIcon  = document.getElementById('kbSizeCompactIcon');
-  var cmpLabel = document.getElementById('kbSizeCompactLabel');
-  if (extIcon)  extIcon.style.color          = extendedColour;
-  if (extLabel) { extLabel.style.color = extendedColour; extLabel.style.textDecoration = isCompact ? 'line-through' : ''; }
-  if (cmpIcon)  cmpIcon.style.color          = compactColour;
-  if (cmpLabel) { cmpLabel.style.color = compactColour; cmpLabel.style.textDecoration = isCompact ? '' : 'line-through'; }
-
-  // Grey out and lock to compact when touch is enabled
-  if (row) row.classList.toggle('disabled', touchEnabled);
+  // Update KB-settings-panel elements only if that panel is in the DOM
+  if (knob) {
+    knob.style.transform = isCompact ? 'translateX(22px)' : 'translateX(0)';
+    knob.setAttribute('fill', isCompact ? '#374151' : 'white');
+    if (tog) tog.checked = isCompact;
+    var extIcon  = document.getElementById('kbSizeExtendedIcon');
+    var extLabel = document.getElementById('kbSizeExtendedLabel');
+    var cmpIcon  = document.getElementById('kbSizeCompactIcon');
+    var cmpLabel = document.getElementById('kbSizeCompactLabel');
+    if (extIcon)  extIcon.style.color          = extendedColour;
+    if (extLabel) { extLabel.style.color = extendedColour; extLabel.style.textDecoration = isCompact ? 'line-through' : ''; }
+    if (cmpIcon)  cmpIcon.style.color          = compactColour;
+    if (cmpLabel) { cmpLabel.style.color = compactColour; cmpLabel.style.textDecoration = isCompact ? '' : 'line-through'; }
+    // Grey out and lock to compact when touch is enabled
+    if (row) row.classList.toggle('disabled', touchEnabled);
+  }
 
   // Keep the conflicts-panel mini-switch in sync if it exists
   var cfKnob = document.getElementById('cfKbSizeKnob');

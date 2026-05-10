@@ -6148,50 +6148,51 @@ function _refreshBrowserContent() {
     });
   }
 
-  // ── Found tab: clear button (above list) + user-found entries ────────────
-  if (showFound && foundList && foundClear && foundEmpty) {
-    foundList.innerHTML  = '';
-    foundList.style.cssText = '';
-    foundClear.innerHTML = '';
-
-    if (UserFoundKeys.length > 0 && !touchEnabled) {
-      // Clear button above the list
+ // Clear button + report button above the list
       var ClearPill = document.createElement('div');
       ClearPill.className = 'score-clear-pill';
       ClearPill.style.cssText = 'margin-bottom:8px;flex-shrink:0;';
       var ClearBtn = document.createElement('button');
-      ClearBtn.className = 'score-pill-seg score-pill-full';
+      ClearBtn.className = 'score-pill-seg score-pill-half';
       ClearBtn.onclick = _clearconflictsOverrides;
       ClearBtn.innerHTML = '<span class="diff-btn-text">clear overrides</span>';
+      var ReportBtn = document.createElement('button');
+      ReportBtn.className = 'score-pill-seg score-pill-half';
+      ReportBtn.onclick = function() {
+        var OsName = currentOs === 'pc' ? 'PC/Windows' : 'Mac';
+        var UserAgent = navigator.userAgent;
+        var BrowserName = UserAgent.match(/Edg\//) ? 'Edge' :
+          UserAgent.match(/Firefox\//) ? 'Firefox' :
+          UserAgent.match(/Safari\//) && !UserAgent.match(/Chrome\//) ? 'Safari' :
+          UserAgent.match(/OPR\//) ? 'Opera' :
+          UserAgent.match(/Chrome\//) ? 'Chrome' : 'Unknown';
+        var ShortcutList = UserFoundKeys.join(', ');
+        var EmailBody = '
+
+User-reported conflict shortcuts:
+' + ShortcutList +
+          '
+
+OS: ' + OsName +
+          '
+Browser: ' + BrowserName +
+          '
+User agent: ' + UserAgent;
+        var Anchor = document.createElement('a');
+        Anchor.href = 'mailto:Wednesday%20Dessauer%20%3Cddessauer%40swin.edu.au%3E' +
+          '?subject=' + encodeURIComponent('Keyboard Warriors: user-found conflict report') +
+          '&body=' + encodeURIComponent(EmailBody);
+        Anchor.target = '_blank';
+        Anchor.rel = 'noopener';
+        document.body.appendChild(Anchor);
+        Anchor.click();
+        document.body.removeChild(Anchor);
+      };
+      ReportBtn.innerHTML = '<span class="diff-btn-text"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="13" height="13" style="vertical-align:middle;margin-right:4px;"><rect x="2" y="4" width="20" height="16" rx="2"/><polyline points="2,4 12,13 22,4"/></svg>report issues</span>';
       ClearPill.appendChild(ClearBtn);
+      ClearPill.appendChild(ReportBtn);
       foundClear.appendChild(ClearPill);
-
-      // User-found entries — two columns
-      foundList.style.cssText = 'display:grid;grid-template-columns:1fr 1fr;column-gap:8px;row-gap:0;';
-      UserFoundKeys.forEach(function(BlockedKey) {
-        var li = document.createElement('li');
-        li.className = 'conflict-dismissed';
-        li.dataset.conflictKey = BlockedKey;
-        li.style.cssText = 'margin-bottom:6px;display:flex;align-items:center;flex-wrap:nowrap;gap:0;line-height:1.6;cursor:pointer;';
-        li.appendChild(_makeConflictRadio(BlockedKey));
-        var label = document.createElement('span');
-        label.className = 'conflict-label';
-        var ParsedDiagnosticLabel = _BuildBrowserConflictLabel(BlockedKey);
-        label.appendChild(_renderKeyChips(ParsedDiagnosticLabel.displayShortcut));
-        li.appendChild(label);
-        li.addEventListener('click', function(e) {
-          if (e.target.closest('.modal-radio')) return;
-          li.querySelector('.modal-radio').click();
-        });
-        foundList.appendChild(li);
-      });
-      foundEmpty.style.display = 'none';
-    } else {
-      // Empty state
-      foundEmpty.style.display = '';
-    }
-  }
-
+      
   // ── Keyboard tab: key grid ────────────────────────────────────────────────
   if (showKeyboard && kbPanel) {
     _renderKeyboardConflictTab(kbPanel);

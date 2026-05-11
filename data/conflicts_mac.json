@@ -39,8 +39,8 @@
       { "bad": "CMD+9", "action": "switch to ninth or last tab", "sus": true },
       { "bad": "CTRL+TAB", "action": "next tab", "sus": true },
       { "bad": "CTRL+SHIFT+TAB", "action": "previous tab", "sus": true },
-      { "bad": "CMD+SHIFT+]", "action": "next tab", "sus": true },
-      { "bad": "CMD+SHIFT+[", "action": "previous tab", "sus": true }
+      { "bad": "CMD+SHIFT+BRACKETRIGHT", "action": "next tab", "sus": true },
+      { "bad": "CMD+SHIFT+BRACKETLEFT", "action": "previous tab", "sus": true }
     ],
     "Chrome": [
       { "bad": "CMD+T", "action": "new tab" },

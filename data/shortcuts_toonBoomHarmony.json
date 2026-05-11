@@ -27,37 +27,37 @@
     "display": "New Scene",
     "mac_sc": "CMD+N",
     "pc_sc": "CTRL+N",
-    "difficulty": 0
+    "difficulty": 1
   },
   {
     "display": "Selection tool",
     "mac_sc": "OPTION+S",
     "pc_sc": "ALT+S",
-    "difficulty": 1
+    "difficulty": 2
   },
   {
     "display": "Brush tool",
     "mac_sc": "OPTION+B",
     "pc_sc": "ALT+B",
-    "difficulty": 1
+    "difficulty": 2
   },
   {
     "display": "Eraser tool",
     "mac_sc": "OPTION+E",
     "pc_sc": "ALT+E",
-    "difficulty": 1
+    "difficulty": 2
   },
   {
     "display": "Paint tool",
     "mac_sc": "OPTION+A",
     "pc_sc": "ALT+A",
-    "difficulty": 1
+    "difficulty": 3
   },
   {
     "display": "Line tool",
     "mac_sc": "OPTION+L",
     "pc_sc": "ALT+L",
-    "difficulty": 1
+    "difficulty": 2
   },
   {
     "display": "Hand tool",
@@ -69,13 +69,13 @@
     "display": "Zoom In",
     "mac_sc": "2",
     "pc_sc": "2",
-    "difficulty": 1
+    "difficulty": 2
   },
   {
     "display": "Zoom Out",
     "mac_sc": "1",
     "pc_sc": "1",
-    "difficulty": 1
+    "difficulty": 2
   },
   {
     "display": "step Forward",
@@ -93,49 +93,49 @@
     "display": "insert Keyframe",
     "mac_sc": "F6",
     "pc_sc": "F6",
-    "difficulty": 1
+    "difficulty": 3
   },
   {
     "display": "toggle Onion Skin",
     "mac_sc": "OPTION+O",
     "pc_sc": "ALT+O",
-    "difficulty": 1
+    "difficulty": 2
   },
   {
     "display": "toggle Light Table",
     "mac_sc": "SHIFT+L",
     "pc_sc": "SHIFT+L",
-    "difficulty": 1
+    "difficulty": 2
   },
   {
     "display": "Pencil tool",
     "mac_sc": "OPTION+SHIFT+B",
     "pc_sc": "ALT+SHIFT+B",
-    "difficulty": 2
+    "difficulty": 3
   },
   {
     "display": "Cutter tool",
     "mac_sc": "OPTION+T",
     "pc_sc": "ALT+T",
-    "difficulty": 2
+    "difficulty": 3
   },
   {
     "display": "Contour Editor tool",
     "mac_sc": "OPTION+Q",
     "pc_sc": "ALT+Q",
-    "difficulty": 2
+    "difficulty": 3
   },
   {
     "display": "create Empty Drawing",
     "mac_sc": "OPTION+SHIFT+R",
     "pc_sc": "ALT+SHIFT+R",
-    "difficulty": 2
+    "difficulty": 3
   },
   {
     "display": "rename Drawing",
     "mac_sc": "CMD+D",
     "pc_sc": "CTRL+D",
-    "difficulty": 2
+    "difficulty": 3
   },
   {
     "display": "Redo",
@@ -159,19 +159,19 @@
     "display": "select Parent",
     "mac_sc": "B",
     "pc_sc": "B",
-    "difficulty": 2
+    "difficulty": 3
   },
   {
     "display": "select Child",
     "mac_sc": "SHIFT+B",
     "pc_sc": "SHIFT+B",
-    "difficulty": 2
+    "difficulty": 3
   },
   {
     "display": "reset View",
     "mac_sc": "SHIFT+M",
     "pc_sc": "SHIFT+M",
-    "difficulty": 2
+    "difficulty": 4
   },
   {
     "display": "toggle Loop",
@@ -183,13 +183,13 @@
     "display": "go to Next Keyframe",
     "mac_sc": "K",
     "pc_sc": "K",
-    "difficulty": 2
+    "difficulty": 3
   },
   {
     "display": "go to Previous Keyframe",
     "mac_sc": "J",
     "pc_sc": "J",
-    "difficulty": 2
+    "difficulty": 3
   },
   {
     "display": "Render Preview",
@@ -243,7 +243,7 @@
     "display": "open Preferences",
     "mac_sc": "CMD+COMMA",
     "pc_sc": "CTRL+U",
-    "difficulty": 3
+    "difficulty": 4
   },
   {
     "display": "add Deformer",
@@ -303,31 +303,31 @@
     "display": "Convert Brush Strokes to Pencil Lines",
     "mac_sc": "CARET",
     "pc_sc": "CARET",
-    "difficulty": 5
+    "difficulty": 4
   },
   {
     "display": "Convert Pencil Lines to Brush Strokes",
     "mac_sc": "AMPERSAND",
     "pc_sc": "AMPERSAND",
-    "difficulty": 5
+    "difficulty": 4
   },
   {
     "display": "Line Art To Colour Art",
     "mac_sc": "ASTERISK",
     "pc_sc": "ASTERISK",
-    "difficulty": 5
+    "difficulty": 4
   },
   {
     "display": "toggle Full Screen",
     "mac_sc": "CMD+F",
     "pc_sc": "CTRL+F",
-    "difficulty": 5
+    "difficulty": 3
   },
   {
     "display": "Group with Composite",
     "mac_sc": "CMD+SHIFT+G",
     "pc_sc": "CTRL+SHIFT+G",
-    "difficulty": 5
+    "difficulty": 3
   },
   {
     "display": "open Essential Sound",
@@ -339,56 +339,56 @@
     "display": "nudge Up 1 pixel",
     "mac_sc": "ARROWUP",
     "pc_sc": "ARROWUP",
-    "difficulty": 0,
+    "difficulty": 1,
     "group": "nudge"
   },
   {
     "display": "nudge Up 10 pixels",
     "mac_sc": "SHIFT+ARROWUP",
     "pc_sc": "SHIFT+ARROWUP",
-    "difficulty": 1,
+    "difficulty": 2,
     "group": "nudge"
   },
   {
     "display": "nudge Down 1 pixel",
     "mac_sc": "ARROWDOWN",
     "pc_sc": "ARROWDOWN",
-    "difficulty": 0,
+    "difficulty": 1,
     "group": "nudge"
   },
   {
     "display": "nudge Down 10 pixels",
     "mac_sc": "SHIFT+ARROWDOWN",
     "pc_sc": "SHIFT+ARROWDOWN",
-    "difficulty": 1,
+    "difficulty": 2,
     "group": "nudge"
   },
   {
     "display": "nudge Left 1 pixel",
     "mac_sc": "ARROWLEFT",
     "pc_sc": "ARROWLEFT",
-    "difficulty": 0,
+    "difficulty": 1,
     "group": "nudge"
   },
   {
     "display": "nudge Left 10 pixels",
     "mac_sc": "SHIFT+ARROWLEFT",
     "pc_sc": "SHIFT+ARROWLEFT",
-    "difficulty": 1,
+    "difficulty": 2,
     "group": "nudge"
   },
   {
     "display": "nudge Right 1 pixel",
     "mac_sc": "ARROWRIGHT",
     "pc_sc": "ARROWRIGHT",
-    "difficulty": 0,
+    "difficulty": 1,
     "group": "nudge"
   },
   {
     "display": "nudge Right 10 pixels",
     "mac_sc": "SHIFT+ARROWRIGHT",
     "pc_sc": "SHIFT+ARROWRIGHT",
-    "difficulty": 1,
+    "difficulty": 2,
     "group": "nudge"
   }
 ]

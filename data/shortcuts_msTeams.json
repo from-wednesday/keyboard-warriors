@@ -1,0 +1,384 @@
+[
+  {
+    "display": "search for a message or person",
+    "mac_sc": "CMD+E",
+    "pc_sc": "CTRL+E",
+    "difficulty": 0
+  },
+  {
+    "display": "start a new chat",
+    "mac_sc": "CMD+N",
+    "pc_sc": "CTRL+N",
+    "difficulty": 0
+  },
+  {
+    "display": "open Help",
+    "mac_sc": "F1",
+    "pc_sc": "F1",
+    "difficulty": 0
+  },
+  {
+    "display": "open Settings",
+    "mac_sc": "CMD+COMMA",
+    "pc_sc": "CTRL+COMMA",
+    "difficulty": 0
+  },
+  {
+    "display": "go to Activity",
+    "mac_sc": "CMD+1",
+    "pc_sc": "CTRL+1",
+    "difficulty": 0
+  },
+  {
+    "display": "go to Chat",
+    "mac_sc": "CMD+2",
+    "pc_sc": "CTRL+2",
+    "difficulty": 0
+  },
+  {
+    "display": "go to Teams",
+    "mac_sc": "CMD+3",
+    "pc_sc": "CTRL+3",
+    "difficulty": 0
+  },
+  {
+    "display": "go to Calendar",
+    "mac_sc": "CMD+4",
+    "pc_sc": "CTRL+4",
+    "difficulty": 0
+  },
+  {
+    "display": "go to Calls",
+    "mac_sc": "CMD+5",
+    "pc_sc": "CTRL+5",
+    "difficulty": 0
+  },
+  {
+    "display": "go to Files",
+    "mac_sc": "CMD+6",
+    "pc_sc": "CTRL+6",
+    "difficulty": 0
+  },
+  {
+    "display": "redo the last action",
+    "mac_sc": "CMD+SHIFT+Z",
+    "pc_sc": "CTRL+Y",
+    "difficulty": 1
+  },
+  {
+    "display": "zoom In",
+    "mac_sc": "CMD+PLUS",
+    "pc_sc": "CTRL+PLUS",
+    "difficulty": 1
+  },
+  {
+    "display": "zoom Out",
+    "mac_sc": "CMD+MINUS",
+    "pc_sc": "CTRL+MINUS",
+    "difficulty": 1
+  },
+  {
+    "display": "reset the zoom level",
+    "mac_sc": "CMD+0",
+    "pc_sc": "CTRL+0",
+    "difficulty": 1
+  },
+  {
+    "display": "toggle Mute",
+    "mac_sc": "CMD+SHIFT+M",
+    "pc_sc": "CTRL+SHIFT+M",
+    "difficulty": 1
+  },
+  {
+    "display": "toggle Video camera",
+    "mac_sc": "CMD+SHIFT+O",
+    "pc_sc": "CTRL+SHIFT+O",
+    "difficulty": 1
+  },
+  {
+    "display": "go to the previous list item",
+    "mac_sc": "OPTION+ARROWUP",
+    "pc_sc": "ALT+ARROWUP",
+    "difficulty": 1
+  },
+  {
+    "display": "go to the next list item",
+    "mac_sc": "OPTION+ARROWDOWN",
+    "pc_sc": "ALT+ARROWDOWN",
+    "difficulty": 1
+  },
+  {
+    "display": "attach a File",
+    "mac_sc": "CMD+O",
+    "pc_sc": "CTRL+O",
+    "difficulty": 1
+  },
+  {
+    "display": "show keyboard shortcuts",
+    "mac_sc": "CMD+PERIOD",
+    "pc_sc": "CTRL+PERIOD",
+    "difficulty": 1
+  },
+  {
+    "display": "start a new line in a message",
+    "mac_sc": "SHIFT+RETURN",
+    "pc_sc": "SHIFT+ENTER",
+    "difficulty": 2
+  },
+  {
+    "display": "send the message",
+    "mac_sc": "CMD+RETURN",
+    "pc_sc": "CTRL+ENTER",
+    "difficulty": 2
+  },
+  {
+    "display": "expand the compose box",
+    "mac_sc": "CMD+SHIFT+X",
+    "pc_sc": "CTRL+SHIFT+X",
+    "difficulty": 2
+  },
+  {
+    "display": "mark the message as important",
+    "mac_sc": "CMD+SHIFT+I",
+    "pc_sc": "CTRL+SHIFT+I",
+    "difficulty": 2
+  },
+  {
+    "display": "bold selection",
+    "mac_sc": "CMD+B",
+    "pc_sc": "CTRL+B",
+    "difficulty": 2
+  },
+  {
+    "display": "italicise selection",
+    "mac_sc": "CMD+I",
+    "pc_sc": "CTRL+I",
+    "difficulty": 2
+  },
+  {
+    "display": "underline selection",
+    "mac_sc": "CMD+U",
+    "pc_sc": "CTRL+U",
+    "difficulty": 2
+  },
+  {
+    "display": "strikethrough selection",
+    "mac_sc": "CMD+SHIFT+S",
+    "pc_sc": "CTRL+SHIFT+S",
+    "difficulty": 2
+  },
+  {
+    "display": "insert a link",
+    "mac_sc": "CMD+K",
+    "pc_sc": "CTRL+K",
+    "difficulty": 2
+  },
+  {
+    "display": "start a bulleted list",
+    "mac_sc": "CMD+SHIFT+8",
+    "pc_sc": "CTRL+SHIFT+8",
+    "difficulty": 2
+  },
+  {
+    "display": "start a numbered list",
+    "mac_sc": "CMD+SHIFT+7",
+    "pc_sc": "CTRL+SHIFT+7",
+    "difficulty": 2
+  },
+  {
+    "display": "accept a video call",
+    "mac_sc": "CMD+SHIFT+A",
+    "pc_sc": "CTRL+SHIFT+A",
+    "difficulty": 3
+  },
+  {
+    "display": "accept an audio call",
+    "mac_sc": "CMD+SHIFT+S",
+    "pc_sc": "CTRL+SHIFT+S",
+    "difficulty": 3
+  },
+  {
+    "display": "decline a call",
+    "mac_sc": "CMD+SHIFT+D",
+    "pc_sc": "CTRL+SHIFT+D",
+    "difficulty": 3
+  },
+  {
+    "display": "raise or lower your Hand",
+    "mac_sc": "CMD+SHIFT+K",
+    "pc_sc": "CTRL+SHIFT+K",
+    "difficulty": 3
+  },
+  {
+    "display": "toggle Background blur",
+    "mac_sc": "CMD+SHIFT+P",
+    "pc_sc": "CTRL+SHIFT+P",
+    "difficulty": 3
+  },
+  {
+    "display": "start a screen share session",
+    "mac_sc": "CMD+SHIFT+E",
+    "pc_sc": "CTRL+SHIFT+E",
+    "difficulty": 3
+  },
+  {
+    "display": "toggle recording in a meeting",
+    "mac_sc": "CMD+SHIFT+C",
+    "pc_sc": "CTRL+SHIFT+C",
+    "difficulty": 3
+  },
+  {
+    "display": "open the sharing toolbar",
+    "mac_sc": "CMD+SHIFT+SPACE",
+    "pc_sc": "CTRL+SHIFT+SPACE",
+    "difficulty": 3
+  },
+  {
+    "display": "see everyone's Video",
+    "mac_sc": "CMD+SHIFT+L",
+    "pc_sc": "CTRL+SHIFT+L",
+    "difficulty": 3
+  },
+  {
+    "display": "go to the Filter",
+    "mac_sc": "CMD+SHIFT+F",
+    "pc_sc": "CTRL+SHIFT+F",
+    "difficulty": 4
+  },
+  {
+    "display": "move to the next section",
+    "mac_sc": "F6",
+    "pc_sc": "F6",
+    "difficulty": 4
+  },
+  {
+    "display": "move to the previous section",
+    "mac_sc": "SHIFT+F6",
+    "pc_sc": "SHIFT+F6",
+    "difficulty": 4
+  },
+  {
+    "display": "open your profile menu",
+    "mac_sc": "CMD+SHIFT+M",
+    "pc_sc": "CTRL+SHIFT+M",
+    "difficulty": 4
+  },
+  {
+    "display": "go to the History menu",
+    "mac_sc": "CMD+SHIFT+H",
+    "pc_sc": "CTRL+SHIFT+H",
+    "difficulty": 4
+  },
+  {
+    "display": "show suggested commands",
+    "mac_sc": "CMD+SLASH",
+    "pc_sc": "CTRL+SLASH",
+    "difficulty": 4
+  },
+  {
+    "display": "jump to the current time in Calendar",
+    "mac_sc": "OPTION+PERIOD",
+    "pc_sc": "ALT+PERIOD",
+    "difficulty": 4
+  },
+  {
+    "display": "schedule a meeting",
+    "mac_sc": "OPTION+SHIFT+N",
+    "pc_sc": "ALT+SHIFT+N",
+    "difficulty": 4
+  },
+  {
+    "display": "toggle Screen Reader mode",
+    "mac_sc": "CMD+CONTROL+S",
+    "pc_sc": "CTRL+WIN+S",
+    "difficulty": 5
+  },
+  {
+    "display": "move selected Team up",
+    "mac_sc": "CMD+SHIFT+ARROWUP",
+    "pc_sc": "CTRL+SHIFT+ARROWUP",
+    "difficulty": 5
+  },
+  {
+    "display": "move selected Team down",
+    "mac_sc": "CMD+SHIFT+ARROWDOWN",
+    "pc_sc": "CTRL+SHIFT+ARROWDOWN",
+    "difficulty": 5
+  },
+  {
+    "display": "open the Apps flyout",
+    "mac_sc": "CMD+SHIFT+A",
+    "pc_sc": "CTRL+SHIFT+A",
+    "difficulty": 5
+  },
+  {
+    "display": "toggle the Mute notification",
+    "mac_sc": "CMD+SHIFT+H",
+    "pc_sc": "CTRL+SHIFT+H",
+    "difficulty": 5
+  },
+  {
+    "display": "open Global Search",
+    "mac_sc": "CMD+SLASH",
+    "pc_sc": "CTRL+SLASH",
+    "difficulty": 5
+  },
+  {
+    "display": "open the 7th app in the sidebar",
+    "mac_sc": "CMD+7",
+    "pc_sc": "CTRL+7",
+    "difficulty": 4
+  },
+  {
+    "display": "open the 8th app in the sidebar",
+    "mac_sc": "CMD+8",
+    "pc_sc": "CTRL+8",
+    "difficulty": 4
+  },
+  {
+    "display": "open the 9th app in the sidebar",
+    "mac_sc": "CMD+9",
+    "pc_sc": "CTRL+9",
+    "difficulty": 4
+  },
+  {
+    "display": "select the character to the left",
+    "mac_sc": "SHIFT+ARROWLEFT",
+    "pc_sc": "SHIFT+ARROWLEFT",
+    "difficulty": 1,
+    "group": "text_nav"
+  },
+  {
+    "display": "select the character to the right",
+    "mac_sc": "SHIFT+ARROWRIGHT",
+    "pc_sc": "SHIFT+ARROWRIGHT",
+    "difficulty": 1,
+    "group": "text_nav"
+  },
+  {
+    "display": "select the word to the left",
+    "mac_sc": "OPTION+SHIFT+ARROWLEFT",
+    "pc_sc": "CTRL+SHIFT+ARROWLEFT",
+    "difficulty": 3,
+    "group": "text_nav"
+  },
+  {
+    "display": "select the word to the right",
+    "mac_sc": "OPTION+SHIFT+ARROWRIGHT",
+    "pc_sc": "CTRL+SHIFT+ARROWRIGHT",
+    "difficulty": 3,
+    "group": "text_nav"
+  },
+  {
+    "display": "move cursor to start of message",
+    "mac_sc": "CMD+ARROWUP",
+    "pc_sc": "CTRL+HOME",
+    "difficulty": 4
+  },
+  {
+    "display": "move cursor to end of message",
+    "mac_sc": "CMD+ARROWDOWN",
+    "pc_sc": "CTRL+END",
+    "difficulty": 4
+  }
+]

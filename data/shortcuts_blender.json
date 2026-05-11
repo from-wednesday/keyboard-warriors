@@ -1,0 +1,476 @@
+[
+  {
+    "display": "move the selected Object",
+    "mac_sc": "G",
+    "pc_sc": "G",
+    "difficulty": 1
+  },
+  {
+    "display": "rotate the selected Object",
+    "mac_sc": "R",
+    "pc_sc": "R",
+    "difficulty": 1
+  },
+  {
+    "display": "scale the selected Object",
+    "mac_sc": "S",
+    "pc_sc": "S",
+    "difficulty": 1
+  },
+  {
+    "display": "Delete the selected Object",
+    "mac_sc": "DELETE|X",
+    "pc_sc": "DELETE|X",
+    "difficulty": 0
+  },
+  {
+    "display": "toggle Edit mode",
+    "mac_sc": "TAB",
+    "pc_sc": "TAB",
+    "difficulty": 1
+  },
+  {
+    "display": "Extrude the selection",
+    "mac_sc": "E",
+    "pc_sc": "E",
+    "difficulty": 3
+  },
+  {
+    "display": "inset the selected face",
+    "mac_sc": "I",
+    "pc_sc": "I",
+    "difficulty": 3
+  },
+  {
+    "display": "Bevel the selected Edges",
+    "mac_sc": "CMD+B",
+    "pc_sc": "CTRL+B",
+    "difficulty": 3
+  },
+  {
+    "display": "loop Cut and slide",
+    "mac_sc": "CMD+R",
+    "pc_sc": "CTRL+R",
+    "difficulty": 3
+  },
+  {
+    "display": "Knife tool",
+    "mac_sc": "K",
+    "pc_sc": "K",
+    "difficulty": 3
+  },
+  {
+    "display": "Duplicate the selection",
+    "mac_sc": "SHIFT+D",
+    "pc_sc": "SHIFT+D",
+    "difficulty": 2
+  },
+  {
+    "display": "create a Linked Duplicate",
+    "mac_sc": "OPTION+D",
+    "pc_sc": "ALT+D",
+    "difficulty": 4
+  },
+  {
+    "display": "separate selection into New Object",
+    "mac_sc": "P",
+    "pc_sc": "P",
+    "difficulty": 3
+  },
+  {
+    "display": "join selected Objects",
+    "mac_sc": "CMD+J",
+    "pc_sc": "CTRL+J",
+    "difficulty": 3
+  },
+  {
+    "display": "fill between Vertices or Edges",
+    "mac_sc": "F",
+    "pc_sc": "F",
+    "difficulty": 2
+  },
+  {
+    "display": "rip the selected Vertex",
+    "mac_sc": "V",
+    "pc_sc": "V",
+    "difficulty": 4
+  },
+  {
+    "display": "Merge the selected Vertices",
+    "mac_sc": "M",
+    "pc_sc": "M",
+    "difficulty": 3
+  },
+  {
+    "display": "view from the Front",
+    "mac_sc": "NUMPAD1",
+    "pc_sc": "NUMPAD1",
+    "difficulty": 3,
+    "group": "view_numpad"
+  },
+  {
+    "display": "view from the Right",
+    "mac_sc": "NUMPAD3",
+    "pc_sc": "NUMPAD3",
+    "difficulty": 3,
+    "group": "view_numpad"
+  },
+  {
+    "display": "view from the Top",
+    "mac_sc": "NUMPAD7",
+    "pc_sc": "NUMPAD7",
+    "difficulty": 3,
+    "group": "view_numpad"
+  },
+  {
+    "display": "view from the Camera",
+    "mac_sc": "NUMPAD0",
+    "pc_sc": "NUMPAD0",
+    "difficulty": 3
+  },
+  {
+    "display": "focus on the selected Object",
+    "mac_sc": "PERIOD",
+    "pc_sc": "PERIOD",
+    "difficulty": 3
+  },
+  {
+    "display": "toggle Perspective or Orthographic",
+    "mac_sc": "NUMPAD5",
+    "pc_sc": "NUMPAD5",
+    "difficulty": 3
+  },
+  {
+    "display": "view Opposite side",
+    "mac_sc": "CMD+NUMPAD1|CMD+NUMPAD3|CMD+NUMPAD7",
+    "pc_sc": "CTRL+NUMPAD1|CTRL+NUMPAD3|CTRL+NUMPAD7",
+    "difficulty": 4
+  },
+  {
+    "display": "Hide the selected Object",
+    "mac_sc": "H",
+    "pc_sc": "H",
+    "difficulty": 2
+  },
+  {
+    "display": "unhide All Hidden objects",
+    "mac_sc": "OPTION+H",
+    "pc_sc": "ALT+H",
+    "difficulty": 3
+  },
+  {
+    "display": "Hide everything Except selection",
+    "mac_sc": "SHIFT+H",
+    "pc_sc": "SHIFT+H",
+    "difficulty": 4
+  },
+  {
+    "display": "toggle X-Ray mode",
+    "mac_sc": "OPTION+Z",
+    "pc_sc": "ALT+Z",
+    "difficulty": 3
+  },
+  {
+    "display": "toggle Wireframe view",
+    "mac_sc": "SHIFT+Z",
+    "pc_sc": "SHIFT+Z",
+    "difficulty": 3
+  },
+  {
+    "display": "switch to Sculpt mode",
+    "mac_sc": "CTRL+TAB",
+    "pc_sc": "CTRL+TAB",
+    "difficulty": 4
+  },
+  {
+    "display": "open Shading pie menu",
+    "mac_sc": "Z",
+    "pc_sc": "Z",
+    "difficulty": 3
+  },
+  {
+    "display": "snap Cursor to Grid or Selection",
+    "mac_sc": "SHIFT+S",
+    "pc_sc": "SHIFT+S",
+    "difficulty": 4
+  },
+  {
+    "display": "reset Cursor to world origin",
+    "mac_sc": "SHIFT+C",
+    "pc_sc": "SHIFT+C",
+    "difficulty": 5
+  },
+  {
+    "display": "move Selection to Cursor",
+    "mac_sc": "SHIFT+S",
+    "pc_sc": "SHIFT+S",
+    "difficulty": 5
+  },
+  {
+    "display": "toggle the Search menu",
+    "mac_sc": "F3",
+    "pc_sc": "F3",
+    "difficulty": 3
+  },
+  {
+    "display": "open the Quick Favorites menu",
+    "mac_sc": "Q",
+    "pc_sc": "Q",
+    "difficulty": 3
+  },
+  {
+    "display": "Box Select",
+    "mac_sc": "B",
+    "pc_sc": "B",
+    "difficulty": 2
+  },
+  {
+    "display": "Circle Select",
+    "mac_sc": "C",
+    "pc_sc": "C",
+    "difficulty": 2
+  },
+  {
+    "display": "select All",
+    "mac_sc": "A",
+    "pc_sc": "A",
+    "difficulty": 3
+  },
+  {
+    "display": "deselect All",
+    "mac_sc": "OPTION+A",
+    "pc_sc": "ALT+A",
+    "difficulty": 3
+  },
+  {
+    "display": "invert current Selection",
+    "mac_sc": "CMD+I",
+    "pc_sc": "CTRL+I",
+    "difficulty": 3
+  },
+  {
+    "display": "select Linked Geometry",
+    "mac_sc": "L",
+    "pc_sc": "L",
+    "difficulty": 3
+  },
+  {
+    "display": "select more Geometry",
+    "mac_sc": "CMD+NUMPADPLUS",
+    "pc_sc": "CTRL+NUMPADPLUS",
+    "difficulty": 4
+  },
+  {
+    "display": "select less Geometry",
+    "mac_sc": "CMD+NUMPADMINUS",
+    "pc_sc": "CTRL+NUMPADMINUS",
+    "difficulty": 4
+  },
+  {
+    "display": "toggle visibility of Collection-1",
+    "mac_sc": "1",
+    "pc_sc": "1",
+    "difficulty": 2,
+    "group": "collection_visibility"
+  },
+  {
+    "display": "toggle visibility of Collection-2",
+    "mac_sc": "2",
+    "pc_sc": "2",
+    "difficulty": 2,
+    "group": "collection_visibility"
+  },
+  {
+    "display": "toggle visibility of Collection-3",
+    "mac_sc": "3",
+    "pc_sc": "3",
+    "difficulty": 2,
+    "group": "collection_visibility"
+  },
+  {
+    "display": "toggle visibility of Collection-4",
+    "mac_sc": "4",
+    "pc_sc": "4",
+    "difficulty": 2,
+    "group": "collection_visibility"
+  },
+  {
+    "display": "toggle visibility of Collection-5",
+    "mac_sc": "5",
+    "pc_sc": "5",
+    "difficulty": 2,
+    "group": "collection_visibility"
+  },
+  {
+    "display": "toggle visibility of Collection-6",
+    "mac_sc": "6",
+    "pc_sc": "6",
+    "difficulty": 2,
+    "group": "collection_visibility"
+  },
+  {
+    "display": "toggle visibility of Collection-7",
+    "mac_sc": "7",
+    "pc_sc": "7",
+    "difficulty": 2,
+    "group": "collection_visibility"
+  },
+  {
+    "display": "toggle visibility of Collection-8",
+    "mac_sc": "8",
+    "pc_sc": "8",
+    "difficulty": 2,
+    "group": "collection_visibility"
+  },
+  {
+    "display": "toggle visibility of Collection-9",
+    "mac_sc": "9",
+    "pc_sc": "9",
+    "difficulty":2,
+    "group": "collection_visibility"
+  },
+  {
+    "display": "apply Subdivision level-0",
+    "mac_sc": "CMD+0",
+    "pc_sc": "CTRL+0",
+    "difficulty": 4,
+    "group": "subdivision_level"
+  },
+  {
+    "display": "apply Subdivision level-1",
+    "mac_sc": "CMD+1",
+    "pc_sc": "CTRL+1",
+    "difficulty": 4,
+    "group": "subdivision_level"
+  },
+  {
+    "display": "apply Subdivision level-2",
+    "mac_sc": "CMD+2",
+    "pc_sc": "CTRL+2",
+    "difficulty": 4,
+    "group": "subdivision_level"
+  },
+  {
+    "display": "apply Subdivision level-3",
+    "mac_sc": "CMD+3",
+    "pc_sc": "CTRL+3",
+    "difficulty": 4,
+    "group": "subdivision_level"
+  },
+  {
+    "display": "apply Subdivision level-4",
+    "mac_sc": "CMD+4",
+    "pc_sc": "CTRL+4",
+    "difficulty": 4,
+    "group": "subdivision_level"
+  },
+  {
+    "display": "apply Subdivision level-5",
+    "mac_sc": "CMD+5",
+    "pc_sc": "CTRL+5",
+    "difficulty": 4,
+    "group": "subdivision_level"
+  },
+  {
+    "display": "insert Keyframe",
+    "mac_sc": "I",
+    "pc_sc": "I",
+    "difficulty": 3
+  },
+  {
+    "display": "clear Keyframes",
+    "mac_sc": "OPTION+I",
+    "pc_sc": "ALT+I",
+    "difficulty": 4
+  },
+  {
+    "display": "play or Stop animation",
+    "mac_sc": "SPACE",
+    "pc_sc": "SPACE",
+    "difficulty": 1
+  },
+  {
+    "display": "apply current Transformation",
+    "mac_sc": "CMD+A",
+    "pc_sc": "CTRL+A",
+    "difficulty": 4
+  },
+  {
+    "display": "clear Object Rotation",
+    "mac_sc": "OPTION+R",
+    "pc_sc": "ALT+R",
+    "difficulty": 3
+  },
+  {
+    "display": "clear Object Scale",
+    "mac_sc": "OPTION+S",
+    "pc_sc": "ALT+S",
+    "difficulty": 3
+  },
+  {
+    "display": "clear Object Location",
+    "mac_sc": "OPTION+G",
+    "pc_sc": "ALT+G",
+    "difficulty": 4
+  },
+  {
+    "display": "annotate or Draw",
+    "mac_sc": "D",
+    "pc_sc": "D",
+    "difficulty": 3
+  },
+  {
+    "display": "Measure distance",
+    "mac_sc": "M",
+    "pc_sc": "M",
+    "difficulty": 2
+  },
+  {
+    "display": "add a New Object",
+    "mac_sc": "SHIFT+A",
+    "pc_sc": "SHIFT+A",
+    "difficulty": 3
+  },
+  {
+    "display": "show Sidebar",
+    "mac_sc": "N",
+    "pc_sc": "N",
+    "difficulty": 3
+  },
+  {
+    "display": "show Toolbar",
+    "mac_sc": "T",
+    "pc_sc": "T",
+    "difficulty": 2
+  },
+  {
+    "display": "center the View",
+    "mac_sc": "C",
+    "pc_sc": "C",
+    "difficulty": 2
+  },
+  {
+    "display": "toggle Local view",
+    "mac_sc": "SLASH",
+    "pc_sc": "SLASH",
+    "difficulty": 3
+  },
+  {
+    "display": "render current Frame",
+    "mac_sc": "F12",
+    "pc_sc": "F12",
+    "difficulty": 3
+  },
+  {
+    "display": "render Animation",
+    "mac_sc": "CMD+F12",
+    "pc_sc": "CTRL+F12",
+    "difficulty": 4
+  },
+  {
+    "display": "save current File",
+    "mac_sc": "CMD+S",
+    "pc_sc": "CTRL+S",
+    "difficulty": 0
+  }
+]

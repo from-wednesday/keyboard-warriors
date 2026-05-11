@@ -95,6 +95,17 @@
       { "bad": "OPT+S", "action": "summarize page" },
       { "bad": "OPT+A", "action": "toggle assistant" },
       { "bad": "OPT+V", "action": "voice input" }
-    ]
-  }
+    },
+  "extended_keys": [
+    { "position": 1,  "extraKey": "F13" },
+    { "position": 2,  "extraKey": "F14" },
+    { "position": 3,  "extraKey": "F15" },
+    { "position": 4,  "extraKey": "F16" },
+    { "position": 5,  "extraKey": "CLEAR" },
+    { "position": 6,  "extraKey": "HOME" },
+    { "position": 7,  "extraKey": "PAGEUP" },
+    { "position": 8,  "extraKey": "DELETE" },
+    { "position": 9,  "extraKey": "END" },
+    { "position": 10, "extraKey": "PAGEDOWN" }
+  ]
 }

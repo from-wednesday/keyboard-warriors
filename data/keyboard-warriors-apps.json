@@ -1,8 +1,9 @@
 [
-  { "label": "[Ps] Photoshop",     "path": "/keyboard-warriors/data/shortcuts_photoshop.json",     "skillset":  ["Graphics",    "Motion"] },
+  { "label": "[Lr] Lightroom",     "path": "/keyboard-warriors/data/shortcuts_lightroom.json",     "skillset":                        ["Photography"] },
+  { "label": "[Ps] Photoshop",     "path": "/keyboard-warriors/data/shortcuts_photoshop.json",     "skillset":  ["Graphics", "Motion", "Photography"] },
   { "label": "[Ai] Illustrator",   "path": "/keyboard-warriors/data/shortcuts_illustrator.json",   "skillset":  ["Graphics"] },
   { "label": "[Id] InDesign",      "path": "/keyboard-warriors/data/shortcuts_inDesign.json",      "skillset":  ["Graphics"] },
-  { "label": "[Ae] After Effects", "path": "/keyboard-warriors/data/shortcuts_afterEffects.json",  "skillset":    ["Motion",    "Graphics"] },
+  { "label": "[Ae] After Effects", "path": "/keyboard-warriors/data/shortcuts_afterEffects.json",  "skillset":    ["Motion", "Graphics"] },
   { "label": "[Pr] Premier Pro", "path": "/keyboard-warriors/data/shortcuts_premier.json",         "skillset":    ["Motion"] },
   { "label": "ToonBoom Harmony", "path": "/keyboard-warriors/data/shortcuts_toonBoomHarmony.json", "skillset":    ["Motion"] },
   { "label": "Blender", "path": "/keyboard-warriors/data/shortcuts_blender.json",                  "skillset":    ["Motion"] },

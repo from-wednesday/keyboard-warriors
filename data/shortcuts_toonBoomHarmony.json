@@ -1,14 +1,8 @@
 [
   {
-    "display": "Save Project",
+    "display": "Save project",
     "mac_sc": "CMD+S",
     "pc_sc": "CTRL+S",
-    "difficulty": 0
-  },
-  {
-    "display": "Undo",
-    "mac_sc": "CMD+Z",
-    "pc_sc": "CTRL+Z",
     "difficulty": 0
   },
   {
@@ -36,37 +30,37 @@
     "difficulty": 0
   },
   {
-    "display": "Selection Tool",
+    "display": "Selection tool",
     "mac_sc": "OPTION+S",
     "pc_sc": "ALT+S",
     "difficulty": 1
   },
   {
-    "display": "Brush Tool",
+    "display": "Brush tool",
     "mac_sc": "OPTION+B",
     "pc_sc": "ALT+B",
     "difficulty": 1
   },
   {
-    "display": "Eraser Tool",
+    "display": "Eraser tool",
     "mac_sc": "OPTION+E",
     "pc_sc": "ALT+E",
     "difficulty": 1
   },
   {
-    "display": "Paint Tool",
+    "display": "Paint tool",
     "mac_sc": "OPTION+A",
     "pc_sc": "ALT+A",
     "difficulty": 1
   },
   {
-    "display": "Line Tool",
+    "display": "Line tool",
     "mac_sc": "OPTION+L",
     "pc_sc": "ALT+L",
     "difficulty": 1
   },
   {
-    "display": "Hand Tool",
+    "display": "Hand tool",
     "mac_sc": "SPACE",
     "pc_sc": "SPACE",
     "difficulty": 1
@@ -84,61 +78,61 @@
     "difficulty": 1
   },
   {
-    "display": "Step Forward",
-    "mac_sc": "PERIOD",
-    "pc_sc": "PERIOD",
+    "display": "step Forward",
+    "mac_sc": "MORETHAN",
+    "pc_sc": "MORETHAN",
     "difficulty": 1
   },
   {
-    "display": "Step Backward",
-    "mac_sc": "COMMA",
-    "pc_sc": "COMMA",
+    "display": "step Backward",
+    "mac_sc": "LESSTHAN",
+    "pc_sc": "LESSTHAN",
     "difficulty": 1
   },
   {
-    "display": "Insert Keyframe",
+    "display": "insert Keyframe",
     "mac_sc": "F6",
     "pc_sc": "F6",
     "difficulty": 1
   },
   {
-    "display": "Toggle Onion Skin",
+    "display": "toggle Onion Skin",
     "mac_sc": "OPTION+O",
     "pc_sc": "ALT+O",
     "difficulty": 1
   },
   {
-    "display": "Toggle Light Table",
+    "display": "toggle Light Table",
     "mac_sc": "SHIFT+L",
     "pc_sc": "SHIFT+L",
     "difficulty": 1
   },
   {
-    "display": "Pencil Tool",
+    "display": "Pencil tool",
     "mac_sc": "OPTION+SHIFT+B",
     "pc_sc": "ALT+SHIFT+B",
     "difficulty": 2
   },
   {
-    "display": "Cutter Tool",
+    "display": "Cutter tool",
     "mac_sc": "OPTION+T",
     "pc_sc": "ALT+T",
     "difficulty": 2
   },
   {
-    "display": "Contour Editor Tool",
+    "display": "Contour Editor tool",
     "mac_sc": "OPTION+Q",
     "pc_sc": "ALT+Q",
     "difficulty": 2
   },
   {
-    "display": "Create Empty Drawing",
+    "display": "create Empty Drawing",
     "mac_sc": "OPTION+SHIFT+R",
     "pc_sc": "ALT+SHIFT+R",
     "difficulty": 2
   },
   {
-    "display": "Rename Drawing",
+    "display": "rename Drawing",
     "mac_sc": "CMD+D",
     "pc_sc": "CTRL+D",
     "difficulty": 2
@@ -150,49 +144,49 @@
     "difficulty": 2
   },
   {
-    "display": "Substitute Drawing Next",
+    "display": "substitute Drawing Next",
     "mac_sc": "BRACKETRIGHT",
     "pc_sc": "BRACKETRIGHT",
     "difficulty": 2
   },
   {
-    "display": "Substitute Drawing Previous",
+    "display": "substitute Drawing Previous",
     "mac_sc": "BRACKETLEFT",
     "pc_sc": "BRACKETLEFT",
     "difficulty": 2
   },
   {
-    "display": "Select Parent",
+    "display": "select Parent",
     "mac_sc": "B",
     "pc_sc": "B",
     "difficulty": 2
   },
   {
-    "display": "Select Child",
+    "display": "select Child",
     "mac_sc": "SHIFT+B",
     "pc_sc": "SHIFT+B",
     "difficulty": 2
   },
   {
-    "display": "Reset View",
+    "display": "reset View",
     "mac_sc": "SHIFT+M",
     "pc_sc": "SHIFT+M",
     "difficulty": 2
   },
   {
-    "display": "Toggle Loop",
+    "display": "toggle Loop",
     "mac_sc": "L",
     "pc_sc": "L",
     "difficulty": 2
   },
   {
-    "display": "Go to Next Keyframe",
+    "display": "go to Next Keyframe",
     "mac_sc": "K",
     "pc_sc": "K",
     "difficulty": 2
   },
   {
-    "display": "Go to Previous Keyframe",
+    "display": "go to Previous Keyframe",
     "mac_sc": "J",
     "pc_sc": "J",
     "difficulty": 2
@@ -210,67 +204,67 @@
     "difficulty": 3
   },
   {
-    "display": "Remove Keyframe",
+    "display": "remove Keyframe",
     "mac_sc": "F7",
     "pc_sc": "F7",
     "difficulty": 3
   },
   {
-    "display": "Extend Exposure",
+    "display": "extend Exposure",
     "mac_sc": "F5",
     "pc_sc": "F5",
     "difficulty": 3
   },
   {
-    "display": "Create Peg",
+    "display": "create Peg",
     "mac_sc": "CMD+P",
     "pc_sc": "CTRL+P",
     "difficulty": 3
   },
   {
-    "display": "Create Group",
+    "display": "create Group",
     "mac_sc": "CMD+G",
     "pc_sc": "CTRL+G",
     "difficulty": 3
   },
   {
-    "display": "Bring Forward",
+    "display": "bring Forward",
     "mac_sc": "CMD+PAGEUP",
     "pc_sc": "CTRL+PAGEUP",
     "difficulty": 3
   },
   {
-    "display": "Send Backward",
+    "display": "send Backward",
     "mac_sc": "CMD+PAGEDOWN",
     "pc_sc": "CTRL+PAGEDOWN",
     "difficulty": 3
   },
   {
-    "display": "Open Preferences",
+    "display": "open Preferences",
     "mac_sc": "CMD+COMMA",
     "pc_sc": "CTRL+U",
     "difficulty": 3
   },
   {
-    "display": "Add Deformer",
+    "display": "add Deformer",
     "mac_sc": "SHIFT+D",
     "pc_sc": "SHIFT+D",
     "difficulty": 3
   },
   {
-    "display": "Add Frame Before Selection",
+    "display": "add Frame Before selection",
     "mac_sc": "CMD+G",
     "pc_sc": "CTRL+G",
     "difficulty": 4
   },
   {
-    "display": "Add Frame After Selection",
+    "display": "add Frame After selection",
     "mac_sc": "CMD+H",
     "pc_sc": "CTRL+H",
     "difficulty": 4
   },
   {
-    "display": "Reset All Transformations",
+    "display": "reset All Transformations",
     "mac_sc": "SHIFT+R",
     "pc_sc": "SHIFT+R",
     "difficulty": 4
@@ -282,19 +276,19 @@
     "difficulty": 4
   },
   {
-    "display": "Export Images",
+    "display": "export Images",
     "mac_sc": "CMD+SHIFT+Y",
     "pc_sc": "CTRL+SHIFT+Y",
     "difficulty": 4
   },
   {
-    "display": "Create Parent Peg",
+    "display": "create Parent Peg",
     "mac_sc": "CMD+SHIFT+P",
     "pc_sc": "CTRL+SHIFT+P",
     "difficulty": 4
   },
   {
-    "display": "Move to Parent Level",
+    "display": "move to Parent Level",
     "mac_sc": "CMD+SHIFT+U",
     "pc_sc": "CTRL+SHIFT+U",
     "difficulty": 4
@@ -324,7 +318,7 @@
     "difficulty": 5
   },
   {
-    "display": "Toggle Full Screen",
+    "display": "toggle Full Screen",
     "mac_sc": "CMD+F",
     "pc_sc": "CTRL+F",
     "difficulty": 5
@@ -336,62 +330,62 @@
     "difficulty": 5
   },
   {
-    "display": "Open Essential Sound",
+    "display": "open Essential Sound",
     "mac_sc": "SHIFT+F8",
     "pc_sc": "SHIFT+F8",
     "difficulty": 5
   },
   {
-    "display": "Nudge Up 1 pixel",
+    "display": "nudge Up 1 pixel",
     "mac_sc": "ARROWUP",
     "pc_sc": "ARROWUP",
     "difficulty": 0,
     "group": "nudge"
   },
   {
-    "display": "Nudge Up 10 pixels",
+    "display": "nudge Up 10 pixels",
     "mac_sc": "SHIFT+ARROWUP",
     "pc_sc": "SHIFT+ARROWUP",
     "difficulty": 1,
     "group": "nudge"
   },
   {
-    "display": "Nudge Down 1 pixel",
+    "display": "nudge Down 1 pixel",
     "mac_sc": "ARROWDOWN",
     "pc_sc": "ARROWDOWN",
     "difficulty": 0,
     "group": "nudge"
   },
   {
-    "display": "Nudge Down 10 pixels",
+    "display": "nudge Down 10 pixels",
     "mac_sc": "SHIFT+ARROWDOWN",
     "pc_sc": "SHIFT+ARROWDOWN",
     "difficulty": 1,
     "group": "nudge"
   },
   {
-    "display": "Nudge Left 1 pixel",
+    "display": "nudge Left 1 pixel",
     "mac_sc": "ARROWLEFT",
     "pc_sc": "ARROWLEFT",
     "difficulty": 0,
     "group": "nudge"
   },
   {
-    "display": "Nudge Left 10 pixels",
+    "display": "nudge Left 10 pixels",
     "mac_sc": "SHIFT+ARROWLEFT",
     "pc_sc": "SHIFT+ARROWLEFT",
     "difficulty": 1,
     "group": "nudge"
   },
   {
-    "display": "Nudge Right 1 pixel",
+    "display": "nudge Right 1 pixel",
     "mac_sc": "ARROWRIGHT",
     "pc_sc": "ARROWRIGHT",
     "difficulty": 0,
     "group": "nudge"
   },
   {
-    "display": "Nudge Right 10 pixels",
+    "display": "nudge Right 10 pixels",
     "mac_sc": "SHIFT+ARROWRIGHT",
     "pc_sc": "SHIFT+ARROWRIGHT",
     "difficulty": 1,

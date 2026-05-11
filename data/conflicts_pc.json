@@ -72,7 +72,8 @@
       { "bad": "CTRL+W", "action": "close tab" },
       { "bad": "CTRL+SHIFT+T", "action": "reopen closed tab", "sus": true },
       { "bad": "F11", "action": "fullscreen", "sus": true }
-    ],
+    ]
+  },
   "extended_keys": [
     { "position": 1,  "extraKey": "PRINTSCREEN" },
     { "position": 2,  "extraKey": "SCROLLLOCK" },

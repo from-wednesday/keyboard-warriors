@@ -1,0 +1,686 @@
+[
+  {
+    "display": "create a new Email",
+    "mac_sc": "CMD+N",
+    "pc_sc": "CTRL+SHIFT+M",
+    "difficulty": 1
+  },
+  {
+    "display": "send Message",
+    "mac_sc": "CMD+RETURN",
+    "pc_sc": "CTRL+ENTER",
+    "difficulty": 3
+  },
+  {
+    "display": "reply to the Message",
+    "mac_sc": "CMD+R",
+    "pc_sc": "CTRL+R",
+    "difficulty": 2
+  },
+  {
+    "display": "reply All to the Message",
+    "mac_sc": "CMD+SHIFT+R",
+    "pc_sc": "CTRL+SHIFT+R",
+    "difficulty": 3
+  },
+  {
+    "display": "forward the Message",
+    "mac_sc": "CMD+J",
+    "pc_sc": "CTRL+F",
+    "difficulty": 3
+  },
+  {
+    "display": "delete the selected Item",
+    "mac_sc": "BACKSPACE|CMD+DELETE",
+    "pc_sc": "DELETE|BACKSPACE",
+    "difficulty": 0
+  },
+  {
+    "display": "save the current Item",
+    "mac_sc": "CMD+S",
+    "pc_sc": "CTRL+S",
+    "difficulty": 0
+  },
+  {
+    "display": "print the current Item",
+    "mac_sc": "CMD+P",
+    "pc_sc": "CTRL+P",
+    "difficulty": 0
+  },
+  {
+    "display": "search for an Item",
+    "mac_sc": "CMD+OPTION+F",
+    "pc_sc": "CTRL+E",
+    "difficulty": 4
+  },
+  {
+    "display": "switch to Mail",
+    "mac_sc": "CMD+1",
+    "pc_sc": "CTRL+1",
+    "difficulty": 3
+  },
+  {
+    "display": "switch to Calendar",
+    "mac_sc": "CMD+2",
+    "pc_sc": "CTRL+2",
+    "difficulty": 3
+  },
+  {
+    "display": "switch to People",
+    "mac_sc": "CMD+3",
+    "pc_sc": "CTRL+3",
+    "difficulty": 3
+  },
+  {
+    "display": "switch to Tasks",
+    "mac_sc": "CMD+4",
+    "pc_sc": "CTRL+4",
+    "difficulty": 3
+  },
+  {
+    "display": "redo the last action",
+    "mac_sc": "CMD+SHIFT+Z",
+    "pc_sc": "CTRL+Y",
+    "difficulty": 1
+  },
+  {
+    "display": "mark Message as Read",
+    "mac_sc": "CMD+T",
+    "pc_sc": "CTRL+Q",
+    "difficulty": 3
+  },
+  {
+    "display": "mark Message as Unread",
+    "mac_sc": "CMD+SHIFT+T",
+    "pc_sc": "CTRL+U",
+    "difficulty": 3
+  },
+  {
+    "display": "archive the selected Email",
+    "mac_sc": "CONTROL+E",
+    "pc_sc": "BACKSPACE",
+    "difficulty": 3
+  },
+  {
+    "display": "zoom In",
+    "mac_sc": "CMD+PLUS",
+    "pc_sc": "CTRL+PLUS",
+    "difficulty": 1
+  },
+  {
+    "display": "zoom Out",
+    "mac_sc": "CMD+MINUS",
+    "pc_sc": "CTRL+MINUS",
+    "difficulty": 1
+  },
+  {
+    "display": "bold text",
+    "mac_sc": "CMD+B",
+    "pc_sc": "CTRL+B",
+    "difficulty": 2
+  },
+  {
+    "display": "italicise text",
+    "mac_sc": "CMD+I",
+    "pc_sc": "CTRL+I",
+    "difficulty": 2
+  },
+  {
+    "display": "underline text",
+    "mac_sc": "CMD+U",
+    "pc_sc": "CTRL+U",
+    "difficulty": 2
+  },
+  {
+    "display": "left align the Paragraph",
+    "mac_sc": "CMD+BRACKETLEFT",
+    "pc_sc": "CTRL+L",
+    "difficulty": 3
+  },
+  {
+    "display": "center align the Paragraph",
+    "mac_sc": "CMD+PIPE",
+    "pc_sc": "CTRL+E",
+    "difficulty": 4
+  },
+  {
+    "display": "right align the Paragraph",
+    "mac_sc": "CMD+BRACKETRIGHT",
+    "pc_sc": "CTRL+R",
+    "difficulty": 3
+  },
+  {
+    "display": "increase font Size",
+    "mac_sc": "CMD+SHIFT+MORETHAN",
+    "pc_sc": "CTRL+SHIFT+MORETHAN",
+    "difficulty": 3
+  },
+  {
+    "display": "decrease font Size",
+    "mac_sc": "CMD+SHIFT+LESSTHAN",
+    "pc_sc": "CTRL+SHIFT+LESSTHAN",
+    "difficulty": 3
+  },
+  {
+    "display": "insert a Bulleted list",
+    "mac_sc": "CMD+SHIFT+L",
+    "pc_sc": "CTRL+SHIFT+L",
+    "difficulty": 3
+  },
+  {
+    "display": "start a Numbered list",
+    "mac_sc": "CMD+OPTION+L",
+    "pc_sc": "CTRL+SHIFT+N",
+    "difficulty": 3
+  },
+  {
+    "display": "indent the Paragraph",
+    "mac_sc": "CMD+BRACKETRIGHT",
+    "pc_sc": "CTRL+M",
+    "difficulty": 3
+  },
+  {
+    "display": "outdent the Paragraph",
+    "mac_sc": "CMD+BRACKETLEFT",
+    "pc_sc": "CTRL+SHIFT+M",
+    "difficulty": 3
+  },
+  {
+    "display": "go to Today in Calendar",
+    "mac_sc": "CMD+T",
+    "pc_sc": "ALT+D|ALT+H|ALT+O",
+    "difficulty": 2
+  },
+  {
+    "display": "view Calendar by Day",
+    "mac_sc": "CMD+OPTION+1",
+    "pc_sc": "ALT+1",
+    "difficulty": 3,
+    "group": "cal_view"
+  },
+  {
+    "display": "view Calendar by Work Week",
+    "mac_sc": "CMD+OPTION+2",
+    "pc_sc": "ALT+2",
+    "difficulty": 3,
+    "group": "cal_view"
+  },
+  {
+    "display": "view Calendar by Week",
+    "mac_sc": "CMD+OPTION+3",
+    "pc_sc": "ALT+3",
+    "difficulty": 3,
+    "group": "cal_view"
+  },
+  {
+    "display": "view Calendar by Month",
+    "mac_sc": "CMD+OPTION+4",
+    "pc_sc": "ALT+4",
+    "difficulty": 3,
+    "group": "cal_view"
+  },
+  {
+    "display": "open selected Appointment",
+    "mac_sc": "CMD+1",
+    "pc_sc": "CTRL+1",
+    "difficulty": 3
+  },
+  {
+    "display": "create a Meeting request",
+    "mac_sc": "CMD+SHIFT+I",
+    "pc_sc": "CTRL+SHIFT+Q",
+    "difficulty": 4
+  },
+  {
+    "display": "flag the selected Item",
+    "mac_sc": "CONTROL+1",
+    "pc_sc": "INSERT",
+    "difficulty": 4
+  },
+  {
+    "display": "mark a Task as complete",
+    "mac_sc": "CMD+OPTION+RETURN",
+    "pc_sc": "INSERT",
+    "difficulty": 3
+  },
+  {
+    "display": "insert a Hyperlink",
+    "mac_sc": "CMD+K",
+    "pc_sc": "CTRL+K",
+    "difficulty": 4
+  },
+  {
+    "display": "move Item to a Folder",
+    "mac_sc": "CMD+SHIFT+M",
+    "pc_sc": "CTRL+SHIFT+V",
+    "difficulty": 3
+  },
+  {
+    "display": "copy Item to a Folder",
+    "mac_sc": "CMD+SHIFT+C",
+    "pc_sc": "CTRL+SHIFT+Y",
+    "difficulty": 4
+  },
+  {
+    "display": "open Advanced Find",
+    "mac_sc": "CMD+OPTION+SHIFT+F",
+    "pc_sc": "CTRL+SHIFT+F",
+    "difficulty": 5
+  },
+  {
+    "display": "jump to the Search box",
+    "mac_sc": "CMD+OPTION+F",
+    "pc_sc": "CTRL+E",
+    "difficulty": 3
+  },
+  {
+    "display": "go to the Next message",
+    "mac_sc": "CONTROL+MORETHAN",
+    "pc_sc": "CTRL+MORETHAN",
+    "difficulty": 3
+  },
+  {
+    "display": "go to the Previous message",
+    "mac_sc": "CONTROL+LESSTHAN",
+    "pc_sc": "CTRL+LESSTHAN",
+    "difficulty": 3
+  },
+  {
+    "display": "open Address Book",
+    "mac_sc": "CMD+SHIFT+B",
+    "pc_sc": "CTRL+SHIFT+B",
+    "difficulty": 4
+  },
+  {
+    "display": "check for new Messages",
+    "mac_sc": "CMD+K",
+    "pc_sc": "F9",
+    "difficulty": 3
+  },
+  {
+    "display": "create a new Journal entry",
+    "mac_sc": "NULL",
+    "pc_sc": "CTRL+SHIFT+J",
+    "difficulty": 4
+  },
+  {
+    "display": "open the Go to Folder dialogue",
+    "mac_sc": "CMD+OPTION+G",
+    "pc_sc": "CTRL+Y",
+    "difficulty": 4
+  },
+  {
+    "display": "toggle the Reading Pane",
+    "mac_sc": "CMD+BACKSLASH",
+    "pc_sc": "ALT+V|ALT+P|ALT+N",
+    "difficulty": 3
+  },
+  {
+    "display": "open the Rules manager",
+    "mac_sc": "NULL",
+    "pc_sc": "ALT+R|ALT+H|ALT+L",
+    "difficulty": 4
+  },
+  {
+    "display": "ignore the current Conversation",
+    "mac_sc": "CMD+SHIFT+J",
+    "pc_sc": "CTRL+DELETE",
+    "difficulty": 4
+  },
+  {
+    "display": "show current message Options",
+    "mac_sc": "CMD+OPTION+O",
+    "pc_sc": "ALT+O|ALT+P",
+    "difficulty": 4
+  },
+  {
+    "display": "post a note to this Folder",
+    "mac_sc": "CMD+SHIFT+P",
+    "pc_sc": "CTRL+SHIFT+S",
+    "difficulty": 4
+  },
+  {
+    "display": "move the cursor up",
+    "mac_sc": "ARROWUP",
+    "pc_sc": "ARROWUP",
+    "difficulty": 1,
+    "group": "cursor_nav"
+  },
+  {
+    "display": "select the word to the up",
+    "mac_sc": "OPTION+SHIFT+ARROWUP",
+    "pc_sc": "CTRL+SHIFT+ARROWUP",
+    "difficulty": 4,
+    "group": "word_nav"
+  },
+  {
+    "display": "move the cursor down",
+    "mac_sc": "ARROWDOWN",
+    "pc_sc": "ARROWDOWN",
+    "difficulty": 1,
+    "group": "cursor_nav"
+  },
+  {
+    "display": "select the word to the down",
+    "mac_sc": "OPTION+SHIFT+ARROWDOWN",
+    "pc_sc": "CTRL+SHIFT+ARROWDOWN",
+    "difficulty": 4,
+    "group": "word_nav"
+  },
+  {
+    "display": "move the cursor left",
+    "mac_sc": "ARROWLEFT",
+    "pc_sc": "ARROWLEFT",
+    "difficulty": 0,
+    "group": "cursor_nav"
+  },
+  {
+    "display": "select the word to the left",
+    "mac_sc": "OPTION+SHIFT+ARROWLEFT",
+    "pc_sc": "CTRL+SHIFT+ARROWLEFT",
+    "difficulty": 3,
+    "group": "word_nav"
+  },
+  {
+    "display": "move the cursor right",
+    "mac_sc": "ARROWRIGHT",
+    "pc_sc": "ARROWRIGHT",
+    "difficulty": 0,
+    "group": "cursor_nav"
+  },
+  {
+    "display": "select the word to the right",
+    "mac_sc": "OPTION+SHIFT+ARROWRIGHT",
+    "pc_sc": "CTRL+SHIFT+ARROWRIGHT",
+    "difficulty": 3,
+    "group": "word_nav"
+  },
+  {
+    "display": "go to the Inbox",
+    "mac_sc": "CMD+1",
+    "pc_sc": "CTRL+SHIFT+I",
+    "difficulty": 3
+  },
+  {
+    "display": "go to the Drafts folder",
+    "mac_sc": "NULL",
+    "pc_sc": "CTRL+SHIFT+D",
+    "difficulty": 3
+  },
+  {
+    "display": "go to the Outbox",
+    "mac_sc": "NULL",
+    "pc_sc": "CTRL+SHIFT+O",
+    "difficulty": 3
+  },
+  {
+    "display": "go to the Sent items",
+    "mac_sc": "NULL",
+    "pc_sc": "CTRL+SHIFT+S",
+    "difficulty": 3
+  },
+  {
+    "display": "show the Folder list in sidebar",
+    "mac_sc": "CMD+OPTION+S",
+    "pc_sc": "CTRL+6",
+    "difficulty": 3
+  },
+  {
+    "display": "show the Tasks bar",
+    "mac_sc": "NULL",
+    "pc_sc": "ALT+B|ALT+V",
+    "difficulty": 3
+  },
+  {
+    "display": "clear Flag",
+    "mac_sc": "CONTROL+0",
+    "pc_sc": "ALT+C|ALT+H|ALT+G",
+    "difficulty": 3
+  },
+  {
+    "display": "apply a Category",
+    "mac_sc": "CMD+OPTION+C",
+    "pc_sc": "ALT+G|ALT+H",
+    "difficulty": 4
+  },
+  {
+    "display": "mark message as Junk",
+    "mac_sc": "CMD+SHIFT+J",
+    "pc_sc": "CTRL+J",
+    "difficulty": 3
+  },
+  {
+    "display": "mark as Not Junk",
+    "mac_sc": "CMD+OPTION+J",
+    "pc_sc": "CTRL+ALT+J",
+    "difficulty": 4
+  },
+  {
+    "display": "switch focus between Panes",
+    "mac_sc": "F6",
+    "pc_sc": "F6",
+    "difficulty": 3
+  },
+  {
+    "display": "close current Window",
+    "mac_sc": "CMD+W",
+    "pc_sc": "CTRL+W|ALT+F4",
+    "difficulty": 1
+  },
+  {
+    "display": "expand the selected Group",
+    "mac_sc": "ARROWRIGHT",
+    "pc_sc": "ARROWRIGHT",
+    "difficulty": 3
+  },
+  {
+    "display": "collapse the selected Group",
+    "mac_sc": "ARROWLEFT",
+    "pc_sc": "ARROWLEFT",
+    "difficulty": 3
+  },
+  {
+    "display": "go to the Next section",
+    "mac_sc": "TAB",
+    "pc_sc": "TAB",
+    "difficulty": 2
+  },
+  {
+    "display": "go to the Previous section",
+    "mac_sc": "SHIFT+TAB",
+    "pc_sc": "SHIFT+TAB",
+    "difficulty": 3
+  },
+  {
+    "display": "cancel an Operation",
+    "mac_sc": "ESCAPE",
+    "pc_sc": "ESCAPE",
+    "difficulty": 1
+  },
+  {
+    "display": "open the shortcut Menu",
+    "mac_sc": "SHIFT+F10",
+    "pc_sc": "SHIFT+F10",
+    "difficulty": 4
+  },
+  {
+    "display": "show the Navigation pane",
+    "mac_sc": "NULL",
+    "pc_sc": "ALT+N|ALT+V",
+    "difficulty": 3
+  },
+  {
+    "display": "toggle the full Screen mode",
+    "mac_sc": "CMD+CONTROL+F",
+    "pc_sc": "F11",
+    "difficulty": 3
+  },
+  {
+    "display": "hide or show the Ribbon",
+    "mac_sc": "CMD+OPTION+R",
+    "pc_sc": "CTRL+F1",
+    "difficulty": 4
+  },
+  {
+    "display": "check Spelling in item",
+    "mac_sc": "CMD+SEMICOLON",
+    "pc_sc": "F7",
+    "difficulty": 3
+  },
+  {
+    "display": "insert an Attachment",
+    "mac_sc": "CMD+OPTION+A",
+    "pc_sc": "ALT+A|ALT+N|ALT+F",
+    "difficulty": 3
+  },
+  {
+    "display": "open Stationery and Fonts",
+    "mac_sc": "CMD+COMMA",
+    "pc_sc": "NULL",
+    "difficulty": 4
+  },
+  {
+    "display": "show keyboard shortcuts Help",
+    "mac_sc": "CMD+QUESTION",
+    "pc_sc": "CTRL+QUESTION",
+    "difficulty": 4
+  },
+  {
+    "display": "go to a specific Date",
+    "mac_sc": "CMD+OPTION+G",
+    "pc_sc": "CTRL+G",
+    "difficulty": 4
+  },
+  {
+    "display": "toggle the To-Do Bar",
+    "mac_sc": "NULL",
+    "pc_sc": "ALT+B|ALT+V",
+    "difficulty": 4
+  },
+  {
+    "display": "open Preferences",
+    "mac_sc": "CMD+COMMA",
+    "pc_sc": "CTRL+COMMA",
+    "difficulty": 4
+  },
+  {
+    "display": "quit Outlook",
+    "mac_sc": "CMD+Q",
+    "pc_sc": "ALT+F4",
+    "difficulty": 2
+  },
+  {
+    "display": "increase Indent",
+    "mac_sc": "CMD+BRACKETRIGHT",
+    "pc_sc": "CTRL+M",
+    "difficulty": 3
+  },
+  {
+    "display": "decrease Indent",
+    "mac_sc": "CMD+BRACKETLEFT",
+    "pc_sc": "CTRL+SHIFT+M",
+    "difficulty": 3
+  },
+  {
+    "display": "insert a Table",
+    "mac_sc": "NULL",
+    "pc_sc": "ALT+T|ALT+N",
+    "difficulty": 3
+  },
+  {
+    "display": "insert a Horizontal line",
+    "mac_sc": "NULL",
+    "pc_sc": "ALT+H|ALT+B",
+    "difficulty": 3
+  },
+  {
+    "display": "open the Signatures dialogue",
+    "mac_sc": "NULL",
+    "pc_sc": "ALT+H|ALT+A|ALT+G|ALT+S",
+    "difficulty": 4
+  },
+  {
+    "display": "start a Search in all Mailboxes",
+    "mac_sc": "CMD+OPTION+F",
+    "pc_sc": "CTRL+ALT+A",
+    "difficulty": 3
+  },
+  {
+    "display": "open Search results in a new Window",
+    "mac_sc": "NULL",
+    "pc_sc": "CTRL+ALT+W",
+    "difficulty": 3
+  },
+  {
+    "display": "create a new Appointment from the Item",
+    "mac_sc": "NULL",
+    "pc_sc": "ALT+A|ALT+H|ALT+M",
+    "difficulty": 3
+  },
+  {
+    "display": "mark Item for Follow Up",
+    "mac_sc": "CONTROL+1",
+    "pc_sc": "ALT+H|ALT+G",
+    "difficulty": 4
+  },
+  {
+    "display": "show or hide the Sidebar",
+    "mac_sc": "CMD+OPTION+S",
+    "pc_sc": "ALT+S|ALT+V|ALT+N",
+    "difficulty": 4
+  },
+  {
+    "display": "refresh the current Folder",
+    "mac_sc": "CMD+OPTION+K",
+    "pc_sc": "F9",
+    "difficulty": 4
+  },
+  {
+    "display": "switch focus to Folder pane",
+    "mac_sc": "CONTROL+SHIFT+TAB",
+    "pc_sc": "ALT+F1",
+    "difficulty": 4
+  },
+  {
+    "display": "show Message headers",
+    "mac_sc": "NULL",
+    "pc_sc": "ALT+H|ALT+P",
+    "difficulty": 4
+  },
+  {
+    "display": "toggle the Reading pane visibility",
+    "mac_sc": "CMD+BACKSLASH",
+    "pc_sc": "ALT+V|ALT+P",
+    "difficulty": 3
+  },
+  {
+    "display": "open the find and replace Dialogue",
+    "mac_sc": "CMD+F",
+    "pc_sc": "CTRL+H",
+    "difficulty": 3
+  },
+  {
+    "display": "show or hide the Ribbon",
+    "mac_sc": "CMD+OPTION+R",
+    "pc_sc": "CTRL+F1",
+    "difficulty": 4
+  },
+  {
+    "display": "create a new Folder",
+    "mac_sc": "CMD+SHIFT+N",
+    "pc_sc": "CTRL+SHIFT+E",
+    "difficulty": 3
+  },
+  {
+    "display": "delete the current Folder",
+    "mac_sc": "CMD+DELETE",
+    "pc_sc": "DELETE",
+    "difficulty": 3
+  },
+  {
+    "display": "empty the Deleted Items folder",
+    "mac_sc": "NULL",
+    "pc_sc": "ALT+E|ALT+H|ALT+Y",
+    "difficulty": 3
+  }
+]

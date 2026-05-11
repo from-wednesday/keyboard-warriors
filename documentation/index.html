@@ -1,0 +1,916 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Shortcut Token Reference — Keyboard Warriors</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:ital,wght@0,400;0,600;1,400&family=IBM+Plex+Sans:ital,wght@0,400;0,500;0,600;1,400&display=swap" rel="stylesheet">
+<style>
+
+  /* ── Reset & base ─────────────────────────────────────────────── */
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --ink:        #1a1d23;
+    --ink-mid:    #4a5060;
+    --ink-soft:   #7a8090;
+    --rule:       #e2e5ea;
+    --rule-strong:#c8cdd4;
+    --page:       #f7f8fa;
+    --surface:    #ffffff;
+    --accent:     #1e3a5f;
+    --mac:        #2d6a4f;
+    --mac-bg:     #d8f3dc;
+    --pc:         #5c4a1e;
+    --pc-bg:      #fef3c7;
+    --both-bg:    #eef2f7;
+    --chip-bg:    #f0f2f5;
+    --chip-shadow:#c4c9d1;
+    --extended-bg:#fdf2f8;
+    --extended-border:#e8c8dc;
+    --extended-ink:#7a3060;
+    --syn-bg:     #f5f0ff;
+    --syn-border: #d4c8f0;
+    --syn-ink:    #4a3080;
+    --warn-bg:    #fff8f0;
+    --warn-border:#f0d0a0;
+    --warn-ink:   #7a4010;
+  }
+
+  html { font-size: 15px; }
+
+  body {
+    font-family: 'IBM Plex Sans', sans-serif;
+    background: var(--page);
+    color: var(--ink);
+    line-height: 1.6;
+    padding: 0;
+  }
+
+  /* ── Layout ──────────────────────────────────────────────────── */
+  .page-wrap {
+    max-width: 980px;
+    margin: 0 auto;
+    padding: 0 32px 80px;
+  }
+
+  /* ── Header ──────────────────────────────────────────────────── */
+  .doc-header {
+    border-bottom: 2px solid var(--ink);
+    padding: 48px 0 28px;
+    margin-bottom: 48px;
+  }
+
+  .doc-header .eyebrow {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 11px;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--ink-soft);
+    margin-bottom: 10px;
+  }
+
+  .doc-header h1 {
+    font-size: 2.4rem;
+    font-weight: 600;
+    letter-spacing: -0.02em;
+    line-height: 1.1;
+    color: var(--accent);
+    margin-bottom: 14px;
+  }
+
+  .doc-header .subtitle {
+    font-size: 1rem;
+    color: var(--ink-mid);
+    max-width: 640px;
+    line-height: 1.7;
+  }
+
+  /* ── Section headings ────────────────────────────────────────── */
+  .section {
+    margin-bottom: 56px;
+  }
+
+  .section-heading {
+    font-size: 0.7rem;
+    font-family: 'IBM Plex Mono', monospace;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--ink-soft);
+    border-top: 1px solid var(--rule);
+    padding-top: 20px;
+    margin-bottom: 20px;
+  }
+
+  h2 {
+    font-size: 1.35rem;
+    font-weight: 600;
+    color: var(--ink);
+    margin-bottom: 6px;
+    letter-spacing: -0.01em;
+  }
+
+  h3 {
+    font-size: 0.9rem;
+    font-weight: 600;
+    color: var(--ink-mid);
+    margin: 24px 0 10px;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    font-family: 'IBM Plex Mono', monospace;
+  }
+
+  p {
+    color: var(--ink-mid);
+    margin-bottom: 14px;
+    font-size: 0.93rem;
+  }
+
+  p:last-child { margin-bottom: 0; }
+
+  /* ── Callout boxes ───────────────────────────────────────────── */
+  .callout {
+    border-radius: 8px;
+    padding: 14px 18px;
+    margin-bottom: 20px;
+    font-size: 0.88rem;
+    line-height: 1.65;
+  }
+
+  .callout.warn {
+    background: var(--warn-bg);
+    border: 1px solid var(--warn-border);
+    color: var(--warn-ink);
+  }
+
+  .callout.info {
+    background: var(--both-bg);
+    border: 1px solid var(--rule-strong);
+    color: var(--ink-mid);
+  }
+
+  .callout strong { color: var(--ink); }
+
+  /* ── Key chip ────────────────────────────────────────────────── */
+  .chip {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 0.75rem;
+    font-weight: 600;
+    color: var(--accent);
+    background: var(--chip-bg);
+    border: 1px solid var(--rule-strong);
+    border-radius: 4px;
+    padding: 2px 7px 1px;
+    box-shadow: 0 1.5px 0 var(--chip-shadow);
+    white-space: nowrap;
+    vertical-align: middle;
+  }
+
+  /* ── Token pill ──────────────────────────────────────────────── */
+  .token {
+    display: inline-block;
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 0.78rem;
+    font-weight: 600;
+    background: var(--accent);
+    color: #fff;
+    border-radius: 3px;
+    padding: 1px 6px;
+    white-space: nowrap;
+  }
+
+  .token.mac-only {
+    background: var(--mac);
+  }
+
+  .token.pc-only {
+    background: #8b6914;
+  }
+
+  /* ── Synonym pill ────────────────────────────────────────────── */
+  .syn {
+    display: inline-block;
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 0.75rem;
+    background: var(--syn-bg);
+    color: var(--syn-ink);
+    border: 1px solid var(--syn-border);
+    border-radius: 3px;
+    padding: 1px 6px;
+    white-space: nowrap;
+  }
+
+  /* ── OS badges ───────────────────────────────────────────────── */
+  .badge {
+    display: inline-block;
+    font-size: 0.68rem;
+    font-weight: 600;
+    font-family: 'IBM Plex Mono', monospace;
+    letter-spacing: 0.06em;
+    border-radius: 3px;
+    padding: 1px 6px;
+    vertical-align: middle;
+    white-space: nowrap;
+  }
+
+  .badge.mac {
+    background: var(--mac-bg);
+    color: var(--mac);
+  }
+
+  .badge.pc {
+    background: var(--pc-bg);
+    color: var(--pc);
+  }
+
+  .badge.both {
+    background: var(--both-bg);
+    color: var(--accent);
+  }
+
+  /* ── Extended key badge ──────────────────────────────────────── */
+  .badge.ext {
+    background: var(--extended-bg);
+    color: var(--extended-ink);
+    border: 1px solid var(--extended-border);
+  }
+
+  /* ── Tables ──────────────────────────────────────────────────── */
+  .ref-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.875rem;
+    margin-bottom: 8px;
+  }
+
+  .ref-table thead th {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 0.7rem;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--ink-soft);
+    border-bottom: 1.5px solid var(--rule-strong);
+    padding: 8px 12px 8px 0;
+    text-align: left;
+    font-weight: 400;
+  }
+
+  .ref-table thead th:first-child {
+    padding-left: 0;
+  }
+
+  .ref-table tbody td {
+    padding: 9px 12px 9px 0;
+    border-bottom: 1px solid var(--rule);
+    vertical-align: middle;
+    color: var(--ink-mid);
+  }
+
+  .ref-table tbody td:first-child {
+    padding-left: 0;
+  }
+
+  .ref-table tbody tr:last-child td {
+    border-bottom: none;
+  }
+
+  .ref-table tbody tr:hover td {
+    background: #f0f2f5;
+  }
+
+  /* ── Two-column table layout ─────────────────────────────────── */
+  .two-col {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 0 40px;
+  }
+
+  /* ── Extended key section ────────────────────────────────────── */
+  .ext-panel {
+    background: var(--extended-bg);
+    border: 1px solid var(--extended-border);
+    border-radius: 10px;
+    padding: 20px 24px;
+    margin-bottom: 20px;
+  }
+
+  .ext-panel h3 {
+    color: var(--extended-ink);
+    margin-top: 0;
+  }
+
+  /* ── Code example ────────────────────────────────────────────── */
+  .code-block {
+    background: var(--ink);
+    color: #e8edf5;
+    border-radius: 8px;
+    padding: 18px 22px;
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 0.82rem;
+    line-height: 1.75;
+    overflow-x: auto;
+    margin-bottom: 20px;
+  }
+
+  .code-block .c-key   { color: #90d4a8; }
+  .code-block .c-val   { color: #f0c070; }
+  .code-block .c-token { color: #80b8f0; }
+  .code-block .c-note  { color: #708090; font-style: italic; }
+
+  /* ── Separator ───────────────────────────────────────────────── */
+  .rule {
+    border: none;
+    border-top: 1px solid var(--rule);
+    margin: 32px 0;
+  }
+
+  /* ── Legend strip ────────────────────────────────────────────── */
+  .legend {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 16px;
+    align-items: center;
+    background: var(--surface);
+    border: 1px solid var(--rule);
+    border-radius: 8px;
+    padding: 12px 18px;
+    margin-bottom: 32px;
+    font-size: 0.82rem;
+    color: var(--ink-mid);
+  }
+
+  .legend-item {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+
+  /* ── Special value ───────────────────────────────────────────── */
+  .null-token {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 0.78rem;
+    font-weight: 600;
+    color: #999;
+    background: #f0f0f0;
+    border-radius: 3px;
+    padding: 1px 6px;
+  }
+
+  /* ── Note under tables ───────────────────────────────────────── */
+  .table-note {
+    font-size: 0.8rem;
+    color: var(--ink-soft);
+    font-style: italic;
+    margin-top: 4px;
+    margin-bottom: 20px;
+  }
+
+</style>
+</head>
+<body>
+<div class="page-wrap">
+
+  <!-- Header -->
+  <header class="doc-header">
+    <p class="eyebrow">Keyboard Warriors — Developer Reference</p>
+    <h1>Shortcut Token Reference</h1>
+    <p class="subtitle">
+      Complete specification for the <code style="font-family:'IBM Plex Mono',monospace;font-size:0.9em;background:var(--both-bg);padding:1px 5px;border-radius:3px;">mac_sc</code> and
+      <code style="font-family:'IBM Plex Mono',monospace;font-size:0.9em;background:var(--both-bg);padding:1px 5px;border-radius:3px;">pc_sc</code> fields
+      in shortcut JSON files. Covers every detectable key, accepted synonyms, chip display behaviour, and OS differences.
+    </p>
+  </header>
+
+  <!-- Legend -->
+  <div class="legend">
+    <strong style="color:var(--ink);margin-right:4px;">Key:</strong>
+    <span class="legend-item"><span class="token">TOKEN</span> canonical token</span>
+    <span class="legend-item"><span class="syn">SYNONYM</span> accepted alias</span>
+    <span class="legend-item"><span class="badge mac">Mac</span> Mac only</span>
+    <span class="legend-item"><span class="badge pc">PC</span> PC only</span>
+    <span class="legend-item"><span class="badge both">Both</span> both platforms</span>
+    <span class="legend-item"><span class="badge ext">Extended</span> chip pill, not graphical keyboard</span>
+    <span class="legend-item"><span class="chip">chip</span> how it renders</span>
+  </div>
+
+
+  <!-- ── SECTION: Fundamentals ─────────────────────────────────── -->
+  <div class="section">
+    <p class="section-heading">01 — Fundamentals</p>
+    <h2>Structure</h2>
+
+    <p>Tokens are combined with <code style="font-family:'IBM Plex Mono',monospace;font-size:0.9em;">+</code> to form a shortcut string. Order does not matter — the parser normalises modifiers before matching.</p>
+
+    <div class="code-block">
+<span class="c-note">// Single key</span>
+<span class="c-key">"mac_sc"</span>: <span class="c-val">"CMD+S"</span>
+
+<span class="c-note">// Multiple modifiers</span>
+<span class="c-key">"mac_sc"</span>: <span class="c-val">"CMD+SHIFT+Z"</span>
+
+<span class="c-note">// Pipe = accepted alternatives (first is shown on the chip)</span>
+<span class="c-key">"mac_sc"</span>: <span class="c-val">"CMD+ARROWLEFT|HOME"</span>
+
+<span class="c-note">// Key does not exist on this platform</span>
+<span class="c-key">"pc_sc"</span>: <span class="c-val">"NULL"</span>
+    </div>
+
+    <div class="callout info">
+      <strong>Pipe alternatives.</strong> The system accepts any alternative listed after <code style="font-family:'IBM Plex Mono',monospace;font-size:0.85em;">|</code> as a correct answer. The chip always shows only the <em>first</em> alternative. Use this when a shortcut can be performed more than one way.
+    </div>
+
+    <div class="callout warn">
+      <strong>NULL.</strong> Use the literal value <span class="null-token">NULL</span> (not an empty string) when a shortcut does not exist on a given platform. This prevents the question appearing on that OS.
+    </div>
+  </div>
+
+
+  <!-- ── SECTION: Modifiers ────────────────────────────────────── -->
+  <div class="section">
+    <p class="section-heading">02 — Modifier Keys</p>
+    <h2>Modifiers</h2>
+    <p>Modifiers are always rendered as a chip. They appear on the graphical keyboard. Left and right variants are interchangeable — holding either satisfies the requirement.</p>
+
+    <table class="ref-table">
+      <thead>
+        <tr>
+          <th>Token</th>
+          <th>Synonyms</th>
+          <th>Mac chip</th>
+          <th>PC chip</th>
+          <th>Platform</th>
+          <th>Notes</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><span class="token">CMD</span></td>
+          <td><span class="syn">COMMAND</span> <span class="syn">CTRL</span></td>
+          <td><span class="chip">⌘</span></td>
+          <td><span class="chip">Ctrl</span></td>
+          <td><span class="badge both">Both</span></td>
+          <td>Maps to ⌘ on Mac, Ctrl on PC. <span class="syn">CTRL</span> is accepted in JSON for readability.</td>
+        </tr>
+        <tr>
+          <td><span class="token">SHIFT</span></td>
+          <td>—</td>
+          <td><span class="chip">⇧</span></td>
+          <td><span class="chip">⇧</span></td>
+          <td><span class="badge both">Both</span></td>
+          <td></td>
+        </tr>
+        <tr>
+          <td><span class="token">OPTION</span></td>
+          <td><span class="syn">OPT</span> <span class="syn">ALT</span></td>
+          <td><span class="chip">⌥</span></td>
+          <td><span class="chip">Alt</span></td>
+          <td><span class="badge both">Both</span></td>
+          <td>Use <span class="syn">ALT</span> freely in JSON; the chip adapts to the platform.</td>
+        </tr>
+        <tr>
+          <td><span class="token mac-only">CONTROL</span></td>
+          <td>—</td>
+          <td><span class="chip">⌃</span></td>
+          <td>—</td>
+          <td><span class="badge mac">Mac</span></td>
+          <td>The physical Control key on Mac, distinct from CMD. Not used on PC.</td>
+        </tr>
+        <tr>
+          <td><span class="token pc-only">WIN</span></td>
+          <td><span class="syn">WINDOWS</span></td>
+          <td>—</td>
+          <td><span class="chip">Win</span></td>
+          <td><span class="badge pc">PC</span></td>
+          <td>Windows key. Not used on Mac.</td>
+        </tr>
+        <tr>
+          <td><span class="token">FN</span></td>
+          <td><span class="syn">FUNCTION</span></td>
+          <td><span class="chip">fn</span></td>
+          <td><span class="chip">FN</span></td>
+          <td><span class="badge both">Both</span></td>
+          <td>Only present on keyboards configured to show the Fn key.</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <div class="callout warn">
+      <strong>CMD vs CONTROL on Mac.</strong> <span class="token">CMD</span> maps to the ⌘ Command key. <span class="token">CONTROL</span> maps to the ⌃ Control key — a separate physical key used in a small number of Mac shortcuts (e.g. <code style="font-family:'IBM Plex Mono',monospace;font-size:0.85em;">CONTROL+CMD+V</code> for Paste Special). Do not confuse them.
+    </div>
+  </div>
+
+
+  <!-- ── SECTION: Named Keys ───────────────────────────────────── -->
+  <div class="section">
+    <p class="section-heading">03 — Named Keys (Graphical Keyboard)</p>
+    <h2>Named Keys</h2>
+    <p>These appear on the graphical keyboard and light up when pressed.</p>
+
+    <table class="ref-table">
+      <thead>
+        <tr>
+          <th>Token</th>
+          <th>Synonyms</th>
+          <th>Mac chip</th>
+          <th>PC chip</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><span class="token">RETURN</span></td>
+          <td><span class="syn">ENTER</span></td>
+          <td><span class="chip">↩</span></td>
+          <td><span class="chip">↵</span></td>
+        </tr>
+        <tr>
+          <td><span class="token">TAB</span></td>
+          <td>—</td>
+          <td><span class="chip">⇥</span></td>
+          <td><span class="chip">Tab</span></td>
+        </tr>
+        <tr>
+          <td><span class="token">SPACE</span></td>
+          <td><span class="syn">SPACEBAR</span></td>
+          <td><span class="chip">Space</span></td>
+          <td><span class="chip">Space</span></td>
+        </tr>
+        <tr>
+          <td><span class="token">BACKSPACE</span></td>
+          <td><span class="syn">DEL</span> <span class="syn">BACKDELETE</span></td>
+          <td><span class="chip">⌫</span></td>
+          <td><span class="chip">⌫</span></td>
+        </tr>
+        <tr>
+          <td><span class="token">ESCAPE</span></td>
+          <td><span class="syn">ESC</span></td>
+          <td><span class="chip">Esc</span></td>
+          <td><span class="chip">Esc</span></td>
+        </tr>
+        <tr>
+          <td><span class="token">CAPSLOCK</span></td>
+          <td>—</td>
+          <td><span class="chip">⇪</span></td>
+          <td><span class="chip">Caps</span></td>
+        </tr>
+        <tr>
+          <td><span class="token">ARROWUP</span></td>
+          <td><span class="syn">UP</span></td>
+          <td><span class="chip">↑</span></td>
+          <td><span class="chip">↑</span></td>
+        </tr>
+        <tr>
+          <td><span class="token">ARROWDOWN</span></td>
+          <td><span class="syn">DOWN</span></td>
+          <td><span class="chip">↓</span></td>
+          <td><span class="chip">↓</span></td>
+        </tr>
+        <tr>
+          <td><span class="token">ARROWLEFT</span></td>
+          <td><span class="syn">LEFT</span></td>
+          <td><span class="chip">←</span></td>
+          <td><span class="chip">←</span></td>
+        </tr>
+        <tr>
+          <td><span class="token">ARROWRIGHT</span></td>
+          <td><span class="syn">RIGHT</span></td>
+          <td><span class="chip">→</span></td>
+          <td><span class="chip">→</span></td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+
+  <!-- ── SECTION: Letters, Digits, F-Keys ─────────────────────── -->
+  <div class="section">
+    <p class="section-heading">04 — Letters, Digits &amp; Function Keys</p>
+    <h2>Letters, Digits &amp; Function Keys</h2>
+    <p>All appear on the graphical keyboard. Use the character or label directly — no special wrapper token needed.</p>
+
+    <div class="two-col">
+      <div>
+        <h3>Letters</h3>
+        <p>Write <code style="font-family:'IBM Plex Mono',monospace;font-size:0.9em;">A</code> through <code style="font-family:'IBM Plex Mono',monospace;font-size:0.9em;">Z</code>. Always uppercase in the token string. The chip shows the letter.</p>
+        <div class="code-block" style="margin-top:10px;">
+<span class="c-val">"CMD+S"</span>   <span class="c-note">→</span> <span class="c-token">⌘ S</span>
+<span class="c-val">"CMD+Z"</span>   <span class="c-note">→</span> <span class="c-token">⌘ Z</span>
+        </div>
+      </div>
+      <div>
+        <h3>Digits</h3>
+        <p>Write <code style="font-family:'IBM Plex Mono',monospace;font-size:0.9em;">0</code> through <code style="font-family:'IBM Plex Mono',monospace;font-size:0.9em;">9</code>. The chip shows the digit.</p>
+        <div class="code-block" style="margin-top:10px;">
+<span class="c-val">"CMD+1"</span>   <span class="c-note">→</span> <span class="c-token">⌘ 1</span>
+<span class="c-val">"CMD+0"</span>   <span class="c-note">→</span> <span class="c-token">⌘ 0</span>
+        </div>
+      </div>
+    </div>
+
+    <h3>Function Keys — Graphical Keyboard (F1–F12)</h3>
+    <p>F1 through F12 appear on the graphical keyboard and light up when pressed. Write the label directly.</p>
+    <p style="margin-bottom:16px;">
+      <span class="token">F1</span> <span class="token">F2</span> <span class="token">F3</span> <span class="token">F4</span>
+      <span class="token">F5</span> <span class="token">F6</span> <span class="token">F7</span> <span class="token">F8</span>
+      <span class="token">F9</span> <span class="token">F10</span> <span class="token">F11</span> <span class="token">F12</span>
+    </p>
+
+    <h3>Function Keys — Extended Chip Only (F13–F24) <span class="badge ext">Extended</span></h3>
+    <p>F13–F24 are not on the graphical keyboard. They appear as a chip pill when pressed. On Mac extended keyboards, the keys physically labelled PrintScreen/ScrollLock/Pause report as F13/F14/F15 to the browser.</p>
+    <p>
+      <span class="token">F13</span> <span class="token">F14</span> <span class="token">F15</span> <span class="token">F16</span>
+      <span class="token">F17</span> <span class="token">F18</span> <span class="token">F19</span> <span class="token">F20</span>
+      <span class="token">F21</span> <span class="token">F22</span> <span class="token">F23</span> <span class="token">F24</span>
+    </p>
+
+    <div class="callout info" style="margin-top:16px;">
+      <strong>Mac vs PC function keys.</strong> On Mac, F1–F12 are system media/brightness keys by default. The user may need to hold Fn to send the raw F-key signal to the browser. On PC, F-keys send directly. Use the CONFLICTS JSON files to mark keys that your OS or browser intercepts.
+    </div>
+  </div>
+
+
+  <!-- ── SECTION: Punctuation ──────────────────────────────────── -->
+  <div class="section">
+    <p class="section-heading">05 — Punctuation &amp; Symbol Keys</p>
+    <h2>Punctuation &amp; Symbol Keys</h2>
+    <p>
+      These keys exist on the graphical keyboard. There are two categories: <strong>physical key tokens</strong> that refer to the key's unshifted character, and <strong>display override tokens</strong> that show the shifted character on the chip. Both match the same physical key regardless of whether Shift is held — the token only affects what the chip displays.
+    </p>
+
+    <h3>Physical Key Tokens (chip shows unshifted character)</h3>
+    <table class="ref-table">
+      <thead>
+        <tr>
+          <th>Token</th>
+          <th>Synonyms</th>
+          <th>Key</th>
+          <th>Chip shows</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr><td><span class="token">EQUAL</span></td><td><span class="syn">PLUS</span> <span class="syn">EQUALS</span></td><td><code style="font-family:'IBM Plex Mono',monospace;">=</code> key</td><td><span class="chip">=</span></td></tr>
+        <tr><td><span class="token">MINUS</span></td><td><span class="syn">UNDERSCORE</span></td><td><code style="font-family:'IBM Plex Mono',monospace;">-</code> key</td><td><span class="chip">-</span></td></tr>
+        <tr><td><span class="token">BRACKETLEFT</span></td><td><span class="syn">OPENBRACE</span> <span class="syn">OPENBRACKET</span></td><td><code style="font-family:'IBM Plex Mono',monospace;">[</code> key</td><td><span class="chip">[</span></td></tr>
+        <tr><td><span class="token">BRACKETRIGHT</span></td><td><span class="syn">CLOSEBRACE</span> <span class="syn">CLOSEBRACKET</span></td><td><code style="font-family:'IBM Plex Mono',monospace;">]</code> key</td><td><span class="chip">]</span></td></tr>
+        <tr><td><span class="token">BACKSLASH</span></td><td><span class="syn">PIPE</span></td><td><code style="font-family:'IBM Plex Mono',monospace;">\</code> key</td><td><span class="chip">\</span></td></tr>
+        <tr><td><span class="token">SEMICOLON</span></td><td><span class="syn">COLON</span></td><td><code style="font-family:'IBM Plex Mono',monospace;">;</code> key</td><td><span class="chip">;</span></td></tr>
+        <tr><td><span class="token">QUOTE</span></td><td><span class="syn">DOUBLEQUOTE</span></td><td><code style="font-family:'IBM Plex Mono',monospace;">'</code> key</td><td><span class="chip">'</span></td></tr>
+        <tr><td><span class="token">COMMA</span></td><td><span class="syn">LESSTHAN</span></td><td><code style="font-family:'IBM Plex Mono',monospace;">,</code> key</td><td><span class="chip">,</span></td></tr>
+        <tr><td><span class="token">PERIOD</span></td><td><span class="syn">MORETHAN</span></td><td><code style="font-family:'IBM Plex Mono',monospace;">.</code> key</td><td><span class="chip">.</span></td></tr>
+        <tr><td><span class="token">SLASH</span></td><td><span class="syn">QUESTION</span></td><td><code style="font-family:'IBM Plex Mono',monospace;">/</code> key</td><td><span class="chip">/</span></td></tr>
+        <tr><td><span class="token">GRAVE</span></td><td><span class="syn">TILDE</span> <span class="syn">BACKTICK</span></td><td><code style="font-family:'IBM Plex Mono',monospace;">`</code> key</td><td><span class="chip">`</span></td></tr>
+      </tbody>
+    </table>
+
+    <h3>Display Override Tokens (chip shows shifted character)</h3>
+    <p>Use these when app documentation refers to the shortcut by the shifted symbol name. The token still matches the physical key, and the chip shows the symbol below.</p>
+    <table class="ref-table">
+      <thead>
+        <tr>
+          <th>Token</th>
+          <th>Physical Key</th>
+          <th>Chip shows</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr><td><span class="token">PLUS</span></td><td>= key</td><td><span class="chip">+</span></td></tr>
+        <tr><td><span class="token">UNDERSCORE</span></td><td>- key</td><td><span class="chip">_</span></td></tr>
+        <tr><td><span class="token">OPENBRACE</span></td><td>[ key</td><td><span class="chip">{</span></td></tr>
+        <tr><td><span class="token">CLOSEBRACE</span></td><td>] key</td><td><span class="chip">}</span></td></tr>
+        <tr><td><span class="token">PIPE</span></td><td>\ key</td><td><span class="chip">|</span></td></tr>
+        <tr><td><span class="token">COLON</span></td><td>; key</td><td><span class="chip">:</span></td></tr>
+        <tr><td><span class="token">DOUBLEQUOTE</span></td><td>' key</td><td><span class="chip">"</span></td></tr>
+        <tr><td><span class="token">LESSTHAN</span></td><td>, key</td><td><span class="chip">&lt;</span></td></tr>
+        <tr><td><span class="token">MORETHAN</span></td><td>. key</td><td><span class="chip">&gt;</span></td></tr>
+        <tr><td><span class="token">QUESTION</span></td><td>/ key</td><td><span class="chip">?</span></td></tr>
+        <tr><td><span class="token">TILDE</span></td><td>` key</td><td><span class="chip">~</span></td></tr>
+        <tr><td><span class="token">EXCLAMATION</span></td><td>1 key</td><td><span class="chip">!</span></td></tr>
+        <tr><td><span class="token">AT</span></td><td>2 key</td><td><span class="chip">@</span></td></tr>
+        <tr><td><span class="token">HASH</span></td><td>3 key</td><td><span class="chip">#</span></td></tr>
+        <tr><td><span class="token">DOLLAR</span></td><td>4 key</td><td><span class="chip">$</span></td></tr>
+        <tr><td><span class="token">PERCENT</span></td><td>5 key</td><td><span class="chip">%</span></td></tr>
+        <tr><td><span class="token">CARET</span></td><td>6 key</td><td><span class="chip">^</span></td></tr>
+        <tr><td><span class="token">AMPERSAND</span></td><td>7 key</td><td><span class="chip">&amp;</span></td></tr>
+        <tr><td><span class="token">ASTERISK</span></td><td>8 key</td><td><span class="chip">*</span></td></tr>
+        <tr><td><span class="token">OPENPAREN</span></td><td>9 key</td><td><span class="chip">(</span></td></tr>
+        <tr><td><span class="token">CLOSEPAREN</span></td><td>0 key</td><td><span class="chip">)</span></td></tr>
+      </tbody>
+    </table>
+    <p class="table-note">Note: PLUS, TILDE, LESSTHAN, MORETHAN, QUESTION, PIPE, UNDERSCORE, COLON, DOUBLEQUOTE, OPENBRACE, CLOSEBRACE are double-duty — they are both synonyms for the physical key token and display overrides that change the chip label. The parser resolves them in that order.</p>
+  </div>
+
+
+  <!-- ── SECTION: Extended Keys ────────────────────────────────── -->
+  <div class="section">
+    <p class="section-heading">06 — Extended Keyboard Keys</p>
+    <h2>Extended Keyboard Keys <span class="badge ext">Extended</span></h2>
+    <p>These keys are not on the graphical keyboard. When pressed, the system shows them as a floating chip pill above the stats row instead. They can be used in shortcut definitions and will be correctly matched and displayed.</p>
+
+    <div class="ext-panel">
+      <h3>Navigation Cluster</h3>
+      <table class="ref-table">
+        <thead>
+          <tr><th>Token</th><th>Chip shows</th><th>Platform</th><th>Notes</th></tr>
+        </thead>
+        <tbody>
+          <tr><td><span class="token">HOME</span></td><td><span class="chip">↖ home</span></td><td><span class="badge both">Both</span></td><td>On Mac: also Fn+Left</td></tr>
+          <tr><td><span class="token">END</span></td><td><span class="chip">↘ end</span></td><td><span class="badge both">Both</span></td><td>On Mac: also Fn+Right</td></tr>
+          <tr><td><span class="token">PAGEUP</span></td><td><span class="chip">⇞ page up</span></td><td><span class="badge both">Both</span></td><td>On Mac: also Fn+Up</td></tr>
+          <tr><td><span class="token">PAGEDOWN</span></td><td><span class="chip">⇟ page down</span></td><td><span class="badge both">Both</span></td><td>On Mac: also Fn+Down</td></tr>
+          <tr><td><span class="token">INSERT</span></td><td><span class="chip">INSERT</span></td><td><span class="badge pc">PC</span></td><td>Not present on most Mac keyboards</td></tr>
+          <tr><td><span class="token">DELETE</span></td><td><span class="chip">⌦</span></td><td><span class="badge both">Both</span></td><td>Forward delete. Distinct from BACKSPACE.</td></tr>
+        </tbody>
+      </table>
+
+      <h3>System Keys</h3>
+      <table class="ref-table">
+        <thead>
+          <tr><th>Token</th><th>Chip shows</th><th>Platform</th><th>Notes</th></tr>
+        </thead>
+        <tbody>
+          <tr><td><span class="token">PRINTSCREEN</span></td><td><span class="chip">PRINTSCREEN</span></td><td><span class="badge pc">PC</span></td><td>Mac extended keyboards report F13 instead</td></tr>
+          <tr><td><span class="token">SCROLLLOCK</span></td><td><span class="chip">SCROLLLOCK</span></td><td><span class="badge pc">PC</span></td><td>Mac extended keyboards report F14 instead</td></tr>
+          <tr><td><span class="token">PAUSE</span></td><td><span class="chip">PAUSE</span></td><td><span class="badge pc">PC</span></td><td>Mac extended keyboards report F15 instead</td></tr>
+          <tr><td><span class="token">NUMLOCK</span></td><td><span class="chip">Number Lock</span></td><td><span class="badge pc">PC</span></td><td>PC NumLock key</td></tr>
+          <tr><td><span class="token">CLEAR</span></td><td><span class="chip">clear</span></td><td><span class="badge mac">Mac</span></td><td>Mac numpad Clear key. Distinct from NUMLOCK.</td></tr>
+          <tr><td><span class="token">CONTEXTMENU</span></td><td><span class="chip">CONTEXTMENU</span></td><td><span class="badge pc">PC</span></td><td>The menu key right of spacebar on PC keyboards. Synonym: <span class="syn">APPS</span></td></tr>
+          <tr><td><span class="token">HELP</span></td><td><span class="chip">HELP</span></td><td><span class="badge mac">Mac</span></td><td>Mac extended keyboard Help key</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+
+  <!-- ── SECTION: Numpad ───────────────────────────────────────── -->
+  <div class="section">
+    <p class="section-heading">07 — Numpad Keys</p>
+    <h2>Numpad Keys <span class="badge ext">Extended</span></h2>
+    <p>All numpad keys show as extended chip pills. The system automatically lights the equivalent main keyboard key where one exists (e.g. Numpad 5 lights the 5 key on the graphical keyboard).</p>
+
+    <div class="callout info">
+      <strong>No JSON changes needed for + shortcuts.</strong> The <span class="token">EQUAL</span> / <span class="token">PLUS</span> token already accepts both the main keyboard <code style="font-family:'IBM Plex Mono',monospace;font-size:0.85em;">=</code> key and the numpad Add key as correct answers. You only need <span class="token">NUMPADADD</span> if you specifically want to require the numpad key.
+    </div>
+
+    <table class="ref-table">
+      <thead>
+        <tr><th>Token</th><th>Chip shows</th><th>Maps to (lighting)</th></tr>
+      </thead>
+      <tbody>
+        <tr><td><span class="token">NUMPAD0</span> – <span class="token">NUMPAD9</span></td><td><span class="chip">0</span> – <span class="chip">9</span></td><td>Digit 0–9 key</td></tr>
+        <tr><td><span class="token">NUMPADADD</span></td><td><span class="chip">+</span></td><td>= key</td></tr>
+        <tr><td><span class="token">NUMPADSUBTRACT</span></td><td><span class="chip">-</span></td><td>- key</td></tr>
+        <tr><td><span class="token">NUMPADMULTIPLY</span></td><td><span class="chip">*</span></td><td>8 key</td></tr>
+        <tr><td><span class="token">NUMPADDIVIDE</span></td><td><span class="chip">/</span></td><td>/ key</td></tr>
+        <tr><td><span class="token">NUMPADDECIMAL</span></td><td><span class="chip">.</span></td><td>. key</td></tr>
+        <tr><td><span class="token">NUMPADENTER</span></td><td><span class="chip">↵</span></td><td>Enter key</td></tr>
+        <tr><td><span class="token">NUMPADEQUAL</span></td><td><span class="chip">=</span></td><td>= key</td></tr>
+        <tr><td><span class="token">NUMPADCOMMA</span></td><td><span class="chip">,</span></td><td>, key</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+
+  <!-- ── SECTION: OS differences summary ──────────────────────── -->
+  <div class="section">
+    <p class="section-heading">08 — OS Differences Summary</p>
+    <h2>Platform Differences at a Glance</h2>
+
+    <table class="ref-table">
+      <thead>
+        <tr>
+          <th>Topic</th>
+          <th><span class="badge mac">Mac</span></th>
+          <th><span class="badge pc">PC</span></th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>Primary command modifier</td>
+          <td>CMD → ⌘</td>
+          <td>CMD → Ctrl</td>
+        </tr>
+        <tr>
+          <td>Secondary command modifier</td>
+          <td>CONTROL → ⌃ (separate from CMD)</td>
+          <td>— (no equivalent)</td>
+        </tr>
+        <tr>
+          <td>Alt / Option</td>
+          <td>OPTION → ⌥</td>
+          <td>OPTION → Alt</td>
+        </tr>
+        <tr>
+          <td>Windows / Command key</td>
+          <td>— (CMD covers this)</td>
+          <td>WIN → Win</td>
+        </tr>
+        <tr>
+          <td>PrintScreen / ScrollLock / Pause</td>
+          <td>F13 / F14 / F15 (extended keyboards)</td>
+          <td>PRINTSCREEN / SCROLLLOCK / PAUSE</td>
+        </tr>
+        <tr>
+          <td>NumLock / Clear</td>
+          <td>CLEAR (NumpadClear key)</td>
+          <td>NUMLOCK</td>
+        </tr>
+        <tr>
+          <td>Context menu key</td>
+          <td>— (not present)</td>
+          <td>CONTEXTMENU / APPS</td>
+        </tr>
+        <tr>
+          <td>Help key</td>
+          <td>HELP (extended keyboards)</td>
+          <td>— (rarely present)</td>
+        </tr>
+        <tr>
+          <td>Backspace label</td>
+          <td>"delete" (⌫)</td>
+          <td>"⌫" (same glyph)</td>
+        </tr>
+        <tr>
+          <td>Forward delete</td>
+          <td>DELETE (extended keyboards only)</td>
+          <td>DELETE</td>
+        </tr>
+        <tr>
+          <td>Enter key label</td>
+          <td>"return" (↩)</td>
+          <td>"enter" (↵)</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+
+  <!-- ── SECTION: Quick examples ───────────────────────────────── -->
+  <div class="section">
+    <p class="section-heading">09 — Quick Examples</p>
+    <h2>Example Shortcut Definitions</h2>
+
+    <div class="code-block">
+<span class="c-note">// Standard cross-platform shortcut</span>
+{
+  <span class="c-key">"display"</span>: <span class="c-val">"save the document"</span>,
+  <span class="c-key">"mac_sc"</span>:  <span class="c-val">"CMD+S"</span>,
+  <span class="c-key">"pc_sc"</span>:   <span class="c-val">"CMD+S"</span>
+}
+
+<span class="c-note">// Different shortcut per platform</span>
+{
+  <span class="c-key">"display"</span>: <span class="c-val">"open find and replace"</span>,
+  <span class="c-key">"mac_sc"</span>:  <span class="c-val">"CMD+SHIFT+H"</span>,
+  <span class="c-key">"pc_sc"</span>:   <span class="c-val">"CMD+H"</span>
+}
+
+<span class="c-note">// Mac-only shortcut</span>
+{
+  <span class="c-key">"display"</span>: <span class="c-val">"quit the application"</span>,
+  <span class="c-key">"mac_sc"</span>:  <span class="c-val">"CMD+Q"</span>,
+  <span class="c-key">"pc_sc"</span>:   <span class="c-val">"NULL"</span>
+}
+
+<span class="c-note">// Pipe: multiple accepted answers, first shown on chip</span>
+{
+  <span class="c-key">"display"</span>: <span class="c-val">"go to line start"</span>,
+  <span class="c-key">"mac_sc"</span>:  <span class="c-val">"CMD+ARROWLEFT|HOME"</span>,
+  <span class="c-key">"pc_sc"</span>:   <span class="c-val">"HOME"</span>
+}
+
+<span class="c-note">// Display override: chip shows the shifted symbol</span>
+{
+  <span class="c-key">"display"</span>: <span class="c-val">"increase font size"</span>,
+  <span class="c-key">"mac_sc"</span>:  <span class="c-val">"CMD+SHIFT+MORETHAN"</span>,
+  <span class="c-key">"pc_sc"</span>:   <span class="c-val">"CMD+SHIFT+MORETHAN"</span>
+}
+
+<span class="c-note">// Mac Control key (distinct from CMD)</span>
+{
+  <span class="c-key">"display"</span>: <span class="c-val">"paste special"</span>,
+  <span class="c-key">"mac_sc"</span>:  <span class="c-val">"CONTROL+CMD+V"</span>,
+  <span class="c-key">"pc_sc"</span>:   <span class="c-val">"CMD+ALT+V"</span>
+}
+
+<span class="c-note">// F-key shortcut</span>
+{
+  <span class="c-key">"display"</span>: <span class="c-val">"open spell check"</span>,
+  <span class="c-key">"mac_sc"</span>:  <span class="c-val">"F7"</span>,
+  <span class="c-key">"pc_sc"</span>:   <span class="c-val">"F7"</span>
+}
+
+<span class="c-note">// Extended key (chip pill only)</span>
+{
+  <span class="c-key">"display"</span>: <span class="c-val">"go to beginning of document"</span>,
+  <span class="c-key">"mac_sc"</span>:  <span class="c-val">"CMD+HOME"</span>,
+  <span class="c-key">"pc_sc"</span>:   <span class="c-val">"CMD+HOME"</span>
+}
+    </div>
+  </div>
+
+</div><!-- /.page-wrap -->
+</body>
+</html>

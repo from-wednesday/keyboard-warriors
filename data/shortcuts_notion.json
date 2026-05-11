@@ -205,56 +205,56 @@
     "mac_sc": "CMD+OPTION+0",
     "pc_sc": "CTRL+SHIFT+0",
     "difficulty": 3,
-         "group": paragraph
+         "group": "paragraph"
   },
   {
     "display": "set Block as Heading-1",
     "mac_sc": "CMD+OPTION+1",
     "pc_sc": "CTRL+SHIFT+1",
     "difficulty": 3,
-         "group": paragraph
+         "group": "paragraph"
   },
   {
     "display": "set Block as Heading-2",
     "mac_sc": "CMD+OPTION+2",
     "pc_sc": "CTRL+SHIFT+2",
     "difficulty": 3,
-         "group": paragraph
+         "group": "paragraph"
   },
   {
     "display": "set Block as Heading-3",
     "mac_sc": "CMD+OPTION+3",
     "pc_sc": "CTRL+SHIFT+3",
     "difficulty": 3,
-         "group": paragraph
+         "group": "paragraph"
   },
   {
     "display": "convert Block to a To-do checkbox",
     "mac_sc": "CMD+OPTION+4",
     "pc_sc": "CTRL+SHIFT+4",
     "difficulty": 3,
-         "group": list
+         "group": "list"
   },
   {
     "display": "convert Block to a Bulleted list",
     "mac_sc": "CMD+OPTION+5",
     "pc_sc": "CTRL+SHIFT+5",
     "difficulty": 3,
-         "group": list
+         "group": "list"
   },
   {
     "display": "convert Block to a Numbered list",
     "mac_sc": "CMD+OPTION+6",
     "pc_sc": "CTRL+SHIFT+6",
     "difficulty": 3,
-         "group": list
+         "group": "list"
   },
   {
     "display": "convert Block to a Toggle list",
     "mac_sc": "CMD+OPTION+7",
     "pc_sc": "CTRL+SHIFT+7",
     "difficulty": 3,
-         "group": list
+         "group": "list"
   },
   {
     "display": "convert Block to a Code block",
@@ -440,15 +440,13 @@
     "display": "move cursor to Start of page",
     "mac_sc": "CMD+ARROWUP",
     "pc_sc": "CTRL+HOME",
-    "difficulty": 3,
-    "group": "page_nav"
+    "difficulty": 3
   },
   {
     "display": "move cursor to End of page",
     "mac_sc": "CMD+ARROWDOWN",
     "pc_sc": "CTRL+END",
-    "difficulty": 3,
-    "group": "page_nav"
+    "difficulty": 3
   },
   {
     "display": "enter text editing mode",
@@ -466,15 +464,13 @@
     "display": "move selection Up",
     "mac_sc": "ARROWUP",
     "pc_sc": "ARROWUP",
-    "difficulty": 1,
-    "group": "block_selection"
+    "difficulty": 1
   },
   {
     "display": "move selection Down",
     "mac_sc": "ARROWDOWN",
     "pc_sc": "ARROWDOWN",
-    "difficulty": 1,
-    "group": "block_selection"
+    "difficulty": 1
   },
   {
     "display": "clear Block contents",
@@ -534,28 +530,24 @@
     "display": "move cursor one word left",
     "mac_sc": "OPTION+ARROWLEFT",
     "pc_sc": "CTRL+ARROWLEFT",
-    "difficulty": 3,
-    "group": "word_jump"
+    "difficulty": 3
   },
   {
     "display": "select one word left",
     "mac_sc": "OPTION+SHIFT+ARROWLEFT",
     "pc_sc": "CTRL+SHIFT+ARROWLEFT",
-    "difficulty": 4,
-    "group": "word_select"
+    "difficulty": 4
   },
   {
     "display": "move cursor one word right",
     "mac_sc": "OPTION+ARROWRIGHT",
     "pc_sc": "CTRL+ARROWRIGHT",
-    "difficulty": 3,
-    "group": "word_jump"
+    "difficulty": 3
   },
   {
     "display": "select one word right",
     "mac_sc": "OPTION+SHIFT+ARROWRIGHT",
     "pc_sc": "CTRL+SHIFT+ARROWRIGHT",
-    "difficulty": 4,
-    "group": "word_select"
+    "difficulty": 4
   }
 ]

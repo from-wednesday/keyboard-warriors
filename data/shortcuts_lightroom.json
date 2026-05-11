@@ -1,0 +1,419 @@
+[
+  {
+    "display": "go to Develop module",
+    "mac_sc": "D",
+    "pc_sc": "D",
+    "difficulty": 2
+  },
+  {
+    "display": "go to Library module",
+    "mac_sc": "G",
+    "pc_sc": "G",
+    "difficulty": 2
+  },
+  {
+    "display": "view Grid in Library",
+    "mac_sc": "G",
+    "pc_sc": "G",
+    "difficulty": 2
+  },
+  {
+    "display": "view Loupe (single photo)",
+    "mac_sc": "E",
+    "pc_sc": "E",
+    "difficulty": 2
+  },
+  {
+    "display": "view Survey mode",
+    "mac_sc": "N",
+    "pc_sc": "N",
+    "difficulty": 3
+  },
+  {
+    "display": "view Compare mode",
+    "mac_sc": "C",
+    "pc_sc": "C",
+    "difficulty": 3
+  },
+  {
+    "display": "view Full screen",
+    "mac_sc": "F",
+    "pc_sc": "F",
+    "difficulty": 2
+  },
+  {
+    "display": "toggle Lights Out mode",
+    "mac_sc": "L",
+    "pc_sc": "L",
+    "difficulty": 3
+  },
+  {
+    "display": "toggle Info overlay",
+    "mac_sc": "I",
+    "pc_sc": "I",
+    "difficulty": 2
+  },
+  {
+    "display": "toggle Sidebar panels",
+    "mac_sc": "TAB",
+    "pc_sc": "TAB",
+    "difficulty": 2
+  },
+  {
+    "display": "toggle All panels",
+    "mac_sc": "SHIFT+TAB",
+    "pc_sc": "SHIFT+TAB",
+    "difficulty": 3
+  },
+  {
+    "display": "set Star rating to 1",
+    "mac_sc": "1",
+    "pc_sc": "1",
+    "difficulty": 2,
+    "group": "star_rating"
+  },
+  {
+    "display": "set Star rating to 2",
+    "mac_sc": "2",
+    "pc_sc": "2",
+    "difficulty": 2,
+    "group": "star_rating"
+  },
+  {
+    "display": "set Star rating to 3",
+    "mac_sc": "3",
+    "pc_sc": "3",
+    "difficulty": 2,
+    "group": "star_rating"
+  },
+  {
+    "display": "set Star rating to 4",
+    "mac_sc": "4",
+    "pc_sc": "4",
+    "difficulty": 2,
+    "group": "star_rating"
+  },
+  {
+    "display": "set Star rating to 5",
+    "mac_sc": "5",
+    "pc_sc": "5",
+    "difficulty": 2,
+    "group": "star_rating"
+  },
+  {
+    "display": "remove Star rating",
+    "mac_sc": "0",
+    "pc_sc": "0",
+    "difficulty": 2
+  },
+  {
+    "display": "set Color label to Red",
+    "mac_sc": "6",
+    "pc_sc": "6",
+    "difficulty": 3,
+    "group": "color_label"
+  },
+  {
+    "display": "set Color label to Yellow",
+    "mac_sc": "7",
+    "pc_sc": "7",
+    "difficulty": 3,
+    "group": "color_label"
+  },
+  {
+    "display": "set Color label to Green",
+    "mac_sc": "8",
+    "pc_sc": "8",
+    "difficulty": 3,
+    "group": "color_label"
+  },
+  {
+    "display": "set Color label to Blue",
+    "mac_sc": "9",
+    "pc_sc": "9",
+    "difficulty": 3,
+    "group": "color_label"
+  },
+  {
+    "display": "pick (Flag) the photo",
+    "mac_sc": "P",
+    "pc_sc": "P",
+    "difficulty": 2
+  },
+  {
+    "display": "reject the photo",
+    "mac_sc": "X",
+    "pc_sc": "X",
+    "difficulty": 3
+  },
+  {
+    "display": "unflag the photo",
+    "mac_sc": "U",
+    "pc_sc": "U",
+    "difficulty": 3
+  },
+  {
+    "display": "crop the photo",
+    "mac_sc": "R",
+    "pc_sc": "R",
+    "difficulty": 3
+  },
+  {
+    "display": "spot Removal tool",
+    "mac_sc": "Q",
+    "pc_sc": "Q",
+    "difficulty": 3
+  },
+  {
+    "display": "adjustment Brush tool",
+    "mac_sc": "K",
+    "pc_sc": "K",
+    "difficulty": 3
+  },
+  {
+    "display": "graduated Filter tool",
+    "mac_sc": "M",
+    "pc_sc": "M",
+    "difficulty": 3
+  },
+  {
+    "display": "radial Filter tool",
+    "mac_sc": "SHIFT+M",
+    "pc_sc": "SHIFT+M",
+    "difficulty": 4
+  },
+  {
+    "display": "white Balance eyedropper",
+    "mac_sc": "W",
+    "pc_sc": "W",
+    "difficulty": 3
+  },
+  {
+    "display": "toggle Before/After view",
+    "mac_sc": "BACKSLASH",
+    "pc_sc": "BACKSLASH",
+    "difficulty": 3
+  },
+  {
+    "display": "copy Develop settings",
+    "mac_sc": "CMD+SHIFT+C",
+    "pc_sc": "CTRL+SHIFT+C",
+    "difficulty": 3
+  },
+  {
+    "display": "paste Develop settings",
+    "mac_sc": "CMD+SHIFT+V",
+    "pc_sc": "CTRL+SHIFT+V",
+    "difficulty": 3
+  },
+  {
+    "display": "auto White Balance",
+    "mac_sc": "CMD+SHIFT+U",
+    "pc_sc": "CTRL+SHIFT+U",
+    "difficulty": 4
+  },
+  {
+    "display": "convert to Black and white",
+    "mac_sc": "V",
+    "pc_sc": "V",
+    "difficulty": 3
+  },
+  {
+    "display": "reset Develop settings",
+    "mac_sc": "CMD+SHIFT+R",
+    "pc_sc": "CTRL+SHIFT+R",
+    "difficulty": 4
+  },
+  {
+    "display": "import photos",
+    "mac_sc": "CMD+SHIFT+I",
+    "pc_sc": "CTRL+SHIFT+I",
+    "difficulty": 2
+  },
+  {
+    "display": "export photos",
+    "mac_sc": "CMD+SHIFT+E",
+    "pc_sc": "CTRL+SHIFT+E",
+    "difficulty": 3
+  },
+  {
+    "display": "select All photos",
+    "mac_sc": "CMD+A",
+    "pc_sc": "CTRL+A",
+    "difficulty": 1
+  },
+  {
+    "display": "deselect All photos",
+    "mac_sc": "CMD+D",
+    "pc_sc": "CTRL+D",
+    "difficulty": 2
+  },
+  {
+    "display": "delete the selected photo",
+    "mac_sc": "BACKSPACE|DELETE",
+    "pc_sc": "BACKSPACE|DELETE",
+    "difficulty": 1
+  },
+  {
+    "display": "remove photo from Catalog",
+    "mac_sc": "OPTION+BACKSPACE",
+    "pc_sc": "ALT+BACKSPACE",
+    "difficulty": 4
+  },
+  {
+    "display": "show Mask overlay",
+    "mac_sc": "O",
+    "pc_sc": "O",
+    "difficulty": 3
+  },
+  {
+    "display": "cycle Mask colors",
+    "mac_sc": "SHIFT+O",
+    "pc_sc": "SHIFT+O",
+    "difficulty": 5
+  },
+  {
+    "display": "toggle clipping Warnings",
+    "mac_sc": "J",
+    "pc_sc": "J",
+    "difficulty": 4
+  },
+  {
+    "display": "open Edit in Photoshop",
+    "mac_sc": "CMD+E",
+    "pc_sc": "CTRL+E",
+    "difficulty": 3
+  },
+  {
+    "display": "create Virtual copy",
+    "mac_sc": "CMD+APOSTROPHE",
+    "pc_sc": "CTRL+APOSTROPHE",
+    "difficulty": 4
+  },
+  {
+    "display": "rotate photo Clockwise",
+    "mac_sc": "CMD+BRACKETRIGHT",
+    "pc_sc": "CTRL+BRACKETRIGHT",
+    "difficulty": 3
+  },
+  {
+    "display": "rotate photo Counter-clockwise",
+    "mac_sc": "CMD+BRACKETLEFT",
+    "pc_sc": "CTRL+BRACKETLEFT",
+    "difficulty": 3
+  },
+  {
+    "display": "show help Overlay",
+    "mac_sc": "CMD+SLASH",
+    "pc_sc": "CTRL+SLASH",
+    "difficulty": 2
+  },
+  {
+    "display": "zoom In on photo",
+    "mac_sc": "CMD+PLUS",
+    "pc_sc": "CTRL+PLUS",
+    "difficulty": 2
+  },
+  {
+    "display": "zoom Out on photo",
+    "mac_sc": "CMD+MINUS",
+    "pc_sc": "CTRL+MINUS",
+    "difficulty": 2
+  },
+  {
+    "display": "cycle Screen modes",
+    "mac_sc": "SHIFT+F",
+    "pc_sc": "SHIFT+F",
+    "difficulty": 4
+  },
+  {
+    "display": "hide Filter bar",
+    "mac_sc": "BACKSLASH",
+    "pc_sc": "BACKSLASH",
+    "difficulty": 4
+  },
+  {
+    "display": "find photo in Library",
+    "mac_sc": "CMD+F",
+    "pc_sc": "CTRL+F",
+    "difficulty": 2
+  },
+  {
+    "display": "stack selected photos",
+    "mac_sc": "CMD+G",
+    "pc_sc": "CTRL+G",
+    "difficulty": 4
+  },
+  {
+    "display": "unstack selected photos",
+    "mac_sc": "CMD+SHIFT+G",
+    "pc_sc": "CTRL+SHIFT+G",
+    "difficulty": 4
+  },
+  {
+    "display": "toggle Sidebar visibility",
+    "mac_sc": "CMD+BACKSLASH",
+    "pc_sc": "CTRL+BACKSLASH",
+    "difficulty": 4
+  },
+  {
+    "display": "synchronize Folder",
+    "mac_sc": "CMD+OPTION+S",
+    "pc_sc": "CTRL+ALT+S",
+    "difficulty": 5
+  },
+  {
+    "display": "match Total exposure",
+    "mac_sc": "CMD+OPTION+SHIFT+M",
+    "pc_sc": "CTRL+ALT+SHIFT+M",
+    "difficulty": 5
+  },
+  {
+    "display": "increase Exposure",
+    "mac_sc": "PLUS",
+    "pc_sc": "PLUS",
+    "difficulty": 3
+  },
+  {
+    "display": "decrease Exposure",
+    "mac_sc": "MINUS",
+    "pc_sc": "MINUS",
+    "difficulty": 3
+  },
+  {
+    "display": "redo last action",
+    "mac_sc": "CMD+SHIFT+Z",
+    "pc_sc": "CTRL+SHIFT+Z",
+    "difficulty": 1
+  },
+  {
+    "display": "toggle Tethered capture bar",
+    "mac_sc": "CMD+T",
+    "pc_sc": "CTRL+T",
+    "difficulty": 5
+  },
+  {
+    "display": "show Folder in Finder or Explorer",
+    "mac_sc": "CMD+R",
+    "pc_sc": "CTRL+R",
+    "difficulty": 4
+  },
+  {
+    "display": "cycle Grid view style 1",
+    "mac_sc": "J",
+    "pc_sc": "J",
+    "difficulty": 4
+  },
+  {
+    "display": "cycle Grid view style 2",
+    "mac_sc": "J",
+    "pc_sc": "J",
+    "difficulty": 4
+  },
+  {
+    "display": "cycle Grid view style 3",
+    "mac_sc": "J",
+    "pc_sc": "J",
+    "difficulty": 4
+  }
+]

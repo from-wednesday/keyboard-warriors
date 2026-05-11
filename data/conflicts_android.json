@@ -19,7 +19,8 @@
     "Edge": [
       { "bad": "CTRL+L", "action": "focus address bar", "sus": true },
       { "bad": "CTRL+T", "action": "new tab", "sus": true }
-    ],
+    ]
+  },
   "extended_keys": [
     { "position": 1,  "extraKey": "PRINTSCREEN" },
     { "position": 2,  "extraKey": "SCROLLLOCK" },

@@ -6137,8 +6137,11 @@ function _refreshBrowserContent() {
   // ── Browser / OS tab: populate browserCompatList ─────────────────────────
   if (ul && showBrowser) {
     ul.innerHTML = '';
-    d.labels.forEach(function(RawLabel, i) {
-      var canonicalKey = d.keys[i];
+    var IsOsTab      = (_activeConflictFilter === 'os');
+    var FilterLabels = IsOsTab ? d.osLabels   : d.browserLabels;
+    var FilterKeys   = IsOsTab ? d.osKeys     : d.browserKeys;
+    FilterLabels.forEach(function(RawLabel, i) {
+      var canonicalKey = FilterKeys[i];
       var isBlocked    = !touchEnabled && dismissedConflicts.has(canonicalKey);
       var Parsed       = _BuildBrowserConflictLabel(RawLabel);
       var li = document.createElement('li');
@@ -6846,130 +6849,150 @@ function dbgNextQuestion() {
 
 /* ══════════════════════════════════════
    BROWSER + OS CONFLICT DATA
-   Evaluated lazily so currentOs is known.
+   Loaded from per-OS JSON files at startup.
+   getBrowserConflicts() reads the cache
+   synchronously so all call sites are unchanged.
 ══════════════════════════════════════ */
-function getBrowserConflicts() {
-  var ua      = navigator.userAgent || '';
-  // Use the real detected OS, not the UI toggle — conflicted shortcuts are a physical
-  // fact about the machine, unaffected by which platform the user is practising.
-  var isMacOs = (detectedOs === 'mac' || detectedOs === 'mobile');
 
-  // Touch devices are assumed to be running Mobile Safari (even "Chrome" on iOS
-  // uses WebKit under the hood). Return the Safari conflict set directly.
+var _conflictsCache = null; // populated by loadConflictsData() at startup
+
+function _osConflictFilePath() {
+  var ua = navigator.userAgent || '';
   if (detectedOs === 'mobile') {
+    if (/android/i.test(ua)) return '/keyboard-warriors/data/conflicts_android.json';
+    return '/keyboard-warriors/data/conflicts_iOS.json';
+  }
+  if (detectedOs === 'pc') {
+    if (/CrOS/i.test(ua)) return '/keyboard-warriors/data/conflicts_chromeOS.json';
+    if (/linux/i.test(ua)) return '/keyboard-warriors/data/conflicts_linux.json';
+    return '/keyboard-warriors/data/conflicts_pc.json';
+  }
+  return '/keyboard-warriors/data/conflicts_mac.json';
+}
+
+function _detectBrowserName() {
+  var ua = navigator.userAgent || '';
+  if (/Edg\//.test(ua))                             return 'Edge';
+  if (/Firefox\//.test(ua))                         return 'Firefox';
+  if (/Safari\//.test(ua) && !/Chrome\//.test(ua)) return 'Safari';
+  if (/OPR\//.test(ua))                             return 'Opera';
+  if (/Chrome\//.test(ua))                          return 'Chrome';
+  if (/Brave\//.test(ua))                           return 'Brave';
+  return null;
+}
+
+// Converts a conflict 'bad' token from the JSON (e.g. "CTRL+T", "CTRL+SHIFT+N")
+// into the canonical shortcut token our matching system understands (e.g. "CMD+T").
+// CMD resolves to ctrlKey on PC via _MatchesSingleAlternative, so this is correct
+// for both platforms.
+function _conflictBadToToken(BadString) {
+  return BadString
+    .replace(/\bCTRL\b/g,   'CMD')
+    .replace(/\bSEARCH\b/g, 'CMD')   // ChromeOS Search key acts like a modifier
+    .replace(/\bWIN\b/g,    'WIN');
+}
+
+// Builds a display label string from a conflict entry's bad + action fields.
+// Format mirrors the existing hardcoded labels: "Cmd+T — opens new tab"
+function _conflictEntryToLabel(Entry, IsMacOs) {
+  var DisplayKey = Entry.bad
+    .replace(/\bCTRL\b/g,   IsMacOs ? 'Cmd'   : 'Ctrl')
+    .replace(/\bCMD\b/g,    'Cmd')
+    .replace(/\bSHIFT\b/g,  'Shift')
+    .replace(/\bALT\b/g,    'Alt')
+    .replace(/\bOPT\b/g,    '\u2325')  // ⌥
+    .replace(/\bSEARCH\b/g, 'Search')
+    .replace(/\bWIN\b/g,    'Win');
+  return DisplayKey + ' \u2014 ' + Entry.action;
+}
+
+// Builds { keys[], labels[] } from a raw array of conflict entries, deduplicating
+// by canonical token. Pass an optional Set of already-seen tokens to exclude.
+function _buildConflictList(RawEntries, IsMacOs, ExcludeSet) {
+  var Seen   = new Set(ExcludeSet || []);
+  var Keys   = [];
+  var Labels = [];
+  (RawEntries || []).forEach(function(Entry) {
+    var Token = _conflictBadToToken(Entry.bad);
+    if (Seen.has(Token)) return;
+    Seen.add(Token);
+    Keys.push(Token);
+    Labels.push(_conflictEntryToLabel(Entry, IsMacOs));
+  });
+  return { keys: Keys, labels: Labels };
+}
+
+// Fetches the OS-specific conflict JSON once at startup and populates
+// _conflictsCache. Also auto-blocks the standard conflicts on first load,
+// mirroring the behaviour that previously happened inline in _refreshBrowserContent().
+function loadConflictsData() {
+  var FilePath = _osConflictFilePath();
+  fetch(FilePath)
+    .then(function(r) {
+      if (!r.ok) throw new Error('HTTP ' + r.status);
+      return r.json();
+    })
+    .then(function(data) {
+      _conflictsCache = data;
+      // Auto-block on first load — same logic as _refreshBrowserContent() does
+      // on every panel open, so the pool is correct from first game start.
+      var d = getBrowserConflicts();
+      d.keys.forEach(function(k) {
+        if (!dismissedConflicts.has(k)) dismissedConflicts.add(k);
+      });
+      _saveCustomDismissedConflicts();
+    })
+    .catch(function(err) {
+      console.warn('[Conflicts] Could not load', FilePath, ':', err, '— no conflicts will be blocked.');
+      _conflictsCache = { os_conflicts: [], browser_conflicts: {} };
+    });
+}
+
+function getBrowserConflicts() {
+  // Graceful fallback while JSON is still loading
+  if (!_conflictsCache) {
     return {
-      name:   'Safari',
-      keys:   ['CMD+T', 'CMD+SHIFT+N', 'CMD+1', 'Cmd+R'],
-      labels: [
-        'Cmd+T \u2014 opens a new tab',
-        'Cmd+Shift+N \u2014 opens a Private tab',
-        'Cmd+1 \u2014 switches to the first tab',
-        'Cmd+R \u2014 reload tab',
-      ],
+      name: 'your browser',
+      keys: [], labels: [],
+      osKeys: [], osLabels: [],
+      browserKeys: [], browserLabels: [],
     };
   }
 
-  // Detect browser
-  var browser;
-  if      (/Edg\//.test(ua))                              browser = 'Edge';
-  else if (/Firefox\//.test(ua))                          browser = 'Firefox';
-  else if (/Safari\//.test(ua) && !/Chrome\//.test(ua))  browser = 'Safari';
-  else if (/OPR\//.test(ua))                              browser = 'Opera';
-  else if (/Chrome\//.test(ua))                           browser = 'Chrome';
-  else                                                     browser = null;
+  var IsMacOs     = (detectedOs === 'mac' || detectedOs === 'mobile');
+  var BrowserName = _detectBrowserName();
 
-  // Conflict tables — Mac shortcuts use Cmd, PC use Ctrl (same token in our shortcut strings)
-  // Values are the canonical shortcut strings used in SHORTCUTS[].shortcut
-  var mac = {
-    Edge:    ['CMD+T','CMD+SHIFT+N'],
-    Firefox: ['CMD+T','CMD+SHIFT+P'],
-    Safari:  ['CMD+T','CMD+N','CMD+SHIFT+N','CMD+O', 'CMD+1', 'Cmd+R'],
-    Opera:   ['CMD+T','CMD+SHIFT+N'],
-    Chrome:  ['CMD+T','CMD+SHIFT+N'],
-  };
-  var pc = {
-    Edge:    ['CMD+T','CMD+SHIFT+N'],
-    Firefox: ['CMD+T','CMD+SHIFT+A','CMD+SHIFT+H','CMD+SHIFT+D','CMD+SHIFT+N'],
-    Opera:   ['CMD+T','CMD+SHIFT+I','CMD+SHIFT+J','CMD+SHIFT+D','CMD+SHIFT+N'],
-    Chrome:  ['CMD+T','CMD+SHIFT+N'],
-  };
+  // OS conflicts: only include sus:true entries — these are the ones a browser
+  // session can actually trigger (e.g. Cmd+Tab, screenshots). Hard system
+  // interrupts without sus (e.g. Ctrl+Shift+Esc) never reach the browser.
+  var RawOs      = (_conflictsCache.os_conflicts || []).filter(function(e) { return e.sus; });
+  var RawBrowser = BrowserName
+    ? (_conflictsCache.browser_conflicts[BrowserName] || [])
+    : [];
 
-  // Human-readable labels — Mac vs PC, browser-specific
-  var macLabels = {
-    Edge: [
-      'Cmd+T \u2014 opens new tab',
-      'Cmd+Shift+N \u2014 opens Private window',
-    ],
-    Firefox: [
-      'Cmd+T \u2014 opens new tab',
-      'Cmd+Shift+P \u2014 opens Private window',
+  var OsList     = _buildConflictList(RawOs,      IsMacOs);
+  var BrowserList = _buildConflictList(RawBrowser, IsMacOs);
 
-    ],
-    Safari: [
-      'Cmd+T \u2014 opens new tab',
-      'Cmd+N \u2014 opens new window',
-      'Cmd+Shift+N \u2014 opens Private window',
-      'Cmd+O \u2014 open a file',
-      'Cmd+1 \u2014 switches to the first tab',
-      'Cmd+R \u2014 reload tab',
-    ],
-    Opera: [
-      'Cmd+T \u2014 opens new tab',
-      'Cmd+Shift+D \u2014 saves bookmark',
-      'Cmd+Shift+N \u2014 opens Private window',
-    ],
-    Chrome: [
-      'Cmd+T \u2014 opens new tab',
-      'Cmd+Shift+N \u2014 opens Incognito window',
-    ],
-  };
-  var pcLabels = {
-    Edge: [
-      'Ctrl+T \u2014 opens new tab',
-      'Ctrl+Shift+N \u2014 opens Private window',
-    ],
-    Firefox: [
-      'Ctrl+T \u2014 opens new tab',
-      'Ctrl+Shift+A \u2014 opens Add-ons',
-      'Ctrl+Shift+H \u2014 opens History',
-      'Ctrl+Shift+D \u2014 bookmarks page',
-      'Ctrl+Shift+N \u2014 opens Private window',
-    ],
-    Opera: [
-      'Ctrl+T \u2014 opens new tab',
-      'Ctrl+Shift+I \u2014 opens DevTools',
-      'Ctrl+Shift+J \u2014 opens DevTools console',
-      'Ctrl+Shift+D \u2014 saves bookmark',
-      'Ctrl+Shift+N \u2014 opens Private window',
-    ],
-    Chrome: [
-      'Ctrl+T \u2014 opens new tab',
-      'Ctrl+Shift+N \u2014 opens Incognito window',
-    ],
-  };
-
-  var conflictKeys = [];
-  var labels       = [];
-
-  if (browser) {
-    var keyTable   = isMacOs ? mac   : pc;
-    var labelTable = isMacOs ? macLabels : pcLabels;
-    conflictKeys = (keyTable[browser]   || []).slice();
-    labels       = (labelTable[browser] || []).slice();
-  } else {
-    // Generic fallback — show both platforms' most universal conflicts
-    conflictKeys = isMacOs
-      ? ['CMD+T','CMD+OPTION+I','CMD+SHIFT+H','CMD+SHIFT+N']
-      : ['CMD+T','CMD+SHIFT+I', 'CMD+SHIFT+H','CMD+SHIFT+N'];
-    labels = isMacOs
-      ? ['Cmd+T \u2014 opens new tab','Cmd+Shift+H \u2014 opens History','Cmd+Shift+N \u2014 opens Private window']
-      : ['Ctrl+T \u2014 opens new tab','Ctrl+Shift+H \u2014 opens History','Ctrl+Shift+N \u2014 opens Private window'];
-  }
+  // Merged (OS first, then browser, deduped) — used by pool filtering and
+  // auto-blocking so the question pool excludes all relevant conflicts.
+  var MergedKeys   = OsList.keys.slice();
+  var MergedLabels = OsList.labels.slice();
+  var SeenMerged   = new Set(MergedKeys);
+  BrowserList.keys.forEach(function(k, i) {
+    if (SeenMerged.has(k)) return;
+    SeenMerged.add(k);
+    MergedKeys.push(k);
+    MergedLabels.push(BrowserList.labels[i]);
+  });
 
   return {
-    name:        browser || 'your browser',
-    keys:        conflictKeys,   // canonical shortcut strings for pool filtering
-    labels:      labels,         // human-readable strings for display
+    name:         BrowserName || 'your browser',
+    keys:         MergedKeys,           // full merged list — used by pool filtering
+    labels:       MergedLabels,
+    osKeys:       OsList.keys,          // OS tab display
+    osLabels:     OsList.labels,
+    browserKeys:  BrowserList.keys,     // Browser tab display
+    browserLabels: BrowserList.labels,
   };
 }
 
@@ -8284,6 +8307,9 @@ function _onAppsLoaded(AllAppsFromJson) {
 }
 
 
+
+// Load OS conflict data at startup (before first game so pool filtering is ready).
+loadConflictsData();
 
 // Fetch the apps manifest on startup. Falls back to a minimal built-in list if the
 // file cannot be reached (e.g. running the HTML file locally without a server).

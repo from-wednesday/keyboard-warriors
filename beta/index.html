@@ -6097,9 +6097,10 @@ function _refreshBrowserContent() {
     }
   }
 
-  // Auto-block standard conflicts on first encounter
+  // Auto-block definite conflicts on first encounter.
+  // sus:true entries start unblocked — they are suspected but unconfirmed.
   d.keys.forEach(function(canonicalKey) {
-    if (!dismissedConflicts.has(canonicalKey)) {
+    if (!dismissedConflicts.has(canonicalKey) && !d.susKeys.has(canonicalKey)) {
       dismissedConflicts.add(canonicalKey);
     }
   });
@@ -6906,20 +6907,24 @@ function _conflictEntryToLabel(Entry, IsMacOs) {
   return DisplayKey + ' \u2014 ' + Entry.action;
 }
 
-// Builds { keys[], labels[] } from a raw array of conflict entries, deduplicating
-// by canonical token. Pass an optional Set of already-seen tokens to exclude.
+// Builds { keys[], labels[], susKeys } from a raw array of conflict entries,
+// deduplicating by canonical token.
+// susKeys — Set of tokens where sus:true (suspected conflicts that start unblocked).
+// Pass an optional Set of already-seen tokens to exclude.
 function _buildConflictList(RawEntries, IsMacOs, ExcludeSet) {
-  var Seen   = new Set(ExcludeSet || []);
-  var Keys   = [];
-  var Labels = [];
+  var Seen    = new Set(ExcludeSet || []);
+  var Keys    = [];
+  var Labels  = [];
+  var SusKeys = new Set();
   (RawEntries || []).forEach(function(Entry) {
     var Token = _conflictBadToToken(Entry.bad);
     if (Seen.has(Token)) return;
     Seen.add(Token);
     Keys.push(Token);
     Labels.push(_conflictEntryToLabel(Entry, IsMacOs));
+    if (Entry.sus) SusKeys.add(Token);
   });
-  return { keys: Keys, labels: Labels };
+  return { keys: Keys, labels: Labels, susKeys: SusKeys };
 }
 
 // Fetches the OS-specific conflict JSON once at startup and populates
@@ -6937,8 +6942,10 @@ function loadConflictsData() {
       // Auto-block on first load — same logic as _refreshBrowserContent() does
       // on every panel open, so the pool is correct from first game start.
       var d = getBrowserConflicts();
+      // Only auto-block definite conflicts (sus:false/absent).
+      // sus:true entries are suspected but unconfirmed — leave them unblocked.
       d.keys.forEach(function(k) {
-        if (!dismissedConflicts.has(k)) dismissedConflicts.add(k);
+        if (!dismissedConflicts.has(k) && !d.susKeys.has(k)) dismissedConflicts.add(k);
       });
       _saveCustomDismissedConflicts();
     })
@@ -6962,16 +6969,19 @@ function getBrowserConflicts() {
   var IsMacOs     = (detectedOs === 'mac' || detectedOs === 'mobile');
   var BrowserName = _detectBrowserName();
 
-  // OS conflicts: only include sus:true entries — these are the ones a browser
-  // session can actually trigger (e.g. Cmd+Tab, screenshots). Hard system
-  // interrupts without sus (e.g. Ctrl+Shift+Esc) never reach the browser.
-  var RawOs      = (_conflictsCache.os_conflicts || []).filter(function(e) { return e.sus; });
+  // All OS and browser conflicts are included.
+  // sus:true  = suspected (starts unblocked — radio off, available for questions)
+  // sus:false/absent = definite conflict (starts blocked — radio on, excluded from pool)
+  var RawOs      = (_conflictsCache.os_conflicts || []);
   var RawBrowser = BrowserName
     ? (_conflictsCache.browser_conflicts[BrowserName] || [])
     : [];
 
-  var OsList     = _buildConflictList(RawOs,      IsMacOs);
+  var OsList      = _buildConflictList(RawOs,      IsMacOs);
   var BrowserList = _buildConflictList(RawBrowser, IsMacOs);
+
+  // Merged susKeys — union of both lists
+  var MergedSusKeys = new Set([...OsList.susKeys, ...BrowserList.susKeys]);
 
   // Merged (OS first, then browser, deduped) — used by pool filtering and
   // auto-blocking so the question pool excludes all relevant conflicts.
@@ -6986,13 +6996,16 @@ function getBrowserConflicts() {
   });
 
   return {
-    name:         BrowserName || 'your browser',
-    keys:         MergedKeys,           // full merged list — used by pool filtering
-    labels:       MergedLabels,
-    osKeys:       OsList.keys,          // OS tab display
-    osLabels:     OsList.labels,
-    browserKeys:  BrowserList.keys,     // Browser tab display
+    name:          BrowserName || 'your browser',
+    keys:          MergedKeys,           // full merged list — used by pool filtering
+    labels:        MergedLabels,
+    susKeys:       MergedSusKeys,        // tokens that start unblocked (sus:true)
+    osKeys:        OsList.keys,          // OS tab display
+    osLabels:      OsList.labels,
+    osSusKeys:     OsList.susKeys,       // sus tokens within OS list
+    browserKeys:   BrowserList.keys,     // Browser tab display
     browserLabels: BrowserList.labels,
+    browserSusKeys: BrowserList.susKeys, // sus tokens within browser list
   };
 }
 

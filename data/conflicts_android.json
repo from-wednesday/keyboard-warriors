@@ -19,6 +19,17 @@
     "Edge": [
       { "bad": "CTRL+L", "action": "focus address bar", "sus": true },
       { "bad": "CTRL+T", "action": "new tab", "sus": true }
-    ]
-  }
+    ],
+  "extended_keys": [
+    { "position": 1,  "extraKey": "PRINTSCREEN" },
+    { "position": 2,  "extraKey": "SCROLLLOCK" },
+    { "position": 3,  "extraKey": "PAUSE" },
+    { "position": 4,  "extraKey": "NUMLOCK" },
+    { "position": 5,  "extraKey": "INSERT" },
+    { "position": 6,  "extraKey": "HOME" },
+    { "position": 7,  "extraKey": "PAGEUP" },
+    { "position": 8,  "extraKey": "DELETE" },
+    { "position": 9,  "extraKey": "END" },
+    { "position": 10, "extraKey": "PAGEDOWN" }
+  ]
 }

@@ -6018,6 +6018,8 @@ function _clearconflictsOverrides() {
 // ── Conflict source filter pill ───────────────────────────────────────────────
 // Tracks which filter tab is active. Content filtering wired in a later step.
 var _activeConflictFilter = 'browser'; // 'os' | 'browser' | 'found' | 'keyboard'
+var _cfPageIndex = 0;  // current page (0-based) for OS/Browser conflict lists
+var CF_PAGE_SIZE = 5;  // items per page
 
 function _initConflictFilterPill() {
   // OS label — read detectedOs (already known) + existing MAC_ICON_SVG / PC_ICON_SVG strings
@@ -6043,6 +6045,7 @@ function _initConflictFilterPill() {
 
 function setConflictFilter(filter) {
   _activeConflictFilter = filter;
+  _cfPageIndex = 0;  // reset to first page on tab switch
   _syncConflictFilterPillStyles();
   _refreshBrowserContent();
 }
@@ -6135,14 +6138,22 @@ function _refreshBrowserContent() {
   if (foundPanel) foundPanel.style.display  = showFound    ? '' : 'none';
   if (kbPanel)    kbPanel.style.display     = showKeyboard ? '' : 'none';
 
-  // ── Browser / OS tab: populate browserCompatList ─────────────────────────
+  // ── Browser / OS tab: populate browserCompatList (paginated) ───────────────
   if (ul && showBrowser) {
     ul.innerHTML = '';
     var IsOsTab      = (_activeConflictFilter === 'os');
     var FilterLabels = IsOsTab ? d.osLabels   : d.browserLabels;
     var FilterKeys   = IsOsTab ? d.osKeys     : d.browserKeys;
-    FilterLabels.forEach(function(RawLabel, i) {
-      var canonicalKey = FilterKeys[i];
+    var TotalItems   = FilterLabels.length;
+    var NeedsPages   = TotalItems > CF_PAGE_SIZE;
+    var TotalPages   = NeedsPages ? Math.ceil(TotalItems / CF_PAGE_SIZE) : 1;
+    // Clamp page index in case list shrank since last render
+    _cfPageIndex = Math.max(0, Math.min(_cfPageIndex, TotalPages - 1));
+    var PageStart = _cfPageIndex * CF_PAGE_SIZE;
+    var PageEnd   = Math.min(PageStart + CF_PAGE_SIZE, TotalItems);
+
+    FilterLabels.slice(PageStart, PageEnd).forEach(function(RawLabel, i) {
+      var canonicalKey = FilterKeys[PageStart + i];
       var isBlocked    = !touchEnabled && dismissedConflicts.has(canonicalKey);
       var Parsed       = _BuildBrowserConflictLabel(RawLabel);
       var li = document.createElement('li');
@@ -6168,6 +6179,48 @@ function _refreshBrowserContent() {
       });
       ul.appendChild(li);
     });
+
+    // ── Pagination controls (only when list exceeds one page) ────────────────
+    var PagerEl = document.getElementById('cfPager');
+    if (!PagerEl) {
+      PagerEl = document.createElement('div');
+      PagerEl.id = 'cfPager';
+      PagerEl.style.cssText = 'display:flex;align-items:center;justify-content:flex-end;gap:6px;margin-top:4px;';
+      ul.parentNode.insertBefore(PagerEl, ul.nextSibling);
+    }
+    PagerEl.innerHTML = '';
+    if (NeedsPages) {
+      var ChevronStyle = 'background:none;border:none;padding:2px 5px;cursor:pointer;font-size:13px;color:#9ca3af;line-height:1;border-radius:4px;';
+      var CountStyle   = 'font-size:11px;color:#9ca3af;font-family:'Lato',system-ui,sans-serif;line-height:1;user-select:none;';
+
+      var PrevBtn = document.createElement('button');
+      PrevBtn.innerHTML = '&#8249;';
+      PrevBtn.style.cssText = ChevronStyle;
+      if (_cfPageIndex === 0) { PrevBtn.disabled = true; PrevBtn.style.opacity = '0.3'; }
+      PrevBtn.addEventListener('click', function() {
+        if (_cfPageIndex > 0) { _cfPageIndex--; _refreshBrowserContent(); }
+      });
+
+      var CountEl = document.createElement('span');
+      CountEl.style.cssText = CountStyle;
+      CountEl.textContent = (_cfPageIndex + 1) + ' / ' + TotalPages;
+
+      var NextBtn = document.createElement('button');
+      NextBtn.innerHTML = '&#8250;';
+      NextBtn.style.cssText = ChevronStyle;
+      if (_cfPageIndex >= TotalPages - 1) { NextBtn.disabled = true; NextBtn.style.opacity = '0.3'; }
+      NextBtn.addEventListener('click', function() {
+        if (_cfPageIndex < TotalPages - 1) { _cfPageIndex++; _refreshBrowserContent(); }
+      });
+
+      PagerEl.appendChild(PrevBtn);
+      PagerEl.appendChild(CountEl);
+      PagerEl.appendChild(NextBtn);
+    }
+  } else {
+    // Hide pager when not on OS/Browser tab
+    var PagerEl = document.getElementById('cfPager');
+    if (PagerEl) PagerEl.innerHTML = '';
   }
 
   // ── Found tab: clear + report buttons, and user-found entries ───────────────

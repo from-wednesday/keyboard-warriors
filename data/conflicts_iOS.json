@@ -59,7 +59,8 @@
       { "bad": "OPT+S", "action": "summarize page", "sus": true },
       { "bad": "OPT+A", "action": "toggle assistant", "sus": true },
       { "bad": "OPT+V", "action": "voice input", "sus": true }
-    ],
+    ]
+  },
   "extended_keys": [
     { "position": 1,  "extraKey": "F13" },
     { "position": 2,  "extraKey": "F14" },

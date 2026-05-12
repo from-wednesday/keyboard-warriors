@@ -184,8 +184,8 @@
   },
   {
     "display": "Delete the selected block",
-    "mac_sc": "BACKSPACE|CMD+DELETE",
-    "pc_sc": "DELETE|BACKSPACE",
+    "mac_sc": "BACKSPACE|DELETE|CMD+SHIFT+BACKSPACE",
+    "pc_sc": "DELETE|BACKSPACE|CTRL+SHIFT+BACKSPACE",
     "difficulty": 1
   },
   {
@@ -473,9 +473,9 @@
     "difficulty": 1
   },
   {
-    "display": "clear Block contents",
-    "mac_sc": "BACKSPACE",
-    "pc_sc": "DELETE",
+    "display": "clear selected Block contents",
+    "mac_sc": "BACKSPACE|DELETE",
+    "pc_sc": "DELETE|BACKSPACE",
     "difficulty": 1
   },
   {

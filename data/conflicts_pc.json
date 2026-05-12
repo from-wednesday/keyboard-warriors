@@ -1,13 +1,14 @@
 {
   "os_conflicts": [
-    { "bad": "CTRL+ALT+DEL", "action": "security interrupt", "sus": true },
+    { "bad": "CTRL+ALT+DEL", "action": "security interrupt" },
     { "bad": "CTRL+SHIFT+ESC", "action": "task manager" },
     { "bad": "ALT+TAB", "action": "switch apps" },
-    { "bad": "ALT+F4", "action": "quit the application", "sus": true },
-    { "bad": "WIN+A", "action": "quick settings", "sus": true },
-    { "bad": "WIN+D", "action": "show/hide desktop", "sus": true },
-    { "bad": "WIN+E", "action": "file explorer", "sus": true },
-    { "bad": "WIN+F", "action": "feedback hub", "sus": true }
+    { "bad": "ALT+F4", "action": "quit the application" },
+     { "bad": "WIN", "action": "open the Start menu" },
+    { "bad": "WIN+A", "action": "quick settings" },
+    { "bad": "WIN+D", "action": "show/hide desktop" },
+    { "bad": "WIN+E", "action": "file explorer" },
+    { "bad": "WIN+F", "action": "feedback hub" }
   ],
   "browser_conflicts": {
     "Chrome": [
@@ -17,7 +18,7 @@
       { "bad": "SHIFT+ESC", "action": "task manager", "sus": true },
       { "bad": "CTRL+SHIFT+N", "action": "new incognito window" },
       { "bad": "F11", "action": "fullscreen", "sus": true },
-      { "bad": "CTRL+SHIFT+T", "action": "reopen closed tab", "sus": true }
+      { "bad": "CTRL+SHIFT+T", "action": "reopen closed tab" }
     ],
     "Safari": [
       { "bad": "CTRL+T", "action": "new tab" },
@@ -31,13 +32,13 @@
       { "bad": "F11", "action": "fullscreen", "sus": true }
     ],
     "Edge": [
-      { "bad": "SHIFT+ESC", "action": "task manager", "sus": true },
-      { "bad": "CTRL+SHIFT+DELETE", "action": "clear browsing data" },
+      { "bad": "SHIFT+ESC", "action": "task manager" },
       { "bad": "CTRL+T", "action": "new tab" },
-      { "bad": "CTRL+SHIFT+R", "action": "hard reload" },
-      { "bad": "F12", "action": "dev tools", "sus": true },
-      { "bad": "CTRL+SHIFT+T", "action": "reopen closed tab", "sus": true },
-      { "bad": "F11", "action": "fullscreen", "sus": true }
+      { "bad": "CTRL+SHIFT+T", "action": "reopen closed tab" },
+      { "bad": "CTRL+SHIFT+R", "action": "hard reload", "sus": true },
+      { "bad": "CTRL+SHIFT+DELETE", "action": "clear browsing data" },
+      { "bad": "F11", "action": "fullscreen", "sus": true },
+      { "bad": "F12", "action": "dev tools", "sus": true }
     ],
     "Comet": [
       { "bad": "CTRL+T", "action": "new tab" },

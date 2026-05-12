@@ -6019,7 +6019,7 @@ function _clearconflictsOverrides() {
 // Tracks which filter tab is active. Content filtering wired in a later step.
 var _activeConflictFilter = 'browser'; // 'os' | 'browser' | 'found' | 'keyboard'
 var _cfPageIndex = 0;  // current page (0-based) for OS/Browser conflict lists
-var CF_PAGE_SIZE = 5;  // items per page
+var CF_PAGE_SIZE = 6;  // items per page
 
 function _initConflictFilterPill() {
   // OS label — read detectedOs (already known) + existing MAC_ICON_SVG / PC_ICON_SVG strings
@@ -6185,8 +6185,8 @@ function _refreshBrowserContent() {
     if (!PagerEl) {
       PagerEl = document.createElement('div');
       PagerEl.id = 'cfPager';
-      PagerEl.style.cssText = 'display:flex;align-items:center;justify-content:flex-end;gap:6px;margin-top:4px;';
-      ul.parentNode.insertBefore(PagerEl, ul.nextSibling);
+      PagerEl.style.cssText = 'display:flex;align-items:center;justify-content:flex-end;gap:6px;margin-bottom:4px;';
+      ul.parentNode.insertBefore(PagerEl, ul);
     }
     PagerEl.innerHTML = '';
     if (NeedsPages) {

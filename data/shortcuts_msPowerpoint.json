@@ -85,8 +85,8 @@
   },
   {
     "display": "delete selected slide",
-    "mac_sc": "DELETE",
-    "pc_sc": "DELETE",
+    "mac_sc": "DEL|DELETE",
+    "pc_sc": "DEL|DELETE",
     "difficulty": 1
   },
   {
@@ -418,12 +418,6 @@
     "mac_sc": "CMD+SHIFT+D",
     "pc_sc": "CTRL+SHIFT+D",
     "difficulty": 2
-  },
-  {
-    "display": "delete slide",
-    "mac_sc": "DELETE|BACKSPACE",
-    "pc_sc": "DELETE|BACKSPACE",
-    "difficulty": 1
   },
   {
     "display": "move slide up",

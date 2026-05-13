@@ -6152,7 +6152,7 @@ function _refreshBrowserContent() {
     FilterLabels.slice(PageStart, PageEnd).forEach(function(RawLabel, i) {
       var canonicalKey = FilterKeys[PageStart + i];
       var isBlocked    = !touchEnabled && dismissedConflicts.has(canonicalKey);
-      var Parsed       = _BuildBrowserConflictLabel(RawLabel);
+       var Parsed       = _BuildBrowserConflictLabel(RawLabel);
       var li = document.createElement('li');
       li.className = isBlocked ? 'conflict-dismissed' : '';
       li.dataset.conflictKey = canonicalKey;
@@ -6160,7 +6160,7 @@ function _refreshBrowserContent() {
       li.appendChild(_makeConflictRadio(canonicalKey));
       var label = document.createElement('span');
       label.className = 'conflict-label';
-      var ChipWrapper = _renderKeyChips(Parsed.displayShortcut);
+      var ChipWrapper = BuildShortcutKeyChips(canonicalKey, false);
       label.appendChild(ChipWrapper);
       if (Parsed.descriptor) {
         var DescEl = document.createElement('span');

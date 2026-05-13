@@ -284,7 +284,7 @@
 <div id="statsRow" class="page-initially-hidden">
   <span id="statLeft"></span>
   <div id="kbToast"></div>
-  <div id="extKeyPill"></div>
+  <div id="extKeyChip"></div>
   <span id="statRight"></span>
 </div>
 
@@ -323,7 +323,7 @@
   <div id="settingsPanel">
     <div id="settingsPanelInner">
 
-    <!-- ── <div id="cfFilterPill" class="score-clear-pill" style="margin-bottom:8px;">s Settings ─────────────────────────────── -->
+    <!-- ── <div id="cfFilterPill" class="segmented-pill" style="margin-bottom:8px;">s Settings ─────────────────────────────── -->
     <div id="panelConflicts" class="sp-page">
       <div class="sp-col sp-col-left">
         <p class="sp-body" id="browserCompatHeading"></p>
@@ -344,17 +344,17 @@
         </span>
       </div>
         <!-- ── Conflict source filter pill ───────────────── -->
-  <div id="cfFilterPill" class="score-clear-pill" style="margin-bottom:8px;">
-  <button id="cfBtnOs" class="score-pill-seg score-pill-quarter" onclick="setConflictFilter('os')" title="">
+  <div id="cfFilterPill" class="segmented-pill" style="margin-bottom:8px;">
+  <button id="cfBtnOs" class="segmented-pill-section segmented-pill-quarter" onclick="setConflictFilter('os')" title="">
     <span class="diff-btn-text" id="cfOsLabel"></span>
   </button>
-  <button id="cfBtnBrowser" class="score-pill-seg score-pill-quarter" onclick="setConflictFilter('browser')">
+  <button id="cfBtnBrowser" class="segmented-pill-section segmented-pill-quarter" onclick="setConflictFilter('browser')">
     <span class="diff-btn-text" id="cfBrowserLabel"></span>
   </button>
-  <button id="cfBtnFound" class="score-pill-seg score-pill-quarter" onclick="setConflictFilter('found')">
+  <button id="cfBtnFound" class="segmented-pill-section segmented-pill-quarter" onclick="setConflictFilter('found')">
     <span class="diff-btn-text">user found</span>
   </button>
-  <button id="cfBtnKeyboard" class="score-pill-seg score-pill-quarter" onclick="setConflictFilter('keyboard')" title="Keyboard conflicts">
+  <button id="cfBtnKeyboard" class="segmented-pill-section segmented-pill-quarter" onclick="setConflictFilter('keyboard')" title="Keyboard conflicts">
     <span class="diff-btn-text"><svg viewBox="0 0 110 101.8" style="width:37px;height:30px;display:block;"><use href="#IconKeyboard"/></svg></span>
   </button>
 </div>
@@ -408,23 +408,23 @@
             </div>
           </span>
         </div>
-        <div class="score-clear-pill">
-          <button id="clearTimeBtn" class="score-pill-seg score-pill-quarter" onclick="_pauseClearClick('time')" title="Clear best time">
+        <div class="segmented-pill">
+          <button id="clearTimeBtn" class="segmented-pill-section segmented-pill-quarter" onclick="_pauseClearClick('time')" title="Clear best time">
             <span class="diff-btn-text"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="14" height="14"><circle cx="12" cy="13" r="8"/><path d="M12 9v4l3 3"/><path d="M9 3h6"/><path d="M12 3v2"/></svg></span>
           </button>
-          <button id="clearBothBtn" class="score-pill-seg score-pill-half" onclick="_pauseClearClick('both')"><span class="diff-btn-text">both</span></button>
-          <button id="clearAccBtn" class="score-pill-seg score-pill-quarter" onclick="_pauseClearClick('accuracy')" title="Clear best accuracy">
+          <button id="clearBothBtn" class="segmented-pill-section segmented-pill-half" onclick="_pauseClearClick('both')"><span class="diff-btn-text">both</span></button>
+          <button id="clearAccBtn" class="segmented-pill-section segmented-pill-quarter" onclick="_pauseClearClick('accuracy')" title="Clear best accuracy">
             <span class="diff-btn-text"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="14" height="14"><circle cx="12" cy="12" r="7"/><line x1="12" y1="2" x2="12" y2="7"/><line x1="12" y1="17" x2="12" y2="22"/><line x1="2" y1="12" x2="7" y2="12"/><line x1="17" y1="12" x2="22" y2="12"/></svg></span>
           </button>
         </div>
-        <div class="score-clear-pill" style="margin-top:8px;">
-          <button id="startOverBtn" class="score-pill-seg score-pill-full" onclick="_pauseStartOverClick()">
+        <div class="segmented-pill" style="margin-top:8px;">
+          <button id="startOverBtn" class="segmented-pill-section segmented-pill-full" onclick="_pauseStartOverClick()">
             <span class="diff-btn-text">clear memory &amp; start fresh</span>
           </button>
         </div></br>
         <p class="sp-body sp-clear-label" style="margin-top:8px;"><strong>Report a problem:</strong></p>
-        <div class="score-clear-pill">
-          <button class="score-pill-seg score-pill-full" onclick="_reportImpossibleQuestion()" title="Report a problem">
+        <div class="segmented-pill">
+          <button class="segmented-pill-section segmented-pill-full" onclick="_reportImpossibleQuestion()" title="Report a problem">
             <span class="diff-btn-text"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="14" height="14"><rect x="2" y="4" width="20" height="16" rx="2"/><polyline points="2,4 12,13 22,4"/></svg></span>
           </button>
         </div>
@@ -441,7 +441,7 @@
           </div>
           <div id="blurDiagnosticChipsArea" style="display:none;align-items:center;justify-content:center;"></div>
           <div id="blurDiagnosticActionArea">
-            <button id="blurDiagnosticRevealBtn" class="score-pill-seg score-pill-full" style="border-radius:12px;border:1.5px solid #d1d5db;" onclick="_blurDiagnosticReveal()"><span class="diff-btn-text">reveal answer</span></button>
+            <button id="blurDiagnosticRevealBtn" class="segmented-pill-section segmented-pill-full" style="border-radius:12px;border:1.5px solid #d1d5db;" onclick="_blurDiagnosticReveal()"><span class="diff-btn-text">reveal answer</span></button>
           </div>
         </div>
         <!-- Right col: single container, text replaced at each stage -->
@@ -2307,10 +2307,10 @@ function clearAllLit() {
   });
 
   clearTimeout(ExtendedKeyPillTimer);
-  ExtendedKeyPillElement.style.opacity = '';
-  ExtendedKeyPillElement.style.transition = '';
-  ExtendedKeyPillElement.style.display = 'none';
-  ExtendedKeyPillElement.innerHTML = '';
+  ExtendedKeyChipElement.style.opacity = '';
+  ExtendedKeyChipElement.style.transition = '';
+  ExtendedKeyChipElement.style.display = 'none';
+  ExtendedKeyChipElement.innerHTML = '';
   greenHeld.clear();
   stickyLit.clear();
 }
@@ -2351,7 +2351,7 @@ function checkStickyShortcut() {
 
 // Extended key labels for the ghost pill
 // Maps browser key codes for extended (non-graphical-keyboard) keys to their token strings.
-// Used to detect extended key presses and render them as chips in #extKeyPill.
+// Used to detect extended key presses and render them as chips in #extKeyChip.
 const ExtendedKeyCodeToToken = {
   'Home': 'HOME', 'End': 'END',
   'PageUp': 'PAGEUP', 'PageDown': 'PAGEDOWN',
@@ -2365,10 +2365,10 @@ const ExtendedKeyCodeToToken = {
   'F21': 'F21', 'F22': 'F22', 'F23': 'F23', 'F24': 'F24',
   'NumpadEqual': 'NUMPADEQUAL', 'NumpadComma': 'NUMPADCOMMA',
 };
-const ExtendedKeyPillElement = document.getElementById('extKeyPill');
+const ExtendedKeyChipElement = document.getElementById('extKeyChip');
 let ExtendedKeyPillTimer = null;
 
-function ShowExtendedKeyPill(BrowserCode, ColourState) {
+function ShowExtendedKeyChip(BrowserCode, ColourState) {
   var Token = ExtendedKeyCodeToToken[BrowserCode];
   if (!Token) return;
 
@@ -2385,7 +2385,7 @@ function ShowExtendedKeyPill(BrowserCode, ColourState) {
   }
 
   clearTimeout(ExtendedKeyPillTimer);
-  ExtendedKeyPillElement.innerHTML = '';
+  ExtendedKeyChipElement.innerHTML = '';
   var ChipsWrapper = BuildShortcutKeyChips(Token, false);
   ChipsWrapper.style.cssText = 'display:inline-flex;align-items:center;justify-content:center;';
 
@@ -2409,20 +2409,20 @@ function ShowExtendedKeyPill(BrowserCode, ColourState) {
   }
   // Unstyled: chips render with their default appearance (no background fill)
 
-  ExtendedKeyPillElement.appendChild(ChipsWrapper);
-  ExtendedKeyPillElement.style.display = 'flex';
-  ExtendedKeyPillElement.style.opacity = '1';
+  ExtendedKeyChipElement.appendChild(ChipsWrapper);
+  ExtendedKeyChipElement.style.display = 'flex';
+  ExtendedKeyChipElement.style.opacity = '1';
 }
 
 function HideExtendedKeyPill() {
   clearTimeout(ExtendedKeyPillTimer);
   ExtendedKeyPillTimer = setTimeout(function() {
-    ExtendedKeyPillElement.style.transition = 'opacity 0.9s ease';
-    ExtendedKeyPillElement.style.opacity = '0';
+    ExtendedKeyChipElement.style.transition = 'opacity 0.9s ease';
+    ExtendedKeyChipElement.style.opacity = '0';
     ExtendedKeyPillTimer = setTimeout(function() {
-      ExtendedKeyPillElement.style.display = 'none';
-      ExtendedKeyPillElement.style.transition = '';
-      ExtendedKeyPillElement.innerHTML = '';
+      ExtendedKeyChipElement.style.display = 'none';
+      ExtendedKeyChipElement.style.transition = '';
+      ExtendedKeyChipElement.innerHTML = '';
     }, 900);
   }, LINGER_MS);
 }
@@ -2494,12 +2494,12 @@ function updateKeyboardLighting(e, isDown) {
     stickyLit.set(code, colour);
     if (isCorrect) {
       greenHeld.add(code);
-      if (isExtKey) ShowExtendedKeyPill(ResolvedCode, 'green');
+      if (isExtKey) ShowExtendedKeyChip(ResolvedCode, 'green');
       else          setKeyLit(ResolvedCode, 'green-down');
       if ((!isModifier || isBareModifierQuestion) && !isSilent) { greenHits++; totalHits++; updateAccuracyDisplay(); }
       checkAndArmPartialShortcutNudge();
     } else {
-      if (isExtKey) ShowExtendedKeyPill(ResolvedCode, 'orange');
+      if (isExtKey) ShowExtendedKeyChip(ResolvedCode, 'orange');
       else          setKeyLit(ResolvedCode, 'orange-down');
       if ((!isModifier || isBareModifierQuestion) && !isSilent) { totalHits++; updateAccuracyDisplay(); }
       resetPartialShortcutNudgeTimers();
@@ -2513,18 +2513,18 @@ function updateKeyboardLighting(e, isDown) {
     heldKeys.add(code);
     if (gameState !== 'playing') {
       greenHeld.add(code);
-      if (isExtKey) ShowExtendedKeyPill(ResolvedCode, null);
+      if (isExtKey) ShowExtendedKeyChip(ResolvedCode, null);
       else          setKeyLit(ResolvedCode, 'green-down');
     } else {
       const isCorrect = isKeyPartOfShortcut(e, currentAnswer);
       if (isCorrect) {
         greenHeld.add(code);
-        if (isExtKey) ShowExtendedKeyPill(ResolvedCode, 'green');
+        if (isExtKey) ShowExtendedKeyChip(ResolvedCode, 'green');
         else          setKeyLit(ResolvedCode, 'green-down');
         if (!alreadyHeld && (!isModifier || isBareModifierQuestion) && !isSilent) { greenHits++; totalHits++; updateAccuracyDisplay(); }
         checkAndArmPartialShortcutNudge();
       } else {
-        if (isExtKey) ShowExtendedKeyPill(ResolvedCode, 'orange');
+        if (isExtKey) ShowExtendedKeyChip(ResolvedCode, 'orange');
         else          setKeyLit(ResolvedCode, 'orange-down');
         if (!alreadyHeld && (!isModifier || isBareModifierQuestion) && !isSilent) { totalHits++; updateAccuracyDisplay(); }
         resetPartialShortcutNudgeTimers();
@@ -3341,7 +3341,7 @@ function enterConfirmReset(target) {
     var pill = _scoreClearPillForTarget(target);
     if (pill) pill.classList.add('score-confirm-source');
     var btn = _scoreClearBtnForTarget(target);
-    if (btn) { btn.classList.add('score-pill-active'); _popScorePillLabel(btn); }
+    if (btn) { btn.classList.add('segmented-pill-active'); _popScorePillLabel(btn); }
     _scoreClearConfirmTarget = target;
     document.addEventListener('click', _scoreClearConfirmGuard, true);
   }
@@ -6058,8 +6058,8 @@ function _syncConflictFilterPillStyles() {
     if (!btn) return;
     var isActive = (f === _activeConflictFilter);
     var hasContent = (f === 'os') || (f === 'browser') || (f === 'found') || (f === 'keyboard');
-    btn.classList.toggle('score-pill-active',   isActive);
-    btn.classList.toggle('score-pill-inactive', !hasContent && !isActive);
+    btn.classList.toggle('segmented-pill-active',   isActive);
+    btn.classList.toggle('segmented-pill-inactive', !hasContent && !isActive);
   });
 }
 
@@ -6230,14 +6230,14 @@ var CountStyle = 'font-size:11px;color:#9ca3af;font-family:\'Lato\',system-ui,sa
     if (UserFoundKeys.length > 0 && !touchEnabled) {
       // Split pill: clear overrides | report issues
       var ClearPill = document.createElement('div');
-      ClearPill.className = 'score-clear-pill';
+      ClearPill.className = 'segmented-pill';
       ClearPill.style.cssText = 'margin-bottom:8px;flex-shrink:0;';
       var ClearBtn = document.createElement('button');
-      ClearBtn.className = 'score-pill-seg score-pill-half';
+      ClearBtn.className = 'segmented-pill-section segmented-pill-half';
       ClearBtn.onclick = _clearconflictsOverrides;
       ClearBtn.innerHTML = '<span class="diff-btn-text">clear overrides</span>';
       var ReportBtn = document.createElement('button');
-      ReportBtn.className = 'score-pill-seg score-pill-half';
+      ReportBtn.className = 'segmented-pill-section segmented-pill-half';
       ReportBtn.onclick = function() {
         var OsName = currentOs === 'pc' ? 'PC/Windows' : 'Mac';
         var BrowserName = navigator.userAgent.match(/Edg\//) ? 'Edge' :
@@ -7815,15 +7815,15 @@ function _refreshPausePanel() {
   var clearLbl = document.getElementById('spClearLabel');
 
   if (timeBtn) {
-    timeBtn.classList.toggle('score-pill-inactive', !hasTime);
+    timeBtn.classList.toggle('segmented-pill-inactive', !hasTime);
     timeBtn.style.borderRadius = '';
   }
   if (bothBtn) {
-    bothBtn.classList.toggle('score-pill-inactive', !bothActive);
+    bothBtn.classList.toggle('segmented-pill-inactive', !bothActive);
     bothBtn.style.borderRadius = '';
   }
   if (accBtn) {
-    accBtn.classList.toggle('score-pill-inactive', !hasAcc && !hasTrophyOnly);
+    accBtn.classList.toggle('segmented-pill-inactive', !hasAcc && !hasTrophyOnly);
     accBtn.style.borderRadius = '';
     if (hasTrophyOnly) {
       accBtn.onclick = function() { enterConfirmTrophy(_trophyFromFinished, _trophyFromPause); };
@@ -7874,7 +7874,7 @@ function _pauseClearClick(target, initialToast) {
   // Light up the pressed button
   var btn = _scoreClearBtnForTarget(target);
   if (btn) {
-    btn.classList.add('score-pill-active');
+    btn.classList.add('segmented-pill-active');
     _popScorePillLabel(btn);
   }
 
@@ -7897,8 +7897,8 @@ function _pauseClearClick(target, initialToast) {
 }
 
 function _scoreClearPillForTarget(target) {
-  // The clear-score pill (first .score-clear-pill in the pause panel right col)
-  return document.querySelector('#panelPause .sp-col-right .score-clear-pill');
+  // The clear-score pill (first .segmented-pill in the pause panel right col)
+  return document.querySelector('#panelPause .sp-col-right .segmented-pill');
 }
 
 function _scoreClearBtnForTarget(target) {
@@ -7943,7 +7943,7 @@ function _exitScoreClearConfirm() {
   var pill = _scoreClearPillForTarget(_scoreClearConfirmTarget);
   _scoreClearConfirmTarget = null;
   document.removeEventListener('click', _scoreClearConfirmGuard, true);
-  if (btn)  btn.classList.remove('score-pill-active');
+  if (btn)  btn.classList.remove('segmented-pill-active');
   if (pill) pill.classList.remove('score-confirm-source');
   var inner = document.getElementById('settingsPanelInner');
   if (inner) inner.removeAttribute('data-score-confirm');
@@ -7955,12 +7955,12 @@ function _exitScoreClearConfirm() {
 function _reportImpossibleQuestion() {
   // Briefly activate the button so the interaction is visually confirmed,
   // then slowly transition back to the available state.
-  var reportBtn = document.querySelector('#panelPause .score-pill-full');
+  var reportBtn = document.querySelector('#panelPause .segmented-pill-full');
   if (reportBtn) {
-    reportBtn.classList.add('score-pill-active');
+    reportBtn.classList.add('segmented-pill-active');
     _popScorePillLabel(reportBtn);
     setTimeout(function() {
-      reportBtn.classList.remove('score-pill-active');
+      reportBtn.classList.remove('segmented-pill-active');
       // Transition is already 1.5s ease from CSS -- returns slowly to available
     }, 3000);
   }
@@ -8042,10 +8042,10 @@ function _pauseStartOverClick() {
 
   var btn = document.getElementById('startOverBtn');
   if (btn) {
-    btn.classList.add('score-pill-active');
+    btn.classList.add('segmented-pill-active');
     _popScorePillLabel(btn);
     // Expose only this pill via the same overlay pattern as score-clear
-    var pill = btn.closest('.score-clear-pill');
+    var pill = btn.closest('.segmented-pill');
     if (pill) pill.classList.add('score-confirm-source');
   }
 
@@ -8085,8 +8085,8 @@ function _exitStartOverConfirm() {
   document.removeEventListener('click', _startOverConfirmGuard, true);
   var btn = document.getElementById('startOverBtn');
   if (btn) {
-    btn.classList.remove('score-pill-active');
-    var pill = btn.closest('.score-clear-pill');
+    btn.classList.remove('segmented-pill-active');
+    var pill = btn.closest('.segmented-pill');
     if (pill) pill.classList.remove('score-confirm-source');
   }
   var inner = document.getElementById('settingsPanelInner');
@@ -11120,17 +11120,17 @@ function _refreshReportPanel() {
 
       if (HasSettingsSuggestion) {
         var AcceptButton = document.createElement('button');
-        AcceptButton.className = 'score-pill-seg';
+        AcceptButton.className = 'segmented-pill-section';
         AcceptButton.style.cssText = 'flex-shrink:0;border-radius:12px;border:1.5px solid #d1d5db;padding:5px 12px;white-space:nowrap;height:auto;';
         AcceptButton.innerHTML = '<span class="diff-btn-text">Accept the coach&#39;s advice</span>';
         if (CoachAdviceAccepted) {
           AcceptButton.disabled = true;
-          AcceptButton.classList.add('score-pill-inactive');
+          AcceptButton.classList.add('segmented-pill-inactive');
         } else {
           AcceptButton.addEventListener('click', function() {
             CoachAdviceAccepted = true;
             AcceptButton.disabled = true;
-            AcceptButton.classList.add('score-pill-inactive');
+            AcceptButton.classList.add('segmented-pill-inactive');
             _applyCoachSuggestionsWithAnimation(lastCompletedReport.trainerSettingSuggested);
           });
         }
@@ -11765,7 +11765,7 @@ updateKeyboardLighting(e, true);
     clearToast();
     clearHelp();
     if (requiresExtKey(currentAnswer)) {
-      // Hard-clear the toast immediately — extKeyPill handles the visual,
+      // Hard-clear the toast immediately — extKeyChip handles the visual,
       // and a fading kbToast in the same position would create a double chip.
       kbToastEl.innerHTML = '';
     } else {
@@ -12008,7 +12008,7 @@ function _activateBlurPauseScreen() {
   var ActionArea = document.getElementById('blurDiagnosticActionArea');
   if (ActionArea) {
     ActionArea.style.display = '';
-    ActionArea.innerHTML = '<button id="blurDiagnosticRevealBtn" class="score-pill-seg score-pill-full" style="border-radius:12px;border:1.5px solid #d1d5db;" onclick="_blurDiagnosticReveal()"><span class="diff-btn-text">reveal the answer</span></button>';
+    ActionArea.innerHTML = '<button id="blurDiagnosticRevealBtn" class="segmented-pill-section segmented-pill-full" style="border-radius:12px;border:1.5px solid #d1d5db;" onclick="_blurDiagnosticReveal()"><span class="diff-btn-text">reveal the answer</span></button>';
   }
 
   // Reset roundrect to normal state (clears any amber/resolved styling from a prior run)
@@ -12190,12 +12190,12 @@ function _blurDiagnosticSecondBlur() {
   LeftLabel.appendChild(ChipClone);
 
   var LeftBtn = document.createElement('button');
-  LeftBtn.className = 'score-pill-seg sp-seg-btn';
+  LeftBtn.className = 'segmented-pill-section sp-seg-btn';
   LeftBtn.style.cssText = 'border-radius:18px 0 0 18px;flex:1;text-align:center;min-width:0;overflow:hidden;color:#6b7280;';
   LeftBtn.onclick = _blurDiagnosticBlockShortcut;
-  LeftBtn.addEventListener('pointerdown', function() { this.classList.add('score-pill-active'); });
-  LeftBtn.addEventListener('pointerup',   function() { this.classList.remove('score-pill-active'); });
-  LeftBtn.addEventListener('pointerleave',function() { this.classList.remove('score-pill-active'); });
+  LeftBtn.addEventListener('pointerdown', function() { this.classList.add('segmented-pill-active'); });
+  LeftBtn.addEventListener('pointerup',   function() { this.classList.remove('segmented-pill-active'); });
+  LeftBtn.addEventListener('pointerleave',function() { this.classList.remove('segmented-pill-active'); });
   LeftBtn.appendChild(LeftLabel);
 
   var RightLabel = document.createElement('span');
@@ -12204,17 +12204,17 @@ function _blurDiagnosticSecondBlur() {
   RightLabel.innerHTML = 'do that + let me know ' + EnvelopeSvg;
 
   var RightBtn = document.createElement('button');
-  RightBtn.className = 'score-pill-seg sp-seg-btn';
+  RightBtn.className = 'segmented-pill-section sp-seg-btn';
   RightBtn.style.cssText = 'border-radius:0 18px 18px 0;flex:1;border-left:1.5px solid #d1d5db;text-align:center;';
   RightBtn.onclick = _blurDiagnosticBlockAndReport;
-  RightBtn.addEventListener('pointerdown', function() { this.classList.add('score-pill-active'); });
-  RightBtn.addEventListener('pointerup',   function() { this.classList.remove('score-pill-active'); });
-  RightBtn.addEventListener('pointerleave',function() { this.classList.remove('score-pill-active'); });
+  RightBtn.addEventListener('pointerdown', function() { this.classList.add('segmented-pill-active'); });
+  RightBtn.addEventListener('pointerup',   function() { this.classList.remove('segmented-pill-active'); });
+  RightBtn.addEventListener('pointerleave',function() { this.classList.remove('segmented-pill-active'); });
   RightBtn.appendChild(RightLabel);
 
   var Pill = document.createElement('div');
   Pill.id = 'blurDiagnosticBlockPill';
-  Pill.className = 'score-clear-pill';
+  Pill.className = 'segmented-pill';
   Pill.appendChild(LeftBtn);
   Pill.appendChild(RightBtn);
 

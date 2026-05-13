@@ -517,12 +517,12 @@ body {
   transform: translateY(-22px);
 }
 
-/* Extended key ghost pill — appears in statsRow when a key not on the
+/* Extended key ghost chip — appears in statsRow when a key not on the
    graphical keyboard is held. Styled to match the current keyboard mode. */
-/* Extended key chip pill: centred in #statsRow, shows chip-format feedback
+/* Extended key chip : centred in #statsRow, shows chip-format feedback
    for keys not present on the graphical keyboard (Home, End, PageUp etc.).
    Background and colour are applied directly to the chip children by JS. */
-#extKeyPill {
+#extKeyChip {
   position: absolute;
   left: 50%;
   top: 50%;
@@ -1932,17 +1932,17 @@ li.conflict-dismissed .conflict-desc {
 .sp-clear-label {
   margin-bottom: 6px !important;
 }
-.score-clear-pill {
+.segmented-pill {
   display: flex;
   width: 100%;
   border: 1.5px solid #d1d5db;
   border-radius: 20px;
 }
-.score-clear-pill .score-pill-seg:first-child { border-radius: 18px 0 0 18px; }
-.score-clear-pill .score-pill-seg:last-child  { border-radius: 0 18px 18px 0; }
-.score-clear-pill .score-pill-seg:only-child  { border-radius: 18px; }
+.segmented-pill .segmented-pill-section:first-child { border-radius: 18px 0 0 18px; }
+.segmented-pill .segmented-pill-section:last-child  { border-radius: 0 18px 18px 0; }
+.segmented-pill .segmented-pill-section:only-child  { border-radius: 18px; }
 
-.score-pill-seg {
+.segmented-pill-section {
   display: flex;
   align-items: center;
   justify-content: center;
@@ -1961,24 +1961,24 @@ li.conflict-dismissed .conflict-desc {
   transition: background 1.5s ease, color 1.5s ease, box-shadow 1.5s ease;
 }
 
-.score-pill-seg.pulse {
+.segmented-pill-section.pulse {
   animation: btnPulse 0.45s cubic-bezier(0.25, 0.46, 0.45, 0.94);
 }
-.score-pill-seg + .score-pill-seg {
+.segmented-pill-section + .segmented-pill-section {
   border-left: 1.5px solid #d1d5db;
 }
-.score-pill-quarter { flex: 1; }
-.score-pill-half    { flex: 2; }
-.score-pill-full    { flex: 1; width: 100%; }
-.score-pill-seg svg { pointer-events: none; stroke: #9ca3af; }
-.score-pill-seg.score-pill-active {
+.segmented-pill-quarter { flex: 1; }
+.segmented-pill-half    { flex: 2; }
+.segmented-pill-full    { flex: 1; width: 100%; }
+.segmented-pill-section svg { pointer-events: none; stroke: #9ca3af; }
+.segmented-pill-section.segmented-pill-active {
   background: white;
   color: #374151;
   box-shadow: none;
   transition: background 0s, color 0s, box-shadow 0s;
 }
-.score-pill-seg.score-pill-active svg { stroke: #374151;  }
-.score-pill-inactive {
+.segmented-pill-section.segmented-pill-active svg { stroke: #374151;  }
+.segmented-pill-inactive {
   background: #f0f4f8;
   cursor: default;
   color: #d1d5db;
@@ -1992,7 +1992,7 @@ li.conflict-dismissed .conflict-desc {
   pointer-events: auto;
   cursor: pointer;
 }
-.score-pill-inactive svg { stroke: #d1d5db; }
+.segmented-pill-inactive svg { stroke: #d1d5db; }
 .sp-clear-label-inactive {
   color: #d1d5db !important;
 }
@@ -2057,7 +2057,7 @@ li.conflict-dismissed .conflict-desc {
   100% { transform: scale(1); }
 }
 .diff-btn-text.diff-btn-label-pop,
-.score-pill-seg.diff-btn-label-pop,
+.segmented-pill-section.diff-btn-label-pop,
 .diff-slider-side-label.diff-btn-label-pop,
 .diff-knob-label.diff-btn-label-pop,
 .diff-advanced-footer.diff-btn-label-pop {
@@ -3613,7 +3613,7 @@ body.returning-screen #diffIconWrap .icon-tip { display: none; }
   gap: 0;
 }
 
-/* All four segments share base sizing overrides on top of score-pill-seg */
+/* All four segments share base sizing overrides on top of segmented-pill-section */
 .conflict-filter-seg {
   flex: 0 0 56px;
   width: 56px;
@@ -3659,6 +3659,6 @@ body.returning-screen #diffIconWrap .icon-tip { display: none; }
   fill: currentColor;
 }
 
-/* Border radii — override score-clear-pill's child selectors */
+/* Border radii — override segmented-pill's child selectors */
 .conflict-filter-pill .conflict-filter-seg:first-child { border-radius: 18px 0 0 18px; }
 .conflict-filter-pill .conflict-filter-seg:last-child  { border-radius: 0 18px 18px 0; }

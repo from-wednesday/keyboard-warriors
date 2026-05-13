@@ -5963,21 +5963,18 @@ function _BuildBrowserConflictLabel(RawLabel) {
     'Alt':   'Alt',
   };
   var ArrowMap = {
-    'ArrowLeft':  '←',
-    'ArrowRight': '→',
-    'ArrowUp':    '↑',
-    'ArrowDown':  '↓',
-    'ArrowLeft':  '←',
+    'ARROWLEFT':  '←',
+    'ARROWRIGHT': '→',
+    'ARROWUP':    '↑',
+    'ARROWDOWN':  '↓',
   };
 
   // Replace known long token names with symbols
-  var DisplayShortcut = ShortcutPart;
-  Object.entries(TokenDisplayMap).forEach(function(Entry) {
-    DisplayShortcut = DisplayShortcut.replace(new RegExp('\b' + Entry[0] + '\b', 'g'), Entry[1]);
-  });
-  Object.entries(ArrowMap).forEach(function(Entry) {
-    DisplayShortcut = DisplayShortcut.replace(new RegExp('\b' + Entry[0] + '\b', 'g'), Entry[1]);
-  });
+  var DisplayShortcut = ShortcutPart.split('+').map(function(Token) {
+    var Upper = Token.trim().toUpperCase();
+    var Canonical = TOKEN_SYNONYM_MAP[Upper] || Upper;
+    return TokenDisplayMap[Canonical] || ArrowMap[Canonical] || Token.trim();
+  }).join('+');
 
   return { displayShortcut: DisplayShortcut, descriptor: DescriptorPart };
 }

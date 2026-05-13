@@ -1786,15 +1786,23 @@ var DomReady = new Promise(function(resolve) {
 });
 
 var StylesheetReady = new Promise(function(resolve) {
-  if (!window._StyleSheetLink || window._StyleSheetLink.sheet) { resolve(); return; }
-  window._StyleSheetLink.addEventListener('load',  resolve, { once: true });
-  window._StyleSheetLink.addEventListener('error', resolve, { once: true });
+  if (!window._StyleSheetLink) { resolve(); return; }
+  if (window._StyleSheetLink.sheet) { resolve(); return; }
+  // Check repeatedly in case .sheet populates late on Safari
+  var CheckInterval = setInterval(function() {
+    if (window._StyleSheetLink.sheet || window._StyleSheetLink.readyState === 'complete') {
+      clearInterval(CheckInterval);
+      resolve();
+    }
+  }, 50);
+  // Hard fallback after 2 seconds
+  setTimeout(function() { clearInterval(CheckInterval); resolve(); }, 2000);
 });
 
 var SkeletonAnimationComplete = new Promise(function(resolve) {
   var SkeletonElement = document.getElementById('skeletonLoader');
   if (!SkeletonElement) { resolve(); return; }
-  var SafetyTimeout = setTimeout(resolve, 3000);
+  var SafetyTimeout = setTimeout(resolve, 100);
   SkeletonElement.addEventListener('animationend', function() {
     clearTimeout(SafetyTimeout);
     resolve();

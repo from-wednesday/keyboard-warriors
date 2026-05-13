@@ -49,9 +49,9 @@
       { "bad": "CMD+L", "action": "focus address bar", "sus": true },
       { "bad": "CMD+R", "action": "reload tab", "sus": true },
       { "bad": "CMD+SHIFT+N", "action": "new incognito window" },
-      { "bad": "CMD+SHIFT+T", "action": "reopen closed tab", "sus": true },
-      { "bad": "CMD+OPT+RIGHT", "action": "next tab", "sus": true },
-      { "bad": "CMD+OPT+LEFT", "action": "previous tab", "sus": true }
+      { "bad": "CMD+SHIFT+T", "action": "reopen closed tab" },
+      { "bad": "CMD+OPT+ARROWRIGHT", "action": "next tab" },
+      { "bad": "CMD+OPT+ARROWLEFT", "action": "previous tab" }
     ],
     "Firefox": [
       { "bad": "CMD+T", "action": "new tab" },

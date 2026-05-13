@@ -1703,7 +1703,7 @@ let currentKbMode = null;
 var ForceNoKeyboard = false;
 
 function updateKeyboardMode() {
-  const w = window.innerWidth;
+  const w = window.innerWidth || document.documentElement.clientWidth || 768;
   if (keyboardDisplayMode !== 'none') {
     ForceNoKeyboard = w < 600;
   }
@@ -1802,9 +1802,11 @@ var SkeletonAnimationComplete = new Promise(function(resolve) {
 });
 
 Promise.all([DomReady, StylesheetReady, SkeletonAnimationComplete]).then(function() {
-  _initialiseLayout();
-  _initialiseStageDragListeners();
-  if (activeSettings !== null) _spAlignPanel();
+  requestAnimationFrame(function() {
+    _initialiseLayout();
+    _initialiseStageDragListeners();
+    if (activeSettings !== null) _spAlignPanel();
+  });
 });
 /* ══════════════════════════════════════
    SHORTCUT PARSING SYSTEM

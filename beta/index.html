@@ -7103,7 +7103,7 @@ var conflictsKbLighting = (function () {
     'lit-fading',
   ];
 
-  var SKIP_KEYS = new Set(['Escape', 'CapsLock']);
+  var SKIP_KEYS = new Set(['CapsLock']);
 
   var _reverseMap = {
     'Equal':'EQUAL','Minus':'MINUS',
@@ -7165,9 +7165,6 @@ var conflictsKbLighting = (function () {
   if (SKIP_KEYS.has(BrowserCode)) return null;
 
   var IsMod = _isModCode(BrowserCode);
-
-  // Modifier keys light green when held (they're part of a valid shortcut),
-  // and have no resting colour (return null = no resting class).
   if (IsMod) {
     var IsHeld = (_isCmdCode(BrowserCode)   && _heldMods.cmd)   ||
                  (_isShiftCode(BrowserCode) && _heldMods.shift) ||
@@ -7180,8 +7177,7 @@ var conflictsKbLighting = (function () {
 
   var ConflictData = getBrowserConflicts();
 
-  // Build the token string for the exact modifier combination currently held.
-  // e.g. if CMD+SHIFT are held, we check "CMD+SHIFT+T", not all 8 combos.
+  // Build the exact token for the current modifier combination
   var Parts = [];
   if (_heldMods.cmd)   Parts.push('CMD');
   if (_heldMods.shift) Parts.push('SHIFT');
@@ -7189,12 +7185,48 @@ var conflictsKbLighting = (function () {
   Parts.push(KeyToken);
   var ExactToken = Parts.join('+');
 
-  // Also check the bare key when no modifiers are held.
-  // (Parts = [KeyToken] when no mods held, so ExactToken already is the bare token.)
+  // Check exact match first (most specific)
+  if (dismissedConflicts.has(ExactToken)) {
+    return (ConflictData.susKeys && ConflictData.susKeys.has(ExactToken)) ? 'sus' : 'blocked';
+  }
 
-  if (!dismissedConflicts.has(ExactToken)) return 'available';
-  if (ConflictData.susKeys && ConflictData.susKeys.has(ExactToken)) return 'sus';
-  return 'blocked';
+  // Also check: does this key appear in ANY conflict at any modifier level?
+  // This ensures keys light green/orange when they're part of a conflict combo
+  // even before all required modifiers are held.
+  var AllConflictKeys = Array.from(dismissedConflicts);
+  var KeyAppearsInAnyConflict = AllConflictKeys.some(function(ConflictToken) {
+    var Tokens = ConflictToken.split('+');
+    return Tokens[Tokens.length - 1] === KeyToken;
+  });
+
+  if (!KeyAppearsInAnyConflict) return 'available';
+
+  // Key is in at least one conflict — now check if the current mod combo
+  // is a prefix of any blocked conflict. If so, show it as 'blocked' to
+  // signal "you're partway into a conflict combo".
+  var CurrentPrefixTokens = Parts.slice(0, -1); // mods only, no key yet
+  var MatchesConflictPrefix = AllConflictKeys.some(function(ConflictToken) {
+    var ConflictParts = ConflictToken.split('+');
+    var ConflictKey   = ConflictParts[ConflictParts.length - 1];
+    var ConflictMods  = ConflictParts.slice(0, -1);
+    if (ConflictKey !== KeyToken) return false;
+    // Every currently-held mod must be in this conflict's mod list
+    return CurrentPrefixTokens.every(function(Mod) {
+      return ConflictMods.indexOf(Mod) !== -1;
+    });
+  });
+
+  if (MatchesConflictPrefix) {
+    // Does this conflict use sus?
+    var MatchingSusConflict = AllConflictKeys.find(function(ConflictToken) {
+      var ConflictParts = ConflictToken.split('+');
+      return ConflictParts[ConflictParts.length - 1] === KeyToken &&
+             ConflictData.susKeys && ConflictData.susKeys.has(ConflictToken);
+    });
+    return MatchingSusConflict ? 'sus' : 'blocked';
+  }
+
+  return 'available';
 }
 
   function _restingClass(Classification) {

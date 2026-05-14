@@ -1456,8 +1456,8 @@ li.conflict-dismissed .conflict-desc {
    ─────────────────────────────────────────────────────────────────────────── */
 
 .resting-available {
-  background: rgba(16, 185, 129, 0.18) !important;
-  box-shadow: inset 0 0 0 1px rgba(16, 185, 129, 0.30) !important;
+  background: rgba(195, 229, 211, 0.9) !important;
+  box-shadow: inset 0 0 0 1px rgba(90, 182, 133, 0.9) !important;
 }
 .resting-available .letter-lbl,
 .resting-available .sym-main,
@@ -1471,8 +1471,8 @@ li.conflict-dismissed .conflict-desc {
 .resting-available .key-glyph-sym { color: #065f46 !important; }
 
 .resting-sus {
-  background: rgba(253, 224, 71, 0.28) !important;
-  box-shadow: inset 0 0 0 1px rgba(202, 172, 0, 0.30) !important;
+  background: rgba(251, 240, 152, 0.9) !important;
+  box-shadow: inset 0 0 0 1px rgba(211, 202, 127, 0.9) !important;
 }
 .resting-sus .letter-lbl,
 .resting-sus .sym-main,
@@ -1486,8 +1486,8 @@ li.conflict-dismissed .conflict-desc {
 .resting-sus .key-glyph-sym { color: #7a6a00 !important; }
 
 .resting-blocked {
-  background: rgba(249, 115, 22, 0.18) !important;
-  box-shadow: inset 0 0 0 1px rgba(249, 115, 22, 0.30) !important;
+  background: rgba(247, 220, 200, 0.9) !important;
+  box-shadow: inset 0 0 0 1px rgba(233, 159, 103, 0.90) !important;
 }
 .resting-blocked .letter-lbl,
 .resting-blocked .sym-main,

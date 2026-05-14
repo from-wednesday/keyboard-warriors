@@ -7307,10 +7307,20 @@ var conflictsKbLighting = (function () {
       var KeyElement = keyEls[BrowserCode];
       if (!KeyElement) return;
       _clearKeyClasses(KeyElement);
+      // CapsLock is never a conflict — always show as available (green).
+      if (BrowserCode === 'CapsLock') {
+        KeyElement.classList.add(CLS_RESTING_AVAILABLE);
+        return;
+      }
       var Classification = _classifyKeyWithCurrentChord(BrowserCode);
       var RestingClass   = _restingClassForClassification(Classification);
       if (RestingClass) KeyElement.classList.add(RestingClass);
     });
+    // Lock key (padlock) is not in keyEls — apply orange resting state directly.
+    if (lockKeyEl) {
+      ALL_MODULE_CLASSES.forEach(function (ClassName) { lockKeyEl.classList.remove(ClassName); });
+      lockKeyEl.classList.add(CLS_RESTING_BLOCKED);
+    }
   }
 
   // Applies the full-brightness pressed class to a single key, temporarily
@@ -7349,6 +7359,8 @@ var conflictsKbLighting = (function () {
       var KeyElement = keyEls[BrowserCode];
       if (KeyElement) _clearKeyClasses(KeyElement);
     });
+    // Clear any resting state applied directly to the lock key
+    if (lockKeyEl) ALL_MODULE_CLASSES.forEach(function (ClassName) { lockKeyEl.classList.remove(ClassName); });
   }
 
   // ── Unblocking on successful keypress ────────────────────────────────────
@@ -7386,9 +7398,69 @@ var conflictsKbLighting = (function () {
     if (gameState !== 'playing' && gameState !== 'paused' && gameState !== 'readyToUnpause') {
       questionPool = shuffleArray(buildPool());
     }
+
+    // Immediately update any visible list items matching this chord so the
+    // radio flips to unchecked and the strikethrough clears in sync with the
+    // key lighting — without waiting for the full _refreshBrowserContent rebuild.
+    document.querySelectorAll(
+      '#browserCompatList li[data-conflict-key], #cfFoundList li[data-conflict-key]'
+    ).forEach(function (ListItem) {
+      if (NormaliseToken(ListItem.dataset.conflictKey || '') !== NormalisedChord) return;
+      var Radio = ListItem.querySelector('.modal-radio');
+      if (Radio) Radio.classList.remove('on');
+      ListItem.classList.remove('conflict-dismissed');
+    });
+
     _syncConflictFilterPillStyles();
     setTimeout(function () { _refreshBrowserContent(); conflictsKbLighting.refresh(); }, 50);
     showToast('Shortcut working \u2014 unblocked');
+  }
+
+  // ── Conflict list chip flash ──────────────────────────────────────────────
+  // When a chord that was orange (blocked) or yellow (sus/uncertain) is
+  // successfully pressed, the chips in the visible conflict list rows that
+  // match that chord briefly light green — giving the user instant feedback
+  // that the shortcut is working, synced with the physical key lighting.
+
+  function _flashConflictListChipsGreen(ChordToken) {
+    var NormalisedChord = NormaliseToken(ChordToken);
+    // Only flash when the chord was orange or yellow at rest (blocked or sus)
+    var WasBlockedOrSus = dismissedConflicts.has(NormalisedChord) ||
+                          (_isSusToken(NormalisedChord));
+    if (!WasBlockedOrSus) return;
+
+    var FLASH_DURATION_MS = 900;
+    var GreenBg     = '#10b981';
+    var GreenBorder = '#059669';
+    var GreenShadow = '0 0 6px rgba(16,185,129,0.45)';
+    var GreenColor  = 'white';
+
+    // All rendered conflict list items whose data-conflict-key matches the chord
+    var AllListItems = document.querySelectorAll(
+      '#browserCompatList li[data-conflict-key], #cfFoundList li[data-conflict-key]'
+    );
+    AllListItems.forEach(function (ListItem) {
+      if (NormaliseToken(ListItem.dataset.conflictKey || '') !== NormalisedChord) return;
+      var Chips = ListItem.querySelectorAll('.sp-report-chip-key');
+      Chips.forEach(function (Chip) {
+        Chip.style.transition  = 'background 0.12s ease, color 0.12s ease, box-shadow 0.12s ease';
+        Chip.style.background  = GreenBg;
+        Chip.style.color       = GreenColor;
+        Chip.style.borderColor = GreenBorder;
+        Chip.style.boxShadow   = GreenShadow;
+      });
+      setTimeout(function () {
+        Chips.forEach(function (Chip) {
+          Chip.style.transition  = 'background 0.5s ease, color 0.5s ease, box-shadow 0.5s ease';
+          Chip.style.background  = '';
+          Chip.style.color       = '';
+          Chip.style.borderColor = '';
+          Chip.style.boxShadow   = '';
+          // Clean up transition after it settles
+          setTimeout(function () { Chip.style.transition = ''; }, 520);
+        });
+      }, FLASH_DURATION_MS);
+    });
   }
 
   // ── Event handlers ───────────────────────────────────────────────────────
@@ -7404,8 +7476,11 @@ var conflictsKbLighting = (function () {
       return;
     }
 
-    // Non-modifier pressed: light it at full brightness, then check for unblocking
+    // Non-modifier pressed: light it at full brightness, then flash any matching
+    // orange/yellow conflict list chips green, then check for unblocking.
     _applyKeyPressedColour(Event.code);
+    var KeyToken = _browserCodeToToken(Event.code);
+    if (KeyToken) _flashConflictListChipsGreen(_buildChordToken(KeyToken));
     _unblockFiredChordIfDismissed(Event.code);
   }
 

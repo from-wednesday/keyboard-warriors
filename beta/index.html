@@ -2449,11 +2449,11 @@ function updateKeyboardLighting(e, isDown) {
     if (CapsLockKeyElement) {
       if (touchEnabled) {
         // In touch mode, toggle the indicator state manually
-        CapsLockKeyElement.classList.toggle('lit-caps-active');
+        CapsLockKeyElement.classList.toggle('lit-yellow-up');
       } else {
         // In normal mode, sync directly with the real OS state
         const CapsLockIsActive = e.getModifierState('CapsLock');
-        CapsLockKeyElement.classList.toggle('lit-caps-active', CapsLockIsActive);
+        CapsLockKeyElement.classList.toggle('lit-yellow-up', CapsLockIsActive);
       }
     }
     return;
@@ -7086,10 +7086,25 @@ var dismissedConflicts = new Set();
 var conflictsKbLighting = (function () {
   var _heldMods = { cmd: false, shift: false, alt: false };
   var _active   = false;
+
+  // Full-strength classes (consistent with gameplay)
   var CLS_GREEN  = 'lit-green-up';
   var CLS_ORANGE = 'lit-orange-up';
-  var CLS_YELLOW = 'lit-caps-active';
-  var SKIP_KEYS  = new Set(['Escape', 'CapsLock']);
+  var CLS_YELLOW = 'lit-yellow-up';
+
+  // Half-strength resting classes
+  var CLS_RESTING_AVAILABLE = 'resting-available';
+  var CLS_RESTING_SUS       = 'resting-sus';
+  var CLS_RESTING_BLOCKED   = 'resting-blocked';
+
+  var ALL_MODULE_CLASSES = [
+    CLS_GREEN, CLS_ORANGE, CLS_YELLOW,
+    CLS_RESTING_AVAILABLE, CLS_RESTING_SUS, CLS_RESTING_BLOCKED,
+    'lit-fading',
+  ];
+
+  var SKIP_KEYS = new Set(['Escape', 'CapsLock']);
+
   var _reverseMap = {
     'Equal':'EQUAL','Minus':'MINUS',
     'BracketLeft':'BRACKETLEFT','BracketRight':'BRACKETRIGHT',
@@ -7103,105 +7118,169 @@ var conflictsKbLighting = (function () {
     'F1':'F1','F2':'F2','F3':'F3','F4':'F4','F5':'F5','F6':'F6',
     'F7':'F7','F8':'F8','F9':'F9','F10':'F10','F11':'F11','F12':'F12',
   };
-  function _codeToToken(c) {
-    if (c.startsWith('Key'))   return c.slice(3);
-    if (c.startsWith('Digit')) return c.slice(5);
-    return _reverseMap[c] || null;
+
+  function _codeToToken(BrowserCode) {
+    if (BrowserCode.startsWith('Key'))   return BrowserCode.slice(3);
+    if (BrowserCode.startsWith('Digit')) return BrowserCode.slice(5);
+    return _reverseMap[BrowserCode] || null;
   }
-  function _isCmdCode(c) {
+
+  function _isCmdCode(BrowserCode) {
     return currentOs === 'pc'
-      ? (c === 'ControlLeft' || c === 'ControlRight')
-      : (c === 'MetaLeft'    || c === 'MetaRight');
+      ? (BrowserCode === 'ControlLeft' || BrowserCode === 'ControlRight')
+      : (BrowserCode === 'MetaLeft'    || BrowserCode === 'MetaRight');
   }
-  function _isShiftCode(c) { return c === 'ShiftLeft'   || c === 'ShiftRight'; }
-  function _isAltCode(c)   { return c === 'AltLeft'     || c === 'AltRight';   }
-  function _isModCode(c) {
-    return c === 'MetaLeft'    || c === 'MetaRight'    ||
-           c === 'ControlLeft' || c === 'ControlRight' ||
-           c === 'ShiftLeft'   || c === 'ShiftRight'   ||
-           c === 'AltLeft'     || c === 'AltRight'     || c === 'Fn';
+  function _isShiftCode(BrowserCode) { return BrowserCode === 'ShiftLeft'  || BrowserCode === 'ShiftRight'; }
+  function _isAltCode(BrowserCode)   { return BrowserCode === 'AltLeft'    || BrowserCode === 'AltRight'; }
+  function _isModCode(BrowserCode) {
+    return BrowserCode === 'MetaLeft'    || BrowserCode === 'MetaRight'    ||
+           BrowserCode === 'ControlLeft' || BrowserCode === 'ControlRight' ||
+           BrowserCode === 'ShiftLeft'   || BrowserCode === 'ShiftRight'   ||
+           BrowserCode === 'AltLeft'     || BrowserCode === 'AltRight'     || BrowserCode === 'Fn';
   }
+
   function _tokenStrings(BrowserCode) {
-    var keyToken = _codeToToken(BrowserCode);
-    if (!keyToken) return [];
-    var out = [];
-    for (var bits = 0; bits < 8; bits++) {
-      var cmd   = !!(bits & 1);
-      var shift = !!(bits & 2);
-      var alt   = !!(bits & 4);
-      if (_heldMods.cmd   && !cmd)   continue;
-      if (_heldMods.shift && !shift) continue;
-      if (_heldMods.alt   && !alt)   continue;
-      var parts = [];
-      if (cmd)   parts.push('CMD');
-      if (shift) parts.push('SHIFT');
-      if (alt)   parts.push('OPTION');
-      parts.push(keyToken);
-      out.push(parts.join('+'));
+    var KeyToken = _codeToToken(BrowserCode);
+    if (!KeyToken) return [];
+    var TokenStrings = [];
+    for (var CombinationBits = 0; CombinationBits < 8; CombinationBits++) {
+      var RequiresCmd   = !!(CombinationBits & 1);
+      var RequiresShift = !!(CombinationBits & 2);
+      var RequiresAlt   = !!(CombinationBits & 4);
+      if (_heldMods.cmd   && !RequiresCmd)   continue;
+      if (_heldMods.shift && !RequiresShift) continue;
+      if (_heldMods.alt   && !RequiresAlt)   continue;
+      var Parts = [];
+      if (RequiresCmd)   Parts.push('CMD');
+      if (RequiresShift) Parts.push('SHIFT');
+      if (RequiresAlt)   Parts.push('OPTION');
+      Parts.push(KeyToken);
+      TokenStrings.push(Parts.join('+'));
     }
-    return out;
+    return TokenStrings;
   }
-  function _classify(BrowserCode) {
+
+  // Returns 'available' | 'sus' | 'blocked' | null (unclassified, stays unlit)
+  function _classifyKey(BrowserCode) {
     if (SKIP_KEYS.has(BrowserCode)) return null;
+
     if (_isModCode(BrowserCode)) {
-      var held = (_isCmdCode(BrowserCode)   && _heldMods.cmd)   ||
-                 (_isShiftCode(BrowserCode) && _heldMods.shift) ||
-                 (_isAltCode(BrowserCode)   && _heldMods.alt);
-      return held ? 'green' : null;
+      var IsHeld = (_isCmdCode(BrowserCode)   && _heldMods.cmd)   ||
+                   (_isShiftCode(BrowserCode) && _heldMods.shift) ||
+                   (_isAltCode(BrowserCode)   && _heldMods.alt);
+      return IsHeld ? 'available' : null;
     }
-    var tokens = _tokenStrings(BrowserCode);
-    var result = 'green';
-    var d = getBrowserConflicts();
-    for (var i = 0; i < tokens.length; i++) {
-      var t = tokens[i];
-      if (!dismissedConflicts.has(t)) continue;
-      if (d.susKeys && d.susKeys.has(t)) {
-        if (result !== 'orange') result = 'yellow';
+
+    var TokenStrings = _tokenStrings(BrowserCode);
+    var ConflictData = getBrowserConflicts();
+    var Result = 'available';
+
+    for (var i = 0; i < TokenStrings.length; i++) {
+      var Token = TokenStrings[i];
+      if (!dismissedConflicts.has(Token)) continue;
+      if (ConflictData.susKeys && ConflictData.susKeys.has(Token)) {
+        if (Result !== 'blocked') Result = 'sus';
       } else {
-        return 'orange';
+        return 'blocked';
       }
     }
-    return result;
+    return Result;
   }
-  function _apply() {
-    if (!_active) return;
-    Object.keys(keyEls).forEach(function (code) {
-      var el = keyEls[code];
-      if (!el || code === 'CapsLock') return;
-      el.classList.remove(CLS_GREEN, CLS_ORANGE, CLS_YELLOW);
-      var c = _classify(code);
-      if      (c === 'green')  el.classList.add(CLS_GREEN);
-      else if (c === 'orange') el.classList.add(CLS_ORANGE);
-      else if (c === 'yellow') el.classList.add(CLS_YELLOW);
+
+  function _restingClass(Classification) {
+    if (Classification === 'available') return CLS_RESTING_AVAILABLE;
+    if (Classification === 'sus')       return CLS_RESTING_SUS;
+    if (Classification === 'blocked')   return CLS_RESTING_BLOCKED;
+    return null;
+  }
+
+  function _pressedClass(Classification) {
+    if (Classification === 'available') return CLS_GREEN;
+    if (Classification === 'sus')       return CLS_YELLOW;
+    if (Classification === 'blocked')   return CLS_ORANGE;
+    return null;
+  }
+
+  function _applyRestingStates() {
+    Object.keys(keyEls).forEach(function (BrowserCode) {
+      var KeyElement = keyEls[BrowserCode];
+      if (!KeyElement || BrowserCode === 'CapsLock') return;
+      ALL_MODULE_CLASSES.forEach(function (ClassName) {
+        KeyElement.classList.remove(ClassName);
+      });
+      var Classification = _classifyKey(BrowserCode);
+      var RestingClass   = _restingClass(Classification);
+      if (RestingClass) KeyElement.classList.add(RestingClass);
     });
   }
+
+  function _applyPressedState(BrowserCode) {
+    var KeyElement = keyEls[BrowserCode];
+    if (!KeyElement || SKIP_KEYS.has(BrowserCode)) return;
+    var Classification = _classifyKey(BrowserCode);
+    var PressedClass   = _pressedClass(Classification);
+    var RestingClass   = _restingClass(Classification);
+    if (RestingClass)  KeyElement.classList.remove(RestingClass);
+    KeyElement.classList.remove('lit-fading');
+    if (PressedClass)  KeyElement.classList.add(PressedClass);
+  }
+
+  function _revertToRestingState(BrowserCode) {
+    var KeyElement = keyEls[BrowserCode];
+    if (!KeyElement || SKIP_KEYS.has(BrowserCode)) return;
+    var Classification = _classifyKey(BrowserCode);
+    var PressedClass   = _pressedClass(Classification);
+    var RestingClass   = _restingClass(Classification);
+
+    KeyElement.classList.add('lit-fading');
+    setTimeout(function () {
+      if (PressedClass) KeyElement.classList.remove(PressedClass);
+      if (RestingClass) KeyElement.classList.add(RestingClass);
+      setTimeout(function () {
+        KeyElement.classList.remove('lit-fading');
+      }, 850);
+    }, LINGER_MS);
+  }
+
   function _clear() {
-    Object.keys(keyEls).forEach(function (code) {
-      var el = keyEls[code];
-      if (el) el.classList.remove(CLS_GREEN, CLS_ORANGE, CLS_YELLOW);
+    Object.keys(keyEls).forEach(function (BrowserCode) {
+      var KeyElement = keyEls[BrowserCode];
+      if (KeyElement) {
+        ALL_MODULE_CLASSES.forEach(function (ClassName) {
+          KeyElement.classList.remove(ClassName);
+        });
+      }
     });
   }
-  function _onKeydown(e) {
+
+  function _onKeydown(KeyboardEvent) {
     if (!_active) return;
-    if (_isCmdCode(e.code))   _heldMods.cmd   = true;
-    if (_isShiftCode(e.code)) _heldMods.shift = true;
-    if (_isAltCode(e.code))   _heldMods.alt   = true;
-    if (_isModCode(e.code)) { _apply(); return; }
-    var tokens = _tokenStrings(e.code);
-    var d = getBrowserConflicts();
-    tokens.forEach(function (t) {
-      if (!dismissedConflicts.has(t)) return;
-      if (!d.susKeys || !d.susKeys.has(t)) return;
-      // Sus key pressed successfully — unblock it and strip the sus flag
-      dismissedConflicts.delete(t);
+    if (_isCmdCode(KeyboardEvent.code))   _heldMods.cmd   = true;
+    if (_isShiftCode(KeyboardEvent.code)) _heldMods.shift = true;
+    if (_isAltCode(KeyboardEvent.code))   _heldMods.alt   = true;
+
+    if (_isModCode(KeyboardEvent.code)) {
+      _applyRestingStates();
+      return;
+    }
+
+    _applyPressedState(KeyboardEvent.code);
+
+    // Preserve existing SUS unblocking logic
+    var ConflictData = getBrowserConflicts();
+    var TokenStrings = _tokenStrings(KeyboardEvent.code);
+    TokenStrings.forEach(function (Token) {
+      if (!dismissedConflicts.has(Token)) return;
+      if (!ConflictData.susKeys || !ConflictData.susKeys.has(Token)) return;
+      dismissedConflicts.delete(Token);
       if (_conflictsCache) {
-        var allEntries = (_conflictsCache.os_conflicts || []).concat(
-          Object.keys(_conflictsCache.browser_conflicts || {}).reduce(function(acc, br) {
-            return acc.concat(_conflictsCache.browser_conflicts[br]);
+        var AllEntries = (_conflictsCache.os_conflicts || []).concat(
+          Object.keys(_conflictsCache.browser_conflicts || {}).reduce(function (Accumulator, BrowserName) {
+            return Accumulator.concat(_conflictsCache.browser_conflicts[BrowserName]);
           }, [])
         );
-        allEntries.forEach(function (entry) {
-          if (_conflictBadToToken(entry.bad) === t) entry.sus = false;
+        AllEntries.forEach(function (Entry) {
+          if (_conflictBadToToken(Entry.bad) === Token) Entry.sus = false;
         });
       }
       _saveCustomDismissedConflicts();
@@ -7212,46 +7291,60 @@ var conflictsKbLighting = (function () {
       showToast('Shortcut working \u2014 unblocked');
     });
   }
-  function _onKeyup(e) {
+
+  function _onKeyup(KeyboardEvent) {
     if (!_active) return;
-    if (_isCmdCode(e.code))   _heldMods.cmd   = false;
-    if (_isShiftCode(e.code)) _heldMods.shift = false;
-    if (_isAltCode(e.code))   _heldMods.alt   = false;
-    setTimeout(_apply, 900);
-    if (_isModCode(e.code)) _apply();
+    if (_isCmdCode(KeyboardEvent.code))   _heldMods.cmd   = false;
+    if (_isShiftCode(KeyboardEvent.code)) _heldMods.shift = false;
+    if (_isAltCode(KeyboardEvent.code))   _heldMods.alt   = false;
+
+    if (_isModCode(KeyboardEvent.code)) {
+      _applyRestingStates();
+      return;
+    }
+
+    _revertToRestingState(KeyboardEvent.code);
   }
+
   function activate() {
     if (_active) return;
     _active = true;
     _heldMods = { cmd: false, shift: false, alt: false };
+    document.getElementById('keyboardPanel').classList.add('conflicts-panel-active');
     document.addEventListener('keydown', _onKeydown, true);
     document.addEventListener('keyup',   _onKeyup,   true);
-    setTimeout(_apply, 80);
+    setTimeout(_applyRestingStates, 80);
   }
+
   function deactivate() {
     if (!_active) return;
     _active = false;
     _heldMods = { cmd: false, shift: false, alt: false };
+    document.getElementById('keyboardPanel').classList.remove('conflicts-panel-active');
     document.removeEventListener('keydown', _onKeydown, true);
     document.removeEventListener('keyup',   _onKeyup,   true);
     _clear();
   }
-  function refresh() { if (_active) _apply(); }
-  function markSusBlocked(token) {
+
+  function refresh() {
+    if (_active) _applyRestingStates();
+  }
+
+  function markSusBlocked(Token) {
     if (_conflictsCache) {
-      var allEntries = (_conflictsCache.os_conflicts || []).concat(
-        Object.keys(_conflictsCache.browser_conflicts || {}).reduce(function(acc, br) {
-          return acc.concat(_conflictsCache.browser_conflicts[br]);
+      var AllEntries = (_conflictsCache.os_conflicts || []).concat(
+        Object.keys(_conflictsCache.browser_conflicts || {}).reduce(function (Accumulator, BrowserName) {
+          return Accumulator.concat(_conflictsCache.browser_conflicts[BrowserName]);
         }, [])
       );
-      allEntries.forEach(function (entry) {
-        if (_conflictBadToToken(entry.bad) === token) entry.sus = false;
+      AllEntries.forEach(function (Entry) {
+        if (_conflictBadToToken(Entry.bad) === Token) Entry.sus = false;
       });
     }
-    if (_active) _apply();
+    if (_active) _applyRestingStates();
   }
-  return { activate: activate, deactivate: deactivate,
-           refresh: refresh, markSusBlocked: markSusBlocked };
+
+  return { activate: activate, deactivate: deactivate, refresh: refresh, markSusBlocked: markSusBlocked };
 }());
 
 // Per-key overrides for extended keyboard keys, set via the keyboard conflicts tab.

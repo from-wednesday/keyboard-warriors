@@ -5934,27 +5934,24 @@ function _setConflictBlocked(canonicalKey, blocked, liEl) {
   liEl.classList.toggle('conflict-dismissed', blocked);
 }
 
-function _makeConflictRadio(canonicalKey) {
+function _makeConflictRadio(CanonicalKey) {
   // Blocked (dismissed) = radio ON. Active = radio OFF.
   // Touch mode bypasses all conflicts, so nothing is shown as blocked.
-  var isBlocked = !touchEnabled && dismissedConflicts.has(canonicalKey);
-  var d         = getBrowserConflicts();
-  var isSus     = isBlocked && d.susKeys && d.susKeys.has(canonicalKey);
-  var dotFill   = isSus ? '#f59e0b' : '#374151';
-  var wrap = document.createElement('span');
-  wrap.className = 'modal-radio' + (isBlocked ? ' on' : '');
-  wrap.style.cssText = 'flex-shrink:0;margin-right:7px;cursor:pointer;';
-  wrap.innerHTML = '<svg class="modal-radio-dot" width="16" height="16" viewBox="0 0 19 19" xmlns="http://www.w3.org/2000/svg">'
+  var IsBlocked = !touchEnabled && dismissedConflicts.has(CanonicalKey);
+  var Wrap = document.createElement('span');
+  Wrap.className = 'modal-radio' + (IsBlocked ? ' on' : '');
+  Wrap.style.cssText = 'flex-shrink:0;margin-right:7px;cursor:pointer;';
+  Wrap.innerHTML = '<svg class="modal-radio-dot" width="16" height="16" viewBox="0 0 19 19" xmlns="http://www.w3.org/2000/svg">'
     + '<circle cx="9.5" cy="9.5" r="6.5" stroke="#374151" stroke-width="1.5" fill="none"/>'
-    + '<circle class="modal-radio-fill" cx="9.5" cy="9.5" r="3.5" fill="' + dotFill + '"/>'
+    + '<circle class="modal-radio-fill" cx="9.5" cy="9.5" r="3.5" fill="#374151"/>'
     + '</svg>';
-  wrap.addEventListener('click', function(e) {
-    var li = wrap.closest('li');
-    var nowBlocked = !dismissedConflicts.has(canonicalKey);
-    _setConflictBlocked(canonicalKey, nowBlocked, li);
-    showToast(nowBlocked ? 'Shortcut blocked' : 'Shortcut working');
+  Wrap.addEventListener('click', function (Event) {
+    var ListItem = Wrap.closest('li');
+    var NowBlocked = !dismissedConflicts.has(CanonicalKey);
+    _setConflictBlocked(CanonicalKey, NowBlocked, ListItem);
+    showToast(NowBlocked ? 'Shortcut blocked' : 'Shortcut working');
   });
-  return wrap;
+  return Wrap;
 }
 
 // Converts a conflict label like "Cmd+T — opens new tab" into
@@ -7084,15 +7081,14 @@ var dismissedConflicts = new Set();
 })();
 
 var conflictsKbLighting = (function () {
-  var _heldMods = { cmd: false, shift: false, alt: false };
-  var _active   = false;
+  var _active    = false;
+  // All browser codes currently held down, tracked as a Set
+  var _heldKeys  = new Set();
 
-  // Full-strength classes (consistent with gameplay)
-  var CLS_GREEN  = 'lit-green-up';
-  var CLS_ORANGE = 'lit-orange-up';
-  var CLS_YELLOW = 'lit-yellow-up';
-
-  // Half-strength resting classes
+  // CSS class constants
+  var CLS_GREEN    = 'lit-green-up';
+  var CLS_ORANGE   = 'lit-orange-up';
+  var CLS_YELLOW   = 'lit-yellow-up';
   var CLS_RESTING_AVAILABLE = 'resting-available';
   var CLS_RESTING_SUS       = 'resting-sus';
   var CLS_RESTING_BLOCKED   = 'resting-blocked';
@@ -7103,9 +7099,10 @@ var conflictsKbLighting = (function () {
     'lit-fading',
   ];
 
-  var SKIP_KEYS = new Set(['CapsLock']);
+  // ── Token helpers ────────────────────────────────────────────────────────
 
-  var _reverseMap = {
+  // Maps a browser key code to the canonical token used in conflict data.
+  var BrowserCodeToTokenMap = {
     'Equal':'EQUAL','Minus':'MINUS',
     'BracketLeft':'BRACKETLEFT','BracketRight':'BRACKETRIGHT',
     'Backslash':'BACKSLASH','Semicolon':'SEMICOLON','Quote':'QUOTE',
@@ -7119,239 +7116,354 @@ var conflictsKbLighting = (function () {
     'F7':'F7','F8':'F8','F9':'F9','F10':'F10','F11':'F11','F12':'F12',
   };
 
-  function _codeToToken(BrowserCode) {
+  function _browserCodeToToken(BrowserCode) {
     if (BrowserCode.startsWith('Key'))   return BrowserCode.slice(3);
     if (BrowserCode.startsWith('Digit')) return BrowserCode.slice(5);
-    return _reverseMap[BrowserCode] || null;
+    return BrowserCodeToTokenMap[BrowserCode] || null;
   }
 
-  function _isCmdCode(BrowserCode) {
-    return currentOs === 'pc'
-      ? (BrowserCode === 'ControlLeft' || BrowserCode === 'ControlRight')
-      : (BrowserCode === 'MetaLeft'    || BrowserCode === 'MetaRight');
-  }
-  function _isShiftCode(BrowserCode) { return BrowserCode === 'ShiftLeft'  || BrowserCode === 'ShiftRight'; }
-  function _isAltCode(BrowserCode)   { return BrowserCode === 'AltLeft'    || BrowserCode === 'AltRight'; }
-  function _isModCode(BrowserCode) {
-    return BrowserCode === 'MetaLeft'    || BrowserCode === 'MetaRight'    ||
-           BrowserCode === 'ControlLeft' || BrowserCode === 'ControlRight' ||
-           BrowserCode === 'ShiftLeft'   || BrowserCode === 'ShiftRight'   ||
-           BrowserCode === 'AltLeft'     || BrowserCode === 'AltRight'     || BrowserCode === 'Fn';
-  }
-
-  function _tokenStrings(BrowserCode) {
-    var KeyToken = _codeToToken(BrowserCode);
-    if (!KeyToken) return [];
-    var TokenStrings = [];
-    for (var CombinationBits = 0; CombinationBits < 8; CombinationBits++) {
-      var RequiresCmd   = !!(CombinationBits & 1);
-      var RequiresShift = !!(CombinationBits & 2);
-      var RequiresAlt   = !!(CombinationBits & 4);
-      if (_heldMods.cmd   && !RequiresCmd)   continue;
-      if (_heldMods.shift && !RequiresShift) continue;
-      if (_heldMods.alt   && !RequiresAlt)   continue;
-      var Parts = [];
-      if (RequiresCmd)   Parts.push('CMD');
-      if (RequiresShift) Parts.push('SHIFT');
-      if (RequiresAlt)   Parts.push('OPTION');
-      Parts.push(KeyToken);
-      TokenStrings.push(Parts.join('+'));
+  // Returns the canonical modifier token for a held browser code, or null
+  // if the code is not a modifier key.
+  function _modifierTokenForCode(BrowserCode) {
+    if (currentOs === 'pc') {
+      if (BrowserCode === 'ControlLeft' || BrowserCode === 'ControlRight') return 'CMD';
+    } else {
+      if (BrowserCode === 'MetaLeft'    || BrowserCode === 'MetaRight')    return 'CMD';
     }
-    return TokenStrings;
-  }
-
-  // Returns 'available' | 'sus' | 'blocked' 
-  function _classifyKey(BrowserCode) {
-  if (SKIP_KEYS.has(BrowserCode)) return null;
-
-  var IsMod = _isModCode(BrowserCode);
-
-  // Modifier keys light green when held (they're part of a valid shortcut),
-  // and have no resting colour (return null = no resting class).
-  if (IsMod) {
-    var IsHeld = (_isCmdCode(BrowserCode)   && _heldMods.cmd)   ||
-                 (_isShiftCode(BrowserCode) && _heldMods.shift) ||
-                 (_isAltCode(BrowserCode)   && _heldMods.alt);
-    return IsHeld ? 'available' : null;
-  }
-
-  var KeyToken = _codeToToken(BrowserCode);
-  if (!KeyToken) return null;
-
-  var ConflictData = getBrowserConflicts();
-
-  // Build the token string for the exact modifier combination currently held.
-  // e.g. if CMD+SHIFT are held, we check "CMD+SHIFT+T", not all 8 combos.
-  var Parts = [];
-  if (_heldMods.cmd)   Parts.push('CMD');
-  if (_heldMods.shift) Parts.push('SHIFT');
-  if (_heldMods.alt)   Parts.push('OPTION');
-  Parts.push(KeyToken);
-  var ExactToken = Parts.join('+');
-
-  // Also check the bare key when no modifiers are held.
-  // (Parts = [KeyToken] when no mods held, so ExactToken already is the bare token.)
-
-  if (!dismissedConflicts.has(ExactToken)) return 'available';
-  if (ConflictData.susKeys && ConflictData.susKeys.has(ExactToken)) return 'sus';
-  return 'blocked';
-}
-
-  function _restingClass(Classification) {
-    if (Classification === 'available') return CLS_RESTING_AVAILABLE;
-    if (Classification === 'sus')       return CLS_RESTING_SUS;
-    if (Classification === 'blocked')   return CLS_RESTING_BLOCKED;
+    if (BrowserCode === 'ShiftLeft'   || BrowserCode === 'ShiftRight')     return 'SHIFT';
+    if (BrowserCode === 'AltLeft'     || BrowserCode === 'AltRight')       return 'OPTION';
+    if (BrowserCode === 'ControlLeft' || BrowserCode === 'ControlRight')   return 'CONTROL';
+    if (BrowserCode === 'MetaLeft'    || BrowserCode === 'MetaRight')      return 'WIN';
+    if (BrowserCode === 'Fn')                                               return 'FN';
     return null;
   }
 
-  function _pressedClass(Classification) {
-    if (Classification === 'available') return CLS_GREEN;
-    if (Classification === 'sus')       return CLS_YELLOW;
-    if (Classification === 'blocked')   return CLS_ORANGE;
+  function _isModifierCode(BrowserCode) {
+    return _modifierTokenForCode(BrowserCode) !== null;
+  }
+
+  // Builds the canonical token string representing the currently held chord
+  // plus an additional key token.  e.g. CMD held + 'T' gives 'CMD+T'.
+  // Modifier tokens are sorted into canonical order before the key.
+  function _buildChordToken(AdditionalKeyToken) {
+    var ModifierOrder = ['CMD', 'CONTROL', 'WIN', 'OPTION', 'SHIFT', 'FN'];
+    var HeldModifierTokens = [];
+    _heldKeys.forEach(function (HeldCode) {
+      var ModToken = _modifierTokenForCode(HeldCode);
+      if (ModToken && ModifierOrder.indexOf(ModToken) !== -1) {
+        if (HeldModifierTokens.indexOf(ModToken) === -1) {
+          HeldModifierTokens.push(ModToken);
+        }
+      }
+    });
+    HeldModifierTokens.sort(function (TokenA, TokenB) {
+      return ModifierOrder.indexOf(TokenA) - ModifierOrder.indexOf(TokenB);
+    });
+    if (AdditionalKeyToken) {
+      HeldModifierTokens.push(AdditionalKeyToken);
+    }
+    return HeldModifierTokens.join('+');
+  }
+
+  // Returns all currently dismissed conflict tokens as a flat array,
+  // each normalised via NormaliseToken so comparisons are consistent.
+  function _allDismissedTokens() {
+    var Tokens = [];
+    dismissedConflicts.forEach(function (RawToken) {
+      Tokens.push(NormaliseToken(RawToken));
+    });
+    return Tokens;
+  }
+
+  // Returns the sus status of a token using the live conflict data.
+  function _isSusToken(Token) {
+    var ConflictData = getBrowserConflicts();
+    return !!(ConflictData.susKeys && ConflictData.susKeys.has(Token));
+  }
+
+  // ── Chord-prefix logic ───────────────────────────────────────────────────
+  //
+  // A chord is a '+'-joined string of canonical tokens, e.g. 'CMD+T'.
+  // A test chord is a PREFIX of a dismissed chord if the dismissed chord
+  // either equals the test chord or starts with the test chord followed by '+'.
+  //
+  // This lets us answer: "could pressing more keys from this point produce a
+  // conflicted shortcut?"  If yes, the currently held keys are uncertain (yellow).
+
+  function _chordIsPrefixOfAnyDismissed(ChordToken) {
+    if (!ChordToken) return false;
+    var AllDismissed = _allDismissedTokens();
+    return AllDismissed.some(function (DismissedToken) {
+      return DismissedToken === ChordToken ||
+             DismissedToken.startsWith(ChordToken + '+');
+    });
+  }
+
+  // ── Per-key colour classification ────────────────────────────────────────
+  //
+  // For each visible key, we ask: given the current held chord, what colour
+  // should this key be?
+  //
+  // Classification values: 'available' | 'sus' | 'uncertain' | 'blocked'
+  //
+  // 'uncertain' = the chord formed by held keys + this key is a prefix of a
+  //               dismissed chord, or the key itself is dismissed at rest.
+  //               Renders yellow.
+
+  function _classifyKeyWithCurrentChord(BrowserCode) {
+    if (BrowserCode === 'CapsLock') return null;
+
+    var IsModifier = _isModifierCode(BrowserCode);
+
+    // Build the chord that would exist if this key were included in the held set.
+    // For non-modifier keys, combine held modifiers + this key's token.
+    // For modifier keys, combine all held modifiers + this modifier token.
+    var KeyToken;
+    var ChordIfPressed;
+
+    if (IsModifier) {
+      // Treat this modifier as if it were added to the held set
+      var ModToken = _modifierTokenForCode(BrowserCode);
+      ChordIfPressed = _buildChordWithExtraModifier(ModToken);
+    } else {
+      KeyToken = _browserCodeToToken(BrowserCode);
+      if (!KeyToken) return 'available';
+      ChordIfPressed = _buildChordToken(KeyToken);
+    }
+
+    // Is this chord itself a dismissed entry?
+    var NormalisedChord  = NormaliseToken(ChordIfPressed);
+    var IsDirectlyBlocked = dismissedConflicts.has(NormalisedChord);
+
+    if (IsDirectlyBlocked) {
+      // A chord can only be directly blocked at rest (no keys held).
+      // Once keys are held, the browser would intercept it before we see it,
+      // so we never reach here with a fully-held conflicted chord.
+      // At rest: bare key blocked = orange or yellow (sus).
+      return _isSusToken(NormalisedChord) ? 'sus' : 'blocked';
+    }
+
+    // Is this chord a prefix of any dismissed entry?
+    // If so, pressing it could lead to a conflict: yellow (uncertain).
+    if (_chordIsPrefixOfAnyDismissed(NormalisedChord)) {
+      return 'uncertain';
+    }
+
+    return 'available';
+  }
+
+  // Like _buildChordToken but adds an extra modifier token to the held set
+  // without mutating _heldKeys, used to classify modifier keys.
+  function _buildChordWithExtraModifier(ExtraModifierToken) {
+    var ModifierOrder = ['CMD', 'CONTROL', 'WIN', 'OPTION', 'SHIFT', 'FN'];
+    var HeldModifierTokens = [];
+    _heldKeys.forEach(function (HeldCode) {
+      var ModToken = _modifierTokenForCode(HeldCode);
+      if (ModToken && ModifierOrder.indexOf(ModToken) !== -1) {
+        if (HeldModifierTokens.indexOf(ModToken) === -1) {
+          HeldModifierTokens.push(ModToken);
+        }
+      }
+    });
+    if (ExtraModifierToken && HeldModifierTokens.indexOf(ExtraModifierToken) === -1) {
+      HeldModifierTokens.push(ExtraModifierToken);
+    }
+    HeldModifierTokens.sort(function (TokenA, TokenB) {
+      return ModifierOrder.indexOf(TokenA) - ModifierOrder.indexOf(TokenB);
+    });
+    return HeldModifierTokens.join('+');
+  }
+
+  // Maps classification to the CSS resting class.
+  function _restingClassForClassification(Classification) {
+    if (Classification === 'available')  return CLS_RESTING_AVAILABLE;
+    if (Classification === 'sus')        return CLS_RESTING_SUS;
+    if (Classification === 'uncertain')  return CLS_RESTING_SUS;   // yellow
+    if (Classification === 'blocked')    return CLS_RESTING_BLOCKED;
     return null;
   }
 
-  function _applyRestingStates() {
+  // Maps classification to the full-brightness pressed class.
+  function _pressedClassForClassification(Classification) {
+    if (Classification === 'available')  return CLS_GREEN;
+    if (Classification === 'sus')        return CLS_YELLOW;
+    if (Classification === 'uncertain')  return CLS_YELLOW;
+    if (Classification === 'blocked')    return CLS_ORANGE;
+    return null;
+  }
+
+  // ── Rendering ────────────────────────────────────────────────────────────
+
+  // Removes all module-owned classes from a key element.
+  function _clearKeyClasses(KeyElement) {
+    ALL_MODULE_CLASSES.forEach(function (ClassName) {
+      KeyElement.classList.remove(ClassName);
+    });
+  }
+
+  // Redraws every key to its current resting colour given the held chord.
+  function _applyAllKeyColours() {
     Object.keys(keyEls).forEach(function (BrowserCode) {
       var KeyElement = keyEls[BrowserCode];
-      if (!KeyElement || BrowserCode === 'CapsLock') return;
-      ALL_MODULE_CLASSES.forEach(function (ClassName) {
-        KeyElement.classList.remove(ClassName);
-      });
-      var Classification = _classifyKey(BrowserCode);
-      var RestingClass   = _restingClass(Classification);
+      if (!KeyElement) return;
+      _clearKeyClasses(KeyElement);
+      var Classification = _classifyKeyWithCurrentChord(BrowserCode);
+      var RestingClass   = _restingClassForClassification(Classification);
       if (RestingClass) KeyElement.classList.add(RestingClass);
     });
   }
 
-  function _applyPressedState(BrowserCode) {
+  // Applies the full-brightness pressed class to a single key, temporarily
+  // replacing its resting class.
+  function _applyKeyPressedColour(BrowserCode) {
     var KeyElement = keyEls[BrowserCode];
-    if (!KeyElement || SKIP_KEYS.has(BrowserCode)) return;
-    var Classification = _classifyKey(BrowserCode);
-    var PressedClass   = _pressedClass(Classification);
-    var RestingClass   = _restingClass(Classification);
+    if (!KeyElement || BrowserCode === 'CapsLock') return;
+    var Classification = _classifyKeyWithCurrentChord(BrowserCode);
+    var PressedClass   = _pressedClassForClassification(Classification);
+    var RestingClass   = _restingClassForClassification(Classification);
     if (RestingClass)  KeyElement.classList.remove(RestingClass);
     KeyElement.classList.remove('lit-fading');
     if (PressedClass)  KeyElement.classList.add(PressedClass);
   }
 
-  function _revertToRestingState(BrowserCode) {
+  // Fades a non-modifier key back to its resting colour after release.
+  function _revertKeyToRestingColour(BrowserCode) {
     var KeyElement = keyEls[BrowserCode];
-    if (!KeyElement || SKIP_KEYS.has(BrowserCode)) return;
-    var Classification = _classifyKey(BrowserCode);
-    var PressedClass   = _pressedClass(Classification);
-    var RestingClass   = _restingClass(Classification);
-
+    if (!KeyElement || BrowserCode === 'CapsLock') return;
+    // Classification is re-evaluated after _heldKeys was already updated on keyup,
+    // so the resting colour reflects the new chord (minus the released key).
+    var Classification = _classifyKeyWithCurrentChord(BrowserCode);
+    var PressedClass   = _pressedClassForClassification(Classification);
+    var RestingClass   = _restingClassForClassification(Classification);
     KeyElement.classList.add('lit-fading');
     setTimeout(function () {
-      if (PressedClass) KeyElement.classList.remove(PressedClass);
+      ALL_MODULE_CLASSES.forEach(function (ClassName) { KeyElement.classList.remove(ClassName); });
       if (RestingClass) KeyElement.classList.add(RestingClass);
-      setTimeout(function () {
-        KeyElement.classList.remove('lit-fading');
-      }, 850);
+      setTimeout(function () { KeyElement.classList.remove('lit-fading'); }, 850);
     }, LINGER_MS);
   }
 
-  function _clear() {
+  // Removes all module-owned classes from every key element.
+  function _clearAllKeys() {
     Object.keys(keyEls).forEach(function (BrowserCode) {
       var KeyElement = keyEls[BrowserCode];
-      if (KeyElement) {
-        ALL_MODULE_CLASSES.forEach(function (ClassName) {
-          KeyElement.classList.remove(ClassName);
-        });
-      }
+      if (KeyElement) _clearKeyClasses(KeyElement);
     });
   }
 
-  function _onKeydown(KeyboardEvent) {
-    if (!_active) return;
-    if (_isCmdCode(KeyboardEvent.code))   _heldMods.cmd   = true;
-    if (_isShiftCode(KeyboardEvent.code)) _heldMods.shift = true;
-    if (_isAltCode(KeyboardEvent.code))   _heldMods.alt   = true;
+  // ── Unblocking on successful keypress ────────────────────────────────────
+  //
+  // When a key fires successfully (we receive the keydown event), any dismissed
+  // entry that matches the current chord is unblocked.  The colour change then
+  // follows automatically from the next _applyAllKeyColours call.
 
-    if (_isModCode(KeyboardEvent.code)) {
-      _applyRestingStates();
+  function _unblockFiredChordIfDismissed(NonModifierBrowserCode) {
+    var KeyToken = _browserCodeToToken(NonModifierBrowserCode);
+    if (!KeyToken) return;
+    var ChordToken = _buildChordToken(KeyToken);
+    var NormalisedChord = NormaliseToken(ChordToken);
+
+    if (!dismissedConflicts.has(NormalisedChord)) return;
+
+    // Unblock it
+    dismissedConflicts.delete(NormalisedChord);
+
+    // Demote from sus to confirmed-available in the cache
+    if (_conflictsCache) {
+      var AllCacheEntries = (_conflictsCache.os_conflicts || []).concat(
+        Object.keys(_conflictsCache.browser_conflicts || {}).reduce(function (Acc, BrowserName) {
+          return Acc.concat(_conflictsCache.browser_conflicts[BrowserName]);
+        }, [])
+      );
+      AllCacheEntries.forEach(function (CacheEntry) {
+        if (_conflictBadToToken(CacheEntry.bad) === NormalisedChord) {
+          CacheEntry.sus = false;
+        }
+      });
+    }
+
+    _saveCustomDismissedConflicts();
+    if (gameState !== 'playing' && gameState !== 'paused' && gameState !== 'readyToUnpause') {
+      questionPool = shuffleArray(buildPool());
+    }
+    _syncConflictFilterPillStyles();
+    setTimeout(function () { _refreshBrowserContent(); conflictsKbLighting.refresh(); }, 50);
+    showToast('Shortcut working \u2014 unblocked');
+  }
+
+  // ── Event handlers ───────────────────────────────────────────────────────
+
+  function _onKeydown(Event) {
+    if (!_active) return;
+
+    _heldKeys.add(Event.code);
+
+    if (_isModifierCode(Event.code)) {
+      // Modifier pressed: redraw all keys to reflect the new chord prefix state
+      _applyAllKeyColours();
       return;
     }
 
-    _applyPressedState(KeyboardEvent.code);
-
-    // Preserve existing SUS unblocking logic
-    var ConflictData = getBrowserConflicts();
-    var TokenStrings = _tokenStrings(KeyboardEvent.code);
-    TokenStrings.forEach(function (Token) {
-      if (!dismissedConflicts.has(Token)) return;
-      if (!ConflictData.susKeys || !ConflictData.susKeys.has(Token)) return;
-      dismissedConflicts.delete(Token);
-      if (_conflictsCache) {
-        var AllEntries = (_conflictsCache.os_conflicts || []).concat(
-          Object.keys(_conflictsCache.browser_conflicts || {}).reduce(function (Accumulator, BrowserName) {
-            return Accumulator.concat(_conflictsCache.browser_conflicts[BrowserName]);
-          }, [])
-        );
-        AllEntries.forEach(function (Entry) {
-          if (_conflictBadToToken(Entry.bad) === Token) Entry.sus = false;
-        });
-      }
-      _saveCustomDismissedConflicts();
-      if (gameState !== 'playing' && gameState !== 'paused' && gameState !== 'readyToUnpause') {
-        questionPool = shuffleArray(buildPool());
-      }
-      setTimeout(function () { _refreshBrowserContent(); conflictsKbLighting.refresh(); }, 50);
-      showToast('Shortcut working \u2014 unblocked');
-    });
+    // Non-modifier pressed: light it at full brightness, then check for unblocking
+    _applyKeyPressedColour(Event.code);
+    _unblockFiredChordIfDismissed(Event.code);
   }
 
-  function _onKeyup(KeyboardEvent) {
+  function _onKeyup(Event) {
     if (!_active) return;
-    if (_isCmdCode(KeyboardEvent.code))   _heldMods.cmd   = false;
-    if (_isShiftCode(KeyboardEvent.code)) _heldMods.shift = false;
-    if (_isAltCode(KeyboardEvent.code))   _heldMods.alt   = false;
 
-    if (_isModCode(KeyboardEvent.code)) {
-      _applyRestingStates();
+    _heldKeys.delete(Event.code);
+
+    if (_isModifierCode(Event.code)) {
+      // Modifier released: redraw all keys to reflect the reduced chord
+      _applyAllKeyColours();
       return;
     }
 
-    _revertToRestingState(KeyboardEvent.code);
+    // Non-modifier released: fade back to resting colour
+    _revertKeyToRestingColour(Event.code);
   }
+
+  // ── Public API ───────────────────────────────────────────────────────────
 
   function activate() {
     if (_active) return;
-    _active = true;
-    _heldMods = { cmd: false, shift: false, alt: false };
+    _active   = true;
+    _heldKeys = new Set();
     document.getElementById('keyboardPanel').classList.add('conflicts-panel-active');
     document.addEventListener('keydown', _onKeydown, true);
     document.addEventListener('keyup',   _onKeyup,   true);
-    setTimeout(_applyRestingStates, 80);
+    setTimeout(_applyAllKeyColours, 80);
   }
 
   function deactivate() {
     if (!_active) return;
-    _active = false;
-    _heldMods = { cmd: false, shift: false, alt: false };
+    _active   = false;
+    _heldKeys = new Set();
     document.getElementById('keyboardPanel').classList.remove('conflicts-panel-active');
     document.removeEventListener('keydown', _onKeydown, true);
     document.removeEventListener('keyup',   _onKeyup,   true);
-    _clear();
+    _clearAllKeys();
   }
 
   function refresh() {
-    if (_active) _applyRestingStates();
+    if (_active) _applyAllKeyColours();
   }
 
+  // Called when a sus entry is manually toggled to confirmed-blocked via the
+  // radio button in the conflict list, so the cache stays consistent.
   function markSusBlocked(Token) {
     if (_conflictsCache) {
-      var AllEntries = (_conflictsCache.os_conflicts || []).concat(
-        Object.keys(_conflictsCache.browser_conflicts || {}).reduce(function (Accumulator, BrowserName) {
-          return Accumulator.concat(_conflictsCache.browser_conflicts[BrowserName]);
+      var AllCacheEntries = (_conflictsCache.os_conflicts || []).concat(
+        Object.keys(_conflictsCache.browser_conflicts || {}).reduce(function (Acc, BrowserName) {
+          return Acc.concat(_conflictsCache.browser_conflicts[BrowserName]);
         }, [])
       );
-      AllEntries.forEach(function (Entry) {
-        if (_conflictBadToToken(Entry.bad) === Token) Entry.sus = false;
+      AllCacheEntries.forEach(function (CacheEntry) {
+        if (_conflictBadToToken(CacheEntry.bad) === Token) CacheEntry.sus = false;
       });
     }
-    if (_active) _applyRestingStates();
+    if (_active) _applyAllKeyColours();
   }
 
   return { activate: activate, deactivate: deactivate, refresh: refresh, markSusBlocked: markSusBlocked };

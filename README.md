@@ -8,8 +8,8 @@ This digital toy was created by **Wednesday Dessauer** to help dedicated practit
   <b><a href="https://from-wednesday.github.io/keyboard-warriors/beta/" target="_blank" rel="noopener noreferrer">latest version ↗</a></b> &nbsp;|&nbsp; 
   <b><a href="https://from-wednesday.github.io/keyboard-warriors/" target="_blank" rel="noopener noreferrer">older build for stability ↗</a></b> &nbsp;|&nbsp; 
   <b><a href="https://from-wednesday.github.io/keyboard-warriors/documentation/" target="_blank" rel="noopener noreferrer">json author documentation ↗</a></b>
-</sub> &nbsp;&nbsp;
+</sub> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
 
   <a href="https://www.buymeacoffee.com/to.wednesday">
     <img src="https://img.shields.io/badge/-%20send a coffee%20|%20to.wednesday-8F817C?style=flat&logo=buy-me-a-coffee&logoColor=white&labelColor=8F817C" /></a>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp</p>
----
+

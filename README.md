@@ -5,7 +5,7 @@ This digital toy was created by **Wednesday Dessauer** to help dedicated practit
 <p align="middle"><sub>
   <b><a href="https://from-wednesday.github.io/keyboard-warriors/beta/" target="_blank" rel="noopener noreferrer">latest version ↗</a></b> &nbsp;|&nbsp; 
   <b><a href="https://from-wednesday.github.io/keyboard-warriors/" target="_blank" rel="noopener noreferrer">older build for stability ↗</a></b> &nbsp;|&nbsp; 
-  <b><a href="https://from-wednesday.github.io/keyboard-warriors/documentation/" target="_blank" rel="noopener noreferrer">json author documentation ↗</a></b>
+  <b><a href="https://from-wednesday.github.io/keyboard-warriors/documentation/" target="_blank" rel="noopener noreferrer">json schema ↗</a></b>
 </sub></p>
 **Keyboard Warriors** is a fun, intentional way to develop your digital literacy. It builds your awareness of what’s possible and trains the physical dexterity to execute it. By moving commands into your muscle memory, you stop hunting through menus and start staying in the idea.
 

@@ -2,7 +2,7 @@
 > **Built for learners.**
 
 This digital toy was created by **Wednesday Dessauer** to help dedicated practitioners master the keyboard shortcuts of complex applications. 
-<p align="centre"><sub>
+<p align="middle"><sub>
   <b><a href="https://from-wednesday.github.io/keyboard-warriors/beta/" target="_blank" rel="noopener noreferrer">latest version ↗</a></b> &nbsp;|&nbsp; 
   <b><a href="https://from-wednesday.github.io/keyboard-warriors/" target="_blank" rel="noopener noreferrer">older build for stability ↗</a></b> &nbsp;|&nbsp; 
   <b><a href="https://from-wednesday.github.io/keyboard-warriors/documentation/" target="_blank" rel="noopener noreferrer">json author documentation ↗</a></b>

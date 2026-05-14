@@ -1438,16 +1438,79 @@ li.conflict-dismissed .conflict-desc {
 .key.lit-orange-up .util-sym-only, .key.lit-orange-down .util-sym-only,
 .key.lit-orange-up .key-glyph-sym, .key.lit-orange-down .key-glyph-sym { color: white !important; }
 
-/* ── CapsLock status indicator ─────────────────────────────────────────────
-   Neutral soft yellow: not green (not correct) and not orange (not wrong).
+/* ── YELLOW status indicator ─────────────────────────────────────────────
+   Used for CapsLock and SUS conflicted keys. Neutral soft yellow: not green (not correct) and not orange (not wrong).
    Immune to the normal lighting lifecycle — cleared only by our own logic. */
-.key.lit-caps-active {
+.key.lit-yellow-up {
   background: #fef08a !important;
   box-shadow: 0 1px 0 rgba(180, 160, 0, 0.25) !important;
 }
-.key.lit-caps-active .letter-lbl,
-.key.lit-caps-active .util-lbl,
-.key.lit-caps-active .util-sym-only { color: #7a6a00 !important; }
+.key.lit-yellow-up .letter-lbl,
+.key.lit-yellow-up .util-lbl,
+.key.lit-yellow-up .util-sym-only { color: #7a6a00 !important; }
+
+
+/* ── RESTING STATES for conflictsKbLighting panel ───────────────────────────
+   Half-strength colours. Keys sit here at rest; full-strength lit classes
+   layer on top when a key is pressed, then fade back to these on release.
+   ─────────────────────────────────────────────────────────────────────────── */
+
+.resting-available {
+  background: rgba(16, 185, 129, 0.18) !important;
+  box-shadow: inset 0 0 0 1px rgba(16, 185, 129, 0.30) !important;
+}
+.resting-available .letter-lbl,
+.resting-available .sym-main,
+.resting-available .sym-sub,
+.resting-available .util-lbl,
+.resting-available .fn-lbl,
+.resting-available .mod-sym,
+.resting-available .mod-sym-only,
+.resting-available .mod-word,
+.resting-available .util-sym-only,
+.resting-available .key-glyph-sym { color: #065f46 !important; }
+
+.resting-sus {
+  background: rgba(253, 224, 71, 0.28) !important;
+  box-shadow: inset 0 0 0 1px rgba(202, 172, 0, 0.30) !important;
+}
+.resting-sus .letter-lbl,
+.resting-sus .sym-main,
+.resting-sus .sym-sub,
+.resting-sus .util-lbl,
+.resting-sus .fn-lbl,
+.resting-sus .mod-sym,
+.resting-sus .mod-sym-only,
+.resting-sus .mod-word,
+.resting-sus .util-sym-only,
+.resting-sus .key-glyph-sym { color: #7a6a00 !important; }
+
+.resting-blocked {
+  background: rgba(249, 115, 22, 0.18) !important;
+  box-shadow: inset 0 0 0 1px rgba(249, 115, 22, 0.30) !important;
+}
+.resting-blocked .letter-lbl,
+.resting-blocked .sym-main,
+.resting-blocked .sym-sub,
+.resting-blocked .util-lbl,
+.resting-blocked .fn-lbl,
+.resting-blocked .mod-sym,
+.resting-blocked .mod-sym-only,
+.resting-blocked .mod-word,
+.resting-blocked .util-sym-only,
+.resting-blocked .key-glyph-sym { color: #9a3412 !important; }
+
+
+/* ── Fade transition back to resting state ───────────────────────────────────
+   When conflictsKbLighting removes the full-strength lit class after a keyup,
+   the resting class is reinstated and this transition carries the fade.
+   Scoped via a parent class so it does not affect normal gameplay fading.
+   ─────────────────────────────────────────────────────────────────────────── */
+
+.conflicts-panel-active .key.lit-fading {
+  transition: background 0.8s ease, box-shadow 0.8s ease !important;
+}
+
 
 /* Fade-out transition — applied just before removing lit class */
 .key.lit-fading {

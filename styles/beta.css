@@ -2765,9 +2765,17 @@ li.conflict-dismissed .conflict-desc {
 }
 #diffIcon:hover { transform: scale(1.12); }
 #diffIcon #Needle {
-  color: #9ca3af; transform-origin: 45px 50.9px; transform: rotate(-60deg);
+  color: #c4cad2;
+  opacity: 0.85;
+  transform-origin: 45px 50.9px;
+  transform: rotate(-60deg);
 }
 
+/* Restore full strength when the icon is active (settings panel open) */
+#diffIconWrap.sp-icon-active #diffIcon #Needle {
+  color: #374151;
+  opacity: 1;
+}
 /* ─── TOOLTIP ────────────────────────────────────────*/
 /* ─── ICON TOOLTIPS — pure CSS, anchored to each icon wrap ──────*/
 #diffIconWrap { position: relative; }

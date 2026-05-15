@@ -6187,17 +6187,25 @@ function _refreshBrowserContent() {
     });
 
     // ── Pagination controls (only when list exceeds one page) ────────────────
-    var PagerEl = document.getElementById('cfPager');
-    if (!PagerEl) {
-      PagerEl = document.createElement('div');
-      PagerEl.id = 'cfPager';
-      PagerEl.style.cssText = 'display:flex;align-items:center;justify-content:flex-end;gap:6px;margin-bottom:4px;';
-      ul.parentNode.insertBefore(PagerEl, ul);
-    }
-    PagerEl.innerHTML = '';
-    if (NeedsPages) {
-      var ChevronStyle = 'background:none;border:none;padding:2px 5px;cursor:pointer;font-size:13px;color:#9ca3af;line-height:1;border-radius:4px;';
-var CountStyle = 'font-size:11px;color:#9ca3af;font-family:\'Lato\',system-ui,sans-serif;line-height:1;user-select:none;';
+var PagerEl = document.getElementById('cfPager');
+if (!PagerEl) {
+PagerEl = document.createElement('div');
+PagerEl.id = 'cfPager';
+PagerEl.style.cssText = 'display:flex;align-items:center;justify-content:space-between;gap:6px;margin-bottom:4px;';
+ul.parentNode.insertBefore(PagerEl, ul);
+}
+PagerEl.innerHTML = '';
+var SectionTitle = IsOsTab ? 'OS Conflicts' : 'Browser Conflicts';
+var TitleEl = document.createElement('span');
+TitleEl.style.cssText = "font-size:11px;font-weight:700;color:#374151;font-family:'Lato',system-ui,sans-serif;line-height:1;user-select:none;"
+TitleEl.textContent = SectionTitle;
+PagerEl.appendChild(TitleEl);
+if (NeedsPages) {
+var PaginationWrap = document.createElement('span');
+PaginationWrap.style.cssText = 'display:inline-flex;align-items:center;gap:2px;';
+var ChevronStyle = 'background:none;border:none;padding:2px 5px;cursor:pointer;font-size:13px;color:#9ca3af;line-height:1;border-radius:4px;';
+var CountStyle = "font-size:11px;color:#9ca3af;font-family:'Lato',system-ui,sans-serif;line-height:1;user-select:none;"
+
       var PrevBtn = document.createElement('button');
       PrevBtn.innerHTML = '&#8249;';
       PrevBtn.style.cssText = ChevronStyle;
@@ -6218,10 +6226,16 @@ var CountStyle = 'font-size:11px;color:#9ca3af;font-family:\'Lato\',system-ui,sa
         if (_cfPageIndex < TotalPages - 1) { _cfPageIndex++; _refreshBrowserContent(); }
       });
 
-      PagerEl.appendChild(PrevBtn);
-      PagerEl.appendChild(CountEl);
-      PagerEl.appendChild(NextBtn);
-    }
+var PageLabelEl = document.createElement('span');
+PageLabelEl.style.cssText = CountStyle;
+PageLabelEl.textContent = 'page';
+PaginationWrap.appendChild(PageLabelEl);
+PaginationWrap.appendChild(PrevBtn);
+PaginationWrap.appendChild(CountEl);
+PaginationWrap.appendChild(NextBtn);
+PagerEl.appendChild(PaginationWrap);
+}
+
   } else {
     // Hide pager when not on OS/Browser tab
     var PagerEl = document.getElementById('cfPager');

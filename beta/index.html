@@ -7222,7 +7222,13 @@ var conflictsKbLighting = (function () {
     var ChordIfPressed;
 
     if (IsModifier) {
-      // Treat this modifier as if it were added to the held set
+      // Treat this modifier as if it were added to the held set.
+      // If nothing else is held yet, a bare modifier chord ('CMD', 'SHIFT' etc.)
+      // is never itself a dismissed entry and is only a prefix if combined with
+      // other keys. Classifying it as 'uncertain' at rest makes it look yellow
+      // even though pressing it alone cannot trigger any conflict. Return
+      // 'available' immediately when no other keys are held.
+      if (_heldKeys.size === 0) return 'available';
       var ModToken = _modifierTokenForCode(BrowserCode);
       ChordIfPressed = _buildChordWithExtraModifier(ModToken);
     } else {
@@ -7412,7 +7418,13 @@ var conflictsKbLighting = (function () {
     });
 
     _syncConflictFilterPillStyles();
-    setTimeout(function () { _refreshBrowserContent(); conflictsKbLighting.refresh(); }, 50);
+    setTimeout(function () {
+      _refreshBrowserContent();
+      conflictsKbLighting.refresh();
+      // Flash chips green on the freshly rebuilt list items so the visual
+      // confirmation is in sync with the resting-available (green) key state.
+      _flashConflictListChipsGreen(NormalisedChord);
+    }, 50);
     showToast('Shortcut working \u2014 unblocked');
   }
 
@@ -7424,11 +7436,6 @@ var conflictsKbLighting = (function () {
 
   function _flashConflictListChipsGreen(ChordToken) {
     var NormalisedChord = NormaliseToken(ChordToken);
-    // Only flash when the chord was orange or yellow at rest (blocked or sus)
-    var WasBlockedOrSus = dismissedConflicts.has(NormalisedChord) ||
-                          (_isSusToken(NormalisedChord));
-    if (!WasBlockedOrSus) return;
-
     var FLASH_DURATION_MS = 900;
     var GreenBg     = '#10b981';
     var GreenBorder = '#059669';
@@ -7467,6 +7474,7 @@ var conflictsKbLighting = (function () {
 
   function _onKeydown(Event) {
     if (!_active) return;
+    if (Event.repeat) return;  // ignore key-repeat — lighting and flash are one-shot
 
     _heldKeys.add(Event.code);
 
@@ -7476,11 +7484,21 @@ var conflictsKbLighting = (function () {
       return;
     }
 
-    // Non-modifier pressed: light it at full brightness, then flash any matching
-    // orange/yellow conflict list chips green, then check for unblocking.
+    // Non-modifier pressed: light it at full brightness.
     _applyKeyPressedColour(Event.code);
+
+    // Flash conflict list chips green only for sus (yellow) entries — orange
+    // entries are about to be unblocked and their list items rebuilt, so
+    // flashing them here would fight the DOM rebuild and cause flicker.
     var KeyToken = _browserCodeToToken(Event.code);
-    if (KeyToken) _flashConflictListChipsGreen(_buildChordToken(KeyToken));
+    if (KeyToken) {
+      var ChordForFlash = _buildChordToken(KeyToken);
+      var NormChordForFlash = NormaliseToken(ChordForFlash);
+      if (_isSusToken(NormChordForFlash) && !dismissedConflicts.has(NormChordForFlash)) {
+        _flashConflictListChipsGreen(ChordForFlash);
+      }
+    }
+
     _unblockFiredChordIfDismissed(Event.code);
   }
 

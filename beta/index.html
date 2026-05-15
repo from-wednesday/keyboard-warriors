@@ -27,40 +27,10 @@
 </script>
 
 <style>
-  /* ── Key glyph SVGs (full-size Mac keyboard only) ──────────────────────────
-     Vector symbols for option (⌥), control (⌃), and return (↩).
-     Rendered as inline SVG so they scale, colour, and animate exactly like
-     the Command symbol in shortcut chips. Mini keyboards use text fallbacks. */
-  .key-glyph-sym {
-    display: block;
-    color: #555;
-    flex-shrink: 0;
-  }
-  .key-glyph-option  { width: 16px; height: 11px; margin-bottom: 1px; }
-  .key-glyph-control { width: 14px; height: 10px; margin-bottom: 1px; }
-  .key-glyph-return  { width: 14px; height: 11px; margin-bottom: 1px; }
-
-  /* Lit states: glyphs inherit white from the parent lit-* rules */
-  .key.lit-green-up    .key-glyph-sym,
-  .key.lit-green-down  .key-glyph-sym,
-  .key.lit-orange-up   .key-glyph-sym,
-  .key.lit-orange-down .key-glyph-sym { color: white; }
-
-  /* Ghost mode: hide with other label content, restore when lit */
-  #keyboardPanel.ghost-mode .key .key-glyph-sym { opacity: 0; }
-  #keyboardPanel.ghost-mode .key.lit-green-up    .key-glyph-sym,
-  #keyboardPanel.ghost-mode .key.lit-green-down  .key-glyph-sym,
-  #keyboardPanel.ghost-mode .key.lit-orange-up   .key-glyph-sym,
-  #keyboardPanel.ghost-mode .key.lit-orange-down .key-glyph-sym { opacity: 1 !important; }
-
-  /* Applied for the first two rAF frames to prevent #kb-wall-bottom flashing
-     visible during 3D stacking-context setup, regardless of kb-edged state. */
-  #keyboardPanel.kb-wall-init #kb-wall-bottom {
-    opacity: 0 !important;
-    visibility: hidden !important;
-    transition: none !important;
-  }
-
+  /* These two rules must remain inline: the skeleton animation runs during
+     stylesheet load, and .page-initially-hidden keeps all content invisible
+     until the stylesheet and DOM are both ready. Moving them to beta.css
+     would create a flash of unstyled content on slower connections. */
   @keyframes SkeletonGrow {
     from { width: 18px; border-radius: 9px; }
     to   { width: 100%; border-radius: 16px; }
@@ -1719,30 +1689,12 @@ function updateKeyboardMode() {
   }
 }
 
-window.addEventListener('resize', function() {
-  updateKeyboardMode();
-  if (activeSettings !== null) _spAlignPanel();
-});
-
 function _initialiseLayout() {
   updateKeyboardMode();
   updateMismatchPill();
   document.getElementById('keyboardPanel').classList.toggle('pc-keys', currentOs === 'pc');
 
-  // Suppress the wall's visibility for the first two animation frames.
-  // This prevents it flashing during the 3D stacking-context setup, even if
-  // concurrent code (e.g. the 80ms welcome-screen timer) adds kb-edged
-  // before the first paint settles. The class is defined inline in the <style>
-  // block and forces opacity:0 + transition:none on #kb-wall-bottom regardless
-  // of kb-edged state.
-  var Panel = document.getElementById('keyboardPanel');
-  Panel.classList.add('kb-wall-init');
-  requestAnimationFrame(function() {
-    requestAnimationFrame(function() {
-      Panel.classList.remove('kb-wall-init');
-      _revealPageContent();
-    });
-  });
+  _revealPageContent();
 
 
 var KeyboardPanelResizeObserver = new ResizeObserver(function(ObservedEntries) {

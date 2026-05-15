@@ -5560,6 +5560,7 @@ function openSettings(page) {
   var wasOpen  = activeSettings !== null;
   var prevPage = activeSettings;
   activeSettings = page;
+  conflictsKbLighting.deactivate();
 
   // Ghost lock hint: hide while any settings panel is open (keyboard is folded down)
   _setGhostLockHint(false);

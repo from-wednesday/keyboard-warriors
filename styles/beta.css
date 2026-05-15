@@ -2763,26 +2763,11 @@ li.conflict-dismissed .conflict-desc {
   display: block; color: #9ca3af; pointer-events: auto;
   cursor: pointer; width: 44px; transition: transform 0.18s ease;
 }
-.gauge-stroke {
-  fill: none;
-  stroke: currentColor;
-  stroke-width: 2px;
-  stroke-linecap: round;
-  stroke-miterlimit: 10;
-}
 #diffIcon:hover { transform: scale(1.12); }
 #diffIcon #Needle {
-  color: #9ca3af;
-  opacity: 0.85;
-  transform-origin: 45px 50.9px;
-  transform: rotate(-60deg);
+  color: #9ca3af; transform-origin: 45px 50.9px; transform: rotate(-60deg);
 }
 
-/* Restore full strength when the icon is active (settings panel open) */
-#diffIconWrap.sp-icon-active #diffIcon #Needle {
-  color: #374151;
-  opacity: 1;
-}
 /* ─── TOOLTIP ────────────────────────────────────────*/
 /* ─── ICON TOOLTIPS — pure CSS, anchored to each icon wrap ──────*/
 #diffIconWrap { position: relative; }

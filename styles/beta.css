@@ -2859,7 +2859,7 @@ body.returning-screen #diffIconWrap .icon-tip { display: none; }
 #kbIconWrap.sp-icon-active  #kbIcon      { color: #374151; }
 #brIconWrap.sp-icon-active  #browserIcon { color: #374151; }
 #diffIconWrap.sp-icon-active #diffIcon   { color: #374151; }
-#diffIconWrap.sp-icon-active #diffIcon .gauge-stroke { stroke: #374151; }
+#diffIconWrap.sp-icon-active #diffIcon .gauge-stroke { stroke: #374151; fill: none;}
 #diffIconWrap.sp-icon-active #diffIcon #Needle        { color: #374151; }
 /* ── Report Card panel ───────────────────────────── */
 

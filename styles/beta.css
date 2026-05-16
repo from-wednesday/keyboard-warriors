@@ -1723,6 +1723,10 @@ li.conflict-dismissed .conflict-desc {
   display: flex;
   border-top: 1px solid rgba(0,0,0,0.05);
 }
+.app-option-wrench-bottom-row .app-option-wrench {
+  flex: 1;
+  border-top: none;
+}
 .app-option-skillsets {
   flex: 1;
   border-left: 1px solid rgba(0,0,0,0.08);

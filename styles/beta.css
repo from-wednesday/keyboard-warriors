@@ -2047,7 +2047,7 @@ li.conflict-dismissed .conflict-desc {
 .segmented-pill-quarter { flex: 1; }
 .segmented-pill-half    { flex: 2; }
 .segmented-pill-full    { flex: 1; width: 100%; }
-.segmented-pill-section svg { pointer-events: none; stroke: #9ca3af; display: block;}
+.segmented-pill-section svg { pointer-events: none; stroke: #9ca3af; }
 .segmented-pill-section.segmented-pill-active {
   background: white;
   color: #374151;

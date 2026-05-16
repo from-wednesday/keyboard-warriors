@@ -1708,7 +1708,7 @@ li.conflict-dismissed .conflict-desc {
   transition: border-color 0.15s, background-color 0.15s;
 }
 .app-option-wrench {
-  border-top: 1px solid rgba(0,0,0,0.05);
+  border-top: none;
   opacity: 0.3;
   height: 28px;
   align-items: center;
@@ -1721,7 +1721,7 @@ li.conflict-dismissed .conflict-desc {
 }
 .app-option-wrench-bottom-row {
   display: flex;
-  border-top: 1px solid rgba(0,0,0,0.05);
+  border-top: none;
 }
 .app-option-wrench-bottom-row .app-option-wrench {
   flex: 1;

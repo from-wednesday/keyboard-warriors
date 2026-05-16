@@ -3710,16 +3710,23 @@ body.returning-screen #diffIconWrap .icon-tip { display: none; }
   gap: 3px;
   white-space: nowrap;
 }
-
+#cfBtnOs .diff-btn-text {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  white-space: nowrap;
+}
 /* Keyboard segment: SVG inherits button colour */
 .conflict-filter-keyboard svg {
   fill: currentColor;
 }
+/* Keyboard segment: no padding, SVG fills the pill height */
 #cfBtnKeyboard {
-  padding: 0px;
+  padding: 0;
+  overflow: visible;
 }
 #cfBtnKeyboard svg {
-  height: 28px;
+  height: 44px;   /* taller than the 27px pill so it bleeds out */
   width: auto;
   display: block;
 }

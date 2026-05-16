@@ -1726,6 +1726,7 @@ li.conflict-dismissed .conflict-desc {
 .app-option-wrench-bottom-row .app-option-wrench {
   flex: 1;
   border-top: none;
+  opacity: 1;
 }
 .app-option-skillsets {
   flex: 1;
@@ -3716,6 +3717,10 @@ body.returning-screen #diffIconWrap .icon-tip { display: none; }
   gap: 4px;
   white-space: nowrap;
 }
+#cfBtnOs .diff-btn-text svg {
+  display: inline;
+  vertical-align: middle;
+}
 /* Keyboard segment: SVG inherits button colour */
 .conflict-filter-keyboard svg {
   fill: currentColor;
@@ -3724,11 +3729,13 @@ body.returning-screen #diffIconWrap .icon-tip { display: none; }
 #cfBtnKeyboard {
   padding: 0;
   overflow: visible;
+  align-items: stretch;
 }
 #cfBtnKeyboard svg {
-  height: 44px;   /* taller than the 27px pill so it bleeds out */
+  height: 44px;
   width: auto;
   display: block;
+  margin: auto;
 }
 {
   fill: currentColor;

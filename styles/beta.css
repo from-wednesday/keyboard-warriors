@@ -3682,7 +3682,7 @@ body.returning-screen #diffIconWrap .icon-tip { display: none; }
   flex: 0 0 56px;
   width: 56px;
   min-width: 0;
-  padding: 0 6px;
+  padding: 0px;
   height: 22px;
   font-size: 11px;
   box-sizing: border-box;
@@ -3708,7 +3708,7 @@ body.returning-screen #diffIconWrap .icon-tip { display: none; }
 .conflict-filter-os .diff-btn-text {
   display: inline-flex;
   align-items: center;
-  gap: 3px;
+  gap: 2px;
   white-space: nowrap;
 }
 #cfBtnOs .diff-btn-text {
@@ -3727,12 +3727,12 @@ body.returning-screen #diffIconWrap .icon-tip { display: none; }
 }
 /* Keyboard segment: no padding, SVG fills the pill height */
 #cfBtnKeyboard {
-  padding: 2;
+  padding: 0;
   overflow: visible;
   align-items: stretch;
 }
 #cfBtnKeyboard svg {
-  height: 20px;
+  height: 22px;
   width: auto;
   display: block;
   margin: auto;

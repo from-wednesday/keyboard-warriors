@@ -1725,7 +1725,7 @@ li.conflict-dismissed .conflict-desc {
 }
 .app-option-wrench-bottom-row .app-option-wrench {
   flex: 1;
-  border-top: none;
+  border-top: 1px solid rgba(0,0,0,0.05);
   opacity: 1;
 }
 .app-option-skillsets {
@@ -1735,7 +1735,7 @@ li.conflict-dismissed .conflict-desc {
   padding-left: 6px;
   gap: 5px;
   font-size: 11px;
-  border-top: none;
+  border-top: 1px solid rgba(0,0,0,0.05);
 }
 
 .app-option-wrench-picker {

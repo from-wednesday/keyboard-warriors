@@ -36,6 +36,7 @@
       { "bad": "CTRL+T", "action": "new tab" },
       { "bad": "CTRL+SHIFT+T", "action": "reopen closed tab" },
       { "bad": "CTRL+SHIFT+R", "action": "hard reload", "sus": true },
+      { "bad": "CTRL+SHIFT+S", "action": "Web Capture tool" },
       { "bad": "CTRL+SHIFT+DELETE", "action": "clear browsing data" },
       { "bad": "F11", "action": "fullscreen", "sus": true },
       { "bad": "F12", "action": "dev tools", "sus": true }

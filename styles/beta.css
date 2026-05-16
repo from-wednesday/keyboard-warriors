@@ -1721,21 +1721,21 @@ li.conflict-dismissed .conflict-desc {
 }
 .app-option-wrench-bottom-row {
   display: flex;
-  border-top: 1px solid rgba(0,0,0,0.05);
+  border-top: 1px solid rgba(0,0,0,0.06);
 }
 .app-option-wrench-bottom-row .app-option-wrench {
   flex: 1;
-  border-top: 1px solid rgba(0,0,0,0.05);
+  border-top: 1px solid rgba(0,0,0,0.06);
   opacity: 1;
 }
 .app-option-skillsets {
   flex: 1;
-  border-left: 1.25px solid rgba(0,0,0,0.07);
+  border-left: 2px solid rgba(0,0,0,0.06);
   justify-content: flex-start;
   padding-left: 6px;
   gap: 5px;
   font-size: 11px;
-  border-top: 1px solid rgba(0,0,0,0.05);
+  border-top: 1px solid rgba(0,0,0,0.06);
 }
 
 .app-option-wrench-picker {
@@ -3732,7 +3732,7 @@ body.returning-screen #diffIconWrap .icon-tip { display: none; }
   align-items: stretch;
 }
 #cfBtnKeyboard svg {
-  height: 28px;
+  height: 32px;
   width: auto;
   display: block;
   margin: auto;

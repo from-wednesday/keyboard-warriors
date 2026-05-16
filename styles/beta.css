@@ -3712,10 +3712,10 @@ body.returning-screen #diffIconWrap .icon-tip { display: none; }
   fill: currentColor;
 }
 #cfBtnKeyboard {
-  padding: 3px 4px;
+  padding: 0px;
 }
 #cfBtnKeyboard svg {
-  height: 26px;
+  height: 28px;
   width: auto;
   display: block;
 }

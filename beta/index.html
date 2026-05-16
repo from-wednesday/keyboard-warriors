@@ -92,9 +92,15 @@
       <line fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-miterlimit="10" x1="51.7" y1="25" x2="52.3" y2="22.7"/>
     </g>
     <path fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-miterlimit="10" d="M11.9,59.9c-.8-2.9-1.2-5.9-1.2-9,0-18.9,15.3-34.3,34.3-34.3s34.3,15.3,34.3,34.3-.4,5.9-1.1,8.6"/>
+</symbol>
+
+  <symbol id="IconMagnifier" viewBox="0 0 24 24">
+    <circle cx="11" cy="11" r="7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+    <line x1="16.5" y1="16.5" x2="22" y2="22" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
   </symbol>
 
 </svg>
+
 
 <div id="phoneWarningBackdrop" class="touch-modal-backdrop" style="display:none;"></div>
 <div id="phoneWarningModal" class="touch-modal-card" role="dialog" aria-modal="true" style="display:none;">
@@ -430,10 +436,7 @@
     <div class="sp-report-col-header">
       <div class="sp-endgame-header-left" onclick="_toggleEndGameHistory(event)" id="reportCardToggleTrigger">
         <p class="sp-small-card-title">REPORT CARD</p>
-        <svg class="sp-endgame-search-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-          <circle cx="11" cy="11" r="7"/>
-          <line x1="16.5" y1="16.5" x2="22" y2="22"/>
-        </svg>
+        <svg class="sp-endgame-search-icon" viewBox="0 0 24 24"><use href="#IconMagnifier"/></svg>
       </div>
       <p class="sp-report-section-title" id="reportMasteredHeading">Mastered</p>
     </div>
@@ -455,10 +458,7 @@
         <div class="sp-report-col-header">
           <div class="sp-endgame-header-left" onclick="_toggleEndGameHistory(event)">
             <p class="sp-small-card-title">HISTORY VIEW</p>
-           <svg class="sp-endgame-search-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-          <circle cx="11" cy="11" r="7"/>
-          <line x1="16.5" y1="16.5" x2="22" y2="22"/>
-        </svg>
+           <svg class="sp-endgame-search-icon" viewBox="0 0 24 24"><use href="#IconMagnifier"/></svg>
           </div>
           <p class="sp-report-section-title" id="EndGameHistoryMasteredHeading"></p>
         </div>

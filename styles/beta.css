@@ -3733,8 +3733,8 @@ body.returning-screen #diffIconWrap .icon-tip { display: none; }
   width: auto;
 }
 #cfBtnKeyboard svg {
-  height: 16px;
-  width: auto;
+  height: auto;
+  width: 75px;
   display: block;
 }
 {

@@ -3919,19 +3919,7 @@ runData.length = 0; lastCompletedReport = null; CoachAdviceAccepted = false;
     _openWrenchPicker();
   });
 
-var SkillsetsButton = document.createElement('div');
-  SkillsetsButton.className = 'app-option app-option-wrench app-option-skillsets';
-  SkillsetsButton.innerHTML = '<svg style="width:14px;height:14px;flex-shrink:0;"><use href="#IconMagnifier"/></svg><span>skillsets</span>';
-  SkillsetsButton.addEventListener('click', function(ClickEvent) {
-    ClickEvent.stopPropagation();
-    // panel to follow
-  });
-
-  var WrenchBottomRow = document.createElement('div');
-  WrenchBottomRow.className = 'app-option-wrench-bottom-row';
-  WrenchBottomRow.appendChild(WrenchRow);
-  WrenchBottomRow.appendChild(SkillsetsButton);
-  appPillEl.appendChild(WrenchBottomRow);
+  appPillEl.appendChild(WrenchRow);
   scrollPillToSelected();
 }
 

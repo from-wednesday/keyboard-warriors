@@ -1708,7 +1708,7 @@ li.conflict-dismissed .conflict-desc {
   transition: border-color 0.15s, background-color 0.15s;
 }
 .app-option-wrench {
-  border-top: none;
+  border-top: 1px solid rgba(0,0,0,0.05);
   opacity: 0.3;
   height: 28px;
   align-items: center;
@@ -1721,7 +1721,7 @@ li.conflict-dismissed .conflict-desc {
 }
 .app-option-wrench-bottom-row {
   display: flex;
-  border-top: none;
+  border-top: 1px solid rgba(0,0,0,0.05);
 }
 .app-option-wrench-bottom-row .app-option-wrench {
   flex: 1;
@@ -3727,17 +3727,15 @@ body.returning-screen #diffIconWrap .icon-tip { display: none; }
 }
 /* Keyboard segment: no padding, SVG fills the pill height */
 #cfBtnKeyboard {
-  padding: 1px;
+  padding: 0;
   overflow: visible;
   align-items: stretch;
-  width: auto;
 }
 #cfBtnKeyboard svg {
-  height: auto;
-  width: 75px;
+  height: 44px;
+  width: auto;
   display: block;
-    margin: auto;
-
+  margin: auto;
 }
 {
   fill: currentColor;

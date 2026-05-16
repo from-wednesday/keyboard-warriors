@@ -1719,6 +1719,20 @@ li.conflict-dismissed .conflict-desc {
 #appPill.open {
   /* Height driven by JS spring animator -- no CSS override needed */
 }
+.app-option-wrench-bottom-row {
+  display: flex;
+  border-top: 1px solid rgba(0,0,0,0.05);
+}
+.app-option-skillsets {
+  flex: 1;
+  border-left: 1px solid rgba(0,0,0,0.08);
+  justify-content: flex-start;
+  padding-left: 6px;
+  gap: 5px;
+  font-size: 11px;
+  border-top: none;
+}
+
 .app-option-wrench-picker {
     height: 24px;
     padding: 4;

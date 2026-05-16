@@ -540,12 +540,6 @@
     "difficulty": 4
   },
   {
-    "display": "show keyboard shortcuts Help",
-    "mac_sc": "CMD+QUESTION",
-    "pc_sc": "CTRL+QUESTION",
-    "difficulty": 4
-  },
-  {
     "display": "go to a specific Date",
     "mac_sc": "CMD+OPTION+G",
     "pc_sc": "CTRL+G",
@@ -682,5 +676,11 @@
     "mac_sc": "NULL",
     "pc_sc": "ALT+E|ALT+H|ALT+Y",
     "difficulty": 3
+  },
+  {
+    "display": "open help",
+    "mac_sc": "CMD+QUESTION",
+    "pc_sc": "F1|ALT+Q",
+    "difficulty": 2
   }
 ]

@@ -13788,8 +13788,54 @@ function _closeSkillsetPill() {
   if (existingDrop) existingDrop.remove();
   _buildSkillsetPill();
 }
+var _skillsetPillInitialised = false;
 
-<script>
+function _resolvePreferredSkillset() {
+  var HardwiredDefault = 'Graphic Design';
+  var StoredPreference = null;
+  try { StoredPreference = localStorage.getItem('kw_preferred_skillset'); } catch (StorageError) {}
+
+  var UrlParamMatch = null;
+  try {
+    var UrlParameters = new URLSearchParams(window.location.search);
+    var UrlSkillsetParam = UrlParameters.get('skillset');
+    if (UrlSkillsetParam) {
+      var MatchedDefinition = SKILLSET_DEFS.find(function(Definition) {
+        return Definition.label.toLowerCase() === UrlSkillsetParam.toLowerCase() ||
+               Definition.tags.some(function(Tag) { return Tag.toLowerCase() === UrlSkillsetParam.toLowerCase(); });
+      });
+      if (MatchedDefinition) UrlParamMatch = MatchedDefinition.label;
+    }
+  } catch (UrlError) {}
+
+  // Param present: always update the stored preference
+  if (UrlParamMatch) {
+    try { localStorage.setItem('kw_preferred_skillset', UrlParamMatch); } catch (StorageError) {}
+    return UrlParamMatch;
+  }
+
+  // No param: use stored preference, or fall back to hardwired default
+  if (StoredPreference) {
+    var IsValidPreference = SKILLSET_DEFS.some(function(Definition) {
+      return Definition.label === StoredPreference;
+    });
+    if (IsValidPreference) return StoredPreference;
+  }
+
+  // First visit with no param: store the hardwired default
+  try { localStorage.setItem('kw_preferred_skillset', HardwiredDefault); } catch (StorageError) {}
+  return HardwiredDefault;
+}
+
+function _initSkillsetPillAfterAppsLoad() {
+  if (_skillsetPillInitialised) return;
+  _skillsetPillInitialised = true;
+
+  currentSkillset = _resolvePreferredSkillset();
+  _applySkillset(currentSkillset);
+  _buildSkillsetPill();
+}
+
 /* ══════════════════════════════════════
    CUSTOMISE SKILLSET PANEL
    Slides in to the left of the app pill
@@ -14018,55 +14064,6 @@ function _closeCustomiseSkillsetPanel() {
 
   if (PanelElement)   PanelElement.classList.remove('customise-skillset-panel-open');
   if (BracketElement) BracketElement.classList.remove('customise-skillset-bracket-visible');
-}
-</script>
-
-var _skillsetPillInitialised = false;
-
-function _resolvePreferredSkillset() {
-  var HardwiredDefault = 'Graphic Design';
-  var StoredPreference = null;
-  try { StoredPreference = localStorage.getItem('kw_preferred_skillset'); } catch (StorageError) {}
-
-  var UrlParamMatch = null;
-  try {
-    var UrlParameters = new URLSearchParams(window.location.search);
-    var UrlSkillsetParam = UrlParameters.get('skillset');
-    if (UrlSkillsetParam) {
-      var MatchedDefinition = SKILLSET_DEFS.find(function(Definition) {
-        return Definition.label.toLowerCase() === UrlSkillsetParam.toLowerCase() ||
-               Definition.tags.some(function(Tag) { return Tag.toLowerCase() === UrlSkillsetParam.toLowerCase(); });
-      });
-      if (MatchedDefinition) UrlParamMatch = MatchedDefinition.label;
-    }
-  } catch (UrlError) {}
-
-  // Param present: always update the stored preference
-  if (UrlParamMatch) {
-    try { localStorage.setItem('kw_preferred_skillset', UrlParamMatch); } catch (StorageError) {}
-    return UrlParamMatch;
-  }
-
-  // No param: use stored preference, or fall back to hardwired default
-  if (StoredPreference) {
-    var IsValidPreference = SKILLSET_DEFS.some(function(Definition) {
-      return Definition.label === StoredPreference;
-    });
-    if (IsValidPreference) return StoredPreference;
-  }
-
-  // First visit with no param: store the hardwired default
-  try { localStorage.setItem('kw_preferred_skillset', HardwiredDefault); } catch (StorageError) {}
-  return HardwiredDefault;
-}
-
-function _initSkillsetPillAfterAppsLoad() {
-  if (_skillsetPillInitialised) return;
-  _skillsetPillInitialised = true;
-
-  currentSkillset = _resolvePreferredSkillset();
-  _applySkillset(currentSkillset);
-  _buildSkillsetPill();
 }
 </script>
 </body>

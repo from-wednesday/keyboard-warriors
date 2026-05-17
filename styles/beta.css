@@ -95,7 +95,7 @@ body {
 #mainBtn:focus, #helpBtn:focus { outline: none; box-shadow: none; }
 
 /* Curly bracket shown during binary confirmation states for destructive actions */
-
+#confirmBracket {
   position: absolute;
   left: 0px;
   top: 50%;

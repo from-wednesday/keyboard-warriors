@@ -95,7 +95,13 @@
       <circle cx="11" cy="11" r="7"/>
       <line x1="16.5" y1="16.5" x2="22" y2="22"/>
     </g>
- </symbol></svg>
+ </symbol>
+
+  <symbol id="IconBracket" viewBox="43 21 15 84">
+    <path fill="currentColor" d="M43.95,103.55c4.8-.2,7.3-4.4,7.3-9.7v-21.8c0-8.9,4.9-9.5,4.9-9.5l.6-.1-.6-.1s-4.9-.6-4.9-9.5v-21.8c0-5.3-2.5-9.5-7.3-9.7h-.7s4.5,2,4.5,10.3v21c0,7.7,3.6,9.5,6.1,9.8-2.5.3-6.1,2.1-6.1,9.8v21c0,8.3-4.5,10.3-4.5,10.3.2.1.4.1.7,0Z"/>
+  </symbol>
+  
+</svg>
 
 <div id="phoneWarningBackdrop" class="touch-modal-backdrop" style="display:none;"></div>
 <div id="phoneWarningModal" class="touch-modal-card" role="dialog" aria-modal="true" style="display:none;">
@@ -159,7 +165,17 @@
 
   <!-- App selector: right-aligned in the same osRow -->
   <div id="appSelectorWrap">
+    <div id="customiseSkillsetPanel">
+      <div id="customiseSkillsetPillWrap">
+        <div id="customiseSkillsetPill"></div>
+      </div>
+    </div>
+    <svg id="customiseSkillsetBracket" xmlns="http://www.w3.org/2000/svg" viewBox="43 21 15 84" aria-hidden="true">
+      <use href="#IconBracket"/>
+    </svg>
     <p id="appSelectorLabel">now training on</p>
+
+
 <div id="appPill" onclick="if(gameState==='playing'||gameState==='paused'||gameState==='readyToUnpause'||gameState==='counting'){showToast('Change app between game rounds.');return;}if(appPillEl.classList.contains('open'))closeAppPill();else openAppPill();">
       
       <!-- Options rendered by JS so selected item can be reordered to top -->
@@ -179,7 +195,7 @@
       <button id="mainBtn" onclick="mainButtonClick()">Start</button>
       <button id="helpBtn" onclick="helpButtonClick()">Help</button>
       <svg id="confirmBracket" xmlns="http://www.w3.org/2000/svg" viewBox="43 21 15 84">
-        <path d="M43.95,103.55c4.8-.2,7.3-4.4,7.3-9.7v-21.8c0-8.9,4.9-9.5,4.9-9.5l.6-.1-.6-.1s-4.9-.6-4.9-9.5v-21.8c0-5.3-2.5-9.5-7.3-9.7h-.7s4.5,2,4.5,10.3v21c0,7.7,3.6,9.5,6.1,9.8-2.5.3-6.1,2.1-6.1,9.8v21c0,8.3-4.5,10.3-4.5,10.3.2.1.4.1.7,0Z"/>
+        <use href="#IconBracket"/>
       </svg>
     </div>
     <div class="middlePanel">
@@ -4080,8 +4096,9 @@ function _buildWrenchPickerRows() {
   SkillsetsButton.innerHTML = '<svg style="width:14px;height:14px;flex-shrink:0;"><use href="#IconMagnifier"/></svg><span>more</span>';
   SkillsetsButton.addEventListener('click', function(ClickEvent) {
     ClickEvent.stopPropagation();
-    // panel to follow
+    _openCustomiseSkillsetPanel();
   });
+
 
   var WrenchBottomRow = document.createElement('div');
   WrenchBottomRow.className = 'app-option-wrench-bottom-row';
@@ -4329,6 +4346,7 @@ function _openWrenchPicker() {
 
 function _closeWrenchPicker() {
     AppPillWrenchOpen = false;
+    _closeCustomiseSkillsetPanel();
     var selectorLabel = document.getElementById('appSelectorLabel');
     if (selectorLabel) selectorLabel.textContent = 'choose app to train in next';    appPillEl.removeEventListener('dragover', _onWrenchDragOver);
     appPillEl.removeEventListener('drop',     _onWrenchDrop);
@@ -13771,6 +13789,237 @@ function _closeSkillsetPill() {
   _buildSkillsetPill();
 }
 
+<script>
+/* ══════════════════════════════════════
+   CUSTOMISE SKILLSET PANEL
+   Slides in to the left of the app pill
+   when the 'more' button in the wrench
+   picker is pressed. Closes with the
+   wrench picker.
+══════════════════════════════════════ */
+
+var CustomiseSkillsetPanelIsOpen = false;
+
+function _buildCustomiseSkillsetPillContent() {
+  var PillElement = document.getElementById('customiseSkillsetPill');
+  if (!PillElement) return;
+  PillElement.innerHTML = '';
+  PillElement.style.cssText = [
+    'position:relative',
+    'border-radius:10px',
+    'border:1.5px solid #9ca3af',
+    'background:white',
+    'overflow:visible',
+    'cursor:pointer',
+    'user-select:none',
+    'width:192px',
+    'min-width:192px',
+    'height:27px',
+    'box-sizing:border-box',
+    'pointer-events:auto',
+    'opacity:0',
+    'transform:scale(0.88)',
+    'transition:opacity 0.22s ease, transform 0.22s cubic-bezier(0.34,1.3,0.64,1)',
+  ].join(';');
+
+  // Selected row — mirrors the original skillset pill structure
+  var SelectedRow = document.createElement('div');
+  SelectedRow.style.cssText = [
+    'display:flex',
+    'align-items:center',
+    'height:24px',
+    'line-height:1',
+    "font-family:'Lato',system-ui,sans-serif",
+    'font-size:12px',
+    'color:#6b7280',
+    'font-weight:500',
+    'white-space:nowrap',
+    'box-sizing:border-box',
+    'cursor:pointer',
+    'padding:0 2px',
+  ].join(';');
+
+  var CaretColumn = document.createElement('span');
+  CaretColumn.style.cssText = 'flex-shrink:0;width:22px;display:flex;align-items:center;justify-content:center;';
+
+  var CaretSvg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
+  CaretSvg.setAttribute('viewBox', '0 0 7 7');
+  CaretSvg.setAttribute('width', '7');
+  CaretSvg.setAttribute('height', '7');
+  CaretSvg.setAttribute('fill', 'currentColor');
+  CaretSvg.style.cssText = 'display:block;color:#9ca3af;flex-shrink:0;transition:transform 0.2s ease;';
+  var CaretPath = document.createElementNS('http://www.w3.org/2000/svg', 'path');
+  CaretPath.setAttribute('d', 'M1.5 1 L6 3.5 L1.5 6 Z');
+  CaretSvg.appendChild(CaretPath);
+  CaretColumn.appendChild(CaretSvg);
+
+  var LabelColumn = document.createElement('span');
+  LabelColumn.style.cssText = 'flex:1;text-align:left;';
+  LabelColumn.textContent = currentSkillset;
+
+  SelectedRow.appendChild(CaretColumn);
+  SelectedRow.appendChild(LabelColumn);
+  PillElement.appendChild(SelectedRow);
+
+  PillElement.addEventListener('click', function(ClickEvent) {
+    ClickEvent.stopPropagation();
+    _toggleCustomiseSkillsetDrop(PillElement);
+  });
+}
+
+function _toggleCustomiseSkillsetDrop(PillElement) {
+  var ExistingDrop = document.getElementById('customiseSkillsetDrop');
+  if (ExistingDrop) { ExistingDrop.remove(); return; }
+
+  var Drop = document.createElement('div');
+  Drop.id = 'customiseSkillsetDrop';
+  var PillRect   = PillElement.getBoundingClientRect();
+  var DropHeight = SKILLSET_DEFS.length * 24;
+  Drop.style.cssText = [
+    'position:fixed',
+    'left:' + PillRect.left + 'px',
+    'top:'  + (PillRect.top + PillRect.height / 2 - DropHeight / 2) + 'px',
+    'width:' + PillRect.width + 'px',
+    'background:white',
+    'border:1.5px solid #9ca3af',
+    'border-radius:10px',
+    'overflow:hidden',
+    'z-index:601',
+    'box-shadow:0 4px 12px rgba(0,0,0,0.12)',
+  ].join(';');
+  document.body.appendChild(Drop);
+
+  SKILLSET_DEFS.forEach(function(Definition) {
+    var IsSelected = (Definition.label === currentSkillset);
+    var Row = document.createElement('div');
+    Row.style.cssText = [
+      'display:flex',
+      'align-items:center',
+      'height:24px',
+      'line-height:1',
+      "font-family:'Lato',system-ui,sans-serif",
+      'font-size:12px',
+      'color:' + (IsSelected ? '#6b7280' : '#9ca3af'),
+      'font-weight:' + (IsSelected ? '500' : '400'),
+      'white-space:nowrap',
+      'box-sizing:border-box',
+      'cursor:pointer',
+      'padding:0 2px',
+    ].join(';');
+
+    Row.addEventListener('mouseenter', function() {
+      Row.style.background = '#f0f9ff';
+      Row.style.color      = '#374151';
+    });
+    Row.addEventListener('mouseleave', function() {
+      Row.style.background = '';
+      Row.style.color      = IsSelected ? '#6b7280' : '#9ca3af';
+    });
+
+    var IconColumn = document.createElement('span');
+    IconColumn.style.cssText = 'flex-shrink:0;width:22px;display:flex;align-items:center;justify-content:center;';
+    var IconSvg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
+    IconSvg.setAttribute('viewBox', '0 0 7 7');
+    IconSvg.setAttribute('width', '7');
+    IconSvg.setAttribute('height', '7');
+    IconSvg.setAttribute('fill', 'currentColor');
+    IconSvg.style.cssText = 'display:block;color:#9ca3af;opacity:' + (IsSelected ? '1' : '0') + ';';
+    var IconPath = document.createElementNS('http://www.w3.org/2000/svg', 'path');
+    IconPath.setAttribute('d', 'M1.5 1 L6 3.5 L1.5 6 Z');
+    IconSvg.appendChild(IconPath);
+    IconColumn.appendChild(IconSvg);
+
+    var LabelSpan = document.createElement('span');
+    LabelSpan.style.cssText = 'flex:1;text-align:left;';
+    LabelSpan.textContent   = Definition.label;
+
+    Row.appendChild(IconColumn);
+    Row.appendChild(LabelSpan);
+
+    Row.addEventListener('click', function(ClickEvent) {
+      ClickEvent.stopPropagation();
+      currentSkillset = Definition.label;
+      _applySkillset(Definition.label);
+      currentApp = appsShortList[0];
+      try { localStorage.setItem('kw_app', currentApp); } catch (StorageError) {}
+      buildAppPill();
+      // Keep the original skillset pill in panelLandingWelcome in sync
+      _buildSkillsetPill();
+      var DropElement = document.getElementById('customiseSkillsetDrop');
+      if (DropElement) DropElement.remove();
+      _buildCustomiseSkillsetPillContent();
+      // Pop the pill to acknowledge the selection
+      var PanelPill = document.getElementById('customiseSkillsetPill');
+      if (PanelPill) pulseBtn(PanelPill);
+      // Re-reveal it after content rebuild resets opacity
+      requestAnimationFrame(function() {
+        requestAnimationFrame(function() {
+          if (PanelPill) {
+            PanelPill.style.opacity   = '1';
+            PanelPill.style.transform = 'scale(1)';
+          }
+        });
+      });
+    });
+
+    Drop.appendChild(Row);
+  });
+
+  setTimeout(function() {
+    document.addEventListener('click', function OutsideClickHandler(ClickEvent) {
+      var DropElement = document.getElementById('customiseSkillsetDrop');
+      var PanelPill   = document.getElementById('customiseSkillsetPill');
+      var TargetOutside = (!DropElement || !DropElement.contains(ClickEvent.target)) &&
+                          (!PanelPill   || !PanelPill.contains(ClickEvent.target));
+      if (TargetOutside) {
+        if (DropElement) DropElement.remove();
+        document.removeEventListener('click', OutsideClickHandler);
+      }
+    });
+  }, 0);
+}
+
+function _openCustomiseSkillsetPanel() {
+  if (CustomiseSkillsetPanelIsOpen) return;
+  CustomiseSkillsetPanelIsOpen = true;
+
+  var PanelElement   = document.getElementById('customiseSkillsetPanel');
+  var BracketElement = document.getElementById('customiseSkillsetBracket');
+  if (!PanelElement) return;
+
+  // Build pill content before the panel becomes visible
+  _buildCustomiseSkillsetPillContent();
+
+  // Slide the panel in
+  PanelElement.classList.add('customise-skillset-panel-open');
+
+  // Bracket fades in alongside the panel
+  if (BracketElement) BracketElement.classList.add('customise-skillset-bracket-visible');
+
+  // Pill pops in after the slide animation has mostly completed
+  setTimeout(function() {
+    var PillElement = document.getElementById('customiseSkillsetPill');
+    if (PillElement) {
+      PillElement.style.opacity   = '1';
+      PillElement.style.transform = 'scale(1)';
+    }
+  }, 260);
+}
+
+function _closeCustomiseSkillsetPanel() {
+  if (!CustomiseSkillsetPanelIsOpen) return;
+  CustomiseSkillsetPanelIsOpen = false;
+
+  var ExistingDrop = document.getElementById('customiseSkillsetDrop');
+  if (ExistingDrop) ExistingDrop.remove();
+
+  var PanelElement   = document.getElementById('customiseSkillsetPanel');
+  var BracketElement = document.getElementById('customiseSkillsetBracket');
+
+  if (PanelElement)   PanelElement.classList.remove('customise-skillset-panel-open');
+  if (BracketElement) BracketElement.classList.remove('customise-skillset-bracket-visible');
+}
+</script>
 
 var _skillsetPillInitialised = false;
 

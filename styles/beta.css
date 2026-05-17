@@ -97,7 +97,7 @@ body {
 /* Curly bracket shown during binary confirmation states for destructive actions */
 #confirmBracket {
   position: absolute;
-  left: 0px;
+  left: 163px;
   top: 50%;
   transform: translateY(-50%);
   width: 16px;

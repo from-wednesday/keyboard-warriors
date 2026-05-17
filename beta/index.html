@@ -2322,7 +2322,7 @@ function checkStickyShortcut() {
 // Extended key labels for the ghost pill
 // Maps browser key codes for extended (non-graphical-keyboard) keys to their token strings.
 // Used to detect extended key presses and render them as chips in #extKeyChip.
-const ExtendedKeyCodeToToken = {
+var ExtendedKeyCodeToToken = {
   'Home': 'HOME', 'End': 'END',
   'PageUp': 'PAGEUP', 'PageDown': 'PAGEDOWN',
   'Insert': 'INSERT', 'Delete': 'DELETE',

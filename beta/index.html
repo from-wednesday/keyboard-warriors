@@ -1,5 +1,5 @@
 <!-- ═══════════════════════════════════════════════════
-    Keyboard Warrios main file 
+    Keyboard Warriors main file 
      ═══════════════════════════════════════════════════ -->
 <!DOCTYPE html>
 <html>
@@ -41,17 +41,13 @@
   }
 </style>
 </head><body>
-<!-- ══════════════════════════════════════
-     GYRO PERMISSION MODAL
-     Shown once on iOS/iPadOS (localStorage persists the decision).
-     iOS 13+ requires a user gesture before DeviceOrientationEvent.requestPermission.
-══════════════════════════════════════ -->
+
 <!-- ══════════════════════════════════════
      SVG SYMBOL DEFINITIONS
      Defined once here, referenced everywhere
      via <use href="#SymbolId">.
      All paths use fill="currentColor" so
-     colour is controlled at the use site.
+     colour is controlled at the use site. But beware of stroke only shapes?
 ══════════════════════════════════════ -->
 <svg xmlns="http://www.w3.org/2000/svg" style="display:none;" aria-hidden="true">
 
@@ -69,29 +65,29 @@
       <circle cx="19.3" cy="13.7" r="2"/>
       <circle cx="13.3" cy="13.7" r="2"/>
       <circle cx="25.3" cy="13.7" r="2"/>
+      <path d="M42.5,23.4c-6,0-11.4,2.1-14.9,5.4h0c0,0-.1.1-.2.2-2.4,2.3-3.8,5.2-3.8,8.4s1.4,6,3.8,8.4c0,0,0,.1.2.2,3.4,3.3,8.8,5.4,14.9,5.4s11.4-2.1,14.9-5.4h0c0,0,.1-.1.2-.2,0,0,0,0,0,0,2.4-2.3,3.8-5.2,3.8-8.4s-1.4-6-3.8-8.4c0,0-.1-.1-.2-.2-3.4-3.3-8.8-5.4-14.9-5.4h0ZM41.3,25.3v5.4c-1.9,0-3.7-.2-5.4-.4.3-.6.7-1.2,1-1.7,1.3-1.7,2.8-2.8,4.4-3.2h0ZM43.7,25.3c1.6.4,3.1,1.5,4.4,3.2.4.5.7,1.1,1.1,1.7-1.7.2-3.5.4-5.4.4v-5.3ZM49,26.2c2.1.7,4,1.7,5.5,2.9-.9.3-1.9.5-2.9.8-.4-.8-.8-1.5-1.3-2.2-.4-.5-.8-1-1.3-1.5h0ZM36,26.2c-.5.4-.9.9-1.2,1.5-.5.7-.9,1.4-1.3,2.2-1.1-.2-2.1-.5-2.9-.8,1.5-1.2,3.4-2.2,5.5-2.9h0ZM28.9,30.6c1.1.4,2.4.8,3.8,1-.5,1.5-.8,3.1-.9,4.8h-5.6c.2-2.1,1.2-4.1,2.7-5.8h0ZM56.1,30.6c1.5,1.7,2.5,3.7,2.7,5.8h-5.6c0-1.7-.4-3.3-.9-4.8,1.4-.3,2.7-.6,3.8-1h0ZM35.1,32c1.9.3,4,.4,6.1.5v3.9h-7c0-1.5.4-3,.8-4.3h0ZM49.9,32c.4,1.3.7,2.8.8,4.3h-7v-3.9c2.2,0,4.2-.2,6.1-.5h0ZM26.2,38.2h5.6c0,1.7.4,3.3.9,4.8-1.4.3-2.7.6-3.8,1-1.5-1.7-2.5-3.7-2.7-5.8h0ZM34.3,38.2h7v3.9c-2.2,0-4.2.2-6.1.5-.4-1.3-.7-2.8-.8-4.3h0ZM43.7,38.2h7c0,1.5-.4,3-.8,4.3-1.9-.3-4-.4-6.1-.5v-3.9ZM53.2,38.2h5.6c-.2,2.1-1.2,4.1-2.7,5.8-1.1-.4-2.4-.8-3.8-1,.5-1.5.8-3.1.9-4.8h0ZM41.3,43.9v5.4c-1.6-.4-3.1-1.4-4.4-3.2-.4-.5-.7-1.1-1.1-1.7,1.7-.2,3.5-.4,5.4-.4h0ZM43.7,43.9c1.9,0,3.7.2,5.4.4-.3.6-.7,1.2-1.1,1.7-1.3,1.7-2.8,2.8-4.4,3.2v-5.3ZM33.4,44.7c.4.8.8,1.5,1.3,2.2.4.5.8,1,1.2,1.5-2.1-.7-4-1.7-5.5-2.9.9-.3,1.9-.5,2.9-.8h0ZM51.6,44.7c1.1.2,2.1.5,2.9.8-1.5,1.2-3.4,2.2-5.5,2.9.5-.4.9-.9,1.3-1.5.5-.7.9-1.4,1.3-2.2h0Z"/>
     </g>
-    <path fill="currentColor" d="M42.5,23.4c-6,0-11.4,2.1-14.9,5.4h0c0,0-.1.1-.2.2-2.4,2.3-3.8,5.2-3.8,8.4s1.4,6,3.8,8.4c0,0,0,.1.2.2,3.4,3.3,8.8,5.4,14.9,5.4s11.4-2.1,14.9-5.4h0c0,0,.1-.1.2-.2,0,0,0,0,0,0,2.4-2.3,3.8-5.2,3.8-8.4s-1.4-6-3.8-8.4c0,0-.1-.1-.2-.2-3.4-3.3-8.8-5.4-14.9-5.4h0ZM41.3,25.3v5.4c-1.9,0-3.7-.2-5.4-.4.3-.6.7-1.2,1-1.7,1.3-1.7,2.8-2.8,4.4-3.2h0ZM43.7,25.3c1.6.4,3.1,1.5,4.4,3.2.4.5.7,1.1,1.1,1.7-1.7.2-3.5.4-5.4.4v-5.3ZM49,26.2c2.1.7,4,1.7,5.5,2.9-.9.3-1.9.5-2.9.8-.4-.8-.8-1.5-1.3-2.2-.4-.5-.8-1-1.3-1.5h0ZM36,26.2c-.5.4-.9.9-1.2,1.5-.5.7-.9,1.4-1.3,2.2-1.1-.2-2.1-.5-2.9-.8,1.5-1.2,3.4-2.2,5.5-2.9h0ZM28.9,30.6c1.1.4,2.4.8,3.8,1-.5,1.5-.8,3.1-.9,4.8h-5.6c.2-2.1,1.2-4.1,2.7-5.8h0ZM56.1,30.6c1.5,1.7,2.5,3.7,2.7,5.8h-5.6c0-1.7-.4-3.3-.9-4.8,1.4-.3,2.7-.6,3.8-1h0ZM35.1,32c1.9.3,4,.4,6.1.5v3.9h-7c0-1.5.4-3,.8-4.3h0ZM49.9,32c.4,1.3.7,2.8.8,4.3h-7v-3.9c2.2,0,4.2-.2,6.1-.5h0ZM26.2,38.2h5.6c0,1.7.4,3.3.9,4.8-1.4.3-2.7.6-3.8,1-1.5-1.7-2.5-3.7-2.7-5.8h0ZM34.3,38.2h7v3.9c-2.2,0-4.2.2-6.1.5-.4-1.3-.7-2.8-.8-4.3h0ZM43.7,38.2h7c0,1.5-.4,3-.8,4.3-1.9-.3-4-.4-6.1-.5v-3.9ZM53.2,38.2h5.6c-.2,2.1-1.2,4.1-2.7,5.8-1.1-.4-2.4-.8-3.8-1,.5-1.5.8-3.1.9-4.8h0ZM41.3,43.9v5.4c-1.6-.4-3.1-1.4-4.4-3.2-.4-.5-.7-1.1-1.1-1.7,1.7-.2,3.5-.4,5.4-.4h0ZM43.7,43.9c1.9,0,3.7.2,5.4.4-.3.6-.7,1.2-1.1,1.7-1.3,1.7-2.8,2.8-4.4,3.2v-5.3ZM33.4,44.7c.4.8.8,1.5,1.3,2.2.4.5.8,1,1.2,1.5-2.1-.7-4-1.7-5.5-2.9.9-.3,1.9-.5,2.9-.8h0ZM51.6,44.7c1.1.2,2.1.5,2.9.8-1.5,1.2-3.4,2.2-5.5,2.9.5-.4.9-.9,1.3-1.5.5-.7.9-1.4,1.3-2.2h0Z"/>
   </symbol>
 
   <symbol id="IconDifficultyStatic" viewBox="0 0 90 90">
-    <g id="notches">
-      <line fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-miterlimit="10" x1="44.7" y1="24.1" x2="44.7" y2="19.8"/>
-      <line fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-miterlimit="10" x1="25.9" y1="32.1" x2="22.8" y2="29.1"/>
-      <line fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-miterlimit="10" x1="18.2" y1="51.1" x2="13.9" y2="51.1"/>
-      <line fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-miterlimit="10" x1="71.7" y1="50.6" x2="76.1" y2="50.6"/>
-      <line fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-miterlimit="10" x1="63.7" y1="31.8" x2="66.8" y2="28.7"/>
-      <line fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-miterlimit="10" x1="37.8" y1="25.1" x2="37.2" y2="22.9"/>
-      <line fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-miterlimit="10" x1="31.4" y1="27.8" x2="30.3" y2="25.8"/>
-      <line fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-miterlimit="10" x1="21.7" y1="37.7" x2="19.7" y2="36.5"/>
-      <line fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-miterlimit="10" x1="19.1" y1="44.2" x2="16.9" y2="43.6"/>
-      <line fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-miterlimit="10" x1="19.2" y1="58" x2="17" y2="58.6"/>
-      <line fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-miterlimit="10" x1="70.9" y1="57.5" x2="73.1" y2="58.1"/>
-      <line fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-miterlimit="10" x1="70.8" y1="43.7" x2="73" y2="43.1"/>
-      <line fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-miterlimit="10" x1="68" y1="37.3" x2="70" y2="36.1"/>
-      <line fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-miterlimit="10" x1="58.1" y1="27.6" x2="59.3" y2="25.6"/>
-      <line fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-miterlimit="10" x1="51.7" y1="25" x2="52.3" y2="22.7"/>
+    <g id="notches" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-miterlimit="10" >
+      <line x1="44.7" y1="24.1" x2="44.7" y2="19.8"/>
+      <line x1="25.9" y1="32.1" x2="22.8" y2="29.1"/>
+      <line x1="18.2" y1="51.1" x2="13.9" y2="51.1"/>
+      <line x1="71.7" y1="50.6" x2="76.1" y2="50.6"/>
+      <line x1="63.7" y1="31.8" x2="66.8" y2="28.7"/>
+      <line x1="37.8" y1="25.1" x2="37.2" y2="22.9"/>
+      <line x1="31.4" y1="27.8" x2="30.3" y2="25.8"/>
+      <line x1="21.7" y1="37.7" x2="19.7" y2="36.5"/>
+      <line x1="19.1" y1="44.2" x2="16.9" y2="43.6"/>
+      <line x1="19.2" y1="58" x2="17" y2="58.6"/>
+      <line x1="70.9" y1="57.5" x2="73.1" y2="58.1"/>
+      <line x1="70.8" y1="43.7" x2="73" y2="43.1"/>
+      <line x1="68" y1="37.3" x2="70" y2="36.1"/>
+      <line x1="58.1" y1="27.6" x2="59.3" y2="25.6"/>
+      <line x1="51.7" y1="25" x2="52.3" y2="22.7"/>
+      <path d="M11.9,59.9c-.8-2.9-1.2-5.9-1.2-9,0-18.9,15.3-34.3,34.3-34.3s34.3,15.3,34.3,34.3-.4,5.9-1.1,8.6"/>
     </g>
-    <path fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-miterlimit="10" d="M11.9,59.9c-.8-2.9-1.2-5.9-1.2-9,0-18.9,15.3-34.3,34.3-34.3s34.3,15.3,34.3,34.3-.4,5.9-1.1,8.6"/>
   </symbol>
 
   <symbol id="IconMagnifier" viewBox="0 0 24 24">
@@ -99,10 +95,7 @@
       <circle cx="11" cy="11" r="7"/>
       <line x1="16.5" y1="16.5" x2="22" y2="22"/>
     </g>
-  </symbol>
-
-</svg>
-
+ </symbol></svg>
 
 <div id="phoneWarningBackdrop" class="touch-modal-backdrop" style="display:none;"></div>
 <div id="phoneWarningModal" class="touch-modal-card" role="dialog" aria-modal="true" style="display:none;">
@@ -113,7 +106,11 @@
     <button class="touch-modal-btn-secondary" onclick="OnPhoneWarningDismiss()">Try anyway</button>
   </div>
 </div>
-
+<!-- ══════════════════════════════════════
+     GYRO PERMISSION MODAL
+     Shown once on iOS/iPadOS (localStorage persists the decision).
+     iOS 13+ requires a user gesture before DeviceOrientationEvent.requestPermission.
+══════════════════════════════════════ -->
 <div id="gyroBackdrop" class="touch-modal-backdrop" style="display:none;"></div>
 <div id="gyroModal" class="touch-modal-card" role="dialog" aria-modal="true" style="display:none;">
   <p class="touch-modal-heading">One quick thing</p>

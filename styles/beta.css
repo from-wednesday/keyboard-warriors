@@ -3341,17 +3341,78 @@ body.returning-screen #diffIconWrap .icon-tip { display: none; }
   opacity: 0.07;
 }
 
-
-/* ═══════════════════════════════════════════════════
-   MISC — Rules extracted from inline <style> tags
-   in the HTML body. Safe to apply globally because
-   both selectors are scoped to specific IDs.
-   ═══════════════════════════════════════════════════ */
-
 /* App pill open: fade the main title out of view */
   #title.app-pill-open {
   opacity: 0;
   transition: opacity 1s ease;
+}
+/* ══════════════════════════════════════
+   CUSTOMISE SKILLSET PANEL
+   Appears to the left of #appSelectorWrap
+   when the 'more' button in the wrench
+   picker is pressed.
+   Width = app pill (142px) × 5 = 710px.
+   The bracket and panel are positioned
+   absolutely relative to #appSelectorWrap
+   and grow leftward.
+══════════════════════════════════════ */
+
+#customiseSkillsetPanel {
+  position: absolute;
+  /* Anchor to the left edge of #appSelectorWrap, growing leftward */
+  right: calc(100% + 24px);
+  top: 50%;
+  transform: translateY(-50%);
+  width: 710px;
+  background: white;
+  border: 1.5px solid #9ca3af;
+  border-radius: 10px;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.10);
+  pointer-events: none;
+
+  display: flex;
+  align-items: center;
+  padding: 4px 12px;
+  gap: 10px;
+  height: 35px;
+  box-sizing: border-box;
+  z-index: 500;
+
+  /* Closed: clipped fully to the right — slams shut instantly */
+  clip-path: inset(0 0 0 100%);
+  transition: clip-path 0.05s cubic-bezier(0.4, 0, 1, 1);
+}
+
+#customiseSkillsetPanel.customise-skillset-panel-open {
+  pointer-events: auto;
+  clip-path: inset(0 0 0 0%);
+  /* Slide in leftward: ease-out so it arrives and settles cleanly */
+  transition: clip-path 0.32s cubic-bezier(0.0, 0.0, 0.2, 1);
+}
+
+/* The bracket that bridges the panel to the label */
+#customiseSkillsetBracket {
+  position: absolute;
+  right: calc(100% + 8px);
+  top: 50%;
+  transform: translateY(-50%);
+  width: 16px;
+  height: 70px;
+  fill: #9ca3af;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.18s ease 0.12s;
+}
+
+#customiseSkillsetBracket.customise-skillset-bracket-visible {
+  opacity: 1;
+}
+
+/* Pill container inside the panel */
+#customiseSkillsetPillWrap {
+  display: flex;
+  align-items: center;
+  flex-shrink: 0;
 }
 
 /* Pause-nudge SVG gauge strokes (was inline in SVG element) */.pn-stroke { fill:none; stroke:currentColor; stroke-width:2px; stroke-linecap:round; stroke-miterlimit:10; }

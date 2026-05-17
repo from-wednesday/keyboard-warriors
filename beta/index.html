@@ -1,5 +1,5 @@
 <!-- ═══════════════════════════════════════════════════
-    Keyboard Warriors main file 
+    Keyboard Warriors central HTML file with JS
      ═══════════════════════════════════════════════════ -->
 <!DOCTYPE html>
 <html>
@@ -1659,22 +1659,6 @@ function updateMismatchPill() {
   }
 }
 
-// On mobile: auto-enable sticky + touch modes, show updated message
-if (detectedOs === 'mobile') {
-  var _mobileHasExternalKeyboard = false;
-  try { _mobileHasExternalKeyboard = localStorage.getItem('kw_has_keyboard') === '1'; } catch(StorageError) {}
-  if (!_mobileHasExternalKeyboard) {
-    setStickyKeys(true);
-    setTouchEnabled(true);
-    document.getElementById('stickyRow').classList.add('disabled');
-    if (!_pillDismissedThisSession) {
-      osMismatchEl.textContent = 'We recommend training with a real mechanical keyboard.';
-      osMismatchEl.classList.add('show');
-      _startPillAutoHideTimer();
-    }
-  }
-}
-
 // Set the initial toggle position to match the detected OS
 // (defaults to PC for unknown/other systems)
 buildOsLabels();
@@ -2318,7 +2302,6 @@ function checkStickyShortcut() {
   });
 }
 
-
 // Extended key labels for the ghost pill
 // Maps browser key codes for extended (non-graphical-keyboard) keys to their token strings.
 // Used to detect extended key presses and render them as chips in #extKeyChip.
@@ -2338,6 +2321,22 @@ var ExtendedKeyCodeToToken = {
 const ExtendedKeyChipElement = document.getElementById('extKeyChip');
 let ExtendedKeyPillTimer = null;
 
+// On mobile: auto-enable sticky + touch modes, show updated message
+if (detectedOs === 'mobile') {
+  var _mobileHasExternalKeyboard = false;
+  try { _mobileHasExternalKeyboard = localStorage.getItem('kw_has_keyboard') === '1'; } catch(StorageError) {}
+  if (!_mobileHasExternalKeyboard) {
+    setStickyKeys(true);
+    setTouchEnabled(true);
+    document.getElementById('stickyRow').classList.add('disabled');
+    if (!_pillDismissedThisSession) {
+      osMismatchEl.textContent = 'We recommend training with a real mechanical keyboard.';
+      osMismatchEl.classList.add('show');
+      _startPillAutoHideTimer();
+    }
+  }
+}
+    
 function ShowExtendedKeyChip(BrowserCode, ColourState) {
   var Token = ExtendedKeyCodeToToken[BrowserCode];
   if (!Token) return;

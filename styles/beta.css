@@ -3374,7 +3374,8 @@ body.returning-screen #diffIconWrap .icon-tip { display: none; }
   align-items: center;
   padding: 4px 12px;
   gap: 10px;
-  height: 35px;
+  min-height: 70px;
+  height: auto;
   box-sizing: border-box;
   z-index: 500;
 

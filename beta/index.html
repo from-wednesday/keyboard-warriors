@@ -7588,11 +7588,14 @@ function _saveKbKeyOverrides() {
 }
 
 function _syncExtendedKeysToBaseline(full) {
+  if (!dismissedConflicts) return;
   // Called when hasFullKeyboard changes. Resets all extended key codes in
   // dismissedConflicts to match the new baseline, and clears kbKeyOverrides.
   var ExtCodes = Object.keys(ExtendedKeyCodeToToken);
+
   // Dedupe: 'Clear' aliases 'NumLock' token, use unique browser codes only
   var SeenTokens = new Set();
+
   ExtCodes.forEach(function(Code) {
     var Token = ExtendedKeyCodeToToken[Code];
     if (SeenTokens.has(Token)) return;
@@ -7603,11 +7606,11 @@ function _syncExtendedKeysToBaseline(full) {
       dismissedConflicts.add(Code);
     }
   });
+
   kbKeyOverrides.clear();
   _saveKbKeyOverrides();
   _saveCustomDismissedConflicts();
 }
-
 function _saveCustomDismissedConflicts() {
   try {
     localStorage.setItem('kw_dismissed_conflicts', JSON.stringify(Array.from(dismissedConflicts)));

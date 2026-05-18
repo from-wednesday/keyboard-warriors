@@ -1694,8 +1694,6 @@ li.conflict-dismissed .conflict-desc {
   z-index: 500;
 }
 #appSelectorLabel {
-  position: relative;
-
   font-family: 'Lato', system-ui, sans-serif;
   font-size: 12px;
   color: #9ca3af;
@@ -3359,64 +3357,6 @@ body.returning-screen #diffIconWrap .icon-tip { display: none; }
   #title.app-pill-open {
   opacity: 0;
   transition: opacity 1s ease;
-}
-/* ══════════════════════════════════════
-   CUSTOMISE SKILLSET PANEL
-   Appears to the left of #appSelectorWrap
-   when the 'more' button in the wrench
-   picker is pressed.
-   Width = app pill (142px) × 5 = 710px.
-   The bracket and panel are positioned
-   absolutely relative to #appSelectorWrap
-   and grow leftward.
-══════════════════════════════════════ */
-
-#customiseSkillsetInlineRow {
-  position: absolute;
-  left: 100%;
-  top: 50%;
-
-  margin-left: 18px;
-
-  display: flex;
-  align-items: center;
-  gap: 10px;
-
-  transform:
-    translateY(-50%)
-    scale(0.92);
-
-  opacity: 0;
-
-  pointer-events: none;
-  white-space: nowrap;
-
-  transition:
-    opacity 0.18s ease,
-    transform 0.24s cubic-bezier(0.2, 0.8, 0.2, 1);
-}
-
-
-#customiseSkillsetInlineRow.customise-skillset-inline-visible {
-  opacity: 1;
-
-  transform:
-    translateY(-50%)
-    scale(1);
-
-  pointer-events: auto;
-}
-
-#customiseSkillsetInlineLabel {
-  font-size: 13px;
-  line-height: 1;
-  color: #9ca3af;
-  white-space: nowrap;
-}
-
-#customiseSkillsetPillWrap {
-  display: flex;
-  align-items: center;
 }
 
 /* Pause-nudge SVG gauge strokes (was inline in SVG element) */.pn-stroke { fill:none; stroke:currentColor; stroke-width:2px; stroke-linecap:round; stroke-miterlimit:10; }

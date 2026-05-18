@@ -94,14 +94,23 @@ body {
 }
 #mainBtn:focus, #helpBtn:focus { outline: none; box-shadow: none; }
 
-/* Curly bracket shown during binary confirmation states for destructive actions */
+/* binary confirmation states for destructive actions */
+.confirmButtonsWrap {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.confirmButtons {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
 #confirmBracket {
-  position: absolute;
-  left: 163px;
-  top: 50%;
-  transform: translateY(-50%) translateY(8px);
   width: 16px;
   height: 70px;
+  flex-shrink: 0;
   opacity: 0;
   transition: opacity 0.2s ease;
   pointer-events: none;

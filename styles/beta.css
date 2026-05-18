@@ -1694,6 +1694,8 @@ li.conflict-dismissed .conflict-desc {
   z-index: 500;
 }
 #appSelectorLabel {
+  position: relative;
+
   font-family: 'Lato', system-ui, sans-serif;
   font-size: 12px;
   color: #9ca3af;
@@ -3394,28 +3396,14 @@ body.returning-screen #diffIconWrap .icon-tip { display: none; }
     transform 0.24s cubic-bezier(0.2, 0.8, 0.2, 1);
 }
 
-#customiseSkillsetInlineRow {
-  display: inline-flex;
-  align-items: center;
-  gap: 10px;
-
-  margin-left: 18px;
-
-  opacity: 0;
-  transform: scale(0.92);
-
-  transform-origin: left center;
-
-  pointer-events: none;
-
-  transition:
-    opacity 0.18s ease,
-    transform 0.24s cubic-bezier(0.2, 0.8, 0.2, 1);
-}
 
 #customiseSkillsetInlineRow.customise-skillset-inline-visible {
   opacity: 1;
-  transform: scale(1);
+
+  transform:
+    translateY(-50%)
+    scale(1);
+
   pointer-events: auto;
 }
 

@@ -4650,8 +4650,10 @@ function setStickyKeys(on) {
 function setKbSizeToggle(full) {
   hasFullKeyboard = full;
   try { localStorage.setItem('kw_kb_full', String(full)); } catch(e) {}
-  // Reset all extended key overrides to the new baseline and clear per-key overrides
-  _syncExtendedKeysToBaseline(full);
+  // Guard: these may not be initialised yet during startup on mobile
+  if (typeof dismissedConflicts !== 'undefined' && typeof kbKeyOverrides !== 'undefined') {
+    _syncExtendedKeysToBaseline(full);
+  }
   if (gameState !== 'playing' && gameState !== 'paused' && gameState !== 'readyToUnpause') {
     questionPool = shuffleArray(buildPool());
   }
@@ -7588,7 +7590,7 @@ function _saveKbKeyOverrides() {
 }
 
 function _syncExtendedKeysToBaseline(full) {
-  if (!dismissedConflicts) return;
+  if (typeof dismissedConflicts === 'undefined' || typeof kbKeyOverrides === 'undefined') return;
   // Called when hasFullKeyboard changes. Resets all extended key codes in
   // dismissedConflicts to match the new baseline, and clears kbKeyOverrides.
   var ExtCodes = Object.keys(ExtendedKeyCodeToToken);

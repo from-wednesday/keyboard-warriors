@@ -4654,9 +4654,16 @@ function setKbSizeToggle(full) {
   if (typeof dismissedConflicts !== 'undefined' && typeof kbKeyOverrides !== 'undefined') {
     _syncExtendedKeysToBaseline(full);
   }
-  if (gameState !== 'playing' && gameState !== 'paused' && gameState !== 'readyToUnpause') {
-    questionPool = shuffleArray(buildPool());
-  }
+if (
+  typeof DIFF_RANGE !== 'undefined' &&
+  typeof currentDifficulty !== 'undefined' &&
+  typeof buildPool === 'function' &&
+  gameState !== 'playing' &&
+  gameState !== 'paused' &&
+  gameState !== 'readyToUnpause'
+) {
+  questionPool = shuffleArray(buildPool());
+}
   updateKbSizeToggle();
   if (activeSettings === 'panelConflicts') conflictsKbLighting.refresh();
 }

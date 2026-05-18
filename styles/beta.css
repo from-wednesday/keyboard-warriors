@@ -99,7 +99,7 @@ body {
   position: absolute;
   left: 163px;
   top: 50%;
-  transform: translateY(-50%);
+  transform: translateY(-50%) translateY(8px);
   width: 16px;
   height: 70px;
   opacity: 0;

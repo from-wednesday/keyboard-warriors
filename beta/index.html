@@ -2540,10 +2540,10 @@ function updateKeyboardLighting(e, isDown) {
    States: idle | playing | paused | confirm-quit | confirm-reset | finished
 ══════════════════════════════════════ */
 var gameState = 'idle';
-let currentMedal = null;
-let _confirmFromFinished  = false;
-let _cheatsheetSavedTitle = '';
-let _confirmFromPause     = false; // true when confirm-reset entered from active paused game
+var currentMedal = null;
+var _confirmFromFinished  = false;
+var _cheatsheetSavedTitle = '';
+var _confirmFromPause     = false; // true when confirm-reset entered from active paused game
 let _welcomeIsReturning   = false; // true when the returning-visitor landing screen is showing
 let _pendingDifficulty   = null;  // difficulty mode awaiting confirmation
 let _prevDifficulty      = null;  // difficulty to restore on cancel
@@ -13480,7 +13480,7 @@ function OnPhoneWarningDismiss() {
   }
 }
 
-(function InitialiseTouchBootSequence() {
+function InitialiseTouchBootSequence() {
   if (detectedOs !== 'mobile') return;
 
   var SavedGyroDecision = null;
@@ -13491,22 +13491,28 @@ function OnPhoneWarningDismiss() {
     InitialiseGyroOrientationListener();
   }
 
-  var IsIos = /iPad|iPhone|iPod/.test(navigator.userAgent) ||
-              (navigator.maxTouchPoints > 1 && /Mac/.test(navigator.userAgent));
-
-  // Phone screens get the size warning first; it handles all subsequent chaining
+  // Small phones get the warning first
   if (IsPhoneScreen()) {
-    setTimeout(ShowPhoneWarningModal, 400);
+    setTimeout(ShowPhoneWarningModal, 250);
     return;
   }
 
-  // Tablet/large touch devices: gyro then keyboard recommendation
+  // iOS permission flow
+  var IsIos = /iPad|iPhone|iPod/.test(navigator.userAgent) ||
+              (navigator.maxTouchPoints > 1 && /Mac/.test(navigator.userAgent));
+
   if (IsIos && _requiresGyroPrompt()) {
-    setTimeout(ShowGyroModal, 600);
-  } else {
-    setTimeout(ShowKeyboardRecommendModal, 400);
+    setTimeout(ShowGyroModal, 250);
+    return;
   }
-})();
+
+  // Otherwise go straight to keyboard recommendation
+  setTimeout(ShowKeyboardRecommendModal, 250);
+}
+
+document.addEventListener('DOMContentLoaded', function() {
+  InitialiseTouchBootSequence();
+});
 
 /* ══════════════════════════════════════
    LAYOUT CHANGE HANDLER

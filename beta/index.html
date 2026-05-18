@@ -4513,6 +4513,10 @@ function _AppPillSpringTick() {
 
 function _AppPillAnimateTo(TargetHeightPixels, TargetTranslateY, TargetSpacerHeight) {
     var Spring = _AppPillSpring;
+    if (Spring.AnimationFrame) {
+        cancelAnimationFrame(Spring.AnimationFrame);
+        Spring.AnimationFrame = null;
+    }
     var ActualCurrentHeight = parseFloat(appPillEl.style.height) || Spring.CurrentHeight;
     if (Math.abs(ActualCurrentHeight - Spring.CurrentHeight) > 1) {
         Spring.CurrentHeight  = ActualCurrentHeight;
@@ -4521,9 +4525,9 @@ function _AppPillAnimateTo(TargetHeightPixels, TargetTranslateY, TargetSpacerHei
     Spring.TargetHeight       = TargetHeightPixels;
     Spring.TargetTranslateY   = TargetTranslateY || 0;
     Spring.TargetSpacerHeight = TargetSpacerHeight || 0;
-    if (Spring.AnimationFrame) return;
     Spring.AnimationFrame = requestAnimationFrame(_AppPillSpringTick);
 }
+
 
 
 function _AppPillMeasureNaturalHeight() {

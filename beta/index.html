@@ -3849,8 +3849,9 @@ function resetToIdle() {
 // APPS and APP_JSON_FILE_PATH are populated at runtime from KeyboardWarriors Apps json.
 // Until the fetch resolves these remain empty; init is deferred to _onAppsLoaded().
 var APPS = [];
-var appsLongList  = [];
-var appsShortList = [];
+var appsLongList    = [];
+var appsShortList   = [];
+var appsStandbyList = [];
 var APP_JSON_FILE_PATH = {};
 
 // Each row is 22px. Closed: scroll to show selected row.
@@ -3866,6 +3867,7 @@ var AppPillWrenchOpen = false;
 function _saveAppsShortList() {
   if (!_appListInitialised) return;
   try { localStorage.setItem('kw_apps_short_list', JSON.stringify(appsShortList)); } catch (StorageError) {}
+  try { localStorage.setItem('kw_apps_standby_list', JSON.stringify(appsStandbyList)); } catch (StorageError) {}
 }
 
 function _MakeAppPillCaretSvg() {
@@ -3891,6 +3893,7 @@ function buildAppPill() {
     return;
   }
 
+  var VisibleLabels = new Set(appsShortList.concat(appsStandbyList));
   appsShortList.forEach(function(AppLabel) {
     var AppEntry = appsLongList.find(function(App) { return App.label === AppLabel; });
     if (!AppEntry) return;
@@ -4040,8 +4043,13 @@ function _AnimateWrenchDot(RadioSpanElement, GoingActive) {
 function _buildWrenchPickerRows() {
   appPillEl.innerHTML = '';
 
-  appsLongList.forEach(function(AppEntry) {
-    var IsInShortList = appsShortList.includes(AppEntry.label);
+  var VisibleApps = appsLongList.filter(function(AppEntry) {
+    return appsShortList.indexOf(AppEntry.label) !== -1 ||
+           appsStandbyList.indexOf(AppEntry.label) !== -1;
+  });
+
+  VisibleApps.forEach(function(AppEntry) {
+    var IsInShortList = appsShortList.indexOf(AppEntry.label) !== -1;
     var IsBetaApp     = !!AppEntry.beta;
 
     var Row = document.createElement('div');
@@ -4116,15 +4124,17 @@ function _buildWrenchPickerRows() {
 }
 
 function _toggleWrenchPickerApp(AppLabel, RowElement, IconColumnElement, LabelSpanElement) {
-  var IsCurrentlyActive = appsShortList.includes(AppLabel);
+  var IsCurrentlyActive = appsShortList.indexOf(AppLabel) !== -1;
   if (IsCurrentlyActive) {
     if (appsShortList.length <= 1) { showToast('You need at least one app in your list.'); return; }
     appsShortList = appsShortList.filter(function(Label) { return Label !== AppLabel; });
+    if (appsStandbyList.indexOf(AppLabel) === -1) appsStandbyList.push(AppLabel);
     _AnimateWrenchDot(IconColumnElement, false);
     LabelSpanElement.style.color = '#d1d5db';
     LabelSpanElement.style.textDecoration = 'line-through';
   } else {
     appsShortList.push(AppLabel);
+    appsStandbyList = appsStandbyList.filter(function(Label) { return Label !== AppLabel; });
     _AnimateWrenchDot(IconColumnElement, true);
     LabelSpanElement.style.color = '#374151';
     LabelSpanElement.style.textDecoration = '';
@@ -4361,10 +4371,14 @@ function _closeWrenchPicker() {
     appPillEl.removeEventListener('drop',     _onWrenchDrop);
 
 
-    var ActiveApps   = appsLongList.filter(function(AppEntry) { return appsShortList.includes(AppEntry.label); });
-    var InactiveApps = appsLongList.filter(function(AppEntry) { return !appsShortList.includes(AppEntry.label); });
-    appsLongList = ActiveApps.concat(InactiveApps);
-    appsShortList = ActiveApps.map(function(AppEntry) { return AppEntry.label; });
+    var ActiveApps   = appsLongList.filter(function(AppEntry) { return appsShortList.indexOf(AppEntry.label) !== -1; });
+    var StandbyApps  = appsLongList.filter(function(AppEntry) { return appsStandbyList.indexOf(AppEntry.label) !== -1; });
+    var HiddenApps   = appsLongList.filter(function(AppEntry) {
+      return appsShortList.indexOf(AppEntry.label) === -1 && appsStandbyList.indexOf(AppEntry.label) === -1;
+    });
+    appsLongList    = ActiveApps.concat(StandbyApps).concat(HiddenApps);
+    appsShortList   = ActiveApps.map(function(AppEntry) { return AppEntry.label; });
+    appsStandbyList = StandbyApps.map(function(AppEntry) { return AppEntry.label; });
 
     if (!appsShortList.includes(currentApp)) {
         currentApp = appsShortList[0];
@@ -8820,6 +8834,24 @@ let loadedAppShortcuts = [];
 let loadSequenceNumber = 0;
 
 // Called once Keyboard Warriors Apps json has been fetched and parsed.
+
+function _BuildStandbyDefaultsForSkillset(SkillsetLabel, AllApps, CurrentShortLabels) {
+  var SkillsetDefinition = SKILLSET_DEFS.find(function(Definition) {
+    return Definition.label === SkillsetLabel;
+  });
+  if (!SkillsetDefinition) return [];
+  var ActiveTags = SkillsetDefinition.tags;
+  var ShortSet   = new Set(CurrentShortLabels);
+  return AllApps
+    .filter(function(App) {
+      if (ShortSet.has(App.label)) return false;
+      return Array.isArray(App.standby) && App.standby.some(function(Tag) {
+        return ActiveTags.indexOf(Tag) !== -1;
+      });
+    })
+    .map(function(App) { return App.label; });
+}
+
 function _onAppsLoaded(AllAppsFromJson) {
   appsLongList = AllAppsFromJson;
 
@@ -8870,8 +8902,25 @@ function _onAppsLoaded(AllAppsFromJson) {
     }
   }
 
-  appsShortList = PersistedLabels || SkillsetDefaultLabels || DefaultShortListLabels;
-  APPS = appsLongList;
+  var DefaultShortLabels   = SkillsetDefaultLabels || DefaultShortListLabels;
+  var DefaultStandbyLabels = _BuildStandbyDefaultsForSkillset(currentSkillset, AllAppsFromJson, DefaultShortLabels);
+
+  var PersistedStandbyLabels = null;
+  try {
+    var RawSavedStandby = localStorage.getItem('kw_apps_standby_list');
+    if (RawSavedStandby) {
+      var ParsedStandby = JSON.parse(RawSavedStandby);
+      if (Array.isArray(ParsedStandby) && ParsedStandby.length > 0) {
+        var ValidatedStandby = ParsedStandby.filter(function(SavedLabel) {
+          return AllAppsFromJson.some(function(App) { return App.label === SavedLabel; });
+        });
+        if (ValidatedStandby.length > 0) PersistedStandbyLabels = ValidatedStandby;
+      }
+    }
+  } catch (StorageError) {}
+
+  appsShortList   = PersistedLabels         || DefaultShortLabels;
+  appsStandbyList = PersistedStandbyLabels  || DefaultStandbyLabels;  APPS = appsLongList;
 
   var FallbackApp = appsShortList[0] || (appsLongList[0] ? appsLongList[0].label : 'Photoshop (Ps)');
   try {
@@ -13767,7 +13816,8 @@ function _applySkillset(skillsetLabel) {
     })
     .map(function(app) { return app.label; });
   if (matching.length > 0) {
-    appsShortList = matching;
+    appsShortList   = matching;
+    appsStandbyList = _BuildStandbyDefaultsForSkillset(skillsetLabel, appsLongList, appsShortList);
     var defaultApp = matching.find(function(label) {
       var entry = appsLongList.find(function(a) { return a.label === label; });
       return entry && Array.isArray(entry.skillset) && entry.skillset[0] &&

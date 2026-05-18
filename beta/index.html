@@ -164,13 +164,7 @@
   <div id="osMismatchPill"></div>
 
   <!-- App selector: right-aligned in the same osRow -->
-<div id="customiseSkillsetInlineRow">
-  <span id="customiseSkillsetInlineLabel">skillset</span>
 
-  <div id="customiseSkillsetPillWrap">
-    <div id="customiseSkillsetPill"></div>
-  </div>
-</div>
     <p id="appSelectorLabel">now training on</p>
 
 
@@ -4335,41 +4329,7 @@ function _onWrenchTouchEnd(Event) {
 
 function _openWrenchPicker() {
     var selectorLabel = document.getElementById('appSelectorLabel');
-
-    if (selectorLabel) {
-        selectorLabel.textContent = 'edit and sort your app list';
-
-        var ExistingInlineRow = document.getElementById('customiseSkillsetInlineRow');
-
-        if (!ExistingInlineRow) {
-            var InlineRow = document.createElement('div');
-            InlineRow.id = 'customiseSkillsetInlineRow';
-
-            var InlineLabel = document.createElement('span');
-            InlineLabel.id = 'customiseSkillsetInlineLabel';
-            InlineLabel.textContent = 'skillset';
-
-            var PillWrap = document.createElement('div');
-            PillWrap.id = 'customiseSkillsetPillWrap';
-
-            var Pill = document.createElement('div');
-            Pill.id = 'customiseSkillsetPill';
-
-            PillWrap.appendChild(Pill);
-
-            InlineRow.appendChild(InlineLabel);
-            InlineRow.appendChild(PillWrap);
-
-            selectorLabel.appendChild(InlineRow);
-
-            _buildCustomiseSkillsetPillContent();
-
-            requestAnimationFrame(function() {
-                InlineRow.classList.add('customise-skillset-inline-visible');
-            });
-        }
-    }
-    
+    if (selectorLabel) selectorLabel.textContent = 'edit and sort your app list';  
     _EnsureAppPillSpacer();    AppPillWrenchOpen = true;
     appPillEl.classList.add('open');
     appPillEl.classList.remove('drop-down');
@@ -4396,11 +4356,7 @@ function _openWrenchPicker() {
 
 function _closeWrenchPicker() {
     AppPillWrenchOpen = false;
-    var InlineRow = document.getElementById('customiseSkillsetInlineRow');
 
-if (InlineRow) {
-    InlineRow.remove();
-}
     var selectorLabel = document.getElementById('appSelectorLabel');
     if (selectorLabel) selectorLabel.textContent = 'choose app to train in next';    appPillEl.removeEventListener('dragover', _onWrenchDragOver);
     appPillEl.removeEventListener('drop',     _onWrenchDrop);

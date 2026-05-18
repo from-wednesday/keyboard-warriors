@@ -933,6 +933,15 @@ body.kb-at-edge #keyboardPanel #kb-shadow {
   animation: btnPulse 0.45s cubic-bezier(0.25, 0.46, 0.45, 0.94);
 }
 
+@keyframes pillGlow {
+  0%   { box-shadow: 0 0 0 0 rgba(156,163,175,0); }
+  40%  { box-shadow: 0 0 0 4px rgba(156,163,175,0.35); }
+  100% { box-shadow: 0 0 0 0 rgba(156,163,175,0); }
+}
+#appPill.pulse-glow {
+  animation: pillGlow 0.55s ease-out;
+}
+
 #kbToast {
   position: absolute;
   left: 50%;

@@ -14177,7 +14177,7 @@ function _buildAppSelectorSkillsetPill() {
 
   var LabelColumn = document.createElement('span');
   LabelColumn.style.cssText = 'flex:1;text-align:left;';
-  LabelColumn.textContent = currentSkillset;
+  LabelColumn.textContent = CustomiseSkillsetPanelIsOpen ? 'Custom Set' : currentSkillset;
 
   SelectedRow.appendChild(CaretColumn);
   SelectedRow.appendChild(LabelColumn);

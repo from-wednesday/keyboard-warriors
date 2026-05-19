@@ -1701,6 +1701,7 @@ li.conflict-dismissed .conflict-desc {
   position: relative;
   overflow: visible;
   z-index: 500;
+  position: relative; 
 }
 #appSelectorLabel {
   font-family: 'Lato', system-ui, sans-serif;
@@ -3394,18 +3395,21 @@ body.returning-screen #diffIconWrap .icon-tip { display: none; }
 ══════════════════════════════════════ */
 
 #customiseSkillsetPanel {
+  position: absolute;
+  top: 0;
+  right: calc(100% + 8px);
   display: none;
-  align-items: center;
-  flex-direction: row;
-  gap: 0;
-  flex-shrink: 0;
+  flex-direction: column;
+  min-width: 200px;
+  max-height: 80vh;
+  overflow-y: auto;
   background: white;
   border: 1.5px solid #9ca3af;
   border-radius: 10px;
   box-shadow: 0 4px 16px rgba(0, 0, 0, 0.10);
-  min-height: 27px;
   box-sizing: border-box;
   z-index: 500;
+  padding: 8px 0;
 }
 
 #customiseSkillsetPanel.customise-skillset-panel-open {

@@ -4388,12 +4388,20 @@ function _closeWrenchPicker() {
     _saveAppsShortList();
 
 // Return to the open drop-down rather than collapsing
-    buildAppPill();
-    var OpenHeight = _AppPillMeasureNaturalHeight();
-    var PillRect = appPillEl.getBoundingClientRect();
-    var Geometry = _AppPillCalculateOpenGeometry(OpenHeight, PillRect);
-    appPillEl.scrollTop = 0;
-    _AppPillAnimateTo(OpenHeight, Geometry.TranslateY, Geometry.SpacerHeight);
+buildAppPill();
+var OpenHeight = _AppPillMeasureNaturalHeight();
+
+// Reset spring's current position to the actual DOM height before animating,
+// so it knows to shrink (not just coast) when the new list is shorter
+var Spring = _AppPillSpring;
+Spring.CurrentHeight = parseFloat(appPillEl.style.height) || Spring.CurrentHeight;
+Spring.HeightVelocity = 0;
+
+var PillRect = appPillEl.getBoundingClientRect();
+var Geometry = _AppPillCalculateOpenGeometry(OpenHeight, PillRect);
+appPillEl.scrollTop = 0;
+_AppPillAnimateTo(OpenHeight, Geometry.TranslateY, Geometry.SpacerHeight);
+
 }
 
 

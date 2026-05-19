@@ -3362,6 +3362,45 @@ body.returning-screen #diffIconWrap .icon-tip { display: none; }
   opacity: 0.07;
 }
 
+/* ── Conflicts panel ghost-mode override ─────────────────────────────────────
+   When the conflicts panel is open in ghost mode, the keyboard becomes
+   semi-transparent so the lighting is visible and useful.
+   The panel background, base, edges and shadow remain invisible.
+   Only the keys themselves show, at 50% opacity with labels visible.       */
+
+#keyboardPanel.conflicts-panel-active.ghost-mode {
+  background: transparent !important;
+  box-shadow: none !important;
+}
+
+#keyboardPanel.conflicts-panel-active.ghost-mode .key {
+  opacity: 0.5;
+}
+
+#keyboardPanel.conflicts-panel-active.ghost-mode .key .letter-lbl,
+#keyboardPanel.conflicts-panel-active.ghost-mode .key .sym-main,
+#keyboardPanel.conflicts-panel-active.ghost-mode .key .sym-sub,
+#keyboardPanel.conflicts-panel-active.ghost-mode .key .util-lbl,
+#keyboardPanel.conflicts-panel-active.ghost-mode .key .fn-lbl,
+#keyboardPanel.conflicts-panel-active.ghost-mode .key .mod-sym,
+#keyboardPanel.conflicts-panel-active.ghost-mode .key .mod-sym-only,
+#keyboardPanel.conflicts-panel-active.ghost-mode .key .mod-word,
+#keyboardPanel.conflicts-panel-active.ghost-mode .key .util-sym-only,
+#keyboardPanel.conflicts-panel-active.ghost-mode .key .key-glyph-sym,
+#keyboardPanel.conflicts-panel-active.ghost-mode .key .win-svg {
+  opacity: 1;
+}
+
+#keyboardPanel.conflicts-panel-active.ghost-mode .key.lit-green-up,
+#keyboardPanel.conflicts-panel-active.ghost-mode .key.lit-green-down,
+#keyboardPanel.conflicts-panel-active.ghost-mode .key.lit-orange-up,
+#keyboardPanel.conflicts-panel-active.ghost-mode .key.lit-orange-down,
+#keyboardPanel.conflicts-panel-active.ghost-mode .key.resting-available,
+#keyboardPanel.conflicts-panel-active.ghost-mode .key.resting-sus,
+#keyboardPanel.conflicts-panel-active.ghost-mode .key.resting-blocked {
+  opacity: 0.5;
+}
+
 /* App pill open: fade the main title out of view */
   #title.app-pill-open {
   opacity: 0;

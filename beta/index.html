@@ -12945,8 +12945,8 @@ var TabletKeyboardLowAngle = 80;
 function SetKeyboardPositionForPanel(PanelName) {
   if (ForceNoKeyboard) return;
   // Ghost mode: always flat at 47, no dragging or toggling.
-  if (keyboardDisplayMode === 'ghost') { _animateToPartialAngle(47); return; }
-  // Tablet: animate to the panel's tablet angle; tap-toggle is handled separately.
+if (keyboardDisplayMode === 'ghost' && PanelName !== 'panelConflicts') { _animateToPartialAngle(47); return; }
+ // Tablet: animate to the panel's tablet angle; tap-toggle is handled separately.
   var Angle = GetPanelKeyboardAngle(PanelName);
   _animateToPartialAngle(Angle);
   // Reset tablet toggle state whenever a panel opens so it starts at the panel default.
@@ -13033,7 +13033,7 @@ function _repositionAffordance() {
   var affordance = document.getElementById('kbHandleAffordance');
   if (!affordance) return;
   // No affordance on tablet (tap-toggle instead) or in ghost mode (fixed angle).
-  var suppress = (detectedOs === 'mobile') || (keyboardDisplayMode === 'ghost');
+var suppress = (detectedOs === 'mobile') || (keyboardDisplayMode === 'ghost' && activeSettings !== 'panelConflicts');
   affordance.style.visibility = suppress ? 'hidden' : '';
   if (suppress) return;
   var sentinel = document.getElementById('kbTopSentinel');

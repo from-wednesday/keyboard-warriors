@@ -6385,21 +6385,41 @@ function _renderKeyboardConflictTab(container) {
   //   bottom key → border-radius: 0 0 3px 3px  (square top corners)
   //   no gap between top and bottom; the column gap provides spacing between pairs.
 
+  // Build key grid from the OS-specific extended_keys data in _conflictsCache.
+  // Position map (1-indexed, matches JSON):
+  //   Mac/iOS:  1=F13 2=F14 3=F15 4=F16 | 5=CLEAR | 6=HOME 7=PAGEUP 8=DELETE 9=END 10=PAGEDOWN
+  //   PC/other: 1=PRINTSCREEN 2=SCROLLLOCK 3=PAUSE 4=NUMLOCK | 5=INSERT | 6=HOME 7=PAGEUP 8=DELETE 9=END 10=PAGEDOWN
+  var _extKeys = (_conflictsCache && _conflictsCache.extended_keys) ? _conflictsCache.extended_keys : [];
+  var _extByPos = {};
+  _extKeys.forEach(function(e) { _extByPos[e.position] = e.extraKey; });
+
+  var MacLikeOs = (detectedOs === 'mac' || detectedOs === 'mobile');
+
+  // Label map for display names
+  var _extLabels = {
+    'F13': 'F13', 'F14': 'F14', 'F15': 'F15', 'F16': 'F16',
+    'CLEAR': 'CLEAR', 'INSERT': 'INSERT',
+    'PRINTSCREEN': 'PRT SC', 'SCROLLLOCK': 'SCR LK', 'PAUSE': 'PAUSE', 'NUMLOCK': 'NUM LK',
+    'HOME': '↖ home', 'PAGEUP': '⇞ pg up', 'DELETE': '⌦ delete', 'END': '↘ end', 'PAGEDOWN': '⇟ pg dn',
+  };
+
+  function _extKey(pos, pairPos) {
+    var tok = _extByPos[pos] || '';
+    return { token: tok, label: _extLabels[tok] || tok, pairPos: pairPos };
+  }
+
   var utilRow = [
-    { token: 'NumLock',     label: currentOs === 'mac' ? 'CLEAR' : 'NUM LK', pairPos: 'solo' },
-    { token: 'PrintScreen', label: 'PRT SC',   pairPos: 'solo' },
-    { token: 'ScrollLock',  label: 'SCR LK',   pairPos: 'solo' },
-    { token: 'Pause',       label: 'PAUSE',    pairPos: 'solo' },
+    _extKey(1, 'solo'), _extKey(2, 'solo'), _extKey(3, 'solo'), _extKey(4, 'solo'),
   ];
   var navTopRow = [
-    { token: 'Insert',   label: 'INSERT',   pairPos: 'top' },
-    { token: 'Home',     label: '↖ home',   pairPos: 'top' },
-    { token: 'PageUp',   label: '⇞ pg up',  pairPos: 'top' },
+    _extKey(5, 'top'),   // CLEAR (Mac) or INSERT (PC) — sits above Delete/End
+    _extKey(6, 'top'),   // HOME
+    _extKey(7, 'top'),   // PAGEUP
   ];
   var navBotRow = [
-    { token: 'Delete',   label: '⌦ delete', pairPos: 'bottom' },
-    { token: 'End',      label: '↘ end',    pairPos: 'bottom' },
-    { token: 'PageDown', label: '⇟ pg dn',  pairPos: 'bottom' },
+    _extKey(8,  'bottom'),  // DELETE
+    _extKey(9,  'bottom'),  // END
+    _extKey(10, 'bottom'),  // PAGEDOWN
   ];
 
   function _makeKeyEl(k) {

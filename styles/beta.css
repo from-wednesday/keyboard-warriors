@@ -3368,14 +3368,58 @@ body.returning-screen #diffIconWrap .icon-tip { display: none; }
   box-shadow: inset 0 0 0 1px rgba(138, 144, 153, 0.3) !important;
 }
 
-#keyboardPanel.conflicts-panel-active.ghost-mode .key.lit-green-up,
-#keyboardPanel.conflicts-panel-active.ghost-mode .key.lit-green-down,
-#keyboardPanel.conflicts-panel-active.ghost-mode .key.lit-orange-up,
-#keyboardPanel.conflicts-panel-active.ghost-mode .key.lit-orange-down,
-#keyboardPanel.conflicts-panel-active.ghost-mode .key.resting-available,
-#keyboardPanel.conflicts-panel-active.ghost-mode .key.resting-sus,
+#keyboardPanel.conflicts-panel-active.ghost-mode .key .letter-lbl,
+#keyboardPanel.conflicts-panel-active.ghost-mode .key .sym-main,
+#keyboardPanel.conflicts-panel-active.ghost-mode .key .sym-sub,
+#keyboardPanel.conflicts-panel-active.ghost-mode .key .util-lbl,
+#keyboardPanel.conflicts-panel-active.ghost-mode .key .fn-lbl,
+#keyboardPanel.conflicts-panel-active.ghost-mode .key .mod-sym,
+#keyboardPanel.conflicts-panel-active.ghost-mode .key .mod-sym-only,
+#keyboardPanel.conflicts-panel-active.ghost-mode .key .mod-word,
+#keyboardPanel.conflicts-panel-active.ghost-mode .key .util-sym-only,
+#keyboardPanel.conflicts-panel-active.ghost-mode .key .key-glyph-sym,
+#keyboardPanel.conflicts-panel-active.ghost-mode .key .win-svg {
+  opacity: 1 !important;
+}
+
+#keyboardPanel.conflicts-panel-active.ghost-mode .key.resting-available {
+  background: rgba(195, 229, 211, 0.9) !important;
+  box-shadow: inset 0 0 0 1px rgba(90, 182, 133, 0.9) !important;
+}
+
+#keyboardPanel.conflicts-panel-active.ghost-mode .key.resting-sus {
+  background: rgba(251, 240, 152, 0.9) !important;
+  box-shadow: inset 0 0 0 1px rgba(211, 202, 127, 0.9) !important;
+}
+
 #keyboardPanel.conflicts-panel-active.ghost-mode .key.resting-blocked {
-  opacity: 1;
+  background: rgba(247, 220, 200, 0.9) !important;
+  box-shadow: inset 0 0 0 1px rgba(233, 159, 103, 0.90) !important;
+}
+
+#keyboardPanel.conflicts-panel-active.ghost-mode .key.lit-green-up {
+  background: #10b981 !important;
+  box-shadow: inset 0 1px 0 rgba(180,255,220,0.55), 0 1px 0 #059669, 0 0 8px rgba(16,185,129,0.5) !important;
+}
+
+#keyboardPanel.conflicts-panel-active.ghost-mode .key.lit-green-down {
+  background: #10b981 !important;
+  box-shadow: inset 0 0 0 1px #059669, 0 0 6px rgba(16,185,129,0.4) !important;
+}
+
+#keyboardPanel.conflicts-panel-active.ghost-mode .key.lit-orange-up {
+  background: #f97316 !important;
+  box-shadow: inset 0 1px 0 rgba(255,220,160,0.60), 0 1px 0 #c2410c, 0 0 8px rgba(249,115,22,0.5) !important;
+}
+
+#keyboardPanel.conflicts-panel-active.ghost-mode .key.lit-orange-down {
+  background: #f97316 !important;
+  box-shadow: inset 0 0 0 1px #c2410c, 0 0 6px rgba(249,115,22,0.4) !important;
+}
+
+#keyboardPanel.conflicts-panel-active.ghost-mode .key.lit-yellow-up {
+  background: #fef08a !important;
+  box-shadow: 0 1px 0 rgba(180,160,0,0.25) !important;
 }
 
 /* App pill open: fade the main title out of view */

@@ -3364,7 +3364,7 @@ body.returning-screen #diffIconWrap .icon-tip { display: none; }
 }
 
 #keyboardPanel.conflicts-panel-active.ghost-mode .key {
-  background: rgba(245, 245, 247, 0.5) !important;
+  background: rgba(245, 245, 247, 0.25) !important;
   box-shadow: inset 0 0 0 1px rgba(138, 144, 153, 0.3) !important;
 }
 
@@ -3383,17 +3383,17 @@ body.returning-screen #diffIconWrap .icon-tip { display: none; }
 }
 
 #keyboardPanel.conflicts-panel-active.ghost-mode .key.resting-available {
-  background: rgba(195, 229, 211, 0.9) !important;
+  background: rgba(195, 229, 211, 0.5) !important;
   box-shadow: inset 0 0 0 1px rgba(90, 182, 133, 0.9) !important;
 }
 
 #keyboardPanel.conflicts-panel-active.ghost-mode .key.resting-sus {
-  background: rgba(251, 240, 152, 0.9) !important;
+  background: rgba(251, 240, 152, 0.5) !important;
   box-shadow: inset 0 0 0 1px rgba(211, 202, 127, 0.9) !important;
 }
 
 #keyboardPanel.conflicts-panel-active.ghost-mode .key.resting-blocked {
-  background: rgba(247, 220, 200, 0.9) !important;
+  background: rgba(247, 220, 200, 0.5) !important;
   box-shadow: inset 0 0 0 1px rgba(233, 159, 103, 0.90) !important;
 }
 

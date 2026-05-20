@@ -14449,28 +14449,34 @@ function _BuildCustomiseSkillsetPanelContent() {
 
   // Apps List
 
-function BuildColumnsRow(FilterFunction) {
-    var ColumnsRow = document.createElement('div');
-    ColumnsRow.style.cssText = 'display:flex;flex-direction:row;align-items:flex-start;gap:0;';
-    var AnyColumnHasContent = false;
+  var ColumnsRow = document.createElement('div');
+  ColumnsRow.style.cssText = 'display:flex;flex-direction:row;align-items:flex-start;gap:0;';
 
-    [1, 2, 3, 4].forEach(function (ColumnNumber, ColumnIndex) {
-      var AppsInColumn = (ColumnGroups[ColumnNumber] || []).filter(FilterFunction);
-      if (AppsInColumn.length === 0) return;
-      AnyColumnHasContent = true;
+  [1, 2, 3, 4].forEach(function(ColumnNumber, ColumnIndex) {
+    var AppsInColumn = ColumnGroups[ColumnNumber];
+    if (!AppsInColumn || AppsInColumn.length === 0) return;
 
-      if (ColumnsRow.children.length > 0) {
-        var ColumnDivider = document.createElement('div');
-        ColumnDivider.style.cssText = 'width:1px;background:rgba(0,0,0,0.08);align-self:stretch;margin:0 6px;flex-shrink:0;';
-        ColumnsRow.appendChild(ColumnDivider);
+    if (ColumnIndex > 0) {
+      var ColumnDivider = document.createElement('div');
+      ColumnDivider.style.cssText = 'width:1px;background:rgba(0,0,0,0.08);align-self:stretch;margin:0 6px;flex-shrink:0;';
+      ColumnsRow.appendChild(ColumnDivider);
+    }
+
+    var ColumnElement = document.createElement('div');
+    ColumnElement.style.cssText = 'display:flex;flex-direction:column;';
+
+    var BetaDividerAdded = false;
+
+    AppsInColumn.forEach(function(AppEntry) {
+      var IsBetaApp   = !!AppEntry.beta;
+      var InPill      = IsInAppPill(AppEntry.label);
+
+      if (IsBetaApp && !BetaDividerAdded) {
+        var BetaDivider = document.createElement('div');
+        BetaDivider.style.cssText = 'height:1px;background:rgba(0,0,0,0.08);margin:4px 0;';
+        ColumnElement.appendChild(BetaDivider);
+        BetaDividerAdded = true;
       }
-
-      var ColumnElement = document.createElement('div');
-      ColumnElement.style.cssText = 'display:flex;flex-direction:column;';
-
-      AppsInColumn.forEach(function (AppEntry) {
-        var IsBetaApp   = !!AppEntry.beta;
-        var InPill      = IsInAppPill(AppEntry.label);
 
       var AppRow = document.createElement('div');
       AppRow.style.cssText = [
@@ -14522,28 +14528,12 @@ function BuildColumnsRow(FilterFunction) {
       });
 
       ColumnElement.appendChild(AppRow);
-      });
-
-      ColumnsRow.appendChild(ColumnElement);
     });
 
-    return AnyColumnHasContent ? ColumnsRow : null;
-  }
+    ColumnsRow.appendChild(ColumnElement);
+  });
 
-  var MainColumnsRow = BuildColumnsRow(function (AppEntry) { return !AppEntry.beta; });
-  if (MainColumnsRow) PanelElement.appendChild(MainColumnsRow);
-
-  var BetaColumnsRow = BuildColumnsRow(function (AppEntry) { return !!AppEntry.beta; });
-  if (BetaColumnsRow) {
-    var ExperimentalHeading = document.createElement('div');
-    ExperimentalHeading.style.cssText = 'width:100%;margin:8px 0 4px;padding-top:8px;border-top:1px solid rgba(0,0,0,0.08);';
-    var ExperimentalLabel = document.createElement('p');
-    ExperimentalLabel.style.cssText = 'font-size:11px;font-weight:700;color:#9ca3af;text-transform:lowercase;margin:0;letter-spacing:0.04em;';
-    ExperimentalLabel.textContent = 'experimental:';
-    ExperimentalHeading.appendChild(ExperimentalLabel);
-    PanelElement.appendChild(ExperimentalHeading);
-    PanelElement.appendChild(BetaColumnsRow);
-  }
+  PanelElement.appendChild(ColumnsRow);
 
   // Footer row
   var FooterRow = document.createElement('div');

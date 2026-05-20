@@ -3439,12 +3439,10 @@ body.returning-screen #diffIconWrap .icon-tip { display: none; }
 ══════════════════════════════════════ */
 
 #customiseSkillsetPanel {
-  position: absolute;
-  top: 0;
-  right: calc(100% + 8px);
   display: none;
   flex-direction: column;
   min-width: 200px;
+  min-height: 27px;
   max-height: 80vh;
   overflow-y: auto;
   background: white;
@@ -3453,7 +3451,8 @@ body.returning-screen #diffIconWrap .icon-tip { display: none; }
   box-shadow: 0 4px 16px rgba(0, 0, 0, 0.10);
   box-sizing: border-box;
   z-index: 500;
-  padding: 8px 0;
+  padding: 8px;
+  flex-shrink: 0;
 }
 
 #customiseSkillsetPanel.customise-skillset-panel-open {

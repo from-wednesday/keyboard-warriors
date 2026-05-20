@@ -14497,17 +14497,10 @@ var IsBetaBuild = document.title !== 'Keyboard Warriors';
         'box-sizing:border-box',
       ].join(';');
 
-      // Dot indicator: green when available (not in pill), grey-struck when already in pill
+      // Hex indicator: filled hexagon when already in pill, empty hexagon when available to add
       var DotColumn = document.createElement('span');
       DotColumn.style.cssText = 'flex-shrink:0;width:22px;display:flex;align-items:center;justify-content:center;';
-      var DotSvg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
-      DotSvg.setAttribute('width', '8'); DotSvg.setAttribute('height', '8');
-      DotSvg.setAttribute('viewBox', '0 0 8 8');
-      var DotCircle = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
-      DotCircle.setAttribute('cx', '4'); DotCircle.setAttribute('cy', '4'); DotCircle.setAttribute('r', '3');
-      DotCircle.setAttribute('fill', InPill ? '#d1d5db' : '#10b981');
-      DotSvg.appendChild(DotCircle);
-      DotColumn.appendChild(DotSvg);
+      DotColumn.appendChild(_MakeWrenchPickerRadioDot(InPill));
 
       var LabelColumn = document.createElement('span');
       LabelColumn.style.color          = InPill ? '#d1d5db' : (IsBetaApp ? '#9ca3af' : '#374151');

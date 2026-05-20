@@ -13916,6 +13916,10 @@ function _applySkillset(skillsetLabel) {
   if (CustomiseSkillsetPanelIsOpen) {
     _BuildCustomiseSkillsetPanelContent();
   }
+  // If the customise panel is open, re-render it to reflect the new skillset (read-only for named, editable for Custom Set)
+  if (CustomiseSkillsetPanelIsOpen) {
+    _BuildCustomiseSkillsetPanelContent();
+  }
 }
 
 function skillsetPillClick(ClickEvent) {
@@ -14428,8 +14432,11 @@ function _BuildCustomiseSkillsetPanelContent() {
   // Prevent clicks inside the panel from bubbling up to the outside-click handler.
   PanelElement.onclick = function(ClickEvent) { ClickEvent.stopPropagation(); };
 
-  var CurrentShortSet   = new Set(CustomSetList ? CustomSetList.shortList   : appsShortList);
-  var CurrentStandbySet = new Set(CustomSetList ? CustomSetList.standbyList  : appsStandbyList);
+   var isNamedSkillset = SKILLSET_DEFS.some(function(d) { return d.label === currentSkillset; });
+  // For a named skillset, derive in/out from the live lists (set by _applySkillset).
+  // For Custom Set, use CustomSetList if seeded, else live lists.
+  var CurrentShortSet   = new Set(isNamedSkillset ? appsShortList   : (CustomSetList ? CustomSetList.shortList   : appsShortList));
+  var CurrentStandbySet = new Set(isNamedSkillset ? appsStandbyList : (CustomSetList ? CustomSetList.standbyList : appsStandbyList));
 
   function IsInAppPill(AppLabel) {
     return CurrentShortSet.has(AppLabel) || CurrentStandbySet.has(AppLabel);
@@ -14561,16 +14568,10 @@ var IsBetaBuild = document.title !== 'Keyboard Warriors';
 }
 
 function _ToggleCustomSetApp(AppLabel) {
-  // ADD: block edits unless 'Custom Set' is the active mode
-  // CustomiseSkillsetPanelIsOpen means we got here via the custom panel,
-  // but we need to know if a named skillset is currently reflected.
-  // CustomSetList being null means it's never been seeded = first open from named skillset.
-  // The wrench picker opened the panel; check if the skillset pill shows a named preset.
-  var skillsetPillEl = document.getElementById('appSelectorSkillsetPill');
-  var pillLabel = skillsetPillEl ? (skillsetPillEl.querySelector('span span:last-child') || {}).textContent : '';
-  var isNamedSkillset = SKILLSET_DEFS.some(function(d) { return d.label === pillLabel; });
+  // Block edits when a named skillset is currently selected — panel is read-only in that state
+  var isNamedSkillset = SKILLSET_DEFS.some(function(d) { return d.label === currentSkillset; });
   if (isNamedSkillset) {
-    showToast("Select 'Custom Set' to build a different skillset");
+    showToast("Select 'Custom Set' to build a different app list");
     return;
   }
   _EnsureCustomSetListSeeded();
@@ -14627,14 +14628,16 @@ function _openCustomiseSkillsetPanel() {
   CustomiseSkillsetPanelIsOpen = true;
   titleEl.classList.add('app-pill-open'); 
 
-  // Seed the custom list from the current combined short + standby on first ever open.
-  _EnsureCustomSetListSeeded();
-
-  // Apply the persisted CustomSetList to the live lists so the app pill reflects it.
-  appsShortList   = CustomSetList.shortList.slice();
-  appsStandbyList = CustomSetList.standbyList.slice();
-  _saveAppsShortList();
-  buildAppPill();
+  var isNamedSkillset = SKILLSET_DEFS.some(function(d) { return d.label === currentSkillset; });
+  if (!isNamedSkillset) {
+    // Only seed and apply CustomSetList when in Custom Set mode
+    _EnsureCustomSetListSeeded();
+    appsShortList   = CustomSetList.shortList.slice();
+    appsStandbyList = CustomSetList.standbyList.slice();
+    _saveAppsShortList();
+    buildAppPill();
+    _AnimateAppPillResize();
+  }
 
   var PanelElement         = document.getElementById('customiseSkillsetPanel');
   var RightBracketElement  = document.getElementById('customiseSkillsetRightBracket');

@@ -14379,6 +14379,92 @@ function _hideAppSelectorSkillsetPill() {
   if (SkillsetsBtn) SkillsetsBtn.textContent = 'more';
 }
 
+function _BuildCustomiseSkillsetPanelContent() {
+  var PanelElement = document.getElementById('customiseSkillsetPanel');
+  if (!PanelElement) return;
+  PanelElement.innerHTML = '';
+
+  // Group apps by their column number (1–4); betas already carry column:4
+  var ColumnGroups = { 1: [], 2: [], 3: [], 4: [] };
+  appsLongList.forEach(function(AppEntry) {
+    var ColumnNumber = AppEntry.column || 4;
+    if (ColumnGroups[ColumnNumber]) ColumnGroups[ColumnNumber].push(AppEntry);
+  });
+
+  var ColumnsRow = document.createElement('div');
+  ColumnsRow.style.cssText = 'display:flex;flex-direction:row;align-items:flex-start;gap:0;';
+
+  [1, 2, 3, 4].forEach(function(ColumnNumber, ColumnIndex) {
+    var AppsInColumn = ColumnGroups[ColumnNumber];
+    if (!AppsInColumn || AppsInColumn.length === 0) return;
+
+    // Thin vertical rule between columns
+    if (ColumnIndex > 0) {
+      var ColumnDivider = document.createElement('div');
+      ColumnDivider.style.cssText = 'width:1px;background:rgba(0,0,0,0.08);align-self:stretch;margin:0 6px;flex-shrink:0;';
+      ColumnsRow.appendChild(ColumnDivider);
+    }
+
+    var ColumnElement = document.createElement('div');
+    ColumnElement.style.cssText = 'display:flex;flex-direction:column;';
+
+    var BetaDividerAdded = false;
+
+    AppsInColumn.forEach(function(AppEntry) {
+      var IsBetaApp = !!AppEntry.beta;
+
+      // Thin horizontal rule before the first beta app in column 4
+      if (IsBetaApp && !BetaDividerAdded) {
+        var BetaDivider = document.createElement('div');
+        BetaDivider.style.cssText = 'height:1px;background:rgba(0,0,0,0.08);margin:4px 0;';
+        ColumnElement.appendChild(BetaDivider);
+        BetaDividerAdded = true;
+      }
+
+      var AppRow = document.createElement('div');
+      AppRow.style.cssText = [
+        'display:flex',
+        'align-items:center',
+        'height:24px',
+        "font-family:'Lato',system-ui,sans-serif",
+        'font-size:12px',
+        'white-space:nowrap',
+        'cursor:pointer',
+        'padding:0 4px 0 0',
+        'border-radius:4px',
+        'box-sizing:border-box',
+      ].join(';');
+
+      // Left icon column at 44px (double the 22px used in the app pill)
+      var IconColumn = document.createElement('span');
+      IconColumn.style.cssText = 'flex-shrink:0;width:44px;display:flex;align-items:center;justify-content:center;';
+
+      var LabelColumn = document.createElement('span');
+      LabelColumn.style.cssText = 'color:' + (IsBetaApp ? '#9ca3af' : '#6b7280') + ';' +
+        (IsBetaApp ? 'font-style:italic;' : '');
+      LabelColumn.textContent = AppEntry.label;
+
+      AppRow.appendChild(IconColumn);
+      AppRow.appendChild(LabelColumn);
+
+      AppRow.addEventListener('mouseenter', function() {
+        AppRow.style.background = '#f0f9ff';
+        LabelColumn.style.color = '#374151';
+      });
+      AppRow.addEventListener('mouseleave', function() {
+        AppRow.style.background = '';
+        LabelColumn.style.color = IsBetaApp ? '#9ca3af' : '#6b7280';
+      });
+
+      ColumnElement.appendChild(AppRow);
+    });
+
+    ColumnsRow.appendChild(ColumnElement);
+  });
+
+  PanelElement.appendChild(ColumnsRow);
+}
+
 function _openCustomiseSkillsetPanel() {
   if (CustomiseSkillsetPanelIsOpen) return;
   CustomiseSkillsetPanelIsOpen = true;
@@ -14387,7 +14473,10 @@ function _openCustomiseSkillsetPanel() {
   var RightBracketElement  = document.getElementById('customiseSkillsetRightBracket');
   var SkillsetLabelElement = document.getElementById('appSelectorSkillsetLabel');
 
-  if (PanelElement)        PanelElement.classList.add('customise-skillset-panel-open');
+  if (PanelElement) {
+    _BuildCustomiseSkillsetPanelContent();
+    PanelElement.classList.add('customise-skillset-panel-open');
+  }
   if (RightBracketElement) {
   RightBracketElement.style.display = 'block';
   RightBracketElement.style.opacity = '1';

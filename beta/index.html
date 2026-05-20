@@ -14385,7 +14385,7 @@ function _openCustomiseSkillsetPanel() {
   var RightBracketElement  = document.getElementById('customiseSkillsetRightBracket');
   var SkillsetLabelElement = document.getElementById('appSelectorSkillsetLabel');
 
-  if (PanelElement)         PanelElement.classList.add('customise-skillset-panel-open');
+  if (PanelElement)        PanelElement.classList.add('customise-skillset-panel-open');
   if (RightBracketElement) {
     RightBracketElement.style.display = 'block';
     requestAnimationFrame(function() {
@@ -14395,6 +14395,9 @@ function _openCustomiseSkillsetPanel() {
     });
   }
   if (SkillsetLabelElement) SkillsetLabelElement.textContent = 'customise';
+
+  // Rebuild pill label to show 'Custom Set'
+  _buildAppSelectorSkillsetPill();
 }
 
 function _closeCustomiseSkillsetPanel() {

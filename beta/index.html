@@ -4630,7 +4630,8 @@ function openAppPill() {
 
 function closeAppPill() {
     AppPillWrenchOpen = false;
-     var selectorLabel = document.getElementById('appSelectorLabel');
+    _hideAppSelectorSkillsetPill(); // ADD THIS LINE
+    var selectorLabel = document.getElementById('appSelectorLabel');
      if (selectorLabel) selectorLabel.textContent = 'now training on';
     appPillEl.classList.remove('open');
     titleEl.classList.remove('app-pill-open');
@@ -13912,6 +13913,9 @@ function _applySkillset(skillsetLabel) {
     }
   }
   runData.length = 0; lastCompletedReport = null; CoachAdviceAccepted = false;
+  if (CustomiseSkillsetPanelIsOpen) {
+    _BuildCustomiseSkillsetPanelContent();
+  }
 }
 
 function skillsetPillClick(ClickEvent) {
@@ -14564,6 +14568,18 @@ var IsBetaBuild = document.title !== 'Keyboard Warriors';
 }
 
 function _ToggleCustomSetApp(AppLabel) {
+  // ADD: block edits unless 'Custom Set' is the active mode
+  // CustomiseSkillsetPanelIsOpen means we got here via the custom panel,
+  // but we need to know if a named skillset is currently reflected.
+  // CustomSetList being null means it's never been seeded = first open from named skillset.
+  // The wrench picker opened the panel; check if the skillset pill shows a named preset.
+  var skillsetPillEl = document.getElementById('appSelectorSkillsetPill');
+  var pillLabel = skillsetPillEl ? (skillsetPillEl.querySelector('span span:last-child') || {}).textContent : '';
+  var isNamedSkillset = SKILLSET_DEFS.some(function(d) { return d.label === pillLabel; });
+  if (isNamedSkillset) {
+    showToast("Select 'Custom Set' to build a different skillset");
+    return;
+  }
   _EnsureCustomSetListSeeded();
 
   var IsInShort   = CustomSetList.shortList.indexOf(AppLabel)   !== -1;
@@ -14616,6 +14632,7 @@ function _AnimateAppPillResize() {
 function _openCustomiseSkillsetPanel() {
   if (CustomiseSkillsetPanelIsOpen) return;
   CustomiseSkillsetPanelIsOpen = true;
+  titleEl.classList.add('app-pill-open'); 
 
   // Seed the custom list from the current combined short + standby on first ever open.
   _EnsureCustomSetListSeeded();

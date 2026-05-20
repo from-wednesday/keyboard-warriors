@@ -5911,8 +5911,8 @@ function _attachconflictsPanelKeypressVerifier() {
       if (kbSubPanel && pressedToken) {
         var keyEls = kbSubPanel.querySelectorAll('[data-token]');
         keyEls.forEach(function(keyEl) {
-          // dataset.token holds the canonical token string (e.g. 'CLEAR', 'HOME')
-          if (keyEl.dataset.token !== pressedToken) return;
+          // Match on browserCode (e.code) — reliable regardless of JSON token string
+          if (keyEl.dataset.browserCode !== pressedCode) return;
           if (keyEl.dataset.blocked !== '1') return; // already available
           e.preventDefault();
           // Flash green-down (key held)
@@ -6424,10 +6424,18 @@ function _renderKeyboardConflictTab(container) {
     _extKey(10, 'bottom'),  // PAGEDOWN
   ];
 
+  // Build a reverse map: canonical token → browser e.code
+  var _tokenToBrowserCode = {};
+  Object.keys(ExtendedKeyCodeToToken).forEach(function(Code) {
+    var Tok = ExtendedKeyCodeToToken[Code];
+    if (!_tokenToBrowserCode[Tok]) _tokenToBrowserCode[Tok] = Code;
+  });
+
   function _makeKeyEl(k) {
     var isBlocked = !touchEnabled && dismissedConflicts.has(k.token);
     var keyEl = document.createElement('div');
-    keyEl.dataset.token   = k.token;
+    keyEl.dataset.token       = k.token;
+    keyEl.dataset.browserCode = _tokenToBrowserCode[k.token] || k.token;
     keyEl.dataset.blocked = isBlocked ? '1' : '0';
     keyEl.dataset.pairPos = k.pairPos;
     var r = k.pairPos === 'top' ? '3px 3px 0 0'

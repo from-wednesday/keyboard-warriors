@@ -1,15 +1,15 @@
 <!-- ═══════════════════════════════════════════════════
-    Keyboard Warrios main file 
+    Keyboard Warriors central HTML file with JS
      ═══════════════════════════════════════════════════ -->
 <!DOCTYPE html>
 <html>
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Keyboard Warriors</title>
+<title>beta</title>
 <script>
   const DefaultTitle = 'Keyboard Warriors';
-  const VersionLabel   = '0028';
+  const VersionLabel   = '0029';
   const TitlePrefix  = document.title !== DefaultTitle ? document.title.trim() + '_' : '';
   const DBG_DEVICE   = TitlePrefix + VersionLabel;
 </script>
@@ -27,40 +27,10 @@
 </script>
 
 <style>
-  /* ── Key glyph SVGs (full-size Mac keyboard only) ──────────────────────────
-     Vector symbols for option (⌥), control (⌃), and return (↩).
-     Rendered as inline SVG so they scale, colour, and animate exactly like
-     the Command symbol in shortcut chips. Mini keyboards use text fallbacks. */
-  .key-glyph-sym {
-    display: block;
-    color: #555;
-    flex-shrink: 0;
-  }
-  .key-glyph-option  { width: 16px; height: 11px; margin-bottom: 1px; }
-  .key-glyph-control { width: 14px; height: 10px; margin-bottom: 1px; }
-  .key-glyph-return  { width: 14px; height: 11px; margin-bottom: 1px; }
-
-  /* Lit states: glyphs inherit white from the parent lit-* rules */
-  .key.lit-green-up    .key-glyph-sym,
-  .key.lit-green-down  .key-glyph-sym,
-  .key.lit-orange-up   .key-glyph-sym,
-  .key.lit-orange-down .key-glyph-sym { color: white; }
-
-  /* Ghost mode: hide with other label content, restore when lit */
-  #keyboardPanel.ghost-mode .key .key-glyph-sym { opacity: 0; }
-  #keyboardPanel.ghost-mode .key.lit-green-up    .key-glyph-sym,
-  #keyboardPanel.ghost-mode .key.lit-green-down  .key-glyph-sym,
-  #keyboardPanel.ghost-mode .key.lit-orange-up   .key-glyph-sym,
-  #keyboardPanel.ghost-mode .key.lit-orange-down .key-glyph-sym { opacity: 1 !important; }
-
-  /* Applied for the first two rAF frames to prevent #kb-wall-bottom flashing
-     visible during 3D stacking-context setup, regardless of kb-edged state. */
-  #keyboardPanel.kb-wall-init #kb-wall-bottom {
-    opacity: 0 !important;
-    visibility: hidden !important;
-    transition: none !important;
-  }
-
+  /* These two rules must remain inline: the skeleton animation runs during
+     stylesheet load, and .page-initially-hidden keeps all content invisible
+     until the stylesheet and DOM are both ready. Moving them to beta.css
+     would create a flash of unstyled content on slower connections. */
   @keyframes SkeletonGrow {
     from { width: 18px; border-radius: 9px; }
     to   { width: 100%; border-radius: 16px; }
@@ -70,23 +40,23 @@
     opacity: 0;
   }
 </style>
-</head>
-<!-- ══════════════════════════════════════
-     GYRO PERMISSION MODAL
-     Shown once on iOS/iPadOS (localStorage persists the decision).
-     iOS 13+ requires a user gesture before DeviceOrientationEvent.requestPermission.
-══════════════════════════════════════ -->
+</head><body>
+
 <!-- ══════════════════════════════════════
      SVG SYMBOL DEFINITIONS
      Defined once here, referenced everywhere
      via <use href="#SymbolId">.
      All paths use fill="currentColor" so
-     colour is controlled at the use site.
+     colour is controlled at the use site. But beware of stroke only shapes?
 ══════════════════════════════════════ -->
 <svg xmlns="http://www.w3.org/2000/svg" style="display:none;" aria-hidden="true">
 
   <symbol id="IconKeyboard" viewBox="0 0 110 101.8">
     <path fill="currentColor" d="M98.6,32.4H11.4c-2.1,0-3.9,1.7-3.9,3.9v29.6c0,2.1,1.7,3.9,3.9,3.9h87.2c2.1,0,3.9-1.7,3.9-3.9v-29.6c0-2.1-1.7-3.9-3.9-3.9ZM99.9,65.9c0,.7-.6,1.3-1.3,1.3H11.4c-.7,0-1.3-.6-1.3-1.3v-29.6c0-.7.6-1.3,1.3-1.3h87.2c.7,0,1.3.6,1.3,1.3v29.6ZM15.2,42.1v-2.6c0-.5.4-.9.9-.9h5.9c.5,0,.9.4.9.9v2.6c0,.5-.4.9-.9.9h-5.9c-.5,0-.9-.4-.9-.9ZM15.2,48.9v-2.6c0-.5.4-.9.9-.9h7.4c.5,0,.9.4.9.9v2.6c0,.5-.4.9-.9.9h-7.4c-.5,0-.9-.4-.9-.9ZM95.9,46.4v2.6c0,.5-.4.9-.9.9h-7.4c-.5,0-.9-.4-.9-.9v-2.6c0-.5.4-.9.9-.9h7.4c.5,0,.9.4.9.9ZM15.2,55.7v-2.6c0-.5.4-.9.9-.9h10.8c.5,0,.9.4.9.9v2.6c0,.5-.4.9-.9.9h-10.8c-.5,0-.9-.4-.9-.9ZM65.8,59.9v2.6c0,.5-.4.9-.9.9h-26.9c-.5,0-.9-.4-.9-.9v-2.6c0-.5.4-.9.9-.9h26.9c.5,0,.9.4.9.9ZM95.9,53.2v2.6c0,.5-.4.9-.9.9h-10.8c-.5,0-.9-.4-.9-.9v-2.6c0-.5.4-.9.9-.9h10.8c.5,0,.9.4.9.9h0ZM24.8,42.2v-2.8c0-.4.3-.8.8-.8h4.4c.4,0,.8.3.8.8v2.8c0,.4-.3.8-.8.8h-4.4c-.4,0-.8-.3-.8-.8ZM33,42.2v-2.8c0-.4.3-.8.8-.8h4.4c.4,0,.8.3.8.8v2.8c0,.4-.3.8-.8.8h-4.4c-.4,0-.8-.3-.8-.8ZM41.1,42.2v-2.8c0-.4.3-.8.8-.8h4.4c.4,0,.8.3.8.8v2.8c0,.4-.3.8-.8.8h-4.4c-.4,0-.8-.3-.8-.8ZM49.3,42.2v-2.8c0-.4.3-.8.8-.8h4.4c.4,0,.8.3.8.8v2.8c0,.4-.3.8-.8.8h-4.4c-.4,0-.8-.3-.8-.8ZM57.4,42.2v-2.8c0-.4.3-.8.8-.8h4.4c.4,0,.8.3.8.8v2.8c0,.4-.3.8-.8.8h-4.4c-.4,0-.8-.3-.8-.8ZM65.5,42.2v-2.8c0-.4.3-.8.8-.8h4.4c.4,0,.8.3.8.8v2.8c0,.4-.3.8-.8.8h-4.4c-.4,0-.8-.3-.8-.8ZM73.7,42.2v-2.8c0-.4.3-.8.8-.8h4.4c.4,0,.8.3.8.8v2.8c0,.4-.3.8-.8.8h-4.4c-.4,0-.8-.3-.8-.8ZM27.8,45.5h4.4c.4,0,.8.3.8.8v2.8c0,.4-.3.8-.8.8h-4.4c-.4,0-.8-.3-.8-.8v-2.8c0-.4.3-.8.8-.8ZM40.7,49.8h-4.4c-.4,0-.8-.3-.8-.8v-2.8c0-.4.3-.8.8-.8h4.4c.4,0,.8.3.8.8v2.8c0,.4-.3.8-.8.8ZM44.8,45.5h4.4c.4,0,.8.3.8.8v2.8c0,.4-.3.8-.8.8h-4.4c-.4,0-.8-.3-.8-.8v-2.8c0-.4.3-.8.8-.8ZM57.7,49.8h-4.4c-.4,0-.8-.3-.8-.8v-2.8c0-.4.3-.8.8-.8h4.4c.4,0,.8.3.8.8v2.8c0,.4-.3.8-.8.8ZM66.2,49.8h-4.4c-.4,0-.8-.3-.8-.8v-2.8c0-.4.3-.8.8-.8h4.4c.4,0,.8.3.8.8v2.8c0,.4-.3.8-.8.8ZM74.7,45.5c.4,0,.8.3.8.8v2.8c0,.4-.3.8-.8.8h-4.4c-.4,0-.8-.3-.8-.8v-2.8c0-.4.3-.8.8-.8h4.4ZM83.2,45.5c.4,0,.8.3.8.8v2.8c0,.4-.3.8-.8.8h-4.4c-.4,0-.8-.3-.8-.8v-2.8c0-.4.3-.8.8-.8h4.4ZM36.3,53.1v2.8c0,.4-.3.8-.8.8h-4.4c-.4,0-.8-.3-.8-.8v-2.8c0-.4.3-.8.8-.8h4.4c.4,0,.8.3.8.8ZM44.3,52.3c.4,0,.8.3.8.8v2.8c0,.4-.3.8-.8.8h-4.4c-.4,0-.8-.3-.8-.8v-2.8c0-.4.3-.8.8-.8h4.4ZM53.1,52.3c.4,0,.8.3.8.8v2.8c0,.4-.3.8-.8.8h-4.4c-.4,0-.8-.3-.8-.8v-2.8c0-.4.3-.8.8-.8h4.4ZM56.7,55.9v-2.8c0-.4.3-.8.8-.8h4.4c.4,0,.8.3.8.8v2.8c0,.4-.3.8-.8.8h-4.4c-.4,0-.8-.3-.8-.8ZM70.7,56.6h-4.4c-.4,0-.8-.3-.8-.8v-2.8c0-.4.3-.8.8-.8h4.4c.4,0,.8.3.8.8v2.8c0,.4-.3.8-.8.8ZM79.5,56.6h-4.4c-.4,0-.8-.3-.8-.8v-2.8c0-.4.3-.8.8-.8h4.4c.4,0,.8.3.8.8v2.8c0,.4-.3.8-.8.8ZM81.8,42.2v-2.8c0-.4.3-.8.8-.8h4.4c.4,0,.8.3.8.8v2.8c0,.4-.3.8-.8.8h-4.4c-.4,0-.8-.3-.8-.8ZM95.9,39.5v2.8c0,.4-.3.8-.8.8h-4.4c-.4,0-.8-.3-.8-.8v-2.8c0-.4.3-.8.8-.8h4.4c.4,0,.8.3.8.8ZM35.4,59.8v2.8c0,.4-.3.8-.8.8h-4.4c-.4,0-.8-.3-.8-.8v-2.8c0-.4.3-.8.8-.8h4.4c.4,0,.8.3.8.8ZM28.3,59.8v2.8c0,.4-.3.8-.8.8h-4.4c-.4,0-.8-.3-.8-.8v-2.8c0-.4.3-.8.8-.8h4.4c.4,0,.8.3.8.8ZM21.2,59.8v2.8c0,.4-.3.8-.8.8h-4.4c-.4,0-.8-.3-.8-.8v-2.8c0-.4.3-.8.8-.8h4.4c.4,0,.8.3.8.8ZM73.5,59.8v2.8c0,.4-.3.8-.8.8h-4.3c-.4,0-.8-.3-.8-.8v-2.8c0-.4.3-.8.8-.8h4.3c.4,0,.8.3.8.8ZM81,59.8v2.8c0,.4-.3.8-.8.8h-4.3c-.4,0-.8-.3-.8-.8v-2.8c0-.4.3-.8.8-.8h4.3c.4,0,.8.3.8.8ZM88.5,59.8v2.8c0,.4-.3.8-.8.8h-4.3c-.4,0-.8-.3-.8-.8v-2.8c0-.4.3-.8.8-.8h4.3c.4,0,.8.3.8.8ZM95.9,59.8v2.8c0,.4-.3.8-.8.8h-4.3c-.4,0-.8-.3-.8-.8v-2.8c0-.4.3-.8.8-.8h4.3c.4,0,.8.3.8.8Z"/>
+  </symbol>
+
+  <symbol id="IconExtKeyboard" viewBox="0 0 167 101.8">
+    <path fill="currentColor" d="M142.1,32.4H24.9c-2.1,0-3.9,1.7-3.9,3.9v29.6c0,2.1,1.7,3.9,3.9,3.9h117.2c2.1,0,3.9-1.7,3.9-3.9v-29.6c0-2.1-1.7-3.9-3.9-3.9ZM143.4,65.9c0,.7-.6,1.3-1.3,1.3H24.9c-.7,0-1.3-.6-1.3-1.3v-29.6c0-.7.6-1.3,1.3-1.3h117.2c.7,0,1.3.6,1.3,1.3v29.6ZM28.7,42.1v-2.6c0-.5.4-.9.9-.9h5.9c.5,0,.9.4.9.9v2.6c0,.5-.4.9-.9.9h-5.9c-.5,0-.9-.4-.9-.9ZM28.7,48.9v-2.6c0-.5.4-.9.9-.9h7.4c.5,0,.9.4.9.9v2.6c0,.5-.4.9-.9.9h-7.4c-.5,0-.9-.4-.9-.9ZM109.4,46.4v2.6c0,.5-.4.9-.9.9h-7.4c-.5,0-.9-.4-.9-.9v-2.6c0-.5.4-.9.9-.9h7.4c.5,0,.9.4.9.9ZM28.7,55.7v-2.6c0-.5.4-.9.9-.9h10.8c.5,0,.9.4.9.9v2.6c0,.5-.4.9-.9.9h-10.8c-.5,0-.9-.4-.9-.9ZM79.3,59.9v2.6c0,.5-.4.9-.9.9h-26.9c-.5,0-.9-.4-.9-.9v-2.6c0-.5.4-.9.9-.9h26.9c.5,0,.9.4.9.9ZM109.4,53.2v2.6c0,.5-.4.9-.9.9h-10.8c-.5,0-.9-.4-.9-.9v-2.6c0-.5.4-.9.9-.9h10.8c.5,0,.9.4.9.9h0ZM38.3,42.2v-2.8c0-.4.3-.8.8-.8h4.4c.4,0,.8.3.8.8v2.8c0,.4-.3.8-.8.8h-4.4c-.4,0-.8-.3-.8-.8ZM46.5,42.2v-2.8c0-.4.3-.8.8-.8h4.4c.4,0,.8.3.8.8v2.8c0,.4-.3.8-.8.8h-4.4c-.4,0-.8-.3-.8-.8ZM54.6,42.2v-2.8c0-.4.3-.8.8-.8h4.4c.4,0,.8.3.8.8v2.8c0,.4-.3.8-.8.8h-4.4c-.4,0-.8-.3-.8-.8ZM62.8,42.2v-2.8c0-.4.3-.8.8-.8h4.4c.4,0,.8.3.8.8v2.8c0,.4-.3.8-.8.8h-4.4c-.4,0-.8-.3-.8-.8ZM70.9,42.2v-2.8c0-.4.3-.8.8-.8h4.4c.4,0,.8.3.8.8v2.8c0,.4-.3.8-.8.8h-4.4c-.4,0-.8-.3-.8-.8ZM79,42.2v-2.8c0-.4.3-.8.8-.8h4.4c.4,0,.8.3.8.8v2.8c0,.4-.3.8-.8.8h-4.4c-.4,0-.8-.3-.8-.8ZM87.2,42.2v-2.8c0-.4.3-.8.8-.8h4.4c.4,0,.8.3.8.8v2.8c0,.4-.3.8-.8.8h-4.4c-.4,0-.8-.3-.8-.8ZM41.3,45.5h4.4c.4,0,.8.3.8.8v2.8c0,.4-.3.8-.8.8h-4.4c-.4,0-.8-.3-.8-.8v-2.8c0-.4.3-.8.8-.8ZM54.2,49.8h-4.4c-.4,0-.8-.3-.8-.8v-2.8c0-.4.3-.8.8-.8h4.4c.4,0,.8.3.8.8v2.8c0,.4-.3.8-.8.8ZM58.3,45.5h4.4c.4,0,.8.3.8.8v2.8c0,.4-.3.8-.8.8h-4.4c-.4,0-.8-.3-.8-.8v-2.8c0-.4.3-.8.8-.8ZM71.2,49.8h-4.4c-.4,0-.8-.3-.8-.8v-2.8c0-.4.3-.8.8-.8h4.4c.4,0,.8.3.8.8v2.8c0,.4-.3.8-.8.8ZM79.7,49.8h-4.4c-.4,0-.8-.3-.8-.8v-2.8c0-.4.3-.8.8-.8h4.4c.4,0,.8.3.8.8v2.8c0,.4-.3.8-.8.8ZM88.2,45.5c.4,0,.8.3.8.8v2.8c0,.4-.3.8-.8.8h-4.4c-.4,0-.8-.3-.8-.8v-2.8c0-.4.3-.8.8-.8h4.4ZM96.7,45.5c.4,0,.8.3.8.8v2.8c0,.4-.3.8-.8.8h-4.4c-.4,0-.8-.3-.8-.8v-2.8c0-.4.3-.8.8-.8h4.4ZM49.8,53.1v2.8c0,.4-.3.8-.8.8h-4.4c-.4,0-.8-.3-.8-.8v-2.8c0-.4.3-.8.8-.8h4.4c.4,0,.8.3.8.8ZM57.8,52.3c.4,0,.8.3.8.8v2.8c0,.4-.3.8-.8.8h-4.4c-.4,0-.8-.3-.8-.8v-2.8c0-.4.3-.8.8-.8h4.4ZM66.6,52.3c.4,0,.8.3.8.8v2.8c0,.4-.3.8-.8.8h-4.4c-.4,0-.8-.3-.8-.8v-2.8c0-.4.3-.8.8-.8h4.4ZM70.2,55.9v-2.8c0-.4.3-.8.8-.8h4.4c.4,0,.8.3.8.8v2.8c0,.4-.3.8-.8.8h-4.4c-.4,0-.8-.3-.8-.8ZM84.2,56.6h-4.4c-.4,0-.8-.3-.8-.8v-2.8c0-.4.3-.8.8-.8h4.4c.4,0,.8.3.8.8v2.8c0,.4-.3.8-.8.8ZM93,56.6h-4.4c-.4,0-.8-.3-.8-.8v-2.8c0-.4.3-.8.8-.8h4.4c.4,0,.8.3.8.8v2.8c0,.4-.3.8-.8.8ZM118.2,55.9v-2.8c0-.4.3-.8.8-.8h4.4c.4,0,.8.3.8.8v2.8c0,.4-.3.8-.8.8h-4.4c-.4,0-.8-.3-.8-.8ZM95.3,42.2v-2.8c0-.4.3-.8.8-.8h4.4c.4,0,.8.3.8.8v2.8c0,.4-.3.8-.8.8h-4.4c-.4,0-.8-.3-.8-.8ZM109.4,39.5v2.8c0,.4-.3.8-.8.8h-4.4c-.4,0-.8-.3-.8-.8v-2.8c0-.4.3-.8.8-.8h4.4c.4,0,.8.3.8.8ZM118.2,42.2v-2.8c0-.4.3-.8.8-.8h4.4c.4,0,.8.3.8.8v2.8c0,.4-.3.8-.8.8h-4.4c-.4,0-.8-.3-.8-.8ZM118.2,49.2v-2.8c0-.4.3-.8.8-.8h4.4c.4,0,.8.3.8.8v2.8c0,.4-.3.8-.8.8h-4.4c-.4,0-.8-.3-.8-.8ZM118.2,62.2v-2.8c0-.4.3-.8.8-.8h4.4c.4,0,.8.3.8.8v2.8c0,.4-.3.8-.8.8h-4.4c-.4,0-.8-.3-.8-.8ZM126.2,55.9v-2.8c0-.4.3-.8.8-.8h4.4c.4,0,.8.3.8.8v2.8c0,.4-.3.8-.8.8h-4.4c-.4,0-.8-.3-.8-.8ZM126.2,42.2v-2.8c0-.4.3-.8.8-.8h4.4c.4,0,.8.3.8.8v2.8c0,.4-.3.8-.8.8h-4.4c-.4,0-.8-.3-.8-.8ZM126.2,49.2v-2.8c0-.4.3-.8.8-.8h4.4c.4,0,.8.3.8.8v2.8c0,.4-.3.8-.8.8h-4.4c-.4,0-.8-.3-.8-.8ZM126.2,62.2v-2.8c0-.4.3-.8.8-.8h4.4c.4,0,.8.3.8.8v2.8c0,.4-.3.8-.8.8h-4.4c-.4,0-.8-.3-.8-.8ZM134.2,55.9v-2.8c0-.4.3-.8.8-.8h4.4c.4,0,.8.3.8.8v2.8c0,.4-.3.8-.8.8h-4.4c-.4,0-.8-.3-.8-.8ZM134.2,42.2v-2.8c0-.4.3-.8.8-.8h4.4c.4,0,.8.3.8.8v2.8c0,.4-.3.8-.8.8h-4.4c-.4,0-.8-.3-.8-.8ZM134.2,49.2v-2.8c0-.4.3-.8.8-.8h4.4c.4,0,.8.3.8.8v2.8c0,.4-.3.8-.8.8h-4.4c-.4,0-.8-.3-.8-.8ZM134.2,62.2v-2.8c0-.4.3-.8.8-.8h4.4c.4,0,.8.3.8.8v2.8c0,.4-.3.8-.8.8h-4.4c-.4,0-.8-.3-.8-.8ZM48.9,59.8v2.8c0,.4-.3.8-.8.8h-4.4c-.4,0-.8-.3-.8-.8v-2.8c0-.4.3-.8.8-.8h4.4c.4,0,.8.3.8.8ZM41.8,59.8v2.8c0,.4-.3.8-.8.8h-4.4c-.4,0-.8-.3-.8-.8v-2.8c0-.4.3-.8.8-.8h4.4c.4,0,.8.3.8.8ZM34.7,59.8v2.8c0,.4-.3.8-.8.8h-4.4c-.4,0-.8-.3-.8-.8v-2.8c0-.4.3-.8.8-.8h4.4c.4,0,.8.3.8.8ZM87,59.8v2.8c0,.4-.3.8-.8.8h-4.3c-.4,0-.8-.3-.8-.8v-2.8c0-.4.3-.8.8-.8h4.3c.4,0,.8.3.8.8ZM94.5,59.8v2.8c0,.4-.3.8-.8.8h-4.3c-.4,0-.8-.3-.8-.8v-2.8c0-.4.3-.8.8-.8h4.3c.4,0,.8.3.8.8ZM102,59.8v2.8c0,.4-.3.8-.8.8h-4.3c-.4,0-.8-.3-.8-.8v-2.8c0-.4.3-.8.8-.8h4.3c.4,0,.8.3.8.8ZM109.4,59.8v2.8c0,.4-.3.8-.8.8h-4.3c-.4,0-.8-.3-.8-.8v-2.8c0-.4.3-.8.8-.8h4.3c.4,0,.8.3.8.8Z"/>
   </symbol>
 
   <symbol id="IconBrowser" viewBox="0 0 86 64.1">
@@ -95,31 +65,42 @@
       <circle cx="19.3" cy="13.7" r="2"/>
       <circle cx="13.3" cy="13.7" r="2"/>
       <circle cx="25.3" cy="13.7" r="2"/>
+      <path d="M42.5,23.4c-6,0-11.4,2.1-14.9,5.4h0c0,0-.1.1-.2.2-2.4,2.3-3.8,5.2-3.8,8.4s1.4,6,3.8,8.4c0,0,0,.1.2.2,3.4,3.3,8.8,5.4,14.9,5.4s11.4-2.1,14.9-5.4h0c0,0,.1-.1.2-.2,0,0,0,0,0,0,2.4-2.3,3.8-5.2,3.8-8.4s-1.4-6-3.8-8.4c0,0-.1-.1-.2-.2-3.4-3.3-8.8-5.4-14.9-5.4h0ZM41.3,25.3v5.4c-1.9,0-3.7-.2-5.4-.4.3-.6.7-1.2,1-1.7,1.3-1.7,2.8-2.8,4.4-3.2h0ZM43.7,25.3c1.6.4,3.1,1.5,4.4,3.2.4.5.7,1.1,1.1,1.7-1.7.2-3.5.4-5.4.4v-5.3ZM49,26.2c2.1.7,4,1.7,5.5,2.9-.9.3-1.9.5-2.9.8-.4-.8-.8-1.5-1.3-2.2-.4-.5-.8-1-1.3-1.5h0ZM36,26.2c-.5.4-.9.9-1.2,1.5-.5.7-.9,1.4-1.3,2.2-1.1-.2-2.1-.5-2.9-.8,1.5-1.2,3.4-2.2,5.5-2.9h0ZM28.9,30.6c1.1.4,2.4.8,3.8,1-.5,1.5-.8,3.1-.9,4.8h-5.6c.2-2.1,1.2-4.1,2.7-5.8h0ZM56.1,30.6c1.5,1.7,2.5,3.7,2.7,5.8h-5.6c0-1.7-.4-3.3-.9-4.8,1.4-.3,2.7-.6,3.8-1h0ZM35.1,32c1.9.3,4,.4,6.1.5v3.9h-7c0-1.5.4-3,.8-4.3h0ZM49.9,32c.4,1.3.7,2.8.8,4.3h-7v-3.9c2.2,0,4.2-.2,6.1-.5h0ZM26.2,38.2h5.6c0,1.7.4,3.3.9,4.8-1.4.3-2.7.6-3.8,1-1.5-1.7-2.5-3.7-2.7-5.8h0ZM34.3,38.2h7v3.9c-2.2,0-4.2.2-6.1.5-.4-1.3-.7-2.8-.8-4.3h0ZM43.7,38.2h7c0,1.5-.4,3-.8,4.3-1.9-.3-4-.4-6.1-.5v-3.9ZM53.2,38.2h5.6c-.2,2.1-1.2,4.1-2.7,5.8-1.1-.4-2.4-.8-3.8-1,.5-1.5.8-3.1.9-4.8h0ZM41.3,43.9v5.4c-1.6-.4-3.1-1.4-4.4-3.2-.4-.5-.7-1.1-1.1-1.7,1.7-.2,3.5-.4,5.4-.4h0ZM43.7,43.9c1.9,0,3.7.2,5.4.4-.3.6-.7,1.2-1.1,1.7-1.3,1.7-2.8,2.8-4.4,3.2v-5.3ZM33.4,44.7c.4.8.8,1.5,1.3,2.2.4.5.8,1,1.2,1.5-2.1-.7-4-1.7-5.5-2.9.9-.3,1.9-.5,2.9-.8h0ZM51.6,44.7c1.1.2,2.1.5,2.9.8-1.5,1.2-3.4,2.2-5.5,2.9.5-.4.9-.9,1.3-1.5.5-.7.9-1.4,1.3-2.2h0Z"/>
     </g>
-    <path fill="currentColor" d="M42.5,23.4c-6,0-11.4,2.1-14.9,5.4h0c0,0-.1.1-.2.2-2.4,2.3-3.8,5.2-3.8,8.4s1.4,6,3.8,8.4c0,0,0,.1.2.2,3.4,3.3,8.8,5.4,14.9,5.4s11.4-2.1,14.9-5.4h0c0,0,.1-.1.2-.2,0,0,0,0,0,0,2.4-2.3,3.8-5.2,3.8-8.4s-1.4-6-3.8-8.4c0,0-.1-.1-.2-.2-3.4-3.3-8.8-5.4-14.9-5.4h0ZM41.3,25.3v5.4c-1.9,0-3.7-.2-5.4-.4.3-.6.7-1.2,1-1.7,1.3-1.7,2.8-2.8,4.4-3.2h0ZM43.7,25.3c1.6.4,3.1,1.5,4.4,3.2.4.5.7,1.1,1.1,1.7-1.7.2-3.5.4-5.4.4v-5.3ZM49,26.2c2.1.7,4,1.7,5.5,2.9-.9.3-1.9.5-2.9.8-.4-.8-.8-1.5-1.3-2.2-.4-.5-.8-1-1.3-1.5h0ZM36,26.2c-.5.4-.9.9-1.2,1.5-.5.7-.9,1.4-1.3,2.2-1.1-.2-2.1-.5-2.9-.8,1.5-1.2,3.4-2.2,5.5-2.9h0ZM28.9,30.6c1.1.4,2.4.8,3.8,1-.5,1.5-.8,3.1-.9,4.8h-5.6c.2-2.1,1.2-4.1,2.7-5.8h0ZM56.1,30.6c1.5,1.7,2.5,3.7,2.7,5.8h-5.6c0-1.7-.4-3.3-.9-4.8,1.4-.3,2.7-.6,3.8-1h0ZM35.1,32c1.9.3,4,.4,6.1.5v3.9h-7c0-1.5.4-3,.8-4.3h0ZM49.9,32c.4,1.3.7,2.8.8,4.3h-7v-3.9c2.2,0,4.2-.2,6.1-.5h0ZM26.2,38.2h5.6c0,1.7.4,3.3.9,4.8-1.4.3-2.7.6-3.8,1-1.5-1.7-2.5-3.7-2.7-5.8h0ZM34.3,38.2h7v3.9c-2.2,0-4.2.2-6.1.5-.4-1.3-.7-2.8-.8-4.3h0ZM43.7,38.2h7c0,1.5-.4,3-.8,4.3-1.9-.3-4-.4-6.1-.5v-3.9ZM53.2,38.2h5.6c-.2,2.1-1.2,4.1-2.7,5.8-1.1-.4-2.4-.8-3.8-1,.5-1.5.8-3.1.9-4.8h0ZM41.3,43.9v5.4c-1.6-.4-3.1-1.4-4.4-3.2-.4-.5-.7-1.1-1.1-1.7,1.7-.2,3.5-.4,5.4-.4h0ZM43.7,43.9c1.9,0,3.7.2,5.4.4-.3.6-.7,1.2-1.1,1.7-1.3,1.7-2.8,2.8-4.4,3.2v-5.3ZM33.4,44.7c.4.8.8,1.5,1.3,2.2.4.5.8,1,1.2,1.5-2.1-.7-4-1.7-5.5-2.9.9-.3,1.9-.5,2.9-.8h0ZM51.6,44.7c1.1.2,2.1.5,2.9.8-1.5,1.2-3.4,2.2-5.5,2.9.5-.4.9-.9,1.3-1.5.5-.7.9-1.4,1.3-2.2h0Z"/>
   </symbol>
 
   <symbol id="IconDifficultyStatic" viewBox="0 0 90 90">
-    <g id="notches">
-      <line fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-miterlimit="10" x1="44.7" y1="24.1" x2="44.7" y2="19.8"/>
-      <line fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-miterlimit="10" x1="25.9" y1="32.1" x2="22.8" y2="29.1"/>
-      <line fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-miterlimit="10" x1="18.2" y1="51.1" x2="13.9" y2="51.1"/>
-      <line fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-miterlimit="10" x1="71.7" y1="50.6" x2="76.1" y2="50.6"/>
-      <line fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-miterlimit="10" x1="63.7" y1="31.8" x2="66.8" y2="28.7"/>
-      <line fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-miterlimit="10" x1="37.8" y1="25.1" x2="37.2" y2="22.9"/>
-      <line fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-miterlimit="10" x1="31.4" y1="27.8" x2="30.3" y2="25.8"/>
-      <line fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-miterlimit="10" x1="21.7" y1="37.7" x2="19.7" y2="36.5"/>
-      <line fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-miterlimit="10" x1="19.1" y1="44.2" x2="16.9" y2="43.6"/>
-      <line fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-miterlimit="10" x1="19.2" y1="58" x2="17" y2="58.6"/>
-      <line fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-miterlimit="10" x1="70.9" y1="57.5" x2="73.1" y2="58.1"/>
-      <line fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-miterlimit="10" x1="70.8" y1="43.7" x2="73" y2="43.1"/>
-      <line fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-miterlimit="10" x1="68" y1="37.3" x2="70" y2="36.1"/>
-      <line fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-miterlimit="10" x1="58.1" y1="27.6" x2="59.3" y2="25.6"/>
-      <line fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-miterlimit="10" x1="51.7" y1="25" x2="52.3" y2="22.7"/>
+    <g id="notches" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-miterlimit="10" >
+      <line x1="44.7" y1="24.1" x2="44.7" y2="19.8"/>
+      <line x1="25.9" y1="32.1" x2="22.8" y2="29.1"/>
+      <line x1="18.2" y1="51.1" x2="13.9" y2="51.1"/>
+      <line x1="71.7" y1="50.6" x2="76.1" y2="50.6"/>
+      <line x1="63.7" y1="31.8" x2="66.8" y2="28.7"/>
+      <line x1="37.8" y1="25.1" x2="37.2" y2="22.9"/>
+      <line x1="31.4" y1="27.8" x2="30.3" y2="25.8"/>
+      <line x1="21.7" y1="37.7" x2="19.7" y2="36.5"/>
+      <line x1="19.1" y1="44.2" x2="16.9" y2="43.6"/>
+      <line x1="19.2" y1="58" x2="17" y2="58.6"/>
+      <line x1="70.9" y1="57.5" x2="73.1" y2="58.1"/>
+      <line x1="70.8" y1="43.7" x2="73" y2="43.1"/>
+      <line x1="68" y1="37.3" x2="70" y2="36.1"/>
+      <line x1="58.1" y1="27.6" x2="59.3" y2="25.6"/>
+      <line x1="51.7" y1="25" x2="52.3" y2="22.7"/>
+      <path d="M11.9,59.9c-.8-2.9-1.2-5.9-1.2-9,0-18.9,15.3-34.3,34.3-34.3s34.3,15.3,34.3,34.3-.4,5.9-1.1,8.6"/>
     </g>
-    <path fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-miterlimit="10" d="M11.9,59.9c-.8-2.9-1.2-5.9-1.2-9,0-18.9,15.3-34.3,34.3-34.3s34.3,15.3,34.3,34.3-.4,5.9-1.1,8.6"/>
   </symbol>
 
+  <symbol id="IconMagnifier" viewBox="0 0 24 24">
+    <g fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round">
+      <circle cx="11" cy="11" r="7"/>
+      <line x1="16.5" y1="16.5" x2="22" y2="22"/>
+    </g>
+ </symbol>
+
+  <symbol id="ShapeBracket" viewBox="0 0 15 84">
+    <path d="M3,0 C3,0 10,1 10,9 L10,33 C10,40 15,42 15,42 C15,42 10,44 10,51 L10,75 C10,83 3,84 3,84 L3,84 C3,84 8,82 8,74 L8,51 C8,43 12,42 12,42 C12,42 8,41 8,33 L8,10 C8,2 3,0 3,0 Z"/>
+  </symbol>
+  
 </svg>
 
 <div id="phoneWarningBackdrop" class="touch-modal-backdrop" style="display:none;"></div>
@@ -131,7 +112,11 @@
     <button class="touch-modal-btn-secondary" onclick="OnPhoneWarningDismiss()">Try anyway</button>
   </div>
 </div>
-
+<!-- ══════════════════════════════════════
+     GYRO PERMISSION MODAL
+     Shown once on iOS/iPadOS (localStorage persists the decision).
+     iOS 13+ requires a user gesture before DeviceOrientationEvent.requestPermission.
+══════════════════════════════════════ -->
 <div id="gyroBackdrop" class="touch-modal-backdrop" style="display:none;"></div>
 <div id="gyroModal" class="touch-modal-card" role="dialog" aria-modal="true" style="display:none;">
   <p class="touch-modal-heading">One quick thing</p>
@@ -179,16 +164,21 @@
   <div id="osMismatchPill"></div>
 
   <!-- App selector: right-aligned in the same osRow -->
-  <div id="appSelectorWrap">
-    <p id="appSelectorLabel">now training on</p>
-<div id="appPill" onclick="if(gameState==='playing'||gameState==='paused'||gameState==='readyToUnpause'||gameState==='counting'){showToast('Change app between game rounds.');return;}if(appPillEl.classList.contains('open'))closeAppPill();else openAppPill();">
+    <div id="appSelectorWrap">
+        <p id="appSelectorLabel">now training on</p>
+        <p id="appSelectorSkillsetLabel" style="display:none;font-family:'Lato',system-ui,sans-serif;font-size:12px;color:#9ca3af;line-height:1;white-space:nowrap;margin:0;">skillset</p>
+        <div id="customiseSkillsetPanel">
+        <!-- content added in later steps -->
+        </div>
+        <svg id="customiseSkillsetRightBracket" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 15 84" width="16" height="70" aria-hidden="true" style="display:none;flex-shrink:0;opacity:0;transition:opacity 0.22s ease;"><use href="#ShapeBracket" fill="#9ca3af"/></svg>
+        <div id="appSelectorSkillsetPill" style="display:none;position:relative;border-radius:10px;border:1.5px solid #9ca3af;background:white;overflow:visible;cursor:pointer;user-select:none;width:142px;min-width:142px;height:27px;box-sizing:border-box;pointer-events:auto;opacity:0;transform:scale(0.88);transition:opacity 0.22s ease, transform 0.22s cubic-bezier(0.34,1.3,0.64,1);"></div>
+        <svg id="appSelectorSkillsetBracket" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 15 84" width="16" height="70" aria-hidden="true" style="display:none;flex-shrink:0;transform:scaleX(-1);opacity:0;transition:opacity 0.22s ease;"><use href="#ShapeBracket" fill="#9ca3af"/></svg>
+        <div id="appPill" onclick="if(gameState==='playing'||gameState==='paused'||gameState==='readyToUnpause'||gameState==='counting'){showToast('Change app between game rounds.');return;}if(appPillEl.classList.contains('open'))closeAppPill();else openAppPill();">
       
       <!-- Options rendered by JS so selected item can be reordered to top -->
     </div>
   </div>
 </div>
-
-
 
 <div style="position:relative;width:100%;"><div id="skeletonWrapper" style="position:absolute;inset:0;z-index:10;display:flex;flex-direction:column;align-items:flex-start;width:100%;">
 <div id="skeletonLoader" style="width:18px;height:188px;border-radius:9px;background:#e0f2fe;animation:SkeletonGrow 2s cubic-bezier(0.4,0,0.2,1) forwards;margin-right:auto;flex-shrink:0;border:1.5px solid white;box-shadow:0 10px 30px rgba(0,0,0,0.1);"></div>
@@ -197,12 +187,17 @@
   <div id="questionRow"></div>
   <div class="topRow">
     <div class="leftPanel">
+  <div class="confirmButtonsWrap">
+    <div class="confirmButtons">
       <button id="mainBtn" onclick="mainButtonClick()">Start</button>
       <button id="helpBtn" onclick="helpButtonClick()">Help</button>
-      <svg id="confirmBracket" xmlns="http://www.w3.org/2000/svg" viewBox="43 21 15 84">
-        <path d="M43.95,103.55c4.8-.2,7.3-4.4,7.3-9.7v-21.8c0-8.9,4.9-9.5,4.9-9.5l.6-.1-.6-.1s-4.9-.6-4.9-9.5v-21.8c0-5.3-2.5-9.5-7.3-9.7h-.7s4.5,2,4.5,10.3v21c0,7.7,3.6,9.5,6.1,9.8-2.5.3-6.1,2.1-6.1,9.8v21c0,8.3-4.5,10.3-4.5,10.3.2.1.4.1.7,0Z"/>
+    </div>
+
+<svg id="confirmBracket" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 15 84" width="16" height="70">
+        <use href="#ShapeBracket" fill="#9ca3af"/>
       </svg>
     </div>
+  </div>
     <div class="middlePanel">
       <div style="position:relative;display:flex;flex-direction:column;align-items:center;justify-content:center;width:100%;">
           
@@ -280,7 +275,7 @@
 <div id="statsRow" class="page-initially-hidden">
   <span id="statLeft"></span>
   <div id="kbToast"></div>
-  <div id="extKeyPill"></div>
+  <div id="extKeyChip"></div>
   <span id="statRight"></span>
 </div>
 
@@ -319,7 +314,7 @@
   <div id="settingsPanel">
     <div id="settingsPanelInner">
 
-    <!-- ── <div id="cfFilterPill" class="score-clear-pill" style="margin-bottom:8px;">s Settings ─────────────────────────────── -->
+    <!-- ── <div id="cfFilterPill" class="segmented-pill" style="margin-bottom:8px;">s Settings ─────────────────────────────── -->
     <div id="panelConflicts" class="sp-page">
       <div class="sp-col sp-col-left">
         <p class="sp-body" id="browserCompatHeading"></p>
@@ -340,22 +335,30 @@
         </span>
       </div>
         <!-- ── Conflict source filter pill ───────────────── -->
-  <div id="cfFilterPill" class="score-clear-pill" style="margin-bottom:8px;">
-  <button id="cfBtnOs" class="score-pill-seg score-pill-quarter" onclick="setConflictFilter('os')" title="">
+  <div id="cfFilterPill" class="segmented-pill" style="margin-bottom:4px;">
+  <button id="cfBtnOs" class="segmented-pill-section segmented-pill-quarter" onclick="setConflictFilter('os')" title="">
     <span class="diff-btn-text" id="cfOsLabel"></span>
   </button>
-  <button id="cfBtnBrowser" class="score-pill-seg score-pill-quarter" onclick="setConflictFilter('browser')">
+  <button id="cfBtnBrowser" class="segmented-pill-section segmented-pill-quarter" onclick="setConflictFilter('browser')">
     <span class="diff-btn-text" id="cfBrowserLabel"></span>
   </button>
-  <button id="cfBtnFound" class="score-pill-seg score-pill-quarter" onclick="setConflictFilter('found')">
+  <button id="cfBtnFound" class="segmented-pill-section segmented-pill-quarter" onclick="setConflictFilter('found')">
     <span class="diff-btn-text">user found</span>
   </button>
-  <button id="cfBtnKeyboard" class="score-pill-seg score-pill-quarter" onclick="setConflictFilter('keyboard')" title="Keyboard conflicts">
-    <span class="diff-btn-text"><svg viewBox="0 0 110 101.8" style="width:37px;height:30px;display:block;"><use href="#IconKeyboard"/></svg></span>
+  <button id="cfBtnKeyboard" class="segmented-pill-section segmented-pill-quarter" onclick="setConflictFilter('keyboard')" title="extended keys">
+<svg viewBox="0 0 167 101.8"><use href="#IconExtKeyboard"/></svg>
   </button>
 </div>
         <ul id="browserCompatList" class="sp-conflict-list"></ul>
-    
+        <div id="cfFoundSubPanel" style="display:none;">
+          <div id="cfFoundClearWrap"></div>
+          <ul id="cfFoundList" class="sp-conflict-list"></ul>
+          <p id="cfFoundEmpty" style="display:none;font-size:11px;font-style:italic;color:#9ca3af;line-height:1.6;margin:0;">If we stumble upon any problem shortcuts during play, we will block them and they will appear here.</p>
+        </div>
+        <div id="cfKeyboardSubPanel" style="display:none;">
+             <p class="sp-body" style="margin-bottom:8px;">Specify exactly which extended keyboard keys you have:</p>
+          <ul id="cfKeyboardList" class="sp-conflict-list"></ul>
+        </div>
       </div>
     </div>
 
@@ -396,23 +399,23 @@
             </div>
           </span>
         </div>
-        <div class="score-clear-pill">
-          <button id="clearTimeBtn" class="score-pill-seg score-pill-quarter" onclick="_pauseClearClick('time')" title="Clear best time">
+        <div class="segmented-pill">
+          <button id="clearTimeBtn" class="segmented-pill-section segmented-pill-quarter" onclick="_pauseClearClick('time')" title="Clear best time">
             <span class="diff-btn-text"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="14" height="14"><circle cx="12" cy="13" r="8"/><path d="M12 9v4l3 3"/><path d="M9 3h6"/><path d="M12 3v2"/></svg></span>
           </button>
-          <button id="clearBothBtn" class="score-pill-seg score-pill-half" onclick="_pauseClearClick('both')"><span class="diff-btn-text">both</span></button>
-          <button id="clearAccBtn" class="score-pill-seg score-pill-quarter" onclick="_pauseClearClick('accuracy')" title="Clear best accuracy">
+          <button id="clearBothBtn" class="segmented-pill-section segmented-pill-half" onclick="_pauseClearClick('both')"><span class="diff-btn-text">both</span></button>
+          <button id="clearAccBtn" class="segmented-pill-section segmented-pill-quarter" onclick="_pauseClearClick('accuracy')" title="Clear best accuracy">
             <span class="diff-btn-text"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="14" height="14"><circle cx="12" cy="12" r="7"/><line x1="12" y1="2" x2="12" y2="7"/><line x1="12" y1="17" x2="12" y2="22"/><line x1="2" y1="12" x2="7" y2="12"/><line x1="17" y1="12" x2="22" y2="12"/></svg></span>
           </button>
         </div>
-        <div class="score-clear-pill" style="margin-top:8px;">
-          <button id="startOverBtn" class="score-pill-seg score-pill-full" onclick="_pauseStartOverClick()">
+        <div class="segmented-pill" style="margin-top:8px;">
+          <button id="startOverBtn" class="segmented-pill-section segmented-pill-full" onclick="_pauseStartOverClick()">
             <span class="diff-btn-text">clear memory &amp; start fresh</span>
           </button>
         </div></br>
         <p class="sp-body sp-clear-label" style="margin-top:8px;"><strong>Report a problem:</strong></p>
-        <div class="score-clear-pill">
-          <button class="score-pill-seg score-pill-full" onclick="_reportImpossibleQuestion()" title="Report a problem">
+        <div class="segmented-pill">
+          <button class="segmented-pill-section segmented-pill-full" onclick="_reportImpossibleQuestion()" title="Report a problem">
             <span class="diff-btn-text"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="14" height="14"><rect x="2" y="4" width="20" height="16" rx="2"/><polyline points="2,4 12,13 22,4"/></svg></span>
           </button>
         </div>
@@ -429,7 +432,7 @@
           </div>
           <div id="blurDiagnosticChipsArea" style="display:none;align-items:center;justify-content:center;"></div>
           <div id="blurDiagnosticActionArea">
-            <button id="blurDiagnosticRevealBtn" class="score-pill-seg score-pill-full" style="border-radius:12px;border:1.5px solid #d1d5db;" onclick="_blurDiagnosticReveal()"><span class="diff-btn-text">reveal answer</span></button>
+            <button id="blurDiagnosticRevealBtn" class="segmented-pill-section segmented-pill-full" style="border-radius:12px;border:1.5px solid #d1d5db;" onclick="_blurDiagnosticReveal()"><span class="diff-btn-text">reveal answer</span></button>
           </div>
         </div>
         <!-- Right col: single container, text replaced at each stage -->
@@ -448,10 +451,7 @@
     <div class="sp-report-col-header">
       <div class="sp-endgame-header-left" onclick="_toggleEndGameHistory(event)" id="reportCardToggleTrigger">
         <p class="sp-small-card-title">REPORT CARD</p>
-        <svg class="sp-endgame-search-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-          <circle cx="11" cy="11" r="7"/>
-          <line x1="16.5" y1="16.5" x2="22" y2="22"/>
-        </svg>
+        <svg class="sp-endgame-search-icon" viewBox="0 0 24 24"><use href="#IconMagnifier"/></svg>
       </div>
       <p class="sp-report-section-title" id="reportMasteredHeading">Mastered</p>
     </div>
@@ -473,10 +473,7 @@
         <div class="sp-report-col-header">
           <div class="sp-endgame-header-left" onclick="_toggleEndGameHistory(event)">
             <p class="sp-small-card-title">HISTORY VIEW</p>
-           <svg class="sp-endgame-search-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-          <circle cx="11" cy="11" r="7"/>
-          <line x1="16.5" y1="16.5" x2="22" y2="22"/>
-        </svg>
+           <svg class="sp-endgame-search-icon" viewBox="0 0 24 24"><use href="#IconMagnifier"/></svg>
           </div>
           <p class="sp-report-section-title" id="EndGameHistoryMasteredHeading"></p>
         </div>
@@ -744,7 +741,7 @@
             </span>
           </div>
           <div class="modal-kbsize-row" id="modalKbSizeRow">
-            <div id="kbSizeExtendedSide" class="modal-left-label" style="display:flex;flex-direction:row;align-items:center;gap:5px;justify-content:flex-end;"><small id="kbSizeExtendedLabel" class="kb-size-word-label">extended</small><svg id="kbSizeExtendedIcon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 167 101.8" style="width:66px;height:auto;flex-shrink:0;"><path d="M142.1,32.4H24.9c-2.1,0-3.9,1.7-3.9,3.9v29.6c0,2.1,1.7,3.9,3.9,3.9h117.2c2.1,0,3.9-1.7,3.9-3.9v-29.6c0-2.1-1.7-3.9-3.9-3.9ZM143.4,65.9c0,.7-.6,1.3-1.3,1.3H24.9c-.7,0-1.3-.6-1.3-1.3v-29.6c0-.7.6-1.3,1.3-1.3h117.2c.7,0,1.3.6,1.3,1.3v29.6ZM28.7,42.1v-2.6c0-.5.4-.9.9-.9h5.9c.5,0,.9.4.9.9v2.6c0,.5-.4.9-.9.9h-5.9c-.5,0-.9-.4-.9-.9ZM28.7,48.9v-2.6c0-.5.4-.9.9-.9h7.4c.5,0,.9.4.9.9v2.6c0,.5-.4.9-.9.9h-7.4c-.5,0-.9-.4-.9-.9ZM109.4,46.4v2.6c0,.5-.4.9-.9.9h-7.4c-.5,0-.9-.4-.9-.9v-2.6c0-.5.4-.9.9-.9h7.4c.5,0,.9.4.9.9ZM28.7,55.7v-2.6c0-.5.4-.9.9-.9h10.8c.5,0,.9.4.9.9v2.6c0,.5-.4.9-.9.9h-10.8c-.5,0-.9-.4-.9-.9ZM79.3,59.9v2.6c0,.5-.4.9-.9.9h-26.9c-.5,0-.9-.4-.9-.9v-2.6c0-.5.4-.9.9-.9h26.9c.5,0,.9.4.9.9ZM109.4,53.2v2.6c0,.5-.4.9-.9.9h-10.8c-.5,0-.9-.4-.9-.9v-2.6c0-.5.4-.9.9-.9h10.8c.5,0,.9.4.9.9h0ZM38.3,42.2v-2.8c0-.4.3-.8.8-.8h4.4c.4,0,.8.3.8.8v2.8c0,.4-.3.8-.8.8h-4.4c-.4,0-.8-.3-.8-.8ZM46.5,42.2v-2.8c0-.4.3-.8.8-.8h4.4c.4,0,.8.3.8.8v2.8c0,.4-.3.8-.8.8h-4.4c-.4,0-.8-.3-.8-.8ZM54.6,42.2v-2.8c0-.4.3-.8.8-.8h4.4c.4,0,.8.3.8.8v2.8c0,.4-.3.8-.8.8h-4.4c-.4,0-.8-.3-.8-.8ZM62.8,42.2v-2.8c0-.4.3-.8.8-.8h4.4c.4,0,.8.3.8.8v2.8c0,.4-.3.8-.8.8h-4.4c-.4,0-.8-.3-.8-.8ZM70.9,42.2v-2.8c0-.4.3-.8.8-.8h4.4c.4,0,.8.3.8.8v2.8c0,.4-.3.8-.8.8h-4.4c-.4,0-.8-.3-.8-.8ZM79,42.2v-2.8c0-.4.3-.8.8-.8h4.4c.4,0,.8.3.8.8v2.8c0,.4-.3.8-.8.8h-4.4c-.4,0-.8-.3-.8-.8ZM87.2,42.2v-2.8c0-.4.3-.8.8-.8h4.4c.4,0,.8.3.8.8v2.8c0,.4-.3.8-.8.8h-4.4c-.4,0-.8-.3-.8-.8ZM41.3,45.5h4.4c.4,0,.8.3.8.8v2.8c0,.4-.3.8-.8.8h-4.4c-.4,0-.8-.3-.8-.8v-2.8c0-.4.3-.8.8-.8ZM54.2,49.8h-4.4c-.4,0-.8-.3-.8-.8v-2.8c0-.4.3-.8.8-.8h4.4c.4,0,.8.3.8.8v2.8c0,.4-.3.8-.8.8ZM58.3,45.5h4.4c.4,0,.8.3.8.8v2.8c0,.4-.3.8-.8.8h-4.4c-.4,0-.8-.3-.8-.8v-2.8c0-.4.3-.8.8-.8ZM71.2,49.8h-4.4c-.4,0-.8-.3-.8-.8v-2.8c0-.4.3-.8.8-.8h4.4c.4,0,.8.3.8.8v2.8c0,.4-.3.8-.8.8ZM79.7,49.8h-4.4c-.4,0-.8-.3-.8-.8v-2.8c0-.4.3-.8.8-.8h4.4c.4,0,.8.3.8.8v2.8c0,.4-.3.8-.8.8ZM88.2,45.5c.4,0,.8.3.8.8v2.8c0,.4-.3.8-.8.8h-4.4c-.4,0-.8-.3-.8-.8v-2.8c0-.4.3-.8.8-.8h4.4ZM96.7,45.5c.4,0,.8.3.8.8v2.8c0,.4-.3.8-.8.8h-4.4c-.4,0-.8-.3-.8-.8v-2.8c0-.4.3-.8.8-.8h4.4ZM49.8,53.1v2.8c0,.4-.3.8-.8.8h-4.4c-.4,0-.8-.3-.8-.8v-2.8c0-.4.3-.8.8-.8h4.4c.4,0,.8.3.8.8ZM57.8,52.3c.4,0,.8.3.8.8v2.8c0,.4-.3.8-.8.8h-4.4c-.4,0-.8-.3-.8-.8v-2.8c0-.4.3-.8.8-.8h4.4ZM66.6,52.3c.4,0,.8.3.8.8v2.8c0,.4-.3.8-.8.8h-4.4c-.4,0-.8-.3-.8-.8v-2.8c0-.4.3-.8.8-.8h4.4ZM70.2,55.9v-2.8c0-.4.3-.8.8-.8h4.4c.4,0,.8.3.8.8v2.8c0,.4-.3.8-.8.8h-4.4c-.4,0-.8-.3-.8-.8ZM84.2,56.6h-4.4c-.4,0-.8-.3-.8-.8v-2.8c0-.4.3-.8.8-.8h4.4c.4,0,.8.3.8.8v2.8c0,.4-.3.8-.8.8ZM93,56.6h-4.4c-.4,0-.8-.3-.8-.8v-2.8c0-.4.3-.8.8-.8h4.4c.4,0,.8.3.8.8v2.8c0,.4-.3.8-.8.8ZM118.2,55.9v-2.8c0-.4.3-.8.8-.8h4.4c.4,0,.8.3.8.8v2.8c0,.4-.3.8-.8.8h-4.4c-.4,0-.8-.3-.8-.8ZM95.3,42.2v-2.8c0-.4.3-.8.8-.8h4.4c.4,0,.8.3.8.8v2.8c0,.4-.3.8-.8.8h-4.4c-.4,0-.8-.3-.8-.8ZM109.4,39.5v2.8c0,.4-.3.8-.8.8h-4.4c-.4,0-.8-.3-.8-.8v-2.8c0-.4.3-.8.8-.8h4.4c.4,0,.8.3.8.8ZM118.2,42.2v-2.8c0-.4.3-.8.8-.8h4.4c.4,0,.8.3.8.8v2.8c0,.4-.3.8-.8.8h-4.4c-.4,0-.8-.3-.8-.8ZM118.2,49.2v-2.8c0-.4.3-.8.8-.8h4.4c.4,0,.8.3.8.8v2.8c0,.4-.3.8-.8.8h-4.4c-.4,0-.8-.3-.8-.8ZM118.2,62.2v-2.8c0-.4.3-.8.8-.8h4.4c.4,0,.8.3.8.8v2.8c0,.4-.3.8-.8.8h-4.4c-.4,0-.8-.3-.8-.8ZM126.2,55.9v-2.8c0-.4.3-.8.8-.8h4.4c.4,0,.8.3.8.8v2.8c0,.4-.3.8-.8.8h-4.4c-.4,0-.8-.3-.8-.8ZM126.2,42.2v-2.8c0-.4.3-.8.8-.8h4.4c.4,0,.8.3.8.8v2.8c0,.4-.3.8-.8.8h-4.4c-.4,0-.8-.3-.8-.8ZM126.2,49.2v-2.8c0-.4.3-.8.8-.8h4.4c.4,0,.8.3.8.8v2.8c0,.4-.3.8-.8.8h-4.4c-.4,0-.8-.3-.8-.8ZM126.2,62.2v-2.8c0-.4.3-.8.8-.8h4.4c.4,0,.8.3.8.8v2.8c0,.4-.3.8-.8.8h-4.4c-.4,0-.8-.3-.8-.8ZM134.2,55.9v-2.8c0-.4.3-.8.8-.8h4.4c.4,0,.8.3.8.8v2.8c0,.4-.3.8-.8.8h-4.4c-.4,0-.8-.3-.8-.8ZM134.2,42.2v-2.8c0-.4.3-.8.8-.8h4.4c.4,0,.8.3.8.8v2.8c0,.4-.3.8-.8.8h-4.4c-.4,0-.8-.3-.8-.8ZM134.2,49.2v-2.8c0-.4.3-.8.8-.8h4.4c.4,0,.8.3.8.8v2.8c0,.4-.3.8-.8.8h-4.4c-.4,0-.8-.3-.8-.8ZM134.2,62.2v-2.8c0-.4.3-.8.8-.8h4.4c.4,0,.8.3.8.8v2.8c0,.4-.3.8-.8.8h-4.4c-.4,0-.8-.3-.8-.8ZM48.9,59.8v2.8c0,.4-.3.8-.8.8h-4.4c-.4,0-.8-.3-.8-.8v-2.8c0-.4.3-.8.8-.8h4.4c.4,0,.8.3.8.8ZM41.8,59.8v2.8c0,.4-.3.8-.8.8h-4.4c-.4,0-.8-.3-.8-.8v-2.8c0-.4.3-.8.8-.8h4.4c.4,0,.8.3.8.8ZM34.7,59.8v2.8c0,.4-.3.8-.8.8h-4.4c-.4,0-.8-.3-.8-.8v-2.8c0-.4.3-.8.8-.8h4.4c.4,0,.8.3.8.8ZM87,59.8v2.8c0,.4-.3.8-.8.8h-4.3c-.4,0-.8-.3-.8-.8v-2.8c0-.4.3-.8.8-.8h4.3c.4,0,.8.3.8.8ZM94.5,59.8v2.8c0,.4-.3.8-.8.8h-4.3c-.4,0-.8-.3-.8-.8v-2.8c0-.4.3-.8.8-.8h4.3c.4,0,.8.3.8.8ZM102,59.8v2.8c0,.4-.3.8-.8.8h-4.3c-.4,0-.8-.3-.8-.8v-2.8c0-.4.3-.8.8-.8h4.3c.4,0,.8.3.8.8ZM109.4,59.8v2.8c0,.4-.3.8-.8.8h-4.3c-.4,0-.8-.3-.8-.8v-2.8c0-.4.3-.8.8-.8h4.3c.4,0,.8.3.8.8Z"/></svg></div>
+            <div id="kbSizeExtendedSide" class="modal-left-label" style="display:flex;flex-direction:row;align-items:center;gap:5px;justify-content:flex-end;"><small id="kbSizeExtendedLabel" class="kb-size-word-label">extended</small><svg id="kbSizeExtendedIcon" viewBox="0 0 167 101.8" style="width:66px;height:auto;flex-shrink:0;"><use href="#IconExtKeyboard"/></svg></div>
             <div class="modal-switch-wrap">
               <label class="os-switch" title="Keyboard size" style="cursor:pointer;">
                 <input type="checkbox" id="modalKbSizeToggle" onchange="onKbSizeToggle()">
@@ -896,12 +893,12 @@
 <p id="credit" class="page-initially-hidden"><em>Built for learners.</em><small> This digital toy was created by Wednesday Dessauer &amp; is free to adapt under Polyform Non-Commercial 1.0.0</small></p>
 
 <div id="diffIconWrap" class="page-initially-hidden">
-  <svg id="diffIcon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 90 90" style="width:44px;height:auto;" cursor="pointer">
+ <svg id="diffIcon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 90 90" style="width:44px;height:auto;" cursor="pointer">
     <use href="#IconDifficultyStatic"/>
     <g id="Needle" style="transform:rotate(-60deg)">
-      <path class="gauge-stroke" d="M50.1,40.4c3.9,1.9,6.5,5.9,6.5,10.5s-5.2,11.7-11.7,11.7-11.7-5.2-11.7-11.7,2.6-8.5,6.5-10.5"/>
-      <path d="M46.9,45.1l-1.1-16.9c0-1.2-1.8-1.2-1.9,0l-1.1,17c0,.8-.4,1.6-1,2.1-1.1,1-1.8,2.6-1.4,4.4s1.8,3.3,3.6,3.6c3,.6,5.7-1.7,5.7-4.6s-.7-2.8-1.8-3.7-.9-1.2-1-2ZM44.2,54.4c-1.3-.3-2.4-1.2-2.8-2.5s-.1-2.2.4-3c0,0,0,0,0-.1,0-.1.2-.3.3-.4,0,0,.1-.1.2-.2,0,0,0-.1.2-.2h0c.6-.5,1.4-.8,2.3-.8s1.5.2,2.1.7h0c1,.6,1.6,1.7,1.6,3,0,2.3-2.1,4.1-4.4,3.6Z"/>
-      <circle cx="45" cy="50.9" r="2.7"/>
+    <path class="gauge-stroke" fill="none" stroke="currentColor" d="M50.1,40.4c3.9,1.9,6.5,5.9,6.5,10.5s-5.2,11.7-11.7,11.7-11.7-5.2-11.7-11.7,2.6-8.5,6.5-10.5"/>
+    <path fill="currentColor" d="M46.9,45.1l-1.1-16.9c0-1.2-1.8-1.2-1.9,0l-1.1,17c0,.8-.4,1.6-1,2.1-1.1,1-1.8,2.6-1.4,4.4s1.8,3.3,3.6,3.6c3,.6,5.7-1.7,5.7-4.6s-.7-2.8-1.8-3.7-.9-1.2-1-2ZM44.2,54.4c-1.3-.3-2.4-1.2-2.8-2.5s-.1-2.2.4-3c0,0,0,0,0-.1,0-.1.2-.3.3-.4,0,0,.1-.1.2-.2,0,0,0-.1.2-.2h0c.6-.5,1.4-.8,2.3-.8s1.5.2,2.1.7h0c1,.6,1.6,1.7,1.6,3,0,2.3-2.1,4.1-4.4,3.6Z"/>
+    <circle fill="currentColor" cx="45" cy="50.9" r="2.7"/>
     </g>
   </svg>
   <span class="icon-tip">difficulty<br>settings</span>
@@ -1327,7 +1324,8 @@ function showToast(msg, duration) {
     var inner = document.getElementById('settingsPanelInner');
     if (inner) {
       var r = inner.getBoundingClientRect();
-      left = Math.round(r.left + window.scrollX + r.width / 2);
+      var xOffset = (activeSettings === 'panelConflicts') ? -(r.width / 4) : 0;
+      left = Math.round(r.left + window.scrollX + r.width / 2 + xOffset);
       top  = Math.round(r.top  + window.scrollY + r.height / 2);
     }
   }
@@ -1536,7 +1534,10 @@ function applyOsMode(os) {
   }
   _syncKbCountFromVariant();
   if (activeSettings !== null) _spAlignPanel();
-
+  if (activeSettings === 'panelConflicts') {
+    conflictsKbLighting.deactivate();
+    conflictsKbLighting.activate();
+  }
   // Restore keyboard position without any animation after DOM rebuild.
   if (savedPos !== 'face') {
     _kbPos     = savedPos;
@@ -1658,22 +1659,6 @@ function updateMismatchPill() {
   }
 }
 
-// On mobile: auto-enable sticky + touch modes, show updated message
-if (detectedOs === 'mobile') {
-  var _mobileHasExternalKeyboard = false;
-  try { _mobileHasExternalKeyboard = localStorage.getItem('kw_has_keyboard') === '1'; } catch(StorageError) {}
-  if (!_mobileHasExternalKeyboard) {
-    setStickyKeys(true);
-    setTouchEnabled(true);
-    document.getElementById('stickyRow').classList.add('disabled');
-    if (!_pillDismissedThisSession) {
-      osMismatchEl.textContent = 'We recommend training with a real mechanical keyboard.';
-      osMismatchEl.classList.add('show');
-      _startPillAutoHideTimer();
-    }
-  }
-}
-
 // Set the initial toggle position to match the detected OS
 // (defaults to PC for unknown/other systems)
 buildOsLabels();
@@ -1706,30 +1691,12 @@ function updateKeyboardMode() {
   }
 }
 
-window.addEventListener('resize', function() {
-  updateKeyboardMode();
-  if (activeSettings !== null) _spAlignPanel();
-});
-
 function _initialiseLayout() {
   updateKeyboardMode();
   updateMismatchPill();
   document.getElementById('keyboardPanel').classList.toggle('pc-keys', currentOs === 'pc');
 
-  // Suppress the wall's visibility for the first two animation frames.
-  // This prevents it flashing during the 3D stacking-context setup, even if
-  // concurrent code (e.g. the 80ms welcome-screen timer) adds kb-edged
-  // before the first paint settles. The class is defined inline in the <style>
-  // block and forces opacity:0 + transition:none on #kb-wall-bottom regardless
-  // of kb-edged state.
-  var Panel = document.getElementById('keyboardPanel');
-  Panel.classList.add('kb-wall-init');
-  requestAnimationFrame(function() {
-    requestAnimationFrame(function() {
-      Panel.classList.remove('kb-wall-init');
-      _revealPageContent();
-    });
-  });
+  _revealPageContent();
 
 
 var KeyboardPanelResizeObserver = new ResizeObserver(function(ObservedEntries) {
@@ -1836,7 +1803,6 @@ const TOKEN_TO_BROWSER_CODE = {
   'SCROLLLOCK':  'ScrollLock',
   'PAUSE':       'Pause',
   'NUMLOCK':     'NumLock',
-  'CLEAR':       'NumLock',
   'FN':          'Fn',
   // Punctuation
   'EQUAL':        'Equal',
@@ -1862,10 +1828,20 @@ const TOKEN_TO_BROWSER_CODE = {
   'NUMPADDIVIDE':   'NumpadDivide',
   'NUMPADDECIMAL':  'NumpadDecimal',
   'NUMPADENTER':    'NumpadEnter',
-  // Function keys
+  'NUMPADEQUAL':    'NumpadEqual',
+  'NUMPADCOMMA':    'NumpadComma',
+  'CLEAR':          'NumpadClear',
+  'CONTEXTMENU':    'ContextMenu',
+  'HELP':           'Help',
+    // Function keys
   'F1':'F1','F2':'F2','F3':'F3','F4':'F4',
   'F5':'F5','F6':'F6','F7':'F7','F8':'F8',
   'F9':'F9','F10':'F10','F11':'F11','F12':'F12',
+      // extended KB Function keys
+  'F13': 'F13', 'F14': 'F14', 'F15': 'F15', 'F16': 'F16',
+  'F17': 'F17', 'F18': 'F18', 'F19': 'F19', 'F20': 'F20',
+  'F21': 'F21', 'F22': 'F22', 'F23': 'F23', 'F24': 'F24',
+
 };
 
 /* ── Synonym map — every accepted alias → canonical token ───────────────── */
@@ -1876,7 +1852,7 @@ const TOKEN_SYNONYM_MAP = {
   'ALT':         'OPTION',
   'WINDOWS':     'WIN',
   'FUNCTION':    'FN',
-  'CLEAR':       'NUMLOCK',
+  'APPS':        'CONTEXTMENU',
   'ENTER':       'RETURN',
   'SPACEBAR':    'SPACE',
   'DEL':         'BACKSPACE',
@@ -2284,10 +2260,10 @@ function clearAllLit() {
   });
 
   clearTimeout(ExtendedKeyPillTimer);
-  ExtendedKeyPillElement.style.opacity = '';
-  ExtendedKeyPillElement.style.transition = '';
-  ExtendedKeyPillElement.style.display = 'none';
-  ExtendedKeyPillElement.innerHTML = '';
+  ExtendedKeyChipElement.style.opacity = '';
+  ExtendedKeyChipElement.style.transition = '';
+  ExtendedKeyChipElement.style.display = 'none';
+  ExtendedKeyChipElement.innerHTML = '';
   greenHeld.clear();
   stickyLit.clear();
 }
@@ -2325,21 +2301,42 @@ function checkStickyShortcut() {
   });
 }
 
-
 // Extended key labels for the ghost pill
 // Maps browser key codes for extended (non-graphical-keyboard) keys to their token strings.
-// Used to detect extended key presses and render them as chips in #extKeyPill.
-const ExtendedKeyCodeToToken = {
-  'Home': 'home', 'End': 'end',
+// Used to detect extended key presses and render them as chips in #extKeyChip.
+var ExtendedKeyCodeToToken = {
+  'Home': 'HOME', 'End': 'END',
   'PageUp': 'PAGEUP', 'PageDown': 'PAGEDOWN',
   'Insert': 'INSERT', 'Delete': 'DELETE',
   'PrintScreen': 'PRINTSCREEN', 'ScrollLock': 'SCROLLLOCK', 'Pause': 'PAUSE',
-  'NumLock': 'NUMLOCK', 'Clear': 'NUMLOCK',
+  'NumLock': currentOs === 'mac' ? 'CLEAR' : 'NUMLOCK', 'NumpadClear': 'CLEAR',
+  'ContextMenu': 'CONTEXTMENU',
+  'Help': 'HELP',
+  'F13': 'F13', 'F14': 'F14', 'F15': 'F15', 'F16': 'F16',
+  'F17': 'F17', 'F18': 'F18', 'F19': 'F19', 'F20': 'F20',
+  'F21': 'F21', 'F22': 'F22', 'F23': 'F23', 'F24': 'F24',
+  'NumpadEqual': 'NUMPADEQUAL', 'NumpadComma': 'NUMPADCOMMA',
 };
-const ExtendedKeyPillElement = document.getElementById('extKeyPill');
+const ExtendedKeyChipElement = document.getElementById('extKeyChip');
 let ExtendedKeyPillTimer = null;
 
-function ShowExtendedKeyPill(BrowserCode, ColourState) {
+// On mobile: auto-enable sticky + touch modes, show updated message
+if (detectedOs === 'mobile') {
+  var _mobileHasExternalKeyboard = false;
+  try { _mobileHasExternalKeyboard = localStorage.getItem('kw_has_keyboard') === '1'; } catch(StorageError) {}
+  if (!_mobileHasExternalKeyboard) {
+    setStickyKeys(true);
+    setTouchEnabled(true);
+    document.getElementById('stickyRow').classList.add('disabled');
+    if (!_pillDismissedThisSession) {
+      osMismatchEl.textContent = 'We recommend training with a real mechanical keyboard.';
+      osMismatchEl.classList.add('show');
+      _startPillAutoHideTimer();
+    }
+  }
+}
+    
+function ShowExtendedKeyChip(BrowserCode, ColourState) {
   var Token = ExtendedKeyCodeToToken[BrowserCode];
   if (!Token) return;
 
@@ -2356,7 +2353,7 @@ function ShowExtendedKeyPill(BrowserCode, ColourState) {
   }
 
   clearTimeout(ExtendedKeyPillTimer);
-  ExtendedKeyPillElement.innerHTML = '';
+  ExtendedKeyChipElement.innerHTML = '';
   var ChipsWrapper = BuildShortcutKeyChips(Token, false);
   ChipsWrapper.style.cssText = 'display:inline-flex;align-items:center;justify-content:center;';
 
@@ -2380,20 +2377,20 @@ function ShowExtendedKeyPill(BrowserCode, ColourState) {
   }
   // Unstyled: chips render with their default appearance (no background fill)
 
-  ExtendedKeyPillElement.appendChild(ChipsWrapper);
-  ExtendedKeyPillElement.style.display = 'flex';
-  ExtendedKeyPillElement.style.opacity = '1';
+  ExtendedKeyChipElement.appendChild(ChipsWrapper);
+  ExtendedKeyChipElement.style.display = 'flex';
+  ExtendedKeyChipElement.style.opacity = '1';
 }
 
 function HideExtendedKeyPill() {
   clearTimeout(ExtendedKeyPillTimer);
   ExtendedKeyPillTimer = setTimeout(function() {
-    ExtendedKeyPillElement.style.transition = 'opacity 0.9s ease';
-    ExtendedKeyPillElement.style.opacity = '0';
+    ExtendedKeyChipElement.style.transition = 'opacity 0.9s ease';
+    ExtendedKeyChipElement.style.opacity = '0';
     ExtendedKeyPillTimer = setTimeout(function() {
-      ExtendedKeyPillElement.style.display = 'none';
-      ExtendedKeyPillElement.style.transition = '';
-      ExtendedKeyPillElement.innerHTML = '';
+      ExtendedKeyChipElement.style.display = 'none';
+      ExtendedKeyChipElement.style.transition = '';
+      ExtendedKeyChipElement.innerHTML = '';
     }, 900);
   }, LINGER_MS);
 }
@@ -2405,7 +2402,10 @@ const NUMPAD_MAP = {
   'Numpad8':'Digit8','Numpad9':'Digit9',
   'NumpadAdd':'Equal','NumpadSubtract':'Minus','NumpadDecimal':'Period',
   'NumpadDivide':'Slash','NumpadMultiply':'Digit8',
-  'NumpadEnter':'Enter',
+  'NumpadEnter':   'Enter',
+  'NumpadEqual':   'Equal',
+  'NumpadComma':   'Comma',
+  'ContextMenu':   'ContextMenu',
 };
 
 function updateKeyboardLighting(e, isDown) {
@@ -2416,11 +2416,11 @@ function updateKeyboardLighting(e, isDown) {
     if (CapsLockKeyElement) {
       if (touchEnabled) {
         // In touch mode, toggle the indicator state manually
-        CapsLockKeyElement.classList.toggle('lit-caps-active');
+        CapsLockKeyElement.classList.toggle('lit-yellow-up');
       } else {
         // In normal mode, sync directly with the real OS state
         const CapsLockIsActive = e.getModifierState('CapsLock');
-        CapsLockKeyElement.classList.toggle('lit-caps-active', CapsLockIsActive);
+        CapsLockKeyElement.classList.toggle('lit-yellow-up', CapsLockIsActive);
       }
     }
     return;
@@ -2461,12 +2461,12 @@ function updateKeyboardLighting(e, isDown) {
     stickyLit.set(code, colour);
     if (isCorrect) {
       greenHeld.add(code);
-      if (isExtKey) ShowExtendedKeyPill(ResolvedCode, 'green');
+      if (isExtKey) ShowExtendedKeyChip(ResolvedCode, 'green');
       else          setKeyLit(ResolvedCode, 'green-down');
       if ((!isModifier || isBareModifierQuestion) && !isSilent) { greenHits++; totalHits++; updateAccuracyDisplay(); }
       checkAndArmPartialShortcutNudge();
     } else {
-      if (isExtKey) ShowExtendedKeyPill(ResolvedCode, 'orange');
+      if (isExtKey) ShowExtendedKeyChip(ResolvedCode, 'orange');
       else          setKeyLit(ResolvedCode, 'orange-down');
       if ((!isModifier || isBareModifierQuestion) && !isSilent) { totalHits++; updateAccuracyDisplay(); }
       resetPartialShortcutNudgeTimers();
@@ -2480,18 +2480,18 @@ function updateKeyboardLighting(e, isDown) {
     heldKeys.add(code);
     if (gameState !== 'playing') {
       greenHeld.add(code);
-      if (isExtKey) ShowExtendedKeyPill(ResolvedCode, null);
+      if (isExtKey) ShowExtendedKeyChip(ResolvedCode, null);
       else          setKeyLit(ResolvedCode, 'green-down');
     } else {
       const isCorrect = isKeyPartOfShortcut(e, currentAnswer);
       if (isCorrect) {
         greenHeld.add(code);
-        if (isExtKey) ShowExtendedKeyPill(ResolvedCode, 'green');
+        if (isExtKey) ShowExtendedKeyChip(ResolvedCode, 'green');
         else          setKeyLit(ResolvedCode, 'green-down');
         if (!alreadyHeld && (!isModifier || isBareModifierQuestion) && !isSilent) { greenHits++; totalHits++; updateAccuracyDisplay(); }
         checkAndArmPartialShortcutNudge();
       } else {
-        if (isExtKey) ShowExtendedKeyPill(ResolvedCode, 'orange');
+        if (isExtKey) ShowExtendedKeyChip(ResolvedCode, 'orange');
         else          setKeyLit(ResolvedCode, 'orange-down');
         if (!alreadyHeld && (!isModifier || isBareModifierQuestion) && !isSilent) { totalHits++; updateAccuracyDisplay(); }
         resetPartialShortcutNudgeTimers();
@@ -2537,11 +2537,11 @@ function updateKeyboardLighting(e, isDown) {
    GAME STATE
    States: idle | playing | paused | confirm-quit | confirm-reset | finished
 ══════════════════════════════════════ */
-let gameState = 'idle';
-let currentMedal = null;
-let _confirmFromFinished  = false;
-let _cheatsheetSavedTitle = '';
-let _confirmFromPause     = false; // true when confirm-reset entered from active paused game
+var gameState = 'idle';
+var currentMedal = null;
+var _confirmFromFinished  = false;
+var _cheatsheetSavedTitle = '';
+var _confirmFromPause     = false; // true when confirm-reset entered from active paused game
 let _welcomeIsReturning   = false; // true when the returning-visitor landing screen is showing
 let _pendingDifficulty   = null;  // difficulty mode awaiting confirmation
 let _prevDifficulty      = null;  // difficulty to restore on cancel
@@ -3308,7 +3308,7 @@ function enterConfirmReset(target) {
     var pill = _scoreClearPillForTarget(target);
     if (pill) pill.classList.add('score-confirm-source');
     var btn = _scoreClearBtnForTarget(target);
-    if (btn) { btn.classList.add('score-pill-active'); _popScorePillLabel(btn); }
+    if (btn) { btn.classList.add('segmented-pill-active'); _popScorePillLabel(btn); }
     _scoreClearConfirmTarget = target;
     document.addEventListener('click', _scoreClearConfirmGuard, true);
   }
@@ -3843,8 +3843,9 @@ function resetToIdle() {
 // APPS and APP_JSON_FILE_PATH are populated at runtime from KeyboardWarriors Apps json.
 // Until the fetch resolves these remain empty; init is deferred to _onAppsLoaded().
 var APPS = [];
-var appsLongList  = [];
-var appsShortList = [];
+var appsLongList    = [];
+var appsShortList   = [];
+var appsStandbyList = [];
 var APP_JSON_FILE_PATH = {};
 
 // Each row is 22px. Closed: scroll to show selected row.
@@ -3860,6 +3861,7 @@ var AppPillWrenchOpen = false;
 function _saveAppsShortList() {
   if (!_appListInitialised) return;
   try { localStorage.setItem('kw_apps_short_list', JSON.stringify(appsShortList)); } catch (StorageError) {}
+  try { localStorage.setItem('kw_apps_standby_list', JSON.stringify(appsStandbyList)); } catch (StorageError) {}
 }
 
 function _MakeAppPillCaretSvg() {
@@ -3885,6 +3887,7 @@ function buildAppPill() {
     return;
   }
 
+  var VisibleLabels = new Set(appsShortList.concat(appsStandbyList));
   appsShortList.forEach(function(AppLabel) {
     var AppEntry = appsLongList.find(function(App) { return App.label === AppLabel; });
     if (!AppEntry) return;
@@ -4034,8 +4037,13 @@ function _AnimateWrenchDot(RadioSpanElement, GoingActive) {
 function _buildWrenchPickerRows() {
   appPillEl.innerHTML = '';
 
-  appsLongList.forEach(function(AppEntry) {
-    var IsInShortList = appsShortList.includes(AppEntry.label);
+  var VisibleApps = appsLongList.filter(function(AppEntry) {
+    return appsShortList.indexOf(AppEntry.label) !== -1 ||
+           appsStandbyList.indexOf(AppEntry.label) !== -1;
+  });
+
+  VisibleApps.forEach(function(AppEntry) {
+    var IsInShortList = appsShortList.indexOf(AppEntry.label) !== -1;
     var IsBetaApp     = !!AppEntry.beta;
 
     var Row = document.createElement('div');
@@ -4088,19 +4096,39 @@ function _buildWrenchPickerRows() {
     ClickEvent.stopPropagation();
     _closeWrenchPicker();
   });
-  appPillEl.appendChild(WrenchRow);
+  var SkillsetsButton = document.createElement('div');
+  SkillsetsButton.className = 'app-option app-option-wrench app-option-skillsets';
+  SkillsetsButton.innerHTML = '<svg style="width:14px;height:14px;flex-shrink:0;"><use href="#IconMagnifier"/></svg><span>' + (AppSelectorSkillsetPillIsOpen ? 'less' : 'more') + '</span>';
+  SkillsetsButton.addEventListener('click', function(ClickEvent) {
+    ClickEvent.stopPropagation();
+    if (AppSelectorSkillsetPillIsOpen) {
+      _hideAppSelectorSkillsetPill();
+    } else {
+      _showAppSelectorSkillsetPill();
+    }
+  });
+
+
+  var WrenchBottomRow = document.createElement('div');
+  WrenchBottomRow.className = 'app-option-wrench-bottom-row';
+  WrenchBottomRow.appendChild(WrenchRow);
+  WrenchBottomRow.appendChild(SkillsetsButton);
+  appPillEl.appendChild(WrenchBottomRow);
+
 }
 
 function _toggleWrenchPickerApp(AppLabel, RowElement, IconColumnElement, LabelSpanElement) {
-  var IsCurrentlyActive = appsShortList.includes(AppLabel);
+  var IsCurrentlyActive = appsShortList.indexOf(AppLabel) !== -1;
   if (IsCurrentlyActive) {
     if (appsShortList.length <= 1) { showToast('You need at least one app in your list.'); return; }
     appsShortList = appsShortList.filter(function(Label) { return Label !== AppLabel; });
+    if (appsStandbyList.indexOf(AppLabel) === -1) appsStandbyList.push(AppLabel);
     _AnimateWrenchDot(IconColumnElement, false);
     LabelSpanElement.style.color = '#d1d5db';
     LabelSpanElement.style.textDecoration = 'line-through';
   } else {
     appsShortList.push(AppLabel);
+    appsStandbyList = appsStandbyList.filter(function(Label) { return Label !== AppLabel; });
     _AnimateWrenchDot(IconColumnElement, true);
     LabelSpanElement.style.color = '#374151';
     LabelSpanElement.style.textDecoration = '';
@@ -4308,6 +4336,8 @@ function _openWrenchPicker() {
     appPillEl.classList.remove('drop-down');
     appPillEl.scrollTop = 0;
     buildAppPill();
+    // Suppress title while wrench picker is open
+    titleEl.classList.add('app-pill-open');
 
     var OpenHeight = _AppPillMeasureNaturalHeight();
 
@@ -4329,15 +4359,20 @@ function _openWrenchPicker() {
 
 function _closeWrenchPicker() {
     AppPillWrenchOpen = false;
+    _hideAppSelectorSkillsetPill();
     var selectorLabel = document.getElementById('appSelectorLabel');
     if (selectorLabel) selectorLabel.textContent = 'choose app to train in next';    appPillEl.removeEventListener('dragover', _onWrenchDragOver);
     appPillEl.removeEventListener('drop',     _onWrenchDrop);
 
 
-    var ActiveApps   = appsLongList.filter(function(AppEntry) { return appsShortList.includes(AppEntry.label); });
-    var InactiveApps = appsLongList.filter(function(AppEntry) { return !appsShortList.includes(AppEntry.label); });
-    appsLongList = ActiveApps.concat(InactiveApps);
-    appsShortList = ActiveApps.map(function(AppEntry) { return AppEntry.label; });
+    var ActiveApps   = appsLongList.filter(function(AppEntry) { return appsShortList.indexOf(AppEntry.label) !== -1; });
+    var StandbyApps  = appsLongList.filter(function(AppEntry) { return appsStandbyList.indexOf(AppEntry.label) !== -1; });
+    var HiddenApps   = appsLongList.filter(function(AppEntry) {
+      return appsShortList.indexOf(AppEntry.label) === -1 && appsStandbyList.indexOf(AppEntry.label) === -1;
+    });
+    appsLongList    = ActiveApps.concat(StandbyApps).concat(HiddenApps);
+    appsShortList   = ActiveApps.map(function(AppEntry) { return AppEntry.label; });
+    appsStandbyList = StandbyApps.map(function(AppEntry) { return AppEntry.label; });
 
     if (!appsShortList.includes(currentApp)) {
         currentApp = appsShortList[0];
@@ -4347,12 +4382,20 @@ function _closeWrenchPicker() {
     _saveAppsShortList();
 
 // Return to the open drop-down rather than collapsing
-    buildAppPill();
-    var OpenHeight = _AppPillMeasureNaturalHeight();
-    var PillRect = appPillEl.getBoundingClientRect();
-    var Geometry = _AppPillCalculateOpenGeometry(OpenHeight, PillRect);
-    appPillEl.scrollTop = 0;
-    _AppPillAnimateTo(OpenHeight, Geometry.TranslateY, Geometry.SpacerHeight);
+buildAppPill();
+var OpenHeight = _AppPillMeasureNaturalHeight();
+
+// Reset spring's current position to the actual DOM height before animating,
+// so it knows to shrink (not just coast) when the new list is shorter
+var Spring = _AppPillSpring;
+Spring.CurrentHeight = parseFloat(appPillEl.style.height) || Spring.CurrentHeight;
+Spring.HeightVelocity = 0;
+
+var PillRect = appPillEl.getBoundingClientRect();
+var Geometry = _AppPillCalculateOpenGeometry(OpenHeight, PillRect);
+appPillEl.scrollTop = 0;
+_AppPillAnimateTo(OpenHeight, Geometry.TranslateY, Geometry.SpacerHeight);
+
 }
 
 
@@ -4472,12 +4515,22 @@ function _AppPillSpringTick() {
 
 function _AppPillAnimateTo(TargetHeightPixels, TargetTranslateY, TargetSpacerHeight) {
     var Spring = _AppPillSpring;
-    Spring.TargetHeight = TargetHeightPixels;
-    Spring.TargetTranslateY = TargetTranslateY || 0;
+    if (Spring.AnimationFrame) {
+        cancelAnimationFrame(Spring.AnimationFrame);
+        Spring.AnimationFrame = null;
+    }
+    var ActualCurrentHeight = parseFloat(appPillEl.style.height) || Spring.CurrentHeight;
+    if (Math.abs(ActualCurrentHeight - Spring.CurrentHeight) > 1) {
+        Spring.CurrentHeight  = ActualCurrentHeight;
+        Spring.HeightVelocity = 0;
+    }
+    Spring.TargetHeight       = TargetHeightPixels;
+    Spring.TargetTranslateY   = TargetTranslateY || 0;
     Spring.TargetSpacerHeight = TargetSpacerHeight || 0;
-    if (Spring.AnimationFrame) return;
     Spring.AnimationFrame = requestAnimationFrame(_AppPillSpringTick);
 }
+
+
 
 function _AppPillMeasureNaturalHeight() {
     var PreviousOverflow = appPillEl.style.overflow;
@@ -4577,7 +4630,8 @@ function openAppPill() {
 
 function closeAppPill() {
     AppPillWrenchOpen = false;
-     var selectorLabel = document.getElementById('appSelectorLabel');
+    _hideAppSelectorSkillsetPill(); // ADD THIS LINE
+    var selectorLabel = document.getElementById('appSelectorLabel');
      if (selectorLabel) selectorLabel.textContent = 'now training on';
     appPillEl.classList.remove('open');
     titleEl.classList.remove('app-pill-open');
@@ -4633,18 +4687,29 @@ function setStickyKeys(on) {
 function setKbSizeToggle(full) {
   hasFullKeyboard = full;
   try { localStorage.setItem('kw_kb_full', String(full)); } catch(e) {}
+  // Guard: these may not be initialised yet during startup on mobile
+  if (typeof dismissedConflicts !== 'undefined' && typeof kbKeyOverrides !== 'undefined') {
+    _syncExtendedKeysToBaseline(full);
+  }
+if (
+  typeof DIFF_RANGE !== 'undefined' &&
+  typeof currentDifficulty !== 'undefined' &&
+  typeof buildPool === 'function' &&
+  gameState !== 'playing' &&
+  gameState !== 'paused' &&
+  gameState !== 'readyToUnpause'
+) {
+  questionPool = shuffleArray(buildPool());
+}
   updateKbSizeToggle();
+  if (activeSettings === 'panelConflicts') conflictsKbLighting.refresh();
 }
 
 function updateKbSizeToggle() {
   var row     = document.getElementById('modalKbSizeRow');
   var knob    = document.getElementById('modalKbSizeKnob');
   var tog     = document.getElementById('modalKbSizeToggle');
-  if (!knob) return;
   var isCompact = !hasFullKeyboard;
-  knob.style.transform = isCompact ? 'translateX(22px)' : 'translateX(0)';
-  knob.setAttribute('fill', isCompact ? '#374151' : 'white');
-  if (tog) tog.checked = isCompact;
 
   // Active side = dark grey; inactive side = mid-grey
   var activeColour   = '#374151';
@@ -4652,17 +4717,36 @@ function updateKbSizeToggle() {
   var extendedColour = isCompact ? inactiveColour : activeColour;
   var compactColour  = isCompact ? activeColour   : inactiveColour;
 
-  var extIcon  = document.getElementById('kbSizeExtendedIcon');
-  var extLabel = document.getElementById('kbSizeExtendedLabel');
-  var cmpIcon  = document.getElementById('kbSizeCompactIcon');
-  var cmpLabel = document.getElementById('kbSizeCompactLabel');
-  if (extIcon)  extIcon.style.fill           = extendedColour;
-  if (extLabel) { extLabel.style.color = extendedColour; extLabel.style.textDecoration = isCompact ? 'line-through' : ''; }
-  if (cmpIcon)  cmpIcon.style.color          = compactColour;
-  if (cmpLabel) { cmpLabel.style.color = compactColour; cmpLabel.style.textDecoration = isCompact ? '' : 'line-through'; }
+  // Update KB-settings-panel elements only if that panel is in the DOM
+  if (knob) {
+    knob.style.transform = isCompact ? 'translateX(22px)' : 'translateX(0)';
+    knob.setAttribute('fill', isCompact ? '#374151' : 'white');
+    if (tog) tog.checked = isCompact;
+    var extIcon  = document.getElementById('kbSizeExtendedIcon');
+    var extLabel = document.getElementById('kbSizeExtendedLabel');
+    var cmpIcon  = document.getElementById('kbSizeCompactIcon');
+    var cmpLabel = document.getElementById('kbSizeCompactLabel');
+    if (extIcon)  extIcon.style.color          = extendedColour;
+    if (extLabel) { extLabel.style.color = extendedColour; extLabel.style.textDecoration = isCompact ? 'line-through' : ''; }
+    if (cmpIcon)  cmpIcon.style.color          = compactColour;
+    if (cmpLabel) { cmpLabel.style.color = compactColour; cmpLabel.style.textDecoration = isCompact ? '' : 'line-through'; }
+    // Grey out and lock to compact when touch is enabled
+    if (row) row.classList.toggle('disabled', touchEnabled);
+  }
 
-  // Grey out and lock to compact when touch is enabled
-  if (row) row.classList.toggle('disabled', touchEnabled);
+  // Keep the conflicts-panel mini-switch in sync if it exists
+  var cfKnob = document.getElementById('cfKbSizeKnob');
+  var cfInp  = document.getElementById('cfKbSizeToggle');
+  var cfExtL = document.getElementById('cfKbExtLabel');
+  var cfExtI = document.getElementById('cfKbExtIcon');
+  var cfCmpL = document.getElementById('cfKbCmpLabel');
+  var cfCmpI = document.getElementById('cfKbCmpIcon');
+  if (cfKnob) { cfKnob.style.transform = isCompact ? 'translateX(22px)' : 'translateX(0)'; cfKnob.setAttribute('fill', isCompact ? '#374151' : 'white'); }
+  if (cfInp)  cfInp.checked = isCompact;
+  if (cfExtL) { cfExtL.style.color = extendedColour; cfExtL.style.textDecoration = isCompact ? 'line-through' : ''; }
+  if (cfExtI) cfExtI.style.color = extendedColour;
+  if (cfCmpL) { cfCmpL.style.color = compactColour; cfCmpL.style.textDecoration = isCompact ? '' : 'line-through'; }
+  if (cfCmpI) cfCmpI.style.color = compactColour;
 }
 
 function onKbSizeToggle() {
@@ -4680,7 +4764,11 @@ function setTouchEnabled(on) {
   }
   var radio = document.getElementById('touchRadio');
   if (radio) radio.classList.toggle('on', on);
-  if (activeSettings === 'panelConflicts') _refreshBrowserContent();
+  if (activeSettings === 'panelConflicts') {
+    _refreshBrowserContent();
+    conflictsKbLighting.deactivate();
+    conflictsKbLighting.activate();
+  }
   if (on) {
     setKbSizeToggle(false);
     setSoundEnabled(true);   // audible on by default when touch activates
@@ -5284,8 +5372,9 @@ function _phoneOpenSettings(Page) {
 
 function _phoneCloseSettings() {
   if (activeSettings === null) return;
-  var ClosingPage = activeSettings;
+   var ClosingPage = activeSettings;
   activeSettings  = null;
+  conflictsKbLighting.deactivate();
 
   _clearPanelTip();
   _exitScoreClearConfirm();
@@ -5546,6 +5635,7 @@ function openSettings(page) {
   var wasOpen  = activeSettings !== null;
   var prevPage = activeSettings;
   activeSettings = page;
+  conflictsKbLighting.deactivate();
 
   // Ghost lock hint: hide while any settings panel is open (keyboard is folded down)
   _setGhostLockHint(false);
@@ -5572,7 +5662,7 @@ function openSettings(page) {
   }
 
   // Populate content
-  if (page === 'panelConflicts')    _refreshBrowserContent();
+  if (page === 'panelConflicts') { _refreshBrowserContent(); conflictsKbLighting.activate(); }
   if (page === 'panelKeyboard')   { updateModalToggles(); updateKbSizeToggle(); }
   if (page === 'panelDifficultySettings') _refreshDifficultyPanel();
   if (page === 'panelPause')      _refreshPausePanel();
@@ -5632,6 +5722,7 @@ function closeSettings() {
   if (activeSettings === null) return;
   var closingPage = activeSettings;
   activeSettings = null;
+  conflictsKbLighting.deactivate();
   
   // Clear any ambient panel tip
   _clearPanelTip();
@@ -5720,6 +5811,7 @@ function _closeAllModalsInstant() {
     return;
   }
   activeSettings = null;
+  conflictsKbLighting.deactivate();
   _panelTipInTitle = false;  // clear any tip that was live in the title
   _exitScoreClearConfirm();
   _exitDiffConfirm();
@@ -5789,21 +5881,59 @@ function _attachconflictsPanelKeypressVerifier() {
   _detachconflictsPanelKeypressVerifier();
   _conflictsPanelKeydownHandler = function(e) {
     if (activeSettings !== 'panelConflicts') { _detachconflictsPanelKeypressVerifier(); return; }
-    // Check every item in the conflict list against this keypress
+
+    // ── Standard conflict list (OS / browser tabs) ───────────────────────
     var ul = document.getElementById('browserCompatList');
-    if (!ul) return;
-    var items = ul.querySelectorAll('li[data-conflict-key]');
-    items.forEach(function(li) {
-      var key = li.dataset.conflictKey;
-      if (!key) return;
-      // Only act on currently-blocked shortcuts (dismissed = blocked = radio on)
-      if (!dismissedConflicts.has(key)) return;
-      if (!matchesShortcut(e, key)) return;
-      // Keypress succeeded without blur — unblock it
-      e.preventDefault();
-      _setConflictBlocked(key, false, li);
-      showToast('Shortcut working');
-    });
+    if (ul) {
+      var items = ul.querySelectorAll('li[data-conflict-key]');
+      items.forEach(function(li) {
+        var key = li.dataset.conflictKey;
+        if (!key) return;
+        if (!dismissedConflicts.has(key)) return;
+        if (!matchesShortcut(e, key)) return;
+        e.preventDefault();
+        _setConflictBlocked(key, false, li);
+        showToast('Shortcut working');
+      });
+    }
+
+    // ── Keyboard tab key-grid: physical press confirms key is available ──
+    // Pressing a key sets it to unblocked (available). Does NOT toggle off.
+    if (_activeConflictFilter === 'keyboard') {
+      var kbSubPanel = document.getElementById('cfKeyboardSubPanel');
+      // Use e.code (physical key) to look up the canonical token.
+      // e.key is unreliable for extended keys: Mac Clear fires e.key='Clear'
+      // but ExtendedKeyCodeToToken is keyed by e.code ('NumpadClear').
+      var pressedCode  = e.code; // e.g. 'NumpadClear', 'Home', 'Insert'
+      var pressedToken = ExtendedKeyCodeToToken[pressedCode]; // e.g. 'CLEAR', 'HOME'
+      if (kbSubPanel && pressedToken) {
+        var keyEls = kbSubPanel.querySelectorAll('[data-token]');
+        keyEls.forEach(function(keyEl) {
+          // Match on browserCode (e.code) — reliable regardless of JSON token string
+          if (keyEl.dataset.browserCode !== pressedCode) return;
+          if (keyEl.dataset.blocked !== '1') return; // already available
+          e.preventDefault();
+          // Flash green-down (key held)
+          keyEl.style.background = '#10b981';
+          keyEl.style.color = 'white';
+          keyEl.style.boxShadow = 'inset 0 0 0 1px #059669,0 0 6px rgba(16,185,129,0.4)';
+          // After a short delay, settle to tint
+          setTimeout(function() {
+            dismissedConflicts.delete(pressedToken);
+            kbKeyOverrides.add(pressedToken);
+            _saveCustomDismissedConflicts();
+            _saveKbKeyOverrides();
+            if (gameState !== 'playing' && gameState !== 'paused' && gameState !== 'readyToUnpause') {
+              questionPool = shuffleArray(buildPool());
+            }
+            _syncConflictFilterPillStyles();
+            keyEl.dataset.blocked = '0';
+            _cfApplyKeyStyle(keyEl, false);
+            showToast('Key available');
+          }, 180);
+        });
+      }
+    }
   };
   document.addEventListener('keydown', _conflictsPanelKeydownHandler);
 }
@@ -5819,22 +5949,24 @@ function _detachconflictsPanelKeypressVerifier() {
 // toastMsg: pass null to suppress toast (used on initial render).
 function _setConflictBlocked(canonicalKey, blocked, liEl) {
   if (blocked) {
+    // If this is a sus key being manually blocked, demote it to confirmed
+    // so the keyboard key turns orange instead of staying yellow.
+    var d = getBrowserConflicts();
+    if (d.susKeys && d.susKeys.has(canonicalKey)) {
+      conflictsKbLighting.markSusBlocked(canonicalKey);
+    }
     dismissedConflicts.add(canonicalKey);
   } else {
     dismissedConflicts.delete(canonicalKey);
   }
-_saveCustomDismissedConflicts();
-if (gameState !== 'playing' && gameState !== 'paused' && gameState !== 'readyToUnpause') {
+  _saveCustomDismissedConflicts();
+  if (gameState !== 'playing' && gameState !== 'paused' && gameState !== 'readyToUnpause') {
     questionPool = shuffleArray(buildPool());
-}
-
-  // Refresh the clear overrides pill state
-  var ClearBtn = document.querySelector('#browserCompatFooter .score-pill-seg');
-  if (ClearBtn) {
-    var NowHasOverrides = _hasconflictsOverrides();
-    ClearBtn.classList.toggle('score-pill-inactive', !NowHasOverrides);
-    ClearBtn.onclick = NowHasOverrides ? _clearconflictsOverrides : null;
   }
+
+  conflictsKbLighting.refresh();
+  // Refresh the filter pill styles (found tab availability may have changed)
+  _syncConflictFilterPillStyles();
 
   if (!liEl) return;
   var radio = liEl.querySelector('.modal-radio');
@@ -5844,24 +5976,24 @@ if (gameState !== 'playing' && gameState !== 'paused' && gameState !== 'readyToU
   liEl.classList.toggle('conflict-dismissed', blocked);
 }
 
-function _makeConflictRadio(canonicalKey) {
+function _makeConflictRadio(CanonicalKey) {
   // Blocked (dismissed) = radio ON. Active = radio OFF.
   // Touch mode bypasses all conflicts, so nothing is shown as blocked.
-  var isBlocked = !touchEnabled && dismissedConflicts.has(canonicalKey);
-  var wrap = document.createElement('span');
-  wrap.className = 'modal-radio' + (isBlocked ? ' on' : '');
-  wrap.style.cssText = 'flex-shrink:0;margin-right:7px;cursor:pointer;';
-  wrap.innerHTML = '<svg class="modal-radio-dot" width="16" height="16" viewBox="0 0 19 19" xmlns="http://www.w3.org/2000/svg">'
+  var IsBlocked = !touchEnabled && dismissedConflicts.has(CanonicalKey);
+  var Wrap = document.createElement('span');
+  Wrap.className = 'modal-radio' + (IsBlocked ? ' on' : '');
+  Wrap.style.cssText = 'flex-shrink:0;margin-right:7px;cursor:pointer;';
+  Wrap.innerHTML = '<svg class="modal-radio-dot" width="16" height="16" viewBox="0 0 19 19" xmlns="http://www.w3.org/2000/svg">'
     + '<circle cx="9.5" cy="9.5" r="6.5" stroke="#374151" stroke-width="1.5" fill="none"/>'
     + '<circle class="modal-radio-fill" cx="9.5" cy="9.5" r="3.5" fill="#374151"/>'
     + '</svg>';
-  wrap.addEventListener('click', function(e) {
-    var li = wrap.closest('li');
-    var nowBlocked = !dismissedConflicts.has(canonicalKey);
-    _setConflictBlocked(canonicalKey, nowBlocked, li);
-    showToast(nowBlocked ? 'Shortcut blocked' : 'Shortcut working');
+  Wrap.addEventListener('click', function (Event) {
+    var ListItem = Wrap.closest('li');
+    var NowBlocked = !dismissedConflicts.has(CanonicalKey);
+    _setConflictBlocked(CanonicalKey, NowBlocked, ListItem);
+    showToast(NowBlocked ? 'Shortcut blocked' : 'Shortcut working');
   });
-  return wrap;
+  return Wrap;
 }
 
 // Converts a conflict label like "Cmd+T — opens new tab" into
@@ -5882,21 +6014,18 @@ function _BuildBrowserConflictLabel(RawLabel) {
     'Alt':   'Alt',
   };
   var ArrowMap = {
-    'ArrowLeft':  '←',
-    'ArrowRight': '→',
-    'ArrowUp':    '↑',
-    'ArrowDown':  '↓',
-    'ArrowLeft':  '←',
+    'ARROWLEFT':  '←',
+    'ARROWRIGHT': '→',
+    'ARROWUP':    '↑',
+    'ARROWDOWN':  '↓',
   };
 
   // Replace known long token names with symbols
-  var DisplayShortcut = ShortcutPart;
-  Object.entries(TokenDisplayMap).forEach(function(Entry) {
-    DisplayShortcut = DisplayShortcut.replace(new RegExp('\b' + Entry[0] + '\b', 'g'), Entry[1]);
-  });
-  Object.entries(ArrowMap).forEach(function(Entry) {
-    DisplayShortcut = DisplayShortcut.replace(new RegExp('\b' + Entry[0] + '\b', 'g'), Entry[1]);
-  });
+  var DisplayShortcut = ShortcutPart.split('+').map(function(Token) {
+    var Upper = Token.trim().toUpperCase();
+    var Canonical = TOKEN_SYNONYM_MAP[Upper] || Upper;
+    return TokenDisplayMap[Canonical] || ArrowMap[Canonical] || Token.trim();
+  }).join('+');
 
   return { displayShortcut: DisplayShortcut, descriptor: DescriptorPart };
 }
@@ -5937,6 +6066,8 @@ function _clearconflictsOverrides() {
 // ── Conflict source filter pill ───────────────────────────────────────────────
 // Tracks which filter tab is active. Content filtering wired in a later step.
 var _activeConflictFilter = 'browser'; // 'os' | 'browser' | 'found' | 'keyboard'
+var _cfPageIndex = 0;  // current page (0-based) for OS/Browser conflict lists
+var CF_PAGE_SIZE = 6;  // items per page
 
 function _initConflictFilterPill() {
   // OS label — read detectedOs (already known) + existing MAC_ICON_SVG / PC_ICON_SVG strings
@@ -5962,25 +6093,21 @@ function _initConflictFilterPill() {
 
 function setConflictFilter(filter) {
   _activeConflictFilter = filter;
+  _cfPageIndex = 0;  // reset to first page on tab switch
   _syncConflictFilterPillStyles();
-  // Content filtering (making each button change the list below) is wired in a later step
+  _refreshBrowserContent();
 }
 
 function _syncConflictFilterPillStyles() {
   var btnIds = { os: 'cfBtnOs', browser: 'cfBtnBrowser', found: 'cfBtnFound', keyboard: 'cfBtnKeyboard' };
-  // 'found' segment is only active/available when diagnostic conflicts exist (_hasconflictsOverrides already checks this)
-  // 'keyboard' segment relevance is tied to hasFullKeyboard
-  var hasFound    = _hasconflictsOverrides();
   var hasKeyboard = hasFullKeyboard;
   Object.keys(btnIds).forEach(function(f) {
     var btn = document.getElementById(btnIds[f]);
     if (!btn) return;
     var isActive = (f === _activeConflictFilter);
-    var hasContent = (f === 'os') || (f === 'browser')
-      || (f === 'found'    && hasFound)
-      || (f === 'keyboard' && hasKeyboard);
-    btn.classList.toggle('score-pill-active',   isActive);
-    btn.classList.toggle('score-pill-inactive', !hasContent && !isActive);
+    var hasContent = (f === 'os') || (f === 'browser') || (f === 'found') || (f === 'keyboard');
+    btn.classList.toggle('segmented-pill-active',   isActive);
+    btn.classList.toggle('segmented-pill-inactive', !hasContent && !isActive);
   });
 }
 
@@ -5992,6 +6119,7 @@ function _refreshBrowserContent() {
 
   _initConflictFilterPill();
 
+  // ── Left column: heading and intro ───────────────────────────────────────
   var h = document.getElementById('browserCompatHeading');
   if (h) {
     h.innerHTML = '';
@@ -6020,41 +6148,71 @@ function _refreshBrowserContent() {
     }
   }
 
-  // Clear overrides pill
-  var ft = document.getElementById('browserCompatFooter');
-  if (ft) ft.innerHTML = '';
-
-  var ul = document.getElementById('browserCompatList');
-  if (ul) {
-    ul.innerHTML = '';
-
-   // Auto-block standard conflicts on first encounter
-    d.keys.forEach(function(canonicalKey) {
-      if (!dismissedConflicts.has(canonicalKey)) {
-        dismissedConflicts.add(canonicalKey);
-      }
-    });
-    _saveCustomDismissedConflicts();
-    if (gameState !== 'playing' && gameState !== 'paused' && gameState !== 'readyToUnpause') {
-        questionPool = shuffleArray(buildPool());
+  // Auto-block definite conflicts on first encounter.
+  // sus:true entries start unblocked — they are suspected but unconfirmed.
+  d.keys.forEach(function(canonicalKey) {
+    if (!dismissedConflicts.has(canonicalKey) && !d.susKeys.has(canonicalKey)) {
+      dismissedConflicts.add(canonicalKey);
     }
-    d.labels.forEach(function(RawLabel, i) {
-      var canonicalKey = d.keys[i];
+  });
+  _saveCustomDismissedConflicts();
+  if (gameState !== 'playing' && gameState !== 'paused' && gameState !== 'readyToUnpause') {
+    questionPool = shuffleArray(buildPool());
+  }
+
+  // Separate standard browser keys from user-found (diagnostic) keys.
+  // Also exclude extended keyboard keys — those are managed in the keyboard tab.
+  var BrowserConflictKeys = new Set(d.keys);
+  var UserFoundKeys = [];
+  dismissedConflicts.forEach(function(BlockedKey) {
+    if (!BrowserConflictKeys.has(BlockedKey) && !ExtendedKeyCodeToToken[BlockedKey]) UserFoundKeys.push(BlockedKey);
+  });
+
+  // ── Right column: tab-switched content ───────────────────────────────────
+  var ul             = document.getElementById('browserCompatList');
+  var foundPanel     = document.getElementById('cfFoundSubPanel');
+  var foundList      = document.getElementById('cfFoundList');
+  var foundClear     = document.getElementById('cfFoundClearWrap');
+  var foundEmpty     = document.getElementById('cfFoundEmpty');
+  var kbPanel        = document.getElementById('cfKeyboardSubPanel');
+  var kbList         = document.getElementById('cfKeyboardList');
+
+  var showFound    = (_activeConflictFilter === 'found');
+  var showKeyboard = (_activeConflictFilter === 'keyboard');
+  var showBrowser  = !showFound && !showKeyboard;
+
+  // Toggle visibility of the three sub-areas
+  if (ul)         ul.style.display          = showBrowser  ? '' : 'none';
+  if (foundPanel) foundPanel.style.display  = showFound    ? '' : 'none';
+  if (kbPanel)    kbPanel.style.display     = showKeyboard ? '' : 'none';
+
+  // ── Browser / OS tab: populate browserCompatList (paginated) ───────────────
+  if (ul && showBrowser) {
+    ul.innerHTML = '';
+    var IsOsTab      = (_activeConflictFilter === 'os');
+    var FilterLabels = IsOsTab ? d.osLabels   : d.browserLabels;
+    var FilterKeys   = IsOsTab ? d.osKeys     : d.browserKeys;
+    var TotalItems   = FilterLabels.length;
+    var NeedsPages   = TotalItems > CF_PAGE_SIZE;
+    var TotalPages   = NeedsPages ? Math.ceil(TotalItems / CF_PAGE_SIZE) : 1;
+    // Clamp page index in case list shrank since last render
+    _cfPageIndex = Math.max(0, Math.min(_cfPageIndex, TotalPages - 1));
+    var PageStart = _cfPageIndex * CF_PAGE_SIZE;
+    var PageEnd   = Math.min(PageStart + CF_PAGE_SIZE, TotalItems);
+
+    FilterLabels.slice(PageStart, PageEnd).forEach(function(RawLabel, i) {
+      var canonicalKey = FilterKeys[PageStart + i];
       var isBlocked    = !touchEnabled && dismissedConflicts.has(canonicalKey);
-      var Parsed       = _BuildBrowserConflictLabel(RawLabel);
+       var Parsed       = _BuildBrowserConflictLabel(RawLabel);
       var li = document.createElement('li');
       li.className = isBlocked ? 'conflict-dismissed' : '';
       li.dataset.conflictKey = canonicalKey;
       li.style.cssText = 'margin-bottom:6px;display:flex;align-items:center;flex-wrap:nowrap;gap:0;line-height:1.6;cursor:pointer;';
       li.appendChild(_makeConflictRadio(canonicalKey));
-
       var label = document.createElement('span');
       label.className = 'conflict-label';
-
-      // Build chips from the symbol-translated shortcut string
-      var ChipWrapper = _renderKeyChips(Parsed.displayShortcut);
+      var ChipWrapper = BuildShortcutKeyChips(canonicalKey, false);
       label.appendChild(ChipWrapper);
-
       if (Parsed.descriptor) {
         var DescEl = document.createElement('span');
         DescEl.className = 'conflict-desc';
@@ -6062,7 +6220,6 @@ function _refreshBrowserContent() {
         DescEl.textContent = Parsed.descriptor;
         label.appendChild(DescEl);
       }
-
       li.appendChild(label);
       li.addEventListener('click', function(e) {
         if (e.target.closest('.modal-radio')) return;
@@ -6071,57 +6228,428 @@ function _refreshBrowserContent() {
       ul.appendChild(li);
     });
 
-    // Diagnostic-added entries (hidden when touch mode is active)
-    var BrowserConflictKeys = new Set(d.keys);
-    dismissedConflicts.forEach(function(BlockedKey) {
-      if (touchEnabled) return;
-      if (BrowserConflictKeys.has(BlockedKey)) return;
-      var li = document.createElement('li');
-      li.className = 'conflict-dismissed';
-      li.dataset.conflictKey = BlockedKey;
-      li.style.cssText = 'margin-bottom:6px;display:flex;align-items:center;flex-wrap:nowrap;gap:0;line-height:1.6;cursor:pointer;';
-      li.appendChild(_makeConflictRadio(BlockedKey));
+    // ── Pagination controls (only when list exceeds one page) ────────────────
+var PagerEl = document.getElementById('cfPager');
+if (!PagerEl) {
+PagerEl = document.createElement('div');
+PagerEl.id = 'cfPager';
+PagerEl.style.cssText = 'display:flex;align-items:center;justify-content:space-between;gap:6px;margin-bottom:4px;';
+ul.parentNode.insertBefore(PagerEl, ul);
+}
+PagerEl.innerHTML = '';
+var SectionTitle = IsOsTab ? 'OS Conflicts' : 'Browser Conflicts';
+var TitleEl = document.createElement('span');
+TitleEl.style.cssText = "font-size:11px;font-weight:700;color:#374151;font-family:'Lato',system-ui,sans-serif;line-height:1;user-select:none;"
+TitleEl.textContent = SectionTitle;
+PagerEl.appendChild(TitleEl);
+if (NeedsPages) {
+var PaginationWrap = document.createElement('span');
+PaginationWrap.style.cssText = 'display:inline-flex;align-items:center;gap:2px;';
+var ChevronStyle = 'background:none;border:none;padding:2px 5px;cursor:pointer;font-size:13px;color:#9ca3af;line-height:1;border-radius:4px;';
+var CountStyle = "font-size:11px;color:#9ca3af;font-family:'Lato',system-ui,sans-serif;line-height:1;user-select:none;"
 
-      var label = document.createElement('span');
-      label.className = 'conflict-label';
-      var ParsedDiagnosticLabel = _BuildBrowserConflictLabel(BlockedKey);
-      label.appendChild(_renderKeyChips(ParsedDiagnosticLabel.displayShortcut));
-
-      var DescEl = document.createElement('span');
-      DescEl.className = 'conflict-desc';
-      DescEl.style.cssText = 'margin-left:5px;color:#6b7280;font-size:11px;vertical-align:middle;';
-      DescEl.textContent = 'user reported owned by OS/Browser/Plugin';
-      label.appendChild(DescEl);
-
-      li.appendChild(label);
-      li.addEventListener('click', function(e) {
-        if (e.target.closest('.modal-radio')) return;
-        li.querySelector('.modal-radio').click();
+      var PrevBtn = document.createElement('button');
+      PrevBtn.innerHTML = '&#8249;';
+      PrevBtn.style.cssText = ChevronStyle;
+      if (_cfPageIndex === 0) { PrevBtn.disabled = true; PrevBtn.style.opacity = '0.3'; }
+      PrevBtn.addEventListener('click', function() {
+        if (_cfPageIndex > 0) { _cfPageIndex--; _refreshBrowserContent(); }
       });
-      ul.appendChild(li);
-    });
+
+      var CountEl = document.createElement('span');
+      CountEl.style.cssText = CountStyle;
+      CountEl.textContent = (_cfPageIndex + 1) + ' / ' + TotalPages;
+
+      var NextBtn = document.createElement('button');
+      NextBtn.innerHTML = '&#8250;';
+      NextBtn.style.cssText = ChevronStyle;
+      if (_cfPageIndex >= TotalPages - 1) { NextBtn.disabled = true; NextBtn.style.opacity = '0.3'; }
+      NextBtn.addEventListener('click', function() {
+        if (_cfPageIndex < TotalPages - 1) { _cfPageIndex++; _refreshBrowserContent(); }
+      });
+
+var PageLabelEl = document.createElement('span');
+PageLabelEl.style.cssText = CountStyle;
+PageLabelEl.textContent = 'page';
+PaginationWrap.appendChild(PageLabelEl);
+PaginationWrap.appendChild(PrevBtn);
+PaginationWrap.appendChild(CountEl);
+PaginationWrap.appendChild(NextBtn);
+PagerEl.appendChild(PaginationWrap);
+}
+
+  } else {
+    // Hide pager when not on OS/Browser tab
+    var PagerEl = document.getElementById('cfPager');
+    if (PagerEl) PagerEl.innerHTML = '';
+  }
+
+  // ── Found tab: clear + report buttons, and user-found entries ───────────────
+  if (showFound && foundList && foundClear && foundEmpty) {
+    foundList.innerHTML = '';
+    foundList.style.cssText = '';
+    foundClear.innerHTML = '';
+    if (UserFoundKeys.length > 0 && !touchEnabled) {
+      // Split pill: clear overrides | report issues
+      var ClearPill = document.createElement('div');
+      ClearPill.className = 'segmented-pill';
+      ClearPill.style.cssText = 'margin-bottom:8px;flex-shrink:0;';
+      var ClearBtn = document.createElement('button');
+      ClearBtn.className = 'segmented-pill-section segmented-pill-half';
+      ClearBtn.onclick = _clearconflictsOverrides;
+      ClearBtn.innerHTML = '<span class="diff-btn-text">clear overrides</span>';
+      var ReportBtn = document.createElement('button');
+      ReportBtn.className = 'segmented-pill-section segmented-pill-half';
+      ReportBtn.onclick = function() {
+        var OsName = currentOs === 'pc' ? 'PC/Windows' : 'Mac';
+        var BrowserName = navigator.userAgent.match(/Edg\//) ? 'Edge' :
+          navigator.userAgent.match(/Firefox\//) ? 'Firefox' :
+          navigator.userAgent.match(/Safari\//) && !navigator.userAgent.match(/Chrome\//) ? 'Safari' :
+          navigator.userAgent.match(/OPR\//) ? 'Opera' :
+          navigator.userAgent.match(/Chrome\//) ? 'Chrome' : 'Unknown';
+        var ShortcutList = UserFoundKeys.join(', ');
+       
+        var EmailBody =
+          '\n\nOS: ' + OsName +
+          '\nBrowser: ' + BrowserName +
+          '\n\nUser-reported conflict shortcuts:\n' + ShortcutList ;
+          
+        var Anchor = document.createElement('a');
+        Anchor.href = 'mailto:Wednesday%20Dessauer%20%3Cddessauer%40swin.edu.au%3E' +
+          '?subject=' + encodeURIComponent('Keyboard Warriors: user-found conflict report') +
+          '&body=' + encodeURIComponent(EmailBody);
+        Anchor.target = '_blank';
+        Anchor.rel = 'noopener';
+        document.body.appendChild(Anchor);
+        Anchor.click();
+        document.body.removeChild(Anchor);
+      };
+      ReportBtn.innerHTML = '<span class="diff-btn-text"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="13" height="13" style="vertical-align:middle;margin-right:4px;"><rect x="2" y="4" width="20" height="16" rx="2"/><polyline points="2,4 12,13 22,4"/></svg>report issues</span>';
+      ClearPill.appendChild(ClearBtn);
+      ClearPill.appendChild(ReportBtn);
+      foundClear.appendChild(ClearPill);
+      // User-found entries
+      foundList.style.cssText = 'display:grid;grid-template-columns:1fr 1fr;column-gap:8px;row-gap:0;';
+      UserFoundKeys.forEach(function(BlockedKey) {
+        var li = document.createElement('li');
+        li.className = 'conflict-dismissed';
+        li.dataset.conflictKey = BlockedKey;
+        li.style.cssText = 'margin-bottom:6px;display:flex;align-items:center;flex-wrap:nowrap;gap:0;line-height:1.6;cursor:pointer;';
+        li.appendChild(_makeConflictRadio(BlockedKey));
+        var label = document.createElement('span');
+        label.className = 'conflict-label';
+        var ParsedDiagnosticLabel = _BuildBrowserConflictLabel(BlockedKey);
+        label.appendChild(_renderKeyChips(ParsedDiagnosticLabel.displayShortcut));
+        li.appendChild(label);
+        li.addEventListener('click', function(e) {
+          if (e.target.closest('.modal-radio')) return;
+          li.querySelector('.modal-radio').click();
+        });
+        foundList.appendChild(li);
+      });
+      foundEmpty.style.display = 'none';
+    } else {
+      foundEmpty.style.display = '';
+    }
+  }
+
+      
+  // ── Keyboard tab: key grid ────────────────────────────────────────────────
+  if (showKeyboard && kbPanel) {
+    _renderKeyboardConflictTab(kbPanel);
   }
 
   _attachconflictsPanelKeypressVerifier();
-
-   var rightCol = document.querySelector('#panelConflicts .sp-col-right');
-  if (rightCol) {
-    var ExistingPill = rightCol.querySelector('.score-clear-pill:not(#cfFilterPill)');
-    if (ExistingPill) rightCol.removeChild(ExistingPill);
-    var HasOverrides = _hasconflictsOverrides();
-    var ClearPill = document.createElement('div');
-    ClearPill.className = 'score-clear-pill';
-    ClearPill.style.cssText = 'margin-top: 8px; flex-shrink: 0;';
-    var ClearBtn = document.createElement('button');
-    ClearBtn.className = 'score-pill-seg score-pill-full' + (HasOverrides ? '' : ' score-pill-inactive');
-    ClearBtn.onclick = HasOverrides ? _clearconflictsOverrides : null;
-    ClearBtn.innerHTML = '<span class="diff-btn-text">clear overrides</span>';
-    ClearPill.appendChild(ClearBtn);
-    rightCol.appendChild(ClearPill);
-  }
-  
-
+  _syncConflictFilterPillStyles();
+  conflictsKbLighting.refresh();
 }
+function _renderKeyboardConflictTab(container) {
+  var panel = container || document.getElementById('cfKeyboardSubPanel');
+  if (!panel) return;
+  panel.innerHTML = '';
+
+  var masterOff = !hasFullKeyboard || touchEnabled;
+  var GAP = '6px'; // column gap — also used as the between-pair row gap
+
+  // ── Intro paragraph ───────────────────────────────────────────────────────
+  var intro = document.createElement('p');
+  intro.className = 'sp-body';
+  intro.style.marginBottom = '8px';
+  intro.textContent = 'Specify exactly which extended keyboard keys you have:';
+  panel.appendChild(intro);
+
+  // ── Key grid — mirrors the physical extended keyboard cluster ────────────
+  // Row 1: utility keys (4 cols, all standalone — full 3px rounding)
+  // Rows 2+3: nav cluster (3 cols) — each column is a vertically joined pair:
+  //   top key  → border-radius: 3px 3px 0 0  (square bottom corners)
+  //   bottom key → border-radius: 0 0 3px 3px  (square top corners)
+  //   no gap between top and bottom; the column gap provides spacing between pairs.
+
+  // Build key grid from the OS-specific extended_keys data in _conflictsCache.
+  // Position map (1-indexed, matches JSON):
+  //   Mac/iOS:  1=F13 2=F14 3=F15 4=F16 | 5=CLEAR | 6=HOME 7=PAGEUP 8=DELETE 9=END 10=PAGEDOWN
+  //   PC/other: 1=PRINTSCREEN 2=SCROLLLOCK 3=PAUSE 4=NUMLOCK | 5=INSERT | 6=HOME 7=PAGEUP 8=DELETE 9=END 10=PAGEDOWN
+  var _extKeys = (_conflictsCache && _conflictsCache.extended_keys) ? _conflictsCache.extended_keys : [];
+  var _extByPos = {};
+  _extKeys.forEach(function(e) { _extByPos[e.position] = e.extraKey; });
+
+  var MacLikeOs = (detectedOs === 'mac' || detectedOs === 'mobile');
+
+  // Label map for display names
+  var _extLabels = {
+    'F13': 'F13', 'F14': 'F14', 'F15': 'F15', 'F16': 'F16',
+    'CLEAR': 'CLEAR', 'INSERT': 'INSERT',
+    'PRINTSCREEN': 'PRT SC', 'SCROLLLOCK': 'SCR LK', 'PAUSE': 'PAUSE', 'NUMLOCK': 'NUM LK',
+    'HOME': '↖ home', 'PAGEUP': '⇞ pg up', 'DELETE': '⌦ delete', 'END': '↘ end', 'PAGEDOWN': '⇟ pg dn',
+  };
+
+  function _extKey(pos, pairPos) {
+    var tok = _extByPos[pos] || '';
+    return { token: tok, label: _extLabels[tok] || tok, pairPos: pairPos };
+  }
+
+  var utilRow = [
+    _extKey(1, 'solo'), _extKey(2, 'solo'), _extKey(3, 'solo'), _extKey(4, 'solo'),
+  ];
+  var navTopRow = [
+    _extKey(5, 'top'),   // CLEAR (Mac) or INSERT (PC) — sits above Delete/End
+    _extKey(6, 'top'),   // HOME
+    _extKey(7, 'top'),   // PAGEUP
+  ];
+  var navBotRow = [
+    _extKey(8,  'bottom'),  // DELETE
+    _extKey(9,  'bottom'),  // END
+    _extKey(10, 'bottom'),  // PAGEDOWN
+  ];
+
+  // Build a reverse map: canonical token → browser e.code
+  var _tokenToBrowserCode = {};
+  Object.keys(ExtendedKeyCodeToToken).forEach(function(Code) {
+    var Tok = ExtendedKeyCodeToToken[Code];
+    if (!_tokenToBrowserCode[Tok]) _tokenToBrowserCode[Tok] = Code;
+  });
+
+  function _makeKeyEl(k) {
+    var isBlocked = !touchEnabled && dismissedConflicts.has(k.token);
+    var keyEl = document.createElement('div');
+    keyEl.dataset.token       = k.token;
+    keyEl.dataset.browserCode = _tokenToBrowserCode[k.token] || k.token;
+    keyEl.dataset.blocked = isBlocked ? '1' : '0';
+    keyEl.dataset.pairPos = k.pairPos;
+    var r = k.pairPos === 'top' ? '3px 3px 0 0'
+          : k.pairPos === 'bottom' ? '0 0 3px 3px'
+          : '3px';
+    keyEl.style.cssText = [
+      'border-radius:' + r,
+      'padding:5px 4px',
+      'text-align:center',
+      'font-size:9px',
+      'font-weight:700',
+      'font-family:inherit',
+      'cursor:pointer',
+      'user-select:none',
+      'transition:background 0.08s,color 0.08s,box-shadow 0.08s',
+      'line-height:1.3',
+      'min-height:22px',
+      'display:flex',
+      'align-items:center',
+      'justify-content:center',
+      'white-space:nowrap',
+    ].join(';');
+    keyEl.textContent = k.label;
+    _cfApplyKeyStyle(keyEl, isBlocked);
+
+    keyEl.addEventListener('mousedown', function() {
+      var willBeBlocked = keyEl.dataset.blocked !== '1';
+      if (willBeBlocked) {
+        keyEl.style.background = '#f97316';
+        keyEl.style.color      = 'white';
+        keyEl.style.boxShadow  = 'inset 0 0 0 1px #c2410c,0 0 6px rgba(249,115,22,0.35)';
+      } else {
+        keyEl.style.background = '#10b981';
+        keyEl.style.color      = 'white';
+        keyEl.style.boxShadow  = 'inset 0 0 0 1px #059669,0 0 6px rgba(16,185,129,0.35)';
+      }
+    });
+
+    function _commitToggle() {
+      // Clicking any key button while compact is set means the user has an
+      // extended keyboard — upgrade the toggle silently so the grid stays
+      // enabled and the individual key change is applied in extended mode.
+      if (!hasFullKeyboard) {
+        // Upgrade to extended without resetting dismissedConflicts — the key
+        // the user just clicked must survive, so skip _syncExtendedKeysToBaseline.
+        hasFullKeyboard = true;
+        try { localStorage.setItem('kw_kb_full', 'true'); } catch(e) {}
+        updateKbSizeToggle();
+        _cfSyncMiniSwitch();
+        var gridEl = panel.querySelector('[data-kb-grid]');
+        if (gridEl) { gridEl.style.opacity = ''; }
+      }
+      var nowBlocked = !dismissedConflicts.has(k.token);
+      dismissedConflicts[nowBlocked ? 'add' : 'delete'](k.token);
+      kbKeyOverrides.add(k.token);
+      _saveCustomDismissedConflicts();
+      _saveKbKeyOverrides();
+      if (gameState !== 'playing' && gameState !== 'paused' && gameState !== 'readyToUnpause') {
+        questionPool = shuffleArray(buildPool());
+      }
+      _syncConflictFilterPillStyles();
+      keyEl.dataset.blocked = nowBlocked ? '1' : '0';
+      _cfApplyKeyStyle(keyEl, nowBlocked);
+      showToast(nowBlocked ? 'Key blocked' : 'Key available');
+    }
+    keyEl.addEventListener('click', _commitToggle);
+    keyEl.addEventListener('mouseleave', function() {
+      _cfApplyKeyStyle(keyEl, dismissedConflicts.has(k.token));
+    });
+    return keyEl;
+  }
+
+  // Utility row — 4 equal columns, all solo keys
+  var utilGrid = document.createElement('div');
+  utilGrid.style.cssText = 'display:grid;grid-template-columns:repeat(4,1fr);gap:' + GAP + ';margin-bottom:' + GAP + ';';
+  utilRow.forEach(function(k) { utilGrid.appendChild(_makeKeyEl(k)); });
+
+  // Nav cluster — 3 columns of joined pairs (no gap within a pair, gap between columns)
+  var navGrid = document.createElement('div');
+  navGrid.style.cssText = 'display:grid;grid-template-columns:repeat(3,1fr);gap:' + GAP + ';';
+  for (var i = 0; i < 3; i++) {
+    var col = document.createElement('div');
+    col.style.cssText = 'display:flex;flex-direction:column;gap:0;';
+    col.appendChild(_makeKeyEl(navTopRow[i]));
+    col.appendChild(_makeKeyEl(navBotRow[i]));
+    navGrid.appendChild(col);
+  }
+
+  var grid = document.createElement('div');
+  grid.dataset.kbGrid = '1';
+  grid.style.marginBottom = '10px';
+  if (masterOff) { grid.style.opacity = '0.45'; }  // pointerEvents left enabled so clicks trigger auto-upgrade
+  grid.appendChild(utilGrid);
+  grid.appendChild(navGrid);
+
+  panel.appendChild(grid);
+
+  // ── Keyboard-size toggle — identical layout/style to KB settings modal ────
+  // Wraps the existing modalKbSizeRow elements so setKbSizeToggle() still
+  // controls colours/labels via its own IDs; we just re-invoke it on click.
+  var toggleWrap = document.createElement('div');
+  toggleWrap.className = 'modal-kbsize-row';
+  if (touchEnabled) toggleWrap.classList.add('disabled');
+
+  // Left side: extended icon + label (clone the exact same markup as the modal)
+  var extSide = document.createElement('div');
+  extSide.className = 'modal-left-label';
+  extSide.style.cssText = 'display:flex;flex-direction:row;align-items:center;gap:5px;justify-content:flex-end;cursor:pointer;';
+  extSide.innerHTML = '<small class="kb-size-word-label" id="cfKbExtLabel">extended</small>'
+    + '<svg viewBox="0 0 167 101.8" style="width:66px;height:auto;flex-shrink:0;" id="cfKbExtIcon"><use href="#IconExtKeyboard"/></svg>';
+
+  // Switch
+  var switchWrap = document.createElement('div');
+  switchWrap.className = 'modal-switch-wrap';
+  switchWrap.innerHTML = '<label class="os-switch" title="Keyboard size" style="cursor:pointer;position:relative;top:2px;">'
+    + '<input type="checkbox" id="cfKbSizeToggle">'
+    + '<svg class="os-track" width="36" height="14" viewBox="0 0 36 14" fill="none" xmlns="http://www.w3.org/2000/svg">'
+    + '<rect x="1" y="1" width="34" height="12" rx="6" stroke="#374151" stroke-width="1.25" fill="none"/>'
+    + '<circle id="cfKbSizeKnob" cx="7" cy="7" r="3.5" stroke="#374151" stroke-width="1.25" fill="white" style="transition:transform 0.18s ease,fill 0.18s ease;transform-origin:7px 7px;transform-box:fill-box;"/>'
+    + '</svg></label>';
+
+  // Right side: compact icon + label
+  var cmpSide = document.createElement('div');
+  cmpSide.className = 'modal-right-label';
+  cmpSide.style.cssText = 'display:flex;flex-direction:row;align-items:center;gap:5px;cursor:pointer;';
+  cmpSide.innerHTML = '<svg id="cfKbCmpIcon" viewBox="0 0 110 101.8" style="width:44px;height:auto;"><use href="#IconKeyboard"/></svg>'
+    + '<small class="kb-size-word-label" id="cfKbCmpLabel">compact</small>';
+
+  toggleWrap.appendChild(extSide);
+  toggleWrap.appendChild(switchWrap);
+  toggleWrap.appendChild(cmpSide);
+  panel.appendChild(toggleWrap);
+
+  // Sync this toggle's knob and label colours to match current state,
+  // clicking it also updates the main modalKbSizeToggle.
+  function _cfSyncMiniSwitch() {
+    var inp  = document.getElementById('cfKbSizeToggle');
+    var knob = document.getElementById('cfKbSizeKnob');
+    var extL = document.getElementById('cfKbExtLabel');
+    var extI = document.getElementById('cfKbExtIcon');
+    var cmpL = document.getElementById('cfKbCmpLabel');
+    var cmpI = document.getElementById('cfKbCmpIcon');
+    if (!inp) return;
+    // checked = compact (same polarity as modalKbSizeToggle)
+    inp.checked = !hasFullKeyboard;
+    if (knob) knob.style.transform = hasFullKeyboard ? 'translateX(0)' : 'translateX(22px)';
+    var activeCol   = '#374151';
+    var inactiveCol = '#9ca3af';
+    var extActive   = hasFullKeyboard;
+    if (extL)  { extL.style.color = extActive ? activeCol : inactiveCol; extL.style.textDecoration = extActive ? '' : 'line-through'; }
+    if (extI)  extI.style.color = extActive ? activeCol : inactiveCol;
+    if (cmpL)  { cmpL.style.color = extActive ? inactiveCol : activeCol; cmpL.style.textDecoration = extActive ? 'line-through' : ''; }
+    if (cmpI)  cmpI.style.color = extActive ? inactiveCol : activeCol;
+  }
+  _cfSyncMiniSwitch();
+
+  var cfInp = document.getElementById('cfKbSizeToggle');
+  if (cfInp) {
+    cfInp.addEventListener('change', function() {
+      if (touchEnabled) return;
+      // cfInp.checked === true means compact. Call setKbSizeToggle directly
+      // with the correct polarity — avoids the double-inversion in onKbSizeToggle().
+      setKbSizeToggle(!cfInp.checked);
+
+      _cfSyncMiniSwitch();
+
+      // Re-evaluate from live state (hasFullKeyboard was just updated by setKbSizeToggle)
+      var nowMasterOff = !hasFullKeyboard || touchEnabled;
+
+      // Update all key button states from the freshly-updated dismissedConflicts
+      var gridDivs = panel.querySelectorAll('[data-token]');
+      gridDivs.forEach(function(el) {
+        var blocked = !touchEnabled && dismissedConflicts.has(el.dataset.token);
+        el.dataset.blocked = blocked ? '1' : '0';
+        _cfApplyKeyStyle(el, blocked);
+      });
+
+      // Update the outer grid wrapper via the stable data attribute selector
+      // pointerEvents always enabled — compact clicks trigger auto-upgrade
+      var gridEl = panel.querySelector('[data-kb-grid]');
+      if (gridEl) {
+        gridEl.style.opacity       = nowMasterOff ? '0.45' : '';
+        gridEl.style.pointerEvents = '';
+      }
+    });
+
+  }
+  [extSide, cmpSide].forEach(function(side) {
+    side.addEventListener('click', function() {
+      if (cfInp && !touchEnabled) { cfInp.checked = !cfInp.checked; cfInp.dispatchEvent(new Event('change')); }
+    });
+  });
+}
+
+// Applies the resting tint style to a key element.
+// Available (unblocked) = green tint. Blocked = orange tint.
+// At rest: 50% strength via semi-transparent background on a light base.
+function _cfApplyKeyStyle(keyEl, isBlocked) {
+  var pairPos = keyEl.dataset.pairPos; // 'top', 'bottom', or 'solo'
+  var isTop   = (pairPos === 'top');
+  var isBot   = (pairPos === 'bottom');
+  if (isBlocked) {
+    keyEl.style.background   = 'rgba(249,115,22,0.14)';
+    keyEl.style.color        = '#9a3412';
+    keyEl.style.border       = '1px solid rgba(249,115,22,0.4)';
+    keyEl.style.borderBottom = isTop ? '1px solid rgba(0,0,0,0.08)' : '1px solid rgba(249,115,22,0.4)';
+    keyEl.style.boxShadow    = isBot ? '0 1.5px 0 rgba(194,65,12,0.4)' : '';
+  } else {
+    keyEl.style.background   = 'rgba(16,185,129,0.12)';
+    keyEl.style.color        = '#065f46';
+    keyEl.style.border       = '1px solid rgba(16,185,129,0.35)';
+    keyEl.style.borderBottom = isTop ? '1px solid rgba(0,0,0,0.08)' : '1px solid rgba(16,185,129,0.35)';
+    keyEl.style.boxShadow    = isBot ? '0 1.5px 0 rgba(5,150,105,0.4)' : '';
+  }
+}
+
 // ── Unified icon click handlers ──────────────────────────────────────────────
 document.getElementById('kbIconWrap').addEventListener('pointerdown', function(e) {
   e.stopPropagation();
@@ -6465,130 +6993,162 @@ function dbgNextQuestion() {
 
 /* ══════════════════════════════════════
    BROWSER + OS CONFLICT DATA
-   Evaluated lazily so currentOs is known.
+   Loaded from per-OS JSON files at startup.
+   getBrowserConflicts() reads the cache
+   synchronously so all call sites are unchanged.
 ══════════════════════════════════════ */
-function getBrowserConflicts() {
-  var ua      = navigator.userAgent || '';
-  // Use the real detected OS, not the UI toggle — conflicted shortcuts are a physical
-  // fact about the machine, unaffected by which platform the user is practising.
-  var isMacOs = (detectedOs === 'mac' || detectedOs === 'mobile');
 
-  // Touch devices are assumed to be running Mobile Safari (even "Chrome" on iOS
-  // uses WebKit under the hood). Return the Safari conflict set directly.
+var _conflictsCache = null; // populated by loadConflictsData() at startup
+
+function _osConflictFilePath() {
+  var ua = navigator.userAgent || '';
   if (detectedOs === 'mobile') {
+    if (/android/i.test(ua)) return '/keyboard-warriors/data/conflicts_android.json';
+    return '/keyboard-warriors/data/conflicts_iOS.json';
+  }
+  if (detectedOs === 'pc') {
+    if (/CrOS/i.test(ua)) return '/keyboard-warriors/data/conflicts_chromeOS.json';
+    if (/linux/i.test(ua)) return '/keyboard-warriors/data/conflicts_linux.json';
+    return '/keyboard-warriors/data/conflicts_pc.json';
+  }
+  return '/keyboard-warriors/data/conflicts_mac.json';
+}
+
+function _detectBrowserName() {
+  var ua = navigator.userAgent || '';
+  if (/Edg\//.test(ua))                             return 'Edge';
+  if (/Firefox\//.test(ua))                         return 'Firefox';
+  if (/Safari\//.test(ua) && !/Chrome\//.test(ua)) return 'Safari';
+  if (/OPR\//.test(ua))                             return 'Opera';
+  if (/Chrome\//.test(ua))                          return 'Chrome';
+  if (/Brave\//.test(ua))                           return 'Brave';
+  return null;
+}
+
+// Converts a conflict 'bad' token from the JSON (e.g. "CTRL+T", "CTRL+SHIFT+N")
+// into the canonical shortcut token our matching system understands (e.g. "CMD+T").
+// CMD resolves to ctrlKey on PC via _MatchesSingleAlternative, so this is correct
+// for both platforms.
+function _conflictBadToToken(BadString) {
+  return BadString
+    .replace(/\bCTRL\b/g,   'CMD')
+    .replace(/\bSEARCH\b/g, 'CMD')   // ChromeOS Search key acts like a modifier
+    .replace(/\bWIN\b/g,    'WIN');
+}
+
+// Builds a display label string from a conflict entry's bad + action fields.
+// Format mirrors the existing hardcoded labels: "Cmd+T — opens new tab"
+function _conflictEntryToLabel(Entry, IsMacOs) {
+  var DisplayKey = Entry.bad
+    .replace(/\bCTRL\b/g,   IsMacOs ? 'Cmd'   : 'Ctrl')
+    .replace(/\bCMD\b/g,    'Cmd')
+    .replace(/\bSHIFT\b/g,  'Shift')
+    .replace(/\bALT\b/g,    'Alt')
+    .replace(/\bOPT\b/g,    '\u2325')  // ⌥
+    .replace(/\bSEARCH\b/g, 'Search')
+    .replace(/\bWIN\b/g,    'Win');
+  return DisplayKey + ' \u2014 ' + Entry.action;
+}
+
+// Builds { keys[], labels[], susKeys } from a raw array of conflict entries,
+// deduplicating by canonical token.
+// susKeys — Set of tokens where sus:true (suspected conflicts that start unblocked).
+// Pass an optional Set of already-seen tokens to exclude.
+function _buildConflictList(RawEntries, IsMacOs, ExcludeSet) {
+  var Seen    = new Set(ExcludeSet || []);
+  var Keys    = [];
+  var Labels  = [];
+  var SusKeys = new Set();
+  (RawEntries || []).forEach(function(Entry) {
+    var Token = _conflictBadToToken(Entry.bad);
+    if (Seen.has(Token)) return;
+    Seen.add(Token);
+    Keys.push(Token);
+    Labels.push(_conflictEntryToLabel(Entry, IsMacOs));
+    if (Entry.sus) SusKeys.add(Token);
+  });
+  return { keys: Keys, labels: Labels, susKeys: SusKeys };
+}
+
+// Fetches the OS-specific conflict JSON once at startup and populates
+// _conflictsCache. Also auto-blocks the standard conflicts on first load,
+// mirroring the behaviour that previously happened inline in _refreshBrowserContent().
+function loadConflictsData() {
+  var FilePath = _osConflictFilePath();
+  fetch(FilePath)
+    .then(function(r) {
+      if (!r.ok) throw new Error('HTTP ' + r.status);
+      return r.json();
+    })
+    .then(function(data) {
+      _conflictsCache = data;
+      // Auto-block on first load — same logic as _refreshBrowserContent() does
+      // on every panel open, so the pool is correct from first game start.
+      var d = getBrowserConflicts();
+      // Only auto-block definite conflicts (sus:false/absent).
+      // sus:true entries are suspected but unconfirmed — leave them unblocked.
+      d.keys.forEach(function(k) {
+        if (!dismissedConflicts.has(k) && !d.susKeys.has(k)) dismissedConflicts.add(k);
+      });
+      _saveCustomDismissedConflicts();
+    })
+    .catch(function(err) {
+      console.warn('[Conflicts] Could not load', FilePath, ':', err, '— no conflicts will be blocked.');
+      _conflictsCache = { os_conflicts: [], browser_conflicts: {} };
+    });
+}
+
+function getBrowserConflicts() {
+  // Graceful fallback while JSON is still loading
+  if (!_conflictsCache) {
     return {
-      name:   'Safari',
-      keys:   ['CMD+T', 'CMD+SHIFT+N', 'CMD+1', 'Cmd+R'],
-      labels: [
-        'Cmd+T \u2014 opens a new tab',
-        'Cmd+Shift+N \u2014 opens a Private tab',
-        'Cmd+1 \u2014 switches to the first tab',
-        'Cmd+R \u2014 reload tab',
-      ],
+      name: 'your browser',
+      keys: [], labels: [],
+      osKeys: [], osLabels: [],
+      browserKeys: [], browserLabels: [],
     };
   }
 
-  // Detect browser
-  var browser;
-  if      (/Edg\//.test(ua))                              browser = 'Edge';
-  else if (/Firefox\//.test(ua))                          browser = 'Firefox';
-  else if (/Safari\//.test(ua) && !/Chrome\//.test(ua))  browser = 'Safari';
-  else if (/OPR\//.test(ua))                              browser = 'Opera';
-  else if (/Chrome\//.test(ua))                           browser = 'Chrome';
-  else                                                     browser = null;
+  var IsMacOs     = (detectedOs === 'mac' || detectedOs === 'mobile');
+  var BrowserName = _detectBrowserName();
 
-  // Conflict tables — Mac shortcuts use Cmd, PC use Ctrl (same token in our shortcut strings)
-  // Values are the canonical shortcut strings used in SHORTCUTS[].shortcut
-  var mac = {
-    Edge:    ['CMD+T','CMD+SHIFT+N'],
-    Firefox: ['CMD+T','CMD+SHIFT+P'],
-    Safari:  ['CMD+T','CMD+N','CMD+SHIFT+N','CMD+O', 'CMD+1', 'Cmd+R'],
-    Opera:   ['CMD+T','CMD+SHIFT+N'],
-    Chrome:  ['CMD+T','CMD+SHIFT+N'],
-  };
-  var pc = {
-    Edge:    ['CMD+T','CMD+SHIFT+N'],
-    Firefox: ['CMD+T','CMD+SHIFT+A','CMD+SHIFT+H','CMD+SHIFT+D','CMD+SHIFT+N'],
-    Opera:   ['CMD+T','CMD+SHIFT+I','CMD+SHIFT+J','CMD+SHIFT+D','CMD+SHIFT+N'],
-    Chrome:  ['CMD+T','CMD+SHIFT+N'],
-  };
+  // All OS and browser conflicts are included.
+  // sus:true  = suspected (starts unblocked — radio off, available for questions)
+  // sus:false/absent = definite conflict (starts blocked — radio on, excluded from pool)
+  var RawOs      = (_conflictsCache.os_conflicts || []);
+  var RawBrowser = BrowserName
+    ? (_conflictsCache.browser_conflicts[BrowserName] || [])
+    : [];
 
-  // Human-readable labels — Mac vs PC, browser-specific
-  var macLabels = {
-    Edge: [
-      'Cmd+T \u2014 opens new tab',
-      'Cmd+Shift+N \u2014 opens Private window',
-    ],
-    Firefox: [
-      'Cmd+T \u2014 opens new tab',
-      'Cmd+Shift+P \u2014 opens Private window',
+  var OsList      = _buildConflictList(RawOs,      IsMacOs);
+  var BrowserList = _buildConflictList(RawBrowser, IsMacOs);
 
-    ],
-    Safari: [
-      'Cmd+T \u2014 opens new tab',
-      'Cmd+N \u2014 opens new window',
-      'Cmd+Shift+N \u2014 opens Private window',
-      'Cmd+O \u2014 open a file',
-      'Cmd+1 \u2014 switches to the first tab',
-      'Cmd+R \u2014 reload tab',
-    ],
-    Opera: [
-      'Cmd+T \u2014 opens new tab',
-      'Cmd+Shift+D \u2014 saves bookmark',
-      'Cmd+Shift+N \u2014 opens Private window',
-    ],
-    Chrome: [
-      'Cmd+T \u2014 opens new tab',
-      'Cmd+Shift+N \u2014 opens Incognito window',
-    ],
-  };
-  var pcLabels = {
-    Edge: [
-      'Ctrl+T \u2014 opens new tab',
-      'Ctrl+Shift+N \u2014 opens Private window',
-    ],
-    Firefox: [
-      'Ctrl+T \u2014 opens new tab',
-      'Ctrl+Shift+A \u2014 opens Add-ons',
-      'Ctrl+Shift+H \u2014 opens History',
-      'Ctrl+Shift+D \u2014 bookmarks page',
-      'Ctrl+Shift+N \u2014 opens Private window',
-    ],
-    Opera: [
-      'Ctrl+T \u2014 opens new tab',
-      'Ctrl+Shift+I \u2014 opens DevTools',
-      'Ctrl+Shift+J \u2014 opens DevTools console',
-      'Ctrl+Shift+D \u2014 saves bookmark',
-      'Ctrl+Shift+N \u2014 opens Private window',
-    ],
-    Chrome: [
-      'Ctrl+T \u2014 opens new tab',
-      'Ctrl+Shift+N \u2014 opens Incognito window',
-    ],
-  };
+  // Merged susKeys — union of both lists
+  var MergedSusKeys = new Set([...OsList.susKeys, ...BrowserList.susKeys]);
 
-  var conflictKeys = [];
-  var labels       = [];
-
-  if (browser) {
-    var keyTable   = isMacOs ? mac   : pc;
-    var labelTable = isMacOs ? macLabels : pcLabels;
-    conflictKeys = (keyTable[browser]   || []).slice();
-    labels       = (labelTable[browser] || []).slice();
-  } else {
-    // Generic fallback — show both platforms' most universal conflicts
-    conflictKeys = isMacOs
-      ? ['CMD+T','CMD+OPTION+I','CMD+SHIFT+H','CMD+SHIFT+N']
-      : ['CMD+T','CMD+SHIFT+I', 'CMD+SHIFT+H','CMD+SHIFT+N'];
-    labels = isMacOs
-      ? ['Cmd+T \u2014 opens new tab','Cmd+Shift+H \u2014 opens History','Cmd+Shift+N \u2014 opens Private window']
-      : ['Ctrl+T \u2014 opens new tab','Ctrl+Shift+H \u2014 opens History','Ctrl+Shift+N \u2014 opens Private window'];
-  }
+  // Merged (OS first, then browser, deduped) — used by pool filtering and
+  // auto-blocking so the question pool excludes all relevant conflicts.
+  var MergedKeys   = OsList.keys.slice();
+  var MergedLabels = OsList.labels.slice();
+  var SeenMerged   = new Set(MergedKeys);
+  BrowserList.keys.forEach(function(k, i) {
+    if (SeenMerged.has(k)) return;
+    SeenMerged.add(k);
+    MergedKeys.push(k);
+    MergedLabels.push(BrowserList.labels[i]);
+  });
 
   return {
-    name:        browser || 'your browser',
-    keys:        conflictKeys,   // canonical shortcut strings for pool filtering
-    labels:      labels,         // human-readable strings for display
+    name:          BrowserName || 'your browser',
+    keys:          MergedKeys,           // full merged list — used by pool filtering
+    labels:        MergedLabels,
+    susKeys:       MergedSusKeys,        // tokens that start unblocked (sus:true)
+    osKeys:        OsList.keys,          // OS tab display
+    osLabels:      OsList.labels,
+    osSusKeys:     OsList.susKeys,       // sus tokens within OS list
+    browserKeys:   BrowserList.keys,     // Browser tab display
+    browserLabels: BrowserList.labels,
+    browserSusKeys: BrowserList.susKeys, // sus tokens within browser list
   };
 }
 
@@ -6604,6 +7164,531 @@ var dismissedConflicts = new Set();
     }
   } catch(e) {}
 })();
+
+var conflictsKbLighting = (function () {
+  var _active    = false;
+  // All browser codes currently held down, tracked as a Set
+  var _heldKeys  = new Set();
+
+  // CSS class constants
+  var CLS_GREEN    = 'lit-green-up';
+  var CLS_ORANGE   = 'lit-orange-up';
+  var CLS_YELLOW   = 'lit-yellow-up';
+  var CLS_RESTING_AVAILABLE = 'resting-available';
+  var CLS_RESTING_SUS       = 'resting-sus';
+  var CLS_RESTING_BLOCKED   = 'resting-blocked';
+
+  var ALL_MODULE_CLASSES = [
+    CLS_GREEN, CLS_ORANGE, CLS_YELLOW,
+    CLS_RESTING_AVAILABLE, CLS_RESTING_SUS, CLS_RESTING_BLOCKED,
+    'lit-fading',
+  ];
+
+  // ── Token helpers ────────────────────────────────────────────────────────
+
+var BrowserCodeToTokenMap = {
+  'Equal':'EQUAL','Minus':'MINUS',
+  'BracketLeft':'BRACKETLEFT','BracketRight':'BRACKETRIGHT',
+  'Backslash':'BACKSLASH','Semicolon':'SEMICOLON','Quote':'QUOTE',
+  'Comma':'COMMA','Period':'PERIOD','Slash':'SLASH','Backquote':'GRAVE',
+  'Tab':'TAB','Space':'SPACE','Enter':'RETURN',
+  'Backspace':'BACKSPACE','Delete':'DELETE',
+  'ArrowUp':'ARROWUP','ArrowDown':'ARROWDOWN',
+  'ArrowLeft':'ARROWLEFT','ArrowRight':'ARROWRIGHT',
+  'Home':'HOME','End':'END','PageUp':'PAGEUP','PageDown':'PAGEDOWN',
+
+  'NumpadClear': currentOs === 'mac' ? 'CLEAR' : 'NUMLOCK',
+
+  'F1':'F1','F2':'F2','F3':'F3','F4':'F4','F5':'F5','F6':'F6',
+  'F7':'F7','F8':'F8','F9':'F9','F10':'F10','F11':'F11','F12':'F12',
+};
+
+  function _browserCodeToToken(BrowserCode) {
+    if (BrowserCode.startsWith('Key'))   return BrowserCode.slice(3);
+    if (BrowserCode.startsWith('Digit')) return BrowserCode.slice(5);
+    return BrowserCodeToTokenMap[BrowserCode] || null;
+  }
+
+  // Returns the canonical modifier token for a held browser code, or null
+  // if the code is not a modifier key.
+  function _modifierTokenForCode(BrowserCode) {
+    if (currentOs === 'pc') {
+      if (BrowserCode === 'ControlLeft' || BrowserCode === 'ControlRight') return 'CMD';
+    } else {
+      if (BrowserCode === 'MetaLeft'    || BrowserCode === 'MetaRight')    return 'CMD';
+    }
+    if (BrowserCode === 'ShiftLeft'   || BrowserCode === 'ShiftRight')     return 'SHIFT';
+    if (BrowserCode === 'AltLeft'     || BrowserCode === 'AltRight')       return 'OPTION';
+    if (BrowserCode === 'ControlLeft' || BrowserCode === 'ControlRight')   return 'CONTROL';
+    if (BrowserCode === 'MetaLeft'    || BrowserCode === 'MetaRight')      return 'WIN';
+    if (BrowserCode === 'Fn')                                               return 'FN';
+    return null;
+  }
+
+  function _isModifierCode(BrowserCode) {
+    return _modifierTokenForCode(BrowserCode) !== null;
+  }
+
+  // Builds the canonical token string representing the currently held chord
+  // plus an additional key token.  e.g. CMD held + 'T' gives 'CMD+T'.
+  // Modifier tokens are sorted into canonical order before the key.
+  function _buildChordToken(AdditionalKeyToken) {
+    var ModifierOrder = ['CMD', 'CONTROL', 'WIN', 'OPTION', 'SHIFT', 'FN'];
+    var HeldModifierTokens = [];
+    _heldKeys.forEach(function (HeldCode) {
+      var ModToken = _modifierTokenForCode(HeldCode);
+      if (ModToken && ModifierOrder.indexOf(ModToken) !== -1) {
+        if (HeldModifierTokens.indexOf(ModToken) === -1) {
+          HeldModifierTokens.push(ModToken);
+        }
+      }
+    });
+    HeldModifierTokens.sort(function (TokenA, TokenB) {
+      return ModifierOrder.indexOf(TokenA) - ModifierOrder.indexOf(TokenB);
+    });
+    if (AdditionalKeyToken) {
+      HeldModifierTokens.push(AdditionalKeyToken);
+    }
+    return HeldModifierTokens.join('+');
+  }
+
+  // Returns all currently dismissed conflict tokens as a flat array,
+  // each normalised via NormaliseToken so comparisons are consistent.
+  function _allDismissedTokens() {
+    var Tokens = [];
+    dismissedConflicts.forEach(function (RawToken) {
+      Tokens.push(NormaliseToken(RawToken));
+    });
+    return Tokens;
+  }
+
+  // Returns the sus status of a token using the live conflict data.
+  function _isSusToken(Token) {
+    var ConflictData = getBrowserConflicts();
+    return !!(ConflictData.susKeys && ConflictData.susKeys.has(Token));
+  }
+
+  // ── Chord-prefix logic ───────────────────────────────────────────────────
+  //
+  // A chord is a '+'-joined string of canonical tokens, e.g. 'CMD+T'.
+  // A test chord is a PREFIX of a dismissed chord if the dismissed chord
+  // either equals the test chord or starts with the test chord followed by '+'.
+  //
+  // This lets us answer: "could pressing more keys from this point produce a
+  // conflicted shortcut?"  If yes, the currently held keys are uncertain (yellow).
+
+  function _chordIsPrefixOfAnyDismissed(ChordToken) {
+    if (!ChordToken) return false;
+    var AllDismissed = _allDismissedTokens();
+    return AllDismissed.some(function (DismissedToken) {
+      return DismissedToken === ChordToken ||
+             DismissedToken.startsWith(ChordToken + '+');
+    });
+  }
+
+  // ── Per-key colour classification ────────────────────────────────────────
+  //
+  // For each visible key, we ask: given the current held chord, what colour
+  // should this key be?
+  //
+  // Classification values: 'available' | 'sus' | 'uncertain' | 'blocked'
+  //
+  // 'uncertain' = the chord formed by held keys + this key is a prefix of a
+  //               dismissed chord, or the key itself is dismissed at rest.
+  //               Renders yellow.
+
+  function _classifyKeyWithCurrentChord(BrowserCode) {
+    if (BrowserCode === 'CapsLock') return null;
+
+    var IsModifier = _isModifierCode(BrowserCode);
+
+    // Build the chord that would exist if this key were included in the held set.
+    // For non-modifier keys, combine held modifiers + this key's token.
+    // For modifier keys, combine all held modifiers + this modifier token.
+    var KeyToken;
+    var ChordIfPressed;
+
+    if (IsModifier) {
+      // Treat this modifier as if it were added to the held set.
+      // If nothing else is held yet, a bare modifier chord ('CMD', 'SHIFT' etc.)
+      // is never itself a dismissed entry and is only a prefix if combined with
+      // other keys. Classifying it as 'uncertain' at rest makes it look yellow
+      // even though pressing it alone cannot trigger any conflict. Return
+      // 'available' immediately when no other keys are held.
+      if (_heldKeys.size === 0) return 'available';
+      var ModToken = _modifierTokenForCode(BrowserCode);
+      ChordIfPressed = _buildChordWithExtraModifier(ModToken);
+    } else {
+      KeyToken = _browserCodeToToken(BrowserCode);
+      if (!KeyToken) return 'available';
+      ChordIfPressed = _buildChordToken(KeyToken);
+    }
+
+    // Is this chord itself a dismissed entry?
+    var NormalisedChord  = NormaliseToken(ChordIfPressed);
+    var IsDirectlyBlocked = dismissedConflicts.has(NormalisedChord);
+
+    if (IsDirectlyBlocked) {
+      // A chord can only be directly blocked at rest (no keys held).
+      // Once keys are held, the browser would intercept it before we see it,
+      // so we never reach here with a fully-held conflicted chord.
+      // At rest: bare key blocked = orange or yellow (sus).
+      return _isSusToken(NormalisedChord) ? 'sus' : 'blocked';
+    }
+
+    // Is this chord a prefix of any dismissed entry?
+    // If so, pressing it could lead to a conflict: yellow (uncertain).
+    if (_chordIsPrefixOfAnyDismissed(NormalisedChord)) {
+      return 'uncertain';
+    }
+
+    return 'available';
+  }
+
+  // Like _buildChordToken but adds an extra modifier token to the held set
+  // without mutating _heldKeys, used to classify modifier keys.
+  function _buildChordWithExtraModifier(ExtraModifierToken) {
+    var ModifierOrder = ['CMD', 'CONTROL', 'WIN', 'OPTION', 'SHIFT', 'FN'];
+    var HeldModifierTokens = [];
+    _heldKeys.forEach(function (HeldCode) {
+      var ModToken = _modifierTokenForCode(HeldCode);
+      if (ModToken && ModifierOrder.indexOf(ModToken) !== -1) {
+        if (HeldModifierTokens.indexOf(ModToken) === -1) {
+          HeldModifierTokens.push(ModToken);
+        }
+      }
+    });
+    if (ExtraModifierToken && HeldModifierTokens.indexOf(ExtraModifierToken) === -1) {
+      HeldModifierTokens.push(ExtraModifierToken);
+    }
+    HeldModifierTokens.sort(function (TokenA, TokenB) {
+      return ModifierOrder.indexOf(TokenA) - ModifierOrder.indexOf(TokenB);
+    });
+    return HeldModifierTokens.join('+');
+  }
+
+  // Maps classification to the CSS resting class.
+  function _restingClassForClassification(Classification) {
+    if (Classification === 'available')  return CLS_RESTING_AVAILABLE;
+    if (Classification === 'sus')        return CLS_RESTING_SUS;
+    if (Classification === 'uncertain')  return CLS_RESTING_SUS;   // yellow
+    if (Classification === 'blocked')    return CLS_RESTING_BLOCKED;
+    return null;
+  }
+
+  // Maps classification to the full-brightness pressed class.
+  function _pressedClassForClassification(Classification) {
+    if (Classification === 'available')  return CLS_GREEN;
+    if (Classification === 'sus')        return CLS_YELLOW;
+    if (Classification === 'uncertain')  return CLS_YELLOW;
+    if (Classification === 'blocked')    return CLS_ORANGE;
+    return null;
+  }
+
+  // ── Rendering ────────────────────────────────────────────────────────────
+
+  // Removes all module-owned classes from a key element.
+  function _clearKeyClasses(KeyElement) {
+    ALL_MODULE_CLASSES.forEach(function (ClassName) {
+      KeyElement.classList.remove(ClassName);
+    });
+  }
+
+  // Redraws every key to its current resting colour given the held chord.
+  function _applyAllKeyColours() {
+    Object.keys(keyEls).forEach(function (BrowserCode) {
+      var KeyElement = keyEls[BrowserCode];
+      if (!KeyElement) return;
+      _clearKeyClasses(KeyElement);
+      // CapsLock is never a conflict — always show as available (green).
+      if (BrowserCode === 'CapsLock') {
+        KeyElement.classList.add(CLS_RESTING_AVAILABLE);
+        return;
+      }
+      var Classification = _classifyKeyWithCurrentChord(BrowserCode);
+      var RestingClass   = _restingClassForClassification(Classification);
+      if (RestingClass) KeyElement.classList.add(RestingClass);
+    });
+    // Lock key (padlock) is not in keyEls — apply orange resting state directly.
+    if (lockKeyEl) {
+      ALL_MODULE_CLASSES.forEach(function (ClassName) { lockKeyEl.classList.remove(ClassName); });
+      lockKeyEl.classList.add(CLS_RESTING_BLOCKED);
+    }
+  }
+
+  // Applies the full-brightness pressed class to a single key, temporarily
+  // replacing its resting class.
+  function _applyKeyPressedColour(BrowserCode) {
+    var KeyElement = keyEls[BrowserCode];
+    if (!KeyElement || BrowserCode === 'CapsLock') return;
+    var Classification = _classifyKeyWithCurrentChord(BrowserCode);
+    var PressedClass   = _pressedClassForClassification(Classification);
+    var RestingClass   = _restingClassForClassification(Classification);
+    if (RestingClass)  KeyElement.classList.remove(RestingClass);
+    KeyElement.classList.remove('lit-fading');
+    if (PressedClass)  KeyElement.classList.add(PressedClass);
+  }
+
+  // Fades a non-modifier key back to its resting colour after release.
+  function _revertKeyToRestingColour(BrowserCode) {
+    var KeyElement = keyEls[BrowserCode];
+    if (!KeyElement || BrowserCode === 'CapsLock') return;
+    // Classification is re-evaluated after _heldKeys was already updated on keyup,
+    // so the resting colour reflects the new chord (minus the released key).
+    var Classification = _classifyKeyWithCurrentChord(BrowserCode);
+    var PressedClass   = _pressedClassForClassification(Classification);
+    var RestingClass   = _restingClassForClassification(Classification);
+    KeyElement.classList.add('lit-fading');
+    setTimeout(function () {
+      ALL_MODULE_CLASSES.forEach(function (ClassName) { KeyElement.classList.remove(ClassName); });
+      if (RestingClass) KeyElement.classList.add(RestingClass);
+      setTimeout(function () { KeyElement.classList.remove('lit-fading'); }, 850);
+    }, LINGER_MS);
+  }
+
+  // Removes all module-owned classes from every key element.
+  function _clearAllKeys() {
+    Object.keys(keyEls).forEach(function (BrowserCode) {
+      var KeyElement = keyEls[BrowserCode];
+      if (KeyElement) _clearKeyClasses(KeyElement);
+    });
+    // Clear any resting state applied directly to the lock key
+    if (lockKeyEl) ALL_MODULE_CLASSES.forEach(function (ClassName) { lockKeyEl.classList.remove(ClassName); });
+  }
+
+  // ── Unblocking on successful keypress ────────────────────────────────────
+  //
+  // When a key fires successfully (we receive the keydown event), any dismissed
+  // entry that matches the current chord is unblocked.  The colour change then
+  // follows automatically from the next _applyAllKeyColours call.
+
+  function _unblockFiredChordIfDismissed(NonModifierBrowserCode) {
+    var KeyToken = _browserCodeToToken(NonModifierBrowserCode);
+    if (!KeyToken) return;
+    var ChordToken = _buildChordToken(KeyToken);
+    var NormalisedChord = NormaliseToken(ChordToken);
+
+    if (!dismissedConflicts.has(NormalisedChord)) return;
+
+    // Unblock it
+    dismissedConflicts.delete(NormalisedChord);
+
+    // Demote from sus to confirmed-available in the cache
+    if (_conflictsCache) {
+      var AllCacheEntries = (_conflictsCache.os_conflicts || []).concat(
+        Object.keys(_conflictsCache.browser_conflicts || {}).reduce(function (Acc, BrowserName) {
+          return Acc.concat(_conflictsCache.browser_conflicts[BrowserName]);
+        }, [])
+      );
+      AllCacheEntries.forEach(function (CacheEntry) {
+        if (_conflictBadToToken(CacheEntry.bad) === NormalisedChord) {
+          CacheEntry.sus = false;
+        }
+      });
+    }
+
+    _saveCustomDismissedConflicts();
+    if (gameState !== 'playing' && gameState !== 'paused' && gameState !== 'readyToUnpause') {
+      questionPool = shuffleArray(buildPool());
+    }
+
+    // Immediately update any visible list items matching this chord so the
+    // radio flips to unchecked and the strikethrough clears in sync with the
+    // key lighting — without waiting for the full _refreshBrowserContent rebuild.
+    document.querySelectorAll(
+      '#browserCompatList li[data-conflict-key], #cfFoundList li[data-conflict-key]'
+    ).forEach(function (ListItem) {
+      if (NormaliseToken(ListItem.dataset.conflictKey || '') !== NormalisedChord) return;
+      var Radio = ListItem.querySelector('.modal-radio');
+      if (Radio) Radio.classList.remove('on');
+      ListItem.classList.remove('conflict-dismissed');
+    });
+
+    _syncConflictFilterPillStyles();
+    setTimeout(function () {
+      _refreshBrowserContent();
+      conflictsKbLighting.refresh();
+      // Flash chips green on the freshly rebuilt list items so the visual
+      // confirmation is in sync with the resting-available (green) key state.
+      _flashConflictListChipsGreen(NormalisedChord);
+    }, 50);
+    showToast('Shortcut working \u2014 unblocked');
+  }
+
+  // ── Conflict list chip flash ──────────────────────────────────────────────
+  // When a chord that was orange (blocked) or yellow (sus/uncertain) is
+  // successfully pressed, the chips in the visible conflict list rows that
+  // match that chord briefly light green — giving the user instant feedback
+  // that the shortcut is working, synced with the physical key lighting.
+
+  function _flashConflictListChipsGreen(ChordToken) {
+    var NormalisedChord = NormaliseToken(ChordToken);
+    var FLASH_DURATION_MS = 900;
+    var GreenBg     = '#10b981';
+    var GreenBorder = '#059669';
+    var GreenShadow = '0 0 6px rgba(16,185,129,0.45)';
+    var GreenColor  = 'white';
+
+    // All rendered conflict list items whose data-conflict-key matches the chord
+    var AllListItems = document.querySelectorAll(
+      '#browserCompatList li[data-conflict-key], #cfFoundList li[data-conflict-key]'
+    );
+    AllListItems.forEach(function (ListItem) {
+      if (NormaliseToken(ListItem.dataset.conflictKey || '') !== NormalisedChord) return;
+      var Chips = ListItem.querySelectorAll('.sp-report-chip-key');
+      Chips.forEach(function (Chip) {
+        Chip.style.transition  = 'background 0.12s ease, color 0.12s ease, box-shadow 0.12s ease';
+        Chip.style.background  = GreenBg;
+        Chip.style.color       = GreenColor;
+        Chip.style.borderColor = GreenBorder;
+        Chip.style.boxShadow   = GreenShadow;
+      });
+      setTimeout(function () {
+        Chips.forEach(function (Chip) {
+          Chip.style.transition  = 'background 0.5s ease, color 0.5s ease, box-shadow 0.5s ease';
+          Chip.style.background  = '';
+          Chip.style.color       = '';
+          Chip.style.borderColor = '';
+          Chip.style.boxShadow   = '';
+          // Clean up transition after it settles
+          setTimeout(function () { Chip.style.transition = ''; }, 520);
+        });
+      }, FLASH_DURATION_MS);
+    });
+  }
+
+  // ── Event handlers ───────────────────────────────────────────────────────
+
+  function _onKeydown(Event) {
+    if (!_active) return;
+    if (Event.repeat) return;  // ignore key-repeat — lighting and flash are one-shot
+
+    _heldKeys.add(Event.code);
+
+    if (_isModifierCode(Event.code)) {
+      // Modifier pressed: redraw all keys to reflect the new chord prefix state
+      _applyAllKeyColours();
+      return;
+    }
+
+    // Non-modifier pressed: light it at full brightness.
+    _applyKeyPressedColour(Event.code);
+
+    // Flash conflict list chips green only for sus (yellow) entries — orange
+    // entries are about to be unblocked and their list items rebuilt, so
+    // flashing them here would fight the DOM rebuild and cause flicker.
+    var KeyToken = _browserCodeToToken(Event.code);
+    if (KeyToken) {
+      var ChordForFlash = _buildChordToken(KeyToken);
+      var NormChordForFlash = NormaliseToken(ChordForFlash);
+      if (_isSusToken(NormChordForFlash) && !dismissedConflicts.has(NormChordForFlash)) {
+        _flashConflictListChipsGreen(ChordForFlash);
+      }
+    }
+
+    _unblockFiredChordIfDismissed(Event.code);
+  }
+
+  function _onKeyup(Event) {
+    if (!_active) return;
+
+    _heldKeys.delete(Event.code);
+
+    if (_isModifierCode(Event.code)) {
+      // Modifier released: redraw all keys to reflect the reduced chord
+      _applyAllKeyColours();
+      return;
+    }
+
+    // Non-modifier released: fade back to resting colour
+    _revertKeyToRestingColour(Event.code);
+  }
+
+  // ── Public API ───────────────────────────────────────────────────────────
+
+  function activate() {
+    if (_active) return;
+    _active   = true;
+    _heldKeys = new Set();
+    document.getElementById('keyboardPanel').classList.add('conflicts-panel-active');
+    document.addEventListener('keydown', _onKeydown, true);
+    document.addEventListener('keyup',   _onKeyup,   true);
+    setTimeout(_applyAllKeyColours, 80);
+  }
+
+  function deactivate() {
+    if (!_active) return;
+    _active   = false;
+    _heldKeys = new Set();
+    document.getElementById('keyboardPanel').classList.remove('conflicts-panel-active');
+    document.removeEventListener('keydown', _onKeydown, true);
+    document.removeEventListener('keyup',   _onKeyup,   true);
+    _clearAllKeys();
+  }
+
+  function refresh() {
+    if (_active) _applyAllKeyColours();
+  }
+
+  // Called when a sus entry is manually toggled to confirmed-blocked via the
+  // radio button in the conflict list, so the cache stays consistent.
+  function markSusBlocked(Token) {
+    if (_conflictsCache) {
+      var AllCacheEntries = (_conflictsCache.os_conflicts || []).concat(
+        Object.keys(_conflictsCache.browser_conflicts || {}).reduce(function (Acc, BrowserName) {
+          return Acc.concat(_conflictsCache.browser_conflicts[BrowserName]);
+        }, [])
+      );
+      AllCacheEntries.forEach(function (CacheEntry) {
+        if (_conflictBadToToken(CacheEntry.bad) === Token) CacheEntry.sus = false;
+      });
+    }
+    if (_active) _applyAllKeyColours();
+  }
+
+  return { activate: activate, deactivate: deactivate, refresh: refresh, markSusBlocked: markSusBlocked };
+}());
+
+// Per-key overrides for extended keyboard keys, set via the keyboard conflicts tab.
+// Tracks which extended key browser-codes have been individually toggled by the user.
+// Shape: Set of browser codes (e.g. 'Home', 'PageUp') that are BLOCKED (excluded from pool).
+// When hasFullKeyboard changes via the size toggle, this set is cleared and all extended
+// keys are reset to the new baseline (all blocked when compact, all allowed when extended).
+var kbKeyOverrides = new Set();
+(function() {
+  try {
+    var SavedKbOverrides = localStorage.getItem('kw_kb_key_overrides');
+    if (SavedKbOverrides) {
+      JSON.parse(SavedKbOverrides).forEach(function(Code) { kbKeyOverrides.add(Code); });
+    }
+  } catch(e) {}
+})();
+
+function _saveKbKeyOverrides() {
+  try { localStorage.setItem('kw_kb_key_overrides', JSON.stringify(Array.from(kbKeyOverrides))); } catch(e) {}
+}
+
+function _syncExtendedKeysToBaseline(full) {
+  if (typeof dismissedConflicts === 'undefined' || typeof kbKeyOverrides === 'undefined') return;
+  
+  var SeenTokens = new Set();
+  
+  Object.keys(ExtendedKeyCodeToToken).forEach(function(Code) {
+    var Token = ExtendedKeyCodeToToken[Code];
+    if (SeenTokens.has(Token)) return;
+    SeenTokens.add(Token);
+    
+    if (full) {
+      dismissedConflicts.delete(Token);  // was: delete(Code)
+    } else {
+      dismissedConflicts.add(Token);     // was: add(Code)
+    }
+  });
+
+  kbKeyOverrides.clear();
+  _saveKbKeyOverrides();
+  _saveCustomDismissedConflicts();
+}
 
 function _saveCustomDismissedConflicts() {
   try {
@@ -7306,15 +8391,15 @@ function _refreshPausePanel() {
   var clearLbl = document.getElementById('spClearLabel');
 
   if (timeBtn) {
-    timeBtn.classList.toggle('score-pill-inactive', !hasTime);
+    timeBtn.classList.toggle('segmented-pill-inactive', !hasTime);
     timeBtn.style.borderRadius = '';
   }
   if (bothBtn) {
-    bothBtn.classList.toggle('score-pill-inactive', !bothActive);
+    bothBtn.classList.toggle('segmented-pill-inactive', !bothActive);
     bothBtn.style.borderRadius = '';
   }
   if (accBtn) {
-    accBtn.classList.toggle('score-pill-inactive', !hasAcc && !hasTrophyOnly);
+    accBtn.classList.toggle('segmented-pill-inactive', !hasAcc && !hasTrophyOnly);
     accBtn.style.borderRadius = '';
     if (hasTrophyOnly) {
       accBtn.onclick = function() { enterConfirmTrophy(_trophyFromFinished, _trophyFromPause); };
@@ -7365,7 +8450,7 @@ function _pauseClearClick(target, initialToast) {
   // Light up the pressed button
   var btn = _scoreClearBtnForTarget(target);
   if (btn) {
-    btn.classList.add('score-pill-active');
+    btn.classList.add('segmented-pill-active');
     _popScorePillLabel(btn);
   }
 
@@ -7388,8 +8473,8 @@ function _pauseClearClick(target, initialToast) {
 }
 
 function _scoreClearPillForTarget(target) {
-  // The clear-score pill (first .score-clear-pill in the pause panel right col)
-  return document.querySelector('#panelPause .sp-col-right .score-clear-pill');
+  // The clear-score pill (first .segmented-pill in the pause panel right col)
+  return document.querySelector('#panelPause .sp-col-right .segmented-pill');
 }
 
 function _scoreClearBtnForTarget(target) {
@@ -7434,7 +8519,7 @@ function _exitScoreClearConfirm() {
   var pill = _scoreClearPillForTarget(_scoreClearConfirmTarget);
   _scoreClearConfirmTarget = null;
   document.removeEventListener('click', _scoreClearConfirmGuard, true);
-  if (btn)  btn.classList.remove('score-pill-active');
+  if (btn)  btn.classList.remove('segmented-pill-active');
   if (pill) pill.classList.remove('score-confirm-source');
   var inner = document.getElementById('settingsPanelInner');
   if (inner) inner.removeAttribute('data-score-confirm');
@@ -7446,12 +8531,12 @@ function _exitScoreClearConfirm() {
 function _reportImpossibleQuestion() {
   // Briefly activate the button so the interaction is visually confirmed,
   // then slowly transition back to the available state.
-  var reportBtn = document.querySelector('#panelPause .score-pill-full');
+  var reportBtn = document.querySelector('#panelPause .segmented-pill-full');
   if (reportBtn) {
-    reportBtn.classList.add('score-pill-active');
+    reportBtn.classList.add('segmented-pill-active');
     _popScorePillLabel(reportBtn);
     setTimeout(function() {
-      reportBtn.classList.remove('score-pill-active');
+      reportBtn.classList.remove('segmented-pill-active');
       // Transition is already 1.5s ease from CSS -- returns slowly to available
     }, 3000);
   }
@@ -7533,10 +8618,10 @@ function _pauseStartOverClick() {
 
   var btn = document.getElementById('startOverBtn');
   if (btn) {
-    btn.classList.add('score-pill-active');
+    btn.classList.add('segmented-pill-active');
     _popScorePillLabel(btn);
     // Expose only this pill via the same overlay pattern as score-clear
-    var pill = btn.closest('.score-clear-pill');
+    var pill = btn.closest('.segmented-pill');
     if (pill) pill.classList.add('score-confirm-source');
   }
 
@@ -7576,8 +8661,8 @@ function _exitStartOverConfirm() {
   document.removeEventListener('click', _startOverConfirmGuard, true);
   var btn = document.getElementById('startOverBtn');
   if (btn) {
-    btn.classList.remove('score-pill-active');
-    var pill = btn.closest('.score-clear-pill');
+    btn.classList.remove('segmented-pill-active');
+    var pill = btn.closest('.segmented-pill');
     if (pill) pill.classList.remove('score-confirm-source');
   }
   var inner = document.getElementById('settingsPanelInner');
@@ -7795,6 +8880,24 @@ let loadedAppShortcuts = [];
 let loadSequenceNumber = 0;
 
 // Called once Keyboard Warriors Apps json has been fetched and parsed.
+
+function _BuildStandbyDefaultsForSkillset(SkillsetLabel, AllApps, CurrentShortLabels) {
+  var SkillsetDefinition = SKILLSET_DEFS.find(function(Definition) {
+    return Definition.label === SkillsetLabel;
+  });
+  if (!SkillsetDefinition) return [];
+  var ActiveTags = SkillsetDefinition.tags;
+  var ShortSet   = new Set(CurrentShortLabels);
+  return AllApps
+    .filter(function(App) {
+      if (ShortSet.has(App.label)) return false;
+      return Array.isArray(App.standby) && App.standby.some(function(Tag) {
+        return ActiveTags.indexOf(Tag) !== -1;
+      });
+    })
+    .map(function(App) { return App.label; });
+}
+
 function _onAppsLoaded(AllAppsFromJson) {
   appsLongList = AllAppsFromJson;
 
@@ -7845,8 +8948,25 @@ function _onAppsLoaded(AllAppsFromJson) {
     }
   }
 
-  appsShortList = PersistedLabels || SkillsetDefaultLabels || DefaultShortListLabels;
-  APPS = appsLongList;
+  var DefaultShortLabels   = SkillsetDefaultLabels || DefaultShortListLabels;
+  var DefaultStandbyLabels = _BuildStandbyDefaultsForSkillset(currentSkillset, AllAppsFromJson, DefaultShortLabels);
+
+  var PersistedStandbyLabels = null;
+  try {
+    var RawSavedStandby = localStorage.getItem('kw_apps_standby_list');
+    if (RawSavedStandby) {
+      var ParsedStandby = JSON.parse(RawSavedStandby);
+      if (Array.isArray(ParsedStandby) && ParsedStandby.length > 0) {
+        var ValidatedStandby = ParsedStandby.filter(function(SavedLabel) {
+          return AllAppsFromJson.some(function(App) { return App.label === SavedLabel; });
+        });
+        if (ValidatedStandby.length > 0) PersistedStandbyLabels = ValidatedStandby;
+      }
+    }
+  } catch (StorageError) {}
+
+  appsShortList   = PersistedLabels         || DefaultShortLabels;
+  appsStandbyList = PersistedStandbyLabels  || DefaultStandbyLabels;  APPS = appsLongList;
 
   var FallbackApp = appsShortList[0] || (appsLongList[0] ? appsLongList[0].label : 'Photoshop (Ps)');
   try {
@@ -7863,6 +8983,9 @@ function _onAppsLoaded(AllAppsFromJson) {
 }
 
 
+
+// Load OS conflict data at startup (before first game so pool filtering is ready).
+loadConflictsData();
 
 // Fetch the apps manifest on startup. Falls back to a minimal built-in list if the
 // file cannot be reached (e.g. running the HTML file locally without a server).
@@ -7952,8 +9075,8 @@ function buildPool() {
     if (!touchEnabled && browserSkip.has(PrimaryString)) return false;
     if (!touchEnabled && dismissedConflicts.has(PrimaryString)) return false;
 
-    // Extended key exclusion for compact keyboards or touch
-    if ((touchEnabled || !hasFullKeyboard) && requiresExtKey(ActiveString)) return false;
+    // Extended key exclusion: touch always blocks all; otherwise per-key via dismissedConflicts
+    if (touchEnabled && requiresExtKey(ActiveString)) return false;
 
     // Kill punctuation
     if (killPunctuationOn && UNSTABLE_PUNCTUATION_TOKENS.has(PrimaryString)) return false;
@@ -10608,17 +11731,17 @@ function _refreshReportPanel() {
 
       if (HasSettingsSuggestion) {
         var AcceptButton = document.createElement('button');
-        AcceptButton.className = 'score-pill-seg';
+        AcceptButton.className = 'segmented-pill-section';
         AcceptButton.style.cssText = 'flex-shrink:0;border-radius:12px;border:1.5px solid #d1d5db;padding:5px 12px;white-space:nowrap;height:auto;';
         AcceptButton.innerHTML = '<span class="diff-btn-text">Accept the coach&#39;s advice</span>';
         if (CoachAdviceAccepted) {
           AcceptButton.disabled = true;
-          AcceptButton.classList.add('score-pill-inactive');
+          AcceptButton.classList.add('segmented-pill-inactive');
         } else {
           AcceptButton.addEventListener('click', function() {
             CoachAdviceAccepted = true;
             AcceptButton.disabled = true;
-            AcceptButton.classList.add('score-pill-inactive');
+            AcceptButton.classList.add('segmented-pill-inactive');
             _applyCoachSuggestionsWithAnimation(lastCompletedReport.trainerSettingSuggested);
           });
         }
@@ -11123,6 +12246,7 @@ function handleKeydown(e) {
   if (detectedOs === 'mobile' && e.isTrusted) {
     _setHasKeyboard();
   }
+
 updateKeyboardLighting(e, true);
   // Sync the CapsLock key indicator with the real OS CapsLock state.
   // getModifierState reads the OS-level state directly, so it never drifts.
@@ -11252,7 +12376,7 @@ updateKeyboardLighting(e, true);
     clearToast();
     clearHelp();
     if (requiresExtKey(currentAnswer)) {
-      // Hard-clear the toast immediately — extKeyPill handles the visual,
+      // Hard-clear the toast immediately — extKeyChip handles the visual,
       // and a fading kbToast in the same position would create a double chip.
       kbToastEl.innerHTML = '';
     } else {
@@ -11450,13 +12574,14 @@ function _activateBlurPauseScreen() {
   // The guard is cleared when the player unpauses or resets to idle.
   if (_blurDiagnosticFlowComplete) return;
 
-  // Touch mode has no physical keyboard, so conflict diagnosis is meaningless.
-  // Show a simple neutral pause message and return.
+// Touch mode has no physical keyboard, so conflict diagnosis is meaningless.
+  // Show a simple neutral pause message, restore the keyboard to the panel angle, and return.
   if (touchEnabled) {
     hideConfirmHeading();
     titleEl.classList.remove('blurred');
     titleEl.className = '';
     titleEl.textContent = 'Lost you for a moment,\nso I paused your game.';
+    SetKeyboardPositionForPanel('panelPause');
     return;
   }
 
@@ -11494,7 +12619,7 @@ function _activateBlurPauseScreen() {
   var ActionArea = document.getElementById('blurDiagnosticActionArea');
   if (ActionArea) {
     ActionArea.style.display = '';
-    ActionArea.innerHTML = '<button id="blurDiagnosticRevealBtn" class="score-pill-seg score-pill-full" style="border-radius:12px;border:1.5px solid #d1d5db;" onclick="_blurDiagnosticReveal()"><span class="diff-btn-text">reveal the answer</span></button>';
+    ActionArea.innerHTML = '<button id="blurDiagnosticRevealBtn" class="segmented-pill-section segmented-pill-full" style="border-radius:12px;border:1.5px solid #d1d5db;" onclick="_blurDiagnosticReveal()"><span class="diff-btn-text">reveal the answer</span></button>';
   }
 
   // Reset roundrect to normal state (clears any amber/resolved styling from a prior run)
@@ -11676,12 +12801,12 @@ function _blurDiagnosticSecondBlur() {
   LeftLabel.appendChild(ChipClone);
 
   var LeftBtn = document.createElement('button');
-  LeftBtn.className = 'score-pill-seg sp-seg-btn';
+  LeftBtn.className = 'segmented-pill-section sp-seg-btn';
   LeftBtn.style.cssText = 'border-radius:18px 0 0 18px;flex:1;text-align:center;min-width:0;overflow:hidden;color:#6b7280;';
   LeftBtn.onclick = _blurDiagnosticBlockShortcut;
-  LeftBtn.addEventListener('pointerdown', function() { this.classList.add('score-pill-active'); });
-  LeftBtn.addEventListener('pointerup',   function() { this.classList.remove('score-pill-active'); });
-  LeftBtn.addEventListener('pointerleave',function() { this.classList.remove('score-pill-active'); });
+  LeftBtn.addEventListener('pointerdown', function() { this.classList.add('segmented-pill-active'); });
+  LeftBtn.addEventListener('pointerup',   function() { this.classList.remove('segmented-pill-active'); });
+  LeftBtn.addEventListener('pointerleave',function() { this.classList.remove('segmented-pill-active'); });
   LeftBtn.appendChild(LeftLabel);
 
   var RightLabel = document.createElement('span');
@@ -11690,17 +12815,17 @@ function _blurDiagnosticSecondBlur() {
   RightLabel.innerHTML = 'do that + let me know ' + EnvelopeSvg;
 
   var RightBtn = document.createElement('button');
-  RightBtn.className = 'score-pill-seg sp-seg-btn';
+  RightBtn.className = 'segmented-pill-section sp-seg-btn';
   RightBtn.style.cssText = 'border-radius:0 18px 18px 0;flex:1;border-left:1.5px solid #d1d5db;text-align:center;';
   RightBtn.onclick = _blurDiagnosticBlockAndReport;
-  RightBtn.addEventListener('pointerdown', function() { this.classList.add('score-pill-active'); });
-  RightBtn.addEventListener('pointerup',   function() { this.classList.remove('score-pill-active'); });
-  RightBtn.addEventListener('pointerleave',function() { this.classList.remove('score-pill-active'); });
+  RightBtn.addEventListener('pointerdown', function() { this.classList.add('segmented-pill-active'); });
+  RightBtn.addEventListener('pointerup',   function() { this.classList.remove('segmented-pill-active'); });
+  RightBtn.addEventListener('pointerleave',function() { this.classList.remove('segmented-pill-active'); });
   RightBtn.appendChild(RightLabel);
 
   var Pill = document.createElement('div');
   Pill.id = 'blurDiagnosticBlockPill';
-  Pill.className = 'score-clear-pill';
+  Pill.className = 'segmented-pill';
   Pill.appendChild(LeftBtn);
   Pill.appendChild(RightBtn);
 
@@ -11828,8 +12953,8 @@ var TabletKeyboardLowAngle = 80;
 function SetKeyboardPositionForPanel(PanelName) {
   if (ForceNoKeyboard) return;
   // Ghost mode: always flat at 47, no dragging or toggling.
-  if (keyboardDisplayMode === 'ghost') { _animateToPartialAngle(47); return; }
-  // Tablet: animate to the panel's tablet angle; tap-toggle is handled separately.
+if (keyboardDisplayMode === 'ghost' && PanelName !== 'panelConflicts') { _animateToPartialAngle(47); return; }
+ // Tablet: animate to the panel's tablet angle; tap-toggle is handled separately.
   var Angle = GetPanelKeyboardAngle(PanelName);
   _animateToPartialAngle(Angle);
   // Reset tablet toggle state whenever a panel opens so it starts at the panel default.
@@ -11916,7 +13041,7 @@ function _repositionAffordance() {
   var affordance = document.getElementById('kbHandleAffordance');
   if (!affordance) return;
   // No affordance on tablet (tap-toggle instead) or in ghost mode (fixed angle).
-  var suppress = (detectedOs === 'mobile') || (keyboardDisplayMode === 'ghost');
+var suppress = (detectedOs === 'mobile') || (keyboardDisplayMode === 'ghost' && activeSettings !== 'panelConflicts');
   affordance.style.visibility = suppress ? 'hidden' : '';
   if (suppress) return;
   var sentinel = document.getElementById('kbTopSentinel');
@@ -12091,7 +13216,7 @@ function _onDragHandlePointerDown(Event) {
   if (_kbPos === 'face') return;
   // No drag on tablet (tap-toggle handles it) or in ghost mode (fixed angle).
   if (detectedOs === 'mobile') return;
-  if (keyboardDisplayMode === 'ghost') return;
+  if (keyboardDisplayMode === 'ghost' && activeSettings !== 'panelConflicts') return;
 
   _kbDragActive             = false;
   _kbDragDirectionConfirmed = false;
@@ -12467,7 +13592,7 @@ function OnPhoneWarningDismiss() {
   }
 }
 
-(function InitialiseTouchBootSequence() {
+function InitialiseTouchBootSequence() {
   if (detectedOs !== 'mobile') return;
 
   var SavedGyroDecision = null;
@@ -12478,22 +13603,28 @@ function OnPhoneWarningDismiss() {
     InitialiseGyroOrientationListener();
   }
 
-  var IsIos = /iPad|iPhone|iPod/.test(navigator.userAgent) ||
-              (navigator.maxTouchPoints > 1 && /Mac/.test(navigator.userAgent));
-
-  // Phone screens get the size warning first; it handles all subsequent chaining
+  // Small phones get the warning first
   if (IsPhoneScreen()) {
-    setTimeout(ShowPhoneWarningModal, 400);
+    setTimeout(ShowPhoneWarningModal, 250);
     return;
   }
 
-  // Tablet/large touch devices: gyro then keyboard recommendation
+  // iOS permission flow
+  var IsIos = /iPad|iPhone|iPod/.test(navigator.userAgent) ||
+              (navigator.maxTouchPoints > 1 && /Mac/.test(navigator.userAgent));
+
   if (IsIos && _requiresGyroPrompt()) {
-    setTimeout(ShowGyroModal, 600);
-  } else {
-    setTimeout(ShowKeyboardRecommendModal, 400);
+    setTimeout(ShowGyroModal, 250);
+    return;
   }
-})();
+
+  // Otherwise go straight to keyboard recommendation
+  setTimeout(ShowKeyboardRecommendModal, 250);
+}
+
+document.addEventListener('DOMContentLoaded', function() {
+  InitialiseTouchBootSequence();
+});
 
 /* ══════════════════════════════════════
    LAYOUT CHANGE HANDLER
@@ -12642,12 +13773,43 @@ function _onWelcomeDifficultyPillClick(ClickEvent) {
 var currentSkillset   = 'Graphic Design';
 var SKILLSET_DEFS = [
   { label: 'Graphic Design',         tags: ['Graphics']     },
+  { label: 'Photography',         tags: ['Photography']     },
   { label: 'Video & Motion',         tags: ['Motion']       },
   { label: 'Office Productivity',    tags: ['Productivity'] },
 ];
 
 var currentSkillset   = 'Graphic Design';
 var skillsetPillOpen  = false;
+
+// CustomSetList: the user's personally curated app list, persisted independently of named skillsets.
+// Null until the user first opens the CustomiseSkillsetPanel, at which point it is seeded from
+// the combined short + standby list and then saved to localStorage on every change.
+var CustomSetList = null; // { shortList: [], standbyList: [] }
+
+(function() {
+  try {
+    var SavedCustomSet = localStorage.getItem('kw_custom_set');
+    if (SavedCustomSet) {
+      var Parsed = JSON.parse(SavedCustomSet);
+      if (Parsed && Array.isArray(Parsed.shortList)) CustomSetList = Parsed;
+    }
+  } catch (StorageError) {}
+})();
+
+function _SaveCustomSetList() {
+  if (!CustomSetList) return;
+  try { localStorage.setItem('kw_custom_set', JSON.stringify(CustomSetList)); } catch (StorageError) {}
+}
+
+function _EnsureCustomSetListSeeded() {
+  if (CustomSetList !== null) return;
+  // First ever opening: seed from the current combined short + standby lists.
+  CustomSetList = {
+    shortList:   appsShortList.slice(),
+    standbyList: appsStandbyList.slice(),
+  };
+  _SaveCustomSetList();
+}
 
 function _buildSkillsetPill() {
   var pill = document.getElementById('skillsetPill');
@@ -12709,7 +13871,7 @@ function _buildSkillsetPill() {
         // Pulse with overflow:hidden so the new rows never escape the pill boundary.
         // The pulse animation operates on the pill border/shadow, not its contents,
         // so clipping is fine here.
-        pulseBtn(appPillEl);
+        appPillEl.classList.remove('pulse-glow'); void appPillEl.offsetWidth; appPillEl.classList.add('pulse-glow'); appPillEl.addEventListener('animationend', function h() { appPillEl.classList.remove('pulse-glow'); appPillEl.removeEventListener('animationend', h); }, { once: true });
         // Show the welcome caret now that a selection has been made
         var wCaret = document.getElementById('welcomeDifficultyCaretEl');
         if (wCaret) wCaret.style.visibility = '';
@@ -12730,8 +13892,14 @@ function _applySkillset(skillsetLabel) {
     })
     .map(function(app) { return app.label; });
   if (matching.length > 0) {
-    appsShortList = matching;
-    currentApp = appsShortList[0];
+    appsShortList   = matching;
+    appsStandbyList = _BuildStandbyDefaultsForSkillset(skillsetLabel, appsLongList, appsShortList);
+    var defaultApp = matching.find(function(label) {
+      var entry = appsLongList.find(function(a) { return a.label === label; });
+      return entry && Array.isArray(entry.skillset) && entry.skillset[0] &&
+             def.tags.indexOf(entry.skillset[0]) !== -1;
+    });
+    currentApp = defaultApp || matching[0];
     try { localStorage.setItem('kw_app', currentApp); } catch(e) {}
     _saveAppsShortList();
     buildAppPill();
@@ -12745,6 +13913,13 @@ function _applySkillset(skillsetLabel) {
     }
   }
   runData.length = 0; lastCompletedReport = null; CoachAdviceAccepted = false;
+  if (CustomiseSkillsetPanelIsOpen) {
+    _BuildCustomiseSkillsetPanelContent();
+  }
+  // If the customise panel is open, re-render it to reflect the new skillset (read-only for named, editable for Custom Set)
+  if (CustomiseSkillsetPanelIsOpen) {
+    _BuildCustomiseSkillsetPanelContent();
+  }
 }
 
 function skillsetPillClick(ClickEvent) {
@@ -12756,6 +13931,9 @@ function skillsetPillClick(ClickEvent) {
 function _openSkillsetPill() {
   skillsetPillOpen = true;
   _buildSkillsetPill();
+  if (gameState === 'welcome' && !_welcomeIsReturning) {
+    openSettings('panelDifficultySettings');
+  }
   setTimeout(function() {
     document.addEventListener('click', function handler(e) {
     var pill = document.getElementById('skillsetPill');
@@ -12773,8 +13951,6 @@ function _closeSkillsetPill() {
   if (existingDrop) existingDrop.remove();
   _buildSkillsetPill();
 }
-
-
 var _skillsetPillInitialised = false;
 
 function _resolvePreferredSkillset() {
@@ -12821,6 +13997,685 @@ function _initSkillsetPillAfterAppsLoad() {
   currentSkillset = _resolvePreferredSkillset();
   _applySkillset(currentSkillset);
   _buildSkillsetPill();
+}
+
+/* ══════════════════════════════════════
+   CUSTOMISE SKILLSET PANEL
+   Slides in to the left of the app pill
+   when the 'more' button in the wrench
+   picker is pressed. Closes with the
+   wrench picker.
+══════════════════════════════════════ */
+
+var CustomiseSkillsetPanelIsOpen = false;
+
+function _buildCustomiseSkillsetPillContent() {
+  var PillElement = document.getElementById('customiseSkillsetPill');
+  if (!PillElement) return;
+  PillElement.innerHTML = '';
+  PillElement.style.cssText = [
+    'position:relative',
+    'border-radius:10px',
+    'border:1.5px solid #9ca3af',
+    'background:white',
+    'overflow:visible',
+    'cursor:pointer',
+    'user-select:none',
+    'width:192px',
+    'min-width:192px',
+    'height:27px',
+    'box-sizing:border-box',
+    'pointer-events:auto',
+    'opacity:0',
+    'transform:scale(0.88)',
+    'transition:opacity 0.22s ease, transform 0.22s cubic-bezier(0.34,1.3,0.64,1)',
+  ].join(';');
+
+  // Selected row — mirrors the original skillset pill structure
+  var SelectedRow = document.createElement('div');
+  SelectedRow.style.cssText = [
+    'display:flex',
+    'align-items:center',
+    'height:24px',
+    'line-height:1',
+    "font-family:'Lato',system-ui,sans-serif",
+    'font-size:12px',
+    'color:#6b7280',
+    'font-weight:500',
+    'white-space:nowrap',
+    'box-sizing:border-box',
+    'cursor:pointer',
+    'padding:0 2px',
+  ].join(';');
+
+  var CaretColumn = document.createElement('span');
+  CaretColumn.style.cssText = 'flex-shrink:0;width:22px;display:flex;align-items:center;justify-content:center;';
+
+  var CaretSvg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
+  CaretSvg.setAttribute('viewBox', '0 0 7 7');
+  CaretSvg.setAttribute('width', '7');
+  CaretSvg.setAttribute('height', '7');
+  CaretSvg.setAttribute('fill', 'currentColor');
+  CaretSvg.style.cssText = 'display:block;color:#9ca3af;flex-shrink:0;transition:transform 0.2s ease;';
+  var CaretPath = document.createElementNS('http://www.w3.org/2000/svg', 'path');
+  CaretPath.setAttribute('d', 'M1.5 1 L6 3.5 L1.5 6 Z');
+  CaretSvg.appendChild(CaretPath);
+  CaretColumn.appendChild(CaretSvg);
+
+  var LabelColumn = document.createElement('span');
+  LabelColumn.style.cssText = 'flex:1;text-align:left;';
+  LabelColumn.textContent = currentSkillset;
+
+  SelectedRow.appendChild(CaretColumn);
+  SelectedRow.appendChild(LabelColumn);
+  PillElement.appendChild(SelectedRow);
+
+  PillElement.addEventListener('click', function(ClickEvent) {
+    ClickEvent.stopPropagation();
+    _toggleCustomiseSkillsetDrop(PillElement);
+  });
+}
+
+function _toggleCustomiseSkillsetDrop(PillElement) {
+  var ExistingDrop = document.getElementById('customiseSkillsetDrop');
+  if (ExistingDrop) { ExistingDrop.remove(); return; }
+
+  var Drop = document.createElement('div');
+  Drop.id = 'customiseSkillsetDrop';
+  var PillRect   = PillElement.getBoundingClientRect();
+  var DropHeight = SKILLSET_DEFS.length * 24;
+  Drop.style.cssText = [
+    'position:fixed',
+    'left:' + PillRect.left + 'px',
+    'top:'  + (PillRect.top + PillRect.height / 2 - DropHeight / 2) + 'px',
+    'width:' + PillRect.width + 'px',
+    'background:white',
+    'border:1.5px solid #9ca3af',
+    'border-radius:10px',
+    'overflow:hidden',
+    'z-index:601',
+    'box-shadow:0 4px 12px rgba(0,0,0,0.12)',
+  ].join(';');
+  document.body.appendChild(Drop);
+
+  SKILLSET_DEFS.forEach(function(Definition) {
+    var IsSelected = (Definition.label === currentSkillset);
+    var Row = document.createElement('div');
+    Row.style.cssText = [
+      'display:flex',
+      'align-items:center',
+      'height:24px',
+      'line-height:1',
+      "font-family:'Lato',system-ui,sans-serif",
+      'font-size:12px',
+      'color:' + (IsSelected ? '#6b7280' : '#9ca3af'),
+      'font-weight:' + (IsSelected ? '500' : '400'),
+      'white-space:nowrap',
+      'box-sizing:border-box',
+      'cursor:pointer',
+      'padding:0 2px',
+    ].join(';');
+
+    Row.addEventListener('mouseenter', function() {
+      Row.style.background = '#f0f9ff';
+      Row.style.color      = '#374151';
+    });
+    Row.addEventListener('mouseleave', function() {
+      Row.style.background = '';
+      Row.style.color      = IsSelected ? '#6b7280' : '#9ca3af';
+    });
+
+    var IconColumn = document.createElement('span');
+    IconColumn.style.cssText = 'flex-shrink:0;width:22px;display:flex;align-items:center;justify-content:center;';
+    var IconSvg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
+    IconSvg.setAttribute('viewBox', '0 0 7 7');
+    IconSvg.setAttribute('width', '7');
+    IconSvg.setAttribute('height', '7');
+    IconSvg.setAttribute('fill', 'currentColor');
+    IconSvg.style.cssText = 'display:block;color:#9ca3af;opacity:' + (IsSelected ? '1' : '0') + ';';
+    var IconPath = document.createElementNS('http://www.w3.org/2000/svg', 'path');
+    IconPath.setAttribute('d', 'M1.5 1 L6 3.5 L1.5 6 Z');
+    IconSvg.appendChild(IconPath);
+    IconColumn.appendChild(IconSvg);
+
+    var LabelSpan = document.createElement('span');
+    LabelSpan.style.cssText = 'flex:1;text-align:left;';
+    LabelSpan.textContent   = Definition.label;
+
+    Row.appendChild(IconColumn);
+    Row.appendChild(LabelSpan);
+
+    Row.addEventListener('click', function(ClickEvent) {
+      ClickEvent.stopPropagation();
+      currentSkillset = Definition.label;
+      _applySkillset(Definition.label);
+      currentApp = appsShortList[0];
+      try { localStorage.setItem('kw_app', currentApp); } catch (StorageError) {}
+      buildAppPill();
+      // Keep the original skillset pill in panelLandingWelcome in sync
+      _buildSkillsetPill();
+      var DropElement = document.getElementById('customiseSkillsetDrop');
+      if (DropElement) DropElement.remove();
+      _buildCustomiseSkillsetPillContent();
+      // Pop the pill to acknowledge the selection
+      var PanelPill = document.getElementById('customiseSkillsetPill');
+      if (PanelPill) pulseBtn(PanelPill);
+      // Re-reveal it after content rebuild resets opacity
+      requestAnimationFrame(function() {
+        requestAnimationFrame(function() {
+          if (PanelPill) {
+            PanelPill.style.opacity   = '1';
+            PanelPill.style.transform = 'scale(1)';
+          }
+        });
+      });
+    });
+
+    Drop.appendChild(Row);
+  });
+
+  setTimeout(function() {
+    document.addEventListener('click', function OutsideClickHandler(ClickEvent) {
+      var DropElement = document.getElementById('customiseSkillsetDrop');
+      var PanelPill   = document.getElementById('customiseSkillsetPill');
+      var TargetOutside = (!DropElement || !DropElement.contains(ClickEvent.target)) &&
+                          (!PanelPill   || !PanelPill.contains(ClickEvent.target));
+      if (TargetOutside) {
+        if (DropElement) DropElement.remove();
+        document.removeEventListener('click', OutsideClickHandler);
+      }
+    });
+  }, 0);
+}
+
+/* ══════════════════════════════════════
+   APP SELECTOR SKILLSET PILL
+   A duplicate of the welcome-screen skillset pill,
+   rendered inline in the appSelectorWrap between
+   the "skillset" label and the app pill.
+   Appears when the "more" button in the wrench
+   picker is pressed; disappears when the wrench
+   picker closes.
+══════════════════════════════════════ */
+
+var AppSelectorSkillsetPillIsOpen = false;
+var AppSelectorSkillsetDropIsOpen = false;
+
+function _buildAppSelectorSkillsetPill() {
+  var PillElement = document.getElementById('appSelectorSkillsetPill');
+  if (!PillElement) return;
+  PillElement.innerHTML = '';
+
+  var SelectedRow = document.createElement('div');
+  SelectedRow.style.cssText = "display:flex;align-items:center;height:24px;line-height:1;font-family:'Lato',system-ui,sans-serif;font-size:12px;color:#6b7280;font-weight:500;white-space:nowrap;box-sizing:border-box;cursor:pointer;padding:0 2px;";
+
+  var CaretColumn = document.createElement('span');
+  CaretColumn.style.cssText = 'flex-shrink:0;width:22px;display:flex;align-items:center;justify-content:center;';
+  var CaretSvg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
+  CaretSvg.setAttribute('viewBox', '0 0 7 7');
+  CaretSvg.setAttribute('width', '7');
+  CaretSvg.setAttribute('height', '7');
+  CaretSvg.setAttribute('fill', 'currentColor');
+  CaretSvg.style.cssText = 'display:block;color:#9ca3af;flex-shrink:0;transition:transform 0.2s ease;transform:' + (AppSelectorSkillsetDropIsOpen ? 'rotate(90deg)' : 'none') + ';';
+  var CaretPath = document.createElementNS('http://www.w3.org/2000/svg', 'path');
+  CaretPath.setAttribute('d', 'M1.5 1 L6 3.5 L1.5 6 Z');
+  CaretSvg.appendChild(CaretPath);
+  CaretColumn.appendChild(CaretSvg);
+
+  var LabelColumn = document.createElement('span');
+  LabelColumn.style.cssText = 'flex:1;text-align:left;';
+  LabelColumn.textContent = CustomiseSkillsetPanelIsOpen ? 'Custom Set' : currentSkillset;
+
+  SelectedRow.appendChild(CaretColumn);
+  SelectedRow.appendChild(LabelColumn);
+  PillElement.appendChild(SelectedRow);
+
+  var ExistingDrop = document.getElementById('appSelectorSkillsetDrop');
+  if (ExistingDrop) ExistingDrop.remove();
+
+  if (AppSelectorSkillsetDropIsOpen) {
+    var Drop = document.createElement('div');
+    Drop.id = 'appSelectorSkillsetDrop';
+    var PillRect   = PillElement.getBoundingClientRect();
+    var DropHeight = SKILLSET_DEFS.length * 24;
+    Drop.style.cssText = 'position:fixed;left:' + PillRect.left + 'px;top:' + (PillRect.top + PillRect.height / 2 - DropHeight / 2) + 'px;width:' + PillRect.width + 'px;background:white;border:1.5px solid #9ca3af;border-radius:10px;overflow:hidden;z-index:601;box-shadow:0 4px 12px rgba(0,0,0,0.12);';
+    document.body.appendChild(Drop);
+
+    SKILLSET_DEFS.forEach(function(Definition) {
+      var IsSelected = CustomiseSkillsetPanelIsOpen
+       ? false
+       : (Definition.label === currentSkillset);
+      var Row = document.createElement('div');
+      Row.style.cssText = "display:flex;align-items:center;height:24px;line-height:1;font-family:'Lato',system-ui,sans-serif;font-size:12px;color:" + (IsSelected ? '#6b7280' : '#9ca3af') + ";font-weight:" + (IsSelected ? '500' : '400') + ";white-space:nowrap;box-sizing:border-box;cursor:pointer;padding:0 2px;";
+      Row.addEventListener('mouseenter', function() { Row.style.background = '#f0f9ff'; Row.style.color = '#374151'; });
+      Row.addEventListener('mouseleave',  function() { Row.style.background = ''; Row.style.color = IsSelected ? '#6b7280' : '#9ca3af'; });
+
+      var IconColumn = document.createElement('span');
+      IconColumn.style.cssText = 'flex-shrink:0;width:22px;display:flex;align-items:center;justify-content:center;';
+      var IconSvg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
+      IconSvg.setAttribute('viewBox', '0 0 7 7');
+      IconSvg.setAttribute('width', '7');
+      IconSvg.setAttribute('height', '7');
+      IconSvg.setAttribute('fill', 'currentColor');
+      IconSvg.style.cssText = 'display:block;color:#9ca3af;opacity:' + (IsSelected ? '1' : '0') + ';';
+      var IconPath = document.createElementNS('http://www.w3.org/2000/svg', 'path');
+      IconPath.setAttribute('d', 'M1.5 1 L6 3.5 L1.5 6 Z');
+      IconSvg.appendChild(IconPath);
+      IconColumn.appendChild(IconSvg);
+
+      var LabelSpan = document.createElement('span');
+      LabelSpan.style.cssText = 'flex:1;text-align:left;';
+      LabelSpan.textContent = Definition.label;
+
+      Row.appendChild(IconColumn);
+      Row.appendChild(LabelSpan);
+
+      Row.addEventListener('click', function(ClickEvent) {
+        ClickEvent.stopPropagation();
+        currentSkillset = Definition.label;
+        _applySkillset(Definition.label);
+        currentApp = appsShortList[0];
+        try { localStorage.setItem('kw_app', currentApp); } catch (StorageError) {}
+        buildAppPill();
+        var NewHeight = _AppPillMeasureNaturalHeight();
+        var NewPillRect = appPillEl.getBoundingClientRect();
+        var NewGeometry = _AppPillCalculateOpenGeometry(NewHeight, NewPillRect);
+        _AppPillSpring.CurrentHeight = parseFloat(appPillEl.style.height) || _AppPillSpring.CurrentHeight;
+        _AppPillSpring.HeightVelocity = 0;
+        _AppPillAnimateTo(NewHeight, NewGeometry.TranslateY, NewGeometry.SpacerHeight);
+        _buildSkillsetPill();
+        AppSelectorSkillsetDropIsOpen = false;
+        CustomiseSkillsetPanelIsOpen = false;
+        _closeCustomiseSkillsetPanel();
+        _buildAppSelectorSkillsetPill();
+        appPillEl.classList.remove('pulse-glow'); void appPillEl.offsetWidth; appPillEl.classList.add('pulse-glow'); appPillEl.addEventListener('animationend', function h() { appPillEl.classList.remove('pulse-glow'); appPillEl.removeEventListener('animationend', h); }, { once: true });
+      });
+
+      Drop.appendChild(Row);
+    });
+
+    var CustomSetRow = document.createElement('div');
+    CustomSetRow.style.cssText = "display:flex;align-items:center;height:24px;line-height:1;font-family:'Lato',system-ui,sans-serif;font-size:12px;color:#9ca3af;white-space:nowrap;box-sizing:border-box;cursor:pointer;padding:0 2px;border-top:1px solid rgba(0,0,0,0.06);";
+    CustomSetRow.addEventListener('mouseenter', function() { CustomSetRow.style.background = '#f0f9ff'; CustomSetRow.style.color = '#374151'; });
+    CustomSetRow.addEventListener('mouseleave',  function() { CustomSetRow.style.background = ''; CustomSetRow.style.color = '#9ca3af'; });
+    var CustomSetCaretColumn = document.createElement('span');
+    CustomSetCaretColumn.style.cssText = 'flex-shrink:0;width:22px;display:flex;align-items:center;justify-content:center;';
+    var CustomSetCaretSvg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
+    CustomSetCaretSvg.setAttribute('viewBox', '0 0 7 7'); CustomSetCaretSvg.setAttribute('width', '7'); CustomSetCaretSvg.setAttribute('height', '7'); CustomSetCaretSvg.setAttribute('fill', 'currentColor');
+    CustomSetCaretSvg.style.cssText = 'display:block;color:#9ca3af;opacity:0;';
+    var CustomSetCaretPath = document.createElementNS('http://www.w3.org/2000/svg', 'path');
+    CustomSetCaretPath.setAttribute('d', 'M1.5 1 L6 3.5 L1.5 6 Z');
+    CustomSetCaretSvg.appendChild(CustomSetCaretPath); CustomSetCaretColumn.appendChild(CustomSetCaretSvg);
+    var CustomSetLabelColumn = document.createElement('span');
+    CustomSetLabelColumn.style.cssText = 'flex:1;text-align:left;';
+    CustomSetLabelColumn.textContent = 'Custom Set';
+    CustomSetRow.appendChild(CustomSetCaretColumn); CustomSetRow.appendChild(CustomSetLabelColumn);
+    CustomSetRow.addEventListener('click', function(ClickEvent) {
+      ClickEvent.stopPropagation();
+      var ExistingDrop = document.getElementById('appSelectorSkillsetDrop');
+      if (ExistingDrop) ExistingDrop.remove();
+      AppSelectorSkillsetDropIsOpen = false;
+      // If a CustomSetList already exists, apply it immediately so the pill reflects it.
+      if (CustomSetList) {
+        appsShortList   = CustomSetList.shortList.slice();
+        appsStandbyList = CustomSetList.standbyList.slice();
+        _saveAppsShortList();
+        buildAppPill();
+        _AnimateAppPillResize();
+      }
+      _buildAppSelectorSkillsetPill();
+      _openCustomiseSkillsetPanel();
+    });
+    Drop.appendChild(CustomSetRow);
+          
+    setTimeout(function() {
+      document.addEventListener('click', function OutsideClickHandler(ClickEvent) {
+        var DropElement = document.getElementById('appSelectorSkillsetDrop');
+        var PillEl      = document.getElementById('appSelectorSkillsetPill');
+        var ClickedOutside = (!DropElement || !DropElement.contains(ClickEvent.target)) &&
+                             (!PillEl      || !PillEl.contains(ClickEvent.target));
+        if (ClickedOutside) {
+          AppSelectorSkillsetDropIsOpen = false;
+          _buildAppSelectorSkillsetPill();
+          document.removeEventListener('click', OutsideClickHandler);
+        }
+      });
+    }, 0);
+  }
+
+  PillElement.onclick = function(ClickEvent) {
+    ClickEvent.stopPropagation();
+    AppSelectorSkillsetDropIsOpen = !AppSelectorSkillsetDropIsOpen;
+    _buildAppSelectorSkillsetPill();
+  };
+}
+
+function _showAppSelectorSkillsetPill() {
+  if (AppSelectorSkillsetPillIsOpen) return;
+  AppSelectorSkillsetPillIsOpen  = true;
+  AppSelectorSkillsetDropIsOpen  = false;
+
+  var LabelElement         = document.getElementById('appSelectorLabel');
+  var SkillsetLabelElement = document.getElementById('appSelectorSkillsetLabel');
+  var SkillsetPillElement  = document.getElementById('appSelectorSkillsetPill');
+  var BracketElement       = document.getElementById('appSelectorSkillsetBracket');
+
+  if (LabelElement)         LabelElement.style.display = 'none';
+  if (SkillsetLabelElement) SkillsetLabelElement.style.display = '';
+  if (BracketElement) {
+    BracketElement.style.display = '';
+    requestAnimationFrame(function() {
+      requestAnimationFrame(function() { BracketElement.style.opacity = '1'; });
+    });
+  }
+  if (SkillsetPillElement) {
+    SkillsetPillElement.style.display = '';
+    _buildAppSelectorSkillsetPill();
+    requestAnimationFrame(function() {
+      requestAnimationFrame(function() {
+        SkillsetPillElement.style.opacity   = '1';
+        SkillsetPillElement.style.transform = 'scale(1)';
+      });
+    });
+  }
+  // Suppress title and tagline while skillset picker is open
+  titleEl.classList.add('app-pill-open');
+  // Update the 'more' button label to 'less' in the wrench picker
+  var SkillsetsBtn = appPillEl.querySelector('.app-option-skillsets span');
+  if (SkillsetsBtn) SkillsetsBtn.textContent = 'less';
+}
+
+function _hideAppSelectorSkillsetPill() {
+  if (!AppSelectorSkillsetPillIsOpen) return;
+  AppSelectorSkillsetPillIsOpen  = false;
+  AppSelectorSkillsetDropIsOpen  = false;
+
+  var ExistingDrop = document.getElementById('appSelectorSkillsetDrop');
+  if (ExistingDrop) ExistingDrop.remove();
+
+  var LabelElement         = document.getElementById('appSelectorLabel');
+  var SkillsetLabelElement = document.getElementById('appSelectorSkillsetLabel');
+  var SkillsetPillElement  = document.getElementById('appSelectorSkillsetPill');
+  var BracketElement       = document.getElementById('appSelectorSkillsetBracket');
+
+  if (LabelElement)         LabelElement.style.display = '';
+  if (SkillsetLabelElement) SkillsetLabelElement.style.display = 'none';
+  if (BracketElement) {
+    BracketElement.style.opacity = '0';
+    setTimeout(function() {
+      if (!AppSelectorSkillsetPillIsOpen) BracketElement.style.display = 'none';
+    }, 220);
+  }
+  if (SkillsetPillElement) {
+    SkillsetPillElement.style.opacity   = '0';
+    SkillsetPillElement.style.transform = 'scale(0.88)';
+    setTimeout(function() {
+      if (!AppSelectorSkillsetPillIsOpen) SkillsetPillElement.style.display = 'none';
+    }, 220);
+  }
+  // Restore title suppression only if appPill is also closed
+  if (!appPillEl.classList.contains('open')) {
+    titleEl.classList.remove('app-pill-open');
+  }
+  // Close the customise panel if it was open
+  _closeCustomiseSkillsetPanel();
+  // Reset 'less' button back to 'more'
+  var SkillsetsBtn = appPillEl.querySelector('.app-option-skillsets span');
+  if (SkillsetsBtn) SkillsetsBtn.textContent = 'more';
+}
+
+function _BuildCustomiseSkillsetPanelContent() {
+  var PanelElement = document.getElementById('customiseSkillsetPanel');
+  if (!PanelElement) return;
+  PanelElement.innerHTML = '';
+
+  // Prevent clicks inside the panel from bubbling up to the outside-click handler.
+  PanelElement.onclick = function(ClickEvent) { ClickEvent.stopPropagation(); };
+
+   var isNamedSkillset = SKILLSET_DEFS.some(function(d) { return d.label === currentSkillset; });
+  // For a named skillset, derive in/out from the live lists (set by _applySkillset).
+  // For Custom Set, use CustomSetList if seeded, else live lists.
+  var CurrentShortSet   = new Set(isNamedSkillset ? appsShortList   : (CustomSetList ? CustomSetList.shortList   : appsShortList));
+  var CurrentStandbySet = new Set(isNamedSkillset ? appsStandbyList : (CustomSetList ? CustomSetList.standbyList : appsStandbyList));
+
+  function IsInAppPill(AppLabel) {
+    return CurrentShortSet.has(AppLabel) || CurrentStandbySet.has(AppLabel);
+  }
+
+  var ColumnGroups = { 1: [], 2: [], 3: [], 4: [] };
+var IsBetaBuild = document.title !== 'Keyboard Warriors';
+    appsLongList.forEach(function (AppEntry) {
+      if (AppEntry.beta && !IsBetaBuild) return;
+      var ColumnNumber = AppEntry.column || 4;
+      if (ColumnGroups[ColumnNumber]) ColumnGroups[ColumnNumber].push(AppEntry);
+    });
+
+  // Header row
+  var HeaderRow = document.createElement('div');
+  HeaderRow.style.cssText = 'width:100%;text-align:center;margin-bottom:8px;padding-bottom:8px;border-bottom:1px solid rgba(0,0,0,0.08);';
+  var HeaderText = document.createElement('p');
+  HeaderText.style.cssText = 'font-size:15px;font-weight:700;color:#1f2937;margin:0;line-height:1.3;';
+  HeaderText.textContent = 'Choose from the currently available Apps:';
+  HeaderRow.appendChild(HeaderText);
+  PanelElement.appendChild(HeaderRow);
+
+  // Apps List
+
+  var ColumnsRow = document.createElement('div');
+  ColumnsRow.style.cssText = 'display:flex;flex-direction:row;align-items:flex-start;gap:0;';
+
+  [1, 2, 3, 4].forEach(function(ColumnNumber, ColumnIndex) {
+    var AppsInColumn = ColumnGroups[ColumnNumber];
+    if (!AppsInColumn || AppsInColumn.length === 0) return;
+
+    if (ColumnIndex > 0) {
+      var ColumnDivider = document.createElement('div');
+      ColumnDivider.style.cssText = 'width:1px;background:rgba(0,0,0,0.08);align-self:stretch;margin:0 6px;flex-shrink:0;';
+      ColumnsRow.appendChild(ColumnDivider);
+    }
+
+    var ColumnElement = document.createElement('div');
+    ColumnElement.style.cssText = 'display:flex;flex-direction:column;';
+
+    var BetaDividerAdded = false;
+
+    AppsInColumn.forEach(function(AppEntry) {
+      var IsBetaApp   = !!AppEntry.beta;
+      var InPill      = IsInAppPill(AppEntry.label);
+
+      if (IsBetaApp && !BetaDividerAdded) {
+        var BetaDivider = document.createElement('div');
+        BetaDivider.style.cssText = 'height:1px;background:rgba(0,0,0,0.08);margin:4px 0;';
+        ColumnElement.appendChild(BetaDivider);
+        BetaDividerAdded = true;
+      }
+
+      var AppRow = document.createElement('div');
+      AppRow.style.cssText = [
+        'display:flex',
+        'align-items:center',
+        'height:24px',
+        "font-family:'Lato',system-ui,sans-serif",
+        'font-size:12px',
+        'white-space:nowrap',
+        'cursor:pointer',
+        'padding:0 4px 0 0',
+        'border-radius:4px',
+        'box-sizing:border-box',
+      ].join(';');
+
+      // Hex indicator: filled hexagon when already in pill, empty hexagon when available to add
+      var DotColumn = document.createElement('span');
+      DotColumn.style.cssText = 'flex-shrink:0;width:22px;display:flex;align-items:center;justify-content:center;';
+      DotColumn.appendChild(_MakeWrenchPickerRadioDot(InPill));
+
+      var LabelColumn = document.createElement('span');
+      LabelColumn.style.color          = InPill ? '#d1d5db' : (IsBetaApp ? '#9ca3af' : '#374151');
+      LabelColumn.style.textDecoration = InPill ? 'line-through' : '';
+      LabelColumn.style.fontStyle      = (IsBetaApp && !InPill) ? 'italic' : '';
+      LabelColumn.textContent          = AppEntry.label;
+
+      AppRow.appendChild(DotColumn);
+      AppRow.appendChild(LabelColumn);
+
+      AppRow.addEventListener('mouseenter', function() {
+        if (!InPill) {
+          AppRow.style.background = '#ecfdf5';
+        } else {
+          AppRow.style.background = '#fef2f2';
+        }
+      });
+      AppRow.addEventListener('mouseleave', function() { AppRow.style.background = ''; });
+
+      AppRow.addEventListener('click', function(ClickEvent) {
+        ClickEvent.stopPropagation();
+        _ToggleCustomSetApp(AppEntry.label);
+      });
+
+      ColumnElement.appendChild(AppRow);
+    });
+
+    ColumnsRow.appendChild(ColumnElement);
+  });
+
+  PanelElement.appendChild(ColumnsRow);
+
+  // Footer row
+  var FooterRow = document.createElement('div');
+  FooterRow.style.cssText = 'width:100%;text-align:center;margin-top:8px;padding-top:8px;border-top:1px solid rgba(0,0,0,0.08);';
+
+  var RequestButton = document.createElement('button');
+  RequestButton.className = 'segmented-pill-section segmented-pill-full';
+  RequestButton.style.cssText = 'border-radius:16px;border:1.5px solid #d1d5db;padding:5px 14px;width:auto;display:inline-flex;align-items:center;gap:6px;';
+
+  var EnvelopeIcon = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="13" height="13" style="vertical-align:middle;flex-shrink:0;"><rect x="2" y="4" width="20" height="16" rx="2"/><polyline points="2,4 12,13 22,4"/></svg>';
+  RequestButton.innerHTML = EnvelopeIcon + '<span class="diff-btn-text">request support for another App</span>';
+
+  RequestButton.addEventListener('click', function () {
+    var Subject = encodeURIComponent('Keyboard Warriors: app support request');
+    var Body    = encodeURIComponent("I'd like to request support for [app name - ideally include a link]. I hope you can add it to Keyboard Warriors.");
+    var Anchor  = document.createElement('a');
+    Anchor.href     = 'mailto:Wednesday%20Dessauer%20%3Cddessauer%40swin.edu.au%3E?subject=' + Subject + '&body=' + Body;
+    Anchor.target   = '_blank';
+    Anchor.rel      = 'noopener';
+    document.body.appendChild(Anchor);
+    Anchor.click();
+    document.body.removeChild(Anchor);
+  });
+
+  FooterRow.appendChild(RequestButton);
+  PanelElement.appendChild(FooterRow);
+}
+
+function _ToggleCustomSetApp(AppLabel) {
+  var IsNamedSkillset = SKILLSET_DEFS.some(function(d) { return d.label === currentSkillset; });
+  if (IsNamedSkillset) {
+    showToast('Switch to Custom Set to edit your app list.');
+    var SkillsetPillElement = document.getElementById('appSelectorSkillsetPill');
+    if (SkillsetPillElement) pulseBtn(SkillsetPillElement);
+    return;
+  }
+  _EnsureCustomSetListSeeded();
+
+  var IsInShort   = CustomSetList.shortList.indexOf(AppLabel)   !== -1;
+  var IsInStandby = CustomSetList.standbyList.indexOf(AppLabel) !== -1;
+  var IsInPill    = IsInShort || IsInStandby;
+
+  if (IsInPill) {
+    // Removing: guard against emptying the short list entirely.
+    var WouldLeaveNoActiveApps = IsInShort && CustomSetList.shortList.length <= 1;
+    if (WouldLeaveNoActiveApps) {
+      showToast('You must have at least one active app.');
+      pulseBtn(appPillEl);
+      return;
+    }
+    // If this was the current app, pass to the next non-standby app.
+    if (AppLabel === currentApp) {
+      var Remaining = CustomSetList.shortList.filter(function(Label) { return Label !== AppLabel; });
+      currentApp = Remaining[0] || CustomSetList.shortList[0];
+      try { localStorage.setItem('kw_app', currentApp); } catch (StorageError) {}
+    }
+    CustomSetList.shortList   = CustomSetList.shortList.filter(function(L)   { return L !== AppLabel; });
+    CustomSetList.standbyList = CustomSetList.standbyList.filter(function(L) { return L !== AppLabel; });
+  } else {
+    // Adding: goes to shortList (not standby).
+    CustomSetList.shortList.push(AppLabel);
+  }
+
+  _SaveCustomSetList();
+
+  // Sync the live appsShortList and appsStandbyList to the CustomSetList.
+  appsShortList   = CustomSetList.shortList.slice();
+  appsStandbyList = CustomSetList.standbyList.slice();
+  _saveAppsShortList();
+
+  // Rebuild the app pill with a pop animation, then rebuild the panel.
+  buildAppPill();
+  _AnimateAppPillResize();
+  _BuildCustomiseSkillsetPanelContent();
+}
+
+function _AnimateAppPillResize() {
+  if (!appPillEl.classList.contains('open')) return;
+  var NewHeight = _AppPillMeasureNaturalHeight();
+  var PillRect  = appPillEl.getBoundingClientRect();
+  var Geometry  = _AppPillCalculateOpenGeometry(NewHeight, PillRect);
+  _AppPillSpring.CurrentHeight  = parseFloat(appPillEl.style.height) || _AppPillSpring.CurrentHeight;
+  _AppPillSpring.HeightVelocity = 0;
+  _AppPillAnimateTo(NewHeight, Geometry.TranslateY, Geometry.SpacerHeight);
+}
+
+function _openCustomiseSkillsetPanel() {
+  if (CustomiseSkillsetPanelIsOpen) return;
+  CustomiseSkillsetPanelIsOpen = true;
+  titleEl.classList.add('app-pill-open'); 
+
+  var isNamedSkillset = SKILLSET_DEFS.some(function(d) { return d.label === currentSkillset; });
+  if (!isNamedSkillset) {
+    // Only seed and apply CustomSetList when in Custom Set mode
+    _EnsureCustomSetListSeeded();
+    appsShortList   = CustomSetList.shortList.slice();
+    appsStandbyList = CustomSetList.standbyList.slice();
+    _saveAppsShortList();
+    buildAppPill();
+    _AnimateAppPillResize();
+  }
+
+  var PanelElement         = document.getElementById('customiseSkillsetPanel');
+  var RightBracketElement  = document.getElementById('customiseSkillsetRightBracket');
+  var SkillsetLabelElement = document.getElementById('appSelectorSkillsetLabel');
+
+  if (PanelElement) {
+    _BuildCustomiseSkillsetPanelContent();
+    PanelElement.classList.add('customise-skillset-panel-open');
+  }
+  if (RightBracketElement) {
+  RightBracketElement.style.display = 'block';
+  RightBracketElement.style.opacity = '1';
+  RightBracketElement.classList.add('customise-skillset-bracket-visible');
+  }
+  if (SkillsetLabelElement) SkillsetLabelElement.textContent = 'customise';
+
+  // Rebuild pill label to show 'Custom Set'
+  _buildAppSelectorSkillsetPill();
+}
+
+function _closeCustomiseSkillsetPanel() {
+  if (!CustomiseSkillsetPanelIsOpen) return;
+  CustomiseSkillsetPanelIsOpen = false;
+
+  var ExistingDrop         = document.getElementById('customiseSkillsetDrop');
+  var PanelElement         = document.getElementById('customiseSkillsetPanel');
+  var RightBracketElement  = document.getElementById('customiseSkillsetRightBracket');
+  var SkillsetLabelElement = document.getElementById('appSelectorSkillsetLabel');
+
+  if (ExistingDrop)        ExistingDrop.remove();
+  if (PanelElement)        PanelElement.classList.remove('customise-skillset-panel-open');
+  if (RightBracketElement) {
+    RightBracketElement.classList.remove('customise-skillset-bracket-visible');
+    setTimeout(function() { RightBracketElement.style.display = 'none'; }, 220);
+  }
+  if (SkillsetLabelElement) SkillsetLabelElement.textContent = 'skillset';
 }
 </script>
 </body>

@@ -13913,10 +13913,7 @@ function _applySkillset(skillsetLabel) {
     }
   }
   runData.length = 0; lastCompletedReport = null; CoachAdviceAccepted = false;
-  if (CustomiseSkillsetPanelIsOpen) {
-    _BuildCustomiseSkillsetPanelContent();
-  }
-  // If the customise panel is open, re-render it to reflect the new skillset (read-only for named, editable for Custom Set)
+  // If the customise panel is open, re-render it to reflect the newly selected skillset.
   if (CustomiseSkillsetPanelIsOpen) {
     _BuildCustomiseSkillsetPanelContent();
   }
@@ -14315,6 +14312,7 @@ function _buildAppSelectorSkillsetPill() {
       var ExistingDrop = document.getElementById('appSelectorSkillsetDrop');
       if (ExistingDrop) ExistingDrop.remove();
       AppSelectorSkillsetDropIsOpen = false;
+      currentSkillset = 'Custom Set';
       // If a CustomSetList already exists, apply it immediately so the pill reflects it.
       if (CustomSetList) {
         appsShortList   = CustomSetList.shortList.slice();
@@ -14568,8 +14566,7 @@ var IsBetaBuild = document.title !== 'Keyboard Warriors';
 }
 
 function _ToggleCustomSetApp(AppLabel) {
-  var IsNamedSkillset = SKILLSET_DEFS.some(function(d) { return d.label === currentSkillset; });
-  if (IsNamedSkillset) {
+  if (currentSkillset !== 'Custom Set') {
     showToast('Switch to Custom Set to edit your app list.');
     var SkillsetPillElement = document.getElementById('appSelectorSkillsetPill');
     if (SkillsetPillElement) pulseBtn(SkillsetPillElement);

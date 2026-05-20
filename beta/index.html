@@ -14568,12 +14568,6 @@ var IsBetaBuild = document.title !== 'Keyboard Warriors';
 }
 
 function _ToggleCustomSetApp(AppLabel) {
-  // Block edits when a named skillset is currently selected — panel is read-only in that state
-  var isNamedSkillset = SKILLSET_DEFS.some(function(d) { return d.label === currentSkillset; });
-  if (isNamedSkillset) {
-    showToast("Select 'Custom Set' to build a different app list");
-    return;
-  }
   _EnsureCustomSetListSeeded();
 
   var IsInShort   = CustomSetList.shortList.indexOf(AppLabel)   !== -1;
@@ -14585,7 +14579,7 @@ function _ToggleCustomSetApp(AppLabel) {
     var WouldLeaveNoActiveApps = IsInShort && CustomSetList.shortList.length <= 1;
     if (WouldLeaveNoActiveApps) {
       showToast('You must have at least one active app.');
-      pulseBtn(document.getElementById('appSelectorSkillsetPill'));
+      pulseBtn(appPillEl);
       return;
     }
     // If this was the current app, pass to the next non-standby app.

@@ -14585,6 +14585,7 @@ function _ToggleCustomSetApp(AppLabel) {
     var WouldLeaveNoActiveApps = IsInShort && CustomSetList.shortList.length <= 1;
     if (WouldLeaveNoActiveApps) {
       showToast('You must have at least one active app.');
+      pulseBtn(document.getElementById('appSelectorSkillsetPill'));
       return;
     }
     // If this was the current app, pass to the next non-standby app.

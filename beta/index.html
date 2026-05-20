@@ -14433,10 +14433,12 @@ function _BuildCustomiseSkillsetPanelContent() {
   }
 
   var ColumnGroups = { 1: [], 2: [], 3: [], 4: [] };
-  appsLongList.forEach(function(AppEntry) {
-    var ColumnNumber = AppEntry.column || 4;
-    if (ColumnGroups[ColumnNumber]) ColumnGroups[ColumnNumber].push(AppEntry);
-  });
+var IsBetaBuild = document.title !== 'Keyboard Warriors';
+    appsLongList.forEach(function (AppEntry) {
+      if (AppEntry.beta && !IsBetaBuild) return;
+      var ColumnNumber = AppEntry.column || 4;
+      if (ColumnGroups[ColumnNumber]) ColumnGroups[ColumnNumber].push(AppEntry);
+    });
 
   // Header row
   var HeaderRow = document.createElement('div');

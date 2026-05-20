@@ -13781,6 +13781,36 @@ var SKILLSET_DEFS = [
 var currentSkillset   = 'Graphic Design';
 var skillsetPillOpen  = false;
 
+// CustomSetList: the user's personally curated app list, persisted independently of named skillsets.
+// Null until the user first opens the CustomiseSkillsetPanel, at which point it is seeded from
+// the combined short + standby list and then saved to localStorage on every change.
+var CustomSetList = null; // { shortList: [], standbyList: [] }
+
+(function() {
+  try {
+    var SavedCustomSet = localStorage.getItem('kw_custom_set');
+    if (SavedCustomSet) {
+      var Parsed = JSON.parse(SavedCustomSet);
+      if (Parsed && Array.isArray(Parsed.shortList)) CustomSetList = Parsed;
+    }
+  } catch (StorageError) {}
+})();
+
+function _SaveCustomSetList() {
+  if (!CustomSetList) return;
+  try { localStorage.setItem('kw_custom_set', JSON.stringify(CustomSetList)); } catch (StorageError) {}
+}
+
+function _EnsureCustomSetListSeeded() {
+  if (CustomSetList !== null) return;
+  // First ever opening: seed from the current combined short + standby lists.
+  CustomSetList = {
+    shortList:   appsShortList.slice(),
+    standbyList: appsStandbyList.slice(),
+  };
+  _SaveCustomSetList();
+}
+
 function _buildSkillsetPill() {
   var pill = document.getElementById('skillsetPill');
   if (!pill) return;
@@ -14278,6 +14308,14 @@ function _buildAppSelectorSkillsetPill() {
       var ExistingDrop = document.getElementById('appSelectorSkillsetDrop');
       if (ExistingDrop) ExistingDrop.remove();
       AppSelectorSkillsetDropIsOpen = false;
+      // If a CustomSetList already exists, apply it immediately so the pill reflects it.
+      if (CustomSetList) {
+        appsShortList   = CustomSetList.shortList.slice();
+        appsStandbyList = CustomSetList.standbyList.slice();
+        _saveAppsShortList();
+        buildAppPill();
+        _AnimateAppPillResize();
+      }
       _buildAppSelectorSkillsetPill();
       _openCustomiseSkillsetPanel();
     });
@@ -14384,6 +14422,160 @@ function _BuildCustomiseSkillsetPanelContent() {
   if (!PanelElement) return;
   PanelElement.innerHTML = '';
 
+  // Prevent clicks inside the panel from bubbling up to the outside-click handler.
+  PanelElement.onclick = function(ClickEvent) { ClickEvent.stopPropagation(); };
+
+  var CurrentShortSet   = new Set(CustomSetList ? CustomSetList.shortList   : appsShortList);
+  var CurrentStandbySet = new Set(CustomSetList ? CustomSetList.standbyList  : appsStandbyList);
+
+  function IsInAppPill(AppLabel) {
+    return CurrentShortSet.has(AppLabel) || CurrentStandbySet.has(AppLabel);
+  }
+
+  var ColumnGroups = { 1: [], 2: [], 3: [], 4: [] };
+  appsLongList.forEach(function(AppEntry) {
+    var ColumnNumber = AppEntry.column || 4;
+    if (ColumnGroups[ColumnNumber]) ColumnGroups[ColumnNumber].push(AppEntry);
+  });
+
+  var ColumnsRow = document.createElement('div');
+  ColumnsRow.style.cssText = 'display:flex;flex-direction:row;align-items:flex-start;gap:0;';
+
+  [1, 2, 3, 4].forEach(function(ColumnNumber, ColumnIndex) {
+    var AppsInColumn = ColumnGroups[ColumnNumber];
+    if (!AppsInColumn || AppsInColumn.length === 0) return;
+
+    if (ColumnIndex > 0) {
+      var ColumnDivider = document.createElement('div');
+      ColumnDivider.style.cssText = 'width:1px;background:rgba(0,0,0,0.08);align-self:stretch;margin:0 6px;flex-shrink:0;';
+      ColumnsRow.appendChild(ColumnDivider);
+    }
+
+    var ColumnElement = document.createElement('div');
+    ColumnElement.style.cssText = 'display:flex;flex-direction:column;';
+
+    var BetaDividerAdded = false;
+
+    AppsInColumn.forEach(function(AppEntry) {
+      var IsBetaApp   = !!AppEntry.beta;
+      var InPill      = IsInAppPill(AppEntry.label);
+
+      if (IsBetaApp && !BetaDividerAdded) {
+        var BetaDivider = document.createElement('div');
+        BetaDivider.style.cssText = 'height:1px;background:rgba(0,0,0,0.08);margin:4px 0;';
+        ColumnElement.appendChild(BetaDivider);
+        BetaDividerAdded = true;
+      }
+
+      var AppRow = document.createElement('div');
+      AppRow.style.cssText = [
+        'display:flex',
+        'align-items:center',
+        'height:24px',
+        "font-family:'Lato',system-ui,sans-serif",
+        'font-size:12px',
+        'white-space:nowrap',
+        'cursor:pointer',
+        'padding:0 4px 0 0',
+        'border-radius:4px',
+        'box-sizing:border-box',
+      ].join(';');
+
+      // Dot indicator: green when available (not in pill), grey-struck when already in pill
+      var DotColumn = document.createElement('span');
+      DotColumn.style.cssText = 'flex-shrink:0;width:22px;display:flex;align-items:center;justify-content:center;';
+      var DotSvg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
+      DotSvg.setAttribute('width', '8'); DotSvg.setAttribute('height', '8');
+      DotSvg.setAttribute('viewBox', '0 0 8 8');
+      var DotCircle = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
+      DotCircle.setAttribute('cx', '4'); DotCircle.setAttribute('cy', '4'); DotCircle.setAttribute('r', '3');
+      DotCircle.setAttribute('fill', InPill ? '#d1d5db' : '#10b981');
+      DotSvg.appendChild(DotCircle);
+      DotColumn.appendChild(DotSvg);
+
+      var LabelColumn = document.createElement('span');
+      LabelColumn.style.color          = InPill ? '#d1d5db' : (IsBetaApp ? '#9ca3af' : '#374151');
+      LabelColumn.style.textDecoration = InPill ? 'line-through' : '';
+      LabelColumn.style.fontStyle      = (IsBetaApp && !InPill) ? 'italic' : '';
+      LabelColumn.textContent          = AppEntry.label;
+
+      AppRow.appendChild(DotColumn);
+      AppRow.appendChild(LabelColumn);
+
+      AppRow.addEventListener('mouseenter', function() {
+        if (!InPill) {
+          AppRow.style.background = '#ecfdf5';
+        } else {
+          AppRow.style.background = '#fef2f2';
+        }
+      });
+      AppRow.addEventListener('mouseleave', function() { AppRow.style.background = ''; });
+
+      AppRow.addEventListener('click', function(ClickEvent) {
+        ClickEvent.stopPropagation();
+        _ToggleCustomSetApp(AppEntry.label);
+      });
+
+      ColumnElement.appendChild(AppRow);
+    });
+
+    ColumnsRow.appendChild(ColumnElement);
+  });
+
+  PanelElement.appendChild(ColumnsRow);
+}
+
+function _ToggleCustomSetApp(AppLabel) {
+  _EnsureCustomSetListSeeded();
+
+  var IsInShort   = CustomSetList.shortList.indexOf(AppLabel)   !== -1;
+  var IsInStandby = CustomSetList.standbyList.indexOf(AppLabel) !== -1;
+  var IsInPill    = IsInShort || IsInStandby;
+
+  if (IsInPill) {
+    // Removing: guard against emptying the short list entirely.
+    var WouldLeaveNoActiveApps = IsInShort && CustomSetList.shortList.length <= 1;
+    if (WouldLeaveNoActiveApps) {
+      showToast('You must have at least one active app.');
+      return;
+    }
+    // If this was the current app, pass to the next non-standby app.
+    if (AppLabel === currentApp) {
+      var Remaining = CustomSetList.shortList.filter(function(Label) { return Label !== AppLabel; });
+      currentApp = Remaining[0] || CustomSetList.shortList[0];
+      try { localStorage.setItem('kw_app', currentApp); } catch (StorageError) {}
+    }
+    CustomSetList.shortList   = CustomSetList.shortList.filter(function(L)   { return L !== AppLabel; });
+    CustomSetList.standbyList = CustomSetList.standbyList.filter(function(L) { return L !== AppLabel; });
+  } else {
+    // Adding: goes to shortList (not standby).
+    CustomSetList.shortList.push(AppLabel);
+  }
+
+  _SaveCustomSetList();
+
+  // Sync the live appsShortList and appsStandbyList to the CustomSetList.
+  appsShortList   = CustomSetList.shortList.slice();
+  appsStandbyList = CustomSetList.standbyList.slice();
+  _saveAppsShortList();
+
+  // Rebuild the app pill with a pop animation, then rebuild the panel.
+  buildAppPill();
+  _AnimateAppPillResize();
+  _BuildCustomiseSkillsetPanelContent();
+}
+
+function _AnimateAppPillResize() {
+  if (!appPillEl.classList.contains('open')) return;
+  var NewHeight = _AppPillMeasureNaturalHeight();
+  var PillRect  = appPillEl.getBoundingClientRect();
+  var Geometry  = _AppPillCalculateOpenGeometry(NewHeight, PillRect);
+  _AppPillSpring.CurrentHeight  = parseFloat(appPillEl.style.height) || _AppPillSpring.CurrentHeight;
+  _AppPillSpring.HeightVelocity = 0;
+  _AppPillAnimateTo(NewHeight, Geometry.TranslateY, Geometry.SpacerHeight);
+}
+
+
   // Group apps by their column number (1–4); betas already carry column:4
   var ColumnGroups = { 1: [], 2: [], 3: [], 4: [] };
   appsLongList.forEach(function(AppEntry) {
@@ -14475,6 +14667,15 @@ function _BuildCustomiseSkillsetPanelContent() {
 function _openCustomiseSkillsetPanel() {
   if (CustomiseSkillsetPanelIsOpen) return;
   CustomiseSkillsetPanelIsOpen = true;
+
+  // Seed the custom list from the current combined short + standby on first ever open.
+  _EnsureCustomSetListSeeded();
+
+  // Apply the persisted CustomSetList to the live lists so the app pill reflects it.
+  appsShortList   = CustomSetList.shortList.slice();
+  appsStandbyList = CustomSetList.standbyList.slice();
+  _saveAppsShortList();
+  buildAppPill();
 
   var PanelElement         = document.getElementById('customiseSkillsetPanel');
   var RightBracketElement  = document.getElementById('customiseSkillsetRightBracket');

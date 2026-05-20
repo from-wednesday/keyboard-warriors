@@ -14142,31 +14142,47 @@ function _toggleCustomiseSkillsetDrop(PillElement) {
     Row.appendChild(IconColumn);
     Row.appendChild(LabelSpan);
 
-    Row.addEventListener('click', function(ClickEvent) {
-      ClickEvent.stopPropagation();
-      currentSkillset = Definition.label;
-      _applySkillset(Definition.label);
-      currentApp = appsShortList[0];
-      try { localStorage.setItem('kw_app', currentApp); } catch (StorageError) {}
-      buildAppPill();
-      // Keep the original skillset pill in panelLandingWelcome in sync
-      _buildSkillsetPill();
-      var DropElement = document.getElementById('customiseSkillsetDrop');
-      if (DropElement) DropElement.remove();
-      _buildCustomiseSkillsetPillContent();
-      // Pop the pill to acknowledge the selection
-      var PanelPill = document.getElementById('customiseSkillsetPill');
-      if (PanelPill) pulseBtn(PanelPill);
-      // Re-reveal it after content rebuild resets opacity
-      requestAnimationFrame(function() {
-        requestAnimationFrame(function() {
-          if (PanelPill) {
-            PanelPill.style.opacity   = '1';
-            PanelPill.style.transform = 'scale(1)';
-          }
-        });
-      });
+Row.addEventListener('click', function(ClickEvent) {
+  ClickEvent.stopPropagation();
+
+  currentSkillset = Definition.label;
+  _applySkillset(Definition.label);
+
+  currentApp = appsShortList[0];
+
+  try {
+    localStorage.setItem('kw_app', currentApp);
+  } catch (StorageError) {}
+
+  buildAppPill();
+
+  // Keep the original skillset pill in panelLandingWelcome in sync
+  _buildSkillsetPill();
+
+  var DropElement = document.getElementById('customiseSkillsetDrop');
+  if (DropElement) DropElement.remove();
+
+  // ADD THESE TWO LINES
+  CustomiseSkillsetPanelIsOpen = false;
+  _closeCustomiseSkillsetPanel();
+
+  _buildCustomiseSkillsetPillContent();
+
+  // Pop the pill to acknowledge the selection
+  var PanelPill = document.getElementById('customiseSkillsetPill');
+
+  if (PanelPill) pulseBtn(PanelPill);
+
+  // Re-reveal it after content rebuild resets opacity
+  requestAnimationFrame(function() {
+    requestAnimationFrame(function() {
+      if (PanelPill) {
+        PanelPill.style.opacity   = '1';
+        PanelPill.style.transform = 'scale(1)';
+      }
     });
+  });
+});
 
     Drop.appendChild(Row);
   });

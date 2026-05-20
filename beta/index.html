@@ -14438,6 +14438,17 @@ function _BuildCustomiseSkillsetPanelContent() {
     if (ColumnGroups[ColumnNumber]) ColumnGroups[ColumnNumber].push(AppEntry);
   });
 
+  // Header row
+  var HeaderRow = document.createElement('div');
+  HeaderRow.style.cssText = 'width:100%;text-align:center;margin-bottom:8px;padding-bottom:8px;border-bottom:1px solid rgba(0,0,0,0.08);';
+  var HeaderText = document.createElement('p');
+  HeaderText.style.cssText = 'font-size:15px;font-weight:700;color:#1f2937;margin:0;line-height:1.3;';
+  HeaderText.textContent = 'Choose from the currently available Apps:';
+  HeaderRow.appendChild(HeaderText);
+  PanelElement.appendChild(HeaderRow);
+
+  // Apps List
+
   var ColumnsRow = document.createElement('div');
   ColumnsRow.style.cssText = 'display:flex;flex-direction:row;align-items:flex-start;gap:0;';
 
@@ -14523,6 +14534,32 @@ function _BuildCustomiseSkillsetPanelContent() {
   });
 
   PanelElement.appendChild(ColumnsRow);
+
+  // Footer row
+  var FooterRow = document.createElement('div');
+  FooterRow.style.cssText = 'width:100%;text-align:center;margin-top:8px;padding-top:8px;border-top:1px solid rgba(0,0,0,0.08);';
+
+  var RequestButton = document.createElement('button');
+  RequestButton.className = 'segmented-pill-section segmented-pill-full';
+  RequestButton.style.cssText = 'border-radius:16px;border:1.5px solid #d1d5db;padding:5px 14px;width:auto;display:inline-flex;align-items:center;gap:6px;';
+
+  var EnvelopeIcon = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="13" height="13" style="vertical-align:middle;flex-shrink:0;"><rect x="2" y="4" width="20" height="16" rx="2"/><polyline points="2,4 12,13 22,4"/></svg>';
+  RequestButton.innerHTML = EnvelopeIcon + '<span class="diff-btn-text">request support for another App</span>';
+
+  RequestButton.addEventListener('click', function () {
+    var Subject = encodeURIComponent('Keyboard Warriors: app support request');
+    var Body    = encodeURIComponent("I'd like to request support for [app name - ideally include a link]. I hope you can add it to Keyboard Warriors.");
+    var Anchor  = document.createElement('a');
+    Anchor.href     = 'mailto:Wednesday%20Dessauer%20%3Cddessauer%40swin.edu.au%3E?subject=' + Subject + '&body=' + Body;
+    Anchor.target   = '_blank';
+    Anchor.rel      = 'noopener';
+    document.body.appendChild(Anchor);
+    Anchor.click();
+    document.body.removeChild(Anchor);
+  });
+
+  FooterRow.appendChild(RequestButton);
+  PanelElement.appendChild(FooterRow);
 }
 
 function _ToggleCustomSetApp(AppLabel) {
@@ -14574,8 +14611,6 @@ function _AnimateAppPillResize() {
   _AppPillSpring.HeightVelocity = 0;
   _AppPillAnimateTo(NewHeight, Geometry.TranslateY, Geometry.SpacerHeight);
 }
-
-
 
 function _openCustomiseSkillsetPanel() {
   if (CustomiseSkillsetPanelIsOpen) return;

@@ -2405,7 +2405,6 @@ const NUMPAD_MAP = {
   'NumpadEnter':   'Enter',
   'NumpadEqual':   'Equal',
   'NumpadComma':   'Comma',
-  'NumpadClear': 'CLEAR',
   'ContextMenu':   'ContextMenu',
 };
 
@@ -7160,7 +7159,12 @@ var dismissedConflicts = new Set();
   try {
     var SavedDismissed = localStorage.getItem('kw_dismissed_conflicts');
     if (SavedDismissed) {
-      JSON.parse(SavedDismissed).forEach(function(Key) { dismissedConflicts.add(Key); });
+      // Migrate legacy stored values: old code stored e.code strings ('NumpadClear', 'NumLock')
+      // instead of canonical tokens ('CLEAR', 'NUMLOCK'). Remap them on load.
+      var _legacyMigrationMap = { 'NumpadClear': 'CLEAR', 'NumLock': 'NUMLOCK' };
+      JSON.parse(SavedDismissed).forEach(function(Key) {
+        dismissedConflicts.add(_legacyMigrationMap[Key] || Key);
+      });
     }
   } catch(e) {}
 })();

@@ -14421,6 +14421,9 @@ function _BuildCustomiseSkillsetPanelContent() {
         BetaDividerAdded = true;
       }
 
+      var IsInPill = appsShortList.indexOf(AppEntry.label) !== -1 ||
+                     appsStandbyList.indexOf(AppEntry.label) !== -1;
+
       var AppRow = document.createElement('div');
       AppRow.style.cssText = [
         'display:flex',
@@ -14429,7 +14432,7 @@ function _BuildCustomiseSkillsetPanelContent() {
         "font-family:'Lato',system-ui,sans-serif",
         'font-size:12px',
         'white-space:nowrap',
-        'cursor:pointer',
+        'cursor:' + (IsInPill ? 'default' : 'pointer'),
         'padding:0 4px 0 0',
         'border-radius:4px',
         'box-sizing:border-box',
@@ -14439,22 +14442,26 @@ function _BuildCustomiseSkillsetPanelContent() {
       var IconColumn = document.createElement('span');
       IconColumn.style.cssText = 'flex-shrink:0;width:44px;display:flex;align-items:center;justify-content:center;';
 
+      var DefaultColour = IsInPill ? '#d1d5db' : (IsBetaApp ? '#9ca3af' : '#6b7280');
       var LabelColumn = document.createElement('span');
-      LabelColumn.style.cssText = 'color:' + (IsBetaApp ? '#9ca3af' : '#6b7280') + ';' +
-        (IsBetaApp ? 'font-style:italic;' : '');
+      LabelColumn.style.cssText = 'color:' + DefaultColour + ';' +
+        (IsInPill ? 'text-decoration:line-through;' : '') +
+        (IsBetaApp && !IsInPill ? 'font-style:italic;' : '');
       LabelColumn.textContent = AppEntry.label;
 
       AppRow.appendChild(IconColumn);
       AppRow.appendChild(LabelColumn);
 
-      AppRow.addEventListener('mouseenter', function() {
-        AppRow.style.background = '#f0f9ff';
-        LabelColumn.style.color = '#374151';
-      });
-      AppRow.addEventListener('mouseleave', function() {
-        AppRow.style.background = '';
-        LabelColumn.style.color = IsBetaApp ? '#9ca3af' : '#6b7280';
-      });
+      if (!IsInPill) {
+        AppRow.addEventListener('mouseenter', function() {
+          AppRow.style.background = '#f0f9ff';
+          LabelColumn.style.color = '#374151';
+        });
+        AppRow.addEventListener('mouseleave', function() {
+          AppRow.style.background = '';
+          LabelColumn.style.color = DefaultColour;
+        });
+      }
 
       ColumnElement.appendChild(AppRow);
     });

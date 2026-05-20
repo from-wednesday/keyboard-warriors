@@ -2309,7 +2309,7 @@ var ExtendedKeyCodeToToken = {
   'PageUp': 'PAGEUP', 'PageDown': 'PAGEDOWN',
   'Insert': 'INSERT', 'Delete': 'DELETE',
   'PrintScreen': 'PRINTSCREEN', 'ScrollLock': 'SCROLLLOCK', 'Pause': 'PAUSE',
-  'NumLock': 'NUMLOCK', 'NumpadClear': 'CLEAR',
+  'NumLock': currentOs === 'mac' ? 'CLEAR' : 'NUMLOCK', 'NumpadClear': 'CLEAR',
   'ContextMenu': 'CONTEXTMENU',
   'Help': 'HELP',
   'F13': 'F13', 'F14': 'F14', 'F15': 'F15', 'F16': 'F16',
@@ -7159,12 +7159,7 @@ var dismissedConflicts = new Set();
   try {
     var SavedDismissed = localStorage.getItem('kw_dismissed_conflicts');
     if (SavedDismissed) {
-      // Migrate legacy stored values: old code stored e.code strings ('NumpadClear', 'NumLock')
-      // instead of canonical tokens ('CLEAR', 'NUMLOCK'). Remap them on load.
-      var _legacyMigrationMap = { 'NumpadClear': 'CLEAR', 'NumLock': 'NUMLOCK' };
-      JSON.parse(SavedDismissed).forEach(function(Key) {
-        dismissedConflicts.add(_legacyMigrationMap[Key] || Key);
-      });
+      JSON.parse(SavedDismissed).forEach(function(Key) { dismissedConflicts.add(Key); });
     }
   } catch(e) {}
 })();

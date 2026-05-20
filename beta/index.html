@@ -5903,11 +5903,16 @@ function _attachconflictsPanelKeypressVerifier() {
     // Pressing a key sets it to unblocked (available). Does NOT toggle off.
     if (_activeConflictFilter === 'keyboard') {
       var kbSubPanel = document.getElementById('cfKeyboardSubPanel');
-      var browserCode = e.key; // e.g. 'Home', 'PageUp', 'Insert'
-      if (kbSubPanel && ExtendedKeyCodeToToken[browserCode]) {
+      // Use e.code (physical key) to look up the canonical token.
+      // e.key is unreliable for extended keys: Mac Clear fires e.key='Clear'
+      // but ExtendedKeyCodeToToken is keyed by e.code ('NumpadClear').
+      var pressedCode  = e.code; // e.g. 'NumpadClear', 'Home', 'Insert'
+      var pressedToken = ExtendedKeyCodeToToken[pressedCode]; // e.g. 'CLEAR', 'HOME'
+      if (kbSubPanel && pressedToken) {
         var keyEls = kbSubPanel.querySelectorAll('[data-token]');
         keyEls.forEach(function(keyEl) {
-          if (keyEl.dataset.token !== browserCode) return;
+          // dataset.token holds the canonical token string (e.g. 'CLEAR', 'HOME')
+          if (keyEl.dataset.token !== pressedToken) return;
           if (keyEl.dataset.blocked !== '1') return; // already available
           e.preventDefault();
           // Flash green-down (key held)
@@ -5916,8 +5921,8 @@ function _attachconflictsPanelKeypressVerifier() {
           keyEl.style.boxShadow = 'inset 0 0 0 1px #059669,0 0 6px rgba(16,185,129,0.4)';
           // After a short delay, settle to tint
           setTimeout(function() {
-            dismissedConflicts.delete(browserCode);
-            kbKeyOverrides.add(browserCode);
+            dismissedConflicts.delete(pressedToken);
+            kbKeyOverrides.add(pressedToken);
             _saveCustomDismissedConflicts();
             _saveKbKeyOverrides();
             if (gameState !== 'playing' && gameState !== 'paused' && gameState !== 'readyToUnpause') {

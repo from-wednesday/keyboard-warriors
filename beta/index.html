@@ -13206,7 +13206,7 @@ function _onDragHandlePointerDown(Event) {
   if (_kbPos === 'face') return;
   // No drag on tablet (tap-toggle handles it) or in ghost mode (fixed angle).
   if (detectedOs === 'mobile') return;
-  if (keyboardDisplayMode === 'ghost') return;
+  if (keyboardDisplayMode === 'ghost' && activeSettings !== 'panelConflicts') return;
 
   _kbDragActive             = false;
   _kbDragDirectionConfirmed = false;

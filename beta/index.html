@@ -4661,8 +4661,8 @@ document.addEventListener('click', function(ClickEvent) {
                                   (SkillsetPill   && SkillsetPill.contains(ClickEvent.target))   ||
                                   (SkillsetDrop   && SkillsetDrop.contains(ClickEvent.target))   ||
                                   appPillEl.contains(ClickEvent.target);
-  if (!ClickedInsideSkillsetArea && CustomiseSkillsetPanelIsOpen) {
-    _hideAppSelectorSkillsetPill();
+if (!ClickedInsideSkillsetArea && CustomiseSkillsetPanelIsOpen) {
+    _closeCustomiseSkillsetPanel();
   }
 });
 

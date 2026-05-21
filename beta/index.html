@@ -4661,8 +4661,12 @@ document.addEventListener('click', function(ClickEvent) {
                                   (SkillsetPill   && SkillsetPill.contains(ClickEvent.target))   ||
                                   (SkillsetDrop   && SkillsetDrop.contains(ClickEvent.target))   ||
                                   appPillEl.contains(ClickEvent.target);
-if (!ClickedInsideSkillsetArea && CustomiseSkillsetPanelIsOpen) {
-    _closeCustomiseSkillsetPanel();
+if (!ClickedInsideSkillsetArea) {
+    if (AppSelectorSkillsetPillIsOpen) {
+      _hideAppSelectorSkillsetPill();
+    } else if (CustomiseSkillsetPanelIsOpen) {
+      _closeCustomiseSkillsetPanel();
+    }
   }
 });
 
@@ -14398,10 +14402,10 @@ function _showAppSelectorSkillsetPill() {
 }
 
 function _hideAppSelectorSkillsetPill() {
-  _closeCustomiseSkillsetPanel();
   if (!AppSelectorSkillsetPillIsOpen) return;
   AppSelectorSkillsetPillIsOpen  = false;
   AppSelectorSkillsetDropIsOpen  = false;
+  _closeCustomiseSkillsetPanel();
 
   var ExistingDrop = document.getElementById('appSelectorSkillsetDrop');
   if (ExistingDrop) ExistingDrop.remove();

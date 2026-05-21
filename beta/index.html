@@ -14292,15 +14292,10 @@ function _buildAppSelectorSkillsetPill() {
         _AppPillSpring.HeightVelocity = 0;
         _AppPillAnimateTo(NewHeight, NewGeometry.TranslateY, NewGeometry.SpacerHeight);
         _buildSkillsetPill();
-         AppSelectorSkillsetDropIsOpen = false;
-        CustomiseSkillsetPanelIsOpen = false;
-        _closeCustomiseSkillsetPanel();
+        AppSelectorSkillsetDropIsOpen = false;
+        // Keep CustomiseSkillsetPanel open — just rebuild its content to reflect the new skillset.
         _buildAppSelectorSkillsetPill();
-        if (AppSelectorSkillsetPillIsOpen) {
-          _BuildCustomiseSkillsetPanelContent();
-        }
-    _buildAppSelectorSkillsetPill();
-        if (AppSelectorSkillsetPillIsOpen) {
+        if (CustomiseSkillsetPanelIsOpen) {
           _BuildCustomiseSkillsetPanelContent();
         }
         appPillEl.classList.remove('pulse-glow'); void appPillEl.offsetWidth; appPillEl.classList.add('pulse-glow'); appPillEl.addEventListener('animationend', function h() { appPillEl.classList.remove('pulse-glow'); appPillEl.removeEventListener('animationend', h); }, { once: true });
@@ -14405,7 +14400,6 @@ function _hideAppSelectorSkillsetPill() {
   if (!AppSelectorSkillsetPillIsOpen) return;
   AppSelectorSkillsetPillIsOpen  = false;
   AppSelectorSkillsetDropIsOpen  = false;
-  _closeCustomiseSkillsetPanel();
 
   var ExistingDrop = document.getElementById('appSelectorSkillsetDrop');
   if (ExistingDrop) ExistingDrop.remove();

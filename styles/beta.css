@@ -919,8 +919,8 @@ body.kb-at-edge #keyboardPanel #kb-shadow {
 
 @keyframes btnPulse {
   0%   { transform: scale(1); }
-  35%  { transform: scale(1.13); }
-  65%  { transform: scale(1.07); }
+  35%  { transform: scale(1.08); }
+  65%  { transform: scale(1.04); }
   100% { transform: scale(1); }
 }
 #mainBtn.pulse {
@@ -934,9 +934,9 @@ body.kb-at-edge #keyboardPanel #kb-shadow {
 }
 
 @keyframes pillGlow {
-  0%   { box-shadow: 0 0 0 0 rgba(156,163,175,0); }
-  40%  { box-shadow: 0 0 0 4px rgba(156,163,175,0.35); }
-  100% { box-shadow: 0 0 0 0 rgba(156,163,175,0); }
+  0%   { transform: scale(1);    box-shadow: 0 0 0 0   rgba(156,163,175,0); }
+  40%  { transform: scale(1.08); box-shadow: 0 0 0 4px rgba(156,163,175,0.35); }
+  100% { transform: scale(1);    box-shadow: 0 0 0 0   rgba(156,163,175,0); }
 }
 #appPill.pulse-glow {
   animation: pillGlow 0.55s ease-out;
@@ -950,8 +950,8 @@ body.kb-at-edge #keyboardPanel #kb-shadow {
 }
 @keyframes pillPop {
   0%   { transform: scale(1);    box-shadow: 0 0 0 0   rgba(156,163,175,0); }
-  30%  { transform: scale(1.12); box-shadow: 0 0 0 5px rgba(156,163,175,0.4); }
-  65%  { transform: scale(1.06); box-shadow: 0 0 0 2px rgba(156,163,175,0.2); }
+  30%  { transform: scale(1.08); box-shadow: 0 0 0 4px rgba(156,163,175,0.35); }
+  65%  { transform: scale(1.04); box-shadow: 0 0 0 2px rgba(156,163,175,0.2); }
   100% { transform: scale(1);    box-shadow: 0 0 0 0   rgba(156,163,175,0); }
 }
 .pulse-pop {

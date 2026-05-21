@@ -14232,7 +14232,7 @@ function _buildAppSelectorSkillsetPill() {
 
   var LabelColumn = document.createElement('span');
   LabelColumn.style.cssText = 'flex:1;text-align:left;';
-  LabelColumn.textContent = CustomiseSkillsetPanelIsOpen ? 'Custom Set' : currentSkillset;
+  LabelColumn.textContent = currentSkillset;
 
   SelectedRow.appendChild(CaretColumn);
   SelectedRow.appendChild(LabelColumn);
@@ -14250,9 +14250,7 @@ function _buildAppSelectorSkillsetPill() {
     document.body.appendChild(Drop);
 
     SKILLSET_DEFS.forEach(function(Definition) {
-      var IsSelected = CustomiseSkillsetPanelIsOpen
-       ? false
-       : (Definition.label === currentSkillset);
+      var IsSelected = (Definition.label === currentSkillset);
       var Row = document.createElement('div');
       Row.style.cssText = "display:flex;align-items:center;height:24px;line-height:1;font-family:'Lato',system-ui,sans-serif;font-size:12px;color:" + (IsSelected ? '#6b7280' : '#9ca3af') + ";font-weight:" + (IsSelected ? '500' : '400') + ";white-space:nowrap;box-sizing:border-box;cursor:pointer;padding:0 2px;";
       Row.addEventListener('mouseenter', function() { Row.style.background = '#f0f9ff'; Row.style.color = '#374151'; });
@@ -14304,15 +14302,16 @@ function _buildAppSelectorSkillsetPill() {
       Drop.appendChild(Row);
     });
 
+    var CustomSetIsSelected = (currentSkillset === 'Custom Set');
     var CustomSetRow = document.createElement('div');
-    CustomSetRow.style.cssText = "display:flex;align-items:center;height:24px;line-height:1;font-family:'Lato',system-ui,sans-serif;font-size:12px;color:#9ca3af;white-space:nowrap;box-sizing:border-box;cursor:pointer;padding:0 2px;border-top:1px solid rgba(0,0,0,0.06);";
+    CustomSetRow.style.cssText = "display:flex;align-items:center;height:24px;line-height:1;font-family:'Lato',system-ui,sans-serif;font-size:12px;color:" + (CustomSetIsSelected ? '#6b7280' : '#9ca3af') + ";font-weight:" + (CustomSetIsSelected ? '500' : '400') + ";white-space:nowrap;box-sizing:border-box;cursor:pointer;padding:0 2px;border-top:1px solid rgba(0,0,0,0.06);";
     CustomSetRow.addEventListener('mouseenter', function() { CustomSetRow.style.background = '#f0f9ff'; CustomSetRow.style.color = '#374151'; });
-    CustomSetRow.addEventListener('mouseleave',  function() { CustomSetRow.style.background = ''; CustomSetRow.style.color = '#9ca3af'; });
+    CustomSetRow.addEventListener('mouseleave',  function() { CustomSetRow.style.background = ''; CustomSetRow.style.color = CustomSetIsSelected ? '#6b7280' : '#9ca3af'; });
     var CustomSetCaretColumn = document.createElement('span');
     CustomSetCaretColumn.style.cssText = 'flex-shrink:0;width:22px;display:flex;align-items:center;justify-content:center;';
     var CustomSetCaretSvg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
     CustomSetCaretSvg.setAttribute('viewBox', '0 0 7 7'); CustomSetCaretSvg.setAttribute('width', '7'); CustomSetCaretSvg.setAttribute('height', '7'); CustomSetCaretSvg.setAttribute('fill', 'currentColor');
-    CustomSetCaretSvg.style.cssText = 'display:block;color:#9ca3af;opacity:0;';
+    CustomSetCaretSvg.style.cssText = 'display:block;color:#9ca3af;opacity:' + (CustomSetIsSelected ? '1' : '0') + ';';
     var CustomSetCaretPath = document.createElementNS('http://www.w3.org/2000/svg', 'path');
     CustomSetCaretPath.setAttribute('d', 'M1.5 1 L6 3.5 L1.5 6 Z');
     CustomSetCaretSvg.appendChild(CustomSetCaretPath); CustomSetCaretColumn.appendChild(CustomSetCaretSvg);

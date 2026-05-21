@@ -14507,24 +14507,24 @@ var IsBetaBuild = document.title !== 'Keyboard Warriors';
         'align-items:center',
         'height:24px',
         "font-family:'Lato',system-ui,sans-serif",
-        'font-size:12px',
+        'font-size:11px',
         'white-space:nowrap',
         'cursor:pointer',
-        'padding:0 2px 0 2px',
+        'padding:0 3px 0 0',
         'border-radius:4px',
         'box-sizing:border-box',
       ].join(';');
 
       // Hex indicator: filled hexagon when already in pill, empty hexagon when available to add
       var DotColumn = document.createElement('span');
-      DotColumn.style.cssText = 'flex-shrink:0;width:16px;display:flex;align-items:center;justify-content:center;';
+      DotColumn.style.cssText = 'flex-shrink:0;width:16px;display:flex;align-items:left;justify-content:center;';
       DotColumn.appendChild(_MakeWrenchPickerRadioDot(InPill));
 
       var LabelColumn = document.createElement('span');
       LabelColumn.style.color          = InPill ? '#d1d5db' : (IsBetaApp ? '#9ca3af' : '#374151');
       LabelColumn.style.textDecoration = InPill ? 'line-through' : '';
       LabelColumn.style.fontStyle      = (IsBetaApp && !InPill) ? 'italic' : '';
-      LabelColumn.style.width          = '100px'; /* ← adjust COLUMN WIDTH */
+      LabelColumn.style.width          = '108px'; /* ← adjust COLUMN WIDTH */
       LabelColumn.style.overflow       = 'hidden';
       LabelColumn.style.flexShrink     = '0';
       LabelColumn.textContent          = AppEntry.label;

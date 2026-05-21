@@ -13914,9 +13914,6 @@ function _applySkillset(skillsetLabel) {
   }
   runData.length = 0; lastCompletedReport = null; CoachAdviceAccepted = false;
   // If the customise panel is open, re-render it to reflect the newly selected skillset.
-  if (CustomiseSkillsetPanelIsOpen) {
-    _BuildCustomiseSkillsetPanelContent();
-  }
 }
 
 function skillsetPillClick(ClickEvent) {
@@ -14154,7 +14151,10 @@ function _toggleCustomiseSkillsetDrop(PillElement) {
       var DropElement = document.getElementById('customiseSkillsetDrop');
       if (DropElement) DropElement.remove();
       _buildCustomiseSkillsetPillContent();
-      // Pop the pill to acknowledge the selection
+        if (CustomiseSkillsetPanelIsOpen) {
+          _BuildCustomiseSkillsetPanelContent();
+        }
+        // Pop the pill to acknowledge the selection
       var PanelPill = document.getElementById('customiseSkillsetPill');
       if (PanelPill) pulseBtn(PanelPill);
       // Re-reveal it after content rebuild resets opacity
@@ -14281,6 +14281,9 @@ function _buildAppSelectorSkillsetPill() {
         _AppPillSpring.HeightVelocity = 0;
         _AppPillAnimateTo(NewHeight, NewGeometry.TranslateY, NewGeometry.SpacerHeight);
         _buildSkillsetPill();
+        if (CustomiseSkillsetPanelIsOpen) {
+          _BuildCustomiseSkillsetPanelContent();
+        }
         AppSelectorSkillsetDropIsOpen = false;
         CustomiseSkillsetPanelIsOpen = false;
         _closeCustomiseSkillsetPanel();

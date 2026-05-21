@@ -14570,12 +14570,12 @@ var IsBetaBuild = document.title !== 'Keyboard Warriors';
 }
 
 function _ToggleCustomSetApp(AppLabel) {
-  if (currentSkillset !== 'Custom Set') {
-    showToast('Switch to Custom Set to edit your app list.');
-    var SkillsetPillElement = document.getElementById('appSelectorSkillsetPill');
-    if (SkillsetPillElement) pulseBtn(SkillsetPillElement);
-    return;
-  }
+if (currentSkillset !== 'Custom Set') {
+      showToast('Switch to Custom Set to edit your app list.');
+      var SkillsetPillElement = document.getElementById('appSelectorSkillsetPill');
+      if (SkillsetPillElement) { SkillsetPillElement.classList.remove('pulse-glow'); void SkillsetPillElement.offsetWidth; SkillsetPillElement.classList.add('pulse-glow'); SkillsetPillElement.addEventListener('animationend', function h() { SkillsetPillElement.classList.remove('pulse-glow'); SkillsetPillElement.removeEventListener('animationend', h); }, { once: true }); }
+      return;
+    }
   _EnsureCustomSetListSeeded();
 
   var IsInShort   = CustomSetList.shortList.indexOf(AppLabel)   !== -1;
@@ -14611,8 +14611,9 @@ function _ToggleCustomSetApp(AppLabel) {
   _saveAppsShortList();
 
   // Rebuild the app pill with a pop animation, then rebuild the panel.
-  buildAppPill();
+buildAppPill();
   _AnimateAppPillResize();
+  appPillEl.classList.remove('pulse-glow'); void appPillEl.offsetWidth; appPillEl.classList.add('pulse-glow'); appPillEl.addEventListener('animationend', function h() { appPillEl.classList.remove('pulse-glow'); appPillEl.removeEventListener('animationend', h); }, { once: true });
   _BuildCustomiseSkillsetPanelContent();
 }
 

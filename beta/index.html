@@ -14398,10 +14398,10 @@ function _showAppSelectorSkillsetPill() {
 }
 
 function _hideAppSelectorSkillsetPill() {
+  _closeCustomiseSkillsetPanel();
   if (!AppSelectorSkillsetPillIsOpen) return;
   AppSelectorSkillsetPillIsOpen  = false;
   AppSelectorSkillsetDropIsOpen  = false;
-  _closeCustomiseSkillsetPanel();
 
   var ExistingDrop = document.getElementById('appSelectorSkillsetDrop');
   if (ExistingDrop) ExistingDrop.remove();
@@ -14674,9 +14674,7 @@ function _openCustomiseSkillsetPanel() {
 }
 
 function _closeCustomiseSkillsetPanel() {
-  CustomiseSkillsetPanelIsOpen = false;
-  if (!document.getElementById('customiseSkillsetPanel').classList.contains('customise-skillset-panel-open')) return;
-  CustomiseSkillsetPanelIsOpen = false;
+  if (!CustomiseSkillsetPanelIsOpen) return;
 
   var ExistingDrop         = document.getElementById('customiseSkillsetDrop');
   var PanelElement         = document.getElementById('customiseSkillsetPanel');

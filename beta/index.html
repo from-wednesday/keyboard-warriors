@@ -14674,7 +14674,8 @@ function _openCustomiseSkillsetPanel() {
 }
 
 function _closeCustomiseSkillsetPanel() {
-  if (!CustomiseSkillsetPanelIsOpen) return;
+  CustomiseSkillsetPanelIsOpen = false;
+  if (!document.getElementById('customiseSkillsetPanel').classList.contains('customise-skillset-panel-open')) return;
 
   var ExistingDrop         = document.getElementById('customiseSkillsetDrop');
   var PanelElement         = document.getElementById('customiseSkillsetPanel');

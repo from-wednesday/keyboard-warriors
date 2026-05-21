@@ -14391,6 +14391,7 @@ function _hideAppSelectorSkillsetPill() {
   if (!AppSelectorSkillsetPillIsOpen) return;
   AppSelectorSkillsetPillIsOpen  = false;
   AppSelectorSkillsetDropIsOpen  = false;
+  _closeCustomiseSkillsetPanel();
 
   var ExistingDrop = document.getElementById('appSelectorSkillsetDrop');
   if (ExistingDrop) ExistingDrop.remove();

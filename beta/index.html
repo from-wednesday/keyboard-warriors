@@ -14581,7 +14581,7 @@ function _ToggleCustomSetApp(AppLabel) {
 if (currentSkillset !== 'Custom Set') {
       showToast('Switch to Custom Set to edit your app list.');
       var SkillsetPillElement = document.getElementById('appSelectorSkillsetPill');
-      if (SkillsetPillElement) { SkillsetPillElement.classList.remove('pulse-glow'); void SkillsetPillElement.offsetWidth; SkillsetPillElement.classList.add('pulse-glow'); SkillsetPillElement.addEventListener('animationend', function h() { SkillsetPillElement.classList.remove('pulse-glow'); SkillsetPillElement.removeEventListener('animationend', h); }, { once: true }); }
+      if (SkillsetPillElement) { SkillsetPillElement.classList.remove('pulse-pop'); void SkillsetPillElement.offsetWidth; SkillsetPillElement.classList.add('pulse-pop'); SkillsetPillElement.addEventListener('animationend', function h() { SkillsetPillElement.classList.remove('pulse-pop'); SkillsetPillElement.removeEventListener('animationend', h); }, { once: true }); }
       return;
     }
   _EnsureCustomSetListSeeded();

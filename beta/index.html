@@ -14522,9 +14522,8 @@ var IsBetaBuild = document.title !== 'Keyboard Warriors';
 
       var LabelColumn = document.createElement('span');
       LabelColumn.style.color          = InPill ? '#d1d5db' : (IsBetaApp ? '#9ca3af' : '#374151');
-      LabelColumn.style.textDecoration = InPill ? 'line-through' : '';
       LabelColumn.style.fontStyle      = (IsBetaApp && !InPill) ? 'italic' : '';
-      LabelColumn.style.width          = '88px'; /* ← adjust this value to taste */
+      LabelColumn.style.width          = '98px'; /* ← adjust column width */
       LabelColumn.style.overflow       = 'hidden';
       LabelColumn.style.flexShrink     = '0';
       LabelColumn.textContent          = AppEntry.label;

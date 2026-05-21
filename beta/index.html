@@ -14670,6 +14670,13 @@ function _openCustomiseSkillsetPanel() {
   if (PanelElement) {
     _BuildCustomiseSkillsetPanelContent();
     PanelElement.classList.add('customise-skillset-panel-open');
+    PanelElement.classList.remove('customise-skillset-panel-pop');
+    void PanelElement.offsetWidth;
+    PanelElement.classList.add('customise-skillset-panel-pop');
+    PanelElement.addEventListener('animationend', function h() {
+      PanelElement.classList.remove('customise-skillset-panel-pop');
+      PanelElement.removeEventListener('animationend', h);
+    }, { once: true });
   }
   if (RightBracketElement) {
   RightBracketElement.style.display = 'block';

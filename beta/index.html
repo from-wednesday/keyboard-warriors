@@ -13903,6 +13903,9 @@ function _applySkillset(skillsetLabel) {
     try { localStorage.setItem('kw_app', currentApp); } catch(e) {}
     _saveAppsShortList();
     buildAppPill();
+    if (CustomiseSkillsetPanelIsOpen) {
+      _BuildCustomiseSkillsetPanelContent();
+    }
 
     // If the app pill is currently open, resize it to fit the new shortlist
     if (appPillEl.classList.contains('open') && !AppPillWrenchOpen) {

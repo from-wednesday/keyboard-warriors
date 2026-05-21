@@ -14335,6 +14335,7 @@ function _buildAppSelectorSkillsetPill() {
       }
       _buildAppSelectorSkillsetPill();
       _openCustomiseSkillsetPanel();
+      appPillEl.classList.remove('pulse-glow'); void appPillEl.offsetWidth; appPillEl.classList.add('pulse-glow'); appPillEl.addEventListener('animationend', function h() { appPillEl.classList.remove('pulse-glow'); appPillEl.removeEventListener('animationend', h); }, { once: true });
     });
     Drop.appendChild(CustomSetRow);
           

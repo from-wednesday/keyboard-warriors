@@ -13903,9 +13903,6 @@ function _applySkillset(skillsetLabel) {
     try { localStorage.setItem('kw_app', currentApp); } catch(e) {}
     _saveAppsShortList();
     buildAppPill();
-    if (CustomiseSkillsetPanelIsOpen) {
-      _BuildCustomiseSkillsetPanelContent();
-    }
 
     // If the app pill is currently open, resize it to fit the new shortlist
     if (appPillEl.classList.contains('open') && !AppPillWrenchOpen) {
@@ -14153,10 +14150,7 @@ function _toggleCustomiseSkillsetDrop(PillElement) {
       _buildSkillsetPill();
       var DropElement = document.getElementById('customiseSkillsetDrop');
       if (DropElement) DropElement.remove();
-      _buildCustomiseSkillsetPillContent();
-        if (CustomiseSkillsetPanelIsOpen) {
-          _BuildCustomiseSkillsetPanelContent();
-        }
+        _buildCustomiseSkillsetPillContent();
         // Pop the pill to acknowledge the selection
       var PanelPill = document.getElementById('customiseSkillsetPill');
       if (PanelPill) pulseBtn(PanelPill);
@@ -14284,13 +14278,17 @@ function _buildAppSelectorSkillsetPill() {
         _AppPillSpring.HeightVelocity = 0;
         _AppPillAnimateTo(NewHeight, NewGeometry.TranslateY, NewGeometry.SpacerHeight);
         _buildSkillsetPill();
-        if (CustomiseSkillsetPanelIsOpen) {
-          _BuildCustomiseSkillsetPanelContent();
-        }
-        AppSelectorSkillsetDropIsOpen = false;
+         AppSelectorSkillsetDropIsOpen = false;
         CustomiseSkillsetPanelIsOpen = false;
         _closeCustomiseSkillsetPanel();
         _buildAppSelectorSkillsetPill();
+        if (AppSelectorSkillsetPillIsOpen) {
+          _BuildCustomiseSkillsetPanelContent();
+        }
+    _buildAppSelectorSkillsetPill();
+        if (AppSelectorSkillsetPillIsOpen) {
+          _BuildCustomiseSkillsetPanelContent();
+        }
         appPillEl.classList.remove('pulse-glow'); void appPillEl.offsetWidth; appPillEl.classList.add('pulse-glow'); appPillEl.addEventListener('animationend', function h() { appPillEl.classList.remove('pulse-glow'); appPillEl.removeEventListener('animationend', h); }, { once: true });
       });
 

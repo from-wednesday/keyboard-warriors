@@ -941,6 +941,13 @@ body.kb-at-edge #keyboardPanel #kb-shadow {
 #appPill.pulse-glow {
   animation: pillGlow 0.55s ease-out;
 }
+/* Generic versions — apply to any element */
+.pulse {
+  animation: btnPulse 0.45s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+}
+.pulse-glow {
+  animation: pillGlow 0.55s ease-out;
+}
 
 #kbToast {
   position: absolute;

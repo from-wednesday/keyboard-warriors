@@ -14540,7 +14540,7 @@ var IsBetaBuild = document.title !== 'Keyboard Warriors';
 
       AppRow.addEventListener('click', function(ClickEvent) {
         ClickEvent.stopPropagation();
-        _ToggleCustomSetApp(AppEntry.label);
+        _ToggleCustomSetApp(AppEntry.label, DotColumn, InPill);
       });
 
       ColumnElement.appendChild(AppRow);
@@ -14578,13 +14578,13 @@ var IsBetaBuild = document.title !== 'Keyboard Warriors';
   PanelElement.appendChild(FooterRow);
 }
 
-function _ToggleCustomSetApp(AppLabel) {
-if (currentSkillset !== 'Custom Set') {
-      showToast('Switch to Custom Set to edit your app list.');
-      var SkillsetPillElement = document.getElementById('appSelectorSkillsetPill');
-      if (SkillsetPillElement) { SkillsetPillElement.classList.remove('pulse-pop'); void SkillsetPillElement.offsetWidth; SkillsetPillElement.classList.add('pulse-pop'); SkillsetPillElement.addEventListener('animationend', function h() { SkillsetPillElement.classList.remove('pulse-pop'); SkillsetPillElement.removeEventListener('animationend', h); }, { once: true }); }
-      return;
-    }
+function _ToggleCustomSetApp(AppLabel, DotColumn, WasInPill) {
+  if (currentSkillset !== 'Custom Set') {
+    showToast('Switch to Custom Set to edit your app list.');
+    var SkillsetPillElement = document.getElementById('appSelectorSkillsetPill');
+    if (SkillsetPillElement) { SkillsetPillElement.classList.remove('pulse-pop'); void SkillsetPillElement.offsetWidth; SkillsetPillElement.classList.add('pulse-pop'); SkillsetPillElement.addEventListener('animationend', function h() { SkillsetPillElement.classList.remove('pulse-pop'); SkillsetPillElement.removeEventListener('animationend', h); }, { once: true }); }
+    return;
+  }
   _EnsureCustomSetListSeeded();
 
   var IsInShort   = CustomSetList.shortList.indexOf(AppLabel)   !== -1;
@@ -14608,22 +14608,33 @@ if (currentSkillset !== 'Custom Set') {
     CustomSetList.shortList   = CustomSetList.shortList.filter(function(L)   { return L !== AppLabel; });
     CustomSetList.standbyList = CustomSetList.standbyList.filter(function(L) { return L !== AppLabel; });
   } else {
-    // Adding: goes to shortList (not standby).
     CustomSetList.shortList.push(AppLabel);
   }
 
   _SaveCustomSetList();
 
-  // Sync the live appsShortList and appsStandbyList to the CustomSetList.
   appsShortList   = CustomSetList.shortList.slice();
   appsStandbyList = CustomSetList.standbyList.slice();
   _saveAppsShortList();
 
-  // Rebuild the app pill with a pop animation, then rebuild the panel.
-buildAppPill();
-  _AnimateAppPillResize();
-  appPillEl.classList.remove('pulse-glow'); void appPillEl.offsetWidth; appPillEl.classList.add('pulse-glow'); appPillEl.addEventListener('animationend', function h() { appPillEl.classList.remove('pulse-glow'); appPillEl.removeEventListener('animationend', h); }, { once: true });
-  _BuildCustomiseSkillsetPanelContent();
+  function _doRebuild() {
+    buildAppPill();
+    _AnimateAppPillResize();
+    appPillEl.classList.remove('pulse-glow'); void appPillEl.offsetWidth; appPillEl.classList.add('pulse-glow'); appPillEl.addEventListener('animationend', function h() { appPillEl.classList.remove('pulse-glow'); appPillEl.removeEventListener('animationend', h); }, { once: true });
+    _BuildCustomiseSkillsetPanelContent();
+  }
+
+  if (DotColumn) {
+    _AnimateWrenchDot(DotColumn, !IsInPill);
+    var DotEl = DotColumn.querySelector('.app-pill-hex-dot');
+    if (DotEl) {
+      DotEl.addEventListener('animationend', _doRebuild, { once: true });
+    } else {
+      _doRebuild();
+    }
+  } else {
+    _doRebuild();
+  }
 }
 
 function _AnimateAppPillResize() {

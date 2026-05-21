@@ -14517,13 +14517,16 @@ var IsBetaBuild = document.title !== 'Keyboard Warriors';
 
       // Hex indicator: filled hexagon when already in pill, empty hexagon when available to add
       var DotColumn = document.createElement('span');
-      DotColumn.style.cssText = 'flex-shrink:0;width:22px;display:flex;align-items:center;justify-content:center;';
+      DotColumn.style.cssText = 'flex-shrink:0;width:16px;display:flex;align-items:center;justify-content:center;';
       DotColumn.appendChild(_MakeWrenchPickerRadioDot(InPill));
 
       var LabelColumn = document.createElement('span');
       LabelColumn.style.color          = InPill ? '#d1d5db' : (IsBetaApp ? '#9ca3af' : '#374151');
       LabelColumn.style.textDecoration = InPill ? 'line-through' : '';
       LabelColumn.style.fontStyle      = (IsBetaApp && !InPill) ? 'italic' : '';
+      LabelColumn.style.width          = '88px'; /* ← adjust this value to taste */
+      LabelColumn.style.overflow       = 'hidden';
+      LabelColumn.style.flexShrink     = '0';
       LabelColumn.textContent          = AppEntry.label;
 
       AppRow.appendChild(DotColumn);

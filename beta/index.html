@@ -4654,6 +4654,16 @@ document.addEventListener('click', function(ClickEvent) {
   if (!appPillEl.contains(ClickEvent.target)) {
     if (AppPillWrenchOpen) { _closeWrenchPicker(); } else { closeAppPill(); }
   }
+  var CustomisePanel = document.getElementById('customiseSkillsetPanel');
+  var SkillsetPill   = document.getElementById('appSelectorSkillsetPill');
+  var SkillsetDrop   = document.getElementById('appSelectorSkillsetDrop');
+  var ClickedInsideSkillsetArea = (CustomisePanel && CustomisePanel.contains(ClickEvent.target)) ||
+                                  (SkillsetPill   && SkillsetPill.contains(ClickEvent.target))   ||
+                                  (SkillsetDrop   && SkillsetDrop.contains(ClickEvent.target))   ||
+                                  appPillEl.contains(ClickEvent.target);
+  if (!ClickedInsideSkillsetArea && CustomiseSkillsetPanelIsOpen) {
+    _hideAppSelectorSkillsetPill();
+  }
 });
 
 function setAppSelectorGameActive(active) {

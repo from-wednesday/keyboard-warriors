@@ -979,7 +979,14 @@ function buildKey(cfg, isMini) {
         el.addEventListener('pointerup',    function(ev) {
           ev.preventDefault();
           updateKeyboardLighting({code:'Escape',key:'Escape',preventDefault:function(){},shiftKey:false,altKey:false,metaKey:false,ctrlKey:false}, false);
-          _debugEscHoldCancel();
+          var dbg = document.getElementById('debugOverlay');
+          if (dbg && dbg.style.display !== 'none') {
+            // Overlay is open — don't close on release; a subsequent tap will close it
+            escHoldFired = false;
+            escHoldTimer = null;
+          } else {
+            _debugEscHoldCancel();
+          }
         });
         el.addEventListener('pointerleave', function(ev) { if (!escHoldFired) _debugEscHoldCancel(); });
       } else {
@@ -4214,7 +4221,14 @@ function _commitWrenchDrop(DroppedAtIndex) {
     });
   }).filter(Boolean);
 
-  appsLongList = NewLongList;
+  // Preserve hidden apps (not shown in wrench picker) so appsLongList always
+  // remains the full master list. Only the ordering of visible apps changes.
+  var VisibleLabels = new Set(NewLongList.map(function(e) { return e.label; }));
+  var HiddenApps = appsLongList.filter(function(AppEntry) {
+    return !VisibleLabels.has(AppEntry.label);
+  });
+
+  appsLongList = NewLongList.concat(HiddenApps);
 
   // Rebuild the visual list to match
   _removeWrenchGap();

@@ -6134,6 +6134,9 @@ function _clearconflictsOverrides() {
   // Re-block all standard browser conflicts
   DefaultBrowserKeys.forEach(function(Key) { dismissedConflicts.add(Key); });
   _saveCustomDismissedConflicts();
+  // Clear all blur diagnostic conflicts
+  blurDiagnosticConflicts.clear();
+  _saveBlurDiagnosticConflicts();
   questionPool = shuffleArray(buildPool());
   _refreshBrowserContent();
 }
@@ -6239,8 +6242,7 @@ function _refreshBrowserContent() {
   // Also exclude extended keyboard keys — those are managed in the keyboard tab.
   var BrowserConflictKeys = new Set(d.keys);
   var UserFoundKeys = [];
-  dismissedConflicts.forEach(function(BlockedKey) {
-    if (!BrowserConflictKeys.has(BlockedKey) && !ExtendedKeyCodeToToken[BlockedKey]) UserFoundKeys.push(BlockedKey);
+  var UserFoundKeys = Array.from(blurDiagnosticConflicts);
   });
 
   // ── Right column: tab-switched content ───────────────────────────────────
@@ -7240,6 +7242,24 @@ var dismissedConflicts = new Set();
   } catch(e) {}
 })();
 
+var blurDiagnosticConflicts = new Set();
+(function() {
+  try {
+    var SavedBlurConflicts = localStorage.getItem('kw_blur_conflicts');
+    if (SavedBlurConflicts) {
+      JSON.parse(SavedBlurConflicts).forEach(function(Key) {
+        blurDiagnosticConflicts.add(Key);
+      });
+    }
+  } catch(e) {}
+})();
+
+function _saveBlurDiagnosticConflicts() {
+  try {
+    localStorage.setItem('kw_blur_conflicts', JSON.stringify(Array.from(blurDiagnosticConflicts)));
+  } catch(e) {}
+}
+
 var conflictsKbLighting = (function () {
   var _active    = false;
   // All browser codes currently held down, tracked as a Set
@@ -7372,53 +7392,87 @@ var BrowserCodeToTokenMap = {
   //               dismissed chord, or the key itself is dismissed at rest.
   //               Renders yellow.
 
-  function _classifyKeyWithCurrentChord(BrowserCode) {
-    if (BrowserCode === 'CapsLock') return null;
+ function _classifyKeyWithCurrentChord(BrowserCode) {
+  if (BrowserCode === 'CapsLock') return null;
 
-    var IsModifier = _isModifierCode(BrowserCode);
-
-    // Build the chord that would exist if this key were included in the held set.
-    // For non-modifier keys, combine held modifiers + this key's token.
-    // For modifier keys, combine all held modifiers + this modifier token.
-    var KeyToken;
-    var ChordIfPressed;
-
-    if (IsModifier) {
-      // Treat this modifier as if it were added to the held set.
-      // If nothing else is held yet, a bare modifier chord ('CMD', 'SHIFT' etc.)
-      // is never itself a dismissed entry and is only a prefix if combined with
-      // other keys. Classifying it as 'uncertain' at rest makes it look yellow
-      // even though pressing it alone cannot trigger any conflict. Return
-      // 'available' immediately when no other keys are held.
-      if (_heldKeys.size === 0) return 'available';
-      var ModToken = _modifierTokenForCode(BrowserCode);
-      ChordIfPressed = _buildChordWithExtraModifier(ModToken);
-    } else {
-      KeyToken = _browserCodeToToken(BrowserCode);
-      if (!KeyToken) return 'available';
-      ChordIfPressed = _buildChordToken(KeyToken);
-    }
-
-    // Is this chord itself a dismissed entry?
-    var NormalisedChord  = NormaliseToken(ChordIfPressed);
-    var IsDirectlyBlocked = dismissedConflicts.has(NormalisedChord);
-
-    if (IsDirectlyBlocked) {
-      // A chord can only be directly blocked at rest (no keys held).
-      // Once keys are held, the browser would intercept it before we see it,
-      // so we never reach here with a fully-held conflicted chord.
-      // At rest: bare key blocked = orange or yellow (sus).
-      return _isSusToken(NormalisedChord) ? 'sus' : 'blocked';
-    }
-
-    // Is this chord a prefix of any dismissed entry?
-    // If so, pressing it could lead to a conflict: yellow (uncertain).
-    if (_chordIsPrefixOfAnyDismissed(NormalisedChord)) {
-      return 'uncertain';
-    }
-
-    return 'available';
+  // Duplicate modifier: if this key's partner is already held, always available
+  var ModifierToken = _modifierTokenForCode(BrowserCode);
+  if (ModifierToken !== null) {
+    var PartnerAlreadyHeld = false;
+    _heldKeys.forEach(function(HeldCode) {
+      if (HeldCode !== BrowserCode && _modifierTokenForCode(HeldCode) === ModifierToken) {
+        PartnerAlreadyHeld = true;
+      }
+    });
+    if (PartnerAlreadyHeld) return 'available';
   }
+
+  // Build the set of currently held modifier tokens
+  var HeldModifierTokens = new Set();
+  _heldKeys.forEach(function(HeldCode) {
+    var Token = _modifierTokenForCode(HeldCode);
+    if (Token) HeldModifierTokens.add(Token);
+  });
+  // Add this key's modifier token if it is a modifier
+  if (ModifierToken) HeldModifierTokens.add(ModifierToken);
+
+  // The candidate key token (null if this key is a modifier)
+  var CandidateKeyToken = ModifierToken ? null : _browserCodeToToken(BrowserCode);
+
+  // Check all dismissed entries for a subset match
+  var AllDismissedNormalised = _allDismissedTokensNormalised();
+  var MatchResult = _findSubsetMatch(HeldModifierTokens, CandidateKeyToken, AllDismissedNormalised);
+
+  if (MatchResult === 'blocked') return 'blocked';
+  if (MatchResult === 'sus')     return 'sus';
+  return 'available';
+}
+
+function _allDismissedTokensNormalised() {
+  var Result = [];
+  dismissedConflicts.forEach(function(RawToken) {
+    Result.push(NormaliseToken(RawToken));
+  });
+  return Result;
+}
+
+function _findSubsetMatch(HeldModifierTokens, CandidateKeyToken, NormalisedDismissedList) {
+  // Returns 'blocked', 'sus', or null
+  var BestMatch = null;
+  NormalisedDismissedList.forEach(function(DismissedEntry) {
+    var Parsed = ParseShortcutString(DismissedEntry);
+    if (!Parsed) return;
+
+    // The dismissed entry's required key must match the candidate
+    if (CandidateKeyToken !== null) {
+      if (Parsed.keyToken !== CandidateKeyToken) return;
+    } else {
+      // Classifying a modifier key: the dismissed entry must have no key token
+      // (i.e. it is a bare modifier chord) -- rare, but handle it
+      if (Parsed.keyToken !== null) return;
+    }
+
+    // Every modifier required by the dismissed entry must be present
+    // in HeldModifierTokens (extra held modifiers are fine)
+    var RequiredModifiers = [];
+    if (Parsed.requiresCmd)     RequiredModifiers.push('CMD');
+    if (Parsed.requiresShift)   RequiredModifiers.push('SHIFT');
+    if (Parsed.requiresOption)  RequiredModifiers.push('OPTION');
+    if (Parsed.requiresControl) RequiredModifiers.push('CONTROL');
+    if (Parsed.requiresWin)     RequiredModifiers.push('WIN');
+
+    var AllRequiredPresent = RequiredModifiers.every(function(RequiredToken) {
+      return HeldModifierTokens.has(RequiredToken);
+    });
+    if (!AllRequiredPresent) return;
+
+    // Match found -- check sus status
+    var IsSus = _isSusToken(DismissedEntry);
+    if (!IsSus) { BestMatch = 'blocked'; }
+    else if (BestMatch !== 'blocked') { BestMatch = 'sus'; }
+  });
+  return BestMatch;
+}
 
   // Like _buildChordToken but adds an extra modifier token to the held set
   // without mutating _heldKeys, used to classify modifier keys.
@@ -7688,7 +7742,7 @@ var BrowserCodeToTokenMap = {
     document.getElementById('keyboardPanel').classList.add('conflicts-panel-active');
     document.addEventListener('keydown', _onKeydown, true);
     document.addEventListener('keyup',   _onKeyup,   true);
-    setTimeout(_applyAllKeyColours, 80);
+    setTimeout(_applyAllKeyColours, 300);
   }
 
   function deactivate() {
@@ -8765,6 +8819,7 @@ function confirmStartOverYes() {
       try { localStorage.removeItem('kw_lives'); }        catch(e) {}
       try { localStorage.removeItem('kw_coach_memory'); } catch(e) {}
       try { localStorage.removeItem('kw_dismissed_conflicts'); } catch(e) {}
+      try { localStorage.removeItem('kw_blur_conflicts'); } catch(e) {}
       try { localStorage.removeItem('kw_has_keyboard'); }        catch(e) {}
       try { sessionStorage.removeItem('kw_welcomed'); }   catch(e) {}
       try {
@@ -8849,7 +8904,8 @@ function _returningStartOver() {
       try { localStorage.removeItem('kw_timer'); }              catch(e) {}
       try { localStorage.removeItem('kw_lives'); }              catch(e) {}
       try { localStorage.removeItem('kw_coach_memory'); }       catch(e) {}
-      try { localStorage.removeItem('kw_dismissed_conflicts'); } catch(e) {}
+      try { localStorage.removeItem('kw_dismissed_conflicts'); } catch(e) {} //POSSIBLE DELETE
+      try { localStorage.removeItem('kw_blur_conflicts'); } catch(e) {} //POSSIBLE DELETE
       try { localStorage.removeItem('kw_has_keyboard'); }       catch(e) {}
       try { sessionStorage.removeItem('kw_welcomed'); }         catch(e) {}
       bestRecord = { time: null, accuracy: null };
@@ -12787,9 +12843,10 @@ function _blurDiagnosticBuildMailtoParams() {
 }
 
 function _blurDiagnosticBlockShortcut() {
-  // Block only -- no report sent
   dismissedConflicts.add(_blurDiagnosticShortcutToken);
   _saveCustomDismissedConflicts();
+  blurDiagnosticConflicts.add(_blurDiagnosticShortcutToken);
+  _saveBlurDiagnosticConflicts()
   questionPool = shuffleArray(buildPool());
   _blurDiagnosticReplaceQuestion();
   _blurDiagnosticShowBlockedConfirmation();

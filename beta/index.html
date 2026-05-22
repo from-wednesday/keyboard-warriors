@@ -4140,6 +4140,7 @@ var _WrenchDragGapRow         = null;
 var _WrenchDragGapIndex       = -1;
 var _WrenchDragPointerOffsetY = 0;
 var _WrenchDragRowHeight      = 24;
+var_WrenchDragDroppedInside   = false;
 
 function _attachWrenchRowDragListeners(RowElement) {
   // Mouse drag (dragover and drop are on the container, not individual rows)
@@ -4227,16 +4228,44 @@ function _commitWrenchDrop(DroppedAtIndex) {
 function _onWrenchDragStart(Event) {
   _WrenchDragSourceRow = Event.currentTarget;
   _WrenchDragSourceRow.style.opacity = '0.4';
+  _WrenchDragDroppedInside = false;
   Event.dataTransfer.effectAllowed = 'move';
 }
 
-function _onWrenchDragEnd(Event) {
-  _removeWrenchGap();
-  if (_WrenchDragSourceRow) {
-    _WrenchDragSourceRow.style.opacity = '';
-    _WrenchDragSourceRow = null;
+function _handleWrenchDragOutside(AppLabel) {
+  if (currentSkillset === 'Custom Set') {
+    _EnsureCustomSetListSeeded();
+    var CanRemove = !(CustomSetList.shortList.indexOf(AppLabel) !== -1 && CustomSetList.shortList.length <= 1);
+    if (!CanRemove) { showToast('You need at least one active app.'); return; }
+    _ToggleCustomSetApp(AppLabel, null, true);
+  } else {
+    showToast('Create a custom set to remove apps.');
+    var SkillsetsBtn = appPillEl.querySelector('.app-option-skillsets');
+    if (SkillsetsBtn) {
+      SkillsetsBtn.classList.remove('pulse');
+      void SkillsetsBtn.offsetWidth;
+      SkillsetsBtn.classList.add('pulse');
+      SkillsetsBtn.addEventListener('animationend', function h() {
+        SkillsetsBtn.classList.remove('pulse');
+        SkillsetsBtn.removeEventListener('animationend', h);
+      }, { once: true });
+    }
   }
 }
+
+function _onWrenchDragEnd(Event) {
+  var WasOutside = !_WrenchDragDroppedInside;
+  var DraggedRow = _WrenchDragSourceRow;
+  _removeWrenchGap();
+  if (DraggedRow) {
+    DraggedRow.style.opacity = '';
+    _WrenchDragSourceRow = null;
+  }
+  if (WasOutside && DraggedRow) {
+    _handleWrenchDragOutside(DraggedRow.dataset.appLabel);
+  }
+}
+
 
 function _onWrenchDragOver(Event) {
   Event.preventDefault();
@@ -4247,6 +4276,7 @@ function _onWrenchDragOver(Event) {
 
 function _onWrenchDrop(Event) {
   Event.preventDefault();
+  _WrenchDragDroppedInside = true;
   var DropIndex = _WrenchDragGapIndex >= 0 ? _WrenchDragGapIndex : _wrenchRowIndexAtY(Event.clientY);
   _commitWrenchDrop(DropIndex);
 }
@@ -4309,17 +4339,30 @@ function _onWrenchTouchMove(Event) {
 function _onWrenchTouchEnd(Event) {
   if (!_WrenchTouchPendingRow) return;
 
-  if (_WrenchTouchDragActive && _WrenchDragSourceRow) {
-    // Commit the drag
-    var DropIndex = _WrenchDragGapIndex >= 0 ? _WrenchDragGapIndex : 0;
-    if (_WrenchTouchDragClone && _WrenchTouchDragClone.parentNode) {
-      _WrenchTouchDragClone.parentNode.removeChild(_WrenchTouchDragClone);
-    }
-    _WrenchTouchDragClone  = null;
-    _WrenchTouchDragActive = false;
-    _WrenchTouchPendingRow = null;
-    _commitWrenchDrop(DropIndex);
-  } else {
+    if (_WrenchTouchDragActive && _WrenchDragSourceRow) {
+      var Touch = Event.changedTouches[0];
+      var PillBounds = appPillEl.getBoundingClientRect();
+      var DroppedOutside = Touch &&
+        (Touch.clientX < PillBounds.left || Touch.clientX > PillBounds.right ||
+         Touch.clientY < PillBounds.top  || Touch.clientY > PillBounds.bottom);
+      var DraggedRow = _WrenchDragSourceRow;
+      var DropIndex = _WrenchDragGapIndex >= 0 ? _WrenchDragGapIndex : 0;
+      if (_WrenchTouchDragClone && _WrenchTouchDragClone.parentNode) {
+        _WrenchTouchDragClone.parentNode.removeChild(_WrenchTouchDragClone);
+      }
+      _WrenchTouchDragClone  = null;
+      _WrenchTouchDragActive = false;
+      _WrenchTouchPendingRow = null;
+      if (DroppedOutside) {
+        _removeWrenchGap();
+        DraggedRow.style.opacity = '';
+        _WrenchDragSourceRow = null;
+        _handleWrenchDragOutside(DraggedRow.dataset.appLabel);
+      } else {
+        _commitWrenchDrop(DropIndex);
+      }
+    } else {
+
     // It was a tap — let the click event handle toggle, just clean up state
     _WrenchTouchDragActive = false;
     _WrenchDragSourceRow   = null;

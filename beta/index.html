@@ -988,7 +988,11 @@ function buildKey(cfg, isMini) {
             _debugEscHoldCancel();
           }
         });
-        el.addEventListener('pointerleave', function(ev) { if (!escHoldFired) _debugEscHoldCancel(); });
+        el.addEventListener('pointerleave', function(ev) {
+          var dbg = document.getElementById('debugOverlay');
+          if (dbg && dbg.style.display !== 'none') return;
+          if (!escHoldTimer) _debugEscHoldCancel();
+        });
       } else {
         el.addEventListener('mousedown', function(ev){ touchEnabled ? handleKeyTouch(ev, el) : showKbToast(ev); });
       }

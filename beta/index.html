@@ -6033,6 +6033,12 @@ function _setConflictBlocked(canonicalKey, blocked, liEl) {
     dismissedConflicts.add(canonicalKey);
   } else {
     dismissedConflicts.delete(canonicalKey);
+    // Also remove from blur diagnostic store if present, so the user found
+    // tab does not re-list it after being toggled off.
+    if (blurDiagnosticConflicts.has(canonicalKey)) {
+      blurDiagnosticConflicts.delete(canonicalKey);
+      _saveBlurDiagnosticConflicts();
+    }
   }
   _saveCustomDismissedConflicts();
   if (gameState !== 'playing' && gameState !== 'paused' && gameState !== 'readyToUnpause') {
@@ -7349,24 +7355,25 @@ var BrowserCodeToTokenMap = {
     return !!(ConflictData.susKeys && ConflictData.susKeys.has(Token));
   }
 
-  // Returns all dismissed tokens as a normalised array for matching.
-  function _allDismissedTokensNormalised() {
-    var Result = [];
-    dismissedConflicts.forEach(function(RawToken) {
-      Result.push(NormaliseToken(RawToken));
+  // Returns all known conflict tokens (both blocked and sus) as a normalised
+  // array. This is the full list from the JSON, not just what is dismissed,
+  // so that sus keys can be classified yellow even when they are unblocked.
+  function _allConflictTokensNormalised() {
+    var ConflictData = getBrowserConflicts();
+    return (ConflictData.keys || []).map(function(RawToken) {
+      return NormaliseToken(RawToken);
     });
-    return Result;
   }
 
   // Checks whether the given held modifiers plus candidate key satisfy all
-  // requirements of any dismissed entry. Extra held modifiers are ignored,
+  // requirements of any known conflict entry. Extra held modifiers are ignored,
   // so holding Cmd+Shift still lights T orange if Cmd+T is blocked.
   // Returns 'blocked', 'sus', or null.
   function _findSubsetMatch(HeldModifierTokens, CandidateKeyToken) {
-    var NormalisedDismissedList = _allDismissedTokensNormalised();
+    var NormalisedConflictList = _allConflictTokensNormalised();
     var BestMatch = null;
-    NormalisedDismissedList.forEach(function(DismissedEntry) {
-      var Parsed = ParseShortcutString(DismissedEntry);
+    NormalisedConflictList.forEach(function(ConflictEntry) {
+      var Parsed = ParseShortcutString(ConflictEntry);
       if (!Parsed) return;
       // Key token must match exactly
       if (Parsed.keyToken !== CandidateKeyToken) return;
@@ -7376,8 +7383,13 @@ var BrowserCodeToTokenMap = {
       if (Parsed.requiresOption  && !HeldModifierTokens.has('OPTION'))  return;
       if (Parsed.requiresControl && !HeldModifierTokens.has('CONTROL')) return;
       if (Parsed.requiresWin     && !HeldModifierTokens.has('WIN'))     return;
-      // Match found
-      var IsSus = _isSusToken(DismissedEntry);
+      // Match found -- check if it has been manually unblocked by the user
+      var IsUserUnblocked = !dismissedConflicts.has(ConflictEntry);
+      if (IsUserUnblocked) {
+        // User has toggled this one off -- treat as available
+        return;
+      }
+      var IsSus = _isSusToken(ConflictEntry);
       if (!IsSus) { BestMatch = 'blocked'; }
       else if (BestMatch !== 'blocked') { BestMatch = 'sus'; }
     });
@@ -7703,7 +7715,15 @@ var BrowserCodeToTokenMap = {
     if (_active) _applyAllKeyColours();
   }
 
-  return { activate: activate, deactivate: deactivate, refresh: refresh, markSusBlocked: markSusBlocked };
+  // Clears all held keys and redraws resting state. Called when the window
+  // loses focus so that keys intercepted by the browser don't get stuck lit.
+  function resetOnBlur() {
+    if (!_active) return;
+    _heldKeys = new Set();
+    _applyAllKeyColours();
+  }
+
+  return { activate: activate, deactivate: deactivate, refresh: refresh, markSusBlocked: markSusBlocked, resetOnBlur: resetOnBlur };
 }());
 
 // Per-key overrides for extended keyboard keys, set via the keyboard conflicts tab.
@@ -12526,6 +12546,9 @@ var _blurDiagnosticFlowComplete   = false;
 
 window.addEventListener('blur', function() {
   releaseAllKeys();
+  if (activeSettings === 'panelConflicts') {
+    conflictsKbLighting.resetOnBlur();
+  }
   if (gameState === 'playing') {
     _blurPauseActive = true;
     enterPause();

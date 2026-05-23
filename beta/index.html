@@ -6238,12 +6238,8 @@ function _refreshBrowserContent() {
     questionPool = shuffleArray(buildPool());
   }
 
-  // Separate standard browser keys from user-found (diagnostic) keys.
-  // Also exclude extended keyboard keys — those are managed in the keyboard tab.
-  var BrowserConflictKeys = new Set(d.keys);
-  var UserFoundKeys = [];
+  // User-found keys come exclusively from the blur diagnostic flow.
   var UserFoundKeys = Array.from(blurDiagnosticConflicts);
-  });
 
   // ── Right column: tab-switched content ───────────────────────────────────
   var ul             = document.getElementById('browserCompatList');
@@ -7347,153 +7343,85 @@ var BrowserCodeToTokenMap = {
     return HeldModifierTokens.join('+');
   }
 
-  // Returns all currently dismissed conflict tokens as a flat array,
-  // each normalised via NormaliseToken so comparisons are consistent.
-  function _allDismissedTokens() {
-    var Tokens = [];
-    dismissedConflicts.forEach(function (RawToken) {
-      Tokens.push(NormaliseToken(RawToken));
-    });
-    return Tokens;
-  }
-
   // Returns the sus status of a token using the live conflict data.
   function _isSusToken(Token) {
     var ConflictData = getBrowserConflicts();
     return !!(ConflictData.susKeys && ConflictData.susKeys.has(Token));
   }
 
-  // ── Chord-prefix logic ───────────────────────────────────────────────────
-  //
-  // A chord is a '+'-joined string of canonical tokens, e.g. 'CMD+T'.
-  // A test chord is a PREFIX of a dismissed chord if the dismissed chord
-  // either equals the test chord or starts with the test chord followed by '+'.
-  //
-  // This lets us answer: "could pressing more keys from this point produce a
-  // conflicted shortcut?"  If yes, the currently held keys are uncertain (yellow).
-
-  function _chordIsPrefixOfAnyDismissed(ChordToken) {
-    if (!ChordToken) return false;
-    var AllDismissed = _allDismissedTokens();
-    return AllDismissed.some(function (DismissedToken) {
-      return DismissedToken === ChordToken ||
-             DismissedToken.startsWith(ChordToken + '+');
+  // Returns all dismissed tokens as a normalised array for matching.
+  function _allDismissedTokensNormalised() {
+    var Result = [];
+    dismissedConflicts.forEach(function(RawToken) {
+      Result.push(NormaliseToken(RawToken));
     });
+    return Result;
   }
 
-  // ── Per-key colour classification ────────────────────────────────────────
-  //
-  // For each visible key, we ask: given the current held chord, what colour
-  // should this key be?
-  //
-  // Classification values: 'available' | 'sus' | 'uncertain' | 'blocked'
-  //
-  // 'uncertain' = the chord formed by held keys + this key is a prefix of a
-  //               dismissed chord, or the key itself is dismissed at rest.
-  //               Renders yellow.
-
- function _classifyKeyWithCurrentChord(BrowserCode) {
-  if (BrowserCode === 'CapsLock') return null;
-
-  // Duplicate modifier: if this key's partner is already held, always available
-  var ModifierToken = _modifierTokenForCode(BrowserCode);
-  if (ModifierToken !== null) {
-    var PartnerAlreadyHeld = false;
-    _heldKeys.forEach(function(HeldCode) {
-      if (HeldCode !== BrowserCode && _modifierTokenForCode(HeldCode) === ModifierToken) {
-        PartnerAlreadyHeld = true;
-      }
-    });
-    if (PartnerAlreadyHeld) return 'available';
-  }
-
-  // Build the set of currently held modifier tokens
-  var HeldModifierTokens = new Set();
-  _heldKeys.forEach(function(HeldCode) {
-    var Token = _modifierTokenForCode(HeldCode);
-    if (Token) HeldModifierTokens.add(Token);
-  });
-  // Add this key's modifier token if it is a modifier
-  if (ModifierToken) HeldModifierTokens.add(ModifierToken);
-
-  // The candidate key token (null if this key is a modifier)
-  var CandidateKeyToken = ModifierToken ? null : _browserCodeToToken(BrowserCode);
-
-  // Check all dismissed entries for a subset match
-  var AllDismissedNormalised = _allDismissedTokensNormalised();
-  var MatchResult = _findSubsetMatch(HeldModifierTokens, CandidateKeyToken, AllDismissedNormalised);
-
-  if (MatchResult === 'blocked') return 'blocked';
-  if (MatchResult === 'sus')     return 'sus';
-  return 'available';
-}
-
-function _allDismissedTokensNormalised() {
-  var Result = [];
-  dismissedConflicts.forEach(function(RawToken) {
-    Result.push(NormaliseToken(RawToken));
-  });
-  return Result;
-}
-
-function _findSubsetMatch(HeldModifierTokens, CandidateKeyToken, NormalisedDismissedList) {
-  // Returns 'blocked', 'sus', or null
-  var BestMatch = null;
-  NormalisedDismissedList.forEach(function(DismissedEntry) {
-    var Parsed = ParseShortcutString(DismissedEntry);
-    if (!Parsed) return;
-
-    // The dismissed entry's required key must match the candidate
-    if (CandidateKeyToken !== null) {
+  // Checks whether the given held modifiers plus candidate key satisfy all
+  // requirements of any dismissed entry. Extra held modifiers are ignored,
+  // so holding Cmd+Shift still lights T orange if Cmd+T is blocked.
+  // Returns 'blocked', 'sus', or null.
+  function _findSubsetMatch(HeldModifierTokens, CandidateKeyToken) {
+    var NormalisedDismissedList = _allDismissedTokensNormalised();
+    var BestMatch = null;
+    NormalisedDismissedList.forEach(function(DismissedEntry) {
+      var Parsed = ParseShortcutString(DismissedEntry);
+      if (!Parsed) return;
+      // Key token must match exactly
       if (Parsed.keyToken !== CandidateKeyToken) return;
-    } else {
-      // Classifying a modifier key: the dismissed entry must have no key token
-      // (i.e. it is a bare modifier chord) -- rare, but handle it
-      if (Parsed.keyToken !== null) return;
-    }
-
-    // Every modifier required by the dismissed entry must be present
-    // in HeldModifierTokens (extra held modifiers are fine)
-    var RequiredModifiers = [];
-    if (Parsed.requiresCmd)     RequiredModifiers.push('CMD');
-    if (Parsed.requiresShift)   RequiredModifiers.push('SHIFT');
-    if (Parsed.requiresOption)  RequiredModifiers.push('OPTION');
-    if (Parsed.requiresControl) RequiredModifiers.push('CONTROL');
-    if (Parsed.requiresWin)     RequiredModifiers.push('WIN');
-
-    var AllRequiredPresent = RequiredModifiers.every(function(RequiredToken) {
-      return HeldModifierTokens.has(RequiredToken);
+      // Every required modifier must be present (extras are fine)
+      if (Parsed.requiresCmd     && !HeldModifierTokens.has('CMD'))     return;
+      if (Parsed.requiresShift   && !HeldModifierTokens.has('SHIFT'))   return;
+      if (Parsed.requiresOption  && !HeldModifierTokens.has('OPTION'))  return;
+      if (Parsed.requiresControl && !HeldModifierTokens.has('CONTROL')) return;
+      if (Parsed.requiresWin     && !HeldModifierTokens.has('WIN'))     return;
+      // Match found
+      var IsSus = _isSusToken(DismissedEntry);
+      if (!IsSus) { BestMatch = 'blocked'; }
+      else if (BestMatch !== 'blocked') { BestMatch = 'sus'; }
     });
-    if (!AllRequiredPresent) return;
+    return BestMatch;
+  }
 
-    // Match found -- check sus status
-    var IsSus = _isSusToken(DismissedEntry);
-    if (!IsSus) { BestMatch = 'blocked'; }
-    else if (BestMatch !== 'blocked') { BestMatch = 'sus'; }
-  });
-  return BestMatch;
-}
+  // ── Per-key colour classification ─────────────────────────────────────────
+  // For each visible key, given the currently held keys, returns:
+  // 'available' | 'sus' | 'blocked' | null (CapsLock)
+  function _classifyKeyWithCurrentChord(BrowserCode) {
+    if (BrowserCode === 'CapsLock') return null;
 
-  // Like _buildChordToken but adds an extra modifier token to the held set
-  // without mutating _heldKeys, used to classify modifier keys.
-  function _buildChordWithExtraModifier(ExtraModifierToken) {
-    var ModifierOrder = ['CMD', 'CONTROL', 'WIN', 'OPTION', 'SHIFT', 'FN'];
-    var HeldModifierTokens = [];
-    _heldKeys.forEach(function (HeldCode) {
-      var ModToken = _modifierTokenForCode(HeldCode);
-      if (ModToken && ModifierOrder.indexOf(ModToken) !== -1) {
-        if (HeldModifierTokens.indexOf(ModToken) === -1) {
-          HeldModifierTokens.push(ModToken);
+    var ModifierToken = _modifierTokenForCode(BrowserCode);
+
+    // Duplicate modifier: if this key's partner is already held, stay green.
+    if (ModifierToken !== null) {
+      var PartnerAlreadyHeld = false;
+      _heldKeys.forEach(function(HeldCode) {
+        if (HeldCode !== BrowserCode && _modifierTokenForCode(HeldCode) === ModifierToken) {
+          PartnerAlreadyHeld = true;
         }
-      }
-    });
-    if (ExtraModifierToken && HeldModifierTokens.indexOf(ExtraModifierToken) === -1) {
-      HeldModifierTokens.push(ExtraModifierToken);
+      });
+      if (PartnerAlreadyHeld) return 'available';
     }
-    HeldModifierTokens.sort(function (TokenA, TokenB) {
-      return ModifierOrder.indexOf(TokenA) - ModifierOrder.indexOf(TokenB);
+
+    // Build the set of held modifier tokens, adding this key's token if it is a modifier.
+    var HeldModifierTokens = new Set();
+    _heldKeys.forEach(function(HeldCode) {
+      var Token = _modifierTokenForCode(HeldCode);
+      if (Token) HeldModifierTokens.add(Token);
     });
-    return HeldModifierTokens.join('+');
+    if (ModifierToken) HeldModifierTokens.add(ModifierToken);
+
+    // Modifier keys have no key token of their own -- nothing to match against
+    // a dismissed entry's required key, so they are always available.
+    if (ModifierToken !== null) return 'available';
+
+    var CandidateKeyToken = _browserCodeToToken(BrowserCode);
+    if (!CandidateKeyToken) return 'available';
+
+    var MatchResult = _findSubsetMatch(HeldModifierTokens, CandidateKeyToken);
+    if (MatchResult === 'blocked') return 'blocked';
+    if (MatchResult === 'sus')     return 'sus';
+    return 'available';
   }
 
   // Maps classification to the CSS resting class.

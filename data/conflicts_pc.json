@@ -52,8 +52,8 @@
     "Opera": [
       { "bad": "CTRL+T", "action": "new tab" },
       { "bad": "CTRL+SHIFT+I", "action": "dev tools", "sus": true },
-      { "bad": "CTRL+SHIFT+T", "action": "reopen closed tab", "sus": true },
-      { "bad": "F11", "action": "fullscreen", "sus": true }
+      { "bad": "CTRL+SHIFT+T", "action": "reopen closed tab" },
+      { "bad": "F11", "action": "fullscreen" }
     ],
     "Brave": [
       { "bad": "CTRL+T", "action": "new tab" },

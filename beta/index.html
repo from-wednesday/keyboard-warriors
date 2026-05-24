@@ -353,7 +353,7 @@
         <div id="cfFoundSubPanel" style="display:none;">
           <div id="cfFoundClearWrap"></div>
           <ul id="cfFoundList" class="sp-conflict-list"></ul>
-          <p id="cfFoundEmpty" style="display:none;font-size:11px;font-style:italic;color:#9ca3af;line-height:1.6;margin:0;">If we stumble upon any problem shortcuts during play, we will block them and they will appear here.</p>
+          <p id="cfFoundEmpty" style="display:none;font-size:11px;font-style:italic;color:#9ca3af;line-height:1.6;margin:0;">If we stumble upon any problem keys or chords during play, we will block them and they will appear here.</p>
         </div>
         <div id="cfKeyboardSubPanel" style="display:none;">
              <p class="sp-body" style="margin-bottom:8px;">Specify exactly which extended keyboard keys you have:</p>
@@ -7095,12 +7095,14 @@ function _osConflictFilePath() {
 
 function _detectBrowserName() {
   var ua = navigator.userAgent || '';
+
+  if (navigator.brave && navigator.brave.isBrave)  return 'Brave';
   if (/Edg\//.test(ua))                             return 'Edge';
   if (/Firefox\//.test(ua))                         return 'Firefox';
-  if (/Safari\//.test(ua) && !/Chrome\//.test(ua)) return 'Safari';
   if (/OPR\//.test(ua))                             return 'Opera';
+  if (/Safari\//.test(ua) && !/Chrome\//.test(ua)) return 'Safari';
   if (/Chrome\//.test(ua))                          return 'Chrome';
-  if (/Brave\//.test(ua))                           return 'Brave';
+
   return null;
 }
 
@@ -14697,23 +14699,39 @@ function _ToggleCustomSetApp(AppLabel, DotColumn, WasInPill) {
   appsStandbyList = CustomSetList.standbyList.slice();
   _saveAppsShortList();
 
-  function _doRebuild() {
+  if (IsInPill) {
     buildAppPill();
     _AnimateAppPillResize();
-    appPillEl.classList.remove('pulse-glow'); void appPillEl.offsetWidth; appPillEl.classList.add('pulse-glow'); appPillEl.addEventListener('animationend', function h() { appPillEl.classList.remove('pulse-glow'); appPillEl.removeEventListener('animationend', h); }, { once: true });
-    _BuildCustomiseSkillsetPanelContent();
-  }
-
-  if (DotColumn) {
-    _AnimateWrenchDot(DotColumn, !IsInPill);
-    var DotEl = DotColumn.querySelector('.app-pill-hex-dot');
-    if (DotEl) {
-      DotEl.addEventListener('animationend', _doRebuild, { once: true });
-    } else {
-      _doRebuild();
-    }
+    appPillEl.classList.remove('pulse-glow'); void appPillEl.offsetWidth; appPillEl.classList.add('pulse-glow');
+    appPillEl.addEventListener('animationend', function h() {
+      appPillEl.classList.remove('pulse-glow');
+      appPillEl.removeEventListener('animationend', h);
+      if (DotColumn) {
+        _AnimateWrenchDot(DotColumn, false);
+      }
+      _BuildCustomiseSkillsetPanelContent();
+    }, { once: true });
   } else {
-    _doRebuild();
+    if (DotColumn) {
+      _AnimateWrenchDot(DotColumn, true);
+      var DotEl = DotColumn.querySelector('.app-pill-hex-dot');
+      var _afterDotAnim = function() {
+        buildAppPill();
+        _AnimateAppPillResize();
+        appPillEl.classList.remove('pulse-glow'); void appPillEl.offsetWidth; appPillEl.classList.add('pulse-glow'); appPillEl.addEventListener('animationend', function h() { appPillEl.classList.remove('pulse-glow'); appPillEl.removeEventListener('animationend', h); }, { once: true });
+        _BuildCustomiseSkillsetPanelContent();
+      };
+      if (DotEl) {
+        DotEl.addEventListener('animationend', _afterDotAnim, { once: true });
+      } else {
+        _afterDotAnim();
+      }
+    } else {
+      buildAppPill();
+      _AnimateAppPillResize();
+      appPillEl.classList.remove('pulse-glow'); void appPillEl.offsetWidth; appPillEl.classList.add('pulse-glow'); appPillEl.addEventListener('animationend', function h() { appPillEl.classList.remove('pulse-glow'); appPillEl.removeEventListener('animationend', h); }, { once: true });
+      _BuildCustomiseSkillsetPanelContent();
+    }
   }
 }
 

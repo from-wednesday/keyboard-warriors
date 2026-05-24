@@ -27,7 +27,9 @@
     ],
     "Firefox": [
       { "bad": "CTRL+T", "action": "new tab" },
-      { "bad": "CTRL+SHIFT+P", "action": "open private window", "sus": true },
+      { "bad": "CTRL+W", "action": "close tab" },
+      { "bad": "CTRL+N", "action": "new window" },
+      { "bad": "CTRL+SHIFT+P", "action": "open private window" },
       { "bad": "CTRL+SHIFT+T", "action": "reopen closed tab", "sus": true },
       { "bad": "F11", "action": "fullscreen", "sus": true }
     ],
@@ -58,6 +60,7 @@
     "Brave": [
       { "bad": "CTRL+T", "action": "new tab" },
       { "bad": "CTRL+W", "action": "close tab" },
+      { "bad": "CTRL+N", "action": "new window" },
       { "bad": "CTRL+SHIFT+N", "action": "new private window" },
       { "bad": "CTRL+SHIFT+T", "action": "reopen closed tab", "sus": true },
       { "bad": "F11", "action": "fullscreen", "sus": true }

@@ -7355,12 +7355,17 @@ var BrowserCodeToTokenMap = {
     return !!(ConflictData.susKeys && ConflictData.susKeys.has(Token));
   }
 
-  // Returns all known conflict tokens (both blocked and sus) as a normalised
-  // array. This is the full list from the JSON, not just what is dismissed,
-  // so that sus keys can be classified yellow even when they are unblocked.
+  // Returns all known conflict tokens (both blocked and sus) plus any blur
+  // diagnostic entries, as normalised strings for matching.
   function _allConflictTokensNormalised() {
     var ConflictData = getBrowserConflicts();
-    return (ConflictData.keys || []).map(function(RawToken) {
+    var AllTokens = (ConflictData.keys || []).slice();
+    // Add blur diagnostic entries that are not already in the browser/OS list
+    var BrowserSet = new Set(AllTokens);
+    blurDiagnosticConflicts.forEach(function(Token) {
+      if (!BrowserSet.has(Token)) AllTokens.push(Token);
+    });
+    return AllTokens.map(function(RawToken) {
       return NormaliseToken(RawToken);
     });
   }
@@ -7383,15 +7388,19 @@ var BrowserCodeToTokenMap = {
       if (Parsed.requiresOption  && !HeldModifierTokens.has('OPTION'))  return;
       if (Parsed.requiresControl && !HeldModifierTokens.has('CONTROL')) return;
       if (Parsed.requiresWin     && !HeldModifierTokens.has('WIN'))     return;
-      // Match found -- check if it has been manually unblocked by the user
-      var IsUserUnblocked = !dismissedConflicts.has(ConflictEntry);
-      if (IsUserUnblocked) {
-        // User has toggled this one off -- treat as available
-        return;
+      // Match found. Determine colour:
+      // - Sus entry in dismissedConflicts = user manually blocked it = orange
+      // - Sus entry not in dismissedConflicts = sus, unblocked = yellow
+      // - Non-sus entry = always orange regardless of dismissed state
+      // - User found (blur diagnostic) entry = always orange
+      var IsBlurEntry = blurDiagnosticConflicts.has(ConflictEntry);
+      var IsSus = !IsBlurEntry && _isSusToken(ConflictEntry);
+      var IsManuallyBlocked = dismissedConflicts.has(ConflictEntry);
+      if (!IsSus || IsManuallyBlocked || IsBlurEntry) {
+        BestMatch = 'blocked';
+      } else if (BestMatch !== 'blocked') {
+        BestMatch = 'sus';
       }
-      var IsSus = _isSusToken(ConflictEntry);
-      if (!IsSus) { BestMatch = 'blocked'; }
-      else if (BestMatch !== 'blocked') { BestMatch = 'sus'; }
     });
     return BestMatch;
   }

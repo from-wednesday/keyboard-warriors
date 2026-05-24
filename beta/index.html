@@ -7352,49 +7352,25 @@ var BrowserCodeToTokenMap = {
   }
 
   // Returns the sus status of a token using the live conflict data.
-function _isSusToken(Token) {
-  // A token is only "sus" (yellow) if it's in the sus set AND hasn't been confirmed working
-  var ConflictData = getBrowserConflicts();
-  if (!ConflictData.susKeys || !ConflictData.susKeys.has(Token)) return false;
-  // Check if this entry has been confirmed working via keypress
-  if (_conflictsCache) {
-    var AllEntries = (_conflictsCache.os_conflicts || []).concat(
-      Object.keys(_conflictsCache.browser_conflicts || {}).reduce(function(Acc, Name) {
-        return Acc.concat(_conflictsCache.browser_conflicts[Name]);
-      }, [])
-    );
-    return !AllEntries.some(function(Entry) {
-      return _conflictBadToToken(Entry.bad) === Token && Entry.confirmed_working;
-    });
+  function _isSusToken(Token) {
+    var ConflictData = getBrowserConflicts();
+    return !!(ConflictData.susKeys && ConflictData.susKeys.has(Token));
   }
-  return true;
-}
 
   // Returns all known conflict tokens (both blocked and sus) plus any blur
   // diagnostic entries, as normalised strings for matching.
-function _allConflictTokensNormalised() {
-  var ConflictData = getBrowserConflicts();
-  var AllTokens = (ConflictData.keys || []).slice();
-  var BrowserSet = new Set(AllTokens);
-  blurDiagnosticConflicts.forEach(function(Token) {
-    if (!BrowserSet.has(Token)) AllTokens.push(Token);
-  });
-  // Filter out entries confirmed working via successful keypress
-  var ConfirmedWorking = new Set();
-  if (_conflictsCache) {
-    var AllEntries = (_conflictsCache.os_conflicts || []).concat(
-      Object.keys(_conflictsCache.browser_conflicts || {}).reduce(function(Acc, Name) {
-        return Acc.concat(_conflictsCache.browser_conflicts[Name]);
-      }, [])
-    );
-    AllEntries.forEach(function(Entry) {
-      if (Entry.confirmed_working) ConfirmedWorking.add(_conflictBadToToken(Entry.bad));
+  function _allConflictTokensNormalised() {
+    var ConflictData = getBrowserConflicts();
+    var AllTokens = (ConflictData.keys || []).slice();
+    // Add blur diagnostic entries that are not already in the browser/OS list
+    var BrowserSet = new Set(AllTokens);
+    blurDiagnosticConflicts.forEach(function(Token) {
+      if (!BrowserSet.has(Token)) AllTokens.push(Token);
+    });
+    return AllTokens.map(function(RawToken) {
+      return NormaliseToken(RawToken);
     });
   }
-  return AllTokens
-    .filter(function(T) { return !ConfirmedWorking.has(NormaliseToken(T)); })
-    .map(function(RawToken) { return NormaliseToken(RawToken); });
-}
 
   // Checks whether the given held modifiers plus candidate key satisfy all
   // requirements of any known conflict entry. Extra held modifiers are ignored,
@@ -7419,10 +7395,8 @@ function _allConflictTokensNormalised() {
       // - Sus entry not in dismissedConflicts = sus, unblocked = yellow
       // - Non-sus entry = always orange regardless of dismissed state
       // - User found (blur diagnostic) entry = always orange
-      // In _findSubsetMatch, change the IsSus check:
       var IsBlurEntry = blurDiagnosticConflicts.has(ConflictEntry);
-      var IsSus = !IsBlurEntry && _isSusToken(ConflictEntry) && !CacheEntry.confirmed_working;
-      // (need to pass CacheEntry through or check _conflictsCache inline)
+      var IsSus = !IsBlurEntry && _isSusToken(ConflictEntry);
       var IsManuallyBlocked = dismissedConflicts.has(ConflictEntry);
       if (!IsSus || IsManuallyBlocked || IsBlurEntry) {
         BestMatch = 'blocked';
@@ -7568,71 +7542,58 @@ function _allConflictTokensNormalised() {
   // entry that matches the current chord is unblocked.  The colour change then
   // follows automatically from the next _applyAllKeyColours call.
 
-// REPLACE _unblockFiredChordIfDismissed with this version:
-function _unblockFiredChordIfDismissed(NonModifierBrowserCode) {
-  var KeyToken = _browserCodeToToken(NonModifierBrowserCode);
-  if (!KeyToken) return;
-  var ChordToken = _buildChordToken(KeyToken);
-  var NormalisedChord = NormaliseToken(ChordToken);
+  function _unblockFiredChordIfDismissed(NonModifierBrowserCode) {
+    var KeyToken = _browserCodeToToken(NonModifierBrowserCode);
+    if (!KeyToken) return;
+    var ChordToken = _buildChordToken(KeyToken);
+    var NormalisedChord = NormaliseToken(ChordToken);
 
-  // Always mark this chord as confirmed working in the cache,
-  // regardless of whether it was in dismissedConflicts or not.
-  // This handles both blocked (orange) AND sus (yellow) entries.
-  var WasInDismissed = dismissedConflicts.has(NormalisedChord);
-  var WasSus = _isSusToken(NormalisedChord) && !WasInDismissed;
-  
-  if (!WasInDismissed && !WasSus) return; // Not a tracked conflict, nothing to do
+    if (!dismissedConflicts.has(NormalisedChord)) return;
 
-  // Mark as confirmed working in cache so it never lights as sus/blocked again
-  if (_conflictsCache) {
-    var AllCacheEntries = (_conflictsCache.os_conflicts || []).concat(
-      Object.keys(_conflictsCache.browser_conflicts || {}).reduce(function (Acc, BrowserName) {
-        return Acc.concat(_conflictsCache.browser_conflicts[BrowserName]);
-      }, [])
-    );
-    AllCacheEntries.forEach(function (CacheEntry) {
-      if (_conflictBadToToken(CacheEntry.bad) === NormalisedChord) {
-        CacheEntry.sus = false;
-        CacheEntry.confirmed_working = true; // new flag
-      }
-    });
-  }
-
-  if (WasInDismissed) {
-    // Was blocked — unblock it
+    // Unblock it
     dismissedConflicts.delete(NormalisedChord);
-    if (blurDiagnosticConflicts.has(NormalisedChord)) {
-      blurDiagnosticConflicts.delete(NormalisedChord);
-      _saveBlurDiagnosticConflicts();
+
+    // Demote from sus to confirmed-available in the cache
+    if (_conflictsCache) {
+      var AllCacheEntries = (_conflictsCache.os_conflicts || []).concat(
+        Object.keys(_conflictsCache.browser_conflicts || {}).reduce(function (Acc, BrowserName) {
+          return Acc.concat(_conflictsCache.browser_conflicts[BrowserName]);
+        }, [])
+      );
+      AllCacheEntries.forEach(function (CacheEntry) {
+        if (_conflictBadToToken(CacheEntry.bad) === NormalisedChord) {
+          CacheEntry.sus = false;
+        }
+      });
     }
+
     _saveCustomDismissedConflicts();
+    if (gameState !== 'playing' && gameState !== 'paused' && gameState !== 'readyToUnpause') {
+      questionPool = shuffleArray(buildPool());
+    }
+
+    // Immediately update any visible list items matching this chord so the
+    // radio flips to unchecked and the strikethrough clears in sync with the
+    // key lighting — without waiting for the full _refreshBrowserContent rebuild.
+    document.querySelectorAll(
+      '#browserCompatList li[data-conflict-key], #cfFoundList li[data-conflict-key]'
+    ).forEach(function (ListItem) {
+      if (NormaliseToken(ListItem.dataset.conflictKey || '') !== NormalisedChord) return;
+      var Radio = ListItem.querySelector('.modal-radio');
+      if (Radio) Radio.classList.remove('on');
+      ListItem.classList.remove('conflict-dismissed');
+    });
+
+    _syncConflictFilterPillStyles();
+    setTimeout(function () {
+      _refreshBrowserContent();
+      conflictsKbLighting.refresh();
+      // Flash chips green on the freshly rebuilt list items so the visual
+      // confirmation is in sync with the resting-available (green) key state.
+      _flashConflictListChipsGreen(NormalisedChord);
+    }, 50);
+    showToast('Shortcut working \u2014 unblocked');
   }
-
-  if (gameState !== 'playing' && gameState !== 'paused' && gameState !== 'readyToUnpause') {
-    questionPool = shuffleArray(buildPool());
-  }
-
-  _syncConflictFilterPillStyles();
-
-  // Update visible list items
-  document.querySelectorAll(
-    '#browserCompatList li[data-conflict-key], #cfFoundList li[data-conflict-key]'
-  ).forEach(function (ListItem) {
-    if (NormaliseToken(ListItem.dataset.conflictKey || '') !== NormalisedChord) return;
-    var Radio = ListItem.querySelector('.modal-radio');
-    if (Radio) Radio.classList.remove('on');
-    ListItem.classList.remove('conflict-dismissed');
-  });
-
-  _syncConflictFilterPillStyles();
-  var ToastMsg = WasInDismissed ? 'Shortcut working \u2014 unblocked' : 'Shortcut confirmed working';
-  setTimeout(function () {
-    _refreshBrowserContent();
-    conflictsKbLighting.refresh();
-    _flashConflictListChipsGreen(NormalisedChord);
-  }, 50);
-  showToast(ToastMsg);
-}
 
   // ── Conflict list chip flash ──────────────────────────────────────────────
   // When a chord that was orange (blocked) or yellow (sus/uncertain) is

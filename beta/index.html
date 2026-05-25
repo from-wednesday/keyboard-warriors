@@ -6045,10 +6045,7 @@ function _setConflictBlocked(canonicalKey, blocked, liEl) {
       _saveBlurDiagnosticConflicts();
     }
     // Mark as manually unblocked (uncertain/yellow) until confirmed working
-    var ConflictData = getBrowserConflicts();
-    var IsKnownConflict = ConflictData.keys.indexOf(canonicalKey) !== -1 ||
-                          blurDiagnosticConflicts.has(canonicalKey);
-    if (IsKnownConflict && !userConfirmedWorkingConflicts.has(canonicalKey)) {
+    if (!userConfirmedWorkingConflicts.has(canonicalKey)) {
       userManuallyUnblockedConflicts.add(canonicalKey);
       _saveUserManuallyUnblockedConflicts();
     }

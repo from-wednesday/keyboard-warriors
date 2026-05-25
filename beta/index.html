@@ -6273,6 +6273,16 @@ function _refreshBrowserContent() {
     var IsOsTab      = (_activeConflictFilter === 'os');
     var FilterLabels = IsOsTab ? d.osLabels   : d.browserLabels;
     var FilterKeys   = IsOsTab ? d.osKeys     : d.browserKeys;
+    // Exclude keys the user has confirmed working -- filter both arrays in step.
+    var FilteredPairs = FilterLabels.reduce(function(Acc, Label, Index) {
+      if (!userConfirmedWorkingConflicts.has(FilterKeys[Index])) {
+        Acc.labels.push(Label);
+        Acc.keys.push(FilterKeys[Index]);
+      }
+      return Acc;
+    }, { labels: [], keys: [] });
+    FilterLabels = FilteredPairs.labels;
+    FilterKeys   = FilteredPairs.keys;
     var TotalItems   = FilterLabels.length;
     var NeedsPages   = TotalItems > CF_PAGE_SIZE;
     var TotalPages   = NeedsPages ? Math.ceil(TotalItems / CF_PAGE_SIZE) : 1;
@@ -6283,6 +6293,7 @@ function _refreshBrowserContent() {
 
     FilterLabels.slice(PageStart, PageEnd).forEach(function(RawLabel, i) {
       var canonicalKey = FilterKeys[PageStart + i];
+      if (userConfirmedWorkingConflicts.has(canonicalKey)) return;
       var isBlocked    = !touchEnabled && dismissedConflicts.has(canonicalKey);
        var Parsed       = _BuildBrowserConflictLabel(RawLabel);
       var li = document.createElement('li');
@@ -7266,6 +7277,24 @@ function _saveBlurDiagnosticConflicts() {
   } catch(e) {}
 }
 
+var userConfirmedWorkingConflicts = new Set();
+(function() {
+  try {
+    var SavedConfirmed = localStorage.getItem('kw_confirmed_working');
+    if (SavedConfirmed) {
+      JSON.parse(SavedConfirmed).forEach(function(Key) {
+        userConfirmedWorkingConflicts.add(Key);
+      });
+    }
+  } catch(e) {}
+})();
+
+function _saveUserConfirmedWorkingConflicts() {
+  try {
+    localStorage.setItem('kw_confirmed_working', JSON.stringify(Array.from(userConfirmedWorkingConflicts)));
+  } catch(e) {}
+}
+
 var conflictsKbLighting = (function () {
   var _active    = false;
   // All browser codes currently held down, tracked as a Set
@@ -7556,6 +7585,8 @@ var BrowserCodeToTokenMap = {
     dismissedConflicts.delete(NormalisedChord);
     kbKeyOverrides.delete(NormalisedChord);
     _saveKbKeyOverrides();
+    userConfirmedWorkingConflicts.add(NormalisedChord);
+    _saveUserConfirmedWorkingConflicts();
     var ChordToExpunge = NormalisedChord;
     var NeedsExpunge = blurDiagnosticConflicts.has(ChordToExpunge);
 

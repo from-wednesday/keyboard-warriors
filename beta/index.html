@@ -7577,65 +7577,68 @@ function _allConflictTokensNormalised() {
   // follows automatically from the next _applyAllKeyColours call.
 
   function _unblockFiredChordIfDismissed(NonModifierBrowserCode) {
-    var KeyToken = _browserCodeToToken(NonModifierBrowserCode);
-    if (!KeyToken) return;
-    var ChordToken = _buildChordToken(KeyToken);
-    var NormalisedChord = NormaliseToken(ChordToken);
+  var KeyToken = _browserCodeToToken(NonModifierBrowserCode);
+  if (!KeyToken) return;
+  var ChordToken = _buildChordToken(KeyToken);
+  var NormalisedChord = NormaliseToken(ChordToken);
 
-    if (!dismissedConflicts.has(NormalisedChord)) return;
+  // Already confirmed working -- nothing to do
+  if (userConfirmedWorkingConflicts.has(NormalisedChord)) return;
 
-    // Unblock it and purge from all persistent stores
-    dismissedConflicts.delete(NormalisedChord);
-    kbKeyOverrides.delete(NormalisedChord);
-    _saveKbKeyOverrides();
-    userConfirmedWorkingConflicts.add(NormalisedChord);
-    _saveUserConfirmedWorkingConflicts();
-    var ChordToExpunge = NormalisedChord;
-    var NeedsExpunge = blurDiagnosticConflicts.has(ChordToExpunge);
+  // Check whether this chord matches any known conflict entry (blocked or sus)
+  var NormalisedConflictList = _allConflictTokensNormalised();
+  var IsKnownConflict = NormalisedConflictList.indexOf(NormalisedChord) !== -1;
+  if (!IsKnownConflict) return;
 
-    // Demote from sus to confirmed-available in the cache
-    if (_conflictsCache) {
-      var AllCacheEntries = (_conflictsCache.os_conflicts || []).concat(
-        Object.keys(_conflictsCache.browser_conflicts || {}).reduce(function (Acc, BrowserName) {
-          return Acc.concat(_conflictsCache.browser_conflicts[BrowserName]);
-        }, [])
-      );
-      AllCacheEntries.forEach(function (CacheEntry) {
-        if (_conflictBadToToken(CacheEntry.bad) === NormalisedChord) {
-          CacheEntry.sus = false;
-        }
-      });
-    }
+  var NeedsExpunge = blurDiagnosticConflicts.has(NormalisedChord);
 
-    _saveCustomDismissedConflicts();
-    if (gameState !== 'playing' && gameState !== 'paused' && gameState !== 'readyToUnpause') {
-      questionPool = shuffleArray(buildPool());
-    }
+  // Remove from all conflict tracking
+  dismissedConflicts.delete(NormalisedChord);
+  kbKeyOverrides.delete(NormalisedChord);
+  _saveKbKeyOverrides();
+  userConfirmedWorkingConflicts.add(NormalisedChord);
+  _saveUserConfirmedWorkingConflicts();
+  _saveCustomDismissedConflicts();
 
-    // Immediately update any visible list items matching this chord so the
-    // radio flips to unchecked and the strikethrough clears in sync with the
-    // key lighting — without waiting for the full _refreshBrowserContent rebuild.
-    document.querySelectorAll(
-      '#browserCompatList li[data-conflict-key], #cfFoundList li[data-conflict-key]'
-    ).forEach(function (ListItem) {
-      if (NormaliseToken(ListItem.dataset.conflictKey || '') !== NormalisedChord) return;
-      var Radio = ListItem.querySelector('.modal-radio');
-      if (Radio) Radio.classList.remove('on');
-      ListItem.classList.remove('conflict-dismissed');
-    });
-
-    _syncConflictFilterPillStyles();
-    setTimeout(function () {
-      if (NeedsExpunge) {
-        blurDiagnosticConflicts.delete(ChordToExpunge);
-        _saveBlurDiagnosticConflicts();
+  // Demote sus flag in cache so it's treated as confirmed-available
+  if (_conflictsCache) {
+    var AllCacheEntries = (_conflictsCache.os_conflicts || []).concat(
+      Object.keys(_conflictsCache.browser_conflicts || {}).reduce(function(Acc, BrowserName) {
+        return Acc.concat(_conflictsCache.browser_conflicts[BrowserName]);
+      }, [])
+    );
+    AllCacheEntries.forEach(function(CacheEntry) {
+      if (_conflictBadToToken(CacheEntry.bad) === NormalisedChord) {
+        CacheEntry.sus = false;
       }
-      _refreshBrowserContent();
-      conflictsKbLighting.refresh();
-      _flashConflictListChipsGreen(ChordToExpunge);
-    }, 1000);
-    showToast('Shortcut working \u2014 unblocked');
+    });
   }
+
+  if (gameState !== 'playing' && gameState !== 'paused' && gameState !== 'readyToUnpause') {
+    questionPool = shuffleArray(buildPool());
+  }
+
+  document.querySelectorAll(
+    '#browserCompatList li[data-conflict-key], #cfFoundList li[data-conflict-key]'
+  ).forEach(function(ListItem) {
+    if (NormaliseToken(ListItem.dataset.conflictKey || '') !== NormalisedChord) return;
+    var Radio = ListItem.querySelector('.modal-radio');
+    if (Radio) Radio.classList.remove('on');
+    ListItem.classList.remove('conflict-dismissed');
+  });
+
+  _syncConflictFilterPillStyles();
+  setTimeout(function() {
+    if (NeedsExpunge) {
+      blurDiagnosticConflicts.delete(NormalisedChord);
+      _saveBlurDiagnosticConflicts();
+    }
+    _refreshBrowserContent();
+    conflictsKbLighting.refresh();
+    _flashConflictListChipsGreen(NormalisedChord);
+  }, 1000);
+  showToast('Shortcut working \u2014 unblocked');
+}
 
   // ── Conflict list chip flash ──────────────────────────────────────────────
   // When a chord that was orange (blocked) or yellow (sus/uncertain) is

@@ -6033,6 +6033,8 @@ function _setConflictBlocked(canonicalKey, blocked, liEl) {
     dismissedConflicts.add(canonicalKey);
   } else {
     dismissedConflicts.delete(canonicalKey);
+    kbKeyOverrides.delete(canonicalKey);
+    _saveKbKeyOverrides();
     // Also remove from blur diagnostic store if present, so the user found
     // tab does not re-list it after being toggled off.
     if (blurDiagnosticConflicts.has(canonicalKey)) {
@@ -7550,8 +7552,10 @@ var BrowserCodeToTokenMap = {
 
     if (!dismissedConflicts.has(NormalisedChord)) return;
 
-    // Unblock it
+    // Unblock it and purge from persistent key overrides
     dismissedConflicts.delete(NormalisedChord);
+    kbKeyOverrides.delete(NormalisedChord);
+    _saveKbKeyOverrides();
 
     // Demote from sus to confirmed-available in the cache
     if (_conflictsCache) {

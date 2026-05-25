@@ -6132,21 +6132,32 @@ function _hasconflictsOverrides() {
 }
 
 function _clearconflictsOverrides() {
-  // Remove all diagnostic-added entries
-  var DefaultBrowserKeys = new Set(getBrowserConflicts().keys);
-  var KeysToRemove = [];
-  dismissedConflicts.forEach(function(Key) {
-    if (!DefaultBrowserKeys.has(Key)) KeysToRemove.push(Key);
+  var ConflictData = getBrowserConflicts();
+
+  // Reset dismissed conflicts to factory state:
+  // block definite conflicts, leave sus entries unblocked
+  dismissedConflicts.clear();
+  ConflictData.keys.forEach(function(Key) {
+    if (!ConflictData.susKeys.has(Key)) dismissedConflicts.add(Key);
   });
-  KeysToRemove.forEach(function(Key) { dismissedConflicts.delete(Key); });
-  // Re-block all standard browser conflicts
-  DefaultBrowserKeys.forEach(function(Key) { dismissedConflicts.add(Key); });
   _saveCustomDismissedConflicts();
-  // Clear all blur diagnostic conflicts
+
+  // Clear all user-found (blur diagnostic) conflicts
   blurDiagnosticConflicts.clear();
   _saveBlurDiagnosticConflicts();
+
+  // Clear confirmed-working overrides
+  userConfirmedWorkingConflicts.clear();
+  _saveUserConfirmedWorkingConflicts();
+
+  // Clear per-key keyboard overrides and restore baseline from current keyboard size
+  kbKeyOverrides.clear();
+  _saveKbKeyOverrides();
+  _syncExtendedKeysToBaseline(hasFullKeyboard);
+
   questionPool = shuffleArray(buildPool());
   _refreshBrowserContent();
+  conflictsKbLighting.refresh();
 }
 
 // ── Conflict source filter pill ───────────────────────────────────────────────

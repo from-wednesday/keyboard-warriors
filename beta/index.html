@@ -7556,10 +7556,8 @@ var BrowserCodeToTokenMap = {
     dismissedConflicts.delete(NormalisedChord);
     kbKeyOverrides.delete(NormalisedChord);
     _saveKbKeyOverrides();
-    if (blurDiagnosticConflicts.has(NormalisedChord)) {
-      blurDiagnosticConflicts.delete(NormalisedChord);
-      _saveBlurDiagnosticConflicts();
-    }
+    var ChordToExpunge = NormalisedChord;
+    var NeedsExpunge = blurDiagnosticConflicts.has(ChordToExpunge);
 
     // Demote from sus to confirmed-available in the cache
     if (_conflictsCache) {
@@ -7594,12 +7592,14 @@ var BrowserCodeToTokenMap = {
 
     _syncConflictFilterPillStyles();
     setTimeout(function () {
+      if (NeedsExpunge) {
+        blurDiagnosticConflicts.delete(ChordToExpunge);
+        _saveBlurDiagnosticConflicts();
+      }
       _refreshBrowserContent();
       conflictsKbLighting.refresh();
-      // Flash chips green on the freshly rebuilt list items so the visual
-      // confirmation is in sync with the resting-available (green) key state.
-      _flashConflictListChipsGreen(NormalisedChord);
-    }, 50);
+      _flashConflictListChipsGreen(ChordToExpunge);
+    }, 1000);
     showToast('Shortcut working \u2014 unblocked');
   }
 

@@ -6041,18 +6041,14 @@ function _setConflictBlocked(canonicalKey, blocked, liEl) {
     kbKeyOverrides.delete(canonicalKey);
     _saveKbKeyOverrides();
     // Mark as manually unblocked (uncertain/yellow) until confirmed working.
-    // Must happen before blurDiagnosticConflicts.delete so User Found entries
-    // are still recognised as known conflicts at this point.
     if (!userConfirmedWorkingConflicts.has(canonicalKey)) {
       userManuallyUnblockedConflicts.add(canonicalKey);
       _saveUserManuallyUnblockedConflicts();
     }
-    // Remove from blur diagnostic store if present, so the user found
-    // tab does not re-list it after being toggled off.
-    if (blurDiagnosticConflicts.has(canonicalKey)) {
-      blurDiagnosticConflicts.delete(canonicalKey);
-      _saveBlurDiagnosticConflicts();
-    }
+    // Do NOT remove from blurDiagnosticConflicts here — it must stay so
+    // _allConflictTokensNormalised can still find it and classify it as
+    // yellow (sus) rather than green (available). It is only removed once
+    // the user successfully presses the shortcut (confirmed working).
   }
 
 

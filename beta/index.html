@@ -6441,8 +6441,7 @@ PagerEl.appendChild(PaginationWrap);
         li.appendChild(_makeConflictRadio(BlockedKey));
         var label = document.createElement('span');
         label.className = 'conflict-label';
-        var ParsedDiagnosticLabel = _BuildBrowserConflictLabel(BlockedKey);
-        label.appendChild(_renderKeyChips(ParsedDiagnosticLabel.displayShortcut));
+        label.appendChild(BuildShortcutKeyChips(BlockedKey, false));
         li.appendChild(label);
         li.addEventListener('click', function(e) {
           if (e.target.closest('.modal-radio')) return;

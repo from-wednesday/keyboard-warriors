@@ -7390,18 +7390,21 @@ var BrowserCodeToTokenMap = {
 
   // Returns all known conflict tokens (both blocked and sus) plus any blur
   // diagnostic entries, as normalised strings for matching.
-  function _allConflictTokensNormalised() {
-    var ConflictData = getBrowserConflicts();
-    var AllTokens = (ConflictData.keys || []).slice();
-    // Add blur diagnostic entries that are not already in the browser/OS list
-    var BrowserSet = new Set(AllTokens);
-    blurDiagnosticConflicts.forEach(function(Token) {
-      if (!BrowserSet.has(Token)) AllTokens.push(Token);
-    });
-    return AllTokens.map(function(RawToken) {
+function _allConflictTokensNormalised() {
+  var ConflictData = getBrowserConflicts();
+  var AllTokens = (ConflictData.keys || []).slice();
+  var BrowserSet = new Set(AllTokens);
+  blurDiagnosticConflicts.forEach(function(Token) {
+    if (!BrowserSet.has(Token)) AllTokens.push(Token);
+  });
+  return AllTokens
+    .filter(function(RawToken) {
+      return !userConfirmedWorkingConflicts.has(NormaliseToken(RawToken));
+    })
+    .map(function(RawToken) {
       return NormaliseToken(RawToken);
     });
-  }
+}
 
   // Checks whether the given held modifiers plus candidate key satisfy all
   // requirements of any known conflict entry. Extra held modifiers are ignored,

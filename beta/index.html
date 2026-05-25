@@ -6034,22 +6034,27 @@ function _setConflictBlocked(canonicalKey, blocked, liEl) {
     // No longer manually unblocked — remove from uncertain set
     userManuallyUnblockedConflicts.delete(canonicalKey);
     _saveUserManuallyUnblockedConflicts();
-  } else {
+    console.log('[conflict] blocked:', canonicalKey, 'remaining uncertain:', Array.from(userManuallyUnblockedConflicts));
+
+    } else {
     dismissedConflicts.delete(canonicalKey);
     kbKeyOverrides.delete(canonicalKey);
     _saveKbKeyOverrides();
-    // Also remove from blur diagnostic store if present, so the user found
+    // Mark as manually unblocked (uncertain/yellow) until confirmed working.
+    // Must happen before blurDiagnosticConflicts.delete so User Found entries
+    // are still recognised as known conflicts at this point.
+    if (!userConfirmedWorkingConflicts.has(canonicalKey)) {
+      userManuallyUnblockedConflicts.add(canonicalKey);
+      _saveUserManuallyUnblockedConflicts();
+    }
+    // Remove from blur diagnostic store if present, so the user found
     // tab does not re-list it after being toggled off.
     if (blurDiagnosticConflicts.has(canonicalKey)) {
       blurDiagnosticConflicts.delete(canonicalKey);
       _saveBlurDiagnosticConflicts();
     }
-    // Mark as manually unblocked (uncertain/yellow) until confirmed working
-    if (!userConfirmedWorkingConflicts.has(canonicalKey)) {
-      userManuallyUnblockedConflicts.add(canonicalKey);
-      _saveUserManuallyUnblockedConflicts();
-    }
   }
+
 
   _saveCustomDismissedConflicts();
   if (gameState !== 'playing' && gameState !== 'paused' && gameState !== 'readyToUnpause') {
@@ -7423,13 +7428,11 @@ var BrowserCodeToTokenMap = {
 
   // Returns the sus status of a token using the live conflict data,
   // or true if the user manually unblocked a known conflict (uncertain state).
-   function _isSusToken(Token) {
-    var manuallyUnblocked = userManuallyUnblockedConflicts.has(Token);
-    if (manuallyUnblocked) return true;
+  function _isSusToken(Token) {
+    if (userManuallyUnblockedConflicts.has(Token)) return true;
     var ConflictData = getBrowserConflicts();
     return !!(ConflictData.susKeys && ConflictData.susKeys.has(Token));
   }
-
 
   // Returns all known conflict tokens (both blocked and sus) plus any blur
   // diagnostic entries, as normalised strings for matching.

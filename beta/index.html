@@ -6023,7 +6023,7 @@ function _detachconflictsPanelKeypressVerifier() {
 // Central toggle for blocked state — updates DOM, storage, pool, and toast.
 // toastMsg: pass null to suppress toast (used on initial render).
 function _setConflictBlocked(canonicalKey, blocked, liEl) {
-  if (blocked) {
+    if (blocked) {
     // If this is a sus key being manually blocked, demote it to confirmed
     // so the keyboard key turns orange instead of staying yellow.
     var d = getBrowserConflicts();
@@ -6031,6 +6031,9 @@ function _setConflictBlocked(canonicalKey, blocked, liEl) {
       conflictsKbLighting.markSusBlocked(canonicalKey);
     }
     dismissedConflicts.add(canonicalKey);
+    // No longer manually unblocked — remove from uncertain set
+    userManuallyUnblockedConflicts.delete(canonicalKey);
+    _saveUserManuallyUnblockedConflicts();
   } else {
     dismissedConflicts.delete(canonicalKey);
     kbKeyOverrides.delete(canonicalKey);
@@ -6041,7 +6044,16 @@ function _setConflictBlocked(canonicalKey, blocked, liEl) {
       blurDiagnosticConflicts.delete(canonicalKey);
       _saveBlurDiagnosticConflicts();
     }
+    // Mark as manually unblocked (uncertain/yellow) until confirmed working
+    var ConflictData = getBrowserConflicts();
+    var IsKnownConflict = ConflictData.keys.indexOf(canonicalKey) !== -1 ||
+                          blurDiagnosticConflicts.has(canonicalKey);
+    if (IsKnownConflict && !userConfirmedWorkingConflicts.has(canonicalKey)) {
+      userManuallyUnblockedConflicts.add(canonicalKey);
+      _saveUserManuallyUnblockedConflicts();
+    }
   }
+
   _saveCustomDismissedConflicts();
   if (gameState !== 'playing' && gameState !== 'paused' && gameState !== 'readyToUnpause') {
     questionPool = shuffleArray(buildPool());
@@ -6150,6 +6162,9 @@ function _clearconflictsOverrides() {
   userConfirmedWorkingConflicts.clear();
   _saveUserConfirmedWorkingConflicts();
 
+  // Clear manually-unblocked uncertain state
+  userManuallyUnblockedConflicts.clear();
+  _saveUserManuallyUnblockedConflicts();
   // Clear per-key keyboard overrides and restore baseline from current keyboard size
   kbKeyOverrides.clear();
   _saveKbKeyOverrides();
@@ -7269,8 +7284,25 @@ var dismissedConflicts = new Set();
   } catch(e) {}
 })();
 
-var blurDiagnosticConflicts = new Set();
+var userManuallyUnblockedConflicts = new Set();
 (function() {
+  try {
+    var SavedManualUnblocked = localStorage.getItem('kw_manual_unblocked');
+    if (SavedManualUnblocked) {
+      JSON.parse(SavedManualUnblocked).forEach(function(Key) {
+        userManuallyUnblockedConflicts.add(Key);
+      });
+    }
+  } catch(e) {}
+})();
+
+function _saveUserManuallyUnblockedConflicts() {
+  try {
+    localStorage.setItem('kw_manual_unblocked', JSON.stringify(Array.from(userManuallyUnblockedConflicts)));
+  } catch(e) {}
+}
+
+var blurDiagnosticConflicts = new Set();(function() {
   try {
     var SavedBlurConflicts = localStorage.getItem('kw_blur_conflicts');
     if (SavedBlurConflicts) {
@@ -7392,8 +7424,10 @@ var BrowserCodeToTokenMap = {
     return HeldModifierTokens.join('+');
   }
 
-  // Returns the sus status of a token using the live conflict data.
+  // Returns the sus status of a token using the live conflict data,
+  // or true if the user manually unblocked a known conflict (uncertain state).
   function _isSusToken(Token) {
+    if (userManuallyUnblockedConflicts.has(Token)) return true;
     var ConflictData = getBrowserConflicts();
     return !!(ConflictData.susKeys && ConflictData.susKeys.has(Token));
   }
@@ -7607,10 +7641,11 @@ function _allConflictTokensNormalised() {
   dismissedConflicts.delete(NormalisedChord);
   kbKeyOverrides.delete(NormalisedChord);
   _saveKbKeyOverrides();
+  userManuallyUnblockedConflicts.delete(NormalisedChord);
+  _saveUserManuallyUnblockedConflicts();
   userConfirmedWorkingConflicts.add(NormalisedChord);
   _saveUserConfirmedWorkingConflicts();
   _saveCustomDismissedConflicts();
-
   // Demote sus flag immediately so lighting reclassifies this key as available
   if (_conflictsCache) {
     var AllCacheEntries = (_conflictsCache.os_conflicts || []).concat(
@@ -8844,6 +8879,8 @@ function confirmStartOverYes() {
       try { localStorage.removeItem('kw_coach_memory'); } catch(e) {}
       try { localStorage.removeItem('kw_dismissed_conflicts'); } catch(e) {}
       try { localStorage.removeItem('kw_blur_conflicts'); } catch(e) {}
+      try { localStorage.removeItem('kw_manual_unblocked'); } catch(e) {}
+      userManuallyUnblockedConflicts.clear();
       try { localStorage.removeItem('kw_has_keyboard'); }        catch(e) {}
       try { sessionStorage.removeItem('kw_welcomed'); }   catch(e) {}
       try {

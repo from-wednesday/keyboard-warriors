@@ -5295,12 +5295,36 @@ function _spPageEl(page) {
 function _syncPhoneToolbarVisibility() {
   var ToolbarElement = document.getElementById('phoneToolbar');
   if (!ToolbarElement) return;
-  if (!ForceNoKeyboard) { ToolbarElement.style.display = 'none'; return; }
-  // Hide desktop-only elements that have no role on phone
-  var DiffIconWrap = document.getElementById('diffIconWrap');
-  if (DiffIconWrap) DiffIconWrap.style.display = 'none';
-  var IsActivePlay = (gameState === 'playing' || gameState === 'counting');
-  ToolbarElement.style.display = IsActivePlay ? 'none' : 'flex';
+  if (!ForceNoKeyboard) { ToolbarElement.style.display = 'none'; _hideMaintenanceMessage(); return; }
+  // Small screen / no-keyboard path is under maintenance — show message instead
+  ToolbarElement.style.display = 'none';
+  _showMaintenanceMessage();
+}
+
+function _showMaintenanceMessage() {
+  var ExistingMessage = document.getElementById('kwMaintenanceBanner');
+  if (ExistingMessage) return;
+  var Banner = document.createElement('div');
+  Banner.id = 'kwMaintenanceBanner';
+  Banner.style.cssText = [
+    'position:fixed',
+    'inset:0',
+    'display:flex',
+    'align-items:center',
+    'justify-content:center',
+    'background:white',
+    'z-index:9000',
+    'padding:32px',
+    'box-sizing:border-box',
+    'text-align:center',
+  ].join(';');
+  Banner.innerHTML = '<p style="font-family:\'Lato\',system-ui,sans-serif;font-size:15px;color:#6b7280;line-height:1.6;max-width:280px;margin:0;">Sorry. The small screen experience is currently under maintenance. Returning soon.</p>';
+  document.body.appendChild(Banner);
+}
+
+function _hideMaintenanceMessage() {
+  var Banner = document.getElementById('kwMaintenanceBanner');
+  if (Banner) Banner.parentNode.removeChild(Banner);
 }
 
 function _syncPhoneToolbarActiveState(ActivePage) {

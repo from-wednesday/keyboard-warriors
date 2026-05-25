@@ -7472,12 +7472,15 @@ function _allConflictTokensNormalised() {
       // - Non-sus entry = always orange regardless of dismissed state
       // - User found (blur diagnostic) entry = always orange
       var IsBlurEntry = blurDiagnosticConflicts.has(ConflictEntry);
-      var IsSus = !IsBlurEntry && _isSusToken(ConflictEntry);
+      var IsManuallyUnblocked = userManuallyUnblockedConflicts.has(ConflictEntry);
       var IsManuallyBlocked = dismissedConflicts.has(ConflictEntry);
-      if (!IsSus || IsManuallyBlocked || IsBlurEntry) {
+      var IsSus = IsManuallyUnblocked || (!IsBlurEntry && _isSusToken(ConflictEntry));
+      if (IsManuallyUnblocked) {
+        if (BestMatch !== 'blocked') BestMatch = 'sus';
+      } else if (!IsSus || IsManuallyBlocked || IsBlurEntry) {
         BestMatch = 'blocked';
-      } else if (BestMatch !== 'blocked') {
-        BestMatch = 'sus';
+      } else {
+        if (BestMatch !== 'blocked') BestMatch = 'sus';
       }
     });
     return BestMatch;

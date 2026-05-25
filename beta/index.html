@@ -7478,9 +7478,13 @@ function _allConflictTokensNormalised() {
     });
     if (ModifierToken) HeldModifierTokens.add(ModifierToken);
 
-    // Modifier keys have no key token of their own -- nothing to match against
-    // a dismissed entry's required key, so they are always available.
-    if (ModifierToken !== null) return 'available';
+      // Check if this modifier is itself a bare conflict (e.g. Option alone)
+    if (ModifierToken !== null) {
+      var BareModifierMatch = _findSubsetMatch(HeldModifierTokens, null);
+      if (BareModifierMatch === 'blocked') return 'blocked';
+      if (BareModifierMatch === 'sus')     return 'sus';
+      return 'available';
+    }
 
     var CandidateKeyToken = _browserCodeToToken(BrowserCode);
     if (!CandidateKeyToken) return 'available';
@@ -7588,8 +7592,8 @@ function _allConflictTokensNormalised() {
 
   function _unblockFiredChordIfDismissed(NonModifierBrowserCode) {
   var KeyToken = _browserCodeToToken(NonModifierBrowserCode);
-  if (!KeyToken) return;
-  var ChordToken = _buildChordToken(KeyToken);
+  var ChordToken = KeyToken ? _buildChordToken(KeyToken) : _buildChordToken(null);
+  if (!ChordToken) return;
   var NormalisedChord = NormaliseToken(ChordToken);
 
   if (userConfirmedWorkingConflicts.has(NormalisedChord)) return;
@@ -7702,9 +7706,13 @@ function _allConflictTokensNormalised() {
 
     _heldKeys.add(Event.code);
 
-    if (_isModifierCode(Event.code)) {
-      // Modifier pressed: redraw all keys to reflect the new chord prefix state
+     if (_isModifierCode(Event.code)) {
       _applyAllKeyColours();
+      var ModifierClassification = _classifyKeyWithCurrentChord(Event.code);
+      if (ModifierClassification === 'blocked' || ModifierClassification === 'sus') {
+        _applyKeyPressedColour(Event.code);
+      }
+      _unblockFiredChordIfDismissed(Event.code);
       return;
     }
 

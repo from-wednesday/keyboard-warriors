@@ -14122,9 +14122,6 @@ function skillsetPillClick(ClickEvent) {
 function _openSkillsetPill() {
   skillsetPillOpen = true;
   _buildSkillsetPill();
-  if (gameState === 'welcome' && !_welcomeIsReturning) {
-    openSettings('panelDifficultySettings');
-  }
   setTimeout(function() {
     document.addEventListener('click', function handler(e) {
     var pill = document.getElementById('skillsetPill');
@@ -14425,6 +14422,10 @@ function _buildAppSelectorSkillsetPill() {
   if (ExistingDrop) ExistingDrop.remove();
 
   if (AppSelectorSkillsetDropIsOpen) {
+    // Switch the welcome panel to Difficulty Settings now that the advanced picker is open
+    if (gameState === 'welcome' && !_welcomeIsReturning) {
+      openSettings('panelDifficultySettings');
+    }
     var Drop = document.createElement('div');
     Drop.id = 'appSelectorSkillsetDrop';
     var PillRect   = PillElement.getBoundingClientRect();
@@ -14573,7 +14574,6 @@ function _showAppSelectorSkillsetPill() {
     });
   }
   // Suppress title and tagline while skillset picker is open
-  titleEl.classList.add('app-pill-open');
   // Update the 'more' button label to 'less' in the wrench picker
   var SkillsetsBtn = appPillEl.querySelector('.app-option-skillsets span');
   if (SkillsetsBtn) SkillsetsBtn.textContent = 'less';

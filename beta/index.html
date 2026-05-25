@@ -14598,7 +14598,8 @@ var IsBetaBuild = document.title !== 'Keyboard Warriors';
       // Hex indicator: filled hexagon when already in pill, empty hexagon when available to add
       var DotColumn = document.createElement('span');
       DotColumn.style.cssText = 'flex-shrink:0;width:12px;display:flex;align-items:center;justify-content:center;margin-left:0px;margin-right:3px;';
-      DotColumn.appendChild(_MakeWrenchPickerRadioDot(InPill));
+      var RadioDot = _MakeWrenchPickerRadioDot(InPill);
+      DotColumn.appendChild(RadioDot);
 
       var LabelColumn = document.createElement('span');
       LabelColumn.style.color          = InPill ? '#d1d5db' : (IsBetaApp ? '#9ca3af' : '#374151');
@@ -14622,7 +14623,7 @@ var IsBetaBuild = document.title !== 'Keyboard Warriors';
 
       AppRow.addEventListener('click', function(ClickEvent) {
         ClickEvent.stopPropagation();
-        _ToggleCustomSetApp(AppEntry.label, DotColumn, InPill);
+        _ToggleCustomSetApp(AppEntry.label, RadioDot, InPill);
       });
 
       ColumnElement.appendChild(AppRow);

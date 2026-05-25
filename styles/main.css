@@ -94,14 +94,26 @@ body {
 }
 #mainBtn:focus, #helpBtn:focus { outline: none; box-shadow: none; }
 
-/* Curly bracket shown during binary confirmation states for destructive actions */
+/* binary confirmation states for destructive actions */
+.confirmButtonsWrap {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  min-height: 70px;
+}
+
+.confirmButtons {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
 #confirmBracket {
-  position: absolute;
-  left: 136px;
-  top: 50%;
-  transform: translateY(-50%);
   width: 16px;
   height: 70px;
+  margin-top: 3px;
+  flex-shrink: 0;
   opacity: 0;
   transition: opacity 0.2s ease;
   pointer-events: none;
@@ -517,12 +529,12 @@ body {
   transform: translateY(-22px);
 }
 
-/* Extended key ghost pill — appears in statsRow when a key not on the
+/* Extended key ghost chip — appears in statsRow when a key not on the
    graphical keyboard is held. Styled to match the current keyboard mode. */
-/* Extended key chip pill: centred in #statsRow, shows chip-format feedback
+/* Extended key chip : centred in #statsRow, shows chip-format feedback
    for keys not present on the graphical keyboard (Home, End, PageUp etc.).
    Background and colour are applied directly to the chip children by JS. */
-#extKeyPill {
+#extKeyChip {
   position: absolute;
   left: 50%;
   top: 50%;
@@ -907,8 +919,8 @@ body.kb-at-edge #keyboardPanel #kb-shadow {
 
 @keyframes btnPulse {
   0%   { transform: scale(1); }
-  35%  { transform: scale(1.13); }
-  65%  { transform: scale(1.07); }
+  35%  { transform: scale(1.08); }
+  65%  { transform: scale(1.04); }
   100% { transform: scale(1); }
 }
 #mainBtn.pulse {
@@ -919,6 +931,31 @@ body.kb-at-edge #keyboardPanel #kb-shadow {
 }
 .app-option.pulse {
   animation: btnPulse 0.45s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+}
+
+@keyframes pillGlow {
+  0%   { transform: scale(1);    box-shadow: 0 0 0 0   rgba(156,163,175,0); }
+  40%  { transform: scale(1.08); box-shadow: 0 0 0 4px rgba(156,163,175,0.35); }
+  100% { transform: scale(1);    box-shadow: 0 0 0 0   rgba(156,163,175,0); }
+}
+#appPill.pulse-glow {
+  animation: pillGlow 0.55s ease-out;
+}
+/* Generic versions — apply to any element */
+.pulse {
+  animation: btnPulse 0.45s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+}
+.pulse-glow {
+  animation: pillGlow 0.55s ease-out;
+}
+@keyframes pillPop {
+  0%   { transform: scale(1);    box-shadow: 0 0 0 0   rgba(156,163,175,0); }
+  30%  { transform: scale(1.08); box-shadow: 0 0 0 4px rgba(156,163,175,0.35); }
+  65%  { transform: scale(1.04); box-shadow: 0 0 0 2px rgba(156,163,175,0.2); }
+  100% { transform: scale(1);    box-shadow: 0 0 0 0   rgba(156,163,175,0); }
+}
+.pulse-pop {
+  animation: pillPop 0.45s cubic-bezier(0.25, 0.46, 0.45, 0.94) !important;
 }
 
 #kbToast {
@@ -1438,16 +1475,79 @@ li.conflict-dismissed .conflict-desc {
 .key.lit-orange-up .util-sym-only, .key.lit-orange-down .util-sym-only,
 .key.lit-orange-up .key-glyph-sym, .key.lit-orange-down .key-glyph-sym { color: white !important; }
 
-/* ── CapsLock status indicator ─────────────────────────────────────────────
-   Neutral soft yellow: not green (not correct) and not orange (not wrong).
+/* ── YELLOW status indicator ─────────────────────────────────────────────
+   Used for CapsLock and SUS conflicted keys. Neutral soft yellow: not green (not correct) and not orange (not wrong).
    Immune to the normal lighting lifecycle — cleared only by our own logic. */
-.key.lit-caps-active {
+.key.lit-yellow-up {
   background: #fef08a !important;
   box-shadow: 0 1px 0 rgba(180, 160, 0, 0.25) !important;
 }
-.key.lit-caps-active .letter-lbl,
-.key.lit-caps-active .util-lbl,
-.key.lit-caps-active .util-sym-only { color: #7a6a00 !important; }
+.key.lit-yellow-up .letter-lbl,
+.key.lit-yellow-up .util-lbl,
+.key.lit-yellow-up .util-sym-only { color: #7a6a00 !important; }
+
+
+/* ── RESTING STATES for conflictsKbLighting panel ───────────────────────────
+   Half-strength colours. Keys sit here at rest; full-strength lit classes
+   layer on top when a key is pressed, then fade back to these on release.
+   ─────────────────────────────────────────────────────────────────────────── */
+
+.resting-available {
+  background: rgba(195, 229, 211, 0.9) !important;
+  box-shadow: inset 0 0 0 1px rgba(90, 182, 133, 0.9) !important;
+}
+.resting-available .letter-lbl,
+.resting-available .sym-main,
+.resting-available .sym-sub,
+.resting-available .util-lbl,
+.resting-available .fn-lbl,
+.resting-available .mod-sym,
+.resting-available .mod-sym-only,
+.resting-available .mod-word,
+.resting-available .util-sym-only,
+.resting-available .key-glyph-sym { color: #065f46 !important; }
+
+.resting-sus {
+  background: rgba(251, 240, 152, 0.9) !important;
+  box-shadow: inset 0 0 0 1px rgba(211, 202, 127, 0.9) !important;
+}
+.resting-sus .letter-lbl,
+.resting-sus .sym-main,
+.resting-sus .sym-sub,
+.resting-sus .util-lbl,
+.resting-sus .fn-lbl,
+.resting-sus .mod-sym,
+.resting-sus .mod-sym-only,
+.resting-sus .mod-word,
+.resting-sus .util-sym-only,
+.resting-sus .key-glyph-sym { color: #7a6a00 !important; }
+
+.resting-blocked {
+  background: rgba(247, 220, 200, 0.9) !important;
+  box-shadow: inset 0 0 0 1px rgba(233, 159, 103, 0.90) !important;
+}
+.resting-blocked .letter-lbl,
+.resting-blocked .sym-main,
+.resting-blocked .sym-sub,
+.resting-blocked .util-lbl,
+.resting-blocked .fn-lbl,
+.resting-blocked .mod-sym,
+.resting-blocked .mod-sym-only,
+.resting-blocked .mod-word,
+.resting-blocked .util-sym-only,
+.resting-blocked .key-glyph-sym { color: #9a3412 !important; }
+
+
+/* ── Fade transition back to resting state ───────────────────────────────────
+   When conflictsKbLighting removes the full-strength lit class after a keyup,
+   the resting class is reinstated and this transition carries the fade.
+   Scoped via a parent class so it does not affect normal gameplay fading.
+   ─────────────────────────────────────────────────────────────────────────── */
+
+.conflicts-panel-active .key.lit-fading {
+  transition: background 0.8s ease, box-shadow 0.8s ease !important;
+}
+
 
 /* Fade-out transition — applied just before removing lit class */
 .key.lit-fading {
@@ -1617,6 +1717,7 @@ li.conflict-dismissed .conflict-desc {
   position: relative;
   overflow: visible;
   z-index: 500;
+  position: relative; 
 }
 #appSelectorLabel {
   font-family: 'Lato', system-ui, sans-serif;
@@ -1645,7 +1746,7 @@ li.conflict-dismissed .conflict-desc {
   transition: border-color 0.15s, background-color 0.15s;
 }
 .app-option-wrench {
-  border-top: 1px solid rgba(0,0,0,0.05);
+  border-top: 1px solid rgba(0,0,0,0.06);
   opacity: 0.3;
   height: 28px;
   align-items: center;
@@ -1656,6 +1757,25 @@ li.conflict-dismissed .conflict-desc {
 #appPill.open {
   /* Height driven by JS spring animator -- no CSS override needed */
 }
+.app-option-wrench-bottom-row {
+  display: flex;
+  border-top: 1px solid rgba(0,0,0,0.06);
+}
+.app-option-wrench-bottom-row .app-option-wrench {
+  flex: 1;
+  border-top: 1px solid rgba(0,0,0,0.06);
+  opacity: 1;
+}
+.app-option-skillsets {
+  flex: 1;
+  border-left: 2px solid rgba(0,0,0,0.06);
+  justify-content: flex-start;
+  padding-left: 6px;
+  gap: 5px;
+  font-size: 11px;
+  border-top: 1px solid rgba(0,0,0,0.06);
+}
+
 .app-option-wrench-picker {
     height: 24px;
     padding: 4;
@@ -1932,22 +2052,22 @@ li.conflict-dismissed .conflict-desc {
 .sp-clear-label {
   margin-bottom: 6px !important;
 }
-.score-clear-pill {
+.segmented-pill {
   display: flex;
   width: 100%;
   border: 1.5px solid #d1d5db;
-  border-radius: 20px;
+  border-radius: 16px;
 }
-.score-clear-pill .score-pill-seg:first-child { border-radius: 18px 0 0 18px; }
-.score-clear-pill .score-pill-seg:last-child  { border-radius: 0 18px 18px 0; }
-.score-clear-pill .score-pill-seg:only-child  { border-radius: 18px; }
+.segmented-pill .segmented-pill-section:first-child { border-radius: 16px 0 0 16px; }
+.segmented-pill .segmented-pill-section:last-child  { border-radius: 0 16px 16px 0; }
+.segmented-pill .segmented-pill-section:only-child  { border-radius: 16px; }
 
-.score-pill-seg {
+.segmented-pill-section {
   display: flex;
   align-items: center;
   justify-content: center;
   min-height: 32px;
-  padding: 7px 0;
+  padding: 2px;
   font-family: 'Lato', system-ui, sans-serif;
   font-size: 12px;
   font-weight: 600;
@@ -1961,24 +2081,24 @@ li.conflict-dismissed .conflict-desc {
   transition: background 1.5s ease, color 1.5s ease, box-shadow 1.5s ease;
 }
 
-.score-pill-seg.pulse {
+.segmented-pill-section.pulse {
   animation: btnPulse 0.45s cubic-bezier(0.25, 0.46, 0.45, 0.94);
 }
-.score-pill-seg + .score-pill-seg {
+.segmented-pill-section + .segmented-pill-section {
   border-left: 1.5px solid #d1d5db;
 }
-.score-pill-quarter { flex: 1; }
-.score-pill-half    { flex: 2; }
-.score-pill-full    { flex: 1; width: 100%; }
-.score-pill-seg svg { pointer-events: none; stroke: #9ca3af; }
-.score-pill-seg.score-pill-active {
+.segmented-pill-quarter { flex: 1; }
+.segmented-pill-half    { flex: 2; }
+.segmented-pill-full    { flex: 1; width: 100%; }
+.segmented-pill-section svg { pointer-events: none; stroke: #9ca3af; }
+.segmented-pill-section.segmented-pill-active {
   background: white;
   color: #374151;
   box-shadow: none;
   transition: background 0s, color 0s, box-shadow 0s;
 }
-.score-pill-seg.score-pill-active svg { stroke: #374151;  }
-.score-pill-inactive {
+.segmented-pill-section.segmented-pill-active svg { stroke: #374151;  }
+.segmented-pill-inactive {
   background: #f0f4f8;
   cursor: default;
   color: #d1d5db;
@@ -1992,7 +2112,7 @@ li.conflict-dismissed .conflict-desc {
   pointer-events: auto;
   cursor: pointer;
 }
-.score-pill-inactive svg { stroke: #d1d5db; }
+.segmented-pill-inactive svg { stroke: #d1d5db; }
 .sp-clear-label-inactive {
   color: #d1d5db !important;
 }
@@ -2057,7 +2177,7 @@ li.conflict-dismissed .conflict-desc {
   100% { transform: scale(1); }
 }
 .diff-btn-text.diff-btn-label-pop,
-.score-pill-seg.diff-btn-label-pop,
+.segmented-pill-section.diff-btn-label-pop,
 .diff-slider-side-label.diff-btn-label-pop,
 .diff-knob-label.diff-btn-label-pop,
 .diff-advanced-footer.diff-btn-label-pop {
@@ -2703,6 +2823,7 @@ li.conflict-dismissed .conflict-desc {
 #diffIcon:hover { transform: scale(1.12); }
 #diffIcon #Needle {
   color: #9ca3af; transform-origin: 45px 50.9px; transform: rotate(-60deg);
+   transition: transform 0.35s cubic-bezier(0.34, 1.56, 0.64, 1);
 }
 
 /* ─── TOOLTIP ────────────────────────────────────────*/
@@ -2796,7 +2917,7 @@ body.returning-screen #diffIconWrap .icon-tip { display: none; }
 #kbIconWrap.sp-icon-active  #kbIcon      { color: #374151; }
 #brIconWrap.sp-icon-active  #browserIcon { color: #374151; }
 #diffIconWrap.sp-icon-active #diffIcon   { color: #374151; }
-#diffIconWrap.sp-icon-active #diffIcon .gauge-stroke { stroke: #374151; }
+#diffIconWrap.sp-icon-active #diffIcon .gauge-stroke { stroke: #374151; fill: none;}
 #diffIconWrap.sp-icon-active #diffIcon #Needle        { color: #374151; }
 /* ── Report Card panel ───────────────────────────── */
 
@@ -3209,6 +3330,7 @@ body.returning-screen #diffIconWrap .icon-tip { display: none; }
 #keyboardPanel.ghost-mode #kb-wall-bottom,
 #keyboardPanel.ghost-mode #kb-shadow,
 #keyboardPanel.ghost-mode #kb-base-edge { display: none; }
+
 /* Lit states remain fully visible in ghost mode */
 #keyboardPanel.ghost-mode .key.lit-green-up,
 #keyboardPanel.ghost-mode .key.lit-green-down {
@@ -3252,38 +3374,118 @@ body.returning-screen #diffIconWrap .icon-tip { display: none; }
   color: white !important;
 }
 
-/* Ghost mode: faint lock-key hint visible when keyboard is facing up.
-   Overrides the opacity:0 set by the ghost-mode block above. */
-#keyboardPanel.ghost-mode .key.lock-key.ghost-lock-visible .lock-svg {
-  opacity: 0.07;
+#keyboardPanel.conflicts-panel-active.ghost-mode {
+  background: transparent !important;
+  box-shadow: none !important;
 }
 
+#keyboardPanel.conflicts-panel-active.ghost-mode .key {
+  background: rgba(245, 245, 247, 0.5) !important;
+  box-shadow: inset 0 0 0 1px rgba(138, 144, 153, 0.3) !important;
+}
 
-/* ═══════════════════════════════════════════════════
-   MISC — Rules extracted from inline <style> tags
-   in the HTML body. Safe to apply globally because
-   both selectors are scoped to specific IDs.
-   ═══════════════════════════════════════════════════ */
+#keyboardPanel.conflicts-panel-active.ghost-mode .key .letter-lbl,
+#keyboardPanel.conflicts-panel-active.ghost-mode .key .sym-main,
+#keyboardPanel.conflicts-panel-active.ghost-mode .key .sym-sub,
+#keyboardPanel.conflicts-panel-active.ghost-mode .key .util-lbl,
+#keyboardPanel.conflicts-panel-active.ghost-mode .key .fn-lbl,
+#keyboardPanel.conflicts-panel-active.ghost-mode .key .mod-sym,
+#keyboardPanel.conflicts-panel-active.ghost-mode .key .mod-sym-only,
+#keyboardPanel.conflicts-panel-active.ghost-mode .key .mod-word,
+#keyboardPanel.conflicts-panel-active.ghost-mode .key .util-sym-only,
+#keyboardPanel.conflicts-panel-active.ghost-mode .key .key-glyph-sym,
+#keyboardPanel.conflicts-panel-active.ghost-mode .key .win-svg {
+  opacity: 1 !important;
+}
+
+#keyboardPanel.conflicts-panel-active.ghost-mode .key.resting-available {
+  background: rgba(195, 229, 211, 0.5) !important;
+  box-shadow: inset 0 0 0 1px rgba(175, 220, 135, 0.9) !important;
+}
+
+#keyboardPanel.conflicts-panel-active.ghost-mode .key.resting-sus {
+  background: rgba(238, 251, 152, 0.5) !important;
+  box-shadow: inset 0 0 0 1px rgba(207, 220, 135, 0.9) !important;
+}
+
+#keyboardPanel.conflicts-panel-active.ghost-mode .key.resting-blocked {
+  background: rgba(247, 220, 200, 0.5) !important;
+  box-shadow: inset 0 0 0 1px rgba(233, 159, 103, 0.90) !important;
+}
+
+#keyboardPanel.conflicts-panel-active.ghost-mode .key.lit-green-up {
+  background: #10b981 !important;
+  box-shadow: inset 0 1px 0 rgba(180,255,220,0.55), 0 1px 0 #059669, 0 0 8px rgba(16,185,129,0.5) !important;
+}
+
+#keyboardPanel.conflicts-panel-active.ghost-mode .key.lit-green-down {
+  background: #10b981 !important;
+  box-shadow: inset 0 0 0 1px #059669, 0 0 6px rgba(16,185,129,0.4) !important;
+}
+
+#keyboardPanel.conflicts-panel-active.ghost-mode .key.lit-orange-up {
+  background: #f97316 !important;
+  box-shadow: inset 0 1px 0 rgba(255,220,160,0.60), 0 1px 0 #c2410c, 0 0 8px rgba(249,115,22,0.5) !important;
+}
+
+#keyboardPanel.conflicts-panel-active.ghost-mode .key.lit-orange-down {
+  background: #f97316 !important;
+  box-shadow: inset 0 0 0 1px #c2410c, 0 0 6px rgba(249,115,22,0.4) !important;
+}
+
+#keyboardPanel.conflicts-panel-active.ghost-mode .key.lit-yellow-up {
+  background: #fef08a !important;
+  box-shadow: 0 1px 0 rgba(180,160,0,0.25) !important;
+}
 
 /* App pill open: fade the main title out of view */
   #title.app-pill-open {
   opacity: 0;
   transition: opacity 1s ease;
 }
+/* ══════════════════════════════════════
+   CUSTOMISE SKILLSET PANEL
+   Appears to the left of #appSelectorWrap
+   when the 'more' button in the wrench
+   picker is pressed.
+   Width = app pill (142px) × 5 = 710px.
+   The bracket and panel are positioned
+   absolutely relative to #appSelectorWrap
+   and grow leftward.
+══════════════════════════════════════ */
 
+#customiseSkillsetPanel {
+  display: none;
+  flex-direction: column;
+  min-width: 200px;
+  min-height: 27px;
+  max-height: 80vh;
+  overflow-y: auto;
+  background: white;
+  border: 1.5px solid #9ca3af;
+  border-radius: 10px;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.10);
+  box-sizing: border-box;
+  z-index: 500;
+  padding: 8px;
+  flex-shrink: 0;
+  transform-origin: right center;
+}
+
+#customiseSkillsetPanel.customise-skillset-panel-open {
+  display: flex;
+}
+
+#customiseSkillsetPanel.customise-skillset-panel-pop {
+  animation: pillPop 0.45s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+}
+
+#customiseSkillsetRightBracket.customise-skillset-bracket-visible {
+  display: block;
+  opacity: 1;
+}
 /* Pause-nudge SVG gauge strokes (was inline in SVG element) */.pn-stroke { fill:none; stroke:currentColor; stroke-width:2px; stroke-linecap:round; stroke-miterlimit:10; }
 
-/* ── Blur pause diagnostic panel ────────────────────────────────────────────
-   Hides both settings columns and shows the full-width diagnostic block.   */
-#panelPause.blur-pause-active.sp-active {
-  display: block;
-}
-#panelPause.blur-pause-active .sp-col {
-  display: none;
-}
-#panelPause.blur-pause-active #blurPauseDiagnostic {
-  display: block !important;
-}
 /* Hide the vertical column divider line on the blur-pause diagnostic screen */
 #panelPause.blur-pause-active.sp-active::after {
   display: none;
@@ -3300,12 +3502,6 @@ body.returning-screen #diffIconWrap .icon-tip { display: none; }
   color: #9ca3af;
 }
 
-/* Difficulty gauge icon (was inline <style> inside #diffIconWrap SVG) */
-#diffIcon .gauge-stroke { fill:none; stroke:currentColor; stroke-width:2px; stroke-linecap:round; stroke-miterlimit:10; }
-#diffIcon #Needle { color:#9ca3af; transform-origin:45px 50.9px; transition:transform 0.35s cubic-bezier(0.34,1.56,0.64,1); }
-#diffIcon #Needle path:first-of-type { fill: none; stroke: currentColor; stroke-width: 2px; stroke-linecap: round; stroke-miterlimit: 10; }
-#diffIcon #Needle path:last-of-type { fill: currentColor; }
-#diffIcon #Needle circle { fill: currentColor; }
 /* ── Blur pause diagnostic panel ────────────────────────────────────────────
    Overrides the two-column grid to show a single full-width column.        */
 #panelPause.blur-pause-active.sp-active {
@@ -3423,7 +3619,6 @@ body.returning-screen #diffIconWrap .icon-tip { display: none; }
   background: #6b7280;
   color: white;
 }
-.touch-modal-btn-secondary:active { background: #9ca3af; }
 .touch-modal-btn-secondary:active { background: #9ca3af; }
 
 /* ══════════════════════════════════════
@@ -3613,13 +3808,13 @@ body.returning-screen #diffIconWrap .icon-tip { display: none; }
   gap: 0;
 }
 
-/* All four segments share base sizing overrides on top of score-pill-seg */
+/* All four segments share base sizing overrides on top of segmented-pill-section */
 .conflict-filter-seg {
   flex: 0 0 56px;
   width: 56px;
   min-width: 0;
-  padding: 0 6px;
-  height: 27px;
+  padding: 0px;
+  height: 22px;
   font-size: 11px;
   box-sizing: border-box;
   display: flex;
@@ -3644,21 +3839,36 @@ body.returning-screen #diffIconWrap .icon-tip { display: none; }
 .conflict-filter-os .diff-btn-text {
   display: inline-flex;
   align-items: center;
-  gap: 3px;
+  gap: 2px;
   white-space: nowrap;
 }
-
+#cfBtnOs .diff-btn-text {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  white-space: nowrap;
+}
+#cfBtnOs .diff-btn-text svg {
+  display: inline;
+  vertical-align: middle;
+}
 /* Keyboard segment: SVG inherits button colour */
 .conflict-filter-keyboard svg {
   fill: currentColor;
 }
+/* Keyboard segment: no padding, SVG fills the pill height */
 #cfBtnKeyboard {
-  padding-left: 4px;
-  padding-right: 4px;
-}{
-  fill: currentColor;
+  padding: 0;
+  overflow: visible;
+  align-items: stretch;
+}
+#cfBtnKeyboard svg {
+  height: 40px;
+  width: auto;
+  display: block;
+  margin: auto;
 }
 
-/* Border radii — override score-clear-pill's child selectors */
+/* Border radii — override segmented-pill's child selectors */
 .conflict-filter-pill .conflict-filter-seg:first-child { border-radius: 18px 0 0 18px; }
 .conflict-filter-pill .conflict-filter-seg:last-child  { border-radius: 0 18px 18px 0; }

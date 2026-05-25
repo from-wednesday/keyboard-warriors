@@ -14122,9 +14122,6 @@ function skillsetPillClick(ClickEvent) {
 function _openSkillsetPill() {
   skillsetPillOpen = true;
   _buildSkillsetPill();
-  if (gameState === 'welcome' && !_welcomeIsReturning) {
-    openSettings('panelDifficultySettings');
-  }
   setTimeout(function() {
     document.addEventListener('click', function handler(e) {
     var pill = document.getElementById('skillsetPill');

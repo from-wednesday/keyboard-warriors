@@ -6801,6 +6801,11 @@ document.addEventListener('click', function(e) {
   }
 });
 
+function _getBodyZoom() {
+  var rect = document.body.getBoundingClientRect();
+  return rect.width / document.body.offsetWidth;
+}
+
 function positionIcons() {
   var panel = document.getElementById('keyboardPanel');
   var wrap  = document.getElementById('keyboardWrap');
@@ -6813,8 +6818,9 @@ function positionIcons() {
   var wRect = wrap.getBoundingClientRect();
   var KB_GAP = 36;
   var BR_GAP = 36;
-  var kbLeft = Math.round(pRect.left - wRect.left - (kbWrap ? kbWrap.offsetWidth : 44) - KB_GAP);
-  var brLeft = Math.round(pRect.right - wRect.left + BR_GAP);
+var zoom = _getBodyZoom();
+var kbLeft = Math.round((pRect.left - wRect.left) / zoom - (kbWrap ? kbWrap.offsetWidth : 44) - KB_GAP);
+var brLeft = Math.round((pRect.right - wRect.left) / zoom + BR_GAP);
   if (kbWrap) { kbWrap.style.left = kbLeft + 'px'; kbWrap.style.right = 'auto'; }
   else if (kb) kb.style.left = kbLeft + 'px';
   if (brWrap) { brWrap.style.left = brLeft + 'px'; brWrap.style.right = 'auto'; }

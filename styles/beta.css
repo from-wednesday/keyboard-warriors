@@ -3872,3 +3872,16 @@ body.returning-screen #diffIconWrap .icon-tip { display: none; }
 /* Border radii — override segmented-pill's child selectors */
 .conflict-filter-pill .conflict-filter-seg:first-child { border-radius: 18px 0 0 18px; }
 .conflict-filter-pill .conflict-filter-seg:last-child  { border-radius: 0 18px 18px 0; }
+
+/* ══════════════════════════════════════
+   LARGE SCREEN ZOOM
+   Scales the entire UI proportionally
+   on large monitors.
+══════════════════════════════════════ */
+@media (min-width: 1600px) {
+  body { zoom: 1.2; }
+}
+
+@media (min-width: 2000px) {
+  body { zoom: 1.45; }
+}

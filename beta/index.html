@@ -13255,8 +13255,10 @@ var suppress = (detectedOs === 'mobile') || (keyboardDisplayMode === 'ghost' && 
   // always reflects the true visual top edge of the keyboard.
   var affH      = affordance.offsetHeight || 80;
   var wrapRect  = wrap.getBoundingClientRect();
-  var anchorTop = sentinel.getBoundingClientRect().top - wrapRect.top + wrap.scrollTop;
-  affordance.style.top      = (anchorTop - affH + _AffordanceCloseOffset) + 'px';
+  var zoom = _getBodyZoom();
+var anchorTop = (sentinel.getBoundingClientRect().top - wrapRect.top) / zoom + wrap.scrollTop;
+affordance.style.top = (anchorTop - affH + _AffordanceCloseOffset) + 'px';
+
   affordance.style.transform = '0.1'; // no 3D slant on the container
 
   // Arrow rotation: based on the sentinel's position in the viewport.

@@ -3635,7 +3635,7 @@ body.returning-screen #diffIconWrap .icon-tip { display: none; }
 #phoneToolbar {
   display: none;
   flex-direction: column;
-  align-items: center;
+  align-items: stretch;
   width: 100%;
   gap: 0;
 }

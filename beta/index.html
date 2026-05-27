@@ -14050,6 +14050,8 @@ function _buildSkillsetPill() {
     drop.id = 'skillsetDrop';
     var pillRect = document.getElementById('skillsetPill').getBoundingClientRect();
     var dropHeight = SKILLSET_DEFS.length * 24;
+    var zoom = _getBodyZoom();
+
     drop.style.cssText = 'position:fixed;left:' + pillRect.left + 'px;top:' + (pillRect.top + pillRect.height / 2 - dropHeight / 2) + 'px;width:' + pillRect.width + 'px;background:white;border:1.5px solid #9ca3af;border-radius:10px;overflow:hidden;z-index:601;box-shadow:0 4px 12px rgba(0,0,0,0.12);';
     document.body.appendChild(drop);
     SKILLSET_DEFS.forEach(function(def) {
@@ -14443,6 +14445,8 @@ function _buildAppSelectorSkillsetPill() {
     Drop.id = 'appSelectorSkillsetDrop';
     var PillRect   = PillElement.getBoundingClientRect();
     var DropHeight = SKILLSET_DEFS.length * 24;
+    var zoom = _getBodyZoom();
+
     Drop.style.cssText = 'position:fixed;left:' + PillRect.left + 'px;top:' + (PillRect.top + PillRect.height / 2 - DropHeight / 2) + 'px;width:' + PillRect.width + 'px;background:white;border:1.5px solid #9ca3af;border-radius:10px;overflow:hidden;z-index:601;box-shadow:0 4px 12px rgba(0,0,0,0.12);';
     document.body.appendChild(Drop);
 

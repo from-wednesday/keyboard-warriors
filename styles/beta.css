@@ -3727,8 +3727,15 @@ body.returning-screen #diffIconWrap .icon-tip { display: none; }
 }
 
 #phonePanelArea .sp-page.sp-active {
-  position: static;
+  position: relative;
   width: 100%;
+}
+
+/* Constrain icons in phone toolbar so they don't bloat button height */
+.phone-icon-btn svg {
+  width: 22px;
+  height: 22px;
+  flex-shrink: 0;
 }
 
 #phonePanelArea .sp-page.sp-active:not(#panelDifficultySettings):not(#panelLandingReturning):not(#panelLandingWelcome) {

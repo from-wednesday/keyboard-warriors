@@ -3878,10 +3878,10 @@ body.returning-screen #diffIconWrap .icon-tip { display: none; }
    Scales the entire UI proportionally
    on large monitors.
 ══════════════════════════════════════ */
-@media (min-width: 1600px) {
+@media (min-width: 1600px) and (min-height: 870px) {
   body { zoom: 1.2; }
 }
 
-@media (min-width: 2000px) {
+@media (min-width: 2000px) and (min-height: 1060px) {
   body { zoom: 1.45; }
 }

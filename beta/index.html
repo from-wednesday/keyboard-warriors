@@ -1030,6 +1030,8 @@ function buildKey(cfg, isMini) {
         el.innerHTML = `${CONTROL_SYM_SVG}<span class="mod-word">control</span>`;
       } else if (_isFullMac && cfg.id === 'Enter') {
         el.innerHTML = `${RETURN_SYM_SVG}<span class="mod-word">return</span>`;
+      } else if (isMini && currentOs === 'mac' && cfg.id === 'Enter') {
+        el.innerHTML = RETURN_SYM_SVG;
       } else {
         const isGlyph = utilText && utilText.length <= 2 && /\p{So}|\p{Sm}|[⇧↩↑↓←→⌫↵]/u.test(utilText);
         if (isGlyph) {

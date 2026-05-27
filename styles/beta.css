@@ -18,7 +18,7 @@ body {
   font-family: system-ui, -apple-system, sans-serif;
   background: #f0f4f8;
   padding: 20px;
-  min-height: 100vh;
+  min-height: 100dvh;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -3879,13 +3879,13 @@ body.returning-screen #diffIconWrap .icon-tip { display: none; }
    on large monitors.
 ══════════════════════════════════════ */
 @media (min-width: 1600px) and (min-height: 870px) {
-  body { zoom: 1.1; }
+  body { zoom: 1.2; }
 }
 
 @media (min-width: 2000px) and (min-height: 1060px) {
-  body { zoom: 1.35; }
+  body { zoom: 1.45; }
 }
 
 @media (min-width: 2600px) and (min-height: 1270px) {
-  body { zoom: 1.65; }
+  body { zoom: 1.75; }
 }

@@ -3637,9 +3637,6 @@ body.returning-screen #diffIconWrap .icon-tip { display: none; }
   flex-direction: column;
   align-items: center;
   width: 100%;
-  max-width: 600px;
-  margin-left: auto;
-  margin-right: auto;
   gap: 0;
 }
 
@@ -3649,10 +3646,9 @@ body.returning-screen #diffIconWrap .icon-tip { display: none; }
   justify-content: center;
   gap: 0;
   width: 100%;
-  background: #e0f2fe;
+  background: #f7f9fb;
   border-radius: 16px;
-  border: 1.5px solid white;
-  box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+  border: 1.5px solid #d1d5db;
   overflow: hidden;
 }
 
@@ -3662,28 +3658,25 @@ body.returning-screen #diffIconWrap .icon-tip { display: none; }
   align-items: center;
   justify-content: center;
   gap: 8px;
-  padding: 10px 16px;
+  padding: 7px 12px;
   cursor: pointer;
   flex: 1;
   user-select: none;
   -webkit-user-select: none;
-  /* Inactive state: inset shadow matching segmented pill */
   box-shadow: inset 0 3px 0 rgba(0,0,0,0.04), inset 0 -3px 0 rgba(255,255,255,0.70);
   background: transparent;
   transition: background 0s, box-shadow 0s;
 }
 
 .phone-icon-btn + .phone-icon-btn {
-  border-left: 1.5px solid rgba(255,255,255,0.6);
+  border-left: 1.5px solid #d1d5db;
 }
 
-/* Active state: white fill, no inset shadow — matches segmented-pill-active */
 .phone-icon-btn.sp-icon-active {
-  background: rgba(255,255,255,0.55);
+  background: white;
   box-shadow: none;
 }
 
-/* Inactive: dims the button when no content is available to show */
 .phone-icon-btn.phone-icon-inactive {
   opacity: 0.38;
   pointer-events: none;
@@ -3700,14 +3693,8 @@ body.returning-screen #diffIconWrap .icon-tip { display: none; }
   pointer-events: none;
 }
 
-.phone-icon-btn.sp-icon-active .phone-icon-label {
-  color: #374151;
-}
-
-.phone-icon-btn.sp-icon-active svg {
-  color: #374151;
-}
-
+.phone-icon-btn.sp-icon-active .phone-icon-label { color: #374151; }
+.phone-icon-btn.sp-icon-active svg { color: #374151; }
 .phone-gauge-stroke {
   fill: none;
   stroke: currentColor;
@@ -3727,7 +3714,7 @@ body.returning-screen #diffIconWrap .icon-tip { display: none; }
   transition:
     max-height 0.35s cubic-bezier(0.4, 0, 0.2, 1),
     opacity    0.25s ease;
-  padding: 0 16px;
+  padding: 0 12px;
   box-sizing: border-box;
   width: 100%;
 }
@@ -3735,34 +3722,21 @@ body.returning-screen #diffIconWrap .icon-tip { display: none; }
 #phonePanelArea.phone-panel-open {
   max-height: 1200px;
   opacity: 1;
-  padding: 16px 16px 8px;
+  padding: 16px 12px 8px;
 }
 
-/* Panels inside phonePanelArea: reset the absolute positioning used
-   in the desktop layout and render as normal block content */
 #phonePanelArea .sp-page.sp-active {
   position: static;
   width: 100%;
 }
 
-/* The column divider line is meaningless in single-column phone flow */
-#phonePanelArea .sp-page.sp-active::after {
-  display: none;
-}
-
-/* Both columns stack vertically on phone */
-#phonePanelArea .sp-col-left,
-#phonePanelArea .sp-col-right {
-  padding-left: 0;
-  padding-right: 0;
-}
-
-/* Panels that are normally two-column grids become single-column stacks */
 #phonePanelArea .sp-page.sp-active:not(#panelDifficultySettings):not(#panelLandingReturning):not(#panelLandingWelcome) {
-  display: flex;
-  flex-direction: column;
-  gap: 16px;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
 }
+
+#phonePanelArea .sp-col-left  { padding-right: 12px; }
+#phonePanelArea .sp-col-right { padding-left:  12px; }
 
 /* Report card: remove the report bottom grid area hack, just stack */
 #phonePanelArea #panelEndGameReportCard.sp-page-report.sp-active {

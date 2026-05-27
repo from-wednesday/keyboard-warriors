@@ -3637,8 +3637,6 @@ body.returning-screen #diffIconWrap .icon-tip { display: none; }
   flex-direction: column;
   align-items: stretch;
   width: 100%;
-  height: 32px;
-  overflow: hidden;
   gap: 0;
 }
 
@@ -3659,8 +3657,8 @@ body.returning-screen #diffIconWrap .icon-tip { display: none; }
   flex-direction: row;
   align-items: center;
   justify-content: center;
-  gap: 4px;
-  padding: 0 2px;
+  gap: 6px;
+  padding: 0 10px;
   min-height: 32px;
   cursor: pointer;
   flex: 1;

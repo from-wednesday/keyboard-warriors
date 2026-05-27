@@ -3879,13 +3879,13 @@ body.returning-screen #diffIconWrap .icon-tip { display: none; }
    on large monitors.
 ══════════════════════════════════════ */
 @media (min-width: 1600px) and (min-height: 870px) {
-  body { zoom: 1.2; }
+  body { zoom: 1.1; }
 }
 
 @media (min-width: 2000px) and (min-height: 1060px) {
-  body { zoom: 1.45; }
+  body { zoom: 1.35; }
 }
 
 @media (min-width: 2600px) and (min-height: 1270px) {
-  body { zoom: 1.75; }
+  body { zoom: 1.65; }
 }

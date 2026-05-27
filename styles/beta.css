@@ -3885,3 +3885,7 @@ body.returning-screen #diffIconWrap .icon-tip { display: none; }
 @media (min-width: 2000px) and (min-height: 1060px) {
   body { zoom: 1.45; }
 }
+
+@media (min-width: 2600px) and (min-height: 1270px) {
+  body { zoom: 1.75; }
+}

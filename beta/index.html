@@ -95,7 +95,11 @@
       <circle cx="11" cy="11" r="7"/>
       <line x1="16.5" y1="16.5" x2="22" y2="22"/>
     </g>
- </symbol>
+  </symbol>
+
+  <symbol id="IconStudyNotes" viewBox="0 0 90 90">
+    <path fill="currentColor" d="M80.43,14.94c-1.43-4.24-5.38-7.29-10.03-7.29h-13.96c-1.67-3.95-5.59-6.72-10.17-6.72s-8.5,2.77-10.17,6.72h-13.96c-5.71,0-10.36,4.65-10.36,10.36v55.18c0,5.71,4.65,10.36,10.36,10.36h47.53c5.71,0,10.36-4.65,10.36-10.36V18.01c0-1.07-.2-2.1-.57-3.07h-.03ZM46.27,4.93c2.89,0,5.24,2.35,5.24,5.24s-2.35,5.24-5.24,5.24-5.24-2.35-5.24-5.24,2.35-5.24,5.24-5.24ZM76.43,73.19c0,3.28-2.67,5.95-5.95,5.95H22.95c-3.28,0-5.95-2.67-5.95-5.95V18.01c0-3.28,2.67-5.95,5.95-5.95h11.87c.37,3.83,3.59,6.83,7.51,6.83h7.88c3.92,0,7.14-3,7.51-6.83h11.77c3.28,0,5.95,2.67,5.95,5.95v55.18ZM62.02,33.08H30.52c-1.22,0-2.21-.99-2.21-2.21s.99-2.21,2.21-2.21h31.49c1.22,0,2.21.99,2.21,2.21s-.99,2.21-2.21,2.21ZM62.02,47.08H30.52c-1.22,0-2.21-.99-2.21-2.21s.99-2.21,2.21-2.21h31.49c1.22,0,2.21.99,2.21,2.21s-.99,2.21-2.21,2.21ZM62.02,61.08h-31.49c-1.22,0-2.21-.99-2.21-2.21s.99-2.21,2.21-2.21h31.49c1.22,0,2.21.99,2.21,2.21s-.99,2.21-2.21,2.21Z"/>
+  </symbol>
 
   <symbol id="ShapeBracket" viewBox="0 0 15 84">
     <path d="M3,0 C3,0 10,1 10,9 L10,33 C10,40 15,42 15,42 C15,42 10,44 10,51 L10,75 C10,83 3,84 3,84 L3,84 C3,84 8,82 8,74 L8,51 C8,43 12,42 12,42 C12,42 8,41 8,33 L8,10 C8,2 3,0 3,0 Z"/>
@@ -299,6 +303,10 @@
     <div class="phone-icon-btn" id="phoneBrIconWrap">
       <svg width="36" style="color:#9ca3af;"><use href="#IconBrowser"/></svg>
       <span class="phone-icon-label">Conflicts</span>
+    </div>
+    <div class="phone-icon-btn" id="phoneStudyNotesIconWrap">
+      <svg width="36" style="color:#9ca3af;"><use href="#IconStudyNotes"/></svg>
+      <span class="phone-icon-label">Study Notes</span>
     </div>
   </div>
   <div id="phonePanelArea"></div>
@@ -1709,8 +1717,22 @@ function updateKeyboardMode() {
 function _initialiseLayout() {
   updateKeyboardMode();
   updateMismatchPill();
+  // Wire phone toolbar icon taps
+var _phoneKbBtn    = document.getElementById('phoneKbIconWrap');
+var _phoneDiffBtn  = document.getElementById('phoneDiffIconWrap');
+var _phoneBrBtn    = document.getElementById('phoneBrIconWrap');
+if (_phoneKbBtn)   _phoneKbBtn.addEventListener('click',   function() { _phoneOpenSettings('panelKeyboard'); });
+if (_phoneDiffBtn) _phoneDiffBtn.addEventListener('click', function() { _phoneOpenSettings('panelDifficultySettings'); });
+if (_phoneBrBtn)   _phoneBrBtn.addEventListener('click',   function() { _phoneOpenSettings('panelConflicts'); });
   document.getElementById('keyboardPanel').classList.toggle('pc-keys', currentOs === 'pc');
-
+var _phoneStudyBtn = document.getElementById('phoneStudyNotesIconWrap');
+if (_phoneStudyBtn) _phoneStudyBtn.addEventListener('click', function() {
+  if (gameState === 'finished' && lastCompletedReport) {
+    _phoneOpenSettings('panelEndGameReportCard');
+  } else {
+    openCheatSheetPanel();
+  }
+});
   _revealPageContent();
 
 
@@ -5300,19 +5322,48 @@ function _spPageEl(page) {
 function _syncPhoneToolbarVisibility() {
   var ToolbarElement = document.getElementById('phoneToolbar');
   if (!ToolbarElement) return;
-  if (!ForceNoKeyboard) { ToolbarElement.style.display = 'none'; return; }
-  // Hide desktop-only elements that have no role on phone
-  var DiffIconWrap = document.getElementById('diffIconWrap');
-  if (DiffIconWrap) DiffIconWrap.style.display = 'none';
-  var IsActivePlay = (gameState === 'playing' || gameState === 'counting');
-  ToolbarElement.style.display = IsActivePlay ? 'none' : 'flex';
+
+  // Two layouts are mutually exclusive: desktop keyboard area or phone toolbar.
+  // When ForceNoKeyboard is true we are in phone layout — show the toolbar and
+  // hide all desktop-only elements. When false, do the opposite.
+  var DesktopOnlyElements = [
+    document.getElementById('keyboardWrap'),
+    document.getElementById('kbIconWrap'),
+    document.getElementById('brIconWrap'),
+    document.getElementById('diffIconWrap'),
+  ];
+
+  if (!ForceNoKeyboard) {
+    ToolbarElement.style.display = 'none';
+    DesktopOnlyElements.forEach(function(Element) {
+      if (Element) Element.style.display = '';
+    });
+    return;
+  }
+
+  // Phone layout: hide all desktop elements unconditionally.
+  DesktopOnlyElements.forEach(function(Element) {
+    if (Element) Element.style.display = 'none';
+  });
+
+  // Toolbar is always visible in phone layout — it does not hide during play.
+  ToolbarElement.style.display = 'flex';
+
+  // Update the Study Notes button availability based on whether there is content to show.
+  var StudyNotesButton = document.getElementById('phoneStudyNotesIconWrap');
+  if (StudyNotesButton) {
+    var HasStudyNotesContent = !!(lastCompletedReport || (questionPool && questionPool.length > 0 && (gameState === 'playing' || gameState === 'paused' || gameState === 'readyToUnpause')));
+    StudyNotesButton.classList.toggle('phone-icon-inactive', !HasStudyNotesContent);
+  }
 }
 
 function _syncPhoneToolbarActiveState(ActivePage) {
   var PhoneIconMap = {
-    panelKeyboard:   'phoneKbIconWrap',
+    panelKeyboard:           'phoneKbIconWrap',
     panelDifficultySettings: 'phoneDiffIconWrap',
-    panelConflicts:    'phoneBrIconWrap',
+    panelConflicts:          'phoneBrIconWrap',
+    panelEndGameReportCard:  'phoneStudyNotesIconWrap',
+    panelCheatSheet:         'phoneStudyNotesIconWrap',
   };
   Object.values(PhoneIconMap).forEach(function(IconId) {
     var IconElement = document.getElementById(IconId);

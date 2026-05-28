@@ -583,6 +583,7 @@ body {
   line-height: 1;
   display: table-cell;
   vertical-align: middle;
+  text-align: center;
   white-space: nowrap;
 }
 /* Column 3: right label — left-aligned from the switch */

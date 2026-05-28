@@ -3442,15 +3442,15 @@ body.returning-screen #diffIconWrap .icon-tip { display: none; }
   box-shadow: 0 1px 0 rgba(180,160,0,0.25) !important;
 }
 
-/* Ghost mode: invisible keyboard must not intercept panel interactions */
-#keyboardWrap.settings-open #keyboardPanel.ghost-mode {
+/* Ghost mode: invisible keyboard must not intercept interactions */
+#keyboardPanel.ghost-mode {
   pointer-events: none;
 }
 
 /* App pill open: fade the main title out of view */
   #title.app-pill-open {
   opacity: 0;
-  transition: opacity 1s ease;
+  transition: opacity 1.25s ease;
 }
 /* ══════════════════════════════════════
    CUSTOMISE SKILLSET PANEL

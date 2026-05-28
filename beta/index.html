@@ -14497,6 +14497,8 @@ function _buildAppSelectorSkillsetPill() {
     if (gameState === 'welcome' && !_welcomeIsReturning) {
       openSettings('panelDifficultySettings');
     }
+    titleEl.classList.add('app-pill-open');
+ 
     var Drop = document.createElement('div');
     Drop.id = 'appSelectorSkillsetDrop';
     var PillRect   = PillElement.getBoundingClientRect();
@@ -14597,17 +14599,18 @@ function _buildAppSelectorSkillsetPill() {
     Drop.appendChild(CustomSetRow);
           
     setTimeout(function() {
-      document.addEventListener('click', function OutsideClickHandler(ClickEvent) {
-        var DropElement = document.getElementById('appSelectorSkillsetDrop');
-        var PillEl      = document.getElementById('appSelectorSkillsetPill');
-        var ClickedOutside = (!DropElement || !DropElement.contains(ClickEvent.target)) &&
-                             (!PillEl      || !PillEl.contains(ClickEvent.target));
-        if (ClickedOutside) {
-          AppSelectorSkillsetDropIsOpen = false;
-          _buildAppSelectorSkillsetPill();
-          document.removeEventListener('click', OutsideClickHandler);
-        }
-      });
+    document.addEventListener('click', function OutsideClickHandler(ClickEvent) {
+     var DropElement = document.getElementById('appSelectorSkillsetDrop');
+     var PillEl      = document.getElementById('appSelectorSkillsetPill');
+     var ClickedOutside = (!DropElement || !DropElement.contains(ClickEvent.target)) &&
+                          (!PillEl      || !PillEl.contains(ClickEvent.target));
+     if (ClickedOutside) {
+       AppSelectorSkillsetDropIsOpen = false;
+       _buildAppSelectorSkillsetPill();
+      if (!CustomiseSkillsetPanelIsOpen) titleEl.classList.remove('app-pill-open');
+      document.removeEventListener('click', OutsideClickHandler);
+  }
+});
     }, 0);
   }
 
@@ -14975,6 +14978,9 @@ function _closeCustomiseSkillsetPanel() {
 
   if (ExistingDrop)        ExistingDrop.remove();
   if (PanelElement)        PanelElement.classList.remove('customise-skillset-panel-open');
+  if (!AppSelectorSkillsetPillIsOpen && !AppSelectorSkillsetDropIsOpen && !appPillEl.classList.contains('open')) {
+    titleEl.classList.remove('app-pill-open');
+  }
   if (RightBracketElement) {
     RightBracketElement.classList.remove('customise-skillset-bracket-visible');
     setTimeout(function() { RightBracketElement.style.display = 'none'; }, 220);

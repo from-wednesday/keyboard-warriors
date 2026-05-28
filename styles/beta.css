@@ -2727,7 +2727,24 @@ li.conflict-dismissed .conflict-desc {
 }
 
 /* Never show when keyboard is at face position */
+/* Never show when keyboard is at face position */
 #keyboardWrap.kb-at-face #kbHandleAffordance {
+  opacity: 0 !important;
+  transition: none;
+}
+
+/* Suppress during keyboard transitions to prevent flash as it passes under the pointer */
+#keyboardWrap.kb-flipping #kbHandleAffordance {
+  opacity: 0 !important;
+  pointer-events: none !important;
+  transition: none;
+}
+
+/* Ghost mode: affordance must not intercept clicks on blur diagnostic or other content */
+body:has(#keyboardPanel.ghost-mode) #kbHandleAffordance {
+  pointer-events: none !important;
+  opacity: 0 !important;
+} {
   opacity: 0 !important;
   transition: none;
 }

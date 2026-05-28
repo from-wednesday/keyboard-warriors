@@ -2727,24 +2727,7 @@ li.conflict-dismissed .conflict-desc {
 }
 
 /* Never show when keyboard is at face position */
-/* Never show when keyboard is at face position */
 #keyboardWrap.kb-at-face #kbHandleAffordance {
-  opacity: 0 !important;
-  transition: none;
-}
-
-/* Suppress during keyboard transitions to prevent flash as it passes under the pointer */
-#keyboardWrap.kb-flipping #kbHandleAffordance {
-  opacity: 0 !important;
-  pointer-events: none !important;
-  transition: none;
-}
-
-/* Ghost mode: affordance must not intercept clicks on blur diagnostic or other content */
-body:has(#keyboardPanel.ghost-mode) #kbHandleAffordance {
-  pointer-events: none !important;
-  opacity: 0 !important;
-} {
   opacity: 0 !important;
   transition: none;
 }
@@ -3459,15 +3442,10 @@ body.returning-screen #diffIconWrap .icon-tip { display: none; }
   box-shadow: 0 1px 0 rgba(180,160,0,0.25) !important;
 }
 
-/* Ghost mode: invisible keyboard must not intercept interactions */
-#keyboardPanel.ghost-mode {
-  pointer-events: none;
-}
-
 /* App pill open: fade the main title out of view */
   #title.app-pill-open {
   opacity: 0;
-  transition: opacity 1.25s ease;
+  transition: opacity 1s ease;
 }
 /* ══════════════════════════════════════
    CUSTOMISE SKILLSET PANEL

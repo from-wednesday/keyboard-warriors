@@ -12857,8 +12857,9 @@ function _activateBlurPauseScreen() {
     return;
   }
 
-  _blurDiagnosticAnswerRevealed = false;
+_blurDiagnosticAnswerRevealed = false;
   _blurDiagnosticShortcutToken = currentAnswer;
+  if (keyboardDisplayMode === 'ghost') _animateToPartialAngle(EdgeAngle);
 
   // Title: stage 1 — clear any floating confirm heading first
   hideConfirmHeading();
@@ -12929,7 +12930,8 @@ function _deactivateBlurPauseScreen() {
 }
 
   function _blurDiagnosticReveal() {
-  _blurDiagnosticAnswerRevealed = true;
+_blurDiagnosticAnswerRevealed = true;
+  if (keyboardDisplayMode === 'ghost') _animateToPartialAngle(EdgeAngle);
 
   var Question = _blurDiagnosticFindQuestion();
   if (!Question) return;
@@ -13025,9 +13027,10 @@ function _blurDiagnosticSecondBlur() {
   if (!_blurDiagnosticShortcutToken) return;
   document.removeEventListener('keydown', _blurDiagnosticKeydownHandler);
 
-  // Flow resolved: second blur without a successful press means a likely conflict.
+// Flow resolved: second blur without a successful press means a likely conflict.
   // Block further blur diversions for the rest of this session.
   _blurDiagnosticFlowComplete = true;
+  if (keyboardDisplayMode === 'ghost') _animateToPartialAngle(EdgeAngle);
 
   // Title: stage 3 — clear any floating confirm heading first
   hideConfirmHeading();
@@ -13212,7 +13215,8 @@ var PanelKeyboardPositions = {
   panelCheatSheet:           { desktop: 47, tablet: 76 },
   panelLandingReturning:     { desktop: 47, tablet: 58 },
   panelLandingWelcome:       { desktop: 47, tablet: 58 },
-}; 
+};
+
 
 function GetPanelKeyboardAngle(PanelName) {
   var Config = PanelKeyboardPositions[PanelName];
@@ -13554,8 +13558,7 @@ function _onDragHandlePointerUp(Event) {
   if (!WasDrag) return;
 
   // Clamp to the valid partial range and stay exactly where the user released.
-  // No settle — the angle they dragged to is the angle they get.
-  _animateToPartialAngle(Math.max(PartialDragMinAngle, Math.min(PartialDragMaxAngle, _kbPartialAngle)));
+  // No settle — the angle they dragged to is the angle they get.        _animateToPartialAngle(Math.max(PartialDragMinAngle, Math.min(EdgeAngle, _kbPartialAngle)));
 
   Event.preventDefault();
 }

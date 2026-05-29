@@ -5016,7 +5016,9 @@ function toggleMoreInfo(PopupId) {
   var TriggerElement = PopupElement ? PopupElement.closest('.more-info-trigger') : null;
   if (!PopupElement || !TriggerElement) return;
 
-  var IsCurrentlyOpen = PopupElement.classList.contains('more-info-popup-visible');
+  // If this popup is already open (even if the outside-click listener already
+  // closed it a moment ago), treat the trigger click as a close action.
+  var IsCurrentlyOpen = (_openMoreInfoId === PopupId);
 
   _closeMoreInfoPopup();
 

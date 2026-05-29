@@ -12799,17 +12799,7 @@ window.addEventListener('blur', function() {
   }
 });
 document.addEventListener('visibilitychange', function() {
-  if (!document.hidden) {
-    var ViewportMetaTag = document.querySelector('meta[name=viewport]');
-    if (ViewportMetaTag) {
-      var OriginalContent = ViewportMetaTag.getAttribute('content');
-      ViewportMetaTag.setAttribute('content', OriginalContent + ', maximum-scale=1');
-      setTimeout(function() {
-        ViewportMetaTag.setAttribute('content', OriginalContent);
-      }, 100);
-    }
-  }
-  if (document.hidden) { 
+  if (document.hidden) {
     releaseAllKeys();
     if (gameState === 'playing') {
       _blurPauseActive = true;
@@ -12818,13 +12808,24 @@ document.addEventListener('visibilitychange', function() {
       _activateBlurPauseScreen();
     }
   } else {
+    // Briefly lock maximum-scale to correct iPadOS Safari's zoom-on-return bug,
+    // then restore the original viewport after Safari has had time to settle.
+    var ViewportMetaTag = document.querySelector('meta[name=viewport]');
+    if (ViewportMetaTag) {
+      var OriginalContent = ViewportMetaTag.getAttribute('content');
+      ViewportMetaTag.setAttribute('content', OriginalContent + ', maximum-scale=1');
+      setTimeout(function() {
+        ViewportMetaTag.setAttribute('content', OriginalContent);
+      }, 300);
+    }
     if (_blurDiagnosticFoldPending) {
       _blurDiagnosticFoldPending = false;
-     setTimeout(function() { SetKeyboardPositionForPanel('panelPause'); }, 600);
+      setTimeout(function() { SetKeyboardPositionForPanel('panelPause'); }, 600);
       setTimeout(_repositionAffordance, 1100);
     }
   }
 });
+
 
 // Replaces the current question with a different one (no penalty, no report card entry).
 // Called whenever the diagnostic answer was revealed, regardless of outcome.

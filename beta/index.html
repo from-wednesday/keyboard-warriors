@@ -554,20 +554,16 @@
 
   <div class="sp-col sp-col-right">
 
-    <div class="sp-report-col-header sp-report-col-header-right" style="position:relative;">
+    <div class="sp-report-col-header sp-report-col-header-right">
 
-      <!-- Label + Info Trigger -->
-      <div class="more-info-wrap" style="margin-bottom:4px;">
+      <!-- LEFT-ANCHORED INFO ICON -->
+      <div class="more-info-wrap" style="position:relative; display:inline-block; margin-bottom:4px;">
 
-        <p class="sp-title" style="font-size:12px;margin:0;">
-          Cheat Sheet
-        </p>
-
-        <button
+        <span
           class="more-info-trigger"
           id="csCheatSheetMoreInfoTrigger"
           onclick="toggleMoreInfo('csCheatSheetMoreInfo')"
-          style="background:none;border:none;padding:0;cursor:pointer;"
+          style="cursor:pointer; display:inline-flex; align-items:center;"
         >
           <svg class="more-info-icon" viewBox="0 0 20 20" width="14" height="14"
                fill="none" stroke="currentColor" stroke-width="1.25" stroke-linecap="round">
@@ -576,13 +572,12 @@
                   font-weight="720" font-family="system-ui,sans-serif"
                   fill="currentColor" stroke="none">?</text>
           </svg>
-        </button>
+        </span>
 
-        <!-- Popup (top-left of right column header) -->
+        <!-- POPUP -->
         <div
           class="more-info-popup"
           id="csCheatSheetMoreInfo"
-          style="position:absolute; top:0; left:0; z-index:50;"
         >
           <p class="more-info-body">
             The ‘Cheat Sheet’ doesn’t <em>just</em> recap recent questions from the current round.
@@ -606,10 +601,10 @@
     </div>
 
     <ul id="cheatSheetListRight" class="sp-report-list sp-report-weakness"></ul>
+
   </div>
 
 </div>
-
 
     <!-- ── Returning User Landing ───────────────────────── -->
     <div id="panelLandingReturning" class="sp-page">

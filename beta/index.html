@@ -558,7 +558,18 @@
         <ul id="cheatSheetList" class="sp-report-list sp-report-weakness"></ul>
       </div>
       <div class="sp-col sp-col-right">
-        <div class="sp-report-col-header sp-report-col-header-right">
+        <div class="sp-report-col-header sp-report-col-header-right" style="justify-content:space-between;">
+          <span class="more-info-trigger" id="csCheatSheetMoreInfoTrigger" onclick="toggleMoreInfo('csCheatSheetMoreInfo')">
+            <svg class="more-info-icon" viewBox="0 0 20 20" width="14" height="14" fill="none" stroke="currentColor" stroke-width="1.25" stroke-linecap="round">
+              <circle cx="10" cy="10" r="8.5"/>
+              <text x="10" y="15" text-anchor="middle" font-size="14" font-weight="720" font-family="system-ui,sans-serif" fill="currentColor" stroke="none">?</text>
+            </svg>
+            <div class="more-info-popup" id="csCheatSheetMoreInfo">
+              <p class="more-info-body">The 'Cheat Sheet' doesn't <em>just</em> recap recent questions from the current round.</p>
+              <p class="more-info-body">It also <strong>spoils</strong> what's coming up!</p>
+              <p class="more-info-body"><em>Don't want to know?</em> Then don't look! But this <strong>can be</strong> a useful study tool, <em>particularly</em> once you go deep in 'hardcore' difficulty.</p>
+            </div>
+          </span>
           <p class="sp-report-section-title">Coming Up</p>
         </div>
         <ul id="cheatSheetListRight" class="sp-report-list sp-report-weakness"></ul>

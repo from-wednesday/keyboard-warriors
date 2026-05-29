@@ -334,18 +334,7 @@
         <p class="sp-body sp-hint">Using the virtual <strong><small>'Touch Enabled'</small></strong> keyboard avoids all conflicts to build knowledge, but is <em>less effective</em> than a real keyboard in building 'muscle memory'.</p>
       </div>
       <div class="sp-col sp-col-right">
-      <div class="more-info-wrap" style="margin-bottom:4px;">
-        <p class="sp-title" onclick="toggleMoreInfo('csTrackedConflictsMoreInfo')" style="font-size:12px;margin:0;">Tracked Conflicts</p>
-        <span class="more-info-trigger" id="csTrackedConflictsMoreInfoTrigger" onclick="toggleMoreInfo('csTrackedConflictsMoreInfo')">
-          <svg class="more-info-icon" viewBox="0 0 20 20" width="14" height="14" fill="none" stroke="currentColor" stroke-width="1.25" stroke-linecap="round">
-            <circle cx="10" cy="10" r="8.5"/>
-            <text x="10" y="15" text-anchor="middle" font-size="14" font-weight="720" font-family="system-ui,sans-serif" fill="currentColor" stroke="none">?</text>
-          </svg>
-          <div class="more-info-popup" id="csTrackedConflictsMoreInfo">
-            <p class="more-info-body">If we detect you successfully press any of these shortcuts, we will add questions using them back into the pool. You can also manually toggle each if you know better than our predictive system.</p>
-          </div>
-        </span>
-      </div>
+     3
         <!-- ── Conflict source filter pill ───────────────── -->
   <div id="cfFilterPill" class="segmented-pill" style="margin-bottom:4px;">
   <button id="cfBtnOs" class="segmented-pill-section segmented-pill-quarter" onclick="setConflictFilter('os')" title="">
@@ -492,8 +481,9 @@
 
     <ul id="reportStrengths" class="sp-report-list sp-report-strength"></ul>
   </div>
+  
   <div class="sp-col sp-col-right">
-    <div class="sp-report-col-header sp-report-col-header-right">
+    <div class="sp-report-col-header sp-report-col-header-right" style="margin-top:6px;">
       <p class="sp-report-section-title" id="reportPracticeHeading">Practice</p>
     </div>
     <ul id="reportWeaknesses" class="sp-report-list sp-report-weakness"></ul>
@@ -502,6 +492,7 @@
     <div class="sp-report-advice-box" id="reportTrainerAdvice"></div>
   </div>
 </div>
+
   <!-- ── EndGame History View ─────────────────────────────── -->
     <div id="panelEndGameHistoryRecord" class="sp-page">
    <div class="sp-col sp-col-left">
@@ -535,6 +526,7 @@
        </div>
         <ul id="EndGameHistoryListLeft" class="sp-endgame-list sp-report-weakness"></ul>
       </div>
+      
       <div class="sp-col sp-col-right">
         <div class="sp-report-col-header sp-report-col-header-right" style="justify-content:space-between;margin-top:6px;">
           <p class="sp-endgame-context-label" id="EndGameHistoryTimerLabel"></p>
@@ -557,8 +549,20 @@
         </div>
         <ul id="cheatSheetList" class="sp-report-list sp-report-weakness"></ul>
       </div>
+      
       <div class="sp-col sp-col-right">
-        <div class="sp-report-col-header sp-report-col-header-right">
+        <div class="sp-report-col-header sp-report-col-header-right"> <div class="more-info-wrap" style="margin-bottom:4px;">
+        <p class="sp-title" onclick="toggleMoreInfo('csCheatSheetMoreInfo')" style="font-size:12px;margin:0;">Tracked Conflicts</p>
+        <span class="more-info-trigger" id="csCheatSheetMoreInfoTrigger" onclick="toggleMoreInfo('csTrackedConflictsMoreInfo')">
+          <svg class="more-info-icon" viewBox="0 0 20 20" width="14" height="14" fill="none" stroke="currentColor" stroke-width="1.25" stroke-linecap="round">
+            <circle cx="10" cy="10" r="8.5"/>
+            <text x="10" y="15" text-anchor="middle" font-size="14" font-weight="720" font-family="system-ui,sans-serif" fill="currentColor" stroke="none">?</text>
+          </svg>
+          <div class="more-info-popup" id="csCheatSheetMoreInfo">
+            <p class="more-info-body">The ‘Cheat Sheet’ doesn’t <em>just</em> recap recent questions from the current round. </p><p class="more-info-body">It also <strong>spoils</strong> what’s coming up! </p><p class="more-info-body"><em>Don’t want to know?</em> Then don’t look! But this <strong>can be</strong> a useful study tool, <em>particularly</em> once you go deep in ‘hardcore’ difficulty. </p>
+          </div>
+        </span>
+      </div>
           <p class="sp-report-section-title">Coming Up</p>
         </div>
         <ul id="cheatSheetListRight" class="sp-report-list sp-report-weakness"></ul>

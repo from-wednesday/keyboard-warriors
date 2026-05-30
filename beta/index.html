@@ -5042,8 +5042,9 @@ function toggleMoreInfo(PopupId) {
   PopupElement.classList.add('more-info-popup-visible');
   _openMoreInfoId = PopupId;
 
-_moreInfoOutsideListener = function(ClickEvent) {
-    if (ClickEvent.target.closest('.more-info-trigger')) return;
+var _openTriggerElement = event.currentTarget.closest('.more-info-trigger');
+  _moreInfoOutsideListener = function(ClickEvent) {
+    if (_openTriggerElement && (_openTriggerElement === ClickEvent.target || _openTriggerElement.contains(ClickEvent.target))) return;
     _closeMoreInfoPopup();
   };
   requestAnimationFrame(function() {

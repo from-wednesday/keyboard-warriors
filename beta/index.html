@@ -335,8 +335,8 @@
       </div>
       <div class="sp-col sp-col-right">
       <div class="more-info-wrap" style="margin-bottom:4px;">
-        <p class="sp-title" onclick="toggleMoreInfo($1, event$2" style="font-size:12px;margin:0;">Tracked Conflicts</p>
-        <span class="more-info-trigger" id="csTrackedConflictsMoreInfoTrigger" onclick="toggleMoreInfo('csTrackedConflictsMoreInfo')">
+        <p class="sp-title" onclick="toggleMoreInfo('csTrackedConflictsMoreInfo', event)" style="font-size:12px;margin:0;">Tracked Conflicts</p>
+        <span class="more-info-trigger" id="csTrackedConflictsMoreInfoTrigger" onclick="toggleMoreInfo('csTrackedConflictsMoreInfo', event)">
           <svg class="more-info-icon" viewBox="0 0 20 20" width="14" height="14" fill="none" stroke="currentColor" stroke-width="1.25" stroke-linecap="round">
             <circle cx="10" cy="10" r="8.5"/>
             <text x="10" y="15" text-anchor="middle" font-size="14" font-weight="720" font-family="system-ui,sans-serif" fill="currentColor" stroke="none">?</text>
@@ -400,8 +400,8 @@
       </div>
       <div class="sp-col sp-col-right">
         <div class="more-info-wrap" style="margin-bottom:4px;">
-          <p class="sp-body sp-clear-label" id="spClearLabel" onclick="toggleMoreInfo('ppClearRecordsMoreInfo')" style="margin:0;cursor:pointer;"><strong>Clear high score record?</strong></p>
-          <span class="more-info-trigger" id="ppClearRecordsMoreInfoTrigger" onclick="toggleMoreInfo('ppClearRecordsMoreInfo')">
+          <p class="sp-body sp-clear-label" id="spClearLabel" onclick="toggleMoreInfo('ppClearRecordsMoreInfo', event)" style="margin:0;cursor:pointer;"><strong>Clear high score record?</strong></p>
+          <span class="more-info-trigger" id="ppClearRecordsMoreInfoTrigger" onclick="toggleMoreInfo('ppClearRecordsMoreInfo', event)">
             <svg class="more-info-icon" viewBox="0 0 20 20" width="14" height="14" fill="none" stroke="currentColor" stroke-width="1.25" stroke-linecap="round">
               <circle cx="10" cy="10" r="8.5"/>
               <text x="10" y="15" text-anchor="middle" font-size="14" font-weight="720" font-family="system-ui,sans-serif" fill="currentColor" stroke="none">?</text>
@@ -462,13 +462,13 @@
   <div class="sp-col sp-col-left">
     <div class="sp-report-col-header">
 <div class="more-info-wrap" style="margin-bottom:4px;">
-        <p class="sp-title" onclick="toggleMoreInfo('csReportCardMoreInfo')" style="font-size:12px;margin:0;"></p>
+        <p class="sp-title" onclick="toggleMoreInfo('csReportCardMoreInfo', event)" style="font-size:12px;margin:0;"></p>
       <div class="sp-endgame-header-left" onclick="_toggleEndGameHistory(event)" id="reportCardToggleTrigger">
         <p class="sp-small-card-title">REPORT CARD</p>
         <svg class="sp-endgame-search-icon" viewBox="0 0 24 24"><use href="#IconMagnifier"/></svg>
       </div>
 
-<span class="more-info-trigger" id="csReportCardMoreInfoTrigger" onclick="toggleMoreInfo('csReportCardMoreInfo')">
+<span class="more-info-trigger" id="csReportCardMoreInfoTrigger" onclick="toggleMoreInfo('csReportCardMoreInfo', event)">
   <svg class="more-info-icon"
        viewBox="0 0 20 20"
        width="14"
@@ -507,13 +507,13 @@
    <div class="sp-col sp-col-left">
         <div class="sp-report-col-header">
 <div class="more-info-wrap" style="margin-bottom:4px;">
-        <p class="sp-title" onclick="toggleMoreInfo('csHistoryMoreInfo')" style="font-size:12px;margin:0;"></p>
+        <p class="sp-title" onclick="toggleMoreInfo('csHistoryMoreInfo', event)" style="font-size:12px;margin:0;"></p>
 <div class="sp-endgame-header-left" onclick="_toggleEndGameHistory(event)">
             <p class="sp-small-card-title">HISTORY VIEW</p>
         <svg class="sp-endgame-search-icon" viewBox="0 0 24 24"><use href="#IconMagnifier"/></svg>
       </div>
 
-<span class="more-info-trigger" id="csHistoryMoreInfoTrigger" onclick="toggleMoreInfo('csHistoryMoreInfo')">
+<span class="more-info-trigger" id="csHistoryMoreInfoTrigger" onclick="toggleMoreInfo('csHistoryMoreInfo', event)">
   <svg class="more-info-icon"
        viewBox="0 0 20 20"
        width="14"
@@ -559,7 +559,7 @@
       </div>
       <div class="sp-col sp-col-right">
         <div class="sp-report-col-header sp-report-col-header-right" style="justify-content:space-between;">
-          <span class="more-info-trigger" id="csCheatSheetMoreInfoTrigger" onclick="toggleMoreInfo('csCheatSheetMoreInfo')">
+          <span class="more-info-trigger" id="csCheatSheetMoreInfoTrigger" onclick="toggleMoreInfo('csCheatSheetMoreInfo', event)">
             <svg class="more-info-icon" viewBox="0 0 20 20" width="14" height="14" fill="none" stroke="currentColor" stroke-width="1.25" stroke-linecap="round">
               <circle cx="10" cy="10" r="8.5"/>
               <text x="10" y="15" text-anchor="middle" font-size="14" font-weight="720" font-family="system-ui,sans-serif" fill="currentColor" stroke="none">?</text>
@@ -651,7 +651,7 @@
   Skill Set loaded
 </span>
          <span class="more-info-trigger" id="skillSetMoreInfoTrigger"
-      onclick="toggleMoreInfo('skillSetMoreInfo')"
+      onclick="toggleMoreInfo('skillSetMoreInfo', event)"
       style="position:absolute;left:75%;transform:translateX(-90%);display:inline-flex;align-items:center;color:#374151;">
   <svg class="more-info-icon" viewBox="0 0 20 20" width="14" height="14" fill="none" stroke="currentColor" stroke-width="1.25" stroke-linecap="round">
     <circle cx="10" cy="10" r="8.5"/>
@@ -695,8 +695,8 @@
 
         <div class="modal-section-gap"></div>
         <div class="more-info-wrap">
-          <p class="sp-title" onclick="toggleMoreInfo('kbLayoutMoreInfo')" style="margin:0;">Keyboard Layout</p>
-          <span class="more-info-trigger" id="kbLayoutMoreInfoTrigger" onclick="toggleMoreInfo('kbLayoutMoreInfo')">
+          <p class="sp-title" onclick="toggleMoreInfo('kbLayoutMoreInfo', event)" style="margin:0;">Keyboard Layout</p>
+          <span class="more-info-trigger" id="kbLayoutMoreInfoTrigger" onclick="toggleMoreInfo('kbLayoutMoreInfo', event)">
             <svg class="more-info-icon" viewBox="0 0 20 20" width="14" height="14" fill="none" stroke="currentColor" stroke-width="1.25" stroke-linecap="round">
               <circle cx="10" cy="10" r="8.5"/>
               <text x="10" y="15" text-anchor="middle" font-size="14" font-weight="720" font-family="system-ui,sans-serif" fill="currentColor" stroke="none">?</text>
@@ -741,8 +741,8 @@
 
       <div class="sp-col sp-col-right">
         <div class="more-info-wrap">
-          <p class="sp-title" onclick="toggleMoreInfo('kbBehaviourMoreInfo')" style="font-size:12px;margin:0;">Keyboard Behaviour</p>
-          <span class="more-info-trigger" id="kbBehaviourMoreInfoTrigger" onclick="toggleMoreInfo('kbBehaviourMoreInfo')">
+          <p class="sp-title" onclick="toggleMoreInfo('kbBehaviourMoreInfo', event)" style="font-size:12px;margin:0;">Keyboard Behaviour</p>
+          <span class="more-info-trigger" id="kbBehaviourMoreInfoTrigger" onclick="toggleMoreInfo('kbBehaviourMoreInfo', event)">
             <svg class="more-info-icon" viewBox="0 0 20 20" width="14" height="14" fill="none" stroke="currentColor" stroke-width="1.25" stroke-linecap="round">
               <circle cx="10" cy="10" r="8.5"/>
               <text x="10" y="15" text-anchor="middle" font-size="14" font-weight="720" font-family="system-ui,sans-serif" fill="currentColor" stroke="none">?</text>
@@ -794,8 +794,8 @@
         <div class="modal-section-gap"></div>
         <div id="modalKbSizeSection">
           <div class="more-info-wrap">
-            <p class="sp-title" onclick="toggleMoreInfo('kbSizeMoreInfo')" style="font-size:12px;">Keyboard Size</p>
-            <span class="more-info-trigger" id="kbSizeMoreInfoTrigger" onclick="toggleMoreInfo('kbSizeMoreInfo')">
+            <p class="sp-title" onclick="toggleMoreInfo('kbSizeMoreInfo', event)" style="font-size:12px;">Keyboard Size</p>
+            <span class="more-info-trigger" id="kbSizeMoreInfoTrigger" onclick="toggleMoreInfo('kbSizeMoreInfo', event)">
               <svg class="more-info-icon" viewBox="0 0 20 20" width="14" height="14" fill="none" stroke="currentColor" stroke-width="1.25" stroke-linecap="round">
                 <circle cx="10" cy="10" r="8.5"/>
                 <text x="10" y="15" text-anchor="middle" font-size="14" font-weight="720" font-family="system-ui,sans-serif" fill="currentColor" stroke="none">?</text>
@@ -4992,7 +4992,7 @@ var _moreInfoOutsideListener = null;
 
 function _closeMoreInfoPopup() {
   if (_moreInfoOutsideListener) {
-    document.removeEventListener('click', _moreInfoOutsideListener, true);
+    document.removeEventListener('click', _moreInfoOutsideListener);
     _moreInfoOutsideListener = null;
   }
   if (_openMoreInfoId) {
@@ -5013,9 +5013,8 @@ function _closeMoreInfoPopup() {
 
 function toggleMoreInfo(PopupId, ClickEvent) {
   if (ClickEvent) { ClickEvent.stopPropagation(); }
-  var PopupElement   = document.getElementById(PopupId);
-  var TriggerElement = PopupElement ? PopupElement.closest('.more-info-trigger') : null;
-  if (!PopupElement || !TriggerElement) return;
+  var PopupElement = document.getElementById(PopupId);
+  if (!PopupElement) return;
 
   var IsCurrentlyOpen = (_openMoreInfoId === PopupId);
 
@@ -5027,8 +5026,8 @@ function toggleMoreInfo(PopupId, ClickEvent) {
   _openMoreInfoOriginalParent = PopupElement.parentNode;
   document.body.appendChild(PopupElement);
 
-  var PopupWidth   = 260;
-  var PopupHeight  = 120;
+  var PopupWidth  = 260;
+  var PopupHeight = 120;
   var zoom = _getBodyZoom();
   var LeftPosition = Math.round((window.innerWidth  / zoom - PopupWidth)  / 2);
   var TopPosition  = Math.round(window.scrollY / zoom + (window.innerHeight / zoom - PopupHeight) / 2);
@@ -5041,9 +5040,11 @@ function toggleMoreInfo(PopupId, ClickEvent) {
   PopupElement.classList.add('more-info-popup-visible');
   _openMoreInfoId = PopupId;
 
-var _openTriggerElement = event.currentTarget.closest('.more-info-trigger');
-  _moreInfoOutsideListener = function(ClickEvent) {
-    if (_openTriggerElement && (_openTriggerElement === ClickEvent.target || _openTriggerElement.contains(ClickEvent.target))) return;
+  // Store the element that was clicked so the outside-click listener can
+  // ignore clicks on that same element (prevents immediate re-close).
+  var ClickedElement = ClickEvent ? ClickEvent.currentTarget : null;
+  _moreInfoOutsideListener = function(OutsideClickEvent) {
+    if (ClickedElement && (OutsideClickEvent.target === ClickedElement || ClickedElement.contains(OutsideClickEvent.target))) return;
     _closeMoreInfoPopup();
   };
   requestAnimationFrame(function() {

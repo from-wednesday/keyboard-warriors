@@ -5011,13 +5011,12 @@ function _closeMoreInfoPopup() {
   }
 }
 
-function toggleMoreInfo(PopupId) {
+function toggleMoreInfo(PopupId, ClickEvent) {
+  if (ClickEvent) { ClickEvent.stopPropagation(); }
   var PopupElement   = document.getElementById(PopupId);
   var TriggerElement = PopupElement ? PopupElement.closest('.more-info-trigger') : null;
   if (!PopupElement || !TriggerElement) return;
 
-  // If this popup is already open (even if the outside-click listener already
-  // closed it a moment ago), treat the trigger click as a close action.
   var IsCurrentlyOpen = (_openMoreInfoId === PopupId);
 
   _closeMoreInfoPopup();

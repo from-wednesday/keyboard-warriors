@@ -6854,17 +6854,10 @@ function _renderKeyboardConflictTab(container) {
     });
 
   }
-  extSide.addEventListener('click', function() {
-    if (!cfInp || touchEnabled || hasFullKeyboard) return;
-    cfInp.checked = false;
-    cfInp.dispatchEvent(new Event('change'));
-  });
-  cmpSide.addEventListener('click', function() {
-    if (!cfInp || touchEnabled || !hasFullKeyboard) return;
-    cfInp.checked = true;
-    cfInp.dispatchEvent(new Event('change'));
-  });
-
+  [extSide, cmpSide].forEach(function(side) {
+    side.addEventListener('click', function() {
+      if (cfInp && !touchEnabled) { cfInp.checked = !cfInp.checked; cfInp.dispatchEvent(new Event('change')); }
+    });
   });
 }
 
@@ -8643,68 +8636,8 @@ document.addEventListener('DOMContentLoaded', function() {
       _updateSliderSideLabel(sliderType, newValue);
     });
   }
-  
-  // Label clicks for keyboard settings toggle switches.
-  // Clicking either label sets that specific option rather than toggling.
-  (function() {
-    var KeyCountLeftLabel  = document.querySelector('#modalKeyCountRow .modal-left-label');
-    var KeyCountRightLabel = document.querySelector('#modalKeyCountRow .modal-right-label');
-    var FnLeftLabel        = document.querySelector('#modalFnRow .modal-left-label');
-    var FnRightLabel       = document.querySelector('#modalFnRow .modal-right-label');
-
-    if (KeyCountLeftLabel) {
-      KeyCountLeftLabel.style.cursor = 'pointer';
-      KeyCountLeftLabel.addEventListener('click', function() {
-        var Toggle = document.getElementById('modalOsToggle');
-        if (!Toggle || !Toggle.checked) return;
-        Toggle.checked = false;
-        onModalOsToggle();
-      });
-    }
-    if (KeyCountRightLabel) {
-      KeyCountRightLabel.style.cursor = 'pointer';
-      KeyCountRightLabel.addEventListener('click', function() {
-        var Toggle = document.getElementById('modalOsToggle');
-        if (!Toggle || Toggle.checked) return;
-        Toggle.checked = true;
-        onModalOsToggle();
-      });
-    }
-    if (FnLeftLabel) {
-      FnLeftLabel.style.cursor = 'pointer';
-      FnLeftLabel.addEventListener('click', function() {
-        var Row    = document.getElementById('modalFnRow');
-        var Toggle = document.getElementById('modalFnToggle');
-        if (!Toggle || !Row || Row.classList.contains('disabled') || !Toggle.checked) return;
-        Toggle.checked = false;
-        onModalFnToggle();
-      });
-    }
-    if (FnRightLabel) {
-      FnRightLabel.style.cursor = 'pointer';
-      FnRightLabel.addEventListener('click', function() {
-        var Row    = document.getElementById('modalFnRow');
-        var Toggle = document.getElementById('modalFnToggle');
-        if (!Toggle || !Row || Row.classList.contains('disabled') || Toggle.checked) return;
-        Toggle.checked = true;
-        onModalFnToggle();
-      });
-    }
-    var KbSizeExtended = document.getElementById('kbSizeExtendedSide');
-    var KbSizeCompact  = document.getElementById('kbSizeCompactSide');
-    if (KbSizeExtended) {
-      KbSizeExtended.addEventListener('click', function() {
-        if (touchEnabled || hasFullKeyboard) return;
-        setKbSizeToggle(true);
-      });
-    }
-    if (KbSizeCompact) {
-      KbSizeCompact.addEventListener('click', function() {
-        if (touchEnabled || !hasFullKeyboard) return;
-        setKbSizeToggle(false);
-      });
-    }
-  }());
+  _initSliders();
+});
 
 function _updateDiffSubtitle(mode, previousMode) {
   var FixedSubtitles = {

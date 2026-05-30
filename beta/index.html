@@ -335,7 +335,7 @@
       </div>
       <div class="sp-col sp-col-right">
       <div class="more-info-wrap" style="margin-bottom:4px;">
-        <p class="sp-title" onclick="toggleMoreInfo('csTrackedConflictsMoreInfo')" style="font-size:12px;margin:0;">Tracked Conflicts</p>
+        <p class="sp-title" onclick="toggleMoreInfo($1, event$2" style="font-size:12px;margin:0;">Tracked Conflicts</p>
         <span class="more-info-trigger" id="csTrackedConflictsMoreInfoTrigger" onclick="toggleMoreInfo('csTrackedConflictsMoreInfo')">
           <svg class="more-info-icon" viewBox="0 0 20 20" width="14" height="14" fill="none" stroke="currentColor" stroke-width="1.25" stroke-linecap="round">
             <circle cx="10" cy="10" r="8.5"/>
@@ -5047,7 +5047,7 @@ var _openTriggerElement = event.currentTarget.closest('.more-info-trigger');
     _closeMoreInfoPopup();
   };
   requestAnimationFrame(function() {
-    document.addEventListener('click', _moreInfoOutsideListener, true);
+    document.addEventListener('click', _moreInfoOutsideListener);
   });
 }
 

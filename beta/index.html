@@ -13522,6 +13522,14 @@ function _animateToPartialAngle(RotateXDegrees) {
   panel.style.transform  = 'rotateX(' + ClampedAngle + 'deg)';
   stage.style.transform  = 'translateY(' + StageY + 'px)';
 
+  // Suppress affordance hover flash while the keyboard is in motion.
+  var _affAnim = document.getElementById('kbHandleAffordance');
+  if (_affAnim) {
+    _affAnim.classList.remove('handle-hover', 'handle-active');
+    _affAnim.classList.add('aff-transitioning');
+    setTimeout(function() { _affAnim.classList.remove('aff-transitioning'); }, 1000);
+  }
+
   panel.classList.add('kb-edged');
   panel.classList.remove('kb-edges-visible', 'kb-partial');
   stage.classList.remove('kb-show-base');
@@ -13560,6 +13568,14 @@ function setKbPosition(pos) {
   stage.style.transition = '';
   stage.style.transform  = 'translateY(' + NamedPos.stageTranslateY + 'px)';
   panel.style.transform  = 'rotateX(' + NamedPos.panelRotateX + 'deg)';
+
+  // Suppress affordance hover flash while the keyboard animates to a named position.
+  var _affNamed = document.getElementById('kbHandleAffordance');
+  if (_affNamed) {
+    _affNamed.classList.remove('handle-hover', 'handle-active');
+    _affNamed.classList.add('aff-transitioning');
+    setTimeout(function() { _affNamed.classList.remove('aff-transitioning'); }, 1000);
+  }
 
   if (pos === 'face') {
     panel.classList.add('no-key-transition');
@@ -13712,10 +13728,11 @@ function _initialiseStageDragListeners() {
       setKbPosition('edge');
     }
   });
-  // Affordance hover: show/hide via class so CSS can transition it
+  // Affordance hover: show/hide via class so CSS can transition it.
+  // Guard against auto-animations moving the handle under the cursor.
   handle.addEventListener('mouseenter', function() {
     var aff = document.getElementById('kbHandleAffordance');
-    if (aff) aff.classList.add('handle-hover');
+    if (aff && !aff.classList.contains('aff-transitioning')) aff.classList.add('handle-hover');
   });
   handle.addEventListener('mouseleave', function() {
     var aff = document.getElementById('kbHandleAffordance');

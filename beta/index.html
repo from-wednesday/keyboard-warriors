@@ -709,7 +709,7 @@
 
         <div class="modal-layout-rows">
           <div class="modal-inline-row" id="modalKeyCountRow">
-            <div class="modal-left-label"><span>3</span></div>
+            <div class="modal-left-label" style="cursor:pointer;" onclick="SetKeyCountToThree()"><span>3</span></div>
             <div class="modal-switch-wrap">
               <label class="os-switch" title="Keys left of space" style="cursor:pointer;">
                 <input type="checkbox" id="modalOsToggle" onchange="onModalOsToggle()">
@@ -720,10 +720,10 @@
                 </svg>
               </label>
             </div>
-            <div class="modal-right-label"><span class="modal-inline-val">4</span>&ensp;<span class="modal-inline-label">keys to the left of spacebar</span></div>
+            <div class="modal-right-label" style="cursor:pointer;" onclick="SetKeyCountToFour()"><span class="modal-inline-val">4</span>&ensp;<span class="modal-inline-label">keys to the left of spacebar</span></div>
           </div>
           <div class="modal-inline-row" id="modalFnRow">
-            <div class="modal-left-label"><span id="modalFnLabelLeft"></span></div>
+            <div class="modal-left-label" style="cursor:pointer;" onclick="SetFnPositionToCtrl()"><span id="modalFnLabelLeft"></span></div>
             <div class="modal-switch-wrap">
               <label class="os-switch" title="Leftmost key" style="cursor:pointer;">
                 <input type="checkbox" id="modalFnToggle" onchange="onModalFnToggle()">
@@ -734,7 +734,7 @@
                 </svg>
               </label>
             </div>
-            <div class="modal-right-label"><span id="modalFnLabelRight" class="modal-inline-val"></span>&ensp;<span class="modal-inline-label">is the leftmost key</span></div>
+            <div class="modal-right-label" style="cursor:pointer;" onclick="SetFnPositionToFn()"><span id="modalFnLabelRight" class="modal-inline-val"></span>&ensp;<span class="modal-inline-label">is the leftmost key</span></div>
           </div>
         </div>
       </div><!-- /.sp-col-left -->
@@ -808,7 +808,7 @@
             </span>
           </div>
           <div class="modal-kbsize-row" id="modalKbSizeRow">
-            <div id="kbSizeExtendedSide" class="modal-left-label" style="display:flex;flex-direction:row;align-items:center;gap:5px;justify-content:flex-end;"><small id="kbSizeExtendedLabel" class="kb-size-word-label">extended</small><svg id="kbSizeExtendedIcon" viewBox="0 0 167 101.8" style="width:66px;height:auto;flex-shrink:0;"><use href="#IconExtKeyboard"/></svg></div>
+            <div id="kbSizeExtendedSide" class="modal-left-label" style="display:flex;flex-direction:row;align-items:center;gap:5px;justify-content:flex-end;cursor:pointer;" onclick="SetKbSizeToExtended()"><small id="kbSizeExtendedLabel" class="kb-size-word-label">extended</small><svg id="kbSizeExtendedIcon" viewBox="0 0 167 101.8" style="width:66px;height:auto;flex-shrink:0;"><use href="#IconExtKeyboard"/></svg></div>
             <div class="modal-switch-wrap">
               <label class="os-switch" title="Keyboard size" style="cursor:pointer;">
                 <input type="checkbox" id="modalKbSizeToggle" onchange="onKbSizeToggle()">
@@ -819,7 +819,7 @@
                 </svg>
               </label>
             </div>
-            <div id="kbSizeCompactSide" class="modal-right-label" style="display:flex;flex-direction:row;align-items:center;gap:5px;"><svg id="kbSizeCompactIcon" viewBox="0 0 110 101.8" style="width:44px;height:auto;"><use href="#IconKeyboard"/></svg><small id="kbSizeCompactLabel" class="kb-size-word-label">compact</small></div>
+            <div id="kbSizeCompactSide" class="modal-right-label" style="display:flex;flex-direction:row;align-items:center;gap:5px;cursor:pointer;" onclick="SetKbSizeToCompact()"><svg id="kbSizeCompactIcon" viewBox="0 0 110 101.8" style="width:44px;height:auto;"><use href="#IconKeyboard"/></svg><small id="kbSizeCompactLabel" class="kb-size-word-label">compact</small></div>
           </div>
         </div><!-- /#modalKbSizeSection -->
 
@@ -1668,6 +1668,16 @@ function applyOsMode(os) {
       questionIndex = 0;
     }
   }
+}
+
+function onOsToggle() {
+  var nativeMac = (detectedOs === 'mac' || detectedOs === 'mobile');
+  // On a Mac device: unchecked = Mac, checked = PC.
+  // On a PC device:  unchecked = PC,  checked = Mac.
+  var targetOs = nativeMac ? (osToggleEl.checked ? 'pc' : 'mac')
+                           : (osToggleEl.checked ? 'mac' : 'pc');
+  applyOsMode(targetOs);
+  if (activeSettings === 'panelKeyboard') updateModalToggles();
 }
 
 // Session-level flag: once the "recommend a keyboard" pill has been visible
@@ -5329,6 +5339,48 @@ function updateModalToggles() {
   }
 }
 
+function SetKeyCountToThree() {
+  var tog = document.getElementById('modalOsToggle');
+  if (!tog || !tog.checked) return;
+  tog.checked = false;
+  onModalOsToggle();
+}
+
+function SetKeyCountToFour() {
+  var tog = document.getElementById('modalOsToggle');
+  if (!tog || tog.checked) return;
+  tog.checked = true;
+  onModalOsToggle();
+}
+
+function SetFnPositionToCtrl() {
+  var tog = document.getElementById('modalFnToggle');
+  if (!tog || !tog.checked) return;
+  tog.checked = false;
+  onModalFnToggle();
+}
+
+function SetFnPositionToFn() {
+  var tog = document.getElementById('modalFnToggle');
+  if (!tog || tog.checked) return;
+  tog.checked = true;
+  onModalFnToggle();
+}
+
+function SetKbSizeToExtended() {
+  var tog = document.getElementById('modalKbSizeToggle');
+  if (!tog || !tog.checked) return;
+  tog.checked = false;
+  onKbSizeToggle();
+}
+
+function SetKbSizeToCompact() {
+  var tog = document.getElementById('modalKbSizeToggle');
+  if (!tog || tog.checked) return;
+  tog.checked = true;
+  onKbSizeToggle();
+}
+
 function onModalOsToggle() {
   var tog = document.getElementById('modalOsToggle');
   var goingTo4 = tog.checked;
@@ -6854,11 +6906,16 @@ function _renderKeyboardConflictTab(container) {
     });
 
   }
-  [extSide, cmpSide].forEach(function(side) {
-    side.addEventListener('click', function() {
-      if (cfInp && !touchEnabled) { cfInp.checked = !cfInp.checked; cfInp.dispatchEvent(new Event('change')); }
-    });
-  });
+  extSide.onclick = function() {
+    if (!cfInp || touchEnabled || !cfInp.checked) return;
+    cfInp.checked = false;
+    cfInp.dispatchEvent(new Event('change'));
+  };
+  cmpSide.onclick = function() {
+    if (!cfInp || touchEnabled || cfInp.checked) return;
+    cfInp.checked = true;
+    cfInp.dispatchEvent(new Event('change'));
+  };
 }
 
 // Applies the resting tint style to a key element.

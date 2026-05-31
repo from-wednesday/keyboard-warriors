@@ -1598,6 +1598,7 @@ li.conflict-dismissed .conflict-desc {
   .scoreDisc .accuracy-icon  { width: 11px; height: 11px; }
   .scoreDisc .timer-top    { padding-bottom: 3px; }
   .scoreDisc .timer-bottom { padding-top: 3px; }
+  #questionTimerArc { width: 90px !important; height: 90px !important; }
 
   #title { font-size: 18px; }
 

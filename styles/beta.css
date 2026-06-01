@@ -3729,10 +3729,11 @@ body.returning-screen #diffIconWrap .icon-tip { display: none; }
   width: 100%;
 }
 
-/* Constrain icons in phone toolbar so they don't bloat button height */
+/* Constrain icons in phone toolbar so they don't bloat button height.
+   Width-only sizing lets each aspect ratio breathe without distortion. */
 .phone-icon-btn svg {
-  width: 22px;
-  height: 22px;
+  width: 28px;
+  height: auto;
   flex-shrink: 0;
 }
 

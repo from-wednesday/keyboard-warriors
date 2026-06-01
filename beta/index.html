@@ -379,11 +379,11 @@
 <div id="phoneToolbar" style="display:none;">
   <div id="phoneToolbarIcons">
     <div class="phone-icon-btn" id="phoneKbIconWrap">
-      <svg style="height:36px;width:auto;color:#9ca3af;"><use href="#IconKeyboard"/></svg>
+      <svg style="color:#9ca3af;"><use href="#IconKeyboard"/></svg>
       <span class="phone-icon-label">Keyboard</span>
     </div>
     <div class="phone-icon-btn" id="phoneDiffIconWrap">
-      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 96.6 64" style="width:36px;height:auto;color:#9ca3af;">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 96.6 64" style="color:#9ca3af;">
         <use href="#IconDifficultyDial"/>
         <g id="phoneDiffNeedle" style="transform:rotate(-60deg);transform-origin:48.2px 48.1px;transition:transform 0.35s cubic-bezier(0.34,1.56,0.64,1);">
           <use href="#IconDifficultyNeedle"/>
@@ -392,11 +392,11 @@
       <span class="phone-icon-label">Difficulty</span>
     </div>
     <div class="phone-icon-btn" id="phoneBrIconWrap">
-<svg style="height:28px;width:auto;color:#9ca3af;"><use href="#IconConflicts"/></svg>
+<svg style="color:#9ca3af;"><use href="#IconConflicts"/></svg>
       <span class="phone-icon-label">Conflicts</span>
     </div>
     <div class="phone-icon-btn" id="phoneStudyNotesIconWrap">
-      <svg style="height:38px;width:auto;color:#9ca3af;"><use href="#IconStudyNotes"/></svg>
+      <svg style="color:#9ca3af;"><use href="#IconStudyNotes"/></svg>
       <span class="phone-icon-label">Study Notes</span>
     </div>
   </div>
@@ -893,7 +893,7 @@
             </span>
           </div>
           <div class="modal-kbsize-row" id="modalKbSizeRow">
-            <div id="kbSizeExtendedSide" class="modal-left-label" style="display:flex;flex-direction:row;align-items:center;gap:5px;justify-content:flex-end;cursor:pointer;" onclick="SetKbSizeToExtended()"><small id="kbSizeExtendedLabel" class="kb-size-word-label">extended</small><svg id="kbSizeExtendedIcon" viewBox="0 0 139.9 49.8" style="width:66px;height:auto;flex-shrink:0;"><use href="#IconExtKeyboard"/></svg></div>
+            <div id="kbSizeExtendedSide" class="modal-left-label" style="display:flex;flex-direction:row;align-items:center;gap:5px;justify-content:flex-end;cursor:pointer;" onclick="SetKbSizeToExtended()"><small id="kbSizeExtendedLabel" class="kb-size-word-label">extended</small><svg id="kbSizeExtendedIcon" viewBox="0 0 139.9 49.8" style="height:22px;width:auto;flex-shrink:0;"><use href="#IconExtKeyboard"/></svg></div>
             <div class="modal-switch-wrap">
               <label class="os-switch" title="Keyboard size" style="cursor:pointer;">
                 <input type="checkbox" id="modalKbSizeToggle" onchange="onKbSizeToggle()">
@@ -904,7 +904,7 @@
                 </svg>
               </label>
             </div>
-            <div id="kbSizeCompactSide" class="modal-right-label" style="display:flex;flex-direction:row;align-items:center;gap:5px;cursor:pointer;" onclick="SetKbSizeToCompact()"><svg id="kbSizeCompactIcon" viewBox="0 0 111.9 49.8"" style="width:44px;height:auto;"><use href="#IconKeyboard"/></svg><small id="kbSizeCompactLabel" class="kb-size-word-label">compact</small></div>
+            <div id="kbSizeCompactSide" class="modal-right-label" style="display:flex;flex-direction:row;align-items:center;gap:5px;cursor:pointer;" onclick="SetKbSizeToCompact()"><svg id="kbSizeCompactIcon" viewBox="0 0 111.9 49.8"" style="height:22px;width:auto;"><use href="#IconKeyboard"/></svg><small id="kbSizeCompactLabel" class="kb-size-word-label">compact</small></div>
           </div>
         </div><!-- /#modalKbSizeSection -->
 
@@ -1045,7 +1045,7 @@
 <p id="credit" class="page-initially-hidden"><em>Built for learners.</em><small> This digital toy was created by Wednesday Dessauer &amp; is free to adapt under Polyform Non-Commercial 1.0.0</small></p>
 
 <div id="diffIconWrap" class="page-initially-hidden">
- <svg id="diffIcon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 96.6 64" style="width:44px;height:auto;" cursor="pointer">
+ <svg id="diffIcon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 96.6 64" style="height:22px;width:auto;" cursor="pointer">
     <use href="#IconDifficultyDial"/>
     <g id="Needle" style="transform:rotate(-60deg);transform-origin:48.2px 48.1px;transition:transform 0.35s cubic-bezier(0.34,1.56,0.64,1);">
       <use href="#IconDifficultyNeedle"/>
@@ -6911,7 +6911,7 @@ function _renderKeyboardConflictTab(container) {
   extSide.className = 'modal-left-label';
   extSide.style.cssText = 'display:flex;flex-direction:row;align-items:center;gap:5px;justify-content:flex-end;cursor:pointer;';
   extSide.innerHTML = '<small class="kb-size-word-label" id="cfKbExtLabel">extended</small>'
-    + '<svg viewBox="0 0 139.9 49.8" style="width:66px;height:auto;flex-shrink:0;" id="cfKbExtIcon"><use href="#IconExtKeyboard"/></svg>';
+    + '<svg viewBox="0 0 139.9 49.8" style="height:22px;width:auto;flex-shrink:0;" id="cfKbExtIcon"><use href="#IconExtKeyboard"/></svg>';
 
   // Switch
   var switchWrap = document.createElement('div');
@@ -6927,7 +6927,7 @@ function _renderKeyboardConflictTab(container) {
   var cmpSide = document.createElement('div');
   cmpSide.className = 'modal-right-label';
   cmpSide.style.cssText = 'display:flex;flex-direction:row;align-items:center;gap:5px;cursor:pointer;';
-  cmpSide.innerHTML = '<svg id="cfKbCmpIcon" viewBox="0 0 111.9 49.8"" style="width:44px;height:auto;"><use href="#IconKeyboard"/></svg>'
+  cmpSide.innerHTML = '<svg id="cfKbCmpIcon" viewBox="0 0 111.9 49.8"" style="height:22px;width:auto;"><use href="#IconKeyboard"/></svg>'
     + '<small class="kb-size-word-label" id="cfKbCmpLabel">compact</small>';
 
   toggleWrap.appendChild(extSide);

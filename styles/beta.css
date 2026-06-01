@@ -3656,8 +3656,7 @@ body.returning-screen #diffIconWrap .icon-tip { display: none; }
   align-items: center;
   justify-content: center;
   gap: 6px;
-  padding: 0 10px;
-  min-height: 32px;
+  padding: 8px 10px;
   cursor: pointer;
   flex: 1;
   user-select: none;

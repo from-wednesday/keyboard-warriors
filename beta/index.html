@@ -1879,12 +1879,15 @@ if (_phoneBrBtn)   _phoneBrBtn.addEventListener('click',   function() { _phoneOp
   document.getElementById('keyboardPanel').classList.toggle('pc-keys', currentOs === 'pc');
 var _phoneStudyBtn = document.getElementById('phoneStudyNotesIconWrap');
 if (_phoneStudyBtn) _phoneStudyBtn.addEventListener('click', function() {
+  var HasContent = !!(lastCompletedReport || (questionPool && questionPool.length > 0 && (gameState === 'playing' || gameState === 'paused' || gameState === 'readyToUnpause')));
+  if (!HasContent) {
+    showToast('Start training to build Study Notes.');
+    return;
+  }
   if (gameState === 'finished' && lastCompletedReport) {
     _phoneOpenSettings('panelEndGameReportCard');
-  } else if (questionPool && questionPool.length > 0 && (gameState === 'playing' || gameState === 'paused' || gameState === 'readyToUnpause')) {
-    openCheatSheetPanel();
   } else {
-    showToast('Start training to build Study Notes.');
+    openCheatSheetPanel();
   }
 });
   _revealPageContent();

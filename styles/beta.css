@@ -1,5 +1,5 @@
 /* ═══════════════════════════════════════════════════
-   Keyboard Warriors CSS
+   Keyboard Warriors CSS v0031
    Load order: @import → Block 1 → Block 3 → misc
    Do not reorder major sections.
    ═══════════════════════════════════════════════════ */
@@ -2922,7 +2922,6 @@ body.returning-screen #diffIconWrap .icon-tip { display: none; }
 #kbIconWrap.sp-icon-active  #kbIcon      { color: #374151; }
 #brIconWrap.sp-icon-active  #browserIcon { color: #374151; }
 #diffIconWrap.sp-icon-active #diffIcon   { color: #374151; }
-#diffIconWrap.sp-icon-active #diffIcon .gauge-stroke { stroke: #374151; fill: none;}
 #diffIconWrap.sp-icon-active #diffIcon #Needle        { color: #374151; }
 /* ── Report Card panel ───────────────────────────── */
 
@@ -3489,7 +3488,6 @@ body.returning-screen #diffIconWrap .icon-tip { display: none; }
   display: block;
   opacity: 1;
 }
-/* Pause-nudge SVG gauge strokes (was inline in SVG element) */.pn-stroke { fill:none; stroke:currentColor; stroke-width:2px; stroke-linecap:round; stroke-miterlimit:10; }
 
 /* Hide the vertical column divider line on the blur-pause diagnostic screen */
 #panelPause.blur-pause-active.sp-active::after {

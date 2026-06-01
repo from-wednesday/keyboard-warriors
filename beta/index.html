@@ -579,7 +579,7 @@
   </div>
   <div class="sp-col sp-col-right">
     <div class="sp-report-col-header sp-report-col-header-right">
-      <p class="sp-report-section-title" id="reportPracticeHeading" style="margin-top:4px;" >Practice</p>
+      <p class="sp-report-section-title" id="reportPracticeHeading">Practice</p>
     </div>
     <ul id="reportWeaknesses" class="sp-report-list sp-report-weakness"></ul>
   </div>
@@ -5755,13 +5755,8 @@ function _spAlignPanel() {
   var wrap  = document.getElementById('keyboardWrap');
   if (!panel || !stage || !inner || !wrap) return;
   wrap.style.minHeight = '';
-var left  = stage.offsetLeft + panel.offsetLeft;
+  var left  = stage.offsetLeft + panel.offsetLeft;
   var width = panel.offsetWidth;
-  var MAX_PANEL_WIDTH = 1000;
-  if (width > MAX_PANEL_WIDTH) {
-    left = left + Math.round((width - MAX_PANEL_WIDTH) / 2);
-    width = MAX_PANEL_WIDTH;
-  }
   inner.style.left  = left + 'px';
   inner.style.width = width + 'px';
   // left/width for affordance set now so horizontal position is immediate

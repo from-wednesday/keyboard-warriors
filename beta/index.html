@@ -5755,8 +5755,13 @@ function _spAlignPanel() {
   var wrap  = document.getElementById('keyboardWrap');
   if (!panel || !stage || !inner || !wrap) return;
   wrap.style.minHeight = '';
-  var left  = stage.offsetLeft + panel.offsetLeft;
+var left  = stage.offsetLeft + panel.offsetLeft;
   var width = panel.offsetWidth;
+  var MAX_PANEL_WIDTH = 1000;
+  if (width > MAX_PANEL_WIDTH) {
+    left = left + Math.round((width - MAX_PANEL_WIDTH) / 2);
+    width = MAX_PANEL_WIDTH;
+  }
   inner.style.left  = left + 'px';
   inner.style.width = width + 'px';
   // left/width for affordance set now so horizontal position is immediate

@@ -893,7 +893,7 @@
             </span>
           </div>
           <div class="modal-kbsize-row" id="modalKbSizeRow">
-            <div id="kbSizeExtendedSide" class="modal-left-label" style="display:flex;flex-direction:row;align-items:center;gap:5px;justify-content:flex-end;cursor:pointer;" onclick="SetKbSizeToExtended()"><small id="kbSizeExtendedLabel" class="kb-size-word-label">extended</small><svg id="kbSizeExtendedIcon" viewBox="0 0 139.9 49.8" style="height:20px;width:auto;flex-shrink:0;"><use href="#IconExtKeyboard"/></svg></div>
+            <div id="kbSizeExtendedSide" class="modal-left-label" style="display:flex;flex-direction:row;align-items:center;gap:5px;justify-content:flex-end;cursor:pointer;" onclick="SetKbSizeToExtended()"><small id="kbSizeExtendedLabel" class="kb-size-word-label">extended</small><svg id="kbSizeExtendedIcon" viewBox="0 0 139.9 49.8" style="height:14px;width:auto;flex-shrink:0;"><use href="#IconExtKeyboard"/></svg></div>
             <div class="modal-switch-wrap">
               <label class="os-switch" title="Keyboard size" style="cursor:pointer;">
                 <input type="checkbox" id="modalKbSizeToggle" onchange="onKbSizeToggle()">
@@ -904,7 +904,7 @@
                 </svg>
               </label>
             </div>
-            <div id="kbSizeCompactSide" class="modal-right-label" style="display:flex;flex-direction:row;align-items:center;gap:5px;cursor:pointer;" onclick="SetKbSizeToCompact()"><svg id="kbSizeCompactIcon" viewBox="0 0 111.9 49.8"" style="height:20px;width:auto;"><use href="#IconKeyboard"/></svg><small id="kbSizeCompactLabel" class="kb-size-word-label">compact</small></div>
+            <div id="kbSizeCompactSide" class="modal-right-label" style="display:flex;flex-direction:row;align-items:center;gap:5px;cursor:pointer;" onclick="SetKbSizeToCompact()"><svg id="kbSizeCompactIcon" viewBox="0 0 111.9 49.8"" style="height:14px;width:auto;"><use href="#IconKeyboard"/></svg><small id="kbSizeCompactLabel" class="kb-size-word-label">compact</small></div>
           </div>
         </div><!-- /#modalKbSizeSection -->
 
@@ -6911,7 +6911,7 @@ function _renderKeyboardConflictTab(container) {
   extSide.className = 'modal-left-label';
   extSide.style.cssText = 'display:flex;flex-direction:row;align-items:center;gap:5px;justify-content:flex-end;cursor:pointer;';
   extSide.innerHTML = '<small class="kb-size-word-label" id="cfKbExtLabel">extended</small>'
-    + '<svg viewBox="0 0 139.9 49.8" style="height:20px;width:auto;flex-shrink:0;" id="cfKbExtIcon"><use href="#IconExtKeyboard"/></svg>';
+    + '<svg viewBox="0 0 139.9 49.8" style="height:14px;width:auto;flex-shrink:0;" id="cfKbExtIcon"><use href="#IconExtKeyboard"/></svg>';
 
   // Switch
   var switchWrap = document.createElement('div');
@@ -6927,7 +6927,7 @@ function _renderKeyboardConflictTab(container) {
   var cmpSide = document.createElement('div');
   cmpSide.className = 'modal-right-label';
   cmpSide.style.cssText = 'display:flex;flex-direction:row;align-items:center;gap:5px;cursor:pointer;';
-  cmpSide.innerHTML = '<svg id="cfKbCmpIcon" viewBox="0 0 111.9 49.8"" style="height:20px;width:auto;"><use href="#IconKeyboard"/></svg>'
+  cmpSide.innerHTML = '<svg id="cfKbCmpIcon" viewBox="0 0 111.9 49.8"" style="height:14px;width:auto;"><use href="#IconKeyboard"/></svg>'
     + '<small class="kb-size-word-label" id="cfKbCmpLabel">compact</small>';
 
   toggleWrap.appendChild(extSide);

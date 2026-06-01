@@ -1881,8 +1881,10 @@ var _phoneStudyBtn = document.getElementById('phoneStudyNotesIconWrap');
 if (_phoneStudyBtn) _phoneStudyBtn.addEventListener('click', function() {
   if (gameState === 'finished' && lastCompletedReport) {
     _phoneOpenSettings('panelEndGameReportCard');
-  } else {
+  } else if (questionPool && questionPool.length > 0 && (gameState === 'playing' || gameState === 'paused' || gameState === 'readyToUnpause')) {
     openCheatSheetPanel();
+  } else {
+    showToast('Start training to build Study Notes.');
   }
 });
   _revealPageContent();

@@ -781,7 +781,6 @@ body.kb-at-edge #keyboardPanel #kb-shadow {
   display: none;
   gap: 0;
   width: 100%;
-  max-width: 1000px;
 }
 .sp-page.sp-active {
   display: grid;

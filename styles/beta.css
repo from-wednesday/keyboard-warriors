@@ -2816,10 +2816,8 @@ li.conflict-dismissed .conflict-desc {
      The translate nudge at face position tucks it up into the keyboard shadow. */
   transform: translateY(0);
   transition: transform 0.85s cubic-bezier(0.4, 0, 0.2, 1);
-  /* Ensure the icon is always clickable — sit above the keyboard stage's
-     pointer-events:none zone that is set while a panel is open. */
   position: relative;
-  z-index: 3;
+  z-index: 1;
 }
 #diffIcon {
   display: block; color: #9ca3af; pointer-events: auto;

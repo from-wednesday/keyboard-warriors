@@ -12938,9 +12938,9 @@ window.addEventListener('blur', function() {
 
   clearTimeout(_blurDebounceTimer);
   _blurDebounceTimer = setTimeout(function() {
-    // If the document is still visible, this was almost certainly Safari's
-    // toolbar chrome animating in or out rather than a genuine focus loss.
-    if (document.visibilityState === 'visible') return;
+// If the document still has focus, this was almost certainly Safari's
+    // toolbar chrome animating rather than a genuine focus loss.
+    if (document.hasFocus()) return;
 
     if (gameState === 'playing') {
       _blurPauseActive = true;

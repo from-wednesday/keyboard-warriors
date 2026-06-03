@@ -12927,33 +12927,28 @@ var _blurDiagnosticAnswerRevealed = false;
 var _blurDiagnosticShortcutToken  = null;
 var _blurDiagnosticFlowComplete   = false;
 
-var _blurDebounceTimer = null;
-var _blurDebounceMs = 180; // Long enough to clear Safari chrome-hide blur; short enough to feel instant on real tab switches
+// iPhone Safari fires blur on every scroll as its chrome auto-hides.
+// The pause-on-blur diagnostic is suppressed on iPhone to prevent false triggers.
+var _IsIphoneSafari = /iPhone/.test(navigator.userAgent);
 
 window.addEventListener('blur', function() {
   releaseAllKeys();
   if (activeSettings === 'panelConflicts') {
     conflictsKbLighting.resetOnBlur();
   }
+  if (_IsIphoneSafari) return;
 
-  clearTimeout(_blurDebounceTimer);
-  _blurDebounceTimer = setTimeout(function() {
-// If the document still has focus, this was almost certainly Safari's
-    // toolbar chrome animating rather than a genuine focus loss.
-    if (document.hasFocus()) return;
-
-    if (gameState === 'playing') {
-      _blurPauseActive = true;
-      enterPause();
+  if (gameState === 'playing') {
+    _blurPauseActive = true;
+    enterPause();
+    requestAnimationFrame(function() {
       requestAnimationFrame(function() {
-        requestAnimationFrame(function() {
-          _activateBlurPauseScreen();
-        });
+        _activateBlurPauseScreen();
       });
-    } else if (!touchEnabled && gameState === 'paused' && _blurPauseActive && _blurDiagnosticAnswerRevealed) {
-      _blurDiagnosticSecondBlur();
-    }
-  }, _blurDebounceMs);
+    });
+  } else if (!touchEnabled && gameState === 'paused' && _blurPauseActive && _blurDiagnosticAnswerRevealed) {
+    _blurDiagnosticSecondBlur();
+  }
 });
 
 document.addEventListener('visibilitychange', function() {

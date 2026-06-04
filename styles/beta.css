@@ -2821,7 +2821,7 @@ li.conflict-dismissed .conflict-desc {
 }
 #diffIcon {
   display: block; color: #9ca3af; pointer-events: auto;
-  cursor: pointer; width: 44px; transition: transform 0.18s ease;
+  cursor: pointer; width: 52px; transition: transform 0.18s ease;
 }
 #diffIcon:hover { transform: scale(1.12); }
 #diffIcon #Needle {

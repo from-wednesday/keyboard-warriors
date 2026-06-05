@@ -5628,19 +5628,7 @@ function _phoneOpenPanel(Page, WasAlreadyOpen, PreviousPage) {
   // Expand the container
   PhonePanelArea.classList.add('phone-panel-open');
 
-  // Scroll the panel area smoothly into view
-  requestAnimationFrame(function() {
-    requestAnimationFrame(function() {
-      var ToolbarElement = document.getElementById('phoneToolbar');
-      if (ToolbarElement) {
-        var ToolbarTop = ToolbarElement.getBoundingClientRect().top + window.scrollY;
-        window.scrollTo({ top: ToolbarTop, behavior: 'smooth' });
-      } else {
-        PhonePanelArea.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
-      }
-    });
-  });
-}
+  // Panel expands in place below the toolbar; no scroll needed.
 
 function _phoneCollapsePanel() {
   var PhonePanelArea = document.getElementById('phonePanelArea');

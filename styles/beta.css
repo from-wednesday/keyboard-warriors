@@ -1569,9 +1569,13 @@ li.conflict-dismissed .conflict-desc {
 
 /* ══════════════════════════════════════
    BREAKPOINTS
-   < 600px: keyboard hidden; stats bar still shows
-   600-819: mini keyboard
-   >= 820:  full keyboard
+    1.	1600px wide AND 870px tall – scales the whole UI to 120% zoom
+	2.	2000px wide AND 1060px tall – scales to 145% zoom
+	3.	2600px wide AND 1270px tall – scales to 175% zoom
+	4.	820px wide – switches from full keyboard to mini keyboard (this is a JS threshold in updateKeyboardMode, not a CSS media query)
+	5.	700px wide – CSS media query that switches from icon wraps to toolbar, reduces padding, shrinks the game panel, buttons, score disc, and title​​​​​​​​​​​​​​​​
+	6.	474 wide – hides the keyboard forcing ‘none’ keyboard visibility option.
+
 ══════════════════════════════════════ */
 @media (max-width: 599px) {
 

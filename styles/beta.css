@@ -1579,7 +1579,12 @@ li.conflict-dismissed .conflict-desc {
   #brIconWrap   { display: none; }
   #diffIconWrap { display: none; }
 
-  body { padding: 12px; }
+  body {
+    padding: 12px;
+    justify-content: flex-start;
+    align-items: flex-start;
+    min-height: unset;
+  }
 
   #gameContainer { padding: 6px 16px 6px; max-width: none; }
 

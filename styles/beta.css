@@ -2405,6 +2405,7 @@ li.conflict-dismissed .conflict-desc {
   width: 44px;
   height: auto;
   fill: currentColor;
+  overflow : visible;
 }
 .sp-nudge-inactive .sp-nudge-icon {
   opacity: 1;
@@ -2821,7 +2822,7 @@ li.conflict-dismissed .conflict-desc {
 }
 #diffIcon {
   display: block; color: #9ca3af; pointer-events: auto;
-  cursor: pointer; width: 38px; transition: transform 0.18s ease;
+  cursor: pointer; width: 40px; overflow: visible; transition: transform 0.18s ease;
 }
 #diffIcon:hover { transform: scale(1.12); }
 #diffIcon #Needle {

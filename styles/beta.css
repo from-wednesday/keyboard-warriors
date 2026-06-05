@@ -3713,6 +3713,18 @@ body.returning-screen #diffIconWrap .icon-tip { display: none; }
   stroke: #1f2937;
 }
 
+/* Phone layout: pin the game UI to the top of the viewport so that
+   opening and closing settings panels does not shift it. */
+body.phone-layout-active {
+  justify-content: flex-start;
+  height: 100dvh;
+  overflow: hidden;
+}
+
+body.phone-layout-active #phonePanelArea.phone-panel-open {
+  overflow-y: auto;
+}
+
 #phonePanelArea {
   overflow: hidden;
   max-height: 0;

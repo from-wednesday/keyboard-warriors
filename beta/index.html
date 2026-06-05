@@ -1864,7 +1864,7 @@ function updateKeyboardMode() {
       buildKeyboard(mode === 'mini');
     }
   }
-  // Always sync toolbar in case the 600px phone-layout boundary was crossed
+  // Always sync toolbar in case the 700px phone-layout boundary was crossed
   // without the keyboard mode itself changing (e.g. 820px → 599px stays 'mini').
   _syncPhoneToolbarVisibility();
 }
@@ -5529,8 +5529,8 @@ function _syncPhoneToolbarVisibility() {
   if (!ToolbarElement) return;
 
   // Phone layout activates either when the keyboard is forcibly hidden,
-  // or when the viewport is narrower than 600px (toolbar replaces icon wraps).
-  var IsPhoneLayout = ForceNoKeyboard || window.innerWidth < 600;
+  // or when the viewport is narrower than 700px (toolbar replaces icon wraps).
+  var IsPhoneLayout = ForceNoKeyboard || window.innerWidth < 700;
 
   document.body.classList.toggle('phone-layout-active', IsPhoneLayout);
 

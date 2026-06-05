@@ -5524,6 +5524,7 @@ function _spPageEl(page) {
 function _syncPhoneToolbarVisibility() {
   var ToolbarElement = document.getElementById('phoneToolbar');
   if (!ToolbarElement) return;
+  document.body.classList.toggle('phone-layout-active', ForceNoKeyboard);
 
   // Two layouts are mutually exclusive: desktop keyboard area or phone toolbar.
   // When ForceNoKeyboard is true we are in phone layout — show the toolbar and

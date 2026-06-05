@@ -3737,6 +3737,7 @@ body.returning-screen #diffIconWrap .icon-tip { display: none; }
   width: 28px;
   height: auto;
   flex-shrink: 0;
+  overflow: visible;
 }
 
 #phonePanelArea .sp-page.sp-active:not(#panelDifficultySettings):not(#panelLandingReturning):not(#panelLandingWelcome) {

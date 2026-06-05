@@ -1852,18 +1852,21 @@ var ForceNoKeyboard = false;
 function updateKeyboardMode() {
   const w = window.innerWidth;
   if (keyboardDisplayMode !== 'none') {
-    ForceNoKeyboard = w < 600;
+    ForceNoKeyboard = w < 474;
   }
   const mode = ForceNoKeyboard ? 'none' : w < 820 ? 'mini' : 'full';
-  if (mode === currentKbMode) return;
-  currentKbMode = mode;
-  if (mode === 'none') {
-    keyboardWrap.style.display = 'none';
-    _syncPhoneToolbarVisibility();
-  } else {
-    keyboardWrap.style.display = 'flex';
-    buildKeyboard(mode === 'mini');
+  if (mode !== currentKbMode) {
+    currentKbMode = mode;
+    if (mode === 'none') {
+      keyboardWrap.style.display = 'none';
+    } else {
+      keyboardWrap.style.display = 'flex';
+      buildKeyboard(mode === 'mini');
+    }
   }
+  // Always sync toolbar in case the 600px phone-layout boundary was crossed
+  // without the keyboard mode itself changing (e.g. 820px → 599px stays 'mini').
+  _syncPhoneToolbarVisibility();
 }
 
 function _initialiseLayout() {
@@ -5524,35 +5527,35 @@ function _spPageEl(page) {
 function _syncPhoneToolbarVisibility() {
   var ToolbarElement = document.getElementById('phoneToolbar');
   if (!ToolbarElement) return;
-  document.body.classList.toggle('phone-layout-active', ForceNoKeyboard);
 
-  // Two layouts are mutually exclusive: desktop keyboard area or phone toolbar.
-  // When ForceNoKeyboard is true we are in phone layout — show the toolbar and
-  // hide all desktop-only elements. When false, do the opposite.
-  var DesktopOnlyElements = [
-    document.getElementById('keyboardWrap'),
+  // Phone layout activates either when the keyboard is forcibly hidden,
+  // or when the viewport is narrower than 600px (toolbar replaces icon wraps).
+  var IsPhoneLayout = ForceNoKeyboard || window.innerWidth < 600;
+
+  document.body.classList.toggle('phone-layout-active', IsPhoneLayout);
+
+  // Icon wraps are hidden in phone layout because the toolbar provides the same buttons.
+  // keyboardWrap visibility is managed separately by updateKeyboardMode.
+  var IconWrapElements = [
     document.getElementById('kbIconWrap'),
     document.getElementById('brIconWrap'),
     document.getElementById('diffIconWrap'),
   ];
 
-  if (!ForceNoKeyboard) {
+  if (!IsPhoneLayout) {
     ToolbarElement.style.display = 'none';
-    DesktopOnlyElements.forEach(function(Element) {
+    IconWrapElements.forEach(function(Element) {
       if (Element) Element.style.display = '';
     });
     return;
   }
 
-  // Phone layout: hide all desktop elements unconditionally.
-  DesktopOnlyElements.forEach(function(Element) {
+  IconWrapElements.forEach(function(Element) {
     if (Element) Element.style.display = 'none';
   });
 
-  // Toolbar is always visible in phone layout — it does not hide during play.
   ToolbarElement.style.display = 'flex';
 
-  // Update the Study Notes button availability based on whether there is content to show.
   var StudyNotesButton = document.getElementById('phoneStudyNotesIconWrap');
   if (StudyNotesButton) {
     var HasStudyNotesContent = !!(lastCompletedReport || (questionPool && questionPool.length > 0 && (gameState === 'playing' || gameState === 'paused' || gameState === 'readyToUnpause')));

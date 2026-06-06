@@ -3729,7 +3729,7 @@ body.phone-layout-active #phonePanelArea.phone-panel-open {
 }
 
 #phonePanelArea {
-  overflow: hidden;
+  overflow: visible;
   max-height: 0;
   opacity: 0;
   transition:
@@ -3762,7 +3762,9 @@ body.phone-layout-active #phonePanelArea.phone-panel-open {
 
 #phonePanelArea .sp-page.sp-active:not(#panelDifficultySettings):not(#panelLandingReturning):not(#panelLandingWelcome) {
   display: grid;
-  grid-template-columns: minmax(160px, 1fr) minmax(160px, 1fr);
+  grid-template-columns: minmax(263px, 1fr) minmax(263px, 1fr);
+  min-width: 526px;
+  margin: 0 auto;
 }
 
 #phonePanelArea .sp-col-left  { padding-right: 12px; }

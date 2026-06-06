@@ -3719,7 +3719,7 @@ body.phone-layout-active {
 }
 
 /* Hide toolbar labels when there is not enough room for four labelled buttons */
-@media (max-width: 299px) {
+@media (max-width: 416px) {
   .phone-icon-label { display: none; }
   .phone-icon-btn   { padding: 6px 8px; gap: 0; }
 }

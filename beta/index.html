@@ -12940,16 +12940,36 @@ window.addEventListener('blur', function() {
   }
 });
 
+var _visibilityHideTimer = null;
 document.addEventListener('visibilitychange', function() {
   if (document.hidden) {
     releaseAllKeys();
     if (gameState === 'playing') {
-      _blurPauseActive = true;
-      _blurDiagnosticFoldPending = true;
-      enterPause();
-      _activateBlurPauseScreen();
+      // On mobile, visibilitychange can fire transiently during scroll as Safari
+      // shows/hides its chrome. Debounce: only treat as a real hide if the page
+      // stays hidden for more than 350ms.
+      if (detectedOs === 'mobile') {
+        _visibilityHideTimer = setTimeout(function() {
+          _visibilityHideTimer = null;
+          if (document.hidden && gameState === 'playing') {
+            _blurPauseActive = true;
+            _blurDiagnosticFoldPending = true;
+            enterPause();
+            _activateBlurPauseScreen();
+          }
+        }, 350);
+      } else {
+        _blurPauseActive = true;
+        _blurDiagnosticFoldPending = true;
+        enterPause();
+        _activateBlurPauseScreen();
+      }
     }
   } else {
+    if (_visibilityHideTimer) {
+      clearTimeout(_visibilityHideTimer);
+      _visibilityHideTimer = null;
+    }
     // Briefly lock maximum-scale to correct iPadOS Safari's zoom-on-return bug,
     // then restore the original viewport after Safari has had time to settle.
     var ViewportMetaTag = document.querySelector('meta[name=viewport]');

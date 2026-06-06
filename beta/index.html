@@ -14073,15 +14073,6 @@ function _requiresGyroPrompt() {
 function OnPhoneWarningDismiss() {
   _uiReady = true;
   HidePhoneWarningModal();
-  // Reverse the touch defaults set at startup -- phone plays without
-  // the graphical keyboard and without on-screen key input.
-  setTouchEnabled(false);
-  setStickyKeys(false);
-  var StickyRowElement = document.getElementById('stickyRow');
-  if (StickyRowElement) StickyRowElement.classList.remove('disabled');
-  // Force the keyboard panel permanently hidden regardless of screen width
-  ForceNoKeyboard = true;
-  updateKeyboardMode();
   // Chain to gyro prompt on iOS if permission not yet granted
   var IsIos = /iPad|iPhone|iPod/.test(navigator.userAgent) ||
               (navigator.maxTouchPoints > 1 && /Mac/.test(navigator.userAgent));
@@ -14099,12 +14090,6 @@ function InitialiseTouchBootSequence() {
   // If gyro was previously granted, re-wire the listener silently
   if (SavedGyroDecision === 'granted') {
     InitialiseGyroOrientationListener();
-  }
-
-  // Small phones get the warning first
-  if (IsPhoneScreen()) {
-    setTimeout(ShowPhoneWarningModal, 250);
-    return;
   }
 
   // iOS permission flow

@@ -14154,13 +14154,22 @@ document.addEventListener('DOMContentLoaded', function() {
 
 var LayoutRedrawDebounceTimer = null;
 
-function OnLayoutChange() {
+function OnLayoutChange(EventSource) {
   clearTimeout(LayoutRedrawDebounceTimer);
   LayoutRedrawDebounceTimer = setTimeout(function() {
     requestAnimationFrame(function() {
+      // Safari on iPhone fires 'resize' on every scroll as the browser chrome
+      // shows/hides. Never pause for a resize on iPhone — only pause on a
+      // genuine orientation angle change, and only on non-iPhone mobile.
+      var ShouldPause = false;
       if (gameState === 'playing') {
-        enterPause();
+        if (detectedOs !== 'mobile') {
+          ShouldPause = true;
+        } else if (!_IsIphoneSafari && EventSource === 'orientationchange') {
+          ShouldPause = true;
+        }
       }
+      if (ShouldPause) enterPause();
       updateKeyboardMode();
       positionIcons();
       if (activeSettings !== null) _spAlignPanel();
@@ -14168,8 +14177,8 @@ function OnLayoutChange() {
   }, 300);
 }
 
-window.addEventListener('resize',            OnLayoutChange, { passive: true });
-window.addEventListener('orientationchange', OnLayoutChange, { passive: true });
+window.addEventListener('resize',            function() { OnLayoutChange('resize'); },            { passive: true });
+window.addEventListener('orientationchange', function() { OnLayoutChange('orientationchange'); }, { passive: true });
 
 /* ══════════════════════════════════════
    DIFFICULTY CARET

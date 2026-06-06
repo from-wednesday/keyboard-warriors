@@ -12940,36 +12940,16 @@ window.addEventListener('blur', function() {
   }
 });
 
-var _visibilityHideTimer = null;
 document.addEventListener('visibilitychange', function() {
   if (document.hidden) {
     releaseAllKeys();
     if (gameState === 'playing') {
-      // On mobile, visibilitychange can fire transiently during scroll as Safari
-      // shows/hides its chrome. Debounce: only treat as a real hide if the page
-      // stays hidden for more than 350ms.
-      if (detectedOs === 'mobile') {
-        _visibilityHideTimer = setTimeout(function() {
-          _visibilityHideTimer = null;
-          if (document.hidden && gameState === 'playing') {
-            _blurPauseActive = true;
-            _blurDiagnosticFoldPending = true;
-            enterPause();
-            _activateBlurPauseScreen();
-          }
-        }, 350);
-      } else {
-        _blurPauseActive = true;
-        _blurDiagnosticFoldPending = true;
-        enterPause();
-        _activateBlurPauseScreen();
-      }
+      _blurPauseActive = true;
+      _blurDiagnosticFoldPending = true;
+      enterPause();
+      _activateBlurPauseScreen();
     }
   } else {
-    if (_visibilityHideTimer) {
-      clearTimeout(_visibilityHideTimer);
-      _visibilityHideTimer = null;
-    }
     // Briefly lock maximum-scale to correct iPadOS Safari's zoom-on-return bug,
     // then restore the original viewport after Safari has had time to settle.
     var ViewportMetaTag = document.querySelector('meta[name=viewport]');
@@ -14090,7 +14070,6 @@ function _requiresGyroPrompt() {
 function OnPhoneWarningDismiss() {
   _uiReady = true;
   HidePhoneWarningModal();
-  // Chain to gyro prompt on iOS if permission not yet granted
   var IsIos = /iPad|iPhone|iPod/.test(navigator.userAgent) ||
               (navigator.maxTouchPoints > 1 && /Mac/.test(navigator.userAgent));
   if (IsIos && _requiresGyroPrompt()) {
@@ -14135,14 +14114,30 @@ document.addEventListener('DOMContentLoaded', function() {
 ══════════════════════════════════════ */
 
 var LayoutRedrawDebounceTimer = null;
+var _lastOrientationAngle = (typeof screen !== 'undefined' && screen.orientation)
+  ? screen.orientation.angle
+  : (typeof window.orientation !== 'undefined' ? window.orientation : 0);
 
-function OnLayoutChange() {
+function OnLayoutChange(EventSource) {
   clearTimeout(LayoutRedrawDebounceTimer);
   LayoutRedrawDebounceTimer = setTimeout(function() {
     requestAnimationFrame(function() {
-      if (gameState === 'playing') {
-        enterPause();
+      // On mobile, Safari fires resize whenever the browser chrome appears or
+      // disappears during scroll. This must not pause the game.
+      // Only pause on a genuine orientation change (angle shift).
+      var IsGenuineOrientationChange = false;
+      if (EventSource === 'orientationchange') {
+        var NewAngle = (typeof screen !== 'undefined' && screen.orientation)
+          ? screen.orientation.angle
+          : (typeof window.orientation !== 'undefined' ? window.orientation : 0);
+        if (NewAngle !== _lastOrientationAngle) {
+          _lastOrientationAngle = NewAngle;
+          IsGenuineOrientationChange = true;
+        }
       }
+      var ShouldPause = gameState === 'playing' &&
+        (detectedOs !== 'mobile' || IsGenuineOrientationChange);
+      if (ShouldPause) enterPause();
       updateKeyboardMode();
       positionIcons();
       if (activeSettings !== null) _spAlignPanel();
@@ -14150,8 +14145,8 @@ function OnLayoutChange() {
   }, 300);
 }
 
-window.addEventListener('resize',            OnLayoutChange, { passive: true });
-window.addEventListener('orientationchange', OnLayoutChange, { passive: true });
+window.addEventListener('resize',            function() { OnLayoutChange('resize'); },            { passive: true });
+window.addEventListener('orientationchange', function() { OnLayoutChange('orientationchange'); }, { passive: true });
 
 /* ══════════════════════════════════════
    DIFFICULTY CARET

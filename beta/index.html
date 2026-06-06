@@ -305,7 +305,7 @@
     </div>
     <div class="rightPanel">
       <!-- CHANGE 5: timer click unpauses -->
-      <div class="scoreDisc" id="scoreDisc" onclick="scoreDiscClick()">
+      <div class="scoreDisc" id="scoreDisc">
         <!-- Question timer arc: SVG overlay sitting on top of the disc perimeter.
              Only visible when questionTimer is a finite integer.
              The arc sweeps clockwise from 12 o'clock using stroke-dashoffset. -->
@@ -1851,6 +1851,9 @@ var ForceNoKeyboard = false;
 
 function updateKeyboardMode() {
   const w = window.innerWidth;
+  if (keyboardDisplayMode !== 'none') {
+    ForceNoKeyboard = w < 474;
+  }
   const mode = ForceNoKeyboard ? 'none' : w < 820 ? 'mini' : 'full';
   if (mode !== currentKbMode) {
     currentKbMode = mode;
@@ -12488,6 +12491,26 @@ scoreDisc.addEventListener('mouseleave',() => { medalPressUp(); });
 scoreDisc.addEventListener('touchstart', e => { if (e.touches.length) medalPressDown(e.touches[0].clientX); }, { passive: true });
 scoreDisc.addEventListener('touchend',   () => { medalPressUp(); }, { passive: true });
 
+// Scroll-safe click handler for scoreDisc.
+// On iOS a scroll that starts on the disc fires a click on touchend even if the
+// finger moved significantly. Track touch movement and suppress the click if it
+// looks like a scroll rather than a deliberate tap.
+(function() {
+  var _discTouchStartY = 0;
+  var _discTouchMoved  = false;
+  scoreDisc.addEventListener('touchstart', function(e) {
+    _discTouchStartY = e.touches[0].clientY;
+    _discTouchMoved  = false;
+  }, { passive: true });
+  scoreDisc.addEventListener('touchmove', function(e) {
+    if (Math.abs(e.touches[0].clientY - _discTouchStartY) > 8) _discTouchMoved = true;
+  }, { passive: true });
+  scoreDisc.addEventListener('click', function() {
+    if (_discTouchMoved) { _discTouchMoved = false; return; }
+    scoreDiscClick();
+  });
+}());
+
 // Reset the "Ready?" prompt on any user interaction while awaiting Start/Unpause
 function _onUserActivity() {
   var awaitingAction = (gameState === 'idle' || gameState === 'paused' ||
@@ -14070,6 +14093,16 @@ function _requiresGyroPrompt() {
 function OnPhoneWarningDismiss() {
   _uiReady = true;
   HidePhoneWarningModal();
+  // Reverse the touch defaults set at startup -- phone plays without
+  // the graphical keyboard and without on-screen key input.
+  setTouchEnabled(false);
+  setStickyKeys(false);
+  var StickyRowElement = document.getElementById('stickyRow');
+  if (StickyRowElement) StickyRowElement.classList.remove('disabled');
+  // Force the keyboard panel permanently hidden regardless of screen width
+  ForceNoKeyboard = true;
+  updateKeyboardMode();
+  // Chain to gyro prompt on iOS if permission not yet granted
   var IsIos = /iPad|iPhone|iPod/.test(navigator.userAgent) ||
               (navigator.maxTouchPoints > 1 && /Mac/.test(navigator.userAgent));
   if (IsIos && _requiresGyroPrompt()) {
@@ -14086,6 +14119,12 @@ function InitialiseTouchBootSequence() {
   // If gyro was previously granted, re-wire the listener silently
   if (SavedGyroDecision === 'granted') {
     InitialiseGyroOrientationListener();
+  }
+
+  // Small phones get the warning first
+  if (IsPhoneScreen()) {
+    setTimeout(ShowPhoneWarningModal, 250);
+    return;
   }
 
   // iOS permission flow
@@ -14114,29 +14153,14 @@ document.addEventListener('DOMContentLoaded', function() {
 ══════════════════════════════════════ */
 
 var LayoutRedrawDebounceTimer = null;
-var _lastOrientationAngle = (typeof screen !== 'undefined' && screen.orientation)
-  ? screen.orientation.angle
-  : (typeof window.orientation !== 'undefined' ? window.orientation : 0);
 
-function OnLayoutChange(EventSource) {
+function OnLayoutChange() {
   clearTimeout(LayoutRedrawDebounceTimer);
   LayoutRedrawDebounceTimer = setTimeout(function() {
     requestAnimationFrame(function() {
-      // On mobile, Safari fires resize as browser chrome appears/disappears
-      // during scroll. Only pause on a genuine orientation angle change.
-      var IsGenuineOrientationChange = false;
-      if (EventSource === 'orientationchange') {
-        var NewAngle = (typeof screen !== 'undefined' && screen.orientation)
-          ? screen.orientation.angle
-          : (typeof window.orientation !== 'undefined' ? window.orientation : 0);
-        if (NewAngle !== _lastOrientationAngle) {
-          _lastOrientationAngle = NewAngle;
-          IsGenuineOrientationChange = true;
-        }
+      if (gameState === 'playing') {
+        enterPause();
       }
-      var ShouldPause = gameState === 'playing' &&
-        (detectedOs !== 'mobile' || IsGenuineOrientationChange);
-      if (ShouldPause) enterPause();
       updateKeyboardMode();
       positionIcons();
       if (activeSettings !== null) _spAlignPanel();
@@ -14144,8 +14168,8 @@ function OnLayoutChange(EventSource) {
   }, 300);
 }
 
-window.addEventListener('resize',            function() { OnLayoutChange('resize'); },            { passive: true });
-window.addEventListener('orientationchange', function() { OnLayoutChange('orientationchange'); }, { passive: true });
+window.addEventListener('resize',            OnLayoutChange, { passive: true });
+window.addEventListener('orientationchange', OnLayoutChange, { passive: true });
 
 /* ══════════════════════════════════════
    DIFFICULTY CARET

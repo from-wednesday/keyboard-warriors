@@ -12943,7 +12943,7 @@ window.addEventListener('blur', function() {
 document.addEventListener('visibilitychange', function() {
   if (document.hidden) {
     releaseAllKeys();
-    if (gameState === 'playing') {
+    if (gameState === 'playing' && !_IsIphoneSafari) {
       _blurPauseActive = true;
       _blurDiagnosticFoldPending = true;
       enterPause();
@@ -14122,9 +14122,8 @@ function OnLayoutChange(EventSource) {
   clearTimeout(LayoutRedrawDebounceTimer);
   LayoutRedrawDebounceTimer = setTimeout(function() {
     requestAnimationFrame(function() {
-      // On mobile, Safari fires resize whenever the browser chrome appears or
-      // disappears during scroll. This must not pause the game.
-      // Only pause on a genuine orientation change (angle shift).
+      // On mobile, Safari fires resize as browser chrome appears/disappears
+      // during scroll. Only pause on a genuine orientation angle change.
       var IsGenuineOrientationChange = false;
       if (EventSource === 'orientationchange') {
         var NewAngle = (typeof screen !== 'undefined' && screen.orientation)

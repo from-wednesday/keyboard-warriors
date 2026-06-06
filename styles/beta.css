@@ -3718,8 +3718,8 @@ body.phone-layout-active {
   justify-content: flex-start;
 }
 
-/* Landscape phone: hide toolbar labels and tighten padding so all 4 buttons fit */
-@media (max-height: 500px) and (orientation: landscape) {
+/* Hide toolbar labels when there is not enough room for four labelled buttons */
+@media (max-width: 299px) {
   .phone-icon-label { display: none; }
   .phone-icon-btn   { padding: 6px 8px; gap: 0; }
 }
@@ -3762,7 +3762,7 @@ body.phone-layout-active #phonePanelArea.phone-panel-open {
 
 #phonePanelArea .sp-page.sp-active:not(#panelDifficultySettings):not(#panelLandingReturning):not(#panelLandingWelcome) {
   display: grid;
-  grid-template-columns: 1fr 1fr;
+  grid-template-columns: minmax(160px, 1fr) minmax(160px, 1fr);
 }
 
 #phonePanelArea .sp-col-left  { padding-right: 12px; }

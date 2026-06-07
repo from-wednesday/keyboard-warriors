@@ -1019,6 +1019,12 @@ body.kb-at-edge #keyboardPanel #kb-shadow {
   position: relative;
   min-height: 320px;
   transition: min-height 0.75s cubic-bezier(0.4, 0, 0.2, 1);
+overflow-x: auto;
+  /* Hide the scrollbar visually while keeping scroll behaviour */
+  scrollbar-width: none;
+}
+#keyboardWrap::-webkit-scrollbar {
+  display: none;
 }
 #kbIcon {
   display: block;

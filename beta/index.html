@@ -1845,8 +1845,21 @@ function updateKeyboardMode() {
 }
 
 function _initialiseLayout() {
+  // Apply mobile touch defaults now that all DOM elements exist.
+  if (detectedOs === 'mobile') {
+    var _mobileHasExternalKeyboard = false;
+    try { _mobileHasExternalKeyboard = localStorage.getItem('kw_has_keyboard') === '1'; } catch(StorageError) {}
+    var _savedTouchPreference = null;
+    try { _savedTouchPreference = localStorage.getItem('kw_touch_enabled'); } catch(StorageError) {}
+    if (!_mobileHasExternalKeyboard && _savedTouchPreference === null) {
+      setTouchEnabled(true);
+    } else if (!_mobileHasExternalKeyboard && touchEnabled) {
+      setTouchEnabled(true);
+    }
+  }
   updateKeyboardMode();
   updateMismatchPill();
+  
   // Wire phone toolbar icon taps
 var _phoneKbBtn    = document.getElementById('phoneKbIconWrap');
 var _phoneDiffBtn  = document.getElementById('phoneDiffIconWrap');
@@ -2492,26 +2505,7 @@ var ExtendedKeyCodeToToken = {
 const ExtendedKeyChipElement = document.getElementById('extKeyChip');
 let ExtendedKeyPillTimer = null;
 
-// On mobile: auto-enable touch mode unless the user has a saved preference or a known external keyboard.
-// setTouchEnabled() handles all side effects: sticky keys, audible, keyboard size, radio state, etc.
-if (detectedOs === 'mobile') {
-  var _mobileHasExternalKeyboard = false;
-  try { _mobileHasExternalKeyboard = localStorage.getItem('kw_has_keyboard') === '1'; } catch(StorageError) {}
-  var _savedTouchPreference = null;
-  try { _savedTouchPreference = localStorage.getItem('kw_touch_enabled'); } catch(StorageError) {}
-  if (!_mobileHasExternalKeyboard && _savedTouchPreference === null) {
-    // First visit on a touch device with no external keyboard: apply defaults properly.
-    setTouchEnabled(true);
-  } else if (!_mobileHasExternalKeyboard && touchEnabled) {
-    // Returning visit with touch still enabled: re-apply all side effects to sync UI.
-    setTouchEnabled(true);
-  }
-  if (touchEnabled && !_pillDismissedThisSession) {
-    osMismatchEl.textContent = 'We recommend training with a real mechanical keyboard.';
-    osMismatchEl.classList.add('show');
-    _startPillAutoHideTimer();
-  }
-}
+// Mobile touch defaults are applied after DOM ready inside _initialiseLayout.
     
 function ShowExtendedKeyChip(BrowserCode, ColourState) {
   var Token = ExtendedKeyCodeToToken[BrowserCode];

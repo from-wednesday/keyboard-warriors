@@ -5031,10 +5031,18 @@ function setTouchEnabled(on) {
   }
   if (on) {
     setKbSizeToggle(false);
-    setSoundEnabled(true);   // audible on by default when touch activates
+    setSoundEnabled(true);
+    // Sticky keys are required for touch -- enable them and lock the row
+    setStickyKeys(true);
+    var stickyRow = document.getElementById('stickyRow');
+    if (stickyRow) stickyRow.classList.add('disabled');
   } else {
     setKbSizeToggle(true);
     setSoundEnabled(false);
+    // Restore sticky keys row to interactive when touch is disabled
+    setStickyKeys(false);
+    var stickyRow = document.getElementById('stickyRow');
+    if (stickyRow) stickyRow.classList.remove('disabled');
   }
   // Audible row: enabled only when touch is on
   var audibleRow = document.getElementById('audibleRow');

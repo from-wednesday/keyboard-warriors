@@ -4916,21 +4916,17 @@ var hasFullKeyboard  = true;  // false = tenkeyless/compact — skip extended ke
   } catch(e) {}
   // Restore touch enabled: saved preference wins; if no preference, default ON for
   // mobile (touch devices) and OFF for non-touch devices.
-  try {
+try {
+    // Only read the saved preference here. Actual initialisation with all
+    // side effects (sticky keys, audible, keyboard size) is handled below
+    // in the mobile boot block, which calls setTouchEnabled() properly.
     var savedTouch = localStorage.getItem('kw_touch_enabled');
     if (savedTouch !== null) {
       touchEnabled = (savedTouch === 'true');
-    } else {
-      // No saved preference — apply platform default
-      var _detectedOsForTouch = (function() {
-        var ua = navigator.userAgent || '';
-        var platform = (navigator.platform || '').toLowerCase();
-        if (navigator.maxTouchPoints > 1 && (/mac/i.test(platform) || /mac os x/i.test(ua))) return 'mobile';
-        if (/android|iphone|ipad|ipod/i.test(ua)) return 'mobile';
-        return 'other';
-      })();
-      touchEnabled = (_detectedOsForTouch === 'mobile');
     }
+    // If no saved preference, leave touchEnabled at its default (false).
+    // The mobile boot block below will call setTouchEnabled(true) for
+    // first-visit touch devices, which sets all side effects correctly.
   } catch(e) {}
 })();
 

@@ -2517,12 +2517,16 @@ var ExtendedKeyCodeToToken = {
 const ExtendedKeyChipElement = document.getElementById('extKeyChip');
 let ExtendedKeyPillTimer = null;
 
-// On mobile: auto-enable sticky + touch modes, show updated message
+// On mobile: auto-enable sticky + touch modes unless a saved preference says otherwise.
+// touchEnabled was already restored from localStorage above; only apply the mobile
+// defaults (touch+sticky on, stickyRow disabled) when touch is actually enabled.
 if (detectedOs === 'mobile') {
   var _mobileHasExternalKeyboard = false;
   try { _mobileHasExternalKeyboard = localStorage.getItem('kw_has_keyboard') === '1'; } catch(StorageError) {}
-  if (!_mobileHasExternalKeyboard) {
+  if (!_mobileHasExternalKeyboard && touchEnabled) {
     setStickyKeys(true);
+    // setTouchEnabled(true) already called implicitly via the restored state above;
+    // call it here to ensure the UI (radio, audible row, etc.) is in sync.
     setTouchEnabled(true);
     document.getElementById('stickyRow').classList.add('disabled');
     if (!_pillDismissedThisSession) {
@@ -4934,6 +4938,24 @@ var hasFullKeyboard  = true;  // false = tenkeyless/compact — skip extended ke
     var savedFull = localStorage.getItem('kw_kb_full');
     if (savedFull !== null) hasFullKeyboard = (savedFull === 'true');
   } catch(e) {}
+  // Restore touch enabled: saved preference wins; if no preference, default ON for
+  // mobile (touch devices) and OFF for non-touch devices.
+  try {
+    var savedTouch = localStorage.getItem('kw_touch_enabled');
+    if (savedTouch !== null) {
+      touchEnabled = (savedTouch === 'true');
+    } else {
+      // No saved preference — apply platform default
+      var _detectedOsForTouch = (function() {
+        var ua = navigator.userAgent || '';
+        var platform = (navigator.platform || '').toLowerCase();
+        if (navigator.maxTouchPoints > 1 && (/mac/i.test(platform) || /mac os x/i.test(ua))) return 'mobile';
+        if (/android|iphone|ipad|ipod/i.test(ua)) return 'mobile';
+        return 'other';
+      })();
+      touchEnabled = (_detectedOsForTouch === 'mobile');
+    }
+  } catch(e) {}
 })();
 
 function setStickyKeys(on) {
@@ -5017,6 +5039,7 @@ function onKbSizeToggle() {
 
 function setTouchEnabled(on) {
   touchEnabled = on;
+  try { localStorage.setItem('kw_touch_enabled', on ? 'true' : 'false'); } catch(e) {}
   // When leaving touch mode, clear the CapsLock indicator since we cannot
   // know the real keyboard state until the next keypress
   if (!on) {

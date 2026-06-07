@@ -5131,7 +5131,7 @@ function toggleMoreInfo(PopupId, ClickEvent) {
   var PopupHeight = 120;
   var zoom = _getBodyZoom();
   var LeftPosition = Math.round((window.innerWidth  / zoom - PopupWidth)  / 2);
-  var TopPosition  = Math.round(window.scrollY / zoom + (window.innerHeight / zoom - PopupHeight) / 2);
+  var TopPosition  = Math.round((window.innerHeight / zoom - PopupHeight) / 2);
 
   PopupElement.style.transformOrigin = 'center center';
   PopupElement.style.left      = LeftPosition + 'px';

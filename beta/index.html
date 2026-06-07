@@ -5528,6 +5528,12 @@ function _syncPhoneToolbarVisibility() {
 
   // Phone layout activates either when the keyboard is forcibly hidden,
   // or when the viewport is narrower than 700px (toolbar replaces icon wraps).
+  // Hide during landing screens -- the welcome/returning panels occupy that space.
+  if (gameState === 'welcome') {
+    var ToolbarElementForWelcome = document.getElementById('phoneToolbar');
+    if (ToolbarElementForWelcome) ToolbarElementForWelcome.style.display = 'none';
+    return;
+  }
   var IsPhoneLayout = ForceNoKeyboard || window.innerWidth < 700;
 
   document.body.classList.toggle('phone-layout-active', IsPhoneLayout);

@@ -2492,23 +2492,24 @@ var ExtendedKeyCodeToToken = {
 const ExtendedKeyChipElement = document.getElementById('extKeyChip');
 let ExtendedKeyPillTimer = null;
 
-// On mobile: auto-enable sticky + touch modes unless a saved preference says otherwise.
-// touchEnabled was already restored from localStorage above; only apply the mobile
-// defaults (touch+sticky on, stickyRow disabled) when touch is actually enabled.
+// On mobile: auto-enable touch mode unless the user has a saved preference or a known external keyboard.
+// setTouchEnabled() handles all side effects: sticky keys, audible, keyboard size, radio state, etc.
 if (detectedOs === 'mobile') {
   var _mobileHasExternalKeyboard = false;
   try { _mobileHasExternalKeyboard = localStorage.getItem('kw_has_keyboard') === '1'; } catch(StorageError) {}
-  if (!_mobileHasExternalKeyboard && touchEnabled) {
-    setStickyKeys(true);
-    // setTouchEnabled(true) already called implicitly via the restored state above;
-    // call it here to ensure the UI (radio, audible row, etc.) is in sync.
+  var _savedTouchPreference = null;
+  try { _savedTouchPreference = localStorage.getItem('kw_touch_enabled'); } catch(StorageError) {}
+  if (!_mobileHasExternalKeyboard && _savedTouchPreference === null) {
+    // First visit on a touch device with no external keyboard: apply defaults properly.
     setTouchEnabled(true);
-    document.getElementById('stickyRow').classList.add('disabled');
-    if (!_pillDismissedThisSession) {
-      osMismatchEl.textContent = 'We recommend training with a real mechanical keyboard.';
-      osMismatchEl.classList.add('show');
-      _startPillAutoHideTimer();
-    }
+  } else if (!_mobileHasExternalKeyboard && touchEnabled) {
+    // Returning visit with touch still enabled: re-apply all side effects to sync UI.
+    setTouchEnabled(true);
+  }
+  if (touchEnabled && !_pillDismissedThisSession) {
+    osMismatchEl.textContent = 'We recommend training with a real mechanical keyboard.';
+    osMismatchEl.classList.add('show');
+    _startPillAutoHideTimer();
   }
 }
     

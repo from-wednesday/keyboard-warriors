@@ -5032,17 +5032,9 @@ function setTouchEnabled(on) {
   if (on) {
     setKbSizeToggle(false);
     setSoundEnabled(true);
-    // Sticky keys are required for touch -- enable them and lock the row
-    setStickyKeys(true);
-    var stickyRow = document.getElementById('stickyRow');
-    if (stickyRow) stickyRow.classList.add('disabled');
   } else {
     setKbSizeToggle(true);
     setSoundEnabled(false);
-    // Restore sticky keys row to interactive when touch is disabled
-    setStickyKeys(false);
-    var stickyRow = document.getElementById('stickyRow');
-    if (stickyRow) stickyRow.classList.remove('disabled');
   }
   // Audible row: enabled only when touch is on
   var audibleRow = document.getElementById('audibleRow');
@@ -5050,7 +5042,18 @@ function setTouchEnabled(on) {
   // Ghost and none modes require a physical keyboard -- disable the pill when touch is on
   var KbDisplayPill = document.getElementById('kbDisplayPill');
   if (KbDisplayPill) KbDisplayPill.classList.toggle('disabled', on);
+  // setKeyboardDisplayMode must run before setStickyKeys so it cannot overwrite sticky state
   if (on && keyboardDisplayMode !== 'graphical') setKeyboardDisplayMode('graphical');
+  // Sticky keys are required for touch and must be set last to survive any mode changes above
+  if (on) {
+    setStickyKeys(true);
+    var StickyRowElement = document.getElementById('stickyRow');
+    if (StickyRowElement) StickyRowElement.classList.add('disabled');
+  } else {
+    setStickyKeys(false);
+    var StickyRowElement = document.getElementById('stickyRow');
+    if (StickyRowElement) StickyRowElement.classList.remove('disabled');
+  }
 }
 
 function setSoundEnabled(on) {

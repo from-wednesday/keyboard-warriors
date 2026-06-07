@@ -12896,6 +12896,7 @@ updateKeyboardLighting(e, true);
         timerInterval = setInterval(updateTimer, 100);
         setTimeout(startQuestionTimerArc, 300);
       }
+    window.scrollTo({ top: 0, behavior: 'smooth' });
     }, 1500);
   } else {
     if (!scoreDisc.classList.contains('red') && !scoreDisc.classList.contains('green')) {

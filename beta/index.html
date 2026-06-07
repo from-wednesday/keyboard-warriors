@@ -218,7 +218,6 @@
 </div>
 
 
-
 <!-- OS toggle row: sits above the game panel -->
 
 
@@ -1828,8 +1827,9 @@ let currentKbMode = null;
 var ForceNoKeyboard = false;
 
 function updateKeyboardMode() {
-  const w = window.innerWidth;
-  const mode = ForceNoKeyboard ? 'none' : w < 820 ? 'mini' : 'full';
+  const w = window.innerWidth;
+
+  const mode = ForceNoKeyboard ? 'none' : w < 820 ? 'mini' : 'full';
   if (mode !== currentKbMode) {
     currentKbMode = mode;
     if (mode === 'none') {
@@ -5740,7 +5740,7 @@ function _phoneCloseSettings() {
 }
 
 function _spAlignPanel() {
-  if (ForceNoKeyboard || window.innerWidth < 700) return;
+  if (ForceNoKeyboard) return;
   var wrap = document.getElementById('keyboardWrap');
   if (wrap) wrap.style.minHeight = '';
   _closeMoreInfoPopup();
@@ -5951,7 +5951,7 @@ function _clearPanelTip() {
 }
 
 function openSettings(page) {
-  if (ForceNoKeyboard || window.innerWidth < 700) { _phoneOpenSettings(page); return; }
+  if (ForceNoKeyboard) { _phoneOpenSettings(page); return; }
   // Block switching panels during any confirmation overlay or countdown
   var confirmStates = ['confirm-reset', 'confirm-quit', 'confirm-trophy', 'confirm-diff-change', 'confirm-kill-punctuation', 'confirm-start-over', 'counting'];
   if (confirmStates.indexOf(gameState) !== -1 && page !== 'panelPause') {
@@ -6044,7 +6044,7 @@ function openSettings(page) {
 }
 
 function closeSettings() {
-  if (ForceNoKeyboard || window.innerWidth < 700) { _phoneCloseSettings(); return; }
+  if (ForceNoKeyboard) { _phoneCloseSettings(); return; }
   if (activeSettings === null) return;
   var closingPage = activeSettings;
   activeSettings = null;
@@ -10099,14 +10099,9 @@ function enterDefeat() {
     titleEl.textContent = defeatMessage(answersLeft);
   }
 
-  // Lead medal on the scoreDisc
-  scoreDisc.className = 'scoreDisc medal-lead';
-  currentMedal = 'lead';
-
-  if (detectedOs === 'mobile' && _requiresGyroPrompt() && !_GyroPromptShownThisSession) {
-    _GyroPromptShownThisSession = true;
-    setTimeout(ShowGyroModal, 2500);
-  }
+  // Lead medal on the scoreDisc
+  scoreDisc.className = 'scoreDisc medal-lead';
+  currentMedal = 'lead';
   rimTarget = 0; rimCurrent = 0; rimVelocity = 0;
   updateMedalFaceStyle(0);
   if (!rimRafId) rimRafId = requestAnimationFrame(rimTick);
@@ -10537,18 +10532,11 @@ lastCompletedReport = finalizeRunData(completedRun, questionPool, 0);
 _refreshReportPanel()
     startEndScreenInactivityTimer();
   }
-  fillProgressDot(9);
-  setTimeout(hideProgressDots, 0);
-  setTimeout(hideLivesHearts, 0);
-  scoreDisc.className = 'scoreDisc medal-' + medal;
-  currentMedal = medal;
-
-  // Gyro prompt: deferred to the first medal so the player has a moment of
-  // engagement before being asked. Trophy sequences get a longer delay.
-  if (detectedOs === 'mobile' && _requiresGyroPrompt() && !_GyroPromptShownThisSession) {
-    _GyroPromptShownThisSession = true;
-    setTimeout(ShowGyroModal, justEarnedTrophy ? 11000 : 2500);
-  }
+  fillProgressDot(9);
+  setTimeout(hideProgressDots, 0);
+  setTimeout(hideLivesHearts, 0);
+  scoreDisc.className = 'scoreDisc medal-' + medal;
+  currentMedal = medal;
   rimTarget = 0; rimCurrent = 0; rimVelocity = 0;
   updateMedalFaceStyle(0);
   timerDiv.textContent = formatTime(Math.floor(totalTime));
@@ -13930,7 +13918,6 @@ function diffIconClick() {
 ══════════════════════════════════════ */
 
 var GyroPermissionGranted = false;
-var _GyroPromptShownThisSession = false;
 
 function InitialiseGyroOrientationListener() {
   if (GyroPermissionGranted) return;
@@ -14016,29 +14003,83 @@ function HideGyroModal() {
 }
 
 function onGyroAllow() {
-  HideGyroModal();
-  var NeedsPermission = typeof DeviceOrientationEvent !== 'undefined' &&
-                        typeof DeviceOrientationEvent.requestPermission === 'function';
-  if (NeedsPermission) {
-    DeviceOrientationEvent.requestPermission().then(function(PermissionState) {
-      try { localStorage.setItem('kw_gyro', PermissionState); } catch (StorageError) {}
-      if (PermissionState === 'granted') InitialiseGyroOrientationListener();
-    });
-  } else {
-    try { localStorage.setItem('kw_gyro', 'granted'); } catch (StorageError) {}
-    InitialiseGyroOrientationListener();
-  }
+  _uiReady = true;
+  HideGyroModal();
+  var NeedsPermission = typeof DeviceOrientationEvent !== 'undefined' &&
+                        typeof DeviceOrientationEvent.requestPermission === 'function';
+  if (NeedsPermission) {
+    DeviceOrientationEvent.requestPermission().then(function(PermissionState) {
+      try { localStorage.setItem('kw_gyro', PermissionState); } catch(StorageError) {}
+      if (PermissionState === 'granted') InitialiseGyroOrientationListener();
+      // No .catch -- a dismissed system dialog should not permanently block the prompt
+    });
+  } else {
+    // Android and other non-permission browsers: wire up directly
+    try { localStorage.setItem('kw_gyro', 'granted'); } catch(StorageError) {}
+    InitialiseGyroOrientationListener();
+  }
+  ShowKeyboardRecommendModal();
 }
 
 function onGyroDeny() {
-  HideGyroModal();
+  _uiReady = true;
+  HideGyroModal();
+  ShowKeyboardRecommendModal();
 }
 
+/* ══════════════════════════════════════
+   KEYBOARD RECOMMENDATION MODAL
+══════════════════════════════════════ */
+
+function ShowKeyboardRecommendModal() {
+  ShowTouchModal('keyboardRecommendBackdrop', 'keyboardRecommendModal');
+}
+
+function HideKeyboardRecommendModal() {
+  HideTouchModal('keyboardRecommendBackdrop', 'keyboardRecommendModal');
+}
+
+function onKeyboardRecommendHaveOne() {
+  _uiReady = true;
+  HideKeyboardRecommendModal();
+  _setHasKeyboard();
+  osMismatchEl.classList.remove('show', 'clickable');
+}
+
+function onKeyboardRecommendTouchOnly() {
+  _uiReady = true;
+  HideKeyboardRecommendModal();
+  // Touch only: enable sticky and touch modes
+  setTouchEnabled(true);
+  setStickyKeys(true);
+  var StickyRow = document.getElementById('stickyRow');
+  if (StickyRow) StickyRow.classList.add('disabled');
+}
 
 /* ══════════════════════════════════════
    TOUCH BOOT SEQUENCE
-  ══════════════════════════════════════ */
+   Fires on page load for touch devices only.
+   Gyro modal: iOS/iPadOS, first visit only (localStorage persists decision).
+   Keyboard recommendation: every fresh session (sessionStorage gates it).
+══════════════════════════════════════ */
 
+/* ══════════════════════════════════════
+   PHONE WARNING MODAL
+   Shown on small touch screens (phones)
+   before any other modal.
+══════════════════════════════════════ */
+
+function IsPhoneScreen() {
+  return Math.min(screen.width, screen.height) < 480;
+}
+
+function ShowPhoneWarningModal() {
+  ShowTouchModal('phoneWarningBackdrop', 'phoneWarningModal');
+}
+
+function HidePhoneWarningModal() {
+  HideTouchModal('phoneWarningBackdrop', 'phoneWarningModal');
+}
 
 // Returns true when the device needs to be asked for DeviceOrientation permission.
 // Shows the prompt unless permission was already explicitly granted.
@@ -14050,15 +14091,54 @@ function _requiresGyroPrompt() {
     typeof DeviceOrientationEvent.requestPermission === 'function';
 }
 
+function OnPhoneWarningDismiss() {
+  _uiReady = true;
+  HidePhoneWarningModal();
+  // Reverse the touch defaults set at startup -- phone plays without
+  // the graphical keyboard and without on-screen key input.
+  setTouchEnabled(false);
+  setStickyKeys(false);
+  var StickyRowElement = document.getElementById('stickyRow');
+  if (StickyRowElement) StickyRowElement.classList.remove('disabled');
+  // Force the keyboard panel permanently hidden regardless of screen width
+  ForceNoKeyboard = true;
+  updateKeyboardMode();
+  // Chain to gyro prompt on iOS if permission not yet granted
+  var IsIos = /iPad|iPhone|iPod/.test(navigator.userAgent) ||
+              (navigator.maxTouchPoints > 1 && /Mac/.test(navigator.userAgent));
+  if (IsIos && _requiresGyroPrompt()) {
+    setTimeout(ShowGyroModal, 300);
+  }
+}
+
 function InitialiseTouchBootSequence() {
-  if (detectedOs !== 'mobile') return;
-  // Re-wire the gyro listener silently if permission was already granted in a previous session.
-  // The prompt modal is now deferred until the first medal is awarded.
-  var SavedGyroDecision = null;
-  try { SavedGyroDecision = localStorage.getItem('kw_gyro'); } catch (StorageError) {}
-  if (SavedGyroDecision === 'granted') {
-    InitialiseGyroOrientationListener();
-  }
+  if (detectedOs !== 'mobile') return;
+
+  var SavedGyroDecision = null;
+  try { SavedGyroDecision = localStorage.getItem('kw_gyro'); } catch(StorageError) {}
+
+  // If gyro was previously granted, re-wire the listener silently
+  if (SavedGyroDecision === 'granted') {
+    InitialiseGyroOrientationListener();
+  }
+
+  // Small phones get the warning first
+  if (IsPhoneScreen()) {
+    setTimeout(ShowPhoneWarningModal, 250);
+    return;
+  }
+
+  // iOS permission flow
+  var IsIos = /iPad|iPhone|iPod/.test(navigator.userAgent) ||
+              (navigator.maxTouchPoints > 1 && /Mac/.test(navigator.userAgent));
+
+  if (IsIos && _requiresGyroPrompt()) {
+    setTimeout(ShowGyroModal, 250);
+    return;
+  }
+
+  // Otherwise go straight to keyboard recommendation
+  setTimeout(ShowKeyboardRecommendModal, 250);
 }
 
 document.addEventListener('DOMContentLoaded', function() {

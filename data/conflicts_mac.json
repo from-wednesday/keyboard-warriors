@@ -1,6 +1,7 @@
 {
   "os_conflicts": [
     { "bad": "CMD+TAB", "action": "switch app" },
+    { "bad": "CMD+SPACE", "action": "spotlight search" },
     { "bad": "CMD+OPT+D", "action": "show or hide Dock" },
     { "bad": "CMD+SHIFT+3", "action": "screenshot to file" },
     { "bad": "CMD+SHIFT+4", "action": "screenshot with selection" },

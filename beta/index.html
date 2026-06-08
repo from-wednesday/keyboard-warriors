@@ -6815,7 +6815,8 @@ function _renderKeyboardConflictTab(container) {
   });
 
   function _makeKeyEl(k) {
-    var isBlocked = !touchEnabled && dismissedConflicts.has(k.token);
+        var isBlocked = dismissedConflicts.has(k.token);
+
     var keyEl = document.createElement('div');
     keyEl.dataset.token       = k.token;
     keyEl.dataset.browserCode = _tokenToBrowserCode[k.token] || k.token;

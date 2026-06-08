@@ -5194,21 +5194,17 @@ function setKeyboardDisplayMode(mode) {
   if (GoingToNone) {
     var SettingsPageToReopen = activeSettings;
     if (SettingsPageToReopen !== null) _closeAllModalsInstant();
-    // Fold keyboard to edge, then crossfade to toolbar
+    // Fold keyboard to edge with no ease-out, then snap toolbar into view
+    var KeyboardPanel = document.getElementById('keyboardPanel');
+    if (KeyboardPanel) KeyboardPanel.style.transition = 'transform 0.4s cubic-bezier(0.4, 0, 1, 1)';
     setKbPosition('edge');
     setTimeout(function() {
+      if (KeyboardPanel) KeyboardPanel.style.transition = '';
       NoKeyboardMode = true;
       updateKeyboardMode();
-      // Toolbar is now in the DOM via _syncPhoneToolbarVisibility; fade it in
       _syncPhoneToolbarVisibility();
-      var ToolbarElement = document.getElementById('phoneToolbar');
-      if (ToolbarElement) {
-        requestAnimationFrame(function() {
-          ToolbarElement.classList.add('toolbar-visible');
-        });
-      }
       if (SettingsPageToReopen !== null) openSettings(SettingsPageToReopen);
-    }, 620);
+    }, 400);
   } else if (LeavingNone) {
     var SettingsPageToReopen = activeSettings;
     if (SettingsPageToReopen !== null) _closeAllModalsInstant();

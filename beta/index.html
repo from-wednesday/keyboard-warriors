@@ -1826,11 +1826,11 @@ updateToggleVisual(currentOs);
 ══════════════════════════════════════ */
 const keyboardWrap = document.getElementById('keyboardWrap');
 let currentKbMode = null;
-var ForceNoKeyboard = false;
+var NoKeyboardMode = false;
 
 function updateKeyboardMode() {
   const w = window.innerWidth;
-  const mode = ForceNoKeyboard ? 'none' : w < 820 ? 'mini' : 'full';
+  const mode = NoKeyboardMode ? 'none' : w < 820 ? 'mini' : 'full';
   if (mode !== currentKbMode) {
     currentKbMode = mode;
     if (mode === 'none') {
@@ -1916,7 +1916,7 @@ function _revealPageContent() {
   });
   // Show phone toolbar if applicable (not hidden by .page-initially-hidden
   // since it must also respond to game state)
-  if (ForceNoKeyboard) _syncPhoneToolbarVisibility();
+  if (NoKeyboardMode) _syncPhoneToolbarVisibility();
   _uiReady = true;
 }
 
@@ -5198,7 +5198,7 @@ function setKeyboardDisplayMode(mode) {
     // without burying the panel content at edge position.
     setKbPosition('partial');
     setTimeout(function() {
-      ForceNoKeyboard = true;
+      NoKeyboardMode = true;
       updateKeyboardMode();
       _syncPhoneToolbarVisibility();
       if (SettingsPageToReopen !== null) openSettings(SettingsPageToReopen);
@@ -5206,7 +5206,7 @@ function setKeyboardDisplayMode(mode) {
   } else if (LeavingNone) {
     var SettingsPageToReopen = activeSettings;
     if (SettingsPageToReopen !== null) _closeAllModalsInstant();
-    ForceNoKeyboard = false;
+    NoKeyboardMode = false;
     updateKeyboardMode();
     _syncPhoneToolbarVisibility();
     setTimeout(function() {
@@ -5520,7 +5520,7 @@ function _spPageEl(page) {
 
 /* ══════════════════════════════════════
    PHONE LAYOUT -- panel portal system
-   When ForceNoKeyboard is true, panels
+   When NoKeyboardMode is true, panels
    are physically moved into #phonePanelArea
    rather than rendered above the keyboard.
    The same panel DOM nodes serve both
@@ -5539,7 +5539,7 @@ function _syncPhoneToolbarVisibility() {
     if (ToolbarElementForWelcome) ToolbarElementForWelcome.style.display = 'none';
     return;
   }
-  var IsPhoneLayout = ForceNoKeyboard || window.innerWidth < 700;
+  var IsPhoneLayout = NoKeyboardMode || window.innerWidth < 700;
 
   document.body.classList.toggle('phone-layout-active', IsPhoneLayout);
 
@@ -5751,7 +5751,7 @@ function _phoneCloseSettings() {
 }
 
 function _spAlignPanel() {
-  if (ForceNoKeyboard || window.innerWidth < 700) return;
+  if (NoKeyboardMode || window.innerWidth < 700) return;
   var wrap = document.getElementById('keyboardWrap');
   if (wrap) wrap.style.minHeight = '';
   _closeMoreInfoPopup();
@@ -5962,7 +5962,7 @@ function _clearPanelTip() {
 }
 
 function openSettings(page) {
-  if (ForceNoKeyboard || window.innerWidth < 700) { _phoneOpenSettings(page); return; }
+  if (NoKeyboardMode || window.innerWidth < 700) { _phoneOpenSettings(page); return; }
   // Block switching panels during any confirmation overlay or countdown
   var confirmStates = ['confirm-reset', 'confirm-quit', 'confirm-trophy', 'confirm-diff-change', 'confirm-kill-punctuation', 'confirm-start-over', 'counting'];
   if (confirmStates.indexOf(gameState) !== -1 && page !== 'panelPause') {
@@ -6055,7 +6055,7 @@ function openSettings(page) {
 }
 
 function closeSettings() {
-  if (ForceNoKeyboard || window.innerWidth < 700) { _phoneCloseSettings(); return; }
+  if (NoKeyboardMode || window.innerWidth < 700) { _phoneCloseSettings(); return; }
   if (activeSettings === null) return;
   var closingPage = activeSettings;
   activeSettings = null;
@@ -6137,7 +6137,7 @@ function _closeAllModals() {
 
 function _closeAllModalsInstant() {
   if (activeSettings === null) return;
-  if (ForceNoKeyboard) {
+  if (NoKeyboardMode) {
     activeSettings = null;
     _panelTipInTitle = false;
     _exitScoreClearConfirm();
@@ -13476,7 +13476,7 @@ function GetPanelKeyboardAngle(PanelName) {
 var TabletKeyboardLowAngle = 80;
 
 function SetKeyboardPositionForPanel(PanelName) {
-  if (ForceNoKeyboard) return;
+  if (NoKeyboardMode) return;
   // Ghost mode: always flat at 47, no dragging or toggling.
 if (keyboardDisplayMode === 'ghost' && PanelName !== 'panelConflicts') { _animateToPartialAngle(47); return; }
  // Tablet: animate to the panel's tablet angle; tap-toggle is handled separately.
@@ -13676,7 +13676,7 @@ function _animateToPartialAngle(RotateXDegrees) {
 }
 
 function setKbPosition(pos) {
-  if (ForceNoKeyboard) return;
+  if (NoKeyboardMode) return;
   if (_touchModalVisible()) { _kbPos = pos; _kbFlipped = (pos !== 'face'); return; }
 
   if (pos === 'partial') {

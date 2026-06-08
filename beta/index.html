@@ -12867,12 +12867,11 @@ updateKeyboardLighting(e, true);
   const isCorrect = stickyKeysOn ? checkStickyShortcut() : matchesShortcut(e, currentAnswer);
   if (isCorrect) {
     transitioning = true;
+    window.scrollTo({ top: 0, behavior: 'smooth' });
     resetPartialShortcutNudgeTimers();
     clearToast();
     clearHelp();
     if (requiresExtKey(currentAnswer)) {
-      // Hard-clear the toast immediately — extKeyChip handles the visual,
-      // and a fading kbToast in the same position would create a double chip.
       kbToastEl.innerHTML = '';
     } else {
       showSuccessHintToast();
@@ -12904,7 +12903,6 @@ updateKeyboardLighting(e, true);
         timerInterval = setInterval(updateTimer, 100);
         setTimeout(startQuestionTimerArc, 300);
       }
-    window.scrollTo({ top: 0, behavior: 'smooth' });
     }, 1500);
   } else {
     if (!scoreDisc.classList.contains('red') && !scoreDisc.classList.contains('green')) {

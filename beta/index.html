@@ -5760,10 +5760,7 @@ function _phoneCloseSettings() {
     _enterReadyToUnpause();
     return;
   }
-  if (gameState === 'welcome') {
-    var WelcomePage = _welcomeIsReturning ? 'panelLandingReturning' : 'panelLandingWelcome';
-    if (ClosingPage !== WelcomePage) { openSettings(WelcomePage); return; }
-  }
+
   // Phone has no keyboard to snap to face -- nothing more to do
 }
 
@@ -6130,16 +6127,6 @@ function closeSettings() {
     return;
   }
   
-  // If on a landing screen and the user closed a *different* panel (e.g. keyboard/conflicts
-  // settings opened on top of the welcome panel), restore the welcome panel.
-  // If the welcome panel itself was closed, let it close normally.
-  if (gameState === 'welcome') {
-    var welcomePage = _welcomeIsReturning ? 'panelLandingReturning' : 'panelLandingWelcome';
-    if (closingPage !== welcomePage) {
-      openSettings(welcomePage);
-      return;
-    }
-  }
   // Only snap keyboard to face if not mid-countdown — that flow handles it itself
   if (gameState !== 'counting') {
     // Ghost lock hint: restore if ghost mode is still active

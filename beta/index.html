@@ -5194,25 +5194,37 @@ function setKeyboardDisplayMode(mode) {
   if (GoingToNone) {
     var SettingsPageToReopen = activeSettings;
     if (SettingsPageToReopen !== null) _closeAllModalsInstant();
-    // Move to partial so the keyboard visibly reacts to the toggle
-    // without burying the panel content at edge position.
-    setKbPosition('partial');
+    // Fold keyboard to edge, then crossfade to toolbar
+    setKbPosition('edge');
     setTimeout(function() {
       NoKeyboardMode = true;
       updateKeyboardMode();
+      // Toolbar is now in the DOM via _syncPhoneToolbarVisibility; fade it in
       _syncPhoneToolbarVisibility();
+      var ToolbarElement = document.getElementById('phoneToolbar');
+      if (ToolbarElement) {
+        requestAnimationFrame(function() {
+          ToolbarElement.classList.add('toolbar-visible');
+        });
+      }
       if (SettingsPageToReopen !== null) openSettings(SettingsPageToReopen);
-    }, 650);
+    }, 620);
   } else if (LeavingNone) {
     var SettingsPageToReopen = activeSettings;
     if (SettingsPageToReopen !== null) _closeAllModalsInstant();
-    NoKeyboardMode = false;
-    updateKeyboardMode();
-    _syncPhoneToolbarVisibility();
+    // Fade toolbar out, then unfold keyboard from edge to face
+    var ToolbarElement = document.getElementById('phoneToolbar');
+    if (ToolbarElement) ToolbarElement.classList.remove('toolbar-visible');
     setTimeout(function() {
-      setKbPosition('partial');
-      if (SettingsPageToReopen !== null) openSettings(SettingsPageToReopen);
-    }, 100);
+      NoKeyboardMode = false;
+      updateKeyboardMode();
+      _syncPhoneToolbarVisibility();
+      setKbPosition('edge');
+      setTimeout(function() {
+        setKbPosition('face');
+        if (SettingsPageToReopen !== null) openSettings(SettingsPageToReopen);
+      }, 80);
+    }, 220);
   } else if (mode === 'ghost' || previous === 'ghost') {
     // Ghost ↔ graphical: apply angle immediately and refresh affordance visibility.
     if (activeSettings !== null) {
@@ -5552,7 +5564,7 @@ function _syncPhoneToolbarVisibility() {
   ];
 
   if (!IsPhoneLayout) {
-    ToolbarElement.style.display = 'none';
+    ToolbarElement.classList.remove('toolbar-visible');
     IconWrapElements.forEach(function(Element) {
       if (Element) Element.style.display = '';
     });
@@ -5563,7 +5575,7 @@ function _syncPhoneToolbarVisibility() {
     if (Element) Element.style.display = 'none';
   });
 
-  ToolbarElement.style.display = 'flex';
+  ToolbarElement.classList.add('toolbar-visible');
 
   var StudyNotesButton = document.getElementById('phoneStudyNotesIconWrap');
   if (StudyNotesButton) {

@@ -5547,8 +5547,7 @@ function _syncPhoneToolbarVisibility() {
   // or when the viewport is narrower than 700px (toolbar replaces icon wraps).
   // Hide during landing screens -- the welcome/returning panels occupy that space.
   if (gameState === 'welcome') {
-    var ToolbarElementForWelcome = document.getElementById('phoneToolbar');
-    if (ToolbarElementForWelcome) ToolbarElementForWelcome.style.display = 'none';
+    ToolbarElement.classList.remove('toolbar-visible');
     return;
   }
   var IsPhoneLayout = NoKeyboardMode || window.innerWidth < 700;

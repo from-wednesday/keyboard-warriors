@@ -9152,8 +9152,10 @@ function confirmStartOverYes() {
       try { localStorage.removeItem('kw_blur_conflicts'); } catch(e) {}
       try { localStorage.removeItem('kw_manual_unblocked'); } catch(e) {}
       userManuallyUnblockedConflicts.clear();
-      try { localStorage.removeItem('kw_has_keyboard'); }        catch(e) {}
-      try { sessionStorage.removeItem('kw_welcomed'); }   catch(e) {}
+      try { localStorage.removeItem('kw_has_keyboard'); }   catch(e) {}
+      try { localStorage.removeItem('kw_touch_enabled'); }  catch(e) {}
+      try { localStorage.removeItem('kw_kb_full'); }         catch(e) {}
+      try { sessionStorage.removeItem('kw_welcomed'); }      catch(e) {}
       try {
         var GyroDecision = localStorage.getItem('kw_gyro');
         if (GyroDecision !== 'granted') localStorage.removeItem('kw_gyro');

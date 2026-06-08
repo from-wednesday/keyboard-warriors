@@ -1569,7 +1569,7 @@ function detectOs() {
   const platform = (navigator.userAgentData?.platform || navigator.platform || '').toLowerCase();
   // Check for touch FIRST — iPadOS 13+ reports itself as macOS in the UA,
   // so a touch-capable "Mac" is almost certainly an iPad or similar tablet.
-  const isTouch = navigator.maxTouchPoints > 1;
+  const isTouch = navigator.maxTouchPoints > 0;
   if (isTouch && (/mac/i.test(platform) || /mac os x/i.test(ua))) return 'mobile';
   if (/android|iphone|ipad|ipod/i.test(ua))                        return 'mobile';
   if (/mac/i.test(platform) || /mac os x/i.test(ua))               return 'mac';
@@ -5551,11 +5551,15 @@ function _syncPhoneToolbarVisibility() {
 
   // Phone layout activates either when the keyboard is forcibly hidden,
   // or when the viewport is narrower than 700px (toolbar replaces icon wraps).
-  // Hide during landing screens -- the welcome/returning panels occupy that space.
-  if (gameState === 'welcome') {
+     // minimal landing ui: to Hide during landing - the welcome/returning panels occupy that space.
+     // if (gameState === 'welcome') {ToolbarElement.classList.remove('toolbar-visible'); return;}
+  // alt: Only suppress the toolbar on the welcome screen when the keyboard is visible.
+  // because: When the keyboard is hidden (NoKeyboardMode), the toolbar is the only way to reach panels.
+  if (gameState === 'welcome' && !NoKeyboardMode) {
     ToolbarElement.classList.remove('toolbar-visible');
     return;
   }
+
   var IsPhoneLayout = NoKeyboardMode || window.innerWidth < 700;
 
   document.body.classList.toggle('phone-layout-active', IsPhoneLayout);

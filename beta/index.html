@@ -5191,15 +5191,18 @@ function setKeyboardDisplayMode(mode) {
   var GoingToNone    = (mode === 'none');
   var LeavingNone    = (previous === 'none' && mode !== 'none');
 
-  if (GoingToNone) {
+if (GoingToNone) {
     var SettingsPageToReopen = activeSettings;
     if (SettingsPageToReopen !== null) _closeAllModalsInstant();
-    // Fold keyboard to edge with no ease-out, then snap toolbar into view
+    var KeyboardWrap = document.getElementById('keyboardWrap');
     var KeyboardPanel = document.getElementById('keyboardPanel');
+    // Start fading immediately, while the fold animation runs in parallel
+    if (KeyboardWrap) KeyboardWrap.style.opacity = '0';
     if (KeyboardPanel) KeyboardPanel.style.transition = 'transform 0.4s cubic-bezier(0.4, 0, 1, 1)';
     setKbPosition('face');
     setTimeout(function() {
       if (KeyboardPanel) KeyboardPanel.style.transition = '';
+      if (KeyboardWrap) KeyboardWrap.style.opacity = '';
       NoKeyboardMode = true;
       updateKeyboardMode();
       _syncPhoneToolbarVisibility();
@@ -5208,19 +5211,26 @@ function setKeyboardDisplayMode(mode) {
   } else if (LeavingNone) {
     var SettingsPageToReopen = activeSettings;
     if (SettingsPageToReopen !== null) _closeAllModalsInstant();
-    // Fade toolbar out, then unfold keyboard from edge to face
     var ToolbarElement = document.getElementById('phoneToolbar');
+    var KeyboardWrap = document.getElementById('keyboardWrap');
     if (ToolbarElement) ToolbarElement.classList.remove('toolbar-visible');
+    // Start invisible so it fades in during the fold animation
+    if (KeyboardWrap) KeyboardWrap.style.opacity = '0';
+    NoKeyboardMode = false;
+    updateKeyboardMode();
+    _syncPhoneToolbarVisibility();
+    // Short delay lets the keyboard build before we begin animating
     setTimeout(function() {
-      NoKeyboardMode = false;
-      updateKeyboardMode();
-      _syncPhoneToolbarVisibility();
+      if (KeyboardWrap) KeyboardWrap.style.opacity = '1';
       setKbPosition('face');
       setTimeout(function() {
         setKbPosition('edge');
-        if (SettingsPageToReopen !== null) openSettings(SettingsPageToReopen);
+        // Wait for the fold animation and panel fade-in before opening settings
+        setTimeout(function() {
+          if (SettingsPageToReopen !== null) openSettings(SettingsPageToReopen);
+        }, 900);
       }, 80);
-    }, 220);
+    }, 60);
   } else if (mode === 'ghost' || previous === 'ghost') {
     // Ghost ↔ graphical: apply angle immediately and refresh affordance visibility.
     if (activeSettings !== null) {

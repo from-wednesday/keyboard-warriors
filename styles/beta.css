@@ -1616,6 +1616,19 @@ li.conflict-dismissed .conflict-desc {
   #appPill   { width: 102px; min-width: 102px; }
 }
 
+/* Below 470px the mini keyboard can no longer fit the viewport at its natural
+   pixel width, so scale it down from the top-centre without affecting DOM
+   layout or JS positioning calculations. */
+@media (max-width: 470px) {
+  #keyboardPanel {
+    transform-origin: top center !important;
+    transform: scale(calc(100vw / 500)) !important;
+  }
+  #keyboardWrap {
+    min-height: calc(320px * (100vw / 500)) !important;
+  }
+}
+
 /* ══════════════════════════════════════
    OS TOGGLE ROW
    The toggle group is pinned to the same

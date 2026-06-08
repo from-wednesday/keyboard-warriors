@@ -5197,7 +5197,7 @@ function setKeyboardDisplayMode(mode) {
     // Fold keyboard to edge with no ease-out, then snap toolbar into view
     var KeyboardPanel = document.getElementById('keyboardPanel');
     if (KeyboardPanel) KeyboardPanel.style.transition = 'transform 0.4s cubic-bezier(0.4, 0, 1, 1)';
-    setKbPosition('edge');
+    setKbPosition('face');
     setTimeout(function() {
       if (KeyboardPanel) KeyboardPanel.style.transition = '';
       NoKeyboardMode = true;
@@ -5215,9 +5215,9 @@ function setKeyboardDisplayMode(mode) {
       NoKeyboardMode = false;
       updateKeyboardMode();
       _syncPhoneToolbarVisibility();
-      setKbPosition('edge');
+      setKbPosition('face');
       setTimeout(function() {
-        setKbPosition('face');
+        setKbPosition('edge');
         if (SettingsPageToReopen !== null) openSettings(SettingsPageToReopen);
       }, 80);
     }, 220);

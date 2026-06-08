@@ -3857,6 +3857,8 @@ var _savedTitleBlurredForConfirm = false;
 var _confirmHeadingActive        = false;
 
 function showConfirmHeading(text, blurTitle, showBracket) {
+  transitioning = true;
+  window.scrollTo({ top: 0, behavior: 'smooth' });
   if (!_confirmHeadingActive) {
     _savedTitleTextForConfirm    = titleEl.textContent;
     _savedTitleBlurredForConfirm = titleEl.classList.contains('blurred');

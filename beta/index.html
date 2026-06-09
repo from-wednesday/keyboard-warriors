@@ -1866,7 +1866,18 @@ var _phoneKbBtn    = document.getElementById('phoneKbIconWrap');
 var _phoneDiffBtn  = document.getElementById('phoneDiffIconWrap');
 var _phoneBrBtn    = document.getElementById('phoneBrIconWrap');
 if (_phoneKbBtn)   _phoneKbBtn.addEventListener('click',   function() {
-  if (!touchEnabled) pulseKbIcon();
+  if (!touchEnabled) {
+    var PhoneKbSvg = _phoneKbBtn.querySelector('svg');
+    if (PhoneKbSvg) {
+      PhoneKbSvg.classList.remove('pulse');
+      void PhoneKbSvg.offsetWidth;
+      PhoneKbSvg.classList.add('pulse');
+      PhoneKbSvg.addEventListener('animationend', function Handler() {
+        PhoneKbSvg.classList.remove('pulse');
+        PhoneKbSvg.removeEventListener('animationend', Handler);
+      });
+    }
+  }
   _phoneOpenSettings('panelKeyboard');
 });
 if (_phoneDiffBtn) _phoneDiffBtn.addEventListener('click', function() { _phoneOpenSettings('panelDifficultySettings'); });
@@ -5709,8 +5720,18 @@ function _phoneOpenSettings(Page) {
 
   // Populate content
   if (Page === 'panelConflicts')    _refreshBrowserContent();
-  if (Page === 'panelKeyboard')   { updateModalToggles(); updateKbSizeToggle(); }
-  if (Page === 'panelDifficultySettings') _refreshDifficultyPanel();
+if (page === 'panelKeyboard')   {
+    updateModalToggles();
+    updateKbSizeToggle();
+    var TouchRadioElement = document.getElementById('touchRadio');
+    if (TouchRadioElement) TouchRadioElement.classList.toggle('on', touchEnabled);
+    var StickyRowElement = document.getElementById('stickyRow');
+    if (StickyRowElement) StickyRowElement.classList.toggle('disabled', touchEnabled);
+    var AudibleRowElement = document.getElementById('audibleRow');
+    if (AudibleRowElement) AudibleRowElement.classList.toggle('disabled', !touchEnabled);
+    var KbDisplayPillElement = document.getElementById('kbDisplayPill');
+    if (KbDisplayPillElement) KbDisplayPillElement.classList.toggle('disabled', touchEnabled);
+  }  if (Page === 'panelDifficultySettings') _refreshDifficultyPanel();
   if (Page === 'panelPause')      _refreshPausePanel();
   if (Page === 'panelEndGameReportCard')     _refreshReportPanel();
   if (Page === 'panelCheatSheet')    _refreshCheatSheet();
@@ -6022,7 +6043,18 @@ function openSettings(page) {
 
   // Populate content
   if (page === 'panelConflicts') { _refreshBrowserContent(); conflictsKbLighting.activate(); }
-  if (page === 'panelKeyboard')   { updateModalToggles(); updateKbSizeToggle(); }
+if (page === 'panelKeyboard')   {
+    updateModalToggles();
+    updateKbSizeToggle();
+    var TouchRadioElement = document.getElementById('touchRadio');
+    if (TouchRadioElement) TouchRadioElement.classList.toggle('on', touchEnabled);
+    var StickyRowElement = document.getElementById('stickyRow');
+    if (StickyRowElement) StickyRowElement.classList.toggle('disabled', touchEnabled);
+    var AudibleRowElement = document.getElementById('audibleRow');
+    if (AudibleRowElement) AudibleRowElement.classList.toggle('disabled', !touchEnabled);
+    var KbDisplayPillElement = document.getElementById('kbDisplayPill');
+    if (KbDisplayPillElement) KbDisplayPillElement.classList.toggle('disabled', touchEnabled);
+  }
   if (page === 'panelDifficultySettings') _refreshDifficultyPanel();
   if (page === 'panelPause')      _refreshPausePanel();
   if (page === 'panelEndGameReportCard')     _refreshReportPanel();

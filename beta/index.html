@@ -1865,7 +1865,10 @@ function _initialiseLayout() {
 var _phoneKbBtn    = document.getElementById('phoneKbIconWrap');
 var _phoneDiffBtn  = document.getElementById('phoneDiffIconWrap');
 var _phoneBrBtn    = document.getElementById('phoneBrIconWrap');
-if (_phoneKbBtn)   _phoneKbBtn.addEventListener('click',   function() { _phoneOpenSettings('panelKeyboard'); });
+if (_phoneKbBtn)   _phoneKbBtn.addEventListener('click',   function() {
+  if (!touchEnabled) pulseKbIcon();
+  _phoneOpenSettings('panelKeyboard');
+});
 if (_phoneDiffBtn) _phoneDiffBtn.addEventListener('click', function() { _phoneOpenSettings('panelDifficultySettings'); });
 if (_phoneBrBtn)   _phoneBrBtn.addEventListener('click',   function() { _phoneOpenSettings('panelConflicts'); });
   document.getElementById('keyboardPanel').classList.toggle('pc-keys', currentOs === 'pc');

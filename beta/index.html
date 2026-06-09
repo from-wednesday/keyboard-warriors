@@ -3020,8 +3020,7 @@ const IMPROVEMENT_TIPS = [
 function helpButtonClick() {
   helpBtn.blur();
   resetEndScreenInactivityTimer();
-  if (gameState === 'idle')           { titleEl.textContent = bestRecord.time !== null ? 'You can reset your score from the pause screen.' : 'Press start to begin.'; return; }
-  if (gameState === 'playing')        { toggleHelp(); return; }
+  if (gameState === 'idle')           { showTip(tipIndex + 1); tipIndex++; return; }  if (gameState === 'playing')        { toggleHelp(); return; }
   // Difficulty panel: refresh the footer message
   if ((gameState === 'idle' || gameState === 'welcome' || gameState === 'paused' || gameState === 'finished') && activeSettings === 'panelDifficultySettings' && !_trophySequenceActive) {
     var footer = document.getElementById('diffAdvancedFooter');

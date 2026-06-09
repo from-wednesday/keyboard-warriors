@@ -5706,7 +5706,21 @@ function _phoneOpenSettings(Page) {
 
   // Populate content
   if (Page === 'panelConflicts')    _refreshBrowserContent();
-  if (Page === 'panelKeyboard')   { updateModalToggles(); updateKbSizeToggle(); }
+  if (_phoneKbBtn)   _phoneKbBtn.addEventListener('click',   function() {
+  if (!touchEnabled) {
+    var PhoneKbSvg = _phoneKbBtn.querySelector('svg');
+    if (PhoneKbSvg) {
+      PhoneKbSvg.classList.remove('pulse');
+      void PhoneKbSvg.offsetWidth;
+      PhoneKbSvg.classList.add('pulse');
+      PhoneKbSvg.addEventListener('animationend', function Handler() {
+        PhoneKbSvg.classList.remove('pulse');
+        PhoneKbSvg.removeEventListener('animationend', Handler);
+      });
+    }
+  }
+  _phoneOpenSettings('panelKeyboard');
+});
   if (Page === 'panelDifficultySettings') _refreshDifficultyPanel();
   if (Page === 'panelPause')      _refreshPausePanel();
   if (Page === 'panelEndGameReportCard')     _refreshReportPanel();
@@ -6019,7 +6033,21 @@ function openSettings(page) {
 
   // Populate content
   if (page === 'panelConflicts') { _refreshBrowserContent(); conflictsKbLighting.activate(); }
-  if (page === 'panelKeyboard')   { updateModalToggles(); updateKbSizeToggle(); }
+  if (_phoneKbBtn)   _phoneKbBtn.addEventListener('click',   function() {
+  if (!touchEnabled) {
+    var PhoneKbSvg = _phoneKbBtn.querySelector('svg');
+    if (PhoneKbSvg) {
+      PhoneKbSvg.classList.remove('pulse');
+      void PhoneKbSvg.offsetWidth;
+      PhoneKbSvg.classList.add('pulse');
+      PhoneKbSvg.addEventListener('animationend', function Handler() {
+        PhoneKbSvg.classList.remove('pulse');
+        PhoneKbSvg.removeEventListener('animationend', Handler);
+      });
+    }
+  }
+  _phoneOpenSettings('panelKeyboard');
+});
   if (page === 'panelDifficultySettings') _refreshDifficultyPanel();
   if (page === 'panelPause')      _refreshPausePanel();
   if (page === 'panelEndGameReportCard')     _refreshReportPanel();

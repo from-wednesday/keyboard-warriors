@@ -3922,6 +3922,7 @@ function _resetToIdleSilently() {
   hideQuestionTimerArc();
   endScreenInactivityTimer = null;
   _enterReadyToUnpauseCleanup();
+  transitioning = false;
   clearHelp();
   clearAllLit();
   heldKeys.clear();
@@ -3967,6 +3968,7 @@ function resetToIdle() {
   hideQuestionTimerArc();
   endScreenInactivityTimer = null;
   _enterReadyToUnpauseCleanup();
+  transitioning = false;
   clearHelp();
   clearAllLit();
   heldKeys.clear();

@@ -529,6 +529,11 @@ body {
   transform: translateY(-22px);
 }
 
+/* Push credit further down when keyboard visibility is set to none */
+body.no-keyboard-mode #credit {
+  transform: translateY(40px);
+}
+
 /* Extended key ghost chip — appears in statsRow when a key not on the
    graphical keyboard is held. Styled to match the current keyboard mode. */
 /* Extended key chip : centred in #statsRow, shows chip-format feedback

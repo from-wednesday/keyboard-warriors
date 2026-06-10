@@ -1370,28 +1370,113 @@ var KeyboardMemory = false; // true = persist keyboard settings across sessions
     if (SavedKeyboardMemory !== null) KeyboardMemory = (SavedKeyboardMemory === 'true');
   } catch(StorageError) {}
 })();
-(function() {
-  var VALID_MAC = ['mac-3key','mac-4key','mac-4key-ctrl-left'];
-  var VALID_PC  = ['pc-fn-left','pc-fn-right','pc-no-fn'];
+
+/* ══════════════════════════════════════
+   KEYBOARD SETTINGS PERSISTENCE
+   All keyboard state is saved as one JSON
+   blob under kw_keyboard_settings.
+   LoadKeyboardSettings() is called once
+   during _initialiseLayout() when
+   KeyboardMemory is true.
+   SaveKeyboardSettings() is called by
+   every setter that changes these values.
+══════════════════════════════════════ */
+
+function SaveKeyboardSettings() {
+  if (!KeyboardMemory) return;
   try {
-    var savedMac = localStorage.getItem('kw_kb_variant_mac');
-    if (savedMac && VALID_MAC.indexOf(savedMac) !== -1) kbVariantMac = savedMac;
-    var savedPc  = localStorage.getItem('kw_kb_variant_pc');
-    if (savedPc  && VALID_PC.indexOf(savedPc)   !== -1) kbVariantPc  = savedPc;
-  } catch(e) {}
-  // Derive kbLeftCount / kbFnLeft from the restored variants so toggles render correctly.
-  // Use the variant for the detected OS, not always kbVariantMac.
-  var detectedOsForInit = (function() {
-    var ua = navigator.userAgent || '';
-    var platform = (navigator.platform || '').toLowerCase();
-    if (/win/i.test(platform) || /windows/i.test(ua)) return 'pc';
-    return 'mac';
-  })();
-  var v = (detectedOsForInit === 'pc') ? kbVariantPc : kbVariantMac;
-  if (v === 'mac-3key' || v === 'pc-no-fn') { kbLeftCount = 3; kbFnLeft = true; }
-  else if (v === 'mac-4key' || v === 'pc-fn-left') { kbLeftCount = 4; kbFnLeft = true; }
-  else if (v === 'mac-4key-ctrl-left' || v === 'pc-fn-right') { kbLeftCount = 4; kbFnLeft = false; }
-})();
+    var Bundle = {
+      KeyboardDisplayMode: keyboardDisplayMode,
+      KbVariantMac:        kbVariantMac,
+      KbVariantPc:         kbVariantPc,
+      TouchEnabled:        touchEnabled,
+      StickyKeysOn:        stickyKeysOn,
+      SoundEnabled:        soundEnabled,
+      HasFullKeyboard:     hasFullKeyboard,
+      KillPunctuationOn:   killPunctuationOn,
+      KbKeyOverrides:      Array.from(kbKeyOverrides),
+    };
+    localStorage.setItem('kw_keyboard_settings', JSON.stringify(Bundle));
+  } catch(StorageError) {}
+}
+
+function LoadKeyboardSettings() {
+  // Migration: if the new bundle is absent, check for legacy individual keys
+  // and build a bundle from them so existing users are not reset abruptly.
+  var RawBundle = null;
+  try { RawBundle = localStorage.getItem('kw_keyboard_settings'); } catch(StorageError) {}
+
+  if (!RawBundle) {
+    // One-time migration from legacy keys
+    var MigratedBundle = {};
+    var Migrated = false;
+    try {
+      var LegacyTouch    = localStorage.getItem('kw_touch_enabled');
+      var LegacyFull     = localStorage.getItem('kw_kb_full');
+      var LegacyMac      = localStorage.getItem('kw_kb_variant_mac');
+      var LegacyPc       = localStorage.getItem('kw_kb_variant_pc');
+      var LegacyOverrides = localStorage.getItem('kw_kb_key_overrides');
+      if (LegacyTouch    !== null) { MigratedBundle.TouchEnabled    = (LegacyTouch === 'true'); Migrated = true; }
+      if (LegacyFull     !== null) { MigratedBundle.HasFullKeyboard = (LegacyFull  === 'true'); Migrated = true; }
+      if (LegacyMac      !== null) { MigratedBundle.KbVariantMac    = LegacyMac;                Migrated = true; }
+      if (LegacyPc       !== null) { MigratedBundle.KbVariantPc     = LegacyPc;                 Migrated = true; }
+      if (LegacyOverrides !== null) {
+        var ParsedOverrides = JSON.parse(LegacyOverrides);
+        if (Array.isArray(ParsedOverrides)) { MigratedBundle.KbKeyOverrides = ParsedOverrides; Migrated = true; }
+      }
+    } catch(MigrationError) {}
+    if (!Migrated) return;
+    RawBundle = JSON.stringify(MigratedBundle);
+  }
+
+  var Bundle = null;
+  try { Bundle = JSON.parse(RawBundle); } catch(ParseError) { return; }
+  if (!Bundle) return;
+
+  // Restore variant strings and derived counts before building the keyboard
+  var ValidMacVariants = ['mac-3key', 'mac-4key', 'mac-4key-ctrl-left'];
+  var ValidPcVariants  = ['pc-fn-left', 'pc-fn-right', 'pc-no-fn'];
+  if (Bundle.KbVariantMac && ValidMacVariants.indexOf(Bundle.KbVariantMac) !== -1) kbVariantMac = Bundle.KbVariantMac;
+  if (Bundle.KbVariantPc  && ValidPcVariants.indexOf(Bundle.KbVariantPc)   !== -1) kbVariantPc  = Bundle.KbVariantPc;
+  _syncKbCountFromVariant();
+
+  // Restore extended key overrides before conflict/pool logic runs
+  if (Array.isArray(Bundle.KbKeyOverrides)) {
+    kbKeyOverrides.clear();
+    Bundle.KbKeyOverrides.forEach(function(Code) { kbKeyOverrides.add(Code); });
+  }
+
+  // Restore size -- must happen before setTouchEnabled to avoid being overridden
+  if (typeof Bundle.HasFullKeyboard === 'boolean') {
+    hasFullKeyboard = Bundle.HasFullKeyboard;
+    try { localStorage.setItem('kw_kb_full', String(hasFullKeyboard)); } catch(StorageError) {}
+  }
+
+  // Restore touch mode via its setter so all cascades fire correctly
+  if (typeof Bundle.TouchEnabled === 'boolean') {
+    setTouchEnabled(Bundle.TouchEnabled);
+  }
+
+  // Restore sticky and audible only when not in touch mode
+  // (touch mode forces these on/off via setTouchEnabled above)
+  if (!touchEnabled) {
+    if (typeof Bundle.StickyKeysOn === 'boolean') setStickyKeys(Bundle.StickyKeysOn);
+    if (typeof Bundle.SoundEnabled === 'boolean') setSoundEnabled(Bundle.SoundEnabled);
+  }
+
+  // Restore kill punctuation
+  if (typeof Bundle.KillPunctuationOn === 'boolean') {
+    killPunctuationOn = Bundle.KillPunctuationOn;
+    var KillPunctuationRadioElement = document.getElementById('killPunctuationRadio');
+    if (KillPunctuationRadioElement) KillPunctuationRadioElement.classList.toggle('on', killPunctuationOn);
+  }
+
+  // Restore display mode last -- it may override touch/sticky locks if mismatched,
+  // but we trust saved state is internally consistent (see architecture notes)
+  if (Bundle.KeyboardDisplayMode && ['none', 'ghost', 'graphical'].indexOf(Bundle.KeyboardDisplayMode) !== -1) {
+    setKeyboardDisplayMode(Bundle.KeyboardDisplayMode);
+  }
+}
 
 function buildKeyboard(isMini) {
   const rowIds = ['row-fn','row-num','row-q','row-a','row-z','row-bot'];
@@ -1868,15 +1953,17 @@ function updateKeyboardMode() {
 }
 
 function _initialiseLayout() {
-  // Apply mobile touch defaults now that all DOM elements exist.
-  if (detectedOs === 'mobile') {
+  // Restore all keyboard settings from the saved bundle when memory is enabled.
+  // This runs before updateKeyboardMode so the keyboard is built in the correct state.
+  if (KeyboardMemory) {
+    LoadKeyboardSettings();
+  }
+
+  // Apply mobile touch defaults for first-visit touch devices that have no saved bundle.
+  if (detectedOs === 'mobile' && !KeyboardMemory) {
     var _mobileHasExternalKeyboard = false;
     try { _mobileHasExternalKeyboard = localStorage.getItem('kw_has_keyboard') === '1'; } catch(StorageError) {}
-    var _savedTouchPreference = null;
-    try { _savedTouchPreference = localStorage.getItem('kw_touch_enabled'); } catch(StorageError) {}
-    if (!_mobileHasExternalKeyboard && _savedTouchPreference === null) {
-      setTouchEnabled(true);
-    } else if (!_mobileHasExternalKeyboard && touchEnabled) {
+    if (!_mobileHasExternalKeyboard) {
       setTouchEnabled(true);
     }
   }
@@ -4929,29 +5016,10 @@ var stickyKeysOn = false;
 var touchEnabled     = false;
 var soundEnabled     = false; // enabled automatically when touch turns on
 var hasFullKeyboard  = true;  // false = tenkeyless/compact — skip extended key questions
-(function() {
-  try {
-    var savedFull = localStorage.getItem('kw_kb_full');
-    if (savedFull !== null) hasFullKeyboard = (savedFull === 'true');
-  } catch(e) {}
-  // Restore touch enabled: saved preference wins; if no preference, default ON for
-  // mobile (touch devices) and OFF for non-touch devices.
-try {
-    // Only read the saved preference here. Actual initialisation with all
-    // side effects (sticky keys, audible, keyboard size) is handled below
-    // in the mobile boot block, which calls setTouchEnabled() properly.
-    var savedTouch = localStorage.getItem('kw_touch_enabled');
-    if (savedTouch !== null) {
-      touchEnabled = (savedTouch === 'true');
-    }
-    // If no saved preference, leave touchEnabled at its default (false).
-    // The mobile boot block below will call setTouchEnabled(true) for
-    // first-visit touch devices, which sets all side effects correctly.
-  } catch(e) {}
-})();
 
 function setStickyKeys(on) {
   stickyKeysOn = on;
+  SaveKeyboardSettings();
   var radio = document.getElementById('stickyRadio');
   if (!radio) return;
   radio.classList.toggle('on', on);
@@ -4961,7 +5029,7 @@ function setStickyKeys(on) {
 
 function setKbSizeToggle(full) {
   hasFullKeyboard = full;
-  try { localStorage.setItem('kw_kb_full', String(full)); } catch(e) {}
+  SaveKeyboardSettings();
   // Guard: these may not be initialised yet during startup on mobile
   if (typeof dismissedConflicts !== 'undefined' && typeof kbKeyOverrides !== 'undefined') {
     _syncExtendedKeysToBaseline(full);
@@ -5031,7 +5099,6 @@ function onKbSizeToggle() {
 
 function setTouchEnabled(on) {
   touchEnabled = on;
-  try { localStorage.setItem('kw_touch_enabled', on ? 'true' : 'false'); } catch(e) {}
   // When leaving touch mode, clear the CapsLock indicator since we cannot
   // know the real keyboard state until the next keypress
   if (!on) {
@@ -5074,6 +5141,7 @@ function setTouchEnabled(on) {
 
 function setSoundEnabled(on) {
   soundEnabled = on;
+  SaveKeyboardSettings();
   var radio = document.getElementById('audibleRadio');
   if (radio) radio.classList.toggle('on', on);
 }
@@ -5182,6 +5250,7 @@ function toggleMoreInfo(PopupId, ClickEvent) {
 function setKeyboardDisplayMode(mode) {
   var previous = keyboardDisplayMode;
   keyboardDisplayMode = mode;
+  SaveKeyboardSettings();
 
   // Update pill button active states
   var NoneBtn      = document.getElementById('kbDisplayNoneBtn');
@@ -5369,6 +5438,7 @@ function _returnAfterKillPunctuationConfirm(message) {
 
 function setKillPunctuation(on) {
   killPunctuationOn = on;
+  SaveKeyboardSettings();
   var radio = document.getElementById('killPunctuationRadio');
   if (radio) radio.classList.toggle('on', on);
   // Rebuild pool immediately so the change takes effect mid-session if needed
@@ -5415,8 +5485,7 @@ function flashKeys(codes) {
 function applyVariant(flashCodes) {
   if (currentOs === 'mac') kbVariantMac = activeVariantKey();
   else                     kbVariantPc  = activeVariantKey();
-  try { localStorage.setItem('kw_kb_variant_mac', kbVariantMac); } catch(e) {}
-  try { localStorage.setItem('kw_kb_variant_pc',  kbVariantPc);  } catch(e) {}
+  SaveKeyboardSettings();
   if (currentKbMode && currentKbMode !== 'none') {
     buildKeyboard(currentKbMode === 'mini');
     if (flashCodes) flashKeys(flashCodes);
@@ -8180,17 +8249,9 @@ function _allConflictTokensNormalised() {
 // When hasFullKeyboard changes via the size toggle, this set is cleared and all extended
 // keys are reset to the new baseline (all blocked when compact, all allowed when extended).
 var kbKeyOverrides = new Set();
-(function() {
-  try {
-    var SavedKbOverrides = localStorage.getItem('kw_kb_key_overrides');
-    if (SavedKbOverrides) {
-      JSON.parse(SavedKbOverrides).forEach(function(Code) { kbKeyOverrides.add(Code); });
-    }
-  } catch(e) {}
-})();
 
 function _saveKbKeyOverrides() {
-  try { localStorage.setItem('kw_kb_key_overrides', JSON.stringify(Array.from(kbKeyOverrides))); } catch(e) {}
+  SaveKeyboardSettings();
 }
 
 function _syncExtendedKeysToBaseline(full) {

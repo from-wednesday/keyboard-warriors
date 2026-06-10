@@ -529,9 +529,13 @@ body {
   transform: translateY(-22px);
 }
 
+#credit {
+  margin-top: 8px;
+}
+
 /* Push credit further down when keyboard visibility is set to none */
 body.no-keyboard-mode #credit {
-  margin-top: 16px;
+  margin-top: 24px;
 }
 
 /* Extended key ghost chip — appears in statsRow when a key not on the

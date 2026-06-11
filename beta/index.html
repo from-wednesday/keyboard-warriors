@@ -1952,20 +1952,41 @@ function updateKeyboardMode() {
   _syncPhoneToolbarVisibility();
 }
 
-function _initialiseLayout() {
-  // Restore all keyboard settings from the saved bundle when memory is enabled.
-  // This runs before updateKeyboardMode so the keyboard is built in the correct state.
-  if (KeyboardMemory) {
-    LoadKeyboardSettings();
+function ApplyDefaultKeyboardSettings() {
+  // Sets all keyboard state variables to device-appropriate defaults.
+  // Called only when KeyboardMemory is false. Does not write to localStorage.
+  var IsTouch = (detectedOs === 'mobile');
+
+  keyboardDisplayMode = 'graphical';
+  kbLeftCount         = 3;
+  kbFnLeft            = true;
+  killPunctuationOn   = false;
+
+  if (IsTouch) {
+    touchEnabled     = true;
+    stickyKeysOn     = true;
+    soundEnabled     = true;
+    hasFullKeyboard  = false;
+    kbVariantMac     = 'mac-3key';
+    kbVariantPc      = 'pc-fn-left';
+  } else {
+    touchEnabled     = false;
+    stickyKeysOn     = false;
+    soundEnabled     = false;
+    hasFullKeyboard  = true;
+    kbVariantMac     = 'mac-3key';
+    kbVariantPc      = 'pc-fn-left';
   }
 
-  // Apply mobile touch defaults for first-visit touch devices that have no saved bundle.
-  if (detectedOs === 'mobile' && !KeyboardMemory) {
-    var _mobileHasExternalKeyboard = false;
-    try { _mobileHasExternalKeyboard = localStorage.getItem('kw_has_keyboard') === '1'; } catch(StorageError) {}
-    if (!_mobileHasExternalKeyboard) {
-      setTouchEnabled(true);
-    }
+  // Apply the size baseline now that variables are set
+  _syncExtendedKeysToBaseline(hasFullKeyboard);
+}
+
+function _initialiseLayout() {
+  if (KeyboardMemory) {
+    LoadKeyboardSettings();
+  } else {
+    ApplyDefaultKeyboardSettings();
   }
   updateKeyboardMode();
   updateMismatchPill();

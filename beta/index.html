@@ -7072,9 +7072,9 @@ function _renderKeyboardConflictTab(container) {
   cmpSide.innerHTML = '<small class="kb-size-word-label" id="cfKbCmpLabel">compact</small>'
     + '<svg id="cfKbCmpIcon" viewBox="0 0 111.9 49.8" style="height:14px;width:auto; overflow: visible;"><use href="#IconKeyboard"/></svg>';
 
-  toggleWrap.appendChild(extSide);
-  toggleWrap.appendChild(switchWrap);
   toggleWrap.appendChild(cmpSide);
+  toggleWrap.appendChild(switchWrap);
+  toggleWrap.appendChild(extSide);
   panel.appendChild(toggleWrap);
 
   // Sync this toggle's knob and label colours to match current state,

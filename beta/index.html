@@ -8257,23 +8257,22 @@ function _saveKbKeyOverrides() {
 
 function _syncExtendedKeysToBaseline(full) {
   if (typeof dismissedConflicts === 'undefined' || typeof kbKeyOverrides === 'undefined') return;
-  
+
   var SeenTokens = new Set();
-  
+
   Object.keys(ExtendedKeyCodeToToken).forEach(function(Code) {
     var Token = ExtendedKeyCodeToToken[Code];
     if (SeenTokens.has(Token)) return;
     SeenTokens.add(Token);
-    
+    // Skip tokens the user has individually configured
+    if (kbKeyOverrides.has(Token)) return;
     if (full) {
-      dismissedConflicts.delete(Token);  // was: delete(Code)
+      dismissedConflicts.delete(Token);
     } else {
-      dismissedConflicts.add(Token);     // was: add(Code)
+      dismissedConflicts.add(Token);
     }
   });
 
-  kbKeyOverrides.clear();
-  _saveKbKeyOverrides();
   _saveCustomDismissedConflicts();
 }
 

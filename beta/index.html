@@ -887,7 +887,7 @@
             </span>
           </div>
           <div class="modal-kbsize-row" id="modalKbSizeRow">
-            <div id="kbSizeCompactSide" class="modal-left-label" style="display:flex;flex-direction:row;align-items:center;gap:5px;justify-content:flex-end;cursor:pointer;" onclick="SetKbSizeToCompact()"><small id="kbSizeCompactLabel" class="kb-size-word-label">compact</small><svg id="kbSizeCompactIcon" viewBox="0 0 111.9 49.8" style="height:14px;width:auto;"><use href="#IconKeyboard"/></svg></div>
+            <div id="kbSizeCompactSide" class="modal-left-label" style="display:flex;flex-direction:row;align-items:center;gap:5px;justify-content:flex-end;cursor:pointer;" onclick="SetKbSizeToExtended()"><small id="kbSizeCompactLabel" class="kb-size-word-label">compact</small><svg id="kbSizeCompactIcon" viewBox="0 0 111.9 49.8" style="height:14px;width:auto;"><use href="#IconKeyboard"/></svg></div>
             <div class="modal-switch-wrap">
               <label class="os-switch" title="Keyboard size" style="cursor:pointer;">
                 <input type="checkbox" id="modalKbSizeToggle" onchange="onKbSizeToggle()">
@@ -898,7 +898,7 @@
                 </svg>
               </label>
             </div>
-            <div id="kbSizeExtendedSide" class="modal-right-label" style="display:flex;flex-direction:row;align-items:center;gap:5px;cursor:pointer;" onclick="SetKbSizeToExtended()"><svg id="kbSizeExtendedIcon" viewBox="0 0 139.9 49.8" style="height:14px;width:auto;flex-shrink:0;"><use href="#IconExtKeyboard"/></svg><small id="kbSizeExtendedLabel" class="kb-size-word-label">extended</small></div>
+            <div id="kbSizeExtendedSide" class="modal-right-label" style="display:flex;flex-direction:row;align-items:center;gap:5px;cursor:pointer;" onclick="SetKbSizeToCompact()"><svg id="kbSizeExtendedIcon" viewBox="0 0 139.9 49.8" style="height:14px;width:auto;flex-shrink:0;"><use href="#IconExtKeyboard"/></svg><small id="kbSizeExtendedLabel" class="kb-size-word-label">extended</small></div>
           </div>
         </div><!-- /#modalKbSizeSection -->
 
@@ -7132,12 +7132,12 @@ function _renderKeyboardConflictTab(container) {
 
   }
   cmpSide.onclick = function() {
-    if (!cfInp || touchEnabled || cfInp.checked) return;
+    if (!cfInp || touchEnabled || !cfInp.checked) return;
     cfInp.checked = false;
     cfInp.dispatchEvent(new Event('change'));
   };
   extSide.onclick = function() {
-    if (!cfInp || touchEnabled || !cfInp.checked) return;
+    if (!cfInp || touchEnabled || cfInp.checked) return;
     cfInp.checked = true;
     cfInp.dispatchEvent(new Event('change'));
   };

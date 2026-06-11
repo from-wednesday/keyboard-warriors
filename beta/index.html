@@ -887,7 +887,7 @@
             </span>
           </div>
           <div class="modal-kbsize-row" id="modalKbSizeRow">
-            <div id="kbSizeExtendedSide" class="modal-left-label" style="display:flex;flex-direction:row;align-items:center;gap:5px;justify-content:flex-end;cursor:pointer;" onclick="SetKbSizeToExtended()"><small id="kbSizeExtendedLabel" class="kb-size-word-label">extended</small><svg id="kbSizeExtendedIcon" viewBox="0 0 139.9 49.8" style="height:14px;width:auto;flex-shrink:0;"><use href="#IconExtKeyboard"/></svg></div>
+            <div id="kbSizeCompactSide" class="modal-left-label" style="display:flex;flex-direction:row;align-items:center;gap:5px;justify-content:flex-end;cursor:pointer;" onclick="SetKbSizeToCompact()"><small id="kbSizeCompactLabel" class="kb-size-word-label">compact</small><svg id="kbSizeCompactIcon" viewBox="0 0 111.9 49.8" style="height:14px;width:auto;"><use href="#IconKeyboard"/></svg></div>
             <div class="modal-switch-wrap">
               <label class="os-switch" title="Keyboard size" style="cursor:pointer;">
                 <input type="checkbox" id="modalKbSizeToggle" onchange="onKbSizeToggle()">
@@ -898,7 +898,7 @@
                 </svg>
               </label>
             </div>
-            <div id="kbSizeCompactSide" class="modal-right-label" style="display:flex;flex-direction:row;align-items:center;gap:5px;cursor:pointer;" onclick="SetKbSizeToCompact()"><svg id="kbSizeCompactIcon" viewBox="0 0 111.9 49.8"" style="height:14px;width:auto;"><use href="#IconKeyboard"/></svg><small id="kbSizeCompactLabel" class="kb-size-word-label">compact</small></div>
+            <div id="kbSizeExtendedSide" class="modal-right-label" style="display:flex;flex-direction:row;align-items:center;gap:5px;cursor:pointer;" onclick="SetKbSizeToExtended()"><svg id="kbSizeExtendedIcon" viewBox="0 0 139.9 49.8" style="height:14px;width:auto;flex-shrink:0;"><use href="#IconExtKeyboard"/></svg><small id="kbSizeExtendedLabel" class="kb-size-word-label">extended</small></div>
           </div>
         </div><!-- /#modalKbSizeSection -->
 
@@ -5061,10 +5061,11 @@ function updateKbSizeToggle() {
   var compactColour  = isCompact ? activeColour   : inactiveColour;
 
   // Update KB-settings-panel elements only if that panel is in the DOM
+  // Knob right = extended (compact is now on the left)
   if (knob) {
-    knob.style.transform = isCompact ? 'translateX(22px)' : 'translateX(0)';
-    knob.setAttribute('fill', isCompact ? '#374151' : 'white');
-    if (tog) tog.checked = isCompact;
+    knob.style.transform = isCompact ? 'translateX(0)' : 'translateX(22px)';
+    knob.setAttribute('fill', isCompact ? 'white' : '#374151');
+    if (tog) tog.checked = !isCompact;
     var extIcon  = document.getElementById('kbSizeExtendedIcon');
     var extLabel = document.getElementById('kbSizeExtendedLabel');
     var cmpIcon  = document.getElementById('kbSizeCompactIcon');
@@ -5094,7 +5095,7 @@ function updateKbSizeToggle() {
 
 function onKbSizeToggle() {
   var tog = document.getElementById('modalKbSizeToggle');
-  setKbSizeToggle(!tog.checked); // checked = compact/tenkeyless
+  setKbSizeToggle(tog.checked); // checked = extended
 }
 
 function setTouchEnabled(on) {
@@ -7049,10 +7050,10 @@ function _renderKeyboardConflictTab(container) {
 
   // Left side: extended icon + label (clone the exact same markup as the modal)
   var extSide = document.createElement('div');
-  extSide.className = 'modal-left-label';
-  extSide.style.cssText = 'display:flex;flex-direction:row;align-items:center;gap:5px;justify-content:flex-end;cursor:pointer;';
-  extSide.innerHTML = '<small class="kb-size-word-label" id="cfKbExtLabel">extended</small>'
-    + '<svg viewBox="0 0 139.9 49.8" style="height:14px;width:auto;flex-shrink:0; overflow: visible;" id="cfKbExtIcon"><use href="#IconExtKeyboard"/></svg>';
+  extSide.className = 'modal-right-label';
+  extSide.style.cssText = 'display:flex;flex-direction:row;align-items:center;gap:5px;cursor:pointer;';
+  extSide.innerHTML = '<svg viewBox="0 0 139.9 49.8" style="height:14px;width:auto;flex-shrink:0; overflow: visible;" id="cfKbExtIcon"><use href="#IconExtKeyboard"/></svg>'
+    + '<small class="kb-size-word-label" id="cfKbExtLabel">extended</small>';
 
   // Switch
   var switchWrap = document.createElement('div');
@@ -7066,10 +7067,10 @@ function _renderKeyboardConflictTab(container) {
 
   // Right side: compact icon + label
   var cmpSide = document.createElement('div');
-  cmpSide.className = 'modal-right-label';
-  cmpSide.style.cssText = 'display:flex;flex-direction:row;align-items:center;gap:5px;cursor:pointer;';
-  cmpSide.innerHTML = '<svg id="cfKbCmpIcon" viewBox="0 0 111.9 49.8"" style="height:14px;width:auto; overflow: visible;"><use href="#IconKeyboard"/></svg>'
-    + '<small class="kb-size-word-label" id="cfKbCmpLabel">compact</small>';
+  cmpSide.className = 'modal-left-label';
+  cmpSide.style.cssText = 'display:flex;flex-direction:row;align-items:center;gap:5px;justify-content:flex-end;cursor:pointer;';
+  cmpSide.innerHTML = '<small class="kb-size-word-label" id="cfKbCmpLabel">compact</small>'
+    + '<svg id="cfKbCmpIcon" viewBox="0 0 111.9 49.8" style="height:14px;width:auto; overflow: visible;"><use href="#IconKeyboard"/></svg>';
 
   toggleWrap.appendChild(extSide);
   toggleWrap.appendChild(switchWrap);
@@ -7086,9 +7087,9 @@ function _renderKeyboardConflictTab(container) {
     var cmpL = document.getElementById('cfKbCmpLabel');
     var cmpI = document.getElementById('cfKbCmpIcon');
     if (!inp) return;
-    // checked = compact (same polarity as modalKbSizeToggle)
-    inp.checked = !hasFullKeyboard;
-    if (knob) knob.style.transform = hasFullKeyboard ? 'translateX(0)' : 'translateX(22px)';
+    // checked = extended (compact is now on the left)
+    inp.checked = hasFullKeyboard;
+    if (knob) knob.style.transform = hasFullKeyboard ? 'translateX(22px)' : 'translateX(0)';
     var activeCol   = '#374151';
     var inactiveCol = '#9ca3af';
     var extActive   = hasFullKeyboard;
@@ -7103,9 +7104,9 @@ function _renderKeyboardConflictTab(container) {
   if (cfInp) {
     cfInp.addEventListener('change', function() {
       if (touchEnabled) return;
-      // cfInp.checked === true means compact. Call setKbSizeToggle directly
+      // cfInp.checked === true means extended. Call setKbSizeToggle directly
       // with the correct polarity — avoids the double-inversion in onKbSizeToggle().
-      setKbSizeToggle(!cfInp.checked);
+      setKbSizeToggle(cfInp.checked);
 
       _cfSyncMiniSwitch();
 
@@ -7130,13 +7131,13 @@ function _renderKeyboardConflictTab(container) {
     });
 
   }
-  extSide.onclick = function() {
-    if (!cfInp || touchEnabled || !cfInp.checked) return;
+  cmpSide.onclick = function() {
+    if (!cfInp || touchEnabled || cfInp.checked) return;
     cfInp.checked = false;
     cfInp.dispatchEvent(new Event('change'));
   };
-  cmpSide.onclick = function() {
-    if (!cfInp || touchEnabled || cfInp.checked) return;
+  extSide.onclick = function() {
+    if (!cfInp || touchEnabled || !cfInp.checked) return;
     cfInp.checked = true;
     cfInp.dispatchEvent(new Event('change'));
   };

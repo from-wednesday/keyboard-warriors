@@ -1440,13 +1440,13 @@ function LoadKeyboardSettings() {
   if (Bundle.KbVariantPc  && ValidPcVariants.indexOf(Bundle.KbVariantPc)   !== -1) kbVariantPc  = Bundle.KbVariantPc;
   _syncKbCountFromVariant();
 
-  // Restore extended key overrides before conflict/pool logic runs
+  // Restore individual key overrides first so _syncExtendedKeysToBaseline skips them
   if (Array.isArray(Bundle.KbKeyOverrides)) {
     kbKeyOverrides.clear();
     Bundle.KbKeyOverrides.forEach(function(Code) { kbKeyOverrides.add(Code); });
   }
 
-  // Restore size -- must happen before setTouchEnabled to avoid being overridden
+  // Restore size intent -- triggers _syncExtendedKeysToBaseline which now respects kbKeyOverrides
   if (typeof Bundle.HasFullKeyboard === 'boolean') {
     hasFullKeyboard = Bundle.HasFullKeyboard;
     try { localStorage.setItem('kw_kb_full', String(hasFullKeyboard)); } catch(StorageError) {}

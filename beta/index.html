@@ -1952,6 +1952,66 @@ function updateKeyboardMode() {
   _syncPhoneToolbarVisibility();
 }
 
+function SyncKeyboardSettingsToUI() {
+  // Syncs all keyboard settings UI to current variable values.
+  // Call after any bulk state change: load, default apply, or OS switch.
+
+  // Keyboard display mode pill
+  var NoneBtn      = document.getElementById('kbDisplayNoneBtn');
+  var GhostBtn     = document.getElementById('kbDisplayGhostBtn');
+  var GraphicalBtn = document.getElementById('kbDisplayGraphicalBtn');
+  if (NoneBtn)      NoneBtn.classList.toggle('diff-btn-active',      keyboardDisplayMode === 'none');
+  if (GhostBtn)     GhostBtn.classList.toggle('diff-btn-active',     keyboardDisplayMode === 'ghost');
+  if (GraphicalBtn) GraphicalBtn.classList.toggle('diff-btn-active', keyboardDisplayMode === 'graphical');
+
+  // Ghost mode class on keyboard panel
+  var KeyboardPanelElement = document.getElementById('keyboardPanel');
+  if (KeyboardPanelElement) KeyboardPanelElement.classList.toggle('ghost-mode', keyboardDisplayMode === 'ghost');
+
+  // Touch enabled radio
+  var TouchRadio = document.getElementById('touchRadio');
+  if (TouchRadio) TouchRadio.classList.toggle('on', touchEnabled);
+
+  // Sticky keys radio
+  var StickyRadio = document.getElementById('stickyRadio');
+  if (StickyRadio) StickyRadio.classList.toggle('on', stickyKeysOn);
+
+  // Audible radio
+  var AudibleRadio = document.getElementById('audibleRadio');
+  if (AudibleRadio) AudibleRadio.classList.toggle('on', soundEnabled);
+
+  // Kill punctuation radio
+  var KillPunctuationRadio = document.getElementById('killPunctuationRadio');
+  if (KillPunctuationRadio) KillPunctuationRadio.classList.toggle('on', killPunctuationOn);
+
+  // Rows that are disabled when touch is on
+  var StickyRowElement  = document.getElementById('stickyRow');
+  var AudibleRowElement = document.getElementById('audibleRow');
+  var KbDisplayPill     = document.getElementById('kbDisplayPill');
+  if (StickyRowElement)  StickyRowElement.classList.toggle('disabled',  touchEnabled);
+  if (AudibleRowElement) AudibleRowElement.classList.toggle('disabled', !touchEnabled);
+  if (KbDisplayPill)     KbDisplayPill.classList.toggle('disabled',     touchEnabled);
+
+  // Touch row disabled when display mode is not graphical
+  var TouchRowElement = document.getElementById('touchRow');
+  if (TouchRowElement) TouchRowElement.classList.toggle('disabled', keyboardDisplayMode !== 'graphical');
+
+  // Keyboard memory toggle
+  var MemoryKnob   = document.getElementById('modalKeyboardMemoryKnobEl');
+  var MemoryToggle = document.getElementById('modalKeyboardMemoryToggle');
+  if (MemoryToggle) MemoryToggle.checked = KeyboardMemory;
+  if (MemoryKnob) {
+    MemoryKnob.style.transform = KeyboardMemory ? 'translateX(22px)' : 'translateX(0)';
+    MemoryKnob.setAttribute('fill', KeyboardMemory ? '#374151' : 'white');
+  }
+
+  // Layout toggles (key count and fn position)
+  updateModalToggles();
+
+  // Size toggle (both main and conflicts panel instance)
+  updateKbSizeToggle();
+}
+
 function ApplyDefaultKeyboardSettings() {
   // Sets all keyboard state variables to device-appropriate defaults.
   // Called only when KeyboardMemory is false. Does not write to localStorage.
@@ -1988,6 +2048,7 @@ function _initialiseLayout() {
   } else {
     ApplyDefaultKeyboardSettings();
   }
+  SyncKeyboardSettingsToUI();
   updateKeyboardMode();
   updateMismatchPill();
   

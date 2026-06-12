@@ -5110,22 +5110,40 @@ function setStickyKeys(on) {
 }
 
 function setKbSizeToggle(full) {
+  // If the user has individual extended key overrides, warn them rather than
+  // silently wiping those settings. They must toggle compact then extended to reset.
+  if (kbKeyOverrides.size > 0 && KeyboardMemory) {
+    var CurrentlyCompact = !full;
+    if (CurrentlyCompact) {
+      // Switching to compact from extended with overrides: safe, compact blocks everything
+    } else {
+      // Switching to extended with overrides: would conflict with individual settings
+      showToast('You have custom key settings. Switch to compact first, then back to extended to reset them.');
+      updateKbSizeToggle();
+      return;
+    }
+  }
+
   hasFullKeyboard = full;
   SaveKeyboardSettings();
-  // Guard: these may not be initialised yet during startup on mobile
   if (typeof dismissedConflicts !== 'undefined' && typeof kbKeyOverrides !== 'undefined') {
     _syncExtendedKeysToBaseline(full);
   }
-if (
-  typeof DIFF_RANGE !== 'undefined' &&
-  typeof currentDifficulty !== 'undefined' &&
-  typeof buildPool === 'function' &&
-  gameState !== 'playing' &&
-  gameState !== 'paused' &&
-  gameState !== 'readyToUnpause'
-) {
-  questionPool = shuffleArray(buildPool());
-}
+  if (
+    typeof DIFF_RANGE !== 'undefined' &&
+    typeof currentDifficulty !== 'undefined' &&
+    typeof buildPool === 'function' &&
+    gameState !== 'playing' &&
+    gameState !== 'paused' &&
+    gameState !== 'readyToUnpause'
+  ) {
+    questionPool = shuffleArray(buildPool());
+  }
+  // Clear overrides only on a full reset (compact then extended)
+  if (full && kbKeyOverrides.size > 0) {
+    kbKeyOverrides.clear();
+    _saveKbKeyOverrides();
+  }
   updateKbSizeToggle();
   if (activeSettings === 'panelConflicts') conflictsKbLighting.refresh();
 }

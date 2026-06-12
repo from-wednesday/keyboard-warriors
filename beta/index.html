@@ -5131,10 +5131,20 @@ if (
 }
 
 function updateKbSizeToggle() {
-  var row     = document.getElementById('modalKbSizeRow');
-  var knob    = document.getElementById('modalKbSizeKnob');
-  var tog     = document.getElementById('modalKbSizeToggle');
-  var isCompact = !hasFullKeyboard;
+  var row  = document.getElementById('modalKbSizeRow');
+  var knob = document.getElementById('modalKbSizeKnob');
+  var tog  = document.getElementById('modalKbSizeToggle');
+
+  // Derive compact/extended from actual key availability rather than intent variable.
+  // If every extended key token is blocked, show compact. If any one is available, show extended.
+  var AllExtendedTokens = [];
+  var SeenTokens = new Set();
+  Object.keys(ExtendedKeyCodeToToken).forEach(function(Code) {
+    var Token = ExtendedKeyCodeToToken[Code];
+    if (!SeenTokens.has(Token)) { SeenTokens.add(Token); AllExtendedTokens.push(Token); }
+  });
+  var AllBlocked = AllExtendedTokens.every(function(Token) { return dismissedConflicts.has(Token); });
+  var isCompact  = AllBlocked;
 
   // Active side = dark grey; inactive side = mid-grey
   var activeColour   = '#374151';

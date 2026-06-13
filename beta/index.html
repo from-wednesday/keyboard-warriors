@@ -1883,17 +1883,51 @@ function _cancelPillAutoHideTimer() {
   if (_pillAutoHideTimer) { clearTimeout(_pillAutoHideTimer); _pillAutoHideTimer = null; }
 }
 
-function _setHasKeyboard() {
-  // Mark that a physical keyboard is present, suppress the mismatch pill,
-  // and persist the flag. Safe to call multiple times — exits early if
-  // already set so there is no redundant localStorage write.
+function _setHasKeyboard(persist) {
+  // Mark that a physical keyboard is present and suppress the mismatch pill.
+  // persist=true (default): also writes kw_has_keyboard to localStorage so
+  //   the flag survives a page reload (used when a physical key is pressed).
+  // persist=false: session-only — suppresses the pill this visit but does
+  //   not write to storage (used for desktop devices on page load).
+  if (persist === undefined) persist = true;
   _cancelPillAutoHideTimer();
   _pillDismissedThisSession = true;
+  osMismatchEl.classList.remove('show', 'clickable');
+  if (!persist) return;
   var already = false;
   try { already = localStorage.getItem('kw_has_keyboard') === '1'; } catch(e) {}
   if (already) return;
   try { localStorage.setItem('kw_has_keyboard', '1'); } catch(e) {}
-  osMismatchEl.classList.remove('show', 'clickable');
+  // Unlock none/ghost display modes now that a keyboard is confirmed
+  _syncKeyboardDisplayPillLock();
+}
+
+function _hasKeyboardConfirmed() {
+  // Returns true when we know a physical keyboard is present this session:
+  // either the session flag was set (desktop boot or keypress), or
+  // KeyboardMemory is on and the stored flag exists.
+  if (_pillDismissedThisSession) return true;
+  if (KeyboardMemory) {
+    try { return localStorage.getItem('kw_has_keyboard') === '1'; } catch(e) {}
+  }
+  return false;
+}
+
+function _syncKeyboardDisplayPillLock() {
+  // Gates the 'none' and 'ghost' display-mode buttons behind keyboard confirmation.
+  // When no keyboard is confirmed: buttons are dimmed, text struck through, cursor default.
+  // When a keyboard is confirmed: buttons fully interactive, styles cleared.
+  var NoneBtn  = document.getElementById('kbDisplayNoneBtn');
+  var GhostBtn = document.getElementById('kbDisplayGhostBtn');
+  var hasKb    = _hasKeyboardConfirmed();
+  [NoneBtn, GhostBtn].forEach(function(Btn) {
+    if (!Btn) return;
+    Btn.classList.toggle('kb-display-locked', !hasKb);
+    Btn.style.opacity = hasKb ? '' : '0.35';
+    Btn.style.cursor  = hasKb ? '' : 'default';
+    var TextEl = Btn.querySelector('.diff-btn-text');
+    if (TextEl) TextEl.style.textDecoration = hasKb ? '' : 'line-through';
+  });
 }
 
 function updateMismatchPill() {
@@ -2022,6 +2056,9 @@ function SyncKeyboardSettingsToUI() {
 
   // Size toggle (both main and conflicts panel instance)
   updateKbSizeToggle();
+
+  // Lock none/ghost buttons when no physical keyboard is confirmed
+  _syncKeyboardDisplayPillLock();
 }
 
 function ApplyDefaultKeyboardSettings() {
@@ -2055,6 +2092,18 @@ function ApplyDefaultKeyboardSettings() {
 }
 
 function _initialiseLayout() {
+  // ── Has-keyboard boot logic ───────────────────────────────────────────────
+  // Desktop: always has a keyboard — suppress the pill session-only (no persist).
+  // Mobile + KeyboardMemory OFF: clear any stale kw_has_keyboard from storage
+  //   so we don't falsely remember an accessory that may not be connected.
+  // Mobile + KeyboardMemory ON: the stored flag (if present) is read by
+  //   updateMismatchPill() and _syncKeyboardDisplayPillLock() below.
+  // Physical key press (handleKeydown) is the only path that persists the flag.
+  if (detectedOs !== 'mobile') {
+    _setHasKeyboard(false);
+  } else if (!KeyboardMemory) {
+    try { localStorage.removeItem('kw_has_keyboard'); } catch(e) {}
+  }
   if (KeyboardMemory) {
     LoadKeyboardSettings();
   } else {
@@ -5440,6 +5489,12 @@ function toggleMoreInfo(PopupId, ClickEvent) {
 }
 
 function setKeyboardDisplayMode(mode) {
+  // None and ghost require a confirmed physical keyboard.
+  // Guard is bypassed when called internally (e.g. touch mode enabling graphical).
+  if ((mode === 'none' || mode === 'ghost') && !_hasKeyboardConfirmed()) {
+    showToast('Press any key to unlock this feature.');
+    return;
+  }
   var previous = keyboardDisplayMode;
   keyboardDisplayMode = mode;
   SaveKeyboardSettings();
@@ -5542,6 +5597,11 @@ if (GoingToNone) {
 }
 
 function onTouchToggle() {
+  // Turning touch OFF requires a confirmed physical keyboard.
+  if (touchEnabled && !_hasKeyboardConfirmed()) {
+    showToast('Press any key to unlock this feature.');
+    return;
+  }
   setTouchEnabled(!touchEnabled);
   if (touchEnabled) {
     if (keyboardDisplayMode !== 'graphical') setKeyboardDisplayMode('graphical');
@@ -5549,7 +5609,6 @@ function onTouchToggle() {
     document.getElementById('stickyRow').classList.add('disabled');
     showModeToast('On-Screen Keyboard Active');
   } else {
-    _setHasKeyboard();
     setStickyKeys(false);
     document.getElementById('stickyRow').classList.remove('disabled');
     showModeToast('On-Screen Keyboard = Display Only');
@@ -6020,7 +6079,7 @@ function _phoneOpenSettings(Page) {
 
   // Populate content
   if (Page === 'panelConflicts')    _refreshBrowserContent();
-  if (Page === 'panelKeyboard')   { updateModalToggles(); updateKbSizeToggle(); }
+  if (Page === 'panelKeyboard')   { updateModalToggles(); updateKbSizeToggle(); _syncKeyboardDisplayPillLock(); }
   if (Page === 'panelDifficultySettings') _refreshDifficultyPanel();
   if (Page === 'panelPause')      _refreshPausePanel();
   if (Page === 'panelEndGameReportCard')     _refreshReportPanel();
@@ -6333,7 +6392,7 @@ function openSettings(page) {
 
   // Populate content
   if (page === 'panelConflicts') { _refreshBrowserContent(); conflictsKbLighting.activate(); }
-  if (page === 'panelKeyboard')   { updateModalToggles(); updateKbSizeToggle(); }
+  if (page === 'panelKeyboard')   { updateModalToggles(); updateKbSizeToggle(); _syncKeyboardDisplayPillLock(); }
   if (page === 'panelDifficultySettings') _refreshDifficultyPanel();
   if (page === 'panelPause')      _refreshPausePanel();
   if (page === 'panelEndGameReportCard')     _refreshReportPanel();

@@ -4086,21 +4086,17 @@ function showConfirmHeading(text, blurTitle, showBracket) {
   }
 }
 
-function scrollKeyboardIntoViewIfNeeded() {
+function scrollPanelIntoViewIfNeeded(elementId, delayMs) {
   if (!touchEnabled) return;
-  var questionText = (questionPool[questionIndex]?.display) || '';
-  var readDelay = Math.min(3500, 1500 + questionText.length * 40);
   setTimeout(function() {
-    var panel = document.getElementById('keyboardPanel');
+    var panel = document.getElementById(elementId);
     if (!panel) return;
-    var observer = new IntersectionObserver(function(entries) {
-      observer.disconnect();
-      if (!entries[0].isIntersecting) {
-        panel.scrollIntoView({ behavior: 'smooth', block: 'center' });
-      }
-    }, { threshold: 1.0 });
-    observer.observe(panel);
-  }, readDelay);
+    var rect = panel.getBoundingClientRect();
+    // Only scroll if the panel has not yet begun to appear on screen
+    if (rect.top >= window.innerHeight) {
+      panel.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    }
+  }, delayMs);
 }
 
 function hideConfirmHeading() {
@@ -10439,7 +10435,7 @@ hintUsedAtMs = null;
 wrongKeyCount = 0;
 partialNudgeFiredThisQuestion = false;
 partialCorrectKeyPressedThisQuestion = false;
-scrollKeyboardIntoViewIfNeeded();
+scrollPanelIntoViewIfNeeded('keyboardPanel', Math.min(3500, 1500 + ((questionPool[questionIndex]?.display) || '').length * 40));
 }
 
 function skipShortcut() {
@@ -10549,7 +10545,7 @@ hintUsedAtMs = null;
 wrongKeyCount = 0;
 partialNudgeFiredThisQuestion = false;
 partialCorrectKeyPressedThisQuestion = false;
-scrollKeyboardIntoViewIfNeeded();
+scrollPanelIntoViewIfNeeded('keyboardPanel', Math.min(3500, 1500 + ((questionPool[questionIndex]?.display) || '').length * 40));
 }
 
 function recordAnswer() {
@@ -10768,8 +10764,9 @@ lastCompletedReport = finalizeRunData(completedRun, questionPool, 0);
       endScreenInactivityTimer = setTimeout(pulseAndReschedule, 5000);
     }, 14000);
   } else {
-  openSettings('panelEndGameReportCard');
-_refreshReportPanel()
+    openSettings('panelEndGameReportCard');
+    _refreshReportPanel();
+    scrollPanelIntoViewIfNeeded('settingsPanelInner', 900);
     startEndScreenInactivityTimer();
   }
   fillProgressDot(9);
@@ -10805,7 +10802,8 @@ _refreshReportPanel()
       openSettings('panelDifficultySettings');
     }, openDelay);
 
-    // Step 2: once panel is visible, change difficulty pill if from Fundamentals
+    // Step 2: once panel is visible, scroll settings into view, then animate pill
+    scrollPanelIntoViewIfNeeded('settingsPanelInner', panelVisible);
     var pillDone = panelVisible;
     if (previousDifficulty === 'fundamentals') {
       setTimeout(function() {

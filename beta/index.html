@@ -1900,6 +1900,13 @@ function _setHasKeyboard(persist) {
   try { localStorage.setItem('kw_has_keyboard', '1'); } catch(e) {}
   // Unlock none/ghost display modes now that a keyboard is confirmed
   _syncKeyboardDisplayPillLock();
+  // Show a brief confirmation so the unlock doesn't appear to do nothing
+  if (activeSettings === 'panelKeyboard') {
+    showConfirmHeading('Keyboard detected — more display options are now available.');
+    setTimeout(function() {
+      if (activeSettings === 'panelKeyboard') hideConfirmHeading();
+    }, 3500);
+  }
 }
 
 function _hasKeyboardConfirmed() {

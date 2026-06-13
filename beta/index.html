@@ -5139,11 +5139,6 @@ function setKbSizeToggle(full) {
   ) {
     questionPool = shuffleArray(buildPool());
   }
-  // Clear overrides only on a full reset (compact then extended)
-  if (full && kbKeyOverrides.size > 0) {
-    kbKeyOverrides.clear();
-    _saveKbKeyOverrides();
-  }
   updateKbSizeToggle();
   if (activeSettings === 'panelConflicts') conflictsKbLighting.refresh();
 }

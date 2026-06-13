@@ -1075,7 +1075,8 @@
 const UNIVERSAL_SHORTCUTS = [
   // ─── BETA TEST ENTRY — single question loops for game cycle testing ───
   {display:"Undo the last action",mac_sc:"CMD+Z",pc_sc:"Ctrl+Z",difficulty:0}
-];/* ══════════════════════════════════════
+];
+/* ══════════════════════════════════════
    KEYBOARD BUILDER
 ══════════════════════════════════════ */
 const keyEls = {};
@@ -4083,6 +4084,23 @@ function showConfirmHeading(text, blurTitle, showBracket) {
       }, { once: true });
     }, 180);
   }
+}
+
+function scrollKeyboardIntoViewIfNeeded() {
+  if (!touchEnabled) return;
+  var questionText = (questionPool[questionIndex]?.display) || '';
+  var readDelay = Math.min(3500, 1500 + questionText.length * 40);
+  setTimeout(function() {
+    var panel = document.getElementById('keyboardPanel');
+    if (!panel) return;
+    var observer = new IntersectionObserver(function(entries) {
+      observer.disconnect();
+      if (!entries[0].isIntersecting) {
+        panel.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      }
+    }, { threshold: 1.0 });
+    observer.observe(panel);
+  }, readDelay);
 }
 
 function hideConfirmHeading() {
@@ -10421,6 +10439,7 @@ hintUsedAtMs = null;
 wrongKeyCount = 0;
 partialNudgeFiredThisQuestion = false;
 partialCorrectKeyPressedThisQuestion = false;
+scrollKeyboardIntoViewIfNeeded();
 }
 
 function skipShortcut() {
@@ -10530,6 +10549,7 @@ hintUsedAtMs = null;
 wrongKeyCount = 0;
 partialNudgeFiredThisQuestion = false;
 partialCorrectKeyPressedThisQuestion = false;
+scrollKeyboardIntoViewIfNeeded();
 }
 
 function recordAnswer() {

@@ -4094,7 +4094,13 @@ function scrollPanelIntoViewIfNeeded(elementId, delayMs) {
     var rect = panel.getBoundingClientRect();
     // Only scroll if the panel has not yet begun to appear on screen
     if (rect.top >= window.innerHeight) {
-      panel.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      var toolbar = document.getElementById('phoneToolbar');
+      if (toolbar) {
+        var scrollTarget = toolbar.getBoundingClientRect().top + window.scrollY;
+        window.scrollTo({ top: scrollTarget, behavior: 'smooth' });
+      } else {
+        panel.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      }
     }
   }, delayMs);
 }

@@ -886,7 +886,7 @@
               </div>
             </span>
           </div>
-          <div class="modal-kbsize-row" id="modalKbSizeRow">
+          <div class="modal-kbsize-row" id="modalKbSizeRow" onclick="onKbSizeRowClick(event)">
             <div id="kbSizeCompactSide" class="modal-left-label" style="display:flex;flex-direction:row;align-items:center;gap:5px;justify-content:flex-end;cursor:pointer;" onclick="SetKbSizeToExtended()"><small id="kbSizeCompactLabel" class="kb-size-word-label">compact</small><svg id="kbSizeCompactIcon" viewBox="0 0 111.9 49.8" style="height:14px;width:auto;"><use href="#IconKeyboard"/></svg></div>
             <div class="modal-switch-wrap">
               <label class="os-switch" title="Keyboard size" style="cursor:pointer;">
@@ -899,6 +899,17 @@
               </label>
             </div>
             <div id="kbSizeExtendedSide" class="modal-right-label" style="display:flex;flex-direction:row;align-items:center;gap:5px;cursor:pointer;" onclick="SetKbSizeToCompact()"><svg id="kbSizeExtendedIcon" viewBox="0 0 139.9 49.8" style="height:14px;width:auto;flex-shrink:0;"><use href="#IconExtKeyboard"/></svg><small id="kbSizeExtendedLabel" class="kb-size-word-label">extended</small></div>
+          </div>
+          <div class="more-info-popup" id="kbSizePartialPopup">
+            <p class="more-info-body">Switching keyboard size here will lose the key availability settings you have made in the Conflicted Keys panel. Please go there to define your desired state in detail.</p>
+            <div class="segmented-pill" style="margin-top:8px;">
+              <button class="segmented-pill-section segmented-pill-half" onclick="_closeKbSizePartialPopup()">
+                <span class="diff-btn-text">Not now</span>
+              </button>
+              <button class="segmented-pill-section segmented-pill-half" onclick="_goToConflictsExtendedKeys()">
+                <span class="diff-btn-text"><svg viewBox="0 0 85.1 61.1" style="height:13px;width:auto;vertical-align:middle;margin-right:4px;"><use href="#IconConflicts"/></svg>Set keys</span>
+              </button>
+            </div>
           </div>
         </div><!-- /#modalKbSizeSection -->
 
@@ -5143,64 +5154,119 @@ function setKbSizeToggle(full) {
   if (activeSettings === 'panelConflicts') conflictsKbLighting.refresh();
 }
 
-function updateKbSizeToggle() {
-  var row  = document.getElementById('modalKbSizeRow');
-  var knob = document.getElementById('modalKbSizeKnob');
-  var tog  = document.getElementById('modalKbSizeToggle');
-
-  // Derive compact/extended from actual key availability rather than intent variable.
-  // If every extended key token is blocked, show compact. If any one is available, show extended.
+// Returns 'compact', 'extended', or 'partial' based on the blocked state of all
+// extended keyboard tokens. 'partial' means a mix of blocked and available keys —
+// this can only happen via individual overrides in the Conflicts panel.
+function getKbSizeState() {
   var AllExtendedTokens = [];
   var SeenTokens = new Set();
   Object.keys(ExtendedKeyCodeToToken).forEach(function(Code) {
     var Token = ExtendedKeyCodeToToken[Code];
     if (!SeenTokens.has(Token)) { SeenTokens.add(Token); AllExtendedTokens.push(Token); }
   });
-  var AllBlocked = AllExtendedTokens.every(function(Token) { return dismissedConflicts.has(Token); });
-  var isCompact  = AllBlocked;
+  var AllBlocked     = AllExtendedTokens.every(function(Token) { return dismissedConflicts.has(Token); });
+  var NoneBlocked    = AllExtendedTokens.every(function(Token) { return !dismissedConflicts.has(Token); });
+  if (AllBlocked)  return 'compact';
+  if (NoneBlocked) return 'extended';
+  return 'partial';
+}
 
-  // Active side = dark grey; inactive side = mid-grey
+function updateKbSizeToggle() {
+  var row  = document.getElementById('modalKbSizeRow');
+  var knob = document.getElementById('modalKbSizeKnob');
+  var tog  = document.getElementById('modalKbSizeToggle');
+
+  var SizeState = getKbSizeState();
+  var isCompact = (SizeState === 'compact');
+  var isPartial = (SizeState === 'partial');
+
+  // Active side = dark grey; inactive side = mid-grey; partial = both grey
   var activeColour   = '#374151';
   var inactiveColour = '#9ca3af';
-  var extendedColour = isCompact ? inactiveColour : activeColour;
-  var compactColour  = isCompact ? activeColour   : inactiveColour;
+  var extendedColour = isPartial ? inactiveColour : (isCompact ? inactiveColour : activeColour);
+  var compactColour  = isPartial ? inactiveColour : (isCompact ? activeColour   : inactiveColour);
 
   // Update KB-settings-panel elements only if that panel is in the DOM
-  // Knob right = extended (compact is now on the left)
+  // Knob right = extended, left = compact, centre = partial
   if (knob) {
-    knob.style.transform = isCompact ? 'translateX(0)' : 'translateX(22px)';
-    knob.setAttribute('fill', isCompact ? 'white' : '#374151');
+    if (isPartial) {
+      knob.style.transform = 'translateX(11px)';
+      knob.setAttribute('fill', '#9ca3af');
+    } else {
+      knob.style.transform = isCompact ? 'translateX(0)' : 'translateX(22px)';
+      knob.setAttribute('fill', isCompact ? 'white' : '#374151');
+    }
     if (tog) tog.checked = !isCompact;
     var extIcon  = document.getElementById('kbSizeExtendedIcon');
     var extLabel = document.getElementById('kbSizeExtendedLabel');
     var cmpIcon  = document.getElementById('kbSizeCompactIcon');
     var cmpLabel = document.getElementById('kbSizeCompactLabel');
     if (extIcon)  extIcon.style.color          = extendedColour;
-    if (extLabel) { extLabel.style.color = extendedColour; extLabel.style.textDecoration = isCompact ? 'line-through' : ''; }
+    if (extLabel) { extLabel.style.color = extendedColour; extLabel.style.textDecoration = (isCompact && !isPartial) ? 'line-through' : ''; }
     if (cmpIcon)  cmpIcon.style.color          = compactColour;
-    if (cmpLabel) { cmpLabel.style.color = compactColour; cmpLabel.style.textDecoration = isCompact ? '' : 'line-through'; }
+    if (cmpLabel) { cmpLabel.style.color = compactColour; cmpLabel.style.textDecoration = (!isCompact && !isPartial) ? 'line-through' : ''; }
     // Grey out and lock to compact when touch is enabled
     if (row) row.classList.toggle('disabled', touchEnabled);
   }
-
-  // Keep the conflicts-panel mini-switch in sync if it exists
-  var cfKnob = document.getElementById('cfKbSizeKnob');
-  var cfInp  = document.getElementById('cfKbSizeToggle');
-  var cfExtL = document.getElementById('cfKbExtLabel');
-  var cfExtI = document.getElementById('cfKbExtIcon');
-  var cfCmpL = document.getElementById('cfKbCmpLabel');
-  var cfCmpI = document.getElementById('cfKbCmpIcon');
-  if (cfKnob) { cfKnob.style.transform = isCompact ? 'translateX(22px)' : 'translateX(0)'; cfKnob.setAttribute('fill', isCompact ? '#374151' : 'white'); }
-  if (cfInp)  cfInp.checked = isCompact;
-  if (cfExtL) { cfExtL.style.color = extendedColour; cfExtL.style.textDecoration = isCompact ? 'line-through' : ''; }
-  if (cfExtI) cfExtI.style.color = extendedColour;
-  if (cfCmpL) { cfCmpL.style.color = compactColour; cfCmpL.style.textDecoration = isCompact ? '' : 'line-through'; }
-  if (cfCmpI) cfCmpI.style.color = compactColour;
 }
 
 function onKbSizeToggle() {
   var tog = document.getElementById('modalKbSizeToggle');
   setKbSizeToggle(tog.checked); // checked = extended
+}
+
+// In partial state the toggle is non-interactive — any click on the row
+// opens the MoreInfo popup instead of changing state. The checkbox's own
+// onchange (onKbSizeToggle) is prevented from firing by intercepting the
+// click on the input before it toggles.
+function onKbSizeRowClick(ClickEvent) {
+  if (getKbSizeState() !== 'partial') return;
+  ClickEvent.preventDefault();
+  ClickEvent.stopPropagation();
+  _openKbSizePartialPopup(ClickEvent);
+}
+
+function _openKbSizePartialPopup(ClickEvent) {
+  var PopupElement = document.getElementById('kbSizePartialPopup');
+  if (!PopupElement) return;
+
+  _closeMoreInfoPopup();
+
+  _openMoreInfoOriginalParent = PopupElement.parentNode;
+  document.body.appendChild(PopupElement);
+
+  var PopupWidth  = 260;
+  var PopupHeight = 160;
+  var zoom = _getBodyZoom();
+  var LeftPosition = Math.round((window.innerWidth  / zoom - PopupWidth)  / 2);
+  var TopPosition  = Math.round((window.innerHeight / zoom - PopupHeight) / 2);
+
+  PopupElement.style.transformOrigin = 'center center';
+  PopupElement.style.left      = LeftPosition + 'px';
+  PopupElement.style.top       = TopPosition  + 'px';
+  PopupElement.style.transform = '';
+
+  PopupElement.classList.add('more-info-popup-visible');
+  _openMoreInfoId = 'kbSizePartialPopup';
+
+  var ClickedElement = ClickEvent ? ClickEvent.currentTarget : null;
+  _moreInfoOutsideListener = function(OutsideClickEvent) {
+    if (ClickedElement && (OutsideClickEvent.target === ClickedElement || ClickedElement.contains(OutsideClickEvent.target))) return;
+    _closeMoreInfoPopup();
+  };
+  requestAnimationFrame(function() {
+    document.addEventListener('click', _moreInfoOutsideListener);
+  });
+}
+
+function _closeKbSizePartialPopup() {
+  _closeMoreInfoPopup();
+}
+
+function _goToConflictsExtendedKeys() {
+  _closeMoreInfoPopup();
+  openSettings('panelConflicts');
+  setConflictFilter('keyboard');
 }
 
 function setTouchEnabled(on) {
@@ -7104,12 +7170,19 @@ function _renderKeyboardConflictTab(container) {
       var nowBlocked = !dismissedConflicts.has(k.token);
       dismissedConflicts[nowBlocked ? 'add' : 'delete'](k.token);
       kbKeyOverrides.add(k.token);
+      // If every extended key is now uniformly blocked or unblocked, the
+      // override set is no longer meaningful — clear it so the size toggle
+      // returns to a normal binary compact/extended state.
+      if (getKbSizeState() !== 'partial') {
+        kbKeyOverrides.clear();
+      }
       _saveCustomDismissedConflicts();
       _saveKbKeyOverrides();
       if (gameState !== 'playing' && gameState !== 'paused' && gameState !== 'readyToUnpause') {
         questionPool = shuffleArray(buildPool());
       }
       _syncConflictFilterPillStyles();
+      updateKbSizeToggle();
       keyEl.dataset.blocked = nowBlocked ? '1' : '0';
       _cfApplyKeyStyle(keyEl, nowBlocked);
       showToast(nowBlocked ? 'Key blocked' : 'Key available');
@@ -7146,107 +7219,7 @@ function _renderKeyboardConflictTab(container) {
 
   panel.appendChild(grid);
 
-  // ── Keyboard-size toggle — identical layout/style to KB settings modal ────
-  // Wraps the existing modalKbSizeRow elements so setKbSizeToggle() still
-  // controls colours/labels via its own IDs; we just re-invoke it on click.
-  var toggleWrap = document.createElement('div');
-  toggleWrap.className = 'modal-kbsize-row';
-  if (touchEnabled) toggleWrap.classList.add('disabled');
-
-  // Left side: extended icon + label (clone the exact same markup as the modal)
-  var extSide = document.createElement('div');
-  extSide.className = 'modal-right-label';
-  extSide.style.cssText = 'display:flex;flex-direction:row;align-items:center;gap:5px;cursor:pointer;';
-  extSide.innerHTML = '<svg viewBox="0 0 139.9 49.8" style="height:14px;width:auto;flex-shrink:0; overflow: visible;" id="cfKbExtIcon"><use href="#IconExtKeyboard"/></svg>'
-    + '<small class="kb-size-word-label" id="cfKbExtLabel">extended</small>';
-
-  // Switch
-  var switchWrap = document.createElement('div');
-  switchWrap.className = 'modal-switch-wrap';
-  switchWrap.innerHTML = '<label class="os-switch" title="Keyboard size" style="cursor:pointer;position:relative;top:2px;">'
-    + '<input type="checkbox" id="cfKbSizeToggle">'
-    + '<svg class="os-track" width="36" height="14" viewBox="0 0 36 14" fill="none" xmlns="http://www.w3.org/2000/svg">'
-    + '<rect x="1" y="1" width="34" height="12" rx="6" stroke="#374151" stroke-width="1.25" fill="none"/>'
-    + '<circle id="cfKbSizeKnob" cx="7" cy="7" r="3.5" stroke="#374151" stroke-width="1.25" fill="white" style="transition:transform 0.18s ease,fill 0.18s ease;transform-origin:7px 7px;transform-box:fill-box;"/>'
-    + '</svg></label>';
-
-  // Right side: compact icon + label
-  var cmpSide = document.createElement('div');
-  cmpSide.className = 'modal-left-label';
-  cmpSide.style.cssText = 'display:flex;flex-direction:row;align-items:center;gap:5px;justify-content:flex-end;cursor:pointer;';
-  cmpSide.innerHTML = '<small class="kb-size-word-label" id="cfKbCmpLabel">compact</small>'
-    + '<svg id="cfKbCmpIcon" viewBox="0 0 111.9 49.8" style="height:14px;width:auto; overflow: visible;"><use href="#IconKeyboard"/></svg>';
-
-  toggleWrap.appendChild(cmpSide);
-  toggleWrap.appendChild(switchWrap);
-  toggleWrap.appendChild(extSide);
-  panel.appendChild(toggleWrap);
-
-  // Sync this toggle's knob and label colours to match current state,
-  // clicking it also updates the main modalKbSizeToggle.
-  function _cfSyncMiniSwitch() {
-    var inp  = document.getElementById('cfKbSizeToggle');
-    var knob = document.getElementById('cfKbSizeKnob');
-    var extL = document.getElementById('cfKbExtLabel');
-    var extI = document.getElementById('cfKbExtIcon');
-    var cmpL = document.getElementById('cfKbCmpLabel');
-    var cmpI = document.getElementById('cfKbCmpIcon');
-    if (!inp) return;
-    // checked = extended (compact is now on the left)
-    inp.checked = hasFullKeyboard;
-    if (knob) knob.style.transform = hasFullKeyboard ? 'translateX(22px)' : 'translateX(0)';
-    var activeCol   = '#374151';
-    var inactiveCol = '#9ca3af';
-    var extActive   = hasFullKeyboard;
-    if (extL)  { extL.style.color = extActive ? activeCol : inactiveCol; extL.style.textDecoration = extActive ? '' : 'line-through'; }
-    if (extI)  extI.style.color = extActive ? activeCol : inactiveCol;
-    if (cmpL)  { cmpL.style.color = extActive ? inactiveCol : activeCol; cmpL.style.textDecoration = extActive ? 'line-through' : ''; }
-    if (cmpI)  cmpI.style.color = extActive ? inactiveCol : activeCol;
   }
-  _cfSyncMiniSwitch();
-
-  var cfInp = document.getElementById('cfKbSizeToggle');
-  if (cfInp) {
-    cfInp.addEventListener('change', function() {
-      if (touchEnabled) return;
-      // cfInp.checked === true means extended. Call setKbSizeToggle directly
-      // with the correct polarity — avoids the double-inversion in onKbSizeToggle().
-      setKbSizeToggle(cfInp.checked);
-
-      _cfSyncMiniSwitch();
-
-      // Re-evaluate from live state (hasFullKeyboard was just updated by setKbSizeToggle)
-      var nowMasterOff = !hasFullKeyboard || touchEnabled;
-
-      // Update all key button states from the freshly-updated dismissedConflicts
-      var gridDivs = panel.querySelectorAll('[data-token]');
-      gridDivs.forEach(function(el) {
-        var blocked = !touchEnabled && dismissedConflicts.has(el.dataset.token);
-        el.dataset.blocked = blocked ? '1' : '0';
-        _cfApplyKeyStyle(el, blocked);
-      });
-
-      // Update the outer grid wrapper via the stable data attribute selector
-      // pointerEvents always enabled — compact clicks trigger auto-upgrade
-      var gridEl = panel.querySelector('[data-kb-grid]');
-      if (gridEl) {
-        gridEl.style.opacity       = nowMasterOff ? '0.45' : '';
-        gridEl.style.pointerEvents = '';
-      }
-    });
-
-  }
-  cmpSide.onclick = function() {
-    if (!cfInp || touchEnabled || !cfInp.checked) return;
-    cfInp.checked = false;
-    cfInp.dispatchEvent(new Event('change'));
-  };
-  extSide.onclick = function() {
-    if (!cfInp || touchEnabled || cfInp.checked) return;
-    cfInp.checked = true;
-    cfInp.dispatchEvent(new Event('change'));
-  };
-}
 
 // Applies the resting tint style to a key element.
 // Available (unblocked) = green tint. Blocked = orange tint.

@@ -1469,12 +1469,14 @@ function LoadKeyboardSettings() {
     setTouchEnabled(Bundle.TouchEnabled);
   }
 
-  // Restore sticky and audible only when not in touch mode
-  // (touch mode forces these on/off via setTouchEnabled above)
+  // Restore sticky from saved preference. Touch mode no longer overrides stickyKeysOn,
+  // so it is safe to restore the user's preference in all cases.
+  // Audible is still managed by setTouchEnabled, so only restore it outside touch mode.
+  if (typeof Bundle.StickyKeysOn === 'boolean') setStickyKeys(Bundle.StickyKeysOn);
   if (!touchEnabled) {
-    if (typeof Bundle.StickyKeysOn === 'boolean') setStickyKeys(Bundle.StickyKeysOn);
     if (typeof Bundle.SoundEnabled === 'boolean') setSoundEnabled(Bundle.SoundEnabled);
   }
+
 
   // Restore kill punctuation
   if (typeof Bundle.KillPunctuationOn === 'boolean') {
@@ -1674,10 +1676,8 @@ function handleKeyTouch(e, el) {
   const synth = { code: code, key: code, preventDefault: function(){},
                   shiftKey: false, altKey: false, metaKey: false, ctrlKey: false };
   handleKeydown(synth);
-  // In sticky mode the key stays; in non-sticky mode we release immediately
-  if (!stickyKeysOn) {
-    requestAnimationFrame(() => handleKeyup(synth));
-  }
+  // Touch always behaves as sticky: key-up is never sent, so the key stays lit
+  // until the user taps it again, regardless of the stickyKeysOn preference.
 }
 
 /* ══════════════════════════════════════
@@ -2037,13 +2037,15 @@ function SyncKeyboardSettingsToUI() {
   var KillPunctuationRadio = document.getElementById('killPunctuationRadio');
   if (KillPunctuationRadio) KillPunctuationRadio.classList.toggle('on', killPunctuationOn);
 
+  // Grey dot on the sticky radio when touch is on and a physical keyboard is confirmed
+  var StickyRadioElement = document.getElementById('stickyRadio');
+  if (StickyRadioElement) StickyRadioElement.classList.toggle('touch-owns-sticky', touchEnabled && _hasKeyboardConfirmed());
   // Rows that are disabled when touch is on
-  var StickyRowElement  = document.getElementById('stickyRow');
   var AudibleRowElement = document.getElementById('audibleRow');
   var KbDisplayPill     = document.getElementById('kbDisplayPill');
-  if (StickyRowElement)  StickyRowElement.classList.toggle('disabled',  touchEnabled);
   if (AudibleRowElement) AudibleRowElement.classList.toggle('disabled', !touchEnabled);
   if (KbDisplayPill)     KbDisplayPill.classList.toggle('disabled',     touchEnabled);
+
 
   // Touch row disabled when display mode is not graphical
   var TouchRowElement = document.getElementById('touchRow');
@@ -5373,19 +5375,13 @@ function setTouchEnabled(on) {
   // Ghost and none modes require a physical keyboard -- disable the pill when touch is on
   var KbDisplayPill = document.getElementById('kbDisplayPill');
   if (KbDisplayPill) KbDisplayPill.classList.toggle('disabled', on);
-  // setKeyboardDisplayMode must run before setStickyKeys so it cannot overwrite sticky state
   if (on && keyboardDisplayMode !== 'graphical') setKeyboardDisplayMode('graphical');
-  // Sticky keys are required for touch and must be set last to survive any mode changes above
-  if (on) {
-    setStickyKeys(true);
-    var StickyRowElement = document.getElementById('stickyRow');
-    if (StickyRowElement) StickyRowElement.classList.add('disabled');
-  } else {
-    setStickyKeys(false);
-    var StickyRowElement = document.getElementById('stickyRow');
-    if (StickyRowElement) StickyRowElement.classList.remove('disabled');
-  }
+  // When touch is on and a physical keyboard is confirmed, show the grey dot
+  // to signal that touch always behaves as sticky without overriding the user's preference.
+  var StickyRadioElement = document.getElementById('stickyRadio');
+  if (StickyRadioElement) StickyRadioElement.classList.toggle('touch-owns-sticky', on && _hasKeyboardConfirmed());
 }
+
 
 function setSoundEnabled(on) {
   soundEnabled = on;
@@ -5611,13 +5607,8 @@ function onTouchToggle() {
   }
   setTouchEnabled(!touchEnabled);
   if (touchEnabled) {
-    if (keyboardDisplayMode !== 'graphical') setKeyboardDisplayMode('graphical');
-    setStickyKeys(true);
-    document.getElementById('stickyRow').classList.add('disabled');
     showModeToast('On-Screen Keyboard Active');
   } else {
-    setStickyKeys(false);
-    document.getElementById('stickyRow').classList.remove('disabled');
     showModeToast('On-Screen Keyboard = Display Only');
     osMismatchEl.classList.remove('show', 'clickable');
   }

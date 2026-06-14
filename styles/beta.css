@@ -685,6 +685,11 @@ body.no-keyboard-mode #credit {
 .modal-toggle-row.disabled .modal-toggle-label {
   text-decoration: line-through;
 }
+.modal-radio.touch-owns-sticky .modal-radio-fill {
+  opacity: 1;
+  fill: #9ca3af;
+}
+
 .modal-toggle-label {
   font-size: 13px;
   color: #374151;

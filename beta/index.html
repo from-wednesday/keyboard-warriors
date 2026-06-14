@@ -5698,14 +5698,13 @@ function setKillPunctuation(on) {
 }
 
 function onStickyKeysToggle() {
-  var stickyRow = document.getElementById('stickyRow');
-  if (stickyRow.classList.contains('disabled')) return;
+  // Sticky preference has no effect while touch is active, so block the toggle
+  if (touchEnabled) return;
   var turningOn = !stickyKeysOn;
   setStickyKeys(turningOn);
-  if (!touchEnabled) {
-    showModeToast(turningOn ? 'Sticky Keys now ON' : 'Sticky Keys now OFF');
-  }
+  showModeToast(turningOn ? 'Sticky Keys now ON' : 'Sticky Keys now OFF');
 }
+
 
 // ── Keyboard layout toggles  ─────────────────────────────────────────
 function activeVariantKey() {
@@ -13152,8 +13151,11 @@ updateKeyboardLighting(e, true);
   }
   if (gameState !== 'playing' || transitioning) { e.preventDefault(); return; }
 
-  // Check correctness: sticky mode uses accumulated toggled keys; normal uses simultaneity
-  const isCorrect = stickyKeysOn ? checkStickyShortcut() : matchesShortcut(e, currentAnswer);
+  // Check correctness: sticky path used when sticky keys are on OR touch is active
+  // (touch always accumulates tapped keys the same way sticky does)
+  const UseStickyPath = stickyKeysOn || touchEnabled;
+  const isCorrect = UseStickyPath ? checkStickyShortcut() : matchesShortcut(e, currentAnswer);
+
   if (isCorrect) {
     transitioning = true;
     window.scrollTo({ top: 0, behavior: 'smooth' });
@@ -13207,12 +13209,13 @@ updateKeyboardLighting(e, true);
     // Detect: all required keys satisfied AND at least one wrong key also present
     const requiredCodes = shortcutToCodes(currentAnswer);
     const allRequiredPresent = neededSatisfied(requiredCodes);
-    const wrongKeyPresent = stickyKeysOn
+    const wrongKeyPresent = UseStickyPath
       ? [...stickyLit.values()].includes('orange')
       : Object.keys(keyEls).some(code =>
           !requiredCodes.includes(code) &&
           (keyEls[code].classList.contains('lit-orange-down') || keyEls[code].classList.contains('lit-orange-up'))
         );
+
     if (allRequiredPresent && wrongKeyPresent) {
       consecutiveExtraKeyCount++;
       if (consecutiveExtraKeyCount >= 2) {

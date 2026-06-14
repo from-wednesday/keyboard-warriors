@@ -716,14 +716,19 @@ body.no-keyboard-mode #credit {
 .modal-radio-fill { opacity: 0; transition: opacity 0.15s ease; }
 .modal-radio.on .modal-radio-fill { opacity: 1; }
 
-/* Sticky radio three-state colour control via currentColor */
-/* Off state: light grey ring, no fill dot */
-#stickyRadio { color: #d1d5db; }
-/* Touch-owns state: mid-grey ring and dot */
-#stickyRadio.touch-owns-sticky { color: #9ca3af; }
+/* Sticky radio three-state appearance.
+   The SVG uses currentColor so all three states are driven here.
+   Off: light grey ring, no fill dot.
+   Touch-owns (touch on, sticky off): mid-grey ring and dot -- touch is always sticky.
+   On: dark ring and dot -- user has explicitly enabled sticky for the physical keyboard. */
+#stickyRadio                              { color: #d1d5db; }
+#stickyRadio.touch-owns-sticky            { color: #9ca3af; }
 #stickyRadio.touch-owns-sticky .modal-radio-fill { opacity: 1; }
-/* On state: dark ring and dot */
-#stickyRadio.on { color: #374151; }
+#stickyRadio.on                           { color: #374151; }
+
+/* Rows that are visible but signal the control is not yet editable (no keyboard confirmed).
+   Unlike .disabled, this does not suppress pointer events -- the JS handles the toast. */
+.modal-toggle-row.no-keyboard .modal-toggle-label { color: #9ca3af; }
 
 /* ══════════════════════════════════════
    SETTINGS PANEL

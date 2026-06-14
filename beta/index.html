@@ -13175,6 +13175,7 @@ updateKeyboardLighting(e, true);
       titleEl.style.color = '';
       clearAllLit();
       heldKeys.clear();
+      greenHeld.clear();
       stickyLit.clear();
       runData.push({
   questionIndex,
@@ -13703,8 +13704,8 @@ function _blurDiagnosticSendReport(EncodedSubject, EncodedBody) {
 
 function handleKeyup(e) {
   updateKeyboardLighting(e, false);
-  // In sticky mode, key-up never clears anything (toggle is handled in updateKeyboardLighting)
-  if (stickyKeysOn) return;
+  // In sticky or touch mode, key-up never clears anything (toggle is handled in updateKeyboardLighting)
+  if (stickyKeysOn || touchEnabled) return;
   // On Mac, releasing a modifier suppresses keyup for any keys held while it
   // was down. Sweep all keys still showing a pressed (down) state and release
   // them now so nothing gets stuck lit.

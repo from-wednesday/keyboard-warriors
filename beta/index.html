@@ -2025,9 +2025,12 @@ function SyncKeyboardSettingsToUI() {
   var TouchRadio = document.getElementById('touchRadio');
   if (TouchRadio) TouchRadio.classList.toggle('on', touchEnabled);
 
-  // Sticky keys radio
+  // Sticky keys radio: dark dot when sticky is on, grey dot when touch owns sticky behaviour
   var StickyRadio = document.getElementById('stickyRadio');
-  if (StickyRadio) StickyRadio.classList.toggle('on', stickyKeysOn);
+  if (StickyRadio) {
+    StickyRadio.classList.toggle('on', stickyKeysOn);
+    StickyRadio.classList.toggle('touch-owns-sticky', touchEnabled && _hasKeyboardConfirmed());
+  }
 
   // Audible radio
   var AudibleRadio = document.getElementById('audibleRadio');
@@ -2036,10 +2039,6 @@ function SyncKeyboardSettingsToUI() {
   // Kill punctuation radio
   var KillPunctuationRadio = document.getElementById('killPunctuationRadio');
   if (KillPunctuationRadio) KillPunctuationRadio.classList.toggle('on', killPunctuationOn);
-
-  // Grey dot on the sticky radio when touch is on and a physical keyboard is confirmed
-  var StickyRadioElement = document.getElementById('stickyRadio');
-  if (StickyRadioElement) StickyRadioElement.classList.toggle('touch-owns-sticky', touchEnabled && _hasKeyboardConfirmed());
   // Rows that are disabled when touch is on
   var AudibleRowElement = document.getElementById('audibleRow');
   var KbDisplayPill     = document.getElementById('kbDisplayPill');
@@ -13197,8 +13196,8 @@ updateKeyboardLighting(e, true);
     }, 1500);
   } else {
     if (!scoreDisc.classList.contains('red') && !scoreDisc.classList.contains('green')) {
-      // In sticky mode only flash red if an orange key is currently lit
-      const showRed = stickyKeysOn ? [...stickyLit.values()].includes('orange') : true;
+      // In sticky or touch mode, only flash red if an orange key is currently lit
+      const showRed = UseStickyPath ? [...stickyLit.values()].includes('orange') : true;
       if (showRed) {
         setTimerState('red');
         setTimeout(() => {

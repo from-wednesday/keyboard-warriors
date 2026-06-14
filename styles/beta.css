@@ -715,7 +715,15 @@ body.no-keyboard-mode #credit {
 .modal-radio-dot { display: block; }
 .modal-radio-fill { opacity: 0; transition: opacity 0.15s ease; }
 .modal-radio.on .modal-radio-fill { opacity: 1; }
-.modal-radio.touch-owns-sticky .modal-radio-fill { opacity: 1; fill: #9ca3af; }
+
+/* Sticky radio three-state colour control via currentColor */
+/* Off state: light grey ring, no fill dot */
+#stickyRadio { color: #d1d5db; }
+/* Touch-owns state: mid-grey ring and dot */
+#stickyRadio.touch-owns-sticky { color: #9ca3af; }
+#stickyRadio.touch-owns-sticky .modal-radio-fill { opacity: 1; }
+/* On state: dark ring and dot */
+#stickyRadio.on { color: #374151; }
 
 /* ══════════════════════════════════════
    SETTINGS PANEL

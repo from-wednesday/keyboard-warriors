@@ -2876,8 +2876,8 @@ function updateKeyboardLighting(e, isDown) {
   const isSilent   = code === 'Escape' || code === 'CapsLock' ||
                      (code.startsWith('F') && /^F\d+$/.test(code));
 
-  if (stickyKeysOn) {
-    if (!isDown) return; // key-up does nothing in sticky mode
+  if (stickyKeysOn || touchEnabled) {
+    if (!isDown) return; // key-up does nothing in sticky or touch mode
     // Toggle: if already sticky-lit, un-light it
     if (stickyLit.has(code)) {
       stickyLit.delete(code);
@@ -5697,8 +5697,6 @@ function setKillPunctuation(on) {
 }
 
 function onStickyKeysToggle() {
-  // Sticky preference has no effect while touch is active, so block the toggle
-  if (touchEnabled) return;
   var turningOn = !stickyKeysOn;
   setStickyKeys(turningOn);
   showModeToast(turningOn ? 'Sticky Keys now ON' : 'Sticky Keys now OFF');

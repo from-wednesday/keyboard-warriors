@@ -720,6 +720,7 @@ body.no-keyboard-mode #credit {
 .modal-radio-dot { display: block; }
 .modal-radio-fill { opacity: 0; transition: opacity 0.15s ease; }
 .modal-radio.on .modal-radio-fill { opacity: 1; }
+.modal-radio.touch-owns-sticky .modal-radio-fill { opacity: 1; fill: #9ca3af; }
 
 /* ══════════════════════════════════════
    SETTINGS PANEL

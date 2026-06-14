@@ -1674,10 +1674,7 @@ function handleKeyTouch(e, el) {
   const synth = { code: code, key: code, preventDefault: function(){},
                   shiftKey: false, altKey: false, metaKey: false, ctrlKey: false };
   handleKeydown(synth);
-  // In sticky mode the key stays; in non-sticky mode we release immediately
-  if (!stickyKeysOn) {
-    requestAnimationFrame(() => handleKeyup(synth));
-  }
+  // Touch events are always handled as sticky -- keys toggle on and off, never release on tap
 }
 
 /* ══════════════════════════════════════
@@ -2041,8 +2038,7 @@ function SyncKeyboardSettingsToUI() {
   var StickyRowElement  = document.getElementById('stickyRow');
   var AudibleRowElement = document.getElementById('audibleRow');
   var KbDisplayPill     = document.getElementById('kbDisplayPill');
-  if (StickyRowElement)  StickyRowElement.classList.toggle('disabled',  touchEnabled);
-  if (AudibleRowElement) AudibleRowElement.classList.toggle('disabled', !touchEnabled);
+  if (StickyRadio) StickyRadio.classList.toggle('touch-owns-sticky', touchEnabled && _hasKeyboardConfirmed());  if (AudibleRowElement) AudibleRowElement.classList.toggle('disabled', !touchEnabled);
   if (KbDisplayPill)     KbDisplayPill.classList.toggle('disabled',     touchEnabled);
 
   // Touch row disabled when display mode is not graphical
@@ -5373,18 +5369,12 @@ function setTouchEnabled(on) {
   // Ghost and none modes require a physical keyboard -- disable the pill when touch is on
   var KbDisplayPill = document.getElementById('kbDisplayPill');
   if (KbDisplayPill) KbDisplayPill.classList.toggle('disabled', on);
-  // setKeyboardDisplayMode must run before setStickyKeys so it cannot overwrite sticky state
   if (on && keyboardDisplayMode !== 'graphical') setKeyboardDisplayMode('graphical');
-  // Sticky keys are required for touch and must be set last to survive any mode changes above
-  if (on) {
-    setStickyKeys(true);
-    var StickyRowElement = document.getElementById('stickyRow');
-    if (StickyRowElement) StickyRowElement.classList.add('disabled');
-  } else {
-    setStickyKeys(false);
-    var StickyRowElement = document.getElementById('stickyRow');
-    if (StickyRowElement) StickyRowElement.classList.remove('disabled');
-  }
+  // When touch is on and a physical keyboard is present, show the grey-dot state on the sticky
+  // radio to indicate touch is always sticky. The user can still toggle sticky for physical keys.
+  var StickyRadioElement = document.getElementById('stickyRadio');
+  var ShowGreyDot = on && hasFullKeyboard;
+  if (StickyRadioElement) StickyRadioElement.classList.toggle('touch-owns-sticky', ShowGreyDot);
 }
 
 function setSoundEnabled(on) {
@@ -5611,13 +5601,8 @@ function onTouchToggle() {
   }
   setTouchEnabled(!touchEnabled);
   if (touchEnabled) {
-    if (keyboardDisplayMode !== 'graphical') setKeyboardDisplayMode('graphical');
-    setStickyKeys(true);
-    document.getElementById('stickyRow').classList.add('disabled');
     showModeToast('On-Screen Keyboard Active');
   } else {
-    setStickyKeys(false);
-    document.getElementById('stickyRow').classList.remove('disabled');
     showModeToast('On-Screen Keyboard = Display Only');
     osMismatchEl.classList.remove('show', 'clickable');
   }

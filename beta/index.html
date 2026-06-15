@@ -9674,6 +9674,10 @@ function _onAppsLoaded(AllAppsFromJson) {
     APP_JSON_FILE_PATH[App.label] = App.path;
   });
 
+  // Resolve the preferred skillset before building the app list so the correct
+  // skillset drives default short/standby list construction below.
+  currentSkillset = _resolvePreferredSkillset();
+
   const IsBetaBuild = document.title !== 'Keyboard Warriors';
 
   const DefaultShortListLabels = IsBetaBuild
@@ -14761,8 +14765,6 @@ function _initSkillsetPillAfterAppsLoad() {
   if (_skillsetPillInitialised) return;
   _skillsetPillInitialised = true;
 
-  currentSkillset = _resolvePreferredSkillset();
-  _applySkillset(currentSkillset);
   _buildSkillsetPill();
 }
 

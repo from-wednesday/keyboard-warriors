@@ -14422,7 +14422,7 @@ function _titleForCurrentState() {
   if (gameState === 'idle')     return 'Play Keyboard Warriors';
   if (gameState === 'finished') return titleEl.textContent; // endgame message set by endGame()
   if (gameState === 'paused' || gameState === 'readyToUnpause') {
-    return (questionPool[questionIndex]?.display || '').replace(/\\/g, '\');
+    return (questionPool[questionIndex]?.display || '').replace(/\\/g, '\\');  
   }
   return titleEl.textContent; // confirm states etc — leave as-is
 }

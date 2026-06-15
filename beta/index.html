@@ -14915,6 +14915,7 @@ function _toggleCustomiseSkillsetDrop(PillElement) {
     Row.addEventListener('click', function(ClickEvent) {
       ClickEvent.stopPropagation();
       currentSkillset = Definition.label;
+      try { localStorage.setItem('kw_preferred_skillset', Definition.label); } catch (StorageError) {}
       _applySkillset(Definition.label);
       currentApp = appsShortList[0];
       try { localStorage.setItem('kw_app', currentApp); } catch (StorageError) {}
@@ -15046,6 +15047,7 @@ function _buildAppSelectorSkillsetPill() {
       Row.addEventListener('click', function(ClickEvent) {
         ClickEvent.stopPropagation();
         currentSkillset = Definition.label;
+        try { localStorage.setItem('kw_preferred_skillset', Definition.label); } catch (StorageError) {}
         _applySkillset(Definition.label);
         currentApp = appsShortList[0];
         try { localStorage.setItem('kw_app', currentApp); } catch (StorageError) {}

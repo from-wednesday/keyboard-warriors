@@ -1844,7 +1844,7 @@ function applyOsMode(os) {
       questionPool = newPool;
       questionIndex = 0;
       currentAnswer = GetActiveShortcutString(questionPool[0]) || "";
-      titleEl.className = '';
+      _resetTitleClasses();
       titleEl.textContent = (questionPool[0].display || '').replace(/\\\\/g, '\\');
     } else {
       questionPool = newPool;
@@ -3504,7 +3504,7 @@ function clearHelp() {
   // Open panel after pausing so it wins the keyboard position.
   openSettings('panelCheatSheet');
   // Always set title + tagline last, overwriting any blur/text from enterPause.
-  titleEl.className = '';
+  _resetTitleClasses();
   titleEl.textContent = 'Cheat Sheet';
   var tagline = document.getElementById('welcomeTagline');
   if (tagline) { tagline.innerHTML = '<em>Your study companion.</em>'; tagline.style.display = 'block'; }
@@ -3519,7 +3519,7 @@ function _enterReadyToUnpause() {
   helpBtn.style.background = '#6b7280';
   helpBtn.style.color = 'white';
   titleEl.classList.remove('blurred');
-  titleEl.className = '';
+  _resetTitleClasses();
   titleEl.textContent = (questionPool[questionIndex]?.display || '').replace(/\\\\/g, '\\');
   questionCountEl.classList.remove('blurred');
   document.getElementById('livesRow').classList.remove('blurred');
@@ -3707,7 +3707,7 @@ function unpause() {
   heldKeys.clear();
   // Restore question title — may have been blanked by the resume countdown
   if (questionPool.length > 0 && (!titleEl.textContent || titleEl.textContent === '')) {
-    titleEl.className = '';
+    _resetTitleClasses();
     titleEl.textContent = (questionPool[questionIndex]?.display || '').replace(/\\\\/g, '\\');
     currentAnswer = GetActiveShortcutString(questionPool[questionIndex]) || '';
   }
@@ -3794,7 +3794,7 @@ function _returnToPauseScreen(message) {
   _refreshPausePanel();
   if (activeSettings !== 'panelPause') openSettings('panelPause');
 
-  titleEl.className = '';
+  _resetTitleClasses();
   titleEl.textContent = (questionPool[questionIndex]?.display || '').replace(/\\\\/g, '\\');
   titleEl.classList.add('blurred');
   questionCountEl.classList.add('blurred');
@@ -3896,7 +3896,7 @@ function _restoreFinishedState(confirmationMessage) {
   helpBtn.style.color = '';
   mainBtn.disabled = false;
   helpBtn.disabled = false;
-  titleEl.className = '';
+  _resetTitleClasses();
   setAppSelectorGameActive(false);
   _refreshPausePanel();
   if (activeSettings !== 'panelPause') openSettings('panelPause');
@@ -4134,7 +4134,7 @@ function showConfirmHeading(text, blurTitle, showBracket) {
     _confirmHeadingActive        = true;
   }
   titleEl.classList.remove('blurred');
-  titleEl.className = '';
+  _resetTitleClasses();
   titleEl.textContent = text;
   questionCountEl.classList.add('blurred');
   document.getElementById('livesRow').classList.add('blurred');
@@ -4175,7 +4175,7 @@ function scrollPanelIntoViewIfNeeded(elementId, delayMs) {
 function hideConfirmHeading() {
   if (!_confirmHeadingActive) return;
   _confirmHeadingActive = false;
-  titleEl.className = '';
+  _resetTitleClasses();
   titleEl.textContent = _savedTitleTextForConfirm;
   if (_savedTitleBlurredForConfirm) titleEl.classList.add('blurred');
   _savedTitleTextForConfirm    = '';
@@ -4266,7 +4266,7 @@ function resetToIdle() {
   helpBtn.style.background = '';
   helpBtn.style.color = '';
   if (lockKeyEl) lockKeyEl.classList.remove('active');
-  titleEl.className = '';
+  _resetTitleClasses();
   titleEl.textContent = 'Play Keyboard Warriors';
   questionCountEl.classList.remove('blurred', 'blur-instant');
   document.getElementById('livesRow').classList.remove('blurred', 'blur-instant');
@@ -5688,7 +5688,7 @@ function _returnAfterKillPunctuationConfirm(message) {
     helpBtn.textContent = 'Help';
     helpBtn.style.background = '';
     helpBtn.style.color = '';
-    titleEl.className = '';
+    _resetTitleClasses();
     titleEl.textContent = 'Play Keyboard Warriors';
     if (message) {
       showConfirmHeading(message);
@@ -7672,7 +7672,7 @@ function dbgPrevQuestion() {
   if (questionPool.length === 0) return;
   questionIndex = (questionIndex - 1 + questionPool.length) % questionPool.length;
   currentAnswer = GetActiveShortcutString(questionPool[questionIndex]) || "";
-  titleEl.className = '';
+  _resetTitleClasses();
   titleEl.textContent = (questionPool[questionIndex].display || '').replace(/\\\\/g, '\\');
   clearAllLit(); heldKeys.clear();
   clearHelp(); transitioning = false;
@@ -7682,7 +7682,7 @@ function dbgNextQuestion() {
   if (questionPool.length === 0) return;
   questionIndex = (questionIndex + 1) % questionPool.length;
   currentAnswer = GetActiveShortcutString(questionPool[questionIndex]) || "";
-  titleEl.className = '';
+  _resetTitleClasses();
   titleEl.textContent = (questionPool[questionIndex].display || '').replace(/\\\\/g, '\\');
   clearAllLit(); heldKeys.clear();
   clearHelp(); transitioning = false;
@@ -10411,7 +10411,7 @@ function enterDefeat() {
   SaveCoachMemory(DefeatMemory.messageKey, DefeatMemory.settingSuggested, NewDefeatCount);
 
   // After 2+ consecutive defeats without a report card, the coach intervenes in the title
-  titleEl.className = '';
+  _resetTitleClasses();
   if (NewDefeatCount >= 2) {
     var CoachTitleMessage = !hasTrophy
       ? 'Complete more questions to see your full report card. Use the Help button when you are stuck on a shortcut.'
@@ -10488,7 +10488,7 @@ questionPool = adaptivePool || shuffleArray(buildPool());  if (currentApp === 'A
   helpBtn.style.color = '';
   var _sgTagline = document.getElementById('welcomeTagline');
   if (_sgTagline) { _sgTagline.style.display = 'none'; _sgTagline.innerHTML = '<em>Your keyboard shortcuts coach &amp; personal trainer.</em>'; }
-  titleEl.className = '';
+  _resetTitleClasses();
   void titleEl.offsetWidth;
   titleEl.textContent = (questionPool[0].display || '').replace(/\\\\/g, '\\');
   titleEl.classList.add('question-pop');
@@ -10616,7 +10616,7 @@ function advanceQuestion() {
     questionIndex = 0;
   }
   currentAnswer = GetActiveShortcutString(questionPool[questionIndex]) || "";
-  titleEl.className = '';
+  _resetTitleClasses();
   void titleEl.offsetWidth; // flush so animation restarts
   titleEl.textContent = (questionPool[questionIndex].display || '').replace(/\\\\/g, '\\');
   consecutiveExtraKeyCount = 0;
@@ -10838,7 +10838,7 @@ lastCompletedReport = finalizeRunData(completedRun, questionPool, 0);
   }
 
   mainBtn.textContent = 'Try again?';
-  titleEl.className = '';
+  _resetTitleClasses();
   questionCountEl.classList.remove('blurred', 'blur-instant');
   document.getElementById('livesRow').classList.remove('blurred', 'blur-instant');
   titleEl.textContent = justEarnedTrophy
@@ -13370,7 +13370,7 @@ function _blurDiagnosticKeydownHandler(e) {
   // Clear any floating confirm heading before writing to the title area
   hideConfirmHeading();
   titleEl.classList.remove('blurred');
-  titleEl.className = '';
+  _resetTitleClasses();
   titleEl.textContent = "Let's keep training.";
   var DotEl = document.getElementById('blurDiagnosticDot');
   if (DotEl) { DotEl.style.background = '#10b981'; DotEl.style.transition = 'background 0.3s ease'; }
@@ -13418,7 +13418,7 @@ function _activateBlurPauseScreen() {
   if (touchEnabled) {
     hideConfirmHeading();
     titleEl.classList.remove('blurred');
-    titleEl.className = '';
+    _resetTitleClasses();
     titleEl.textContent = 'Lost you for a moment,\nso I paused your game.';
     SetKeyboardPositionForPanel('panelPause');
     return;
@@ -13431,7 +13431,7 @@ _blurDiagnosticAnswerRevealed = false;
   // Title: stage 1 — clear any floating confirm heading first
   hideConfirmHeading();
   titleEl.classList.remove('blurred');
-  titleEl.className = '';
+  _resetTitleClasses();
   titleEl.textContent = 'You went away for a bit,\nso we paused your game.';
 
   // Activate diagnostic layout (hides the standard two columns)
@@ -13491,7 +13491,7 @@ function _deactivateBlurPauseScreen() {
   var PausePanelEl = document.getElementById('panelPause');
   if (PausePanelEl) PausePanelEl.classList.remove('blur-pause-active');
   // Restore the blurred question text in the title area
-  titleEl.className = '';
+  _resetTitleClasses();
   titleEl.textContent = (questionPool[questionIndex]?.display || '').replace(/\\\\/g, '\\');
   titleEl.classList.add('blurred');
 }
@@ -13506,7 +13506,7 @@ _blurDiagnosticAnswerRevealed = true;
   // Title: stage 2 — clear any floating confirm heading first
   hideConfirmHeading();
   titleEl.classList.remove('blurred');
-  titleEl.className = '';
+  _resetTitleClasses();
   titleEl.textContent = 'Check if the shortcut is causing a problem.';
 
   // Replace right-column text for stage 2
@@ -13577,7 +13577,7 @@ function _blurDiagnosticShowBlockedConfirmation() {
   _blurDiagnosticFlowComplete = true;
   hideConfirmHeading();
   titleEl.classList.remove('blurred');
-  titleEl.className = '';
+  _resetTitleClasses();
   titleEl.textContent = 'Shortcut blocked. Ready to resume?';
   var RightTextEl = document.getElementById('blurDiagnosticRightText');
   if (RightTextEl) {
@@ -13602,7 +13602,7 @@ function _blurDiagnosticSecondBlur() {
   // Title: stage 3 — clear any floating confirm heading first
   hideConfirmHeading();
   titleEl.classList.remove('blurred');
-  titleEl.className = '';
+  _resetTitleClasses();
   titleEl.textContent = 'Do you want to block this?';
 
   // Right-column text: conflict explanation
@@ -14404,6 +14404,17 @@ document.addEventListener('DOMContentLoaded', function() {
    Pauses the game if it is actively playing.
 ══════════════════════════════════════ */
 
+// Replaces titleEl.className = '' everywhere. Clears all game-managed title
+// classes but preserves app-pill-open whenever the app pill, skillset pill,
+// or customise panel is currently open — those suppress the title via CSS.
+function _resetTitleClasses() {
+  var SuppressTitle = appPillEl.classList.contains('open')
+    || AppSelectorSkillsetPillIsOpen
+    || CustomiseSkillsetPanelIsOpen
+    || skillsetPillOpen;
+  titleEl.className = SuppressTitle ? 'app-pill-open' : '';
+}
+
 var LayoutRedrawDebounceTimer = null;
 
 /* ── Rotation hint ───────────────────────────────────────────────────────────
@@ -14422,7 +14433,9 @@ function _titleForCurrentState() {
   if (gameState === 'idle')     return 'Play Keyboard Warriors';
   if (gameState === 'finished') return titleEl.textContent; // endgame message set by endGame()
   if (gameState === 'paused' || gameState === 'readyToUnpause') {
-  return (questionPool[questionIndex]?.display || '').replace(/\\/g, '\\');  }
+    // Escaping the backslash correctly as '\\'
+    return (questionPool[questionIndex]?.display || '').replace(/\\/g, '\\');
+  }
   return titleEl.textContent; // confirm states etc — leave as-is
 }
 
@@ -14436,11 +14449,11 @@ function _syncRotationHint() {
 
   if (ShouldShow && !_rotationHintActive) {
     _rotationHintActive = true;
-    titleEl.className = '';
+    _resetTitleClasses();
     titleEl.textContent = 'turn your phone 90°';
   } else if (!ShouldShow && _rotationHintActive) {
     _rotationHintActive = false;
-    titleEl.className = '';
+    _resetTitleClasses();
     titleEl.textContent = _titleForCurrentState();
     // Restore blur when returning to landscape while paused
     if (gameState === 'paused' || gameState === 'readyToUnpause') {

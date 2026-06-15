@@ -6,13 +6,7 @@
     "difficulty": 2
   },
   {
-    "display": "go to Library module",
-    "mac_sc": "G",
-    "pc_sc": "G",
-    "difficulty": 2
-  },
-  {
-    "display": "view Grid in Library",
+    "display": "Library module Grid view",
     "mac_sc": "G",
     "pc_sc": "G",
     "difficulty": 2
@@ -69,35 +63,35 @@
     "display": "set Star rating to 1",
     "mac_sc": "1",
     "pc_sc": "1",
-    "difficulty": 2,
+    "difficulty": 1,
     "group": "star_rating"
   },
   {
     "display": "set Star rating to 2",
     "mac_sc": "2",
     "pc_sc": "2",
-    "difficulty": 2,
+    "difficulty": 1,
     "group": "star_rating"
   },
   {
     "display": "set Star rating to 3",
     "mac_sc": "3",
     "pc_sc": "3",
-    "difficulty": 2,
+    "difficulty": 1,
     "group": "star_rating"
   },
   {
     "display": "set Star rating to 4",
     "mac_sc": "4",
     "pc_sc": "4",
-    "difficulty": 2,
+    "difficulty": 1,
     "group": "star_rating"
   },
   {
     "display": "set Star rating to 5",
     "mac_sc": "5",
     "pc_sc": "5",
-    "difficulty": 2,
+    "difficulty": 1,
     "group": "star_rating"
   },
   {
@@ -189,9 +183,9 @@
     "difficulty": 3
   },
   {
-    "display": "toggle Before/After view",
-    "mac_sc": "BACKSLASH",
-    "pc_sc": "BACKSLASH",
+    "display": "toggle Before/After in Develop",
+    "mac_sc": "BACKSLASH|Y",
+    "pc_sc": "BACKSLASH|Y",
     "difficulty": 3
   },
   {
@@ -327,7 +321,7 @@
     "difficulty": 4
   },
   {
-    "display": "hide Filter bar",
+    "display": "hide Library Filter bar",
     "mac_sc": "BACKSLASH",
     "pc_sc": "BACKSLASH",
     "difficulty": 4
@@ -398,20 +392,37 @@
     "pc_sc": "CTRL+R",
     "difficulty": 4
   },
+  { "display": "add Keywords to selected photo", "mac_sc": "CMD+K", "pc_sc": "CTRL+K", "difficulty": 3 },
+{ "display": "save Metadata to file", "mac_sc": "CMD+S", "pc_sc": "CTRL+S", "difficulty": 3 },
+  { "display": "sync Develop settings", "mac_sc": "CMD+SHIFT+S", "pc_sc": "CTRL+SHIFT+S", "difficulty": 3 },
+{ "display": "paste settings from Previous photo", "mac_sc": "CMD+OPTION+V", "pc_sc": "CTRL+ALT+V", "difficulty": 4 },
+{ "display": "auto Tone", "mac_sc": "CMD+U", "pc_sc": "CTRL+U", "difficulty": 3 },
+{ "display": "toggle before/after Left/Right", "mac_sc": "Y", "pc_sc": "Y", "difficulty": 3 },
+{ "display": "show/hide local adjustment Pin", "mac_sc": "H", "pc_sc": "H", "difficulty": 3 },
+{ "display": "increase brush Size", "mac_sc": "BRACKETRIGHT", "pc_sc": "BRACKETRIGHT", "difficulty": 3 },
+{ "display": "decrease brush Size", "mac_sc": "BRACKETLEFT", "pc_sc": "BRACKETLEFT", "difficulty": 3 },
+{ "display": "open/close Masking panel", "mac_sc": "SHIFT+W", "pc_sc": "SHIFT+W", "difficulty": 3 },
+{ "display": "create new Snapshot", "mac_sc": "CMD+N", "pc_sc": "CTRL+N", "difficulty": 4 },
+{ "display": "open in other Editor", "mac_sc": "CMD+OPTION+E", "pc_sc": "CTRL+ALT+E", "difficulty": 4 },
+  { "display": "add to Quick Collection", "mac_sc": "B", "pc_sc": "B", "difficulty": 2 },
+{ "display": "show Quick Collection", "mac_sc": "CMD+B", "pc_sc": "CTRL+B", "difficulty": 3 },
+{ "display": "clear Quick Collection", "mac_sc": "CMD+SHIFT+B", "pc_sc": "CTRL+SHIFT+B", "difficulty": 4 },
+  { "display": "show/hide Toolbar", "mac_sc": "T", "pc_sc": "T", "difficulty": 1 },
+{ "display": "show/hide Filmstrip", "mac_sc": "F6", "pc_sc": "F6", "difficulty": 3 },
+{ "display": "show/hide left Panels", "mac_sc": "F7", "pc_sc": "F7", "difficulty": 3 },
+{ "display": "show/hide right Panels", "mac_sc": "F8", "pc_sc": "F8", "difficulty": 3 },
+{ "display": "toggle Zoom view", "mac_sc": "Z", "pc_sc": "Z", "difficulty": 1 },
+{ "display": "play impromptu Slideshow", "mac_sc": "CMD+RETURN", "pc_sc": "CTRL+ENTER", "difficulty": 4 },
+{ "display": "flag as Pick and advance", "mac_sc": "SHIFT+P", "pc_sc": "SHIFT+P", "difficulty": 3 },
+{ "display": "flag as Reject and advance", "mac_sc": "SHIFT+X", "pc_sc": "SHIFT+X", "difficulty": 3 },
+{ "display": "unflag and advance", "mac_sc": "SHIFT+U", "pc_sc": "SHIFT+U", "difficulty": 3 },
+{ "display": "set Star rating to 1 and advance", "mac_sc": "SHIFT+1", "pc_sc": "SHIFT+1", "difficulty": 3, "group": "star_rating" },
+{ "display": "set Star rating to 2 and advance", "mac_sc": "SHIFT+2", "pc_sc": "SHIFT+2", "difficulty": 3, "group": "star_rating" },
+{ "display": "set Star rating to 3 and advance", "mac_sc": "SHIFT+3", "pc_sc": "SHIFT+3", "difficulty": 3, "group": "star_rating" },
+{ "display": "set Star rating to 4 and advance", "mac_sc": "SHIFT+4", "pc_sc": "SHIFT+4", "difficulty": 3, "group": "star_rating" },
+{ "display": "set Star rating to 5 and advance", "mac_sc": "SHIFT+5", "pc_sc": "SHIFT+5", "difficulty": 3, "group": "star_rating" },
   {
-    "display": "cycle Grid view style 1",
-    "mac_sc": "J",
-    "pc_sc": "J",
-    "difficulty": 4
-  },
-  {
-    "display": "cycle Grid view style 2",
-    "mac_sc": "J",
-    "pc_sc": "J",
-    "difficulty": 4
-  },
-  {
-    "display": "cycle Grid view style 3",
+    "display": "cycle Grid view style",
     "mac_sc": "J",
     "pc_sc": "J",
     "difficulty": 4

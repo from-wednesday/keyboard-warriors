@@ -4852,12 +4852,6 @@ function _SyncHeadingVisibility() {
 var _OverlayHeadingSavedText    = '';
 var _OverlayHeadingSavedBlurred = false;
 
-function _SyncHeadingVisibility() {
-  var AnyOverlayOpen = appPillEl.classList.contains('open')
-    || AppPillWrenchOpen
-    || AppSelectorSkillsetPillIsOpen
-    || CustomiseSkillsetPanelIsOpen;
-
   if (AnyOverlayOpen) {
     if (!titleEl.classList.contains('app-pill-open')) {
       _OverlayHeadingSavedText    = titleEl.textContent;

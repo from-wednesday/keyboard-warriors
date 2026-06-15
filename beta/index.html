@@ -2187,6 +2187,7 @@ function _revealPageContent() {
   // since it must also respond to game state)
   if (NoKeyboardMode) _syncPhoneToolbarVisibility();
   _uiReady = true;
+  _syncRotationHint();
 }
 
 var DomReady = new Promise(function(resolve) {
@@ -10461,6 +10462,7 @@ function enterDefeat() {
 
 function startGame() {
   gameState = 'playing';
+  _rotationHintActive = false;
   setAppSelectorGameActive(true);
   clearTimeout(endScreenInactivityTimer);
   endScreenInactivityTimer = null;
@@ -14404,6 +14406,50 @@ document.addEventListener('DOMContentLoaded', function() {
 
 var LayoutRedrawDebounceTimer = null;
 
+/* ── Rotation hint ───────────────────────────────────────────────────────────
+   On mobile phones in portrait, before or between games, the title briefly
+   prompts the user to rotate. Conditions: mobile device, portrait orientation,
+   game not actively running or counting down. All three must be true together.
+   When any condition no longer holds, the title is restored from gameState.  */
+var _PortraitMediaQuery = window.matchMedia('(orientation: portrait)');
+
+function _titleForCurrentState() {
+  // Returns what #title should say when the rotation hint is not showing.
+  // Mirrors the title text set by the main game state functions.
+  if (gameState === 'welcome') {
+    return _welcomeIsReturning ? 'Thanks for coming back.' : 'Welcome to Keyboard Warriors';
+  }
+  if (gameState === 'idle')     return 'Play Keyboard Warriors';
+  if (gameState === 'finished') return titleEl.textContent; // endgame message set by endGame()
+  if (gameState === 'paused' || gameState === 'readyToUnpause') {
+    return (questionPool[questionIndex]?.display || '').replace(/\\/g, '\');
+  }
+  return titleEl.textContent; // confirm states etc — leave as-is
+}
+
+var _rotationHintActive = false;
+
+function _syncRotationHint() {
+  if (!_uiReady) return;
+  var ShouldShow = (detectedOs === 'mobile')
+    && _PortraitMediaQuery.matches
+    && (gameState !== 'playing' && gameState !== 'counting');
+
+  if (ShouldShow && !_rotationHintActive) {
+    _rotationHintActive = true;
+    titleEl.className = '';
+    titleEl.textContent = 'turn your phone 90°';
+  } else if (!ShouldShow && _rotationHintActive) {
+    _rotationHintActive = false;
+    titleEl.className = '';
+    titleEl.textContent = _titleForCurrentState();
+    // Restore blur when returning to landscape while paused
+    if (gameState === 'paused' || gameState === 'readyToUnpause') {
+      titleEl.classList.add('blurred');
+    }
+  }
+}
+
 function OnLayoutChange(EventSource) {
   clearTimeout(LayoutRedrawDebounceTimer);
   LayoutRedrawDebounceTimer = setTimeout(function() {
@@ -14423,6 +14469,7 @@ function OnLayoutChange(EventSource) {
       updateKeyboardMode();
       positionIcons();
       if (activeSettings !== null) _spAlignPanel();
+      _syncRotationHint();
     });
   }, 300);
 }

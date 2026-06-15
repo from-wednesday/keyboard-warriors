@@ -6337,6 +6337,8 @@ var _PANEL_TIPS = {
 function _showPanelTip(page) {
   // Trophy sequence writes its own title message — do not overwrite it.
   if (_trophySequenceActive) return;
+  // Do not write tip text while the heading is suppressed by an overlay.
+  if (titleEl.classList.contains('app-pill-open')) return;
   var tip;
   // A forced tip overrides the random pool (used by the coach suggestion flow).
   if (_overridePanelTip !== null) {

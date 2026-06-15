@@ -4848,7 +4848,10 @@ function _SyncHeadingVisibility() {
     || AppSelectorSkillsetPillIsOpen
     || CustomiseSkillsetPanelIsOpen;
   titleEl.classList.toggle('app-pill-open', AnyOverlayOpen);
-}    var selectorLabel = document.getElementById('appSelectorLabel');
+}    
+
+function _openWrenchPicker() {
+    var selectorLabel = document.getElementById('appSelectorLabel');
     if (selectorLabel) selectorLabel.textContent = 'edit and sort your app list';
     _EnsureAppPillSpacer();    AppPillWrenchOpen = true;
     appPillEl.classList.add('open');

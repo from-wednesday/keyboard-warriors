@@ -9468,7 +9468,8 @@ function confirmStartOverYes() {
       hasTrophy = false;
       questionTimer = null;
       playerLives   = null;
-      currentSkillset = _resolvePreferredSkillset();
+      try { localStorage.removeItem('kw_preferred_skillset'); } catch(e) {}
+      currentSkillset = 'Graphic Design';
       currentDifficulty = 'fundamentals';
       _diffFirst = true;
       setDiffState(-1);
@@ -9551,13 +9552,14 @@ function _returningStartOver() {
       questionTimer = null;
       playerLives   = null;
       dismissedConflicts.clear();
-      currentSkillset = _resolvePreferredSkillset();
+      // Clear the stored preference before resolving so we always land on
+      // the hardwired default (Graphic Design) for a clean start.
+      try { localStorage.removeItem('kw_preferred_skillset'); } catch(e) {}
+      currentSkillset = 'Graphic Design';
+      _applySkillset(currentSkillset);
       updateBestDisplay();
       _syncSliderToValue('timer', null);
       _syncSliderToValue('lives', null);
-      // Reset the in-memory short list to the skillset default so the welcome
-      // screen reflects a clean state rather than the player's old custom list.
-      _applySkillset(currentSkillset);
       buildAppPill();
       if (panelInner) { panelInner.style.transition = ''; panelInner.style.opacity = ''; }
       _resetToIdleSilently();
@@ -14555,7 +14557,6 @@ var SKILLSET_DEFS = [
   { label: 'Office Productivity', tags: ['Productivity'] },
 ];
 
-var currentSkillset   = 'Graphic Design';
 var skillsetPillOpen  = false;
 
 // CustomSetList: the user's personally curated app list, persisted independently of named skillsets.

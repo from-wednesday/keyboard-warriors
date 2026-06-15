@@ -5362,6 +5362,7 @@ function _goToConflictsExtendedKeys() {
 
 function setTouchEnabled(on) {
   touchEnabled = on;
+  SaveKeyboardSettings();
   // When leaving touch mode, clear the CapsLock indicator since we cannot
   // know the real keyboard state until the next keypress
   if (!on) {

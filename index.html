@@ -207,7 +207,7 @@
      iOS 13+ requires a user gesture before DeviceOrientationEvent.requestPermission.
 ══════════════════════════════════════ -->
 <div id="gyroBackdrop" class="touch-modal-backdrop" style="display:none;" onclick="HideGyroModal()"></div>
-<div id="gyroModal" class="touch-modal-card" role="dialog" aria-modal="true" style="display:none;">
+<div id="gyroModal" class="touch-modal-card" role="dialog" aria-modal="true" style="display:none;" onclick="if(event.target===this)onGyroDeny()">
   <p class="touch-modal-heading">One quick thing</p>
   <p class="touch-modal-body">When you earn a medal, tilting your device brings the shine to life.</p>
   <p class="touch-modal-body">May we use your device's motion sensor for this?</p>

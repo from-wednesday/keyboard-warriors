@@ -3484,8 +3484,9 @@ body.returning-screen #diffIconWrap .icon-tip { display: none; }
   box-shadow: 0 1px 0 rgba(180,160,0,0.25) !important;
 }
 
-/* App pill open: fade the main title out of view */
-  #title.app-pill-open {
+/* App pill open: fade the main title and tagline out of view */
+#title.app-pill-open,
+#title.app-pill-open + #welcomeTagline {
   opacity: 0;
   transition: opacity 1s ease;
 }

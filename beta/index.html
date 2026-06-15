@@ -4842,16 +4842,20 @@ function _onWrenchTouchEnd(Event) {
   }
 }
 
-function _openWrenchPicker() {
-    var selectorLabel = document.getElementById('appSelectorLabel');
+function _SyncHeadingVisibility() {
+  var AnyOverlayOpen = appPillEl.classList.contains('open')
+    || AppPillWrenchOpen
+    || AppSelectorSkillsetPillIsOpen
+    || CustomiseSkillsetPanelIsOpen;
+  titleEl.classList.toggle('app-pill-open', AnyOverlayOpen);
+}    var selectorLabel = document.getElementById('appSelectorLabel');
     if (selectorLabel) selectorLabel.textContent = 'edit and sort your app list';
     _EnsureAppPillSpacer();    AppPillWrenchOpen = true;
     appPillEl.classList.add('open');
     appPillEl.classList.remove('drop-down');
     appPillEl.scrollTop = 0;
     buildAppPill();
-    // Suppress title while wrench picker is open
-    titleEl.classList.add('app-pill-open');
+    _SyncHeadingVisibility();
 
     var OpenHeight = _AppPillMeasureNaturalHeight();
 
@@ -5133,7 +5137,7 @@ function openAppPill() {
     var PillRect = appPillEl.getBoundingClientRect();
 
     appPillEl.classList.add('open');
-    titleEl.classList.add('app-pill-open');
+    _SyncHeadingVisibility();
     var OpenHeight = _AppPillMeasureNaturalHeight();
     var PillRect = appPillEl.getBoundingClientRect();
     var Geometry = _AppPillCalculateOpenGeometry(OpenHeight, PillRect);
@@ -5148,7 +5152,7 @@ function closeAppPill() {
     var selectorLabel = document.getElementById('appSelectorLabel');
      if (selectorLabel) selectorLabel.textContent = 'now training on';
     appPillEl.classList.remove('open');
-    titleEl.classList.remove('app-pill-open');
+    _SyncHeadingVisibility();
 
     var Spring = _AppPillSpring;
     if (Spring.AnimationFrame) {
@@ -15221,7 +15225,7 @@ function _showAppSelectorSkillsetPill() {
       });
     });
   }
-  // Suppress title and tagline while skillset picker is open
+  _SyncHeadingVisibility();
   // Update the 'more' button label to 'less' in the wrench picker
   var SkillsetsBtn = appPillEl.querySelector('.app-option-skillsets span');
   if (SkillsetsBtn) SkillsetsBtn.textContent = 'less';
@@ -15255,10 +15259,7 @@ function _hideAppSelectorSkillsetPill() {
       if (!AppSelectorSkillsetPillIsOpen) SkillsetPillElement.style.display = 'none';
     }, 220);
   }
-  // Restore title suppression only if appPill is also closed
-  if (!appPillEl.classList.contains('open')) {
-    titleEl.classList.remove('app-pill-open');
-  }
+  _SyncHeadingVisibility();
   // Close the customise panel if it was open
   _closeCustomiseSkillsetPanel();
   // Reset 'less' button back to 'more'
@@ -15500,7 +15501,7 @@ function _AnimateAppPillResize() {
 function _openCustomiseSkillsetPanel() {
   if (CustomiseSkillsetPanelIsOpen) return;
   CustomiseSkillsetPanelIsOpen = true;
-  titleEl.classList.add('app-pill-open'); 
+  _SyncHeadingVisibility(); 
 
   var isNamedSkillset = SKILLSET_DEFS.some(function(d) { return d.label === currentSkillset; });
   if (!isNamedSkillset) {
@@ -15550,9 +15551,7 @@ function _closeCustomiseSkillsetPanel() {
 
   if (ExistingDrop)        ExistingDrop.remove();
   if (PanelElement)        PanelElement.classList.remove('customise-skillset-panel-open');
-  if (!AppSelectorSkillsetPillIsOpen && !AppSelectorSkillsetDropIsOpen && !appPillEl.classList.contains('open')) {
-    titleEl.classList.remove('app-pill-open');
-  }
+  _SyncHeadingVisibility();
   if (RightBracketElement) {
     RightBracketElement.classList.remove('customise-skillset-bracket-visible');
     setTimeout(function() { RightBracketElement.style.display = 'none'; }, 220);

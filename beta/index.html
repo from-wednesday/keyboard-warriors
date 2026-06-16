@@ -4842,15 +4842,14 @@ function _onWrenchTouchEnd(Event) {
   }
 }
 
+var _OverlayHeadingSavedText    = '';
+var _OverlayHeadingSavedBlurred = false;
+
 function _SyncHeadingVisibility() {
   var AnyOverlayOpen = appPillEl.classList.contains('open')
     || AppPillWrenchOpen
     || AppSelectorSkillsetPillIsOpen
     || CustomiseSkillsetPanelIsOpen;
-  titleEl.classList.toggle('app-pill-open', AnyOverlayOpen);
-}    
-var _OverlayHeadingSavedText    = '';
-var _OverlayHeadingSavedBlurred = false;
 
   if (AnyOverlayOpen) {
     if (!titleEl.classList.contains('app-pill-open')) {
@@ -4866,6 +4865,7 @@ var _OverlayHeadingSavedBlurred = false;
     }
   }
 }
+
     
 function _openWrenchPicker() {
     var selectorLabel = document.getElementById('appSelectorLabel');

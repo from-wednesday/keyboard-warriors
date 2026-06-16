@@ -276,8 +276,10 @@
     <div class="middlePanel">
       <div style="position:relative;display:flex;flex-direction:column;align-items:center;justify-content:center;width:100%;">
           
-          <h2 id="title">Play Keyboard Warriors</h2>
-          <p id="welcomeTagline"><em>Your keyboard shortcuts coach &amp; personal trainer.</em></p>
+          <div id="studyNotesIconInline" style="display:none;padding:1px 0;pointer-events:none;" aria-hidden="true">
+            <svg viewBox="0 0 112.5 84.6" style="width:40px;height:auto;color:#9ca3af;display:block;margin:0 auto;"><use href="#IconStudyNotes"/></svg>
+          </div>
+          <h2 id="title">Play Keyboard Warriors</h2>          <p id="welcomeTagline"><em>Your keyboard shortcuts coach &amp; personal trainer.</em></p>
           <div id="countdownOverlay"><span id="countdownNum"></span></div>
         </div>
     </div>
@@ -6013,8 +6015,14 @@ function _syncPhoneToolbarVisibility() {
   }
 }
 
-function _syncPhoneToolbarActiveState(ActivePage) {
-  var PhoneIconMap = {
+function _syncStudyNotesInlineIcon() {
+  var el = document.getElementById('studyNotesIconInline');
+  if (!el) return;
+  var STUDY_PANELS = ['panelCheatSheet', 'panelEndGameReportCard', 'panelEndGameHistoryRecord'];
+  el.style.display = (STUDY_PANELS.indexOf(activeSettings) !== -1) ? '' : 'none';
+}
+
+function _syncPhoneToolbarActiveState(ActivePage) {  var PhoneIconMap = {
     panelKeyboard:           'phoneKbIconWrap',
     panelDifficultySettings: 'phoneDiffIconWrap',
     panelConflicts:          'phoneBrIconWrap',
@@ -6143,6 +6151,7 @@ function _phoneOpenSettings(Page) {
   var NoConfirmOverlayActive = ['confirm-reset', 'confirm-quit', 'confirm-trophy',
     'confirm-diff-change', 'confirm-kill-punctuation', 'confirm-start-over'].indexOf(gameState) === -1;
   if (NoConfirmOverlayActive) _showPanelTip(Page);
+  _syncStudyNotesInlineIcon();
 }
 
 function _phoneCloseSettings() {
@@ -6150,6 +6159,7 @@ function _phoneCloseSettings() {
    var ClosingPage = activeSettings;
   activeSettings  = null;
   conflictsKbLighting.deactivate();
+    _syncStudyNotesInlineIcon();
 
   _clearPanelTip();
   _exitScoreClearConfirm();
@@ -6494,6 +6504,7 @@ function openSettings(page) {
     'confirm-diff-change', 'confirm-kill-punctuation', 'confirm-start-over'
   ].indexOf(gameState) === -1;
   if (confirmStatesActive) _showPanelTip(page);
+  _syncStudyNotesInlineIcon();
 }
 
 function closeSettings() {
@@ -6502,6 +6513,7 @@ function closeSettings() {
   var closingPage = activeSettings;
   activeSettings = null;
   conflictsKbLighting.deactivate();
+  _syncStudyNotesInlineIcon();
   
   // Clear any ambient panel tip
   _clearPanelTip();
@@ -6581,6 +6593,7 @@ function _closeAllModalsInstant() {
   }
   activeSettings = null;
   conflictsKbLighting.deactivate();
+    _syncStudyNotesInlineIcon();
   _panelTipInTitle = false;  // clear any tip that was live in the title
   _exitScoreClearConfirm();
   _exitDiffConfirm();

@@ -5238,7 +5238,12 @@ function setStickyKeys(on) {
   if (!radio) return;
   radio.classList.toggle('on', on);
   // Leaving sticky mode: clear any stuck-on keys immediately
-  if (!on) { clearAllLit(); heldKeys.clear(); greenHeld.clear(); }
+  if (!on) {
+    clearAllLit();
+    heldKeys.clear();
+    greenHeld.clear();
+    conflictsKbLighting.resetOnBlur(); // also clear any sticky-toggled keys in the Conflicts panel
+  }
 }
 
 function setKbSizeToggle(full) {
@@ -8364,9 +8369,32 @@ function _allConflictTokensNormalised() {
 
   // ── Event handlers ───────────────────────────────────────────────────────
 
+  // Removes a key from the held set and restores its resting/fade visual.
+  // Shared by genuine keyup events and by sticky toggle-off keydowns, so
+  // both paths release a key the same way.
+  function _releaseKey(BrowserCode) {
+    _heldKeys.delete(BrowserCode);
+
+    if (_isModifierCode(BrowserCode)) {
+      // Modifier released: redraw all keys to reflect the reduced chord
+      _applyAllKeyColours();
+      return;
+    }
+
+    // Non-modifier released: fade back to resting colour
+    _revertKeyToRestingColour(BrowserCode);
+  }
+
   function _onKeydown(Event) {
     if (!_active) return;
     if (Event.repeat) return;  // ignore key-repeat — lighting and flash are one-shot
+
+    if (stickyKeysOn && _heldKeys.has(Event.code)) {
+      // Sticky Keys is on and this key is already toggled on — this keydown
+      // is the toggle-off press, not a fresh chord. Release it and stop.
+      _releaseKey(Event.code);
+      return;
+    }
 
     _heldKeys.add(Event.code);
 
@@ -8400,17 +8428,9 @@ function _allConflictTokensNormalised() {
 
   function _onKeyup(Event) {
     if (!_active) return;
+    if (stickyKeysOn) return; // sticky toggling is handled entirely on keydown
 
-    _heldKeys.delete(Event.code);
-
-    if (_isModifierCode(Event.code)) {
-      // Modifier released: redraw all keys to reflect the reduced chord
-      _applyAllKeyColours();
-      return;
-    }
-
-    // Non-modifier released: fade back to resting colour
-    _revertKeyToRestingColour(Event.code);
+    _releaseKey(Event.code);
   }
 
   // ── Public API ───────────────────────────────────────────────────────────

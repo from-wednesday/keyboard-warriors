@@ -4056,7 +4056,7 @@ function _diffConfirmGuard(e) {
   // Block and toast
   e.stopPropagation();
   e.preventDefault();
-  showToast('Stay at your current difficulty to continue or choose to quit this round now.');
+  showToast('Stay at your current difficulty to continue or choose Quit this round now.');
 }
 
 function _exitDiffConfirm() {
@@ -5249,7 +5249,7 @@ function setKbSizeToggle(full) {
       // Switching to compact from extended with overrides: safe, compact blocks everything
     } else {
       // Switching to extended with overrides: would conflict with individual settings
-      showToast('You have custom key settings. Switch to compact first, then back to extended to reset them.');
+      showToast('You have custom key settings. Go to the Conflict Settings screen to  edit them.');
       updateKbSizeToggle();
       return;
     }
@@ -6105,7 +6105,7 @@ function _phoneOpenSettings(Page) {
   var ConfirmStates = ['confirm-reset', 'confirm-quit', 'confirm-trophy',
     'confirm-diff-change', 'confirm-kill-punctuation', 'confirm-start-over', 'counting'];
   if (ConfirmStates.indexOf(gameState) !== -1 && Page !== 'panelPause') {
-    showToast('Resolve the current prompt first.');
+    showToast('First you must resolve the prompt above.');
     return;
   }
 
@@ -6419,7 +6419,7 @@ function openSettings(page) {
   // Block switching panels during any confirmation overlay or countdown
   var confirmStates = ['confirm-reset', 'confirm-quit', 'confirm-trophy', 'confirm-diff-change', 'confirm-kill-punctuation', 'confirm-start-over', 'counting'];
   if (confirmStates.indexOf(gameState) !== -1 && page !== 'panelPause') {
-    showToast('Resolve the current prompt first.');
+    showToast('First resolve the prompt above.');
     return;
   }
   var wasOpen  = activeSettings !== null;
@@ -6712,7 +6712,7 @@ function _attachconflictsPanelKeypressVerifier() {
             _syncConflictFilterPillStyles();
             keyEl.dataset.blocked = '0';
             _cfApplyKeyStyle(keyEl, false);
-            showToast('Key available');
+            showToast('Key now available');
           }, 180);
         });
       }
@@ -8307,7 +8307,7 @@ function _allConflictTokensNormalised() {
   // Refresh lighting immediately so the key turns green right now
   conflictsKbLighting.refresh();
 
-  showToast('Shortcut working \u2014 confirmed');
+  showToast('Confirmed the shortcut is working');
 
   setTimeout(function() {
     if (NeedsExpunge) {
@@ -9462,7 +9462,7 @@ function _startOverConfirmGuard(e) {
   // Block and toast
   e.stopPropagation();
   e.preventDefault();
-  showToast('Confirm above, or Keep to retain your local data.');
+  showToast('Confirm above if you will Wipe or Keep your local data.');
 }
 
 function _exitStartOverConfirm() {
@@ -10521,7 +10521,7 @@ function startGame() {
   CoachAdviceAccepted = false;
   const adaptivePool = getAdaptiveNextRoundPool();
 questionPool = adaptivePool || shuffleArray(buildPool());  if (currentApp === 'Ae' && !hasFullKeyboard) {
-    showToast('After Effects uses many extended keyboard shortcuts. Switch to Full Keyboard for the best experience.');
+    showToast('This app uses many extended keyboard shortcuts. Switch to a Full Keyboard for the best experience.');
   }
   questionIndex = 0;
   answersLeft = 10;
@@ -13055,7 +13055,7 @@ function _killPunctuationConfirmGuard(e) {
   e.stopPropagation();
   e.preventDefault();
   if (e.type === 'click') {
-    showToast('You must confirm if you really want no punctuation keys or not.');
+    showToast('You must confirm above if you really want to Remove punctuation keys or Keep them.');
   }
 }
 document.addEventListener('click',       _killPunctuationConfirmGuard, true);

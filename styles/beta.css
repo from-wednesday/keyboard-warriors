@@ -40,6 +40,12 @@ body {
   box-shadow: 0 10px 30px rgba(0,0,0,0.1);
   border: 1.5px solid white;
   overflow: visible;
+  transition: background 0.55s ease;
+}
+
+/* Shift to a soft purple when any destructive confirm overlay is active */
+#gameContainer:has(.leftPanel.showing-confirm) {
+  background: #eee4fd;
 }
 .topRow {
   display: flex;
@@ -2794,7 +2800,7 @@ li.conflict-dismissed .conflict-desc {
   transform:      translateZ(-10px) translateY(4px);
   background:     rgba(0,0,0,0.0);
   filter:         blur(22px);
-    visibility:     hidden;          /* ← remove unintended lines on iOS*/
+  visibility:     hidden;
   transition:
     background 0.6s ease 0.1s,
     transform  0.85s cubic-bezier(0.4, 0, 0.2, 1);
@@ -2803,7 +2809,7 @@ li.conflict-dismissed .conflict-desc {
 #keyboardPanel.kb-edged #kb-shadow {
   background: rgba(0,0,0,0.45);
   transform:  translateZ(-10px) translateY(6px);
-    visibility:  visible;
+  visibility:  visible;
 }
 
 

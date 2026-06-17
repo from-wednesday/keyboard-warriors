@@ -3490,10 +3490,13 @@ body.returning-screen #diffIconWrap .icon-tip { display: none; }
   box-shadow: 0 1px 0 rgba(180,160,0,0.25) !important;
 }
 
-/* App pill open: fade the main title and tagline out of view */
+/* App pill open: fade the main title and tagline out of view.
+   animation: none cancels any forwards-fill animation that would otherwise
+   retain opacity: 1 and override this rule. */
 #title.app-pill-open,
 #title.app-pill-open + #welcomeTagline {
   opacity: 0;
+  animation: none;
   transition: opacity 1s ease;
 }
 /* ══════════════════════════════════════

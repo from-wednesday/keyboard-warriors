@@ -1065,7 +1065,8 @@
 <div id="kwToast"></div>
 
 <!-- Gyro diagnostic overlay — remove once gyro is confirmed working -->
-<div id="gyroDiag" style="display:none;position:fixed;bottom:12px;left:12px;background:rgba(0,0,0,0.82);color:#0f0;font-family:monospace;font-size:12px;line-height:1.7;padding:10px 14px;border-radius:10px;z-index:9999;pointer-events:none;min-width:200px;"></div>
+<!-- Temporary diagnostic overlay for investigating the iPad zoom-on-return bug. Safe to delete once resolved. -->
+<div id="viewportDiag" style="display:none;position:fixed;top:12px;left:12px;right:12px;background:rgba(0,0,0,0.85);color:#0f0;font-family:monospace;font-size:11px;line-height:1.5;padding:8px 10px;border-radius:8px;z-index:9999;pointer-events:none;max-height:220px;overflow:hidden;white-space:pre-wrap;"></div>
 
 <script>
 /* ══════════════════════════════════════
@@ -13357,7 +13358,35 @@ var _blurDiagnosticFlowComplete   = false;
 // The pause-on-blur diagnostic is suppressed on iPhone to prevent false triggers.
 var _IsIphoneSafari = /iPhone/.test(navigator.userAgent);
 
+```
+// Temporary diagnostic overlay for investigating the iPad zoom-on-return bug. Safe to delete once resolved.
+function _ViewportDiagLog(EventLabel) {
+  var DiagElement = document.getElementById('viewportDiag');
+  if (!DiagElement) return;
+  DiagElement.style.display = 'block';
+  var ScaleNow   = (window.visualViewport ? window.visualViewport.scale.toFixed(3) : 'n/a');
+  var TimeLabel  = new Date().toLocaleTimeString();
+  var NewLine    = TimeLabel + '  ' + EventLabel + '  hidden=' + document.hidden + '  scale=' + ScaleNow;
+  DiagElement.textContent = NewLine + '
+' + DiagElement.textContent;
+  var RecentLines = DiagElement.textContent.split('
+').slice(0, 14);
+  DiagElement.textContent = RecentLines.join('
+');
+}
+
+function _ScheduleViewportScaleChecks(EventLabel) {
+  [0, 150, 350, 600, 1000, 2000].forEach(function(DelayMs) {
+    setTimeout(function() { _ViewportDiagLog(EventLabel + ' +' + DelayMs + 'ms'); }, DelayMs);
+  });
+}
+
+window.addEventListener('focus', function() {
+  _ViewportDiagLog('window focus');
+});
+
 window.addEventListener('blur', function() {
+  _ViewportDiagLog('window blur');
   releaseAllKeys();
   if (activeSettings === 'panelConflicts') {
     conflictsKbLighting.resetOnBlur();
@@ -13379,6 +13408,7 @@ window.addEventListener('blur', function() {
 
 document.addEventListener('visibilitychange', function() {
   if (document.hidden) {
+    _ViewportDiagLog('visibilitychange hidden');
     releaseAllKeys();
     if (gameState === 'playing' && !_IsIphoneSafari) {
       _blurPauseActive = true;
@@ -13387,6 +13417,7 @@ document.addEventListener('visibilitychange', function() {
       _activateBlurPauseScreen();
     }
   } else {
+    _ScheduleViewportScaleChecks('visibilitychange visible');
     // Briefly lock maximum-scale to correct iPadOS Safari's zoom-on-return bug.
     // Replacing the whole meta element, rather than just editing its content
     // attribute, forces Safari to properly re-read the viewport rules.

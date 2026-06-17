@@ -1,5 +1,5 @@
 /* ═══════════════════════════════════════════════════
-   Keyboard Warriors CSS v0031
+   Keyboard Warriors CSS 
    Load order: @import → Block 1 → Block 3 → misc
    Do not reorder major sections.
    ═══════════════════════════════════════════════════ */
@@ -3962,13 +3962,25 @@ body.phone-layout-active #phonePanelArea.phone-panel-open {
    on large monitors.
 ══════════════════════════════════════ */
 @media (min-width: 1600px) and (min-height: 870px) {
-  body { zoom: 1.2; }
+  body {
+    zoom: 1.2;
+    justify-content: flex-start;
+    padding-top: 40px;
+  }
 }
 
 @media (min-width: 2000px) and (min-height: 1060px) {
-  body { zoom: 1.45; }
+  body {
+    zoom: 1.45;
+    justify-content: flex-start;
+    padding-top: 40px;
+  }
 }
 
 @media (min-width: 2600px) and (min-height: 1270px) {
-  body { zoom: 1.75; }
+  body {
+    zoom: 1.75;
+    justify-content: flex-start;
+    padding-top: 40px;
+  }
 }

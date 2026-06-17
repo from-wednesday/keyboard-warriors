@@ -3670,7 +3670,7 @@ function _quitConfirmGuard(e) {
       (helpB && (e.target === helpB || helpB.contains(e.target)))) return;
   e.stopPropagation();
   e.preventDefault();
-  showToast('Confirm above, or press No to go back.');
+  showToast('Confirm above, or press Keep to back out.');
 }
 
 function _exitQuitConfirm() {
@@ -7456,7 +7456,7 @@ document.getElementById('gameContainer').addEventListener('click', function(e) {
   if (e.target.closest('button, input, label, a, #scoreDisc, #kbIcon, #browserIcon, #appPill, #appDropdown, #debugOverlay, #settingsPanel')) return;
 
   if (gameState === 'confirm-kill-punctuation') {
-    showToast('You must confirm if you really want no punctuation keys or not.');
+    showToast('Confirm above if you really want to Remove punctuation keys or Keep them.');
     return;
   }
 
@@ -9427,7 +9427,8 @@ function _pauseStartOverClick() {
   if (btn) {
     btn.disabled = true;
     btn.querySelector('.diff-btn-text').textContent = 'confirm above';
-    btn.classList.add('segmented-pill-inactive');
+    btn.style.opacity = '0.38';
+    btn.style.cursor = 'default';
     // Expose only this pill via the same overlay pattern as score-clear
     var pill = btn.closest('.segmented-pill');
     if (pill) pill.classList.add('score-confirm-source');
@@ -9471,7 +9472,8 @@ function _exitStartOverConfirm() {
   if (btn) {
     btn.disabled = false;
     btn.querySelector('.diff-btn-text').textContent = 'clear memory \u0026 start fresh';
-    btn.classList.remove('segmented-pill-inactive');
+    btn.style.opacity = '';
+    btn.style.cursor = '';
     var pill = btn.closest('.segmented-pill');
     if (pill) pill.classList.remove('score-confirm-source');
   }

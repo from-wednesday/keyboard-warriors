@@ -2870,12 +2870,7 @@ function updateKeyboardLighting(e, isDown) {
     }
     return;
   }
-  // The Conflicted Shortcuts panel runs its own independent key-lighting system
-  // (conflictsKbLighting). Letting this gameplay lighting run at the same time
-  // causes the two systems to fight over the same CSS classes on a key, which
-  // only becomes a stuck, visible problem in Sticky Keys mode, because the
-  // gameplay classes are never cleared there until the same key is pressed again.
-  if (activeSettings === 'panelConflicts') return;
+
   const code = NUMPAD_MAP[e.code] || e.code;
   const RightToLeftKeyFallback = {
     'MetaRight':    'MetaLeft',

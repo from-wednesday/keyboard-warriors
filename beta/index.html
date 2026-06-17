@@ -9425,8 +9425,9 @@ function _pauseStartOverClick() {
 
   var btn = document.getElementById('startOverBtn');
   if (btn) {
-    btn.classList.add('segmented-pill-active');
-    _popScorePillLabel(btn);
+    btn.disabled = true;
+    btn.querySelector('.diff-btn-text').textContent = 'confirm above';
+    btn.classList.add('segmented-pill-inactive');
     // Expose only this pill via the same overlay pattern as score-clear
     var pill = btn.closest('.segmented-pill');
     if (pill) pill.classList.add('score-confirm-source');
@@ -9468,7 +9469,9 @@ function _exitStartOverConfirm() {
   document.removeEventListener('click', _startOverConfirmGuard, true);
   var btn = document.getElementById('startOverBtn');
   if (btn) {
-    btn.classList.remove('segmented-pill-active');
+    btn.disabled = false;
+    btn.querySelector('.diff-btn-text').textContent = 'clear memory \u0026 start fresh';
+    btn.classList.remove('segmented-pill-inactive');
     var pill = btn.closest('.segmented-pill');
     if (pill) pill.classList.remove('score-confirm-source');
   }

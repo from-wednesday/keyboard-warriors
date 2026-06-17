@@ -429,6 +429,16 @@ body {
 #questionRow.blurred { filter: blur(3px); opacity: 0.75; user-select: none; }
 #livesRow.blurred    { filter: blur(3px); opacity: 0.75; user-select: none; }
 
+/* ── Study Notes inline icon — grows from 1px wide to full width, centred ── */
+#studyNotesIconInline {
+  transform: scaleX(1);
+  transform-origin: center;
+  transition: transform 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+}
+#studyNotesIconInline.study-notes-icon-hidden {
+  transform: scaleX(0.001);
+}
+
 /* ══════════════════════════════════════
    INFO ROWS (question count + best record)
 ══════════════════════════════════════ */

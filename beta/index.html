@@ -11965,18 +11965,19 @@ function _refreshCheatSheet() {
     ContextLabel.textContent = AppName + ' on ' + OsName;
   }
 
+  var IsActiveGame = (gameState === 'playing' || gameState === 'paused' || gameState === 'readyToUnpause');
+
+  // While a game is in progress, the Cheat Sheet must follow the actual live
+  // pool so 'Coming Up' matches what will really appear next.
   var Pool = questionPool;
-  if (lastCompletedReport) {
+  if (!IsActiveGame && lastCompletedReport) {
     var AdaptivePool = getAdaptiveNextRoundPool();
     if (AdaptivePool && AdaptivePool.length > 0) Pool = AdaptivePool;
   }
-  var StartIndex = (gameState === 'playing' || gameState === 'paused' || gameState === 'readyToUnpause')
-    ? questionIndex
-    : 0;
+  var StartIndex = IsActiveGame ? questionIndex : 0;
   var OrderedPool = Pool.slice(StartIndex).concat(Pool.slice(0, StartIndex));
   window._cheatSheetResolvedPool = OrderedPool;
 
-  var IsActiveGame = (gameState === 'playing' || gameState === 'paused' || gameState === 'readyToUnpause');
 
   // Build a map of shortcut token → dot colour based on runData outcomes.
   // This is computed fresh each time the panel opens and does not persist.

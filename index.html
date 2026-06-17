@@ -9,7 +9,7 @@
 <title>Keyboard Warriors</title>
 <script>
   const DefaultTitle = 'Keyboard Warriors';
-  const VersionLabel   = '0031';
+  const VersionLabel   = '0032';
   const TitlePrefix  = document.title !== DefaultTitle ? document.title.trim() + '_' : '';
   const DBG_DEVICE   = TitlePrefix + VersionLabel;
 </script>
@@ -276,8 +276,10 @@
     <div class="middlePanel">
       <div style="position:relative;display:flex;flex-direction:column;align-items:center;justify-content:center;width:100%;">
           
-          <h2 id="title">Play Keyboard Warriors</h2>
-          <p id="welcomeTagline"><em>Your keyboard shortcuts coach &amp; personal trainer.</em></p>
+          <div id="studyNotesIconInline" style="display:none;padding:1px 0;pointer-events:none;" aria-hidden="true">
+            <svg viewBox="0 0 112.5 84.6" style="width:64px;height:auto;color:#212936;display:block;margin:0 auto;"><use href="#IconStudyNotes"/></svg>
+          </div>
+          <h2 id="title">Play Keyboard Warriors</h2>          <p id="welcomeTagline"><em>Your keyboard shortcuts coach &amp; personal trainer.</em></p>
           <div id="countdownOverlay"><span id="countdownNum"></span></div>
         </div>
     </div>
@@ -631,6 +633,7 @@
               <p class="more-info-body">The 'Cheat Sheet' doesn't <em>just</em> recap recent questions from the current round.</p>
               <p class="more-info-body">It also <strong>spoils</strong> what's coming up!</p>
               <p class="more-info-body"><em>Don't want to know?</em> Then don't look! But this <strong>can be</strong> a useful study tool, <em>particularly</em> once you go deep in 'hardcore' difficulty.</p>
+              <p class="more-info-body">You can also practice them here. Let me see you <em>turn the yellow dots green!</em></p>
             </div>
           </span>
           <p class="sp-report-section-title">Coming Up</p>
@@ -1844,7 +1847,7 @@ function applyOsMode(os) {
       questionPool = newPool;
       questionIndex = 0;
       currentAnswer = GetActiveShortcutString(questionPool[0]) || "";
-      titleEl.className = '';
+      _resetTitleClasses();
       titleEl.textContent = (questionPool[0].display || '').replace(/\\\\/g, '\\');
     } else {
       questionPool = newPool;
@@ -2867,6 +2870,7 @@ function updateKeyboardLighting(e, isDown) {
     }
     return;
   }
+
   const code = NUMPAD_MAP[e.code] || e.code;
   const RightToLeftKeyFallback = {
     'MetaRight':    'MetaLeft',
@@ -3504,7 +3508,7 @@ function clearHelp() {
   // Open panel after pausing so it wins the keyboard position.
   openSettings('panelCheatSheet');
   // Always set title + tagline last, overwriting any blur/text from enterPause.
-  titleEl.className = '';
+  _resetTitleClasses();
   titleEl.textContent = 'Cheat Sheet';
   var tagline = document.getElementById('welcomeTagline');
   if (tagline) { tagline.innerHTML = '<em>Your study companion.</em>'; tagline.style.display = 'block'; }
@@ -3519,7 +3523,7 @@ function _enterReadyToUnpause() {
   helpBtn.style.background = '#6b7280';
   helpBtn.style.color = 'white';
   titleEl.classList.remove('blurred');
-  titleEl.className = '';
+  _resetTitleClasses();
   titleEl.textContent = (questionPool[questionIndex]?.display || '').replace(/\\\\/g, '\\');
   questionCountEl.classList.remove('blurred');
   document.getElementById('livesRow').classList.remove('blurred');
@@ -3667,7 +3671,7 @@ function _quitConfirmGuard(e) {
       (helpB && (e.target === helpB || helpB.contains(e.target)))) return;
   e.stopPropagation();
   e.preventDefault();
-  showToast('Confirm above, or press No to go back.');
+  showToast('Confirm above, or press Keep to back out.');
 }
 
 function _exitQuitConfirm() {
@@ -3707,7 +3711,7 @@ function unpause() {
   heldKeys.clear();
   // Restore question title — may have been blanked by the resume countdown
   if (questionPool.length > 0 && (!titleEl.textContent || titleEl.textContent === '')) {
-    titleEl.className = '';
+    _resetTitleClasses();
     titleEl.textContent = (questionPool[questionIndex]?.display || '').replace(/\\\\/g, '\\');
     currentAnswer = GetActiveShortcutString(questionPool[questionIndex]) || '';
   }
@@ -3794,7 +3798,7 @@ function _returnToPauseScreen(message) {
   _refreshPausePanel();
   if (activeSettings !== 'panelPause') openSettings('panelPause');
 
-  titleEl.className = '';
+  _resetTitleClasses();
   titleEl.textContent = (questionPool[questionIndex]?.display || '').replace(/\\\\/g, '\\');
   titleEl.classList.add('blurred');
   questionCountEl.classList.add('blurred');
@@ -3896,7 +3900,7 @@ function _restoreFinishedState(confirmationMessage) {
   helpBtn.style.color = '';
   mainBtn.disabled = false;
   helpBtn.disabled = false;
-  titleEl.className = '';
+  _resetTitleClasses();
   setAppSelectorGameActive(false);
   _refreshPausePanel();
   if (activeSettings !== 'panelPause') openSettings('panelPause');
@@ -4053,7 +4057,7 @@ function _diffConfirmGuard(e) {
   // Block and toast
   e.stopPropagation();
   e.preventDefault();
-  showToast('Stay at your current difficulty to continue or choose to quit this round now.');
+  showToast('Stay at your current difficulty to continue or choose Quit this round now.');
 }
 
 function _exitDiffConfirm() {
@@ -4134,7 +4138,7 @@ function showConfirmHeading(text, blurTitle, showBracket) {
     _confirmHeadingActive        = true;
   }
   titleEl.classList.remove('blurred');
-  titleEl.className = '';
+  _resetTitleClasses();
   titleEl.textContent = text;
   questionCountEl.classList.add('blurred');
   document.getElementById('livesRow').classList.add('blurred');
@@ -4175,7 +4179,7 @@ function scrollPanelIntoViewIfNeeded(elementId, delayMs) {
 function hideConfirmHeading() {
   if (!_confirmHeadingActive) return;
   _confirmHeadingActive = false;
-  titleEl.className = '';
+  _resetTitleClasses();
   titleEl.textContent = _savedTitleTextForConfirm;
   if (_savedTitleBlurredForConfirm) titleEl.classList.add('blurred');
   _savedTitleTextForConfirm    = '';
@@ -4266,7 +4270,7 @@ function resetToIdle() {
   helpBtn.style.background = '';
   helpBtn.style.color = '';
   if (lockKeyEl) lockKeyEl.classList.remove('active');
-  titleEl.className = '';
+  _resetTitleClasses();
   titleEl.textContent = 'Play Keyboard Warriors';
   questionCountEl.classList.remove('blurred', 'blur-instant');
   document.getElementById('livesRow').classList.remove('blurred', 'blur-instant');
@@ -4842,6 +4846,31 @@ function _onWrenchTouchEnd(Event) {
   }
 }
 
+var _OverlayHeadingSavedText    = '';
+var _OverlayHeadingSavedBlurred = false;
+
+function _SyncHeadingVisibility() {
+  var AnyOverlayOpen = appPillEl.classList.contains('open')
+    || AppPillWrenchOpen
+    || AppSelectorSkillsetPillIsOpen
+    || CustomiseSkillsetPanelIsOpen;
+
+  if (AnyOverlayOpen) {
+    if (!titleEl.classList.contains('app-pill-open')) {
+      _OverlayHeadingSavedText    = titleEl.textContent;
+      _OverlayHeadingSavedBlurred = titleEl.classList.contains('blurred');
+      titleEl.classList.add('app-pill-open');
+    }
+  } else {
+    if (titleEl.classList.contains('app-pill-open')) {
+      titleEl.classList.remove('app-pill-open');
+      titleEl.textContent = _OverlayHeadingSavedText;
+      if (_OverlayHeadingSavedBlurred) titleEl.classList.add('blurred');
+    }
+  }
+}
+
+    
 function _openWrenchPicker() {
     var selectorLabel = document.getElementById('appSelectorLabel');
     if (selectorLabel) selectorLabel.textContent = 'edit and sort your app list';
@@ -4850,8 +4879,7 @@ function _openWrenchPicker() {
     appPillEl.classList.remove('drop-down');
     appPillEl.scrollTop = 0;
     buildAppPill();
-    // Suppress title while wrench picker is open
-    titleEl.classList.add('app-pill-open');
+    _SyncHeadingVisibility();
 
     var OpenHeight = _AppPillMeasureNaturalHeight();
 
@@ -4873,6 +4901,7 @@ function _openWrenchPicker() {
 
 function _closeWrenchPicker() {
     AppPillWrenchOpen = false;
+    _SyncHeadingVisibility();
     _hideAppSelectorSkillsetPill();
     var selectorLabel = document.getElementById('appSelectorLabel');
     if (selectorLabel) selectorLabel.textContent = 'choose app to train in next';    appPillEl.removeEventListener('dragover', _onWrenchDragOver);
@@ -5133,7 +5162,7 @@ function openAppPill() {
     var PillRect = appPillEl.getBoundingClientRect();
 
     appPillEl.classList.add('open');
-    titleEl.classList.add('app-pill-open');
+    _SyncHeadingVisibility();
     var OpenHeight = _AppPillMeasureNaturalHeight();
     var PillRect = appPillEl.getBoundingClientRect();
     var Geometry = _AppPillCalculateOpenGeometry(OpenHeight, PillRect);
@@ -5148,7 +5177,7 @@ function closeAppPill() {
     var selectorLabel = document.getElementById('appSelectorLabel');
      if (selectorLabel) selectorLabel.textContent = 'now training on';
     appPillEl.classList.remove('open');
-    titleEl.classList.remove('app-pill-open');
+    _SyncHeadingVisibility();
 
     var Spring = _AppPillSpring;
     if (Spring.AnimationFrame) {
@@ -5209,7 +5238,12 @@ function setStickyKeys(on) {
   if (!radio) return;
   radio.classList.toggle('on', on);
   // Leaving sticky mode: clear any stuck-on keys immediately
-  if (!on) { clearAllLit(); heldKeys.clear(); greenHeld.clear(); }
+  if (!on) {
+    clearAllLit();
+    heldKeys.clear();
+    greenHeld.clear();
+    conflictsKbLighting.resetOnBlur(); // also clear any sticky-toggled keys in the Conflicts panel
+  }
 }
 
 function setKbSizeToggle(full) {
@@ -5221,7 +5255,7 @@ function setKbSizeToggle(full) {
       // Switching to compact from extended with overrides: safe, compact blocks everything
     } else {
       // Switching to extended with overrides: would conflict with individual settings
-      showToast('You have custom key settings. Switch to compact first, then back to extended to reset them.');
+      showToast('You have custom key settings. Go to the Conflict Settings screen to  edit them.');
       updateKbSizeToggle();
       return;
     }
@@ -5688,7 +5722,7 @@ function _returnAfterKillPunctuationConfirm(message) {
     helpBtn.textContent = 'Help';
     helpBtn.style.background = '';
     helpBtn.style.color = '';
-    titleEl.className = '';
+    _resetTitleClasses();
     titleEl.textContent = 'Play Keyboard Warriors';
     if (message) {
       showConfirmHeading(message);
@@ -5988,8 +6022,14 @@ function _syncPhoneToolbarVisibility() {
   }
 }
 
-function _syncPhoneToolbarActiveState(ActivePage) {
-  var PhoneIconMap = {
+function _syncStudyNotesInlineIcon() {
+  var el = document.getElementById('studyNotesIconInline');
+  if (!el) return;
+  var STUDY_PANELS = ['panelCheatSheet', 'panelEndGameReportCard', 'panelEndGameHistoryRecord'];
+  el.style.display = (STUDY_PANELS.indexOf(activeSettings) !== -1) ? '' : 'none';
+}
+
+function _syncPhoneToolbarActiveState(ActivePage) {  var PhoneIconMap = {
     panelKeyboard:           'phoneKbIconWrap',
     panelDifficultySettings: 'phoneDiffIconWrap',
     panelConflicts:          'phoneBrIconWrap',
@@ -6071,7 +6111,7 @@ function _phoneOpenSettings(Page) {
   var ConfirmStates = ['confirm-reset', 'confirm-quit', 'confirm-trophy',
     'confirm-diff-change', 'confirm-kill-punctuation', 'confirm-start-over', 'counting'];
   if (ConfirmStates.indexOf(gameState) !== -1 && Page !== 'panelPause') {
-    showToast('Resolve the current prompt first.');
+    showToast('First you must resolve the prompt above.');
     return;
   }
 
@@ -6118,6 +6158,7 @@ function _phoneOpenSettings(Page) {
   var NoConfirmOverlayActive = ['confirm-reset', 'confirm-quit', 'confirm-trophy',
     'confirm-diff-change', 'confirm-kill-punctuation', 'confirm-start-over'].indexOf(gameState) === -1;
   if (NoConfirmOverlayActive) _showPanelTip(Page);
+  _syncStudyNotesInlineIcon();
 }
 
 function _phoneCloseSettings() {
@@ -6125,6 +6166,7 @@ function _phoneCloseSettings() {
    var ClosingPage = activeSettings;
   activeSettings  = null;
   conflictsKbLighting.deactivate();
+    _syncStudyNotesInlineIcon();
 
   _clearPanelTip();
   _exitScoreClearConfirm();
@@ -6330,6 +6372,10 @@ var _PANEL_TIPS = {
 function _showPanelTip(page) {
   // Trophy sequence writes its own title message — do not overwrite it.
   if (_trophySequenceActive) return;
+  // Do not write tip text while the heading is suppressed by an overlay.
+  if (titleEl.classList.contains('app-pill-open')) return;
+  // Do not write tip text while the heading is suppressed by an overlay.
+  if (titleEl.classList.contains('app-pill-open')) return;
   var tip;
   // A forced tip overrides the random pool (used by the coach suggestion flow).
   if (_overridePanelTip !== null) {
@@ -6379,7 +6425,7 @@ function openSettings(page) {
   // Block switching panels during any confirmation overlay or countdown
   var confirmStates = ['confirm-reset', 'confirm-quit', 'confirm-trophy', 'confirm-diff-change', 'confirm-kill-punctuation', 'confirm-start-over', 'counting'];
   if (confirmStates.indexOf(gameState) !== -1 && page !== 'panelPause') {
-    showToast('Resolve the current prompt first.');
+    showToast('First resolve the prompt above.');
     return;
   }
   var wasOpen  = activeSettings !== null;
@@ -6465,6 +6511,7 @@ function openSettings(page) {
     'confirm-diff-change', 'confirm-kill-punctuation', 'confirm-start-over'
   ].indexOf(gameState) === -1;
   if (confirmStatesActive) _showPanelTip(page);
+  _syncStudyNotesInlineIcon();
 }
 
 function closeSettings() {
@@ -6473,6 +6520,7 @@ function closeSettings() {
   var closingPage = activeSettings;
   activeSettings = null;
   conflictsKbLighting.deactivate();
+  _syncStudyNotesInlineIcon();
   
   // Clear any ambient panel tip
   _clearPanelTip();
@@ -6552,6 +6600,7 @@ function _closeAllModalsInstant() {
   }
   activeSettings = null;
   conflictsKbLighting.deactivate();
+    _syncStudyNotesInlineIcon();
   _panelTipInTitle = false;  // clear any tip that was live in the title
   _exitScoreClearConfirm();
   _exitDiffConfirm();
@@ -6669,7 +6718,7 @@ function _attachconflictsPanelKeypressVerifier() {
             _syncConflictFilterPillStyles();
             keyEl.dataset.blocked = '0';
             _cfApplyKeyStyle(keyEl, false);
-            showToast('Key available');
+            showToast('Key now available');
           }, 180);
         });
       }
@@ -7413,7 +7462,7 @@ document.getElementById('gameContainer').addEventListener('click', function(e) {
   if (e.target.closest('button, input, label, a, #scoreDisc, #kbIcon, #browserIcon, #appPill, #appDropdown, #debugOverlay, #settingsPanel')) return;
 
   if (gameState === 'confirm-kill-punctuation') {
-    showToast('You must confirm if you really want no punctuation keys or not.');
+    showToast('Confirm above if you really want to Remove punctuation keys or Keep them.');
     return;
   }
 
@@ -7672,7 +7721,7 @@ function dbgPrevQuestion() {
   if (questionPool.length === 0) return;
   questionIndex = (questionIndex - 1 + questionPool.length) % questionPool.length;
   currentAnswer = GetActiveShortcutString(questionPool[questionIndex]) || "";
-  titleEl.className = '';
+  _resetTitleClasses();
   titleEl.textContent = (questionPool[questionIndex].display || '').replace(/\\\\/g, '\\');
   clearAllLit(); heldKeys.clear();
   clearHelp(); transitioning = false;
@@ -7682,7 +7731,7 @@ function dbgNextQuestion() {
   if (questionPool.length === 0) return;
   questionIndex = (questionIndex + 1) % questionPool.length;
   currentAnswer = GetActiveShortcutString(questionPool[questionIndex]) || "";
-  titleEl.className = '';
+  _resetTitleClasses();
   titleEl.textContent = (questionPool[questionIndex].display || '').replace(/\\\\/g, '\\');
   clearAllLit(); heldKeys.clear();
   clearHelp(); transitioning = false;
@@ -8264,7 +8313,7 @@ function _allConflictTokensNormalised() {
   // Refresh lighting immediately so the key turns green right now
   conflictsKbLighting.refresh();
 
-  showToast('Shortcut working \u2014 confirmed');
+  showToast('Confirmed the shortcut is working');
 
   setTimeout(function() {
     if (NeedsExpunge) {
@@ -8320,9 +8369,32 @@ function _allConflictTokensNormalised() {
 
   // ── Event handlers ───────────────────────────────────────────────────────
 
+  // Removes a key from the held set and restores its resting/fade visual.
+  // Shared by genuine keyup events and by sticky toggle-off keydowns, so
+  // both paths release a key the same way.
+  function _releaseKey(BrowserCode) {
+    _heldKeys.delete(BrowserCode);
+
+    if (_isModifierCode(BrowserCode)) {
+      // Modifier released: redraw all keys to reflect the reduced chord
+      _applyAllKeyColours();
+      return;
+    }
+
+    // Non-modifier released: fade back to resting colour
+    _revertKeyToRestingColour(BrowserCode);
+  }
+
   function _onKeydown(Event) {
     if (!_active) return;
     if (Event.repeat) return;  // ignore key-repeat — lighting and flash are one-shot
+
+    if (stickyKeysOn && _heldKeys.has(Event.code)) {
+      // Sticky Keys is on and this key is already toggled on — this keydown
+      // is the toggle-off press, not a fresh chord. Release it and stop.
+      _releaseKey(Event.code);
+      return;
+    }
 
     _heldKeys.add(Event.code);
 
@@ -8356,17 +8428,9 @@ function _allConflictTokensNormalised() {
 
   function _onKeyup(Event) {
     if (!_active) return;
+    if (stickyKeysOn) return; // sticky toggling is handled entirely on keydown
 
-    _heldKeys.delete(Event.code);
-
-    if (_isModifierCode(Event.code)) {
-      // Modifier released: redraw all keys to reflect the reduced chord
-      _applyAllKeyColours();
-      return;
-    }
-
-    // Non-modifier released: fade back to resting colour
-    _revertKeyToRestingColour(Event.code);
+    _releaseKey(Event.code);
   }
 
   // ── Public API ───────────────────────────────────────────────────────────
@@ -9274,7 +9338,7 @@ function _scoreClearConfirmGuard(e) {
   // Block everything else and toast
   e.stopPropagation();
   e.preventDefault();
-  showToast('You need to decide if you are keeping or clearing your score record.');
+  showToast('You need to decide above between Wiping or Keeping your score record.');
 }
 
 function _exitScoreClearConfirm() {
@@ -9382,8 +9446,10 @@ function _pauseStartOverClick() {
 
   var btn = document.getElementById('startOverBtn');
   if (btn) {
-    btn.classList.add('segmented-pill-active');
-    _popScorePillLabel(btn);
+    btn.disabled = true;
+    btn.querySelector('.diff-btn-text').textContent = 'confirm above';
+    btn.style.opacity = '0.38';
+    btn.style.cursor = 'default';
     // Expose only this pill via the same overlay pattern as score-clear
     var pill = btn.closest('.segmented-pill');
     if (pill) pill.classList.add('score-confirm-source');
@@ -9417,7 +9483,7 @@ function _startOverConfirmGuard(e) {
   // Block and toast
   e.stopPropagation();
   e.preventDefault();
-  showToast('Confirm above, or press No to keep your local data.');
+  showToast('Confirm above if you will Wipe or Keep your local data.');
 }
 
 function _exitStartOverConfirm() {
@@ -9425,7 +9491,10 @@ function _exitStartOverConfirm() {
   document.removeEventListener('click', _startOverConfirmGuard, true);
   var btn = document.getElementById('startOverBtn');
   if (btn) {
-    btn.classList.remove('segmented-pill-active');
+    btn.disabled = false;
+    btn.querySelector('.diff-btn-text').textContent = 'clear memory \u0026 start fresh';
+    btn.style.opacity = '';
+    btn.style.cursor = '';
     var pill = btn.closest('.segmented-pill');
     if (pill) pill.classList.remove('score-confirm-source');
   }
@@ -10411,7 +10480,7 @@ function enterDefeat() {
   SaveCoachMemory(DefeatMemory.messageKey, DefeatMemory.settingSuggested, NewDefeatCount);
 
   // After 2+ consecutive defeats without a report card, the coach intervenes in the title
-  titleEl.className = '';
+  _resetTitleClasses();
   if (NewDefeatCount >= 2) {
     var CoachTitleMessage = !hasTrophy
       ? 'Complete more questions to see your full report card. Use the Help button when you are stuck on a shortcut.'
@@ -10473,7 +10542,7 @@ function startGame() {
   CoachAdviceAccepted = false;
   const adaptivePool = getAdaptiveNextRoundPool();
 questionPool = adaptivePool || shuffleArray(buildPool());  if (currentApp === 'Ae' && !hasFullKeyboard) {
-    showToast('After Effects uses many extended keyboard shortcuts. Switch to Full Keyboard for the best experience.');
+    showToast('This app uses many extended keyboard shortcuts. Switch to a Full Keyboard for the best experience.');
   }
   questionIndex = 0;
   answersLeft = 10;
@@ -10488,7 +10557,7 @@ questionPool = adaptivePool || shuffleArray(buildPool());  if (currentApp === 'A
   helpBtn.style.color = '';
   var _sgTagline = document.getElementById('welcomeTagline');
   if (_sgTagline) { _sgTagline.style.display = 'none'; _sgTagline.innerHTML = '<em>Your keyboard shortcuts coach &amp; personal trainer.</em>'; }
-  titleEl.className = '';
+  _resetTitleClasses();
   void titleEl.offsetWidth;
   titleEl.textContent = (questionPool[0].display || '').replace(/\\\\/g, '\\');
   titleEl.classList.add('question-pop');
@@ -10616,7 +10685,7 @@ function advanceQuestion() {
     questionIndex = 0;
   }
   currentAnswer = GetActiveShortcutString(questionPool[questionIndex]) || "";
-  titleEl.className = '';
+  _resetTitleClasses();
   void titleEl.offsetWidth; // flush so animation restarts
   titleEl.textContent = (questionPool[questionIndex].display || '').replace(/\\\\/g, '\\');
   consecutiveExtraKeyCount = 0;
@@ -10838,7 +10907,7 @@ lastCompletedReport = finalizeRunData(completedRun, questionPool, 0);
   }
 
   mainBtn.textContent = 'Try again?';
-  titleEl.className = '';
+  _resetTitleClasses();
   questionCountEl.classList.remove('blurred', 'blur-instant');
   document.getElementById('livesRow').classList.remove('blurred', 'blur-instant');
   titleEl.textContent = justEarnedTrophy
@@ -13007,7 +13076,7 @@ function _killPunctuationConfirmGuard(e) {
   e.stopPropagation();
   e.preventDefault();
   if (e.type === 'click') {
-    showToast('You must confirm if you really want no punctuation keys or not.');
+    showToast('You must confirm above if you really want to Remove punctuation keys or Keep them.');
   }
 }
 document.addEventListener('click',       _killPunctuationConfirmGuard, true);
@@ -13370,7 +13439,7 @@ function _blurDiagnosticKeydownHandler(e) {
   // Clear any floating confirm heading before writing to the title area
   hideConfirmHeading();
   titleEl.classList.remove('blurred');
-  titleEl.className = '';
+  _resetTitleClasses();
   titleEl.textContent = "Let's keep training.";
   var DotEl = document.getElementById('blurDiagnosticDot');
   if (DotEl) { DotEl.style.background = '#10b981'; DotEl.style.transition = 'background 0.3s ease'; }
@@ -13418,7 +13487,7 @@ function _activateBlurPauseScreen() {
   if (touchEnabled) {
     hideConfirmHeading();
     titleEl.classList.remove('blurred');
-    titleEl.className = '';
+    _resetTitleClasses();
     titleEl.textContent = 'Lost you for a moment,\nso I paused your game.';
     SetKeyboardPositionForPanel('panelPause');
     return;
@@ -13431,7 +13500,7 @@ _blurDiagnosticAnswerRevealed = false;
   // Title: stage 1 — clear any floating confirm heading first
   hideConfirmHeading();
   titleEl.classList.remove('blurred');
-  titleEl.className = '';
+  _resetTitleClasses();
   titleEl.textContent = 'You went away for a bit,\nso we paused your game.';
 
   // Activate diagnostic layout (hides the standard two columns)
@@ -13491,7 +13560,7 @@ function _deactivateBlurPauseScreen() {
   var PausePanelEl = document.getElementById('panelPause');
   if (PausePanelEl) PausePanelEl.classList.remove('blur-pause-active');
   // Restore the blurred question text in the title area
-  titleEl.className = '';
+  _resetTitleClasses();
   titleEl.textContent = (questionPool[questionIndex]?.display || '').replace(/\\\\/g, '\\');
   titleEl.classList.add('blurred');
 }
@@ -13506,7 +13575,7 @@ _blurDiagnosticAnswerRevealed = true;
   // Title: stage 2 — clear any floating confirm heading first
   hideConfirmHeading();
   titleEl.classList.remove('blurred');
-  titleEl.className = '';
+  _resetTitleClasses();
   titleEl.textContent = 'Check if the shortcut is causing a problem.';
 
   // Replace right-column text for stage 2
@@ -13577,7 +13646,7 @@ function _blurDiagnosticShowBlockedConfirmation() {
   _blurDiagnosticFlowComplete = true;
   hideConfirmHeading();
   titleEl.classList.remove('blurred');
-  titleEl.className = '';
+  _resetTitleClasses();
   titleEl.textContent = 'Shortcut blocked. Ready to resume?';
   var RightTextEl = document.getElementById('blurDiagnosticRightText');
   if (RightTextEl) {
@@ -13602,7 +13671,7 @@ function _blurDiagnosticSecondBlur() {
   // Title: stage 3 — clear any floating confirm heading first
   hideConfirmHeading();
   titleEl.classList.remove('blurred');
-  titleEl.className = '';
+  _resetTitleClasses();
   titleEl.textContent = 'Do you want to block this?';
 
   // Right-column text: conflict explanation
@@ -14404,6 +14473,17 @@ document.addEventListener('DOMContentLoaded', function() {
    Pauses the game if it is actively playing.
 ══════════════════════════════════════ */
 
+// Replaces titleEl.className = '' everywhere. Clears all game-managed title
+// classes but preserves app-pill-open whenever the app pill, skillset pill,
+// or customise panel is currently open — those suppress the title via CSS.
+function _resetTitleClasses() {
+  var SuppressTitle = appPillEl.classList.contains('open')
+    || AppSelectorSkillsetPillIsOpen
+    || CustomiseSkillsetPanelIsOpen
+    || skillsetPillOpen;
+  titleEl.className = SuppressTitle ? 'app-pill-open' : '';
+}
+
 var LayoutRedrawDebounceTimer = null;
 
 /* ── Rotation hint ───────────────────────────────────────────────────────────
@@ -14422,7 +14502,8 @@ function _titleForCurrentState() {
   if (gameState === 'idle')     return 'Play Keyboard Warriors';
   if (gameState === 'finished') return titleEl.textContent; // endgame message set by endGame()
   if (gameState === 'paused' || gameState === 'readyToUnpause') {
-    return (questionPool[questionIndex]?.display || '').replace(/\\/g, '\\');  
+    // Escaping the backslash correctly as '\\'
+    return (questionPool[questionIndex]?.display || '').replace(/\\/g, '\\');
   }
   return titleEl.textContent; // confirm states etc — leave as-is
 }
@@ -14437,11 +14518,11 @@ function _syncRotationHint() {
 
   if (ShouldShow && !_rotationHintActive) {
     _rotationHintActive = true;
-    titleEl.className = '';
+    _resetTitleClasses();
     titleEl.textContent = 'turn your phone 90°';
   } else if (!ShouldShow && _rotationHintActive) {
     _rotationHintActive = false;
-    titleEl.className = '';
+    _resetTitleClasses();
     titleEl.textContent = _titleForCurrentState();
     // Restore blur when returning to landscape while paused
     if (gameState === 'paused' || gameState === 'readyToUnpause') {
@@ -15167,7 +15248,7 @@ function _buildAppSelectorSkillsetPill() {
      if (ClickedOutside) {
        AppSelectorSkillsetDropIsOpen = false;
        _buildAppSelectorSkillsetPill();
-      if (!CustomiseSkillsetPanelIsOpen) titleEl.classList.remove('app-pill-open');
+      if (!CustomiseSkillsetPanelIsOpen && !appPillEl.classList.contains('open')) titleEl.classList.remove('app-pill-open');
       document.removeEventListener('click', OutsideClickHandler);
   }
 });
@@ -15209,7 +15290,7 @@ function _showAppSelectorSkillsetPill() {
       });
     });
   }
-  // Suppress title and tagline while skillset picker is open
+  _SyncHeadingVisibility();
   // Update the 'more' button label to 'less' in the wrench picker
   var SkillsetsBtn = appPillEl.querySelector('.app-option-skillsets span');
   if (SkillsetsBtn) SkillsetsBtn.textContent = 'less';
@@ -15243,10 +15324,7 @@ function _hideAppSelectorSkillsetPill() {
       if (!AppSelectorSkillsetPillIsOpen) SkillsetPillElement.style.display = 'none';
     }, 220);
   }
-  // Restore title suppression only if appPill is also closed
-  if (!appPillEl.classList.contains('open')) {
-    titleEl.classList.remove('app-pill-open');
-  }
+  _SyncHeadingVisibility();
   // Close the customise panel if it was open
   _closeCustomiseSkillsetPanel();
   // Reset 'less' button back to 'more'
@@ -15488,7 +15566,7 @@ function _AnimateAppPillResize() {
 function _openCustomiseSkillsetPanel() {
   if (CustomiseSkillsetPanelIsOpen) return;
   CustomiseSkillsetPanelIsOpen = true;
-  titleEl.classList.add('app-pill-open'); 
+  _SyncHeadingVisibility(); 
 
   var isNamedSkillset = SKILLSET_DEFS.some(function(d) { return d.label === currentSkillset; });
   if (!isNamedSkillset) {
@@ -15538,9 +15616,7 @@ function _closeCustomiseSkillsetPanel() {
 
   if (ExistingDrop)        ExistingDrop.remove();
   if (PanelElement)        PanelElement.classList.remove('customise-skillset-panel-open');
-  if (!AppSelectorSkillsetPillIsOpen && !AppSelectorSkillsetDropIsOpen && !appPillEl.classList.contains('open')) {
-    titleEl.classList.remove('app-pill-open');
-  }
+  _SyncHeadingVisibility();
   if (RightBracketElement) {
     RightBracketElement.classList.remove('customise-skillset-bracket-visible');
     setTimeout(function() { RightBracketElement.style.display = 'none'; }, 220);

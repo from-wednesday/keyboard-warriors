@@ -430,13 +430,24 @@ body {
 #livesRow.blurred    { filter: blur(3px); opacity: 0.75; user-select: none; }
 
 /* ── Study Notes inline icon — grows from 1px wide to full width, centred ── */
+#studyNotesIconOuter {
+  overflow: hidden;
+  height: 52px;
+  transition: height 0.4s ease-out 0s;
+}
+#studyNotesIconOuter.study-notes-icon-hidden {
+  height: 0px;
+  transition: height 0.4s ease-in 0.8s;
+}
+
 #studyNotesIconInline {
   transform: scaleX(1);
   transform-origin: center;
-  transition: transform 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+  transition: transform 0.8s cubic-bezier(0.4, 0, 0.2, 1) 0.4s;
 }
-#studyNotesIconInline.study-notes-icon-hidden {
+#studyNotesIconOuter.study-notes-icon-hidden #studyNotesIconInline {
   transform: scaleX(0.001);
+  transition: transform 0.8s cubic-bezier(0.4, 0, 0.2, 1) 0s;
 }
 
 /* ══════════════════════════════════════

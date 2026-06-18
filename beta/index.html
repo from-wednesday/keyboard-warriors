@@ -6085,17 +6085,21 @@ function _phoneOpenPanel(Page, WasAlreadyOpen, PreviousPage) {
   PanelElement.classList.add('sp-active');
 
   // Wipe animation when switching between panels
-  if (WasAlreadyOpen && PreviousPage && PreviousPage !== Page) {
-    var PreviousIndex = SP_PAGE_ORDER.indexOf(PreviousPage);
-    var NextIndex     = SP_PAGE_ORDER.indexOf(Page);
-    var IsRisingPage  = (Page === 'panelDifficultySettings' || Page === 'panelLandingWelcome');
-    var WasRisingPage = (PreviousPage === 'panelDifficultySettings' || PreviousPage === 'panelLandingWelcome');
-    if (IsRisingPage || WasRisingPage) {
-      PanelElement.classList.add('sp-wipe-in-up');
-    } else {
-      PanelElement.classList.add(NextIndex > PreviousIndex ? 'sp-wipe-in' : 'sp-wipe-in-left');
+if (WasAlreadyOpen && PreviousPage && PreviousPage !== Page) {
+      var PreviousIndex = SP_PAGE_ORDER.indexOf(PreviousPage);
+      var NextIndex     = SP_PAGE_ORDER.indexOf(Page);
+      var EndgamePanels = new Set(['panelEndGameReportCard', 'panelEndGameHistoryRecord']);
+      var BothAreEndgamePanels = EndgamePanels.has(Page) && EndgamePanels.has(PreviousPage);
+      var IsRisingPage  = (Page === 'panelDifficultySettings' || Page === 'panelLandingWelcome');
+      var WasRisingPage = (PreviousPage === 'panelDifficultySettings' || PreviousPage === 'panelLandingWelcome');
+      if (BothAreEndgamePanels) {
+        PanelElement.classList.add(NextIndex > PreviousIndex ? 'sp-page-turn-right' : 'sp-page-turn-left');
+      } else if (IsRisingPage || WasRisingPage) {
+        PanelElement.classList.add('sp-wipe-in-up');
+      } else {
+        PanelElement.classList.add(NextIndex > PreviousIndex ? 'sp-wipe-in' : 'sp-wipe-in-left');
+      }
     }
-  }
 
   // Expand the container
   PhonePanelArea.classList.add('phone-panel-open');
@@ -6485,10 +6489,16 @@ function openSettings(page) {
   if (pageEl) {
     pageEl.classList.add('sp-active');
     if (wasOpen && prevPage !== page) {
+      var EndgamePanels = new Set(['panelEndGameReportCard', 'panelEndGameHistoryRecord']);
+      var BothAreEndgamePanels = EndgamePanels.has(page) && EndgamePanels.has(prevPage);
       // Difficulty panels always rise up; other pages wipe left/right by order
       var isDiffPage = (page === 'panelDifficultySettings' || page === 'panelLandingWelcome');
       var wasDiffPage = (prevPage === 'panelDifficultySettings' || prevPage === 'panelLandingWelcome');
-      if (isDiffPage || wasDiffPage) {
+      if (BothAreEndgamePanels) {
+        var prevIdx = SP_PAGE_ORDER.indexOf(prevPage);
+        var nextIdx = SP_PAGE_ORDER.indexOf(page);
+        pageEl.classList.add(nextIdx > prevIdx ? 'sp-page-turn-right' : 'sp-page-turn-left');
+      } else if (isDiffPage || wasDiffPage) {
         pageEl.classList.add('sp-wipe-in-up');
       } else {
         var prevIdx = SP_PAGE_ORDER.indexOf(prevPage);

@@ -8258,6 +8258,10 @@ function _allConflictTokensNormalised() {
         return;
       }
       var Classification = _classifyKeyWithCurrentChord(BrowserCode);
+
+if (BrowserCode === 'MetaLeft') {
+  console.log('MetaLeft', Classification);
+}
       var RestingClass   = _restingClassForClassification(Classification);
       if (RestingClass) KeyElement.classList.add(RestingClass);
     });

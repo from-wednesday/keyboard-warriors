@@ -431,7 +431,7 @@ body {
 
 /* ── Study Notes inline icon — grows from 1px wide to full width, centred ── */
 #studyNotesIconOuter {
-  overflow: hidden;
+  overflow: visible;
   height: 52px;
   /* Snappy physical curve: rapid start, smooth deceleration */
   transition: height 0.35s cubic-bezier(0.25, 1, 0.5, 1) 0s;

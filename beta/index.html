@@ -1086,6 +1086,7 @@ const UNIVERSAL_SHORTCUTS = [
 ══════════════════════════════════════ */
 const keyEls = {};
 let lockKeyEl = null;
+console.log(Object.keys(keyEls).sort());
 
 // Show/hide the faint lock-key glyph hint used in ghost mode.
 function _setGhostLockHint(visible) {
@@ -8258,10 +8259,6 @@ function _allConflictTokensNormalised() {
         return;
       }
       var Classification = _classifyKeyWithCurrentChord(BrowserCode);
-
-if (BrowserCode === 'MetaLeft') {
-  console.log('MetaLeft', Classification);
-}
       var RestingClass   = _restingClassForClassification(Classification);
       if (RestingClass) KeyElement.classList.add(RestingClass);
     });

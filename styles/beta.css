@@ -977,6 +977,17 @@ body.kb-at-edge #keyboardPanel #kb-shadow {
 .sp-page.sp-wipe-in-left  { animation: spWipeInLeft 0.22s ease forwards; }
 .sp-page.sp-wipe-in-up    { animation: spWipeInUp   0.22s ease forwards; }
 
+@keyframes spPageTurnRight {
+  from { opacity: 0; transform: translateX(18px); }
+  to   { opacity: 1; transform: translateX(0); }
+}
+@keyframes spPageTurnLeft {
+  from { opacity: 0; transform: translateX(-18px); }
+  to   { opacity: 1; transform: translateX(0); }
+}
+.sp-page.sp-page-turn-right { animation: spPageTurnRight 0.25s cubic-bezier(0.22, 0.61, 0.36, 1) forwards; }
+.sp-page.sp-page-turn-left  { animation: spPageTurnLeft  0.25s cubic-bezier(0.22, 0.61, 0.36, 1) forwards; }
+
 @keyframes btnPulse {
   0%   { transform: scale(1); }
   35%  { transform: scale(1.08); }

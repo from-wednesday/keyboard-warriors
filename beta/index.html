@@ -8159,12 +8159,55 @@ function _allConflictTokensNormalised() {
     });
     if (ModifierToken) HeldModifierTokens.add(ModifierToken);
 
-      // Check if this modifier is itself a bare conflict (e.g. Option alone)
+      // Modifier keys should light only when pressing this modifier would
+    // immediately complete a known conflict chord.
     if (ModifierToken !== null) {
-      var BareModifierMatch = _findSubsetMatch(HeldModifierTokens, null);
-      if (BareModifierMatch === 'blocked') return 'blocked';
-      if (BareModifierMatch === 'sus')     return 'sus';
-      return 'available';
+
+      var ModifierMatch = null;
+
+      _allConflictTokensNormalised().forEach(function (ConflictEntry) {
+
+        var Parsed = ParseShortcutString(ConflictEntry);
+        if (!Parsed || !Parsed.keyToken) return;
+
+        // The conflict's non-modifier key must already be held.
+        var ConflictKeyIsHeld = false;
+
+        _heldKeys.forEach(function (HeldCode) {
+          if (_browserCodeToToken(HeldCode) === Parsed.keyToken) {
+            ConflictKeyIsHeld = true;
+          }
+        });
+
+        if (!ConflictKeyIsHeld) return;
+
+        var MissingModifiers = [];
+
+        if (Parsed.requiresCmd     && !HeldModifierTokens.has('CMD'))     MissingModifiers.push('CMD');
+        if (Parsed.requiresShift   && !HeldModifierTokens.has('SHIFT'))   MissingModifiers.push('SHIFT');
+        if (Parsed.requiresOption  && !HeldModifierTokens.has('OPTION'))  MissingModifiers.push('OPTION');
+        if (Parsed.requiresControl && !HeldModifierTokens.has('CONTROL')) MissingModifiers.push('CONTROL');
+        if (Parsed.requiresWin     && !HeldModifierTokens.has('WIN'))     MissingModifiers.push('WIN');
+
+        // Only light if this modifier is the final missing piece.
+        if (MissingModifiers.length !== 1) return;
+        if (MissingModifiers[0] !== ModifierToken) return;
+
+        var IsBlurEntry = blurDiagnosticConflicts.has(ConflictEntry);
+        var IsManuallyUnblocked = userManuallyUnblockedConflicts.has(ConflictEntry);
+        var IsManuallyBlocked = dismissedConflicts.has(ConflictEntry);
+        var IsSus = IsManuallyUnblocked || (!IsBlurEntry && _isSusToken(ConflictEntry));
+
+        if (IsManuallyUnblocked) {
+          if (ModifierMatch !== 'blocked') ModifierMatch = 'sus';
+        } else if (!IsSus || IsManuallyBlocked || IsBlurEntry) {
+          ModifierMatch = 'blocked';
+        } else {
+          if (ModifierMatch !== 'blocked') ModifierMatch = 'sus';
+        }
+      });
+
+      return ModifierMatch || 'available';
     }
 
     var CandidateKeyToken = _browserCodeToToken(BrowserCode);

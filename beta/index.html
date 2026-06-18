@@ -8464,8 +8464,10 @@ function _allConflictTokensNormalised() {
       return;
     }
 
-    // Non-modifier pressed: light it at full brightness.
-    _applyKeyPressedColour(Event.code);
+// Non-modifier pressed: redraw the keyboard so any newly-completable
+// conflicts become visible, then light the pressed key.
+_applyAllKeyColours();
+_applyKeyPressedColour(Event.code);
 
     // Flash conflict list chips green only for sus (yellow) entries — orange
     // entries are about to be unblocked and their list items rebuilt, so

@@ -47,6 +47,11 @@ body {
 #gameContainer:has(.leftPanel.showing-confirm) {
   background: #eee4fd;
 }
+
+/* Shift to a muted teal when the lead (defeat) medal is showing */
+#gameContainer:has(.scoreDisc.medal-lead) {
+  background: #cdd9d8;
+}
 .topRow {
   display: flex;
   align-items: center;

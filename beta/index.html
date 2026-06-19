@@ -359,6 +359,7 @@
 </div>
 
 <div id="phoneToolbar">
+  <div id="phonePanelArea"></div>
   <div id="phoneToolbarIcons">
     <div class="phone-icon-btn" id="phoneKbIconWrap">
       <svg viewBox="0 0 111.9 49.8" style="color:#9ca3af;overflow:visible;"><use href="#IconKeyboard"/></svg>
@@ -382,7 +383,6 @@
       <span class="phone-icon-label">Study Notes</span>
     </div>
   </div>
-  <div id="phonePanelArea"></div>
 </div>
 
 <div id="keyboardWrap" class="page-initially-hidden">
@@ -5985,6 +5985,7 @@ function _spPageEl(page) {
    The same panel DOM nodes serve both
    layouts; only their parent changes.
 ══════════════════════════════════════ */
+var _phonePanelSettleTimer = null;
 
 function _syncPhoneToolbarVisibility() {
   var ToolbarElement = document.getElementById('phoneToolbar');
@@ -6120,14 +6121,23 @@ if (WasAlreadyOpen && PreviousPage && PreviousPage !== Page) {
       }
     }
 
-  // Expand the container
+   // Expand the container
   PhonePanelArea.classList.add('phone-panel-open');
 
-  // Panel expands in place below the toolbar; no scroll needed.
+  // Allow internal scrolling only once the opening animation has finished,
+  // so a tall panel cannot show a brief, self-resolving scrollbar while the
+  // panel area is still growing towards its full height.
+  clearTimeout(_phonePanelSettleTimer);
+  PhonePanelArea.classList.remove('phone-panel-settled');
+  _phonePanelSettleTimer = setTimeout(function() {
+    PhonePanelArea.classList.add('phone-panel-settled');
+  }, 360);
 }
 function _phoneCollapsePanel() {
   var PhonePanelArea = document.getElementById('phonePanelArea');
   if (!PhonePanelArea) return;
+  clearTimeout(_phonePanelSettleTimer);
+  PhonePanelArea.classList.remove('phone-panel-settled');
   PhonePanelArea.classList.remove('phone-panel-open');
   // Return panels after the collapse animation settles
   setTimeout(_phoneReturnAllPanels, 380);
@@ -6231,6 +6241,52 @@ function _phoneCloseSettings() {
   // Phone has no keyboard to snap to face -- nothing more to do
 }
 
+// Viewport height, in real rendered pixels, kept clear below the bottom-most
+// element (credit or the difficulty icon) before viewport-fit layout is
+// considered safe. Stops the fit decision from flickering exactly at the edge.
+var ViewportFitSafetyMarginPixels = 8;
+
+// While a settings panel is open on a screen wide enough for the desktop
+// layout, decides whether there is enough vertical room to pin the keyboard
+// and credit line to the bottom of the window, with the settings panel
+// filling the gap above them, or whether the page should fall back to its
+// normal flowing, scrollable behaviour instead, exactly as it already does
+// on narrow screens. Reuses keyboardWrap's existing min-height transition,
+// so entering or leaving this mode animates smoothly rather than jumping.
+// Call any time the available height could have changed: from inside
+// _spAlignPanel after it recalculates the settings panel's own minimum
+// height, on window resize, and whenever a panel opens or closes.
+function _updateViewportFitLayout() {
+  var CanConsiderPinning = !NoKeyboardMode &&
+    window.innerWidth >= MiniKeyboardBreakpointWidth &&
+    activeSettings !== null;
+
+  var Wrap = document.getElementById('keyboardWrap');
+  var DiffIconWrapElement = document.getElementById('diffIconWrap');
+  if (!Wrap || !DiffIconWrapElement) return;
+
+  if (!CanConsiderPinning) {
+    document.body.classList.remove('settings-fits-viewport');
+    return;
+  }
+
+  // Measure with pinning switched off first, so the measurement reflects
+  // each element's own natural height rather than an already-stretched one.
+  document.body.classList.remove('settings-fits-viewport');
+
+  var WrapNaturalHeight = parseFloat(Wrap.style.minHeight) || Wrap.getBoundingClientRect().height;
+  var NaturalStackBottomEdge = DiffIconWrapElement.getBoundingClientRect().bottom;
+  var AvailableSlack = window.innerHeight - ViewportFitSafetyMarginPixels - NaturalStackBottomEdge;
+
+  if (AvailableSlack < 0) return; // doesn't fit; leave today's flowing behaviour in place
+
+  Wrap.style.minHeight = (WrapNaturalHeight + AvailableSlack) + 'px';
+  document.body.classList.add('settings-fits-viewport');
+}
+
+function _spAlignPanel() {
+  if (NoKeyboardMode || window.innerWidth < MiniKeyboardBreakpointWidth) return;
+
 function _spAlignPanel() {
   if (NoKeyboardMode || window.innerWidth < MiniKeyboardBreakpointWidth) return; 
   var wrap = document.getElementById('keyboardWrap');
@@ -6274,6 +6330,7 @@ function _spAlignPanel() {
         ? contentH + 8
         : (contentH > stageH ? contentH + stageH + 24 : contentH + 16);
       wrap.style.minHeight = Math.max(needed, 320) + 'px';
+      _updateViewportFitLayout();
     });
   });
 }
@@ -6551,6 +6608,7 @@ function closeSettings() {
   if (activeSettings === null) return;
   var closingPage = activeSettings;
   activeSettings = null;
+  _updateViewportFitLayout();
   conflictsKbLighting.deactivate();
   _syncStudyNotesInlineIcon();
   
@@ -6622,6 +6680,7 @@ function _closeAllModalsInstant() {
   if (activeSettings === null) return;
   if (NoKeyboardMode) {
     activeSettings = null;
+    _updateViewportFitLayout();
     _panelTipInTitle = false;
     _exitScoreClearConfirm();
     _exitDiffConfirm();
@@ -6631,6 +6690,7 @@ function _closeAllModalsInstant() {
     return;
   }
   activeSettings = null;
+  _updateViewportFitLayout();
   conflictsKbLighting.deactivate();
     _syncStudyNotesInlineIcon();
   _panelTipInTitle = false;  // clear any tip that was live in the title
@@ -8446,6 +8506,19 @@ function _allConflictTokensNormalised() {
 
   // ── Event handlers ───────────────────────────────────────────────────────
 
+  // Re-evaluates a key that is still being held, after some other key has
+  // just been released. Clears any stale lit class first, since the match
+  // may have changed (a modifier that was blocked a moment ago may now be
+  // available, because the key it depended on is no longer held).
+  function _reapplyPressedColourForKey(BrowserCode) {
+    var KeyElement = keyEls[BrowserCode];
+    if (!KeyElement || BrowserCode === 'CapsLock') return;
+    _clearKeyClasses(KeyElement);
+    var Classification = _classifyKeyWithCurrentChord(BrowserCode);
+    var PressedClass    = _pressedClassForClassification(Classification);
+    if (PressedClass) KeyElement.classList.add(PressedClass);
+  }
+
   // Removes a key from the held set and restores its resting/fade visual.
   // Shared by genuine keyup events and by sticky toggle-off keydowns, so
   // both paths release a key the same way.
@@ -8458,8 +8531,14 @@ function _allConflictTokensNormalised() {
       return;
     }
 
-    // Non-modifier released: fade back to resting colour
+    // Non-modifier released: fade itself back to resting colour, then
+    // re-check any other keys still held. Releasing a non-modifier key
+    // can change whether a held modifier still completes a conflict, so
+    // those keys need a fresh classification too.
     _revertKeyToRestingColour(BrowserCode);
+    _heldKeys.forEach(function (StillHeldCode) {
+      _reapplyPressedColourForKey(StillHeldCode);
+    });
   }
 
   function _onKeydown(Event) {
@@ -14631,6 +14710,7 @@ function OnLayoutChange(EventSource) {
       updateKeyboardMode();
       positionIcons();
       if (activeSettings !== null) _spAlignPanel();
+      _updateViewportFitLayout();
       _syncRotationHint();
       // Recalculate caret position after resize in case zoom breakpoint changed
       if (activeSettings === 'panelDifficultySettings' || activeSettings === 'panelLandingWelcome') {

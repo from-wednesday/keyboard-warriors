@@ -8170,13 +8170,15 @@ function _allConflictTokensNormalised() {
       if (PartnerAlreadyHeld) return 'available';
     }
 
-    // Build the set of held modifier tokens, adding this key's token if it is a modifier.
+    // Build the set of currently held modifier tokens. The candidate key's own
+    // token is deliberately excluded here, otherwise checking whether pressing
+    // CMD would complete a chord would count CMD as already held, and the
+    // missing-modifier check below would never find it.
     var HeldModifierTokens = new Set();
     _heldKeys.forEach(function(HeldCode) {
       var Token = _modifierTokenForCode(HeldCode);
       if (Token) HeldModifierTokens.add(Token);
     });
-    if (ModifierToken) HeldModifierTokens.add(ModifierToken);
 
       // Modifier keys should light only when pressing this modifier would
     // immediately complete a known conflict chord.

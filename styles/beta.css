@@ -1638,14 +1638,13 @@ li.conflict-dismissed .conflict-desc {
 }
 
 /* ══════════════════════════════════════
-   BREAKPOINTS
+   BREAKPOINTS (in process - I am changing numbers to Var because numbers get out of sync)
     1.	1600px wide AND 870px tall – scales the whole UI to 120% zoom
 	2.	2000px wide AND 1060px tall – scales to 145% zoom
 	3.	2600px wide AND 1270px tall – scales to 175% zoom
-	4.	820px wide – switches from full keyboard to mini keyboard (this is a JS threshold in updateKeyboardMode, not a CSS media query)
-	5.	700px wide – CSS media query that switches from icon wraps to toolbar, reduces padding, shrinks the game panel, buttons, score disc, and title​​​​​​​​​​​​​​​​
-	6.	474 wide – hides the keyboard forcing ‘none’ keyboard visibility option.
-
+    4.  MiniKeyboardBreakpointWidth – switches from full keyboard to mini keyboard (JS threshold in updateKeyboardMode, not a CSS media query)	5.	700px wide – CSS media query that switches from icon wraps to toolbar, reduces padding, shrinks the game panel, buttons, score disc, and title​​​​​​​​​​​​​​​​
+	5.  MiniKeyboardBreakpointWidth – JS threshold (the same value as #4) that switches from icon wraps to the phone toolbar in _syncPhoneToolbarVisibility
+    6.  599px CSS breakpoint shrinks padding, the game panel, buttons and score disc
 ══════════════════════════════════════ */
 @media (max-width: 599px) {
 

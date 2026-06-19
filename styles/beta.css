@@ -1664,7 +1664,7 @@ li.conflict-dismissed .conflict-desc {
      the empty space left by the keyboard's shrunken height. This boundary
      must stay one pixel below MiniKeyboardBreakpointWidth in index.html. */
   #keyboardWrap {
-    min-height: 182px;
+    min-height: 177px;
   }
   #keyboardWrap.kb-at-face ~ #credit {
     transform: translateY(0);

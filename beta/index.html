@@ -3022,7 +3022,8 @@ let accumulatedPauseMs = 0;
 let pauseStartTime     = null;
 let hintUsedAtMs       = null;
 let wrongKeyCount      = 0;
-let lastCompletedReport = null;  // retained so report card remains visible until next game
+let lastCompletedReport = null;  // retained so report card remains visible until next game 
+var EndGamePagesMaxContentHeightPhone = 0;  // tallest phone-layout panel height seen between the Report Card and History pages this round, so switching between them does not resize the toolbar panel area
 let CoachAdviceAccepted = false; // true once the accept button has been pressed this round
 // ── Lives state ───────────────────────────────────────────────────────────────
 let livesRemaining  = null;  // null when playerLives is infinite
@@ -6094,7 +6095,15 @@ function _phoneOpenPanel(Page, WasAlreadyOpen, PreviousPage) {
   PhonePanelArea.appendChild(PanelElement);
   PanelElement.classList.add('sp-active');
 
-  // Wipe animation when switching between panels
+  // Report Card and History share one reserved height for the rest of the
+  // round, so switching between them never resizes the toolbar panel area.
+  var IsEndGamePairPanel = (Page === 'panelEndGameReportCard' || Page === 'panelEndGameHistoryRecord');
+  if (IsEndGamePairPanel) {
+    EndGamePagesMaxContentHeightPhone = Math.max(EndGamePagesMaxContentHeightPhone, PanelElement.scrollHeight);
+    PanelElement.style.minHeight = EndGamePagesMaxContentHeightPhone + 'px';
+  }
+
+  // Wipe animation when switching between panels 
 if (WasAlreadyOpen && PreviousPage && PreviousPage !== Page) {
       var PreviousIndex = SP_PAGE_ORDER.indexOf(PreviousPage);
       var NextIndex     = SP_PAGE_ORDER.indexOf(Page);
@@ -10586,6 +10595,7 @@ function enterDefeat() {
     var DefeatRun = runData.slice();
     runData.length = 0;
     lastCompletedReport = finalizeRunData(DefeatRun, questionPool, NewDefeatCount);
+    EndGamePagesMaxContentHeightPhone = 0;
     openSettings('panelEndGameReportCard');
     _refreshReportPanel();
   } else {
@@ -10914,7 +10924,7 @@ function endGame() {
   // Adaptive: finalise run
 const completedRun = runData.slice();
 runData.length = 0;
-lastCompletedReport = finalizeRunData(completedRun, questionPool, 0);
+lastCompletedReport = finalizeRunData(completedRun, questionPool, 0); EndGamePagesMaxContentHeightPhone = 0;
   gameState = 'finished';
   setAppSelectorGameActive(false);
   clearInterval(timerInterval);

@@ -1995,9 +1995,17 @@ const keyboardWrap = document.getElementById('keyboardWrap');
 let currentKbMode = null;
 var NoKeyboardMode = false;
 
+// Viewport width below which the keyboard switches from full to mini, and
+// the phone toolbar replaces the icon wraps. Both switches share this one
+// value: if they used different numbers, there would be a width range where
+// the mini keyboard appears but the wider two-column settings layout is
+// still in use, causing it to overflow. To tune the breakpoint, change this
+// number only.
+const MiniKeyboardBreakpointWidth = 820;
+
 function updateKeyboardMode() {
-  const w = window.innerWidth;
-  const mode = NoKeyboardMode ? 'none' : w < 820 ? 'mini' : 'full';
+  const w = window.innerWidth;
+  const mode = NoKeyboardMode ? 'none' : w < MiniKeyboardBreakpointWidth ? 'mini' : 'full';
   if (mode !== currentKbMode) {
     currentKbMode = mode;
     if (mode === 'none') {
@@ -2007,10 +2015,11 @@ function updateKeyboardMode() {
       buildKeyboard(mode === 'mini');
     }
   }
-  // Always sync toolbar in case the 700px phone-layout boundary was crossed
-  // without the keyboard mode itself changing (e.g. 820px → 599px stays 'mini').
+  // Always sync toolbar afterwards, since its visibility also depends on
+  // NoKeyboardMode and the current game state, not just this breakpoint.
   _syncPhoneToolbarVisibility();
 }
+
 
 function SyncKeyboardSettingsToUI() {
   // Syncs all keyboard settings UI to current variable values.
@@ -5981,7 +5990,8 @@ function _syncPhoneToolbarVisibility() {
   if (!ToolbarElement) return;
 
   // Phone layout activates either when the keyboard is forcibly hidden,
-  // or when the viewport is narrower than 700px (toolbar replaces icon wraps).
+  // or when the viewport is narrower than MiniKeyboardBreakpointWidth
+  // (toolbar replaces icon wraps at the same point the keyboard goes mini).
      // minimal landing ui: to Hide during landing - the welcome/returning panels occupy that space.
      // if (gameState === 'welcome') {ToolbarElement.classList.remove('toolbar-visible'); return;}
   // alt: Only suppress the toolbar on the welcome screen when the keyboard is visible.
@@ -5991,7 +6001,7 @@ function _syncPhoneToolbarVisibility() {
     return;
   }
 
-  var IsPhoneLayout = NoKeyboardMode || window.innerWidth < 700;
+  var IsPhoneLayout = NoKeyboardMode || window.innerWidth < MiniKeyboardBreakpointWidth;
 
   document.body.classList.toggle('phone-layout-active', IsPhoneLayout);
 

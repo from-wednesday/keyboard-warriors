@@ -6223,7 +6223,7 @@ function _phoneCloseSettings() {
 }
 
 function _spAlignPanel() {
-  if (NoKeyboardMode || window.innerWidth < 700) return;
+  if (NoKeyboardMode || window.innerWidth < MiniKeyboardBreakpointWidth) return; 
   var wrap = document.getElementById('keyboardWrap');
   if (wrap) wrap.style.minHeight = '';
   _closeMoreInfoPopup();
@@ -6438,7 +6438,7 @@ function _clearPanelTip() {
 }
 
 function openSettings(page) {
-  if (NoKeyboardMode || window.innerWidth < 700) { _phoneOpenSettings(page); return; }
+  if (NoKeyboardMode || window.innerWidth < MiniKeyboardBreakpointWidth) { _phoneOpenSettings(page); return; } 
   // Block switching panels during any confirmation overlay or countdown
   var confirmStates = ['confirm-reset', 'confirm-quit', 'confirm-trophy', 'confirm-diff-change', 'confirm-kill-punctuation', 'confirm-start-over', 'counting'];
   if (confirmStates.indexOf(gameState) !== -1 && page !== 'panelPause') {
@@ -6538,7 +6538,7 @@ function openSettings(page) {
 }
 
 function closeSettings() {
-  if (NoKeyboardMode || window.innerWidth < 700) { _phoneCloseSettings(); return; }
+  if (NoKeyboardMode || window.innerWidth < MiniKeyboardBreakpointWidth) { _phoneCloseSettings(); return; } 
   if (activeSettings === null) return;
   var closingPage = activeSettings;
   activeSettings = null;

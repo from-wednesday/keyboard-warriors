@@ -1643,10 +1643,24 @@ li.conflict-dismissed .conflict-desc {
 	2.	2000px wide AND 1060px tall – scales to 145% zoom
 	3.	2600px wide AND 1270px tall – scales to 175% zoom
     4.  MiniKeyboardBreakpointWidth – switches from full keyboard to mini keyboard (JS threshold in updateKeyboardMode, not a CSS media query)	5.	700px wide – CSS media query that switches from icon wraps to toolbar, reduces padding, shrinks the game panel, buttons, score disc, and title​​​​​​​​​​​​​​​​
-	5.  MiniKeyboardBreakpointWidth – JS threshold (the same value as #4) that switches from icon wraps to the phone toolbar in _syncPhoneToolbarVisibility
-    6.  599px CSS breakpoint shrinks padding, the game panel, buttons and score disc
-══════════════════════════════════════ */
+	5.	MiniKeyboardBreakpointWidth – JS threshold (the same value as #4) that switches from icon wraps to the phone toolbar in _syncPhoneToolbarVisibility
+	6.	474 wide – hides the keyboard forcing ‘none’ keyboard visibility option.
+	7.	MiniKeyboardBreakpointWidth minus 1 – CSS media query that tightens the gap between the mini keyboard and the credit line below it
+
+══════════════════════════════════════ */ @media (max-width: 819px) {
+  /* Keeps the credit line close to the mini keyboard instead of floating in
+     the empty space left by the keyboard's shrunken height. This boundary
+     must stay one pixel below MiniKeyboardBreakpointWidth in index.html. */
+  #keyboardWrap {
+    min-height: 212px;
+  }
+  #keyboardWrap.kb-at-face ~ #credit {
+    transform: translateY(0);
+  }
+}
+
 @media (max-width: 599px) {
+
 
   body {
     padding: 12px;

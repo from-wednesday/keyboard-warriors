@@ -3775,7 +3775,7 @@ body.returning-screen #diffIconWrap .icon-tip { display: none; }
    corner radius, rather than sitting flush against it with a hard seam.
  */
 body.phone-layout-active #keyboardWrap {
-  margin-top: -7px;
+  margin-top: 7px;
 }
 
 

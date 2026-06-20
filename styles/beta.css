@@ -577,6 +577,24 @@ body.settings-fits-viewport #keyboardWrap {
   transform: translateY(-22px);
 }
 
+/* Credit line and the difficulty icon travel together as one unit while a
+   settings panel is open on the desktop (icon-wrap) layout. They jump
+   straight to this offset, with no easing, rather than following the
+   keyboard's own slow fold. Tune the pixel value to taste. */
+#keyboardWrap.settings-open ~ #credit,
+#keyboardWrap.settings-open ~ #diffIconWrap {
+  transform: translateY(-40px);
+  transition: none;
+}
+
+/* Brief window switched on by JS right as settings closes (see
+   closeSettings and _closeAllModalsInstant in index.html), so the jump
+   back to the resting position above is also instant, not eased. */
+#keyboardWrap.settings-closing-snap ~ #credit,
+#keyboardWrap.settings-closing-snap ~ #diffIconWrap {
+  transition: none;
+}
+
 #credit {
   margin-top: 8px;
 }

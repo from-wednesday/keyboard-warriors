@@ -6253,48 +6253,68 @@ var ViewportFitSafetyMarginPixels = 8;
 // normal flowing, scrollable behaviour instead, exactly as it already does
 // on narrow screens. Reuses keyboardWrap's existing min-height transition,
 // so entering or leaving this mode animates smoothly rather than jumping.
-// Call any time the available height could have changed: from inside
-// _spAlignPanel after it recalculates the settings panel's own minimum
-// height, on window resize, and whenever a panel opens or closes.
-function _updateViewportFitLayout() {
-  var CanConsiderPinning = !NoKeyboardMode &&
-    window.innerWidth >= MiniKeyboardBreakpointWidth &&
-    activeSettings !== null;
-
+//
+// NaturalFloorHeight is the settings panel's own minimum height before any
+// extra stretch is added, already calculated by _spAlignPanel and passed
+// straight in here. Taking it as a parameter, rather than reading it back
+// out of keyboardWrap's own style afterwards, means this function only ever
+// needs to write keyboardWrap's min-height once. Writing it twice, with a
+// layout read forced in between to measure the gap below, was what caused a
+// visible two-step animation whenever the open settings panel changed
+// height: forcing a layout read between two writes to the same animated
+// property makes the browser commit the first write as a real, rendered
+// state, so the transition restarts from there instead of running straight
+// through to the second write.
+function _updateViewportFitLayout(NaturalFloorHeight) {
   var Wrap = document.getElementById('keyboardWrap');
   var DiffIconWrapElement = document.getElementById('diffIconWrap');
   if (!Wrap || !DiffIconWrapElement) return;
 
-  if (!CanConsiderPinning) {
+  if (NaturalFloorHeight === undefined) {
+    // No panel is open, or no floor height is known yet; there is nothing
+    // to stretch keyboardWrap to, so just make sure pinning is switched off.
     document.body.classList.remove('settings-fits-viewport');
     return;
   }
 
-  // Measure with pinning switched off first, so the measurement reflects
-  // each element's own natural height rather than an already-stretched one.
-  document.body.classList.remove('settings-fits-viewport');
+  var CanConsiderPinning = !NoKeyboardMode &&
+    window.innerWidth >= MiniKeyboardBreakpointWidth &&
+    activeSettings !== null;
 
-  var WrapNaturalHeight = parseFloat(Wrap.style.minHeight) || Wrap.getBoundingClientRect().height;
-  var NaturalStackBottomEdge = DiffIconWrapElement.getBoundingClientRect().bottom;
+  if (!CanConsiderPinning) {
+    document.body.classList.remove('settings-fits-viewport');
+    Wrap.style.minHeight = NaturalFloorHeight + 'px';
+    return;
+  }
+
+  // credit and the difficulty icon both sit directly below keyboardWrap, so
+  // the gap between them and keyboardWrap's own bottom edge stays constant
+  // regardless of keyboardWrap's height. Reading that gap once here, before
+  // the single write below, is what keeps this whole update to one step.
+  var WrapRect = Wrap.getBoundingClientRect();
+  var ConstantHeightBelowWrap = DiffIconWrapElement.getBoundingClientRect().bottom - WrapRect.bottom;
+  var NaturalStackBottomEdge = WrapRect.top + NaturalFloorHeight + ConstantHeightBelowWrap;
   var AvailableSlack = window.innerHeight - ViewportFitSafetyMarginPixels - NaturalStackBottomEdge;
 
-  if (AvailableSlack < 0) return; // doesn't fit; leave today's flowing behaviour in place
+  if (AvailableSlack < 0) {
+    document.body.classList.remove('settings-fits-viewport');
+    Wrap.style.minHeight = NaturalFloorHeight + 'px';
+    return;
+  }
 
-  Wrap.style.minHeight = (WrapNaturalHeight + AvailableSlack) + 'px';
+  Wrap.style.minHeight = (NaturalFloorHeight + AvailableSlack) + 'px';
   document.body.classList.add('settings-fits-viewport');
 }
 
 function _spAlignPanel() {
   if (NoKeyboardMode || window.innerWidth < MiniKeyboardBreakpointWidth) return;
-  var wrap = document.getElementById('keyboardWrap');
-  if (wrap) wrap.style.minHeight = '';
   _closeMoreInfoPopup();
   var panel = document.getElementById('keyboardPanel');
   var stage = document.getElementById('kbFlipStage');
   var inner = document.getElementById('settingsPanelInner');
   var wrap  = document.getElementById('keyboardWrap');
   if (!panel || !stage || !inner || !wrap) return;
-  wrap.style.minHeight = '';
+
   var left  = stage.offsetLeft + panel.offsetLeft;
   var width = panel.offsetWidth;
   inner.style.left  = left + 'px';
@@ -6326,11 +6346,11 @@ function _spAlignPanel() {
       var needed = IsEdgePanel
         ? contentH + 8
         : (contentH > stageH ? contentH + stageH + 24 : contentH + 16);
-      wrap.style.minHeight = Math.max(needed, 320) + 'px';
-      _updateViewportFitLayout();
+      _updateViewportFitLayout(Math.max(needed, 320));
     });
   });
 }
+
 
 var _iconWrapIds = { panelKeyboard: 'kbIconWrap', panelConflicts: 'brIconWrap', panelDifficultySettings: 'diffIconWrap' };
 
@@ -14706,8 +14726,11 @@ function OnLayoutChange(EventSource) {
       if (ShouldPause) enterPause();
       updateKeyboardMode();
       positionIcons();
-      if (activeSettings !== null) _spAlignPanel();
-      _updateViewportFitLayout();
+      if (activeSettings !== null) {
+        _spAlignPanel();
+      } else {
+        document.body.classList.remove('settings-fits-viewport');
+      }
       _syncRotationHint();
       // Recalculate caret position after resize in case zoom breakpoint changed
       if (activeSettings === 'panelDifficultySettings' || activeSettings === 'panelLandingWelcome') {

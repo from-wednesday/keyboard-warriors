@@ -8536,6 +8536,19 @@ function _allConflictTokensNormalised() {
     if (PressedClass) KeyElement.classList.add(PressedClass);
   }
 
+  // Re-evaluates a key that is still being held, after some other key has
+  // just been released. Clears any stale lit class first, since the match
+  // may have changed (a modifier that was blocked a moment ago may now be
+  // available, because the key it depended on is no longer held).
+  function _reapplyPressedColourForKey(BrowserCode) {
+    var KeyElement = keyEls[BrowserCode];
+    if (!KeyElement || BrowserCode === 'CapsLock') return;
+    _clearKeyClasses(KeyElement);
+    var Classification = _classifyKeyWithCurrentChord(BrowserCode);
+    var PressedClass    = _pressedClassForClassification(Classification);
+    if (PressedClass) KeyElement.classList.add(PressedClass);
+  }
+
   // Removes a key from the held set and restores its resting/fade visual.
   // Shared by genuine keyup events and by sticky toggle-off keydowns, so
   // both paths release a key the same way.
@@ -8557,6 +8570,7 @@ function _allConflictTokensNormalised() {
       _reapplyPressedColourForKey(StillHeldCode);
     });
   }
+
 
   function _onKeydown(Event) {
     if (!_active) return;

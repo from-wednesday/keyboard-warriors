@@ -3765,11 +3765,13 @@ body.returning-screen #diffIconWrap .icon-tip { display: none; }
   transition: max-height 0.25s ease, opacity 0.25s ease;
 }
 
-#phoneToolbar.toolbar-visible {
-  max-height: 2000px;
-  opacity: 1;
-  pointer-events: auto;
+/* Keyboard overlaps the top of the toolbar pill by roughly half its own
+   corner radius, rather than sitting flush against it with a hard seam.
+ */
+body.phone-layout-active #keyboardWrap {
+  margin-top: -7px;
 }
+
 
 
 #phoneToolbarIcons {

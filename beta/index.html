@@ -8351,9 +8351,12 @@ function _allConflictTokensNormalised() {
     });
   }
 
-  // Redraws every key to its current resting colour given the held chord.
-  function _applyAllKeyColours() {
+// Redraws every key to its current resting colour given the held chord.
+  // ExcludedBrowserCode is optional, and lets a key that is in the middle of
+  // its own fade-out animation be skipped, so this redraw does not interrupt it.
+  function _applyAllKeyColours(ExcludedBrowserCode) {
     Object.keys(keyEls).forEach(function (BrowserCode) {
+      if (BrowserCode === ExcludedBrowserCode) return;
       var KeyElement = keyEls[BrowserCode];
       if (!KeyElement) return;
       _clearKeyClasses(KeyElement);
@@ -8530,20 +8533,7 @@ function _allConflictTokensNormalised() {
 
   // ── Event handlers ───────────────────────────────────────────────────────
 
-  // Re-evaluates a key that is still being held, after some other key has
-  // just been released. Clears any stale lit class first, since the match
-  // may have changed (a modifier that was blocked a moment ago may now be
-  // available, because the key it depended on is no longer held).
-  function _reapplyPressedColourForKey(BrowserCode) {
-    var KeyElement = keyEls[BrowserCode];
-    if (!KeyElement || BrowserCode === 'CapsLock') return;
-    _clearKeyClasses(KeyElement);
-    var Classification = _classifyKeyWithCurrentChord(BrowserCode);
-    var PressedClass    = _pressedClassForClassification(Classification);
-    if (PressedClass) KeyElement.classList.add(PressedClass);
-  }
-
-  // Removes a key from the held set and restores its resting/fade visual.
+// Removes a key from the held set and restores its resting/fade visual.
   // Shared by genuine keyup events and by sticky toggle-off keydowns, so
   // both paths release a key the same way.
   function _releaseKey(BrowserCode) {
@@ -8555,16 +8545,20 @@ function _allConflictTokensNormalised() {
       return;
     }
 
-    // Non-modifier released: fade itself back to resting colour, then
-    // re-check any other keys still held. Releasing a non-modifier key
-    // can change whether a held modifier still completes a conflict, so
-    // those keys need a fresh classification too.
-    _revertKeyToRestingColour(BrowserCode);
+    // Non-modifier released. Letting go of this key can change the resting
+    // preview shown on every OTHER key too, including keys that are not
+    // held at all, for example a modifier that was only showing "pressing
+    // me now would complete a blocked combination" purely because this key
+    // was held. Redraw every other key's resting tint, reassert the bright
+    // pressed colour on any key that is genuinely still held, and let this
+    // released key fade out on its own rather than snapping instantly.
+    _applyAllKeyColours(BrowserCode);
     _heldKeys.forEach(function (StillHeldCode) {
-      _reapplyPressedColourForKey(StillHeldCode);
+      _applyKeyPressedColour(StillHeldCode);
     });
+    _revertKeyToRestingColour(BrowserCode);
   }
-
+  
   function _onKeydown(Event) {
     if (!_active) return;
     if (Event.repeat) return;  // ignore key-repeat — lighting and flash are one-shot

@@ -6559,14 +6559,18 @@ function closeSettings() {
   _exitScoreClearConfirm();
   _exitDiffConfirm();
 
-  var sp = document.getElementById('settingsPanel');
+    var sp = document.getElementById('settingsPanel');
   if (sp) {
     sp.classList.add('sp-closing');
     setTimeout(function() { sp.classList.remove('sp-closing'); }, 250);
     sp.classList.remove('sp-open');
   }
   var kbWrap = document.getElementById('keyboardWrap');
-  if (kbWrap) kbWrap.classList.remove('settings-open');
+  if (kbWrap) {
+    kbWrap.classList.remove('settings-open');
+    kbWrap.classList.add('settings-closing-snap');
+    setTimeout(function() { kbWrap.classList.remove('settings-closing-snap'); }, 250);
+  }
 
   // Hide all pages
   SP_PAGE_ORDER.forEach(function(p) {
@@ -6643,7 +6647,12 @@ function _closeAllModalsInstant() {
   });
   _unpinTooltip();
   var wrap2 = document.getElementById('keyboardWrap');
-  if (wrap2) { wrap2.classList.remove('settings-open'); wrap2.style.minHeight = ''; }
+  if (wrap2) {
+    wrap2.classList.remove('settings-open');
+    wrap2.style.minHeight = '';
+    wrap2.classList.add('settings-closing-snap');
+    setTimeout(function() { wrap2.classList.remove('settings-closing-snap'); }, 250);
+  }
 }
 
 // Legacy aliases — kept so remaining call sites compile

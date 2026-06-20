@@ -1,8 +1,8 @@
 [
-  { "label": "[Lr] Lightroom",    "path": "/keyboard-warriors/data/shortcuts_lightroom.json",       "column": 1, "skillset": ["Photography"],              "standby": [] },
   { "label": "[Ps] Photoshop",    "path": "/keyboard-warriors/data/shortcuts_photoshop.json",       "column": 1, "skillset": ["Graphics", "Photography", "UIUX"], "standby": ["Motion", "Video", "3D", "Productivity"] },
   { "label": "[Ai] Illustrator",  "path": "/keyboard-warriors/data/shortcuts_illustrator.json",     "column": 1, "skillset": ["Graphics"],                 "standby": ["UIUX", "Motion", "3D"] },
   { "label": "[Id] InDesign",     "path": "/keyboard-warriors/data/shortcuts_inDesign.json",        "column": 1, "skillset": ["Graphics"],                 "standby": ["Photography"] },
+  { "label": "[Lr] Lightroom",    "path": "/keyboard-warriors/data/shortcuts_lightroom.json",       "column": 1, "skillset": ["Photography"],              "standby": [] },
   { "label": "[Ae] After Effects","path": "/keyboard-warriors/data/shortcuts_afterEffects.json",   "column": 1, "skillset": ["Motion", "Video"],           "standby": ["Graphics"] },
   { "label": "[Pr] Premier Pro",  "path": "/keyboard-warriors/data/shortcuts_premier.json",         "column": 1, "skillset": ["Video"],                    "standby": ["Photography", "Motion"] },
   { "label": "ToonBoom Harmony",  "path": "/keyboard-warriors/data/shortcuts_toonBoomHarmony.json", "column": 2, "skillset": ["Motion"],                   "standby": [] },

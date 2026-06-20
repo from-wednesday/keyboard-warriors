@@ -5985,7 +5985,6 @@ function _spPageEl(page) {
    The same panel DOM nodes serve both
    layouts; only their parent changes.
 ══════════════════════════════════════ */
-var _phonePanelSettleTimer = null;
 
 function _syncPhoneToolbarVisibility() {
   var ToolbarElement = document.getElementById('phoneToolbar');
@@ -6123,21 +6122,10 @@ if (WasAlreadyOpen && PreviousPage && PreviousPage !== Page) {
 
    // Expand the container
   PhonePanelArea.classList.add('phone-panel-open');
-
-  // Allow internal scrolling only once the opening animation has finished,
-  // so a tall panel cannot show a brief, self-resolving scrollbar while the
-  // panel area is still growing towards its full height.
-  clearTimeout(_phonePanelSettleTimer);
-  PhonePanelArea.classList.remove('phone-panel-settled');
-  _phonePanelSettleTimer = setTimeout(function() {
-    PhonePanelArea.classList.add('phone-panel-settled');
-  }, 360);
 }
 function _phoneCollapsePanel() {
   var PhonePanelArea = document.getElementById('phonePanelArea');
   if (!PhonePanelArea) return;
-  clearTimeout(_phonePanelSettleTimer);
-  PhonePanelArea.classList.remove('phone-panel-settled');
   PhonePanelArea.classList.remove('phone-panel-open');
   // Return panels after the collapse animation settles
   setTimeout(_phoneReturnAllPanels, 380);

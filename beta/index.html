@@ -14200,6 +14200,15 @@ function _applyPartialAngleInstant(RotateXDegrees) {
   _repositionAffordance();
 }
 
+// Repositions the drag handle affordance the moment the keyboard panel's own
+// fold transition genuinely finishes, rather than guessing how long that
+// takes. transform is the slowest of keyboardPanel's transitioning
+// properties, so by the time it fires, everything else has already settled.
+function _onKeyboardFoldTransitionEnd(Event) {
+  if (Event.propertyName !== 'transform') return;
+  _repositionAffordance();
+}
+
 // Animate to a partial angle with the standard CSS transition
 // (used after drag release, auto-settle, and the edge-tap-to-partial gesture).
 function _animateToPartialAngle(RotateXDegrees) {
@@ -14234,11 +14243,14 @@ function _animateToPartialAngle(RotateXDegrees) {
   wrap.classList.add('kb-flipping');
   document.body.classList.remove('kb-at-edge');
   dbgRefreshAngle();
-  // Reposition immediately (start of animation) and again after the
-  // 850ms CSS transition settles so the affordance tracks the final resting spot.
+  // Reposition immediately, then again the moment the fold transition
+  // genuinely finishes. Removing any previous pending listener first stops
+  // them building up if a new angle is requested before the last one settled.
   _repositionAffordance();
-  setTimeout(_repositionAffordance, 870);
+  panel.removeEventListener('transitionend', _onKeyboardFoldTransitionEnd);
+  panel.addEventListener('transitionend', _onKeyboardFoldTransitionEnd, { once: true });
 }
+
 
 function setKbPosition(pos) {
   if (NoKeyboardMode) return;

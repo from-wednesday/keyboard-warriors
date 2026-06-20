@@ -6189,6 +6189,10 @@ function _phoneOpenSettings(Page) {
   });
 
   _phoneOpenPanel(Page, WasAlreadyOpen, PreviousPage);
+  // Folds the keyboard partway whenever it is visible alongside the
+  // toolbar. Already does nothing when the keyboard is genuinely hidden,
+  // so this is safe to call unconditionally here.
+  SetKeyboardPositionForPanel(Page);
   _syncPhoneToolbarActiveState(Page);
 
   var NoConfirmOverlayActive = ['confirm-reset', 'confirm-quit', 'confirm-trophy',
@@ -6238,7 +6242,10 @@ function _phoneCloseSettings() {
     return;
   }
 
-  // Phone has no keyboard to snap to face -- nothing more to do
+  // Only snap keyboard to face if not mid-countdown -- that flow handles it itself
+  if (gameState !== 'counting') {
+    setKbPosition('face');
+  }
 }
 
 // Viewport height, in real rendered pixels, kept clear below the bottom-most

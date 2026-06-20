@@ -804,7 +804,7 @@ body.no-keyboard-mode #credit {
   overflow: hidden; /* never an internal scrollbar; taller content is paginated instead */
   display: flex;
   flex-direction: column;
-  justify-content: center;
+  justify-content: flex-start;
   /* left and width set by JS to match keyboardPanel, or the Keyboard
      Settings minimum width */
   padding: 0 0 8px;

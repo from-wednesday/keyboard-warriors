@@ -6248,70 +6248,11 @@ function _phoneCloseSettings() {
   }
 }
 
-// Viewport height, in real rendered pixels, kept clear below the bottom-most
-// element (credit or the difficulty icon) before viewport-fit layout is
-// considered safe. Stops the fit decision from flickering exactly at the edge.
-var ViewportFitSafetyMarginPixels = 8;
-
-// While a settings panel is open on a screen wide enough for the desktop
-// layout, decides whether there is enough vertical room to pin the keyboard
-// and credit line to the bottom of the window, with the settings panel
-// filling the gap above them, or whether the page should fall back to its
-// normal flowing, scrollable behaviour instead, exactly as it already does
-// on narrow screens. Reuses keyboardWrap's existing min-height transition,
-// so entering or leaving this mode animates smoothly rather than jumping.
-//
-// NaturalFloorHeight is the settings panel's own minimum height before any
-// extra stretch is added, already calculated by _spAlignPanel and passed
-// straight in here. Taking it as a parameter, rather than reading it back
-// out of keyboardWrap's own style afterwards, means this function only ever
-// needs to write keyboardWrap's min-height once. Writing it twice, with a
-// layout read forced in between to measure the gap below, was what caused a
-// visible two-step animation whenever the open settings panel changed
-// height: forcing a layout read between two writes to the same animated
-// property makes the browser commit the first write as a real, rendered
-// state, so the transition restarts from there instead of running straight
-// through to the second write.
-function _updateViewportFitLayout(NaturalFloorHeight) {
-  var Wrap = document.getElementById('keyboardWrap');
-  var DiffIconWrapElement = document.getElementById('diffIconWrap');
-  if (!Wrap || !DiffIconWrapElement) return;
-
-  if (NaturalFloorHeight === undefined) {
-    // No panel is open, or no floor height is known yet; there is nothing
-    // to stretch keyboardWrap to, so just make sure pinning is switched off.
-    document.body.classList.remove('settings-fits-viewport');
-    return;
-  }
-
-  var CanConsiderPinning = !NoKeyboardMode &&
-    window.innerWidth >= MiniKeyboardBreakpointWidth &&
-    activeSettings !== null;
-
-  if (!CanConsiderPinning) {
-    document.body.classList.remove('settings-fits-viewport');
-    Wrap.style.minHeight = NaturalFloorHeight + 'px';
-    return;
-  }
-
-  // credit and the difficulty icon both sit directly below keyboardWrap, so
-  // the gap between them and keyboardWrap's own bottom edge stays constant
-  // regardless of keyboardWrap's height. Reading that gap once here, before
-  // the single write below, is what keeps this whole update to one step.
-  var WrapRect = Wrap.getBoundingClientRect();
-  var ConstantHeightBelowWrap = DiffIconWrapElement.getBoundingClientRect().bottom - WrapRect.bottom;
-  var NaturalStackBottomEdge = WrapRect.top + NaturalFloorHeight + ConstantHeightBelowWrap;
-  var AvailableSlack = window.innerHeight - ViewportFitSafetyMarginPixels - NaturalStackBottomEdge;
-
-  if (AvailableSlack < 0) {
-    document.body.classList.remove('settings-fits-viewport');
-    Wrap.style.minHeight = NaturalFloorHeight + 'px';
-    return;
-  }
-
-  Wrap.style.minHeight = (NaturalFloorHeight + AvailableSlack) + 'px';
-  document.body.classList.add('settings-fits-viewport');
-}
+// Widened only for Keyboard Settings, whose toggle-switch labels would
+// otherwise wrap onto a second line and break the two-column layout once
+// the keyboard panel itself gets narrow. Centred over the keyboard panel
+// rather than sharing its left edge, so the two still read as related.
+var KeyboardSettingsMinimumPanelWidth = 575;
 
 function _spAlignPanel() {
   if (NoKeyboardMode || window.innerWidth < MiniKeyboardBreakpointWidth) return;
@@ -6324,40 +6265,26 @@ function _spAlignPanel() {
 
   var left  = stage.offsetLeft + panel.offsetLeft;
   var width = panel.offsetWidth;
+  if (activeSettings === 'panelKeyboard' && width < KeyboardSettingsMinimumPanelWidth) {
+    left -= (KeyboardSettingsMinimumPanelWidth - width) / 2;
+    width = KeyboardSettingsMinimumPanelWidth;
+  }
   inner.style.left  = left + 'px';
   inner.style.width = width + 'px';
-  // left/width for affordance set now so horizontal position is immediate
+
   var affordance = document.getElementById('kbHandleAffordance');
   if (affordance) {
     affordance.style.left  = left + 'px';
     affordance.style.width = width + 'px';
   }
-  // Grow the wrap so the tilted keyboard sits below the settings content.
-  // Two rAFs: first lets the browser lay out the content at its new width,
-  // second reads the settled scrollHeight after reflow.
-  requestAnimationFrame(function() {
-    requestAnimationFrame(function() {
-      var contentH = inner.scrollHeight;
-      var stageH   = stage.offsetHeight;
-      // Position affordance using the sentinel inside keyboardPanel —
-      // it lives in the same 3D transform space so its BCR.top is the
-      // keyboard's true visual top edge, regardless of rotateX angle.
-      if (affordance) _repositionAffordance();
-      // Edge-position panels (report, cheat sheet, pause, conflicts, difficulty) sit
-      // above a fully folded keyboard. Only the content height matters; the stage
-      // height is already accounted for by the fold. Add a small buffer only.
-      var IsEdgePanel = (activeSettings === 'panelEndGameReportCard' || activeSettings === 'panelCheatSheet' ||
-                         activeSettings === 'panelPause'  || activeSettings === 'panelConflicts' ||
-                         activeSettings === 'panelDifficultySettings' || activeSettings === 'panelEndGameHistoryRecord' ||
-                         activeSettings === 'panelKeyboard');
-      var needed = IsEdgePanel
-        ? contentH + 8
-        : (contentH > stageH ? contentH + stageH + 24 : contentH + 16);
-      _updateViewportFitLayout(Math.max(needed, 320));
-    });
-  });
-}
 
+  wrap.style.minHeight = KeyboardWrapHeightWithSettingsOpen + 'px';
+
+  // Position affordance using the sentinel inside keyboardPanel, which
+  // lives in the same 3D transform space so its BCR.top is the keyboard's
+  // true visual top edge, regardless of rotateX angle.
+  if (affordance) _repositionAffordance();
+}
 
 var _iconWrapIds = { panelKeyboard: 'kbIconWrap', panelConflicts: 'brIconWrap', panelDifficultySettings: 'diffIconWrap' };
 
@@ -6632,7 +6559,8 @@ function closeSettings() {
   if (activeSettings === null) return;
   var closingPage = activeSettings;
   activeSettings = null;
-  _updateViewportFitLayout();
+  var closingWrap = document.getElementById('keyboardWrap');
+  if (closingWrap) closingWrap.style.minHeight = '';
   conflictsKbLighting.deactivate();
   _syncStudyNotesInlineIcon();
   
@@ -6704,7 +6632,6 @@ function _closeAllModalsInstant() {
   if (activeSettings === null) return;
   if (NoKeyboardMode) {
     activeSettings = null;
-    _updateViewportFitLayout();
     _panelTipInTitle = false;
     _exitScoreClearConfirm();
     _exitDiffConfirm();
@@ -6714,9 +6641,8 @@ function _closeAllModalsInstant() {
     return;
   }
   activeSettings = null;
-  _updateViewportFitLayout();
   conflictsKbLighting.deactivate();
-    _syncStudyNotesInlineIcon();
+  _syncStudyNotesInlineIcon();
   _panelTipInTitle = false;  // clear any tip that was live in the title
   _exitScoreClearConfirm();
   _exitDiffConfirm();
@@ -14082,11 +14008,33 @@ var PartialDragMinAngle = 10;  // shallowest fold in the draggable range
 var PartialDragMaxAngle = 80;  // deepest fold before the edge state
 var EdgeAngle           = 82;  // discrete edge state, just beyond drag range
 
+// Every settings panel reserves exactly this much vertical room, so the
+// keyboard's resting position never depends on which panel is open or how
+// much content it has. Must match the height set on #settingsPanelInner
+// in beta.css.
+var SettingsPanelFixedHeight = 300;
+
+// How far the keyboard's stage sits below its flex-centred starting point
+// once dragged all the way to the edge tilt. Tune this by eye: at full
+// edge tilt, the keyboard's top edge should land exactly on the bottom of
+// the settings area above it. Raise this number if a gap remains below
+// the settings area at full tilt; lower it if the keyboard overshoots
+// past that point. At the shallower default tilt each panel opens to, the
+// keyboard sits higher than this, deliberately overlapping up into the
+// settings area, which is what makes the longest panels need a manual
+// fold to read in full.
+var KeyboardEdgeStageTranslateY = 118;
+
+// The keyboard's resting box, while any settings panel is open, needs to
+// hold both figures above stacked together. Kept as one calculation so
+// the two stay in step if either is retuned.
+var KeyboardWrapHeightWithSettingsOpen = SettingsPanelFixedHeight + KeyboardEdgeStageTranslateY;
+
 // Named position definitions used by setKbPosition for face and edge only.
 // Partial uses _interpolateStageY against _kbPartialAngle directly.
 var KbNamedPositions = {
   face: { stageTranslateY: 0,   panelRotateX: 0  },
-  edge: { stageTranslateY: 118, panelRotateX: 82 },
+  edge: { stageTranslateY: KeyboardEdgeStageTranslateY, panelRotateX: 82 },
 };
 
 // ── Drag state ────────────────────────────────────────────────────────────────
@@ -14739,11 +14687,7 @@ function OnLayoutChange(EventSource) {
       if (ShouldPause) enterPause();
       updateKeyboardMode();
       positionIcons();
-      if (activeSettings !== null) {
-        _spAlignPanel();
-      } else {
-        document.body.classList.remove('settings-fits-viewport');
-      }
+      if (activeSettings !== null) _spAlignPanel();
       _syncRotationHint();
       // Recalculate caret position after resize in case zoom breakpoint changed
       if (activeSettings === 'panelDifficultySettings' || activeSettings === 'panelLandingWelcome') {

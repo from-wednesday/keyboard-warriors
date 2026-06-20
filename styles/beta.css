@@ -3842,16 +3842,15 @@ body.phone-layout-active {
   .phone-icon-btn   { padding: 6px 8px; gap: 0; }
 }
 
-body.phone-layout-active #phonePanelArea.phone-panel-settled {
-  overflow-y: auto;
-}
 
 #phonePanelArea {
-  overflow: visible;
+  overflow: hidden; /* never an internal scrollbar; taller content will be paginated instead */
   max-height: 0;
+  min-height: 0;
   opacity: 0;
   transition:
     max-height 0.35s cubic-bezier(0.4, 0, 0.2, 1),
+    min-height 0.35s cubic-bezier(0.4, 0, 0.2, 1),
     opacity    0.25s ease;
   padding: 0 12px;
   box-sizing: border-box;
@@ -3859,7 +3858,8 @@ body.phone-layout-active #phonePanelArea.phone-panel-settled {
 }
 
 #phonePanelArea.phone-panel-open {
-  max-height: 1200px;
+  max-height: 1200px; /* generous ceiling so the slide-open animation works at any content height */
+  min-height: 250px;  /* floor reserved for every panel, so the toolbar and credit line below stay still for ordinary content; genuinely tall content can still grow past this */
   opacity: 1;
   padding: 16px 12px 8px;
 }

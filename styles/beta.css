@@ -798,9 +798,15 @@ body.no-keyboard-mode #credit {
 
 #settingsPanelInner {
   position: absolute;
-   background: transparent;
+  background: transparent;
   top: 0;
-  /* left and width set by JS to match keyboardPanel */
+  height: 300px; /* must match SettingsPanelFixedHeight in index.html */
+  overflow: hidden; /* never an internal scrollbar; taller content is paginated instead */
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  /* left and width set by JS to match keyboardPanel, or the Keyboard
+     Settings minimum width */
   padding: 0 0 8px;
   font-family: 'Lato', system-ui, sans-serif;
   font-size: 13px;
@@ -2629,14 +2635,6 @@ li.conflict-dismissed .conflict-desc {
   pointer-events:     none;
 }
 
-/* Spacer: when a panel is open, push the keyboard down so the fold reveals
-   more page content above it. Padding transitions in with the panel. */
-#settingsPanel.sp-open ~ #kbFlipStage {
-  padding-top: 28px;
-  transition: transform 0.85s cubic-bezier(0.4, 0, 0.2, 1),
-              padding-top 0.55s cubic-bezier(0.4, 0, 0.2, 1);
-}
-
 /* ─── PANEL ──────────────────────────────────────────*/
 #keyboardPanel {
   transform-style:  preserve-3d;
@@ -3105,11 +3103,7 @@ body.returning-screen #diffIconWrap .icon-tip { display: none; }
 }
 
 /* Suppress the standard centred gutter line — we draw it manually */
-##cheatSheetList {
-  padding-top: 30px;
-  max-height: var(--cheat-sheet-left-list-max-height, 320px);
-  overflow: hidden;
-}.sp-page-report.sp-active::after {
+.sp-page-report.sp-active::after {
   display: none;
 }
 
@@ -3342,17 +3336,7 @@ body.returning-screen #diffIconWrap .icon-tip { display: none; }
   transition: background 0.15s ease, color 0.15s ease, box-shadow 0.15s ease;
 }
 
-/* ── EndGame CheatSheet panel ────────────────────────────────────────────── */
-#panelEndGameHistory.sp-active {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  grid-template-rows: auto;
-  overflow: hidden;
-  max-height: 320px;
-  mask-image: linear-gradient(to bottom, black 80%, transparent 100%);
-  -webkit-mask-image: linear-gradient(to bottom, black 80%, transparent 100%);
-}
-
+/* ── EndGame History panel ───────────────────────────────────────────────── */
 .sp-endgame-header-left {
   display: flex;
   align-items: center;

@@ -308,7 +308,7 @@
                   stroke-linecap="butt"
                   stroke-dasharray="376.99 376.99"
                   stroke-dashoffset="376.99"
-                  transform="rotate(0 65 65)" />
+                  transform="rotate(-90 65 65)" />
           <!-- Round-capped dot that rides the leading tip of the arc.
                Rendered as a tiny filled circle positioned by JS. -->
           <circle id="questionTimerArcLeadingCap"
@@ -10181,9 +10181,9 @@ function updateQuestionTimerArcVisual() {
   leadingCap.setAttribute('fill',  arcColour);
 
   // Position the leading cap dot at the tip of the arc.
-  // The arc starts at 3 o'clock (0°) and sweeps clockwise.
-  // Angle in degrees from 3 o'clock = (1 − fraction) × 360
-  var angleDegrees  = (1 - fraction) * 360;
+  // The arc starts at 12 o'clock (-90°) and sweeps clockwise.
+  // Angle in degrees from 3 o'clock = (1 − fraction) × 360 − 90
+  var angleDegrees  = (1 - fraction) * 360 - 90;
   var angleRadians  = angleDegrees * (Math.PI / 180);
   var capX          = 65 + 60 * Math.cos(angleRadians);
   var capY          = 65 + 60 * Math.sin(angleRadians);

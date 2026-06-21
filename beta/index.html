@@ -14933,6 +14933,11 @@ function _buildSkillsetPill() {
 
 drop.style.cssText =
   'position:fixed;left:' + (pillRect.left / zoom) + 'px;top:' + ((pillRect.top + pillRect.height / 2 - dropHeight / 2) / zoom) + 'px;width:' + (pillRect.width / zoom) + 'px;background:white;border:1.5px solid #9ca3af;border-radius:10px;overflow:hidden;z-index:601;box-shadow:0 4px 12px rgba(0,0,0,0.12);';
+    drop.classList.add('pulse-pop');
+    drop.addEventListener('animationend', function DropPopHandler() {
+      drop.classList.remove('pulse-pop');
+      drop.removeEventListener('animationend', DropPopHandler);
+    });
     document.body.appendChild(drop);
     SKILLSET_DEFS.forEach(function(def) {
       var isSelected = (def.label === currentSkillset);
@@ -15017,16 +15022,6 @@ function skillsetPillClick(ClickEvent) {
 function _openSkillsetPill() {
   skillsetPillOpen = true;
   _buildSkillsetPill();
-  var SkillsetPillEl = document.getElementById('skillsetPill');
-  if (SkillsetPillEl) {
-    SkillsetPillEl.classList.remove('pulse-pop');
-    void SkillsetPillEl.offsetWidth;
-    SkillsetPillEl.classList.add('pulse-pop');
-    SkillsetPillEl.addEventListener('animationend', function PopHandler() {
-      SkillsetPillEl.classList.remove('pulse-pop');
-      SkillsetPillEl.removeEventListener('animationend', PopHandler);
-    });
-  }
   setTimeout(function() {
     document.addEventListener('click', function handler(e) {
     var pill = document.getElementById('skillsetPill');

@@ -2345,7 +2345,6 @@ li.conflict-dismissed .conflict-desc {
 }
 .diff-advanced-footer {
   font-size: 10px;
-  font-style: italic;
   color: #9ca3af;
   text-align: center;
   margin-top: 8px;
@@ -3110,6 +3109,11 @@ body.returning-screen #diffIconWrap .icon-tip { display: none; }
   stroke: currentColor;
   overflow: visible;
 }
+/* Resting state: label reads dark, pill border/icon stay light.
+   Hover below still brings the pill + icon up to the same dark grey. */
+.sp-endgame-header-left .sp-small-card-title {
+  color: #374151;
+}
 @media (hover: none) {
   .sp-endgame-header-left:hover { color: #9ca3af; background: transparent; }
 }
@@ -3388,6 +3392,12 @@ body.returning-screen #diffIconWrap .icon-tip { display: none; }
 }
 .sp-endgame-header-left:hover .sp-endgame-search-icon {
   opacity: 1;
+}
+
+/* Resting state: label reads dark, pill border/icon stay light.
+   Hover below still brings the pill + icon up to the same dark grey. */
+.sp-endgame-header-left .sp-small-card-title {
+  color: #374151;
 }
 
 .sp-endgame-context-label {

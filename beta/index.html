@@ -13477,6 +13477,37 @@ window.addEventListener('blur', function() {
   }
 });
 
+// Captured once, at load, so a re-entrant call during the brief
+// maximum-scale nudge below can never read back its own mutated value
+// and accidentally bake "maximum-scale=1" into the "original" content.
+var _OriginalViewportContent = (function() {
+  var Tag = document.querySelector('meta[name=viewport]');
+  return Tag ? Tag.getAttribute('content') : null;
+})();
+var _ViewportNudgeTimeout = null;
+
+function _nudgeViewportScaleOnReturn() {
+  // Briefly locks maximum-scale to correct Safari's zoom-on-return bug,
+  // then restores the original viewport after Safari has had time to settle.
+  // iOS Safari does not reliably fire visibilitychange when the user leaves
+  // to another app (vs. switching tabs within Safari), so this is called
+  // from both visibilitychange and pageshow -- pageshow is the dependable
+  // signal for the "left the app, came back" case. The timeout is cleared
+  // and restarted if both fire for the same return, so they don't race.
+  var ViewportMetaTag = document.querySelector('meta[name=viewport]');
+  if (!ViewportMetaTag || _OriginalViewportContent === null) return;
+  clearTimeout(_ViewportNudgeTimeout);
+  ViewportMetaTag.setAttribute('content', _OriginalViewportContent + ', maximum-scale=1');
+  _ViewportNudgeTimeout = setTimeout(function() {
+    ViewportMetaTag.setAttribute('content', _OriginalViewportContent);
+  }, 300);
+}
+
+window.addEventListener('pageshow', function(Event) {
+  if (document.hidden) return;
+  _nudgeViewportScaleOnReturn();
+});
+
 document.addEventListener('visibilitychange', function() {
   if (document.hidden) {
     releaseAllKeys();
@@ -13487,16 +13518,7 @@ document.addEventListener('visibilitychange', function() {
       _activateBlurPauseScreen();
     }
   } else {
-    // Briefly lock maximum-scale to correct iPadOS Safari's zoom-on-return bug,
-    // then restore the original viewport after Safari has had time to settle.
-    var ViewportMetaTag = document.querySelector('meta[name=viewport]');
-    if (ViewportMetaTag) {
-      var OriginalContent = ViewportMetaTag.getAttribute('content');
-      ViewportMetaTag.setAttribute('content', OriginalContent + ', maximum-scale=1');
-      setTimeout(function() {
-        ViewportMetaTag.setAttribute('content', OriginalContent);
-      }, 300);
-    }
+    _nudgeViewportScaleOnReturn();
     if (_blurDiagnosticFoldPending) {
       _blurDiagnosticFoldPending = false;
       setTimeout(function() { SetKeyboardPositionForPanel('panelPause'); }, 600);

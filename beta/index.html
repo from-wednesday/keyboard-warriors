@@ -2318,6 +2318,7 @@ const TOKEN_TO_BROWSER_CODE = {
 const TOKEN_SYNONYM_MAP = {
   'COMMAND':     'CMD',
   'CTRL':        'CMD',
+  'SEARCH':      'CMD',
   'OPT':         'OPTION',
   'ALT':         'OPTION',
   'WINDOWS':     'WIN',
@@ -2449,6 +2450,28 @@ function GetActiveShortcutString(ShortcutEntry) {
 function GetAllAlternatives(ShortcutString) {
   if (!ShortcutString) return [];
   return ShortcutString.split('|').map(function(s) { return s.trim(); }).filter(Boolean);
+}
+
+/* ── CanonicaliseShortcutToken ───────────────────────────────────────────────
+   The single shared translation used everywhere a shortcut needs to be
+   compared or stored as a key: question pool filtering, dismissed
+   conflicts, blur diagnostic entries, kill punctuation exclusions.
+   Parses one alternative (no pipes) via ParseShortcutString, which already
+   resolves CTRL to CMD, OPT to OPTION, SEARCH to CMD, and case, then
+   rebuilds it in one fixed modifier order. mac_sc/pc_sc wording and
+   conflict JSON wording never need to match each other literally; both
+   reduce to the same string here. ── */
+function CanonicaliseShortcutToken(ShortcutString) {
+  var Parsed = ParseShortcutString(ShortcutString);
+  if (!Parsed) return '';
+  var Parts = [];
+  if (Parsed.requiresCmd)     Parts.push('CMD');
+  if (Parsed.requiresControl) Parts.push('CONTROL');
+  if (Parsed.requiresWin)     Parts.push('WIN');
+  if (Parsed.requiresOption)  Parts.push('OPTION');
+  if (Parsed.requiresShift)   Parts.push('SHIFT');
+  if (Parsed.keyToken)        Parts.push(Parsed.keyToken);
+  return Parts.join('+');
 }
 
 /* ── TokenToBrowserCode ─────────────────────────────────────────────────────
@@ -6868,8 +6891,7 @@ function _BuildBrowserConflictLabel(RawLabel) {
 
   // Replace known long token names with symbols
   var DisplayShortcut = ShortcutPart.split('+').map(function(Token) {
-    var Upper = Token.trim().toUpperCase();
-    var Canonical = TOKEN_SYNONYM_MAP[Upper] || Upper;
+    var Canonical = NormaliseToken(Token);
     return TokenDisplayMap[Canonical] || ArrowMap[Canonical] || Token.trim();
   }).join('+');
 
@@ -7819,10 +7841,10 @@ function _detectBrowserName() {
 // CMD resolves to ctrlKey on PC via _MatchesSingleAlternative, so this is correct
 // for both platforms.
 function _conflictBadToToken(BadString) {
-  return BadString
-    .replace(/\bCTRL\b/g,   'CMD')
-    .replace(/\bSEARCH\b/g, 'CMD')   // ChromeOS Search key acts like a modifier
-    .replace(/\bWIN\b/g,    'WIN');
+  // Delegates to the single shared canonicaliser so conflict JSON wording
+  // (CTRL/CMD/OPT/SEARCH, any case) and shortcut JSON wording always land
+  // on the same token string, regardless of which platform authored them.
+  return CanonicaliseShortcutToken(BadString);
 }
 
 // Builds a display label string from a conflict entry's bad + action fields.
@@ -8113,10 +8135,10 @@ function _allConflictTokensNormalised() {
   });
   return AllTokens
     .filter(function(RawToken) {
-      return !userConfirmedWorkingConflicts.has(NormaliseToken(RawToken));
+      return !userConfirmedWorkingConflicts.has(CanonicaliseShortcutToken(RawToken));
     })
     .map(function(RawToken) {
-      return NormaliseToken(RawToken);
+      return CanonicaliseShortcutToken(RawToken);
     });
 }
 
@@ -8349,7 +8371,7 @@ function _allConflictTokensNormalised() {
   var KeyToken = _browserCodeToToken(NonModifierBrowserCode);
   var ChordToken = KeyToken ? _buildChordToken(KeyToken) : _buildChordToken(null);
   if (!ChordToken) return;
-  var NormalisedChord = NormaliseToken(ChordToken);
+  var NormalisedChord = CanonicaliseShortcutToken(ChordToken);
 
   if (userConfirmedWorkingConflicts.has(NormalisedChord)) return;
 
@@ -8389,7 +8411,7 @@ function _allConflictTokensNormalised() {
   document.querySelectorAll(
     '#browserCompatList li[data-conflict-key], #cfFoundList li[data-conflict-key]'
   ).forEach(function(ListItem) {
-    if (NormaliseToken(ListItem.dataset.conflictKey || '') !== NormalisedChord) return;
+    if (CanonicaliseShortcutToken(ListItem.dataset.conflictKey || '') !== NormalisedChord) return;
     var Radio = ListItem.querySelector('.modal-radio');
     if (Radio) Radio.classList.remove('on');
     ListItem.classList.remove('conflict-dismissed');
@@ -8419,7 +8441,7 @@ function _allConflictTokensNormalised() {
   // that the shortcut is working, synced with the physical key lighting.
 
   function _flashConflictListChipsGreen(ChordToken) {
-    var NormalisedChord = NormaliseToken(ChordToken);
+    var NormalisedChord = CanonicaliseShortcutToken(ChordToken);
     var FLASH_DURATION_MS = 900;
     var GreenBg     = '#10b981';
     var GreenBorder = '#059669';
@@ -8431,7 +8453,7 @@ function _allConflictTokensNormalised() {
       '#browserCompatList li[data-conflict-key], #cfFoundList li[data-conflict-key]'
     );
     AllListItems.forEach(function (ListItem) {
-      if (NormaliseToken(ListItem.dataset.conflictKey || '') !== NormalisedChord) return;
+      if (CanonicaliseShortcutToken(ListItem.dataset.conflictKey || '') !== NormalisedChord) return;
       var Chips = ListItem.querySelectorAll('.sp-report-chip-key');
       Chips.forEach(function (Chip) {
         Chip.style.transition  = 'background 0.12s ease, color 0.12s ease, box-shadow 0.12s ease';
@@ -9990,13 +10012,15 @@ var DIFF_RANGE = {
 // between layouts (e.g. UK, French, German, Nordic, Spanish keyboards).
 // Letters (KeyA-Z), digits (Digit0-9), modifiers, arrows, and function keys
 // are all stable and are never included here.
+// Written directly in canonical form (see CanonicaliseShortcutToken) since
+// buildPool() now compares against the canonicalised shortcut string.
 const UNSTABLE_PUNCTUATION_TOKENS = new Set([
-  ';', "CMD+;", "CMD+OPTION+;", "CMD+SHIFT+;", "CMD+SHIFT+OPTION+;",
-  "'", "CMD+'",
-  '/', "CMD+/", "CMD+OPTION+/",
-  '\\', "BACKSLASH", "CMD+BACKSLASH", "CMD+SHIFT+BACKSLASH", "CMD+OPTION+BACKSLASH",
-  '`', "GRAVE", "CMD+GRAVE", "CMD+OPTION+GRAVE", "CMD+SHIFT+GRAVE",
-  '~', "SHIFT+~", "SHIFT+GRAVE",
+  "SEMICOLON", "CMD+SEMICOLON", "CMD+OPTION+SEMICOLON", "CMD+SHIFT+SEMICOLON", "CMD+OPTION+SHIFT+SEMICOLON",
+  "QUOTE", "CMD+QUOTE",
+  "SLASH", "CMD+SLASH", "CMD+OPTION+SLASH",
+  "BACKSLASH", "CMD+BACKSLASH", "CMD+SHIFT+BACKSLASH", "CMD+OPTION+BACKSLASH",
+  "GRAVE", "CMD+GRAVE", "CMD+OPTION+GRAVE", "CMD+SHIFT+GRAVE",
+  "SHIFT+GRAVE",
 ]);
 
 function buildPool() {
@@ -10014,8 +10038,11 @@ function buildPool() {
     var d = ShortcutEntry.difficulty;
     if (d < diffRange.min || d > diffRange.max) return false;
 
-    // Browser conflict exclusion — check primary alternative only
-    var PrimaryString = ActiveString.split('|')[0];
+    // Browser conflict exclusion — check primary alternative only.
+    // Canonicalised so conflict JSON wording (CTRL/CMD/OPT, any case)
+    // always matches this shortcut's wording, regardless of which
+    // platform authored it.
+    var PrimaryString = CanonicaliseShortcutToken(ActiveString.split('|')[0]);
     if (!touchEnabled && browserSkip.has(PrimaryString)) return false;
     if (!touchEnabled && dismissedConflicts.has(PrimaryString)) return false;
 
@@ -13764,9 +13791,11 @@ function _blurDiagnosticBuildMailtoParams() {
 }
 
 function _blurDiagnosticBlockShortcut() {
-  dismissedConflicts.add(_blurDiagnosticShortcutToken);
+  // Stored canonical so it matches the same form buildPool() checks against.
+  var CanonicalToken = CanonicaliseShortcutToken(_blurDiagnosticShortcutToken);
+  dismissedConflicts.add(CanonicalToken);
   _saveCustomDismissedConflicts();
-  blurDiagnosticConflicts.add(_blurDiagnosticShortcutToken);
+  blurDiagnosticConflicts.add(CanonicalToken);
   _saveBlurDiagnosticConflicts()
   questionPool = shuffleArray(buildPool());
   _blurDiagnosticReplaceQuestion();
@@ -13774,8 +13803,8 @@ function _blurDiagnosticBlockShortcut() {
 }
 
 function _blurDiagnosticBlockAndReport() {
-  // Block and send report
-  dismissedConflicts.add(_blurDiagnosticShortcutToken);
+  // Block and send report. Stored canonical, same reason as above.
+  dismissedConflicts.add(CanonicaliseShortcutToken(_blurDiagnosticShortcutToken));
   _saveCustomDismissedConflicts();
   questionPool = shuffleArray(buildPool());
   _blurDiagnosticReplaceQuestion();

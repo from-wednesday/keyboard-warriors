@@ -26,6 +26,18 @@ body {
   gap: 0;
 }
 
+/* When a settings panel has enough room to fit the window without scrolling,
+   the top group anchors to the top and keyboardWrap's stretched min-height
+   (set in _updateViewportFitLayout) pushes credit down to the bottom edge.
+   Outside this class, the page behaves exactly as it always has. */
+body.settings-fits-viewport {
+  height: 100dvh;
+  justify-content: flex-start;
+}
+body.settings-fits-viewport #keyboardWrap {
+  align-items: flex-end;
+}
+
 /* ══════════════════════════════════════
    GAME PANEL
 ══════════════════════════════════════ */
@@ -46,6 +58,11 @@ body {
 /* Shift to a soft purple when any destructive confirm overlay is active */
 #gameContainer:has(.leftPanel.showing-confirm) {
   background: #eee4fd;
+}
+
+/* Shift to a muted teal when the lead (defeat) medal is showing */
+#gameContainer:has(.scoreDisc.medal-lead) {
+  background: #eaf1f6;
 }
 .topRow {
   display: flex;
@@ -429,6 +446,31 @@ body {
 #questionRow.blurred { filter: blur(3px); opacity: 0.75; user-select: none; }
 #livesRow.blurred    { filter: blur(3px); opacity: 0.75; user-select: none; }
 
+/* ── Study Notes inline icon — grows from 1px wide to full width, centred ── */
+#studyNotesIconOuter {
+  overflow: visible;
+  height: 52px;
+  /* Snappy physical curve: rapid start, smooth deceleration */
+  transition: height 0.35s cubic-bezier(0.25, 1, 0.5, 1) 0s;
+}
+#studyNotesIconOuter.study-notes-icon-hidden {
+  height: 0px;
+  /* Slight delay so the horizontal collapse starts first, but they overlap */
+  transition: height 0.3s cubic-bezier(0.55, 0, 1, 0.45) 0.15s;
+}
+
+#studyNotesIconInline {
+  transform: scaleX(1);
+  transform-origin: center;
+  /* Starts just after the height begins to open, blending the two motions */
+  transition: transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1) 0.05s;
+}
+#studyNotesIconOuter.study-notes-icon-hidden #studyNotesIconInline {
+  transform: scaleX(0); /* Clean collapse to 0 */
+  /* Shrinks rapidly and immediately */
+  transition: transform 0.25s cubic-bezier(0.36, 0, 0.66, -0.56) 0s;
+}
+
 /* ══════════════════════════════════════
    INFO ROWS (question count + best record)
 ══════════════════════════════════════ */
@@ -533,6 +575,24 @@ body {
 #keyboardWrap.kb-at-face ~ #credit,
 #keyboardWrap.kb-at-face ~ #diffIconWrap {
   transform: translateY(-22px);
+}
+
+/* Credit line and the difficulty icon travel together as one unit while a
+   settings panel is open on the desktop (icon-wrap) layout. They jump
+   straight to this offset, with no easing, rather than following the
+   keyboard's own slow fold. Tune the pixel value to taste. */
+#keyboardWrap.settings-open ~ #credit,
+#keyboardWrap.settings-open ~ #diffIconWrap {
+  transform: translateY(-40px);
+  transition: none;
+}
+
+/* Brief window switched on by JS right as settings closes (see
+   closeSettings and _closeAllModalsInstant in index.html), so the jump
+   back to the resting position above is also instant, not eased. */
+#keyboardWrap.settings-closing-snap ~ #credit,
+#keyboardWrap.settings-closing-snap ~ #diffIconWrap {
+  transition: none;
 }
 
 #credit {
@@ -756,9 +816,15 @@ body.no-keyboard-mode #credit {
 
 #settingsPanelInner {
   position: absolute;
-   background: transparent;
+  background: transparent;
   top: 0;
-  /* left and width set by JS to match keyboardPanel */
+  height: 300px; /* must match SettingsPanelFixedHeight in index.html */
+  overflow: hidden; /* never an internal scrollbar; taller content is paginated instead */
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  /* left and width set by JS to match keyboardPanel, or the Keyboard
+     Settings minimum width */
   padding: 0 0 8px;
   font-family: 'Lato', system-ui, sans-serif;
   font-size: 13px;
@@ -946,6 +1012,17 @@ body.kb-at-edge #keyboardPanel #kb-shadow {
 .sp-page.sp-wipe-in       { animation: spWipeIn     0.22s ease forwards; }
 .sp-page.sp-wipe-in-left  { animation: spWipeInLeft 0.22s ease forwards; }
 .sp-page.sp-wipe-in-up    { animation: spWipeInUp   0.22s ease forwards; }
+
+@keyframes spPageTurnRight {
+  from { opacity: 0; transform: translateX(18px); }
+  to   { opacity: 1; transform: translateX(0); }
+}
+@keyframes spPageTurnLeft {
+  from { opacity: 0; transform: translateX(-18px); }
+  to   { opacity: 1; transform: translateX(0); }
+}
+.sp-page.sp-page-turn-right { animation: spPageTurnRight 0.25s cubic-bezier(0.22, 0.61, 0.36, 1) forwards; }
+.sp-page.sp-page-turn-left  { animation: spPageTurnLeft  0.25s cubic-bezier(0.22, 0.61, 0.36, 1) forwards; }
 
 @keyframes btnPulse {
   0%   { transform: scale(1); }
@@ -1597,16 +1674,29 @@ li.conflict-dismissed .conflict-desc {
 }
 
 /* ══════════════════════════════════════
-   BREAKPOINTS
+   BREAKPOINTS (in process - I am changing numbers to Var because numbers get out of sync)
     1.	1600px wide AND 870px tall – scales the whole UI to 120% zoom
 	2.	2000px wide AND 1060px tall – scales to 145% zoom
 	3.	2600px wide AND 1270px tall – scales to 175% zoom
-	4.	820px wide – switches from full keyboard to mini keyboard (this is a JS threshold in updateKeyboardMode, not a CSS media query)
-	5.	700px wide – CSS media query that switches from icon wraps to toolbar, reduces padding, shrinks the game panel, buttons, score disc, and title​​​​​​​​​​​​​​​​
+    4.  MiniKeyboardBreakpointWidth – switches from full keyboard to mini keyboard (JS threshold in updateKeyboardMode, not a CSS media query)	5.	700px wide – CSS media query that switches from icon wraps to toolbar, reduces padding, shrinks the game panel, buttons, score disc, and title​​​​​​​​​​​​​​​​
+	5.	MiniKeyboardBreakpointWidth – JS threshold (the same value as #4) that switches from icon wraps to the phone toolbar in _syncPhoneToolbarVisibility
 	6.	474 wide – hides the keyboard forcing ‘none’ keyboard visibility option.
+	7.	MiniKeyboardBreakpointWidth minus 1 – CSS media query that tightens the gap between the mini keyboard and the credit line below it
 
-══════════════════════════════════════ */
+══════════════════════════════════════ */ @media (max-width: 819px) {
+  /* Keeps the credit line close to the mini keyboard instead of floating in
+     the empty space left by the keyboard's shrunken height. This boundary
+     must stay one pixel below MiniKeyboardBreakpointWidth in index.html. */
+  #keyboardWrap {
+    min-height: 182px;
+  }
+  #keyboardWrap.kb-at-face ~ #credit {
+    transform: translateY(0);
+  }
+}
+
 @media (max-width: 599px) {
+
 
   body {
     padding: 12px;
@@ -2563,14 +2653,6 @@ li.conflict-dismissed .conflict-desc {
   pointer-events:     none;
 }
 
-/* Spacer: when a panel is open, push the keyboard down so the fold reveals
-   more page content above it. Padding transitions in with the panel. */
-#settingsPanel.sp-open ~ #kbFlipStage {
-  padding-top: 28px;
-  transition: transform 0.85s cubic-bezier(0.4, 0, 0.2, 1),
-              padding-top 0.55s cubic-bezier(0.4, 0, 0.2, 1);
-}
-
 /* ─── PANEL ──────────────────────────────────────────*/
 #keyboardPanel {
   transform-style:  preserve-3d;
@@ -3039,11 +3121,7 @@ body.returning-screen #diffIconWrap .icon-tip { display: none; }
 }
 
 /* Suppress the standard centred gutter line — we draw it manually */
-##cheatSheetList {
-  padding-top: 30px;
-  max-height: var(--cheat-sheet-left-list-max-height, 320px);
-  overflow: hidden;
-}.sp-page-report.sp-active::after {
+.sp-page-report.sp-active::after {
   display: none;
 }
 
@@ -3276,17 +3354,7 @@ body.returning-screen #diffIconWrap .icon-tip { display: none; }
   transition: background 0.15s ease, color 0.15s ease, box-shadow 0.15s ease;
 }
 
-/* ── EndGame CheatSheet panel ────────────────────────────────────────────── */
-#panelEndGameHistory.sp-active {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  grid-template-rows: auto;
-  overflow: hidden;
-  max-height: 320px;
-  mask-image: linear-gradient(to bottom, black 80%, transparent 100%);
-  -webkit-mask-image: linear-gradient(to bottom, black 80%, transparent 100%);
-}
-
+/* ── EndGame History panel ───────────────────────────────────────────────── */
 .sp-endgame-header-left {
   display: flex;
   align-items: center;
@@ -3692,15 +3760,26 @@ body.returning-screen #diffIconWrap .icon-tip { display: none; }
   max-width: 1000px;
   margin: 0 auto;
   gap: 0;
+  overflow: visible;
+  max-height: 0;
   opacity: 0;
   pointer-events: none;
-  transition: opacity 0.25s ease;
+  transition: max-height 0.25s ease, opacity 0.25s ease;
 }
 
 #phoneToolbar.toolbar-visible {
+  max-height: 2000px;
   opacity: 1;
   pointer-events: auto;
 }
+
+/* Keyboard overlaps the top of the toolbar pill by roughly half its own
+   corner radius, rather than sitting flush against it with a hard seam.
+ */
+body.phone-layout-active #keyboardWrap {
+  margin-top: 7px;
+}
+
 
 
 #phoneToolbarIcons {
@@ -3781,16 +3860,15 @@ body.phone-layout-active {
   .phone-icon-btn   { padding: 6px 8px; gap: 0; }
 }
 
-body.phone-layout-active #phonePanelArea.phone-panel-open {
-  overflow-y: auto;
-}
 
 #phonePanelArea {
-  overflow: visible;
+  overflow: hidden; /* never an internal scrollbar; taller content will be paginated instead */
   max-height: 0;
+  min-height: 0;
   opacity: 0;
   transition:
     max-height 0.35s cubic-bezier(0.4, 0, 0.2, 1),
+    min-height 0.35s cubic-bezier(0.4, 0, 0.2, 1),
     opacity    0.25s ease;
   padding: 0 12px;
   box-sizing: border-box;
@@ -3798,7 +3876,8 @@ body.phone-layout-active #phonePanelArea.phone-panel-open {
 }
 
 #phonePanelArea.phone-panel-open {
-  max-height: 1200px;
+  max-height: 1200px; /* generous ceiling so the slide-open animation works at any content height */
+  min-height: 250px;  /* floor reserved for every panel, so the toolbar and credit line below stay still for ordinary content; genuinely tall content can still grow past this */
   opacity: 1;
   padding: 16px 12px 8px;
 }

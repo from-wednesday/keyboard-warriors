@@ -5997,7 +5997,7 @@ function _syncPhoneToolbarVisibility() {
      // if (gameState === 'welcome') {ToolbarElement.classList.remove('toolbar-visible'); return;}
   // alt: Only suppress the toolbar on the welcome screen when the keyboard is visible.
   // because: When the keyboard is hidden (NoKeyboardMode), the toolbar is the only way to reach panels.
-  if (gameState === 'welcome' && !NoKeyboardMode) {
+ if (gameState === 'welcome' && !NoKeyboardMode && window.innerWidth >= MiniKeyboardBreakpointWidth) {
     ToolbarElement.classList.remove('toolbar-visible');
     return;
   }

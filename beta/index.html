@@ -13477,9 +13477,9 @@ window.addEventListener('blur', function() {
   }
 });
 
-// Captured once, at load, so a re-entrant call during the brief
-// maximum-scale nudge below can never read back its own mutated value
-// and accidentally bake "maximum-scale=1" into the "original" content.
+// Captured once, at load, from the tag's parsed HTML, so a re-entrant
+// call during the brief maximum-scale nudge below can never read back
+// an already-mutated value and bake it in as "original".
 var _OriginalViewportContent = (function() {
   var Tag = document.querySelector('meta[name=viewport]');
   return Tag ? Tag.getAttribute('content') : null;
@@ -13487,19 +13487,38 @@ var _OriginalViewportContent = (function() {
 var _ViewportNudgeTimeout = null;
 
 function _nudgeViewportScaleOnReturn() {
-  // Briefly locks maximum-scale to correct Safari's zoom-on-return bug,
-  // then restores the original viewport after Safari has had time to settle.
-  // iOS Safari does not reliably fire visibilitychange when the user leaves
-  // to another app (vs. switching tabs within Safari), so this is called
-  // from both visibilitychange and pageshow -- pageshow is the dependable
-  // signal for the "left the app, came back" case. The timeout is cleared
-  // and restarted if both fire for the same return, so they don't race.
-  var ViewportMetaTag = document.querySelector('meta[name=viewport]');
-  if (!ViewportMetaTag || _OriginalViewportContent === null) return;
+  // Safari can return from backgrounding with visualViewport.scale stuck
+  // above 1 (confirmed via remote debugging: scale ~1.6 after returning
+  // from the App Switcher, with no pinch/zoom or text-input focus involved).
+  // Mutating the existing <meta name=viewport> tag's content attribute does
+  // NOT clear this -- Safari caches the zoom state independently of the
+  // viewport tag's attribute value once it's been applied, so setAttribute()
+  // calls are silently ignored here. The tag has to be removed from the DOM
+  // and a fresh element inserted to force Safari to actually reprocess it.
+  // iOS does not reliably fire visibilitychange when the user leaves to
+  // another app (vs. switching tabs within Safari), so this is called from
+  // both visibilitychange and pageshow -- pageshow is the dependable signal
+  // for the "left the app, came back" case. The timeout is cleared and
+  // restarted if both fire for the same return, so they don't race.
+  if (_OriginalViewportContent === null) return;
   clearTimeout(_ViewportNudgeTimeout);
-  ViewportMetaTag.setAttribute('content', _OriginalViewportContent + ', maximum-scale=1');
+
+  var OldTag = document.querySelector('meta[name=viewport]');
+  if (OldTag) OldTag.remove();
+  var NudgeTag = document.createElement('meta');
+  NudgeTag.setAttribute('name', 'viewport');
+  NudgeTag.setAttribute('content', _OriginalViewportContent + ', maximum-scale=1');
+  document.head.appendChild(NudgeTag);
+  void document.body.offsetHeight; // force reflow so the new tag is processed immediately
+
   _ViewportNudgeTimeout = setTimeout(function() {
-    ViewportMetaTag.setAttribute('content', _OriginalViewportContent);
+    var NudgeTagNow = document.querySelector('meta[name=viewport]');
+    if (NudgeTagNow) NudgeTagNow.remove();
+    var RestoredTag = document.createElement('meta');
+    RestoredTag.setAttribute('name', 'viewport');
+    RestoredTag.setAttribute('content', _OriginalViewportContent);
+    document.head.appendChild(RestoredTag);
+    void document.body.offsetHeight;
   }, 300);
 }
 

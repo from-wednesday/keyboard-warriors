@@ -15017,6 +15017,16 @@ function skillsetPillClick(ClickEvent) {
 function _openSkillsetPill() {
   skillsetPillOpen = true;
   _buildSkillsetPill();
+  var SkillsetPillEl = document.getElementById('skillsetPill');
+  if (SkillsetPillEl) {
+    SkillsetPillEl.classList.remove('pulse-pop');
+    void SkillsetPillEl.offsetWidth;
+    SkillsetPillEl.classList.add('pulse-pop');
+    SkillsetPillEl.addEventListener('animationend', function PopHandler() {
+      SkillsetPillEl.classList.remove('pulse-pop');
+      SkillsetPillEl.removeEventListener('animationend', PopHandler);
+    });
+  }
   setTimeout(function() {
     document.addEventListener('click', function handler(e) {
     var pill = document.getElementById('skillsetPill');

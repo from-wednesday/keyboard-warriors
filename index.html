@@ -9,7 +9,7 @@
 <title>Keyboard Warriors</title>
 <script>
   const DefaultTitle = 'Keyboard Warriors';
-  const VersionLabel   = '0032';
+  const VersionLabel   = '0033';
   const TitlePrefix  = document.title !== DefaultTitle ? document.title.trim() + '_' : '';
   const DBG_DEVICE   = TitlePrefix + VersionLabel;
 </script>
@@ -18,7 +18,7 @@
   (function() {
     var link = document.createElement('link');
     link.rel  = 'stylesheet';
-    link.href = document.title === 'beta'
+    link.href = document.title.toLowerCase() === 'beta'
       ? '/keyboard-warriors/styles/beta.css'
       : '/keyboard-warriors/styles/main.css';
     window._StyleSheetLink = link;
@@ -276,8 +276,10 @@
     <div class="middlePanel">
       <div style="position:relative;display:flex;flex-direction:column;align-items:center;justify-content:center;width:100%;">
           
-          <div id="studyNotesIconInline" style="display:none;padding:1px 0;pointer-events:none;" aria-hidden="true">
-            <svg viewBox="0 0 112.5 84.6" style="width:64px;height:auto;color:#212936;display:block;margin:0 auto;"><use href="#IconStudyNotes"/></svg>
+          <div id="studyNotesIconOuter" class="study-notes-icon-hidden" aria-hidden="true">
+            <div id="studyNotesIconInline" style="padding:1px 0;pointer-events:none;">
+              <svg viewBox="0 0 112.5 84.6" style="width:64px;height:auto;color:#212936;display:block;margin:0 auto;"><use href="#IconStudyNotes"/></svg>
+            </div>
           </div>
           <h2 id="title">Play Keyboard Warriors</h2>          <p id="welcomeTagline"><em>Your keyboard shortcuts coach &amp; personal trainer.</em></p>
           <div id="countdownOverlay"><span id="countdownNum"></span></div>
@@ -357,6 +359,7 @@
 </div>
 
 <div id="phoneToolbar">
+  <div id="phonePanelArea"></div>
   <div id="phoneToolbarIcons">
     <div class="phone-icon-btn" id="phoneKbIconWrap">
       <svg viewBox="0 0 111.9 49.8" style="color:#9ca3af;overflow:visible;"><use href="#IconKeyboard"/></svg>
@@ -380,7 +383,6 @@
       <span class="phone-icon-label">Study Notes</span>
     </div>
   </div>
-  <div id="phonePanelArea"></div>
 </div>
 
 <div id="keyboardWrap" class="page-initially-hidden">
@@ -890,7 +892,7 @@
             </span>
           </div>
           <div class="modal-kbsize-row" id="modalKbSizeRow" onclick="onKbSizeRowClick(event)">
-            <div id="kbSizeCompactSide" class="modal-left-label" style="display:flex;flex-direction:row;align-items:center;gap:5px;justify-content:flex-end;cursor:pointer;" onclick="SetKbSizeToExtended()"><small id="kbSizeCompactLabel" class="kb-size-word-label">compact</small><svg id="kbSizeCompactIcon" viewBox="0 0 111.9 49.8" style="height:14px;width:auto;"><use href="#IconKeyboard"/></svg></div>
+            <div id="kbSizeCompactSide" class="modal-left-label" style="display:flex;flex-direction:row;align-items:center;gap:5px;justify-content:flex-end;cursor:pointer;" onclick="SetKbSizeToExtended()"><small id="kbSizeCompactLabel" class="kb-size-word-label">compact</small><svg id="kbSizeCompactIcon" viewBox="0 0 111.9 49.8" style="height:18px;width:auto;"><use href="#IconKeyboard"/></svg></div>
             <div class="modal-switch-wrap">
               <label class="os-switch" title="Keyboard size" style="cursor:pointer;">
                 <input type="checkbox" id="modalKbSizeToggle" onchange="onKbSizeToggle()">
@@ -901,7 +903,7 @@
                 </svg>
               </label>
             </div>
-            <div id="kbSizeExtendedSide" class="modal-right-label" style="display:flex;flex-direction:row;align-items:center;gap:5px;cursor:pointer;" onclick="SetKbSizeToCompact()"><svg id="kbSizeExtendedIcon" viewBox="0 0 139.9 49.8" style="height:14px;width:auto;flex-shrink:0;"><use href="#IconExtKeyboard"/></svg><small id="kbSizeExtendedLabel" class="kb-size-word-label">extended</small></div>
+            <div id="kbSizeExtendedSide" class="modal-right-label" style="display:flex;flex-direction:row;align-items:center;gap:5px;cursor:pointer;" onclick="SetKbSizeToCompact()"><svg id="kbSizeExtendedIcon" viewBox="0 0 139.9 49.8" style="height:18px;width:auto;flex-shrink:0;"><use href="#IconExtKeyboard"/></svg><small id="kbSizeExtendedLabel" class="kb-size-word-label">extended</small></div>
           </div>
           <div class="more-info-popup" id="kbSizePartialPopup">
             <p class="more-info-body">Switching keyboard size here will lose the key availability settings you have made in the Conflicted Keys panel. Please go there to define your desired state in detail.</p>
@@ -1993,9 +1995,17 @@ const keyboardWrap = document.getElementById('keyboardWrap');
 let currentKbMode = null;
 var NoKeyboardMode = false;
 
+// Viewport width below which the keyboard switches from full to mini, and
+// the phone toolbar replaces the icon wraps. Both switches share this one
+// value: if they used different numbers, there would be a width range where
+// the mini keyboard appears but the wider two-column settings layout is
+// still in use, causing it to overflow. To tune the breakpoint, change this
+// number only.
+const MiniKeyboardBreakpointWidth = 820;
+
 function updateKeyboardMode() {
-  const w = window.innerWidth;
-  const mode = NoKeyboardMode ? 'none' : w < 820 ? 'mini' : 'full';
+  const w = window.innerWidth;
+  const mode = NoKeyboardMode ? 'none' : w < MiniKeyboardBreakpointWidth ? 'mini' : 'full';
   if (mode !== currentKbMode) {
     currentKbMode = mode;
     if (mode === 'none') {
@@ -2005,10 +2015,11 @@ function updateKeyboardMode() {
       buildKeyboard(mode === 'mini');
     }
   }
-  // Always sync toolbar in case the 700px phone-layout boundary was crossed
-  // without the keyboard mode itself changing (e.g. 820px → 599px stays 'mini').
+  // Always sync toolbar afterwards, since its visibility also depends on
+  // NoKeyboardMode and the current game state, not just this breakpoint.
   _syncPhoneToolbarVisibility();
 }
+
 
 function SyncKeyboardSettingsToUI() {
   // Syncs all keyboard settings UI to current variable values.
@@ -3011,7 +3022,8 @@ let accumulatedPauseMs = 0;
 let pauseStartTime     = null;
 let hintUsedAtMs       = null;
 let wrongKeyCount      = 0;
-let lastCompletedReport = null;  // retained so report card remains visible until next game
+let lastCompletedReport = null;  // retained so report card remains visible until next game 
+var EndGamePagesMaxContentHeightPhone = 0;  // tallest phone-layout panel height seen between the Report Card and History pages this round, so switching between them does not resize the toolbar panel area
 let CoachAdviceAccepted = false; // true once the accept button has been pressed this round
 // ── Lives state ───────────────────────────────────────────────────────────────
 let livesRemaining  = null;  // null when playerLives is infinite
@@ -5979,7 +5991,8 @@ function _syncPhoneToolbarVisibility() {
   if (!ToolbarElement) return;
 
   // Phone layout activates either when the keyboard is forcibly hidden,
-  // or when the viewport is narrower than 700px (toolbar replaces icon wraps).
+  // or when the viewport is narrower than MiniKeyboardBreakpointWidth
+  // (toolbar replaces icon wraps at the same point the keyboard goes mini).
      // minimal landing ui: to Hide during landing - the welcome/returning panels occupy that space.
      // if (gameState === 'welcome') {ToolbarElement.classList.remove('toolbar-visible'); return;}
   // alt: Only suppress the toolbar on the welcome screen when the keyboard is visible.
@@ -5989,7 +6002,7 @@ function _syncPhoneToolbarVisibility() {
     return;
   }
 
-  var IsPhoneLayout = NoKeyboardMode || window.innerWidth < 700;
+  var IsPhoneLayout = NoKeyboardMode || window.innerWidth < MiniKeyboardBreakpointWidth;
 
   document.body.classList.toggle('phone-layout-active', IsPhoneLayout);
 
@@ -6023,10 +6036,11 @@ function _syncPhoneToolbarVisibility() {
 }
 
 function _syncStudyNotesInlineIcon() {
-  var el = document.getElementById('studyNotesIconInline');
+  var el = document.getElementById('studyNotesIconOuter');
   if (!el) return;
   var STUDY_PANELS = ['panelCheatSheet', 'panelEndGameReportCard', 'panelEndGameHistoryRecord'];
-  el.style.display = (STUDY_PANELS.indexOf(activeSettings) !== -1) ? '' : 'none';
+  var ShouldShow = (STUDY_PANELS.indexOf(activeSettings) !== -1);
+  el.classList.toggle('study-notes-icon-hidden', !ShouldShow);
 }
 
 function _syncPhoneToolbarActiveState(ActivePage) {  var PhoneIconMap = {
@@ -6081,23 +6095,33 @@ function _phoneOpenPanel(Page, WasAlreadyOpen, PreviousPage) {
   PhonePanelArea.appendChild(PanelElement);
   PanelElement.classList.add('sp-active');
 
-  // Wipe animation when switching between panels
-  if (WasAlreadyOpen && PreviousPage && PreviousPage !== Page) {
-    var PreviousIndex = SP_PAGE_ORDER.indexOf(PreviousPage);
-    var NextIndex     = SP_PAGE_ORDER.indexOf(Page);
-    var IsRisingPage  = (Page === 'panelDifficultySettings' || Page === 'panelLandingWelcome');
-    var WasRisingPage = (PreviousPage === 'panelDifficultySettings' || PreviousPage === 'panelLandingWelcome');
-    if (IsRisingPage || WasRisingPage) {
-      PanelElement.classList.add('sp-wipe-in-up');
-    } else {
-      PanelElement.classList.add(NextIndex > PreviousIndex ? 'sp-wipe-in' : 'sp-wipe-in-left');
-    }
+  // Report Card and History share one reserved height for the rest of the
+  // round, so switching between them never resizes the toolbar panel area.
+  var IsEndGamePairPanel = (Page === 'panelEndGameReportCard' || Page === 'panelEndGameHistoryRecord');
+  if (IsEndGamePairPanel) {
+    EndGamePagesMaxContentHeightPhone = Math.max(EndGamePagesMaxContentHeightPhone, PanelElement.scrollHeight);
+    PanelElement.style.minHeight = EndGamePagesMaxContentHeightPhone + 'px';
   }
 
-  // Expand the container
-  PhonePanelArea.classList.add('phone-panel-open');
+  // Wipe animation when switching between panels 
+if (WasAlreadyOpen && PreviousPage && PreviousPage !== Page) {
+      var PreviousIndex = SP_PAGE_ORDER.indexOf(PreviousPage);
+      var NextIndex     = SP_PAGE_ORDER.indexOf(Page);
+      var EndgamePanels = new Set(['panelEndGameReportCard', 'panelEndGameHistoryRecord']);
+      var BothAreEndgamePanels = EndgamePanels.has(Page) && EndgamePanels.has(PreviousPage);
+      var IsRisingPage  = (Page === 'panelDifficultySettings' || Page === 'panelLandingWelcome');
+      var WasRisingPage = (PreviousPage === 'panelDifficultySettings' || PreviousPage === 'panelLandingWelcome');
+      if (BothAreEndgamePanels) {
+        PanelElement.classList.add(NextIndex > PreviousIndex ? 'sp-page-turn-right' : 'sp-page-turn-left');
+      } else if (IsRisingPage || WasRisingPage) {
+        PanelElement.classList.add('sp-wipe-in-up');
+      } else {
+        PanelElement.classList.add(NextIndex > PreviousIndex ? 'sp-wipe-in' : 'sp-wipe-in-left');
+      }
+    }
 
-  // Panel expands in place below the toolbar; no scroll needed.
+   // Expand the container
+  PhonePanelArea.classList.add('phone-panel-open');
 }
 function _phoneCollapsePanel() {
   var PhonePanelArea = document.getElementById('phonePanelArea');
@@ -6153,6 +6177,10 @@ function _phoneOpenSettings(Page) {
   });
 
   _phoneOpenPanel(Page, WasAlreadyOpen, PreviousPage);
+  // Folds the keyboard partway whenever it is visible alongside the
+  // toolbar. Already does nothing when the keyboard is genuinely hidden,
+  // so this is safe to call unconditionally here.
+  SetKeyboardPositionForPanel(Page);
   _syncPhoneToolbarActiveState(Page);
 
   var NoConfirmOverlayActive = ['confirm-reset', 'confirm-quit', 'confirm-trophy',
@@ -6202,54 +6230,48 @@ function _phoneCloseSettings() {
     return;
   }
 
-  // Phone has no keyboard to snap to face -- nothing more to do
+  // Only snap keyboard to face if not mid-countdown -- that flow handles it itself
+  if (gameState !== 'counting') {
+    setKbPosition('face');
+  }
 }
 
+// Widened only for Keyboard Settings, whose toggle-switch labels would
+// otherwise wrap onto a second line and break the two-column layout once
+// the keyboard panel itself gets narrow. Centred over the keyboard panel
+// rather than sharing its left edge, so the two still read as related.
+var KeyboardSettingsMinimumPanelWidth = 575;
+
 function _spAlignPanel() {
-  if (NoKeyboardMode || window.innerWidth < 700) return;
-  var wrap = document.getElementById('keyboardWrap');
-  if (wrap) wrap.style.minHeight = '';
+  if (NoKeyboardMode || window.innerWidth < MiniKeyboardBreakpointWidth) return;
   _closeMoreInfoPopup();
   var panel = document.getElementById('keyboardPanel');
   var stage = document.getElementById('kbFlipStage');
   var inner = document.getElementById('settingsPanelInner');
   var wrap  = document.getElementById('keyboardWrap');
   if (!panel || !stage || !inner || !wrap) return;
-  wrap.style.minHeight = '';
+
   var left  = stage.offsetLeft + panel.offsetLeft;
   var width = panel.offsetWidth;
+  if (activeSettings === 'panelKeyboard' && width < KeyboardSettingsMinimumPanelWidth) {
+    left -= (KeyboardSettingsMinimumPanelWidth - width) / 2;
+    width = KeyboardSettingsMinimumPanelWidth;
+  }
   inner.style.left  = left + 'px';
   inner.style.width = width + 'px';
-  // left/width for affordance set now so horizontal position is immediate
+
   var affordance = document.getElementById('kbHandleAffordance');
   if (affordance) {
     affordance.style.left  = left + 'px';
     affordance.style.width = width + 'px';
   }
-  // Grow the wrap so the tilted keyboard sits below the settings content.
-  // Two rAFs: first lets the browser lay out the content at its new width,
-  // second reads the settled scrollHeight after reflow.
-  requestAnimationFrame(function() {
-    requestAnimationFrame(function() {
-      var contentH = inner.scrollHeight;
-      var stageH   = stage.offsetHeight;
-      // Position affordance using the sentinel inside keyboardPanel —
-      // it lives in the same 3D transform space so its BCR.top is the
-      // keyboard's true visual top edge, regardless of rotateX angle.
-      if (affordance) _repositionAffordance();
-      // Edge-position panels (report, cheat sheet, pause, conflicts, difficulty) sit
-      // above a fully folded keyboard. Only the content height matters; the stage
-      // height is already accounted for by the fold. Add a small buffer only.
-      var IsEdgePanel = (activeSettings === 'panelEndGameReportCard' || activeSettings === 'panelCheatSheet' ||
-                         activeSettings === 'panelPause'  || activeSettings === 'panelConflicts' ||
-                         activeSettings === 'panelDifficultySettings' || activeSettings === 'panelEndGameHistoryRecord' ||
-                         activeSettings === 'panelKeyboard');
-      var needed = IsEdgePanel
-        ? contentH + 8
-        : (contentH > stageH ? contentH + stageH + 24 : contentH + 16);
-      wrap.style.minHeight = Math.max(needed, 320) + 'px';
-    });
-  });
+
+  wrap.style.minHeight = KeyboardWrapHeightWithSettingsOpen + 'px';
+
+  // Position affordance using the sentinel inside keyboardPanel, which
+  // lives in the same 3D transform space so its BCR.top is the keyboard's
+  // true visual top edge, regardless of rotateX angle.
+  if (affordance) _repositionAffordance();
 }
 
 var _iconWrapIds = { panelKeyboard: 'kbIconWrap', panelConflicts: 'brIconWrap', panelDifficultySettings: 'diffIconWrap' };
@@ -6421,7 +6443,7 @@ function _clearPanelTip() {
 }
 
 function openSettings(page) {
-  if (NoKeyboardMode || window.innerWidth < 700) { _phoneOpenSettings(page); return; }
+  if (NoKeyboardMode || window.innerWidth < MiniKeyboardBreakpointWidth) { _phoneOpenSettings(page); return; } 
   // Block switching panels during any confirmation overlay or countdown
   var confirmStates = ['confirm-reset', 'confirm-quit', 'confirm-trophy', 'confirm-diff-change', 'confirm-kill-punctuation', 'confirm-start-over', 'counting'];
   if (confirmStates.indexOf(gameState) !== -1 && page !== 'panelPause') {
@@ -6482,10 +6504,16 @@ function openSettings(page) {
   if (pageEl) {
     pageEl.classList.add('sp-active');
     if (wasOpen && prevPage !== page) {
+      var EndgamePanels = new Set(['panelEndGameReportCard', 'panelEndGameHistoryRecord']);
+      var BothAreEndgamePanels = EndgamePanels.has(page) && EndgamePanels.has(prevPage);
       // Difficulty panels always rise up; other pages wipe left/right by order
       var isDiffPage = (page === 'panelDifficultySettings' || page === 'panelLandingWelcome');
       var wasDiffPage = (prevPage === 'panelDifficultySettings' || prevPage === 'panelLandingWelcome');
-      if (isDiffPage || wasDiffPage) {
+      if (BothAreEndgamePanels) {
+        var prevIdx = SP_PAGE_ORDER.indexOf(prevPage);
+        var nextIdx = SP_PAGE_ORDER.indexOf(page);
+        pageEl.classList.add(nextIdx > prevIdx ? 'sp-page-turn-right' : 'sp-page-turn-left');
+      } else if (isDiffPage || wasDiffPage) {
         pageEl.classList.add('sp-wipe-in-up');
       } else {
         var prevIdx = SP_PAGE_ORDER.indexOf(prevPage);
@@ -6515,10 +6543,12 @@ function openSettings(page) {
 }
 
 function closeSettings() {
-  if (NoKeyboardMode || window.innerWidth < 700) { _phoneCloseSettings(); return; }
+  if (NoKeyboardMode || window.innerWidth < MiniKeyboardBreakpointWidth) { _phoneCloseSettings(); return; } 
   if (activeSettings === null) return;
   var closingPage = activeSettings;
   activeSettings = null;
+  var closingWrap = document.getElementById('keyboardWrap');
+  if (closingWrap) closingWrap.style.minHeight = '';
   conflictsKbLighting.deactivate();
   _syncStudyNotesInlineIcon();
   
@@ -6529,14 +6559,18 @@ function closeSettings() {
   _exitScoreClearConfirm();
   _exitDiffConfirm();
 
-  var sp = document.getElementById('settingsPanel');
+    var sp = document.getElementById('settingsPanel');
   if (sp) {
     sp.classList.add('sp-closing');
     setTimeout(function() { sp.classList.remove('sp-closing'); }, 250);
     sp.classList.remove('sp-open');
   }
   var kbWrap = document.getElementById('keyboardWrap');
-  if (kbWrap) kbWrap.classList.remove('settings-open');
+  if (kbWrap) {
+    kbWrap.classList.remove('settings-open');
+    kbWrap.classList.add('settings-closing-snap');
+    setTimeout(function() { kbWrap.classList.remove('settings-closing-snap'); }, 250);
+  }
 
   // Hide all pages
   SP_PAGE_ORDER.forEach(function(p) {
@@ -6600,7 +6634,7 @@ function _closeAllModalsInstant() {
   }
   activeSettings = null;
   conflictsKbLighting.deactivate();
-    _syncStudyNotesInlineIcon();
+  _syncStudyNotesInlineIcon();
   _panelTipInTitle = false;  // clear any tip that was live in the title
   _exitScoreClearConfirm();
   _exitDiffConfirm();
@@ -6613,7 +6647,12 @@ function _closeAllModalsInstant() {
   });
   _unpinTooltip();
   var wrap2 = document.getElementById('keyboardWrap');
-  if (wrap2) { wrap2.classList.remove('settings-open'); wrap2.style.minHeight = ''; }
+  if (wrap2) {
+    wrap2.classList.remove('settings-open');
+    wrap2.style.minHeight = '';
+    wrap2.classList.add('settings-closing-snap');
+    setTimeout(function() { wrap2.classList.remove('settings-closing-snap'); }, 250);
+  }
 }
 
 // Legacy aliases — kept so remaining call sites compile
@@ -8138,20 +8177,65 @@ function _allConflictTokensNormalised() {
       if (PartnerAlreadyHeld) return 'available';
     }
 
-    // Build the set of held modifier tokens, adding this key's token if it is a modifier.
+    // Build the set of currently held modifier tokens. The candidate key's own
+    // token is deliberately excluded here, otherwise checking whether pressing
+    // CMD would complete a chord would count CMD as already held, and the
+    // missing-modifier check below would never find it.
     var HeldModifierTokens = new Set();
     _heldKeys.forEach(function(HeldCode) {
       var Token = _modifierTokenForCode(HeldCode);
       if (Token) HeldModifierTokens.add(Token);
     });
-    if (ModifierToken) HeldModifierTokens.add(ModifierToken);
 
-      // Check if this modifier is itself a bare conflict (e.g. Option alone)
+      // Modifier keys should light only when pressing this modifier would
+    // immediately complete a known conflict chord.
     if (ModifierToken !== null) {
-      var BareModifierMatch = _findSubsetMatch(HeldModifierTokens, null);
-      if (BareModifierMatch === 'blocked') return 'blocked';
-      if (BareModifierMatch === 'sus')     return 'sus';
-      return 'available';
+
+      var ModifierMatch = null;
+
+      _allConflictTokensNormalised().forEach(function (ConflictEntry) {
+
+        var Parsed = ParseShortcutString(ConflictEntry);
+        if (!Parsed || !Parsed.keyToken) return;
+
+        // The conflict's non-modifier key must already be held.
+        var ConflictKeyIsHeld = false;
+
+        _heldKeys.forEach(function (HeldCode) {
+          if (_browserCodeToToken(HeldCode) === Parsed.keyToken) {
+            ConflictKeyIsHeld = true;
+          }
+        });
+
+        if (!ConflictKeyIsHeld) return;
+
+        var MissingModifiers = [];
+
+        if (Parsed.requiresCmd     && !HeldModifierTokens.has('CMD'))     MissingModifiers.push('CMD');
+        if (Parsed.requiresShift   && !HeldModifierTokens.has('SHIFT'))   MissingModifiers.push('SHIFT');
+        if (Parsed.requiresOption  && !HeldModifierTokens.has('OPTION'))  MissingModifiers.push('OPTION');
+        if (Parsed.requiresControl && !HeldModifierTokens.has('CONTROL')) MissingModifiers.push('CONTROL');
+        if (Parsed.requiresWin     && !HeldModifierTokens.has('WIN'))     MissingModifiers.push('WIN');
+
+        // Only light if this modifier is the final missing piece.
+        if (MissingModifiers.length !== 1) return;
+        if (MissingModifiers[0] !== ModifierToken) return;
+
+        var IsBlurEntry = blurDiagnosticConflicts.has(ConflictEntry);
+        var IsManuallyUnblocked = userManuallyUnblockedConflicts.has(ConflictEntry);
+        var IsManuallyBlocked = dismissedConflicts.has(ConflictEntry);
+        var IsSus = IsManuallyUnblocked || (!IsBlurEntry && _isSusToken(ConflictEntry));
+
+        if (IsManuallyUnblocked) {
+          if (ModifierMatch !== 'blocked') ModifierMatch = 'sus';
+        } else if (!IsSus || IsManuallyBlocked || IsBlurEntry) {
+          ModifierMatch = 'blocked';
+        } else {
+          if (ModifierMatch !== 'blocked') ModifierMatch = 'sus';
+        }
+      });
+
+      return ModifierMatch || 'available';
     }
 
     var CandidateKeyToken = _browserCodeToToken(BrowserCode);
@@ -8190,9 +8274,12 @@ function _allConflictTokensNormalised() {
     });
   }
 
-  // Redraws every key to its current resting colour given the held chord.
-  function _applyAllKeyColours() {
+// Redraws every key to its current resting colour given the held chord.
+  // ExcludedBrowserCode is optional, and lets a key that is in the middle of
+  // its own fade-out animation be skipped, so this redraw does not interrupt it.
+  function _applyAllKeyColours(ExcludedBrowserCode) {
     Object.keys(keyEls).forEach(function (BrowserCode) {
+      if (BrowserCode === ExcludedBrowserCode) return;
       var KeyElement = keyEls[BrowserCode];
       if (!KeyElement) return;
       _clearKeyClasses(KeyElement);
@@ -8369,7 +8456,7 @@ function _allConflictTokensNormalised() {
 
   // ── Event handlers ───────────────────────────────────────────────────────
 
-  // Removes a key from the held set and restores its resting/fade visual.
+// Removes a key from the held set and restores its resting/fade visual.
   // Shared by genuine keyup events and by sticky toggle-off keydowns, so
   // both paths release a key the same way.
   function _releaseKey(BrowserCode) {
@@ -8381,10 +8468,20 @@ function _allConflictTokensNormalised() {
       return;
     }
 
-    // Non-modifier released: fade back to resting colour
+    // Non-modifier released. Letting go of this key can change the resting
+    // preview shown on every OTHER key too, including keys that are not
+    // held at all, for example a modifier that was only showing "pressing
+    // me now would complete a blocked combination" purely because this key
+    // was held. Redraw every other key's resting tint, reassert the bright
+    // pressed colour on any key that is genuinely still held, and let this
+    // released key fade out on its own rather than snapping instantly.
+    _applyAllKeyColours(BrowserCode);
+    _heldKeys.forEach(function (StillHeldCode) {
+      _applyKeyPressedColour(StillHeldCode);
+    });
     _revertKeyToRestingColour(BrowserCode);
   }
-
+  
   function _onKeydown(Event) {
     if (!_active) return;
     if (Event.repeat) return;  // ignore key-repeat — lighting and flash are one-shot
@@ -8408,8 +8505,10 @@ function _allConflictTokensNormalised() {
       return;
     }
 
-    // Non-modifier pressed: light it at full brightness.
-    _applyKeyPressedColour(Event.code);
+// Non-modifier pressed: redraw the keyboard so any newly-completable
+// conflicts become visible, then light the pressed key.
+_applyAllKeyColours();
+_applyKeyPressedColour(Event.code);
 
     // Flash conflict list chips green only for sus (yellow) entries — orange
     // entries are about to be unblocked and their list items rebuilt, so
@@ -10518,6 +10617,7 @@ function enterDefeat() {
     var DefeatRun = runData.slice();
     runData.length = 0;
     lastCompletedReport = finalizeRunData(DefeatRun, questionPool, NewDefeatCount);
+    EndGamePagesMaxContentHeightPhone = 0;
     openSettings('panelEndGameReportCard');
     _refreshReportPanel();
   } else {
@@ -10846,7 +10946,7 @@ function endGame() {
   // Adaptive: finalise run
 const completedRun = runData.slice();
 runData.length = 0;
-lastCompletedReport = finalizeRunData(completedRun, questionPool, 0);
+lastCompletedReport = finalizeRunData(completedRun, questionPool, 0); EndGamePagesMaxContentHeightPhone = 0;
   gameState = 'finished';
   setAppSelectorGameActive(false);
   clearInterval(timerInterval);
@@ -11965,18 +12065,19 @@ function _refreshCheatSheet() {
     ContextLabel.textContent = AppName + ' on ' + OsName;
   }
 
+  var IsActiveGame = (gameState === 'playing' || gameState === 'paused' || gameState === 'readyToUnpause');
+
+  // While a game is in progress, the Cheat Sheet must follow the actual live
+  // pool so 'Coming Up' matches what will really appear next.
   var Pool = questionPool;
-  if (lastCompletedReport) {
+  if (!IsActiveGame && lastCompletedReport) {
     var AdaptivePool = getAdaptiveNextRoundPool();
     if (AdaptivePool && AdaptivePool.length > 0) Pool = AdaptivePool;
   }
-  var StartIndex = (gameState === 'playing' || gameState === 'paused' || gameState === 'readyToUnpause')
-    ? questionIndex
-    : 0;
+  var StartIndex = IsActiveGame ? questionIndex : 0;
   var OrderedPool = Pool.slice(StartIndex).concat(Pool.slice(0, StartIndex));
   window._cheatSheetResolvedPool = OrderedPool;
 
-  var IsActiveGame = (gameState === 'playing' || gameState === 'paused' || gameState === 'readyToUnpause');
 
   // Build a map of shortcut token → dot colour based on runData outcomes.
   // This is computed fresh each time the panel opens and does not persist.
@@ -13904,11 +14005,33 @@ var PartialDragMinAngle = 10;  // shallowest fold in the draggable range
 var PartialDragMaxAngle = 80;  // deepest fold before the edge state
 var EdgeAngle           = 82;  // discrete edge state, just beyond drag range
 
+// Every settings panel reserves exactly this much vertical room, so the
+// keyboard's resting position never depends on which panel is open or how
+// much content it has. Must match the height set on #settingsPanelInner
+// in beta.css.
+var SettingsPanelFixedHeight = 250;
+
+// How far the keyboard's stage sits below its flex-centred starting point
+// once dragged all the way to the edge tilt. Tune this by eye: at full
+// edge tilt, the keyboard's top edge should land exactly on the bottom of
+// the settings area above it. Raise this number if a gap remains below
+// the settings area at full tilt; lower it if the keyboard overshoots
+// past that point. At the shallower default tilt each panel opens to, the
+// keyboard sits higher than this, deliberately overlapping up into the
+// settings area, which is what makes the longest panels need a manual
+// fold to read in full.
+var KeyboardEdgeStageTranslateY = 96;
+
+// The keyboard's resting box, while any settings panel is open, needs to
+// hold both figures above stacked together. Kept as one calculation so
+// the two stay in step if either is retuned.
+var KeyboardWrapHeightWithSettingsOpen = SettingsPanelFixedHeight + KeyboardEdgeStageTranslateY;
+
 // Named position definitions used by setKbPosition for face and edge only.
 // Partial uses _interpolateStageY against _kbPartialAngle directly.
 var KbNamedPositions = {
   face: { stageTranslateY: 0,   panelRotateX: 0  },
-  edge: { stageTranslateY: 118, panelRotateX: 82 },
+  edge: { stageTranslateY: KeyboardEdgeStageTranslateY, panelRotateX: 82 },
 };
 
 // ── Drag state ────────────────────────────────────────────────────────────────
@@ -14023,6 +14146,15 @@ function _applyPartialAngleInstant(RotateXDegrees) {
   _repositionAffordance();
 }
 
+// Repositions the drag handle affordance the moment the keyboard panel's own
+// fold transition genuinely finishes, rather than guessing how long that
+// takes. transform is the slowest of keyboardPanel's transitioning
+// properties, so by the time it fires, everything else has already settled.
+function _onKeyboardFoldTransitionEnd(Event) {
+  if (Event.propertyName !== 'transform') return;
+  _repositionAffordance();
+}
+
 // Animate to a partial angle with the standard CSS transition
 // (used after drag release, auto-settle, and the edge-tap-to-partial gesture).
 function _animateToPartialAngle(RotateXDegrees) {
@@ -14057,11 +14189,14 @@ function _animateToPartialAngle(RotateXDegrees) {
   wrap.classList.add('kb-flipping');
   document.body.classList.remove('kb-at-edge');
   dbgRefreshAngle();
-  // Reposition immediately (start of animation) and again after the
-  // 850ms CSS transition settles so the affordance tracks the final resting spot.
+  // Reposition immediately, then again the moment the fold transition
+  // genuinely finishes. Removing any previous pending listener first stops
+  // them building up if a new angle is requested before the last one settled.
   _repositionAffordance();
-  setTimeout(_repositionAffordance, 870);
+  panel.removeEventListener('transitionend', _onKeyboardFoldTransitionEnd);
+  panel.addEventListener('transitionend', _onKeyboardFoldTransitionEnd, { once: true });
 }
+
 
 function setKbPosition(pos) {
   if (NoKeyboardMode) return;
@@ -14551,6 +14686,10 @@ function OnLayoutChange(EventSource) {
       positionIcons();
       if (activeSettings !== null) _spAlignPanel();
       _syncRotationHint();
+      // Recalculate caret position after resize in case zoom breakpoint changed
+      if (activeSettings === 'panelDifficultySettings' || activeSettings === 'panelLandingWelcome') {
+        _placeDifficultyCaretInstant(currentDifficulty);
+      }
     });
   }, 300);
 }
@@ -14604,13 +14743,15 @@ function _moveSingleCaretToMode(CaretId, PillId, Mode) {
   if (!CaretElement || !PillElement) return;
   var TargetX      = _getDifficultyCaretXForMode(Mode, PillElement);
   if (TargetX === null) return;
+  var Zoom          = _getBodyZoom();
+  var TargetXLayout = TargetX / Zoom;
   var PreviousLeft  = parseFloat(CaretElement.style.left) || 0;
-  var PillWidth     = PillElement.getBoundingClientRect().width;
-  var IsExtremeJump = Math.abs(TargetX - PreviousLeft) > PillWidth * 0.55;
+  var PillWidth     = PillElement.getBoundingClientRect().width / Zoom;
+  var IsExtremeJump = Math.abs(TargetXLayout - PreviousLeft) > PillWidth * 0.55;
   CaretElement.style.transition = IsExtremeJump
     ? 'left 0.42s cubic-bezier(0.34,1.45,0.64,1)'
     : 'left 0.32s cubic-bezier(0.34,1.2,0.64,1)';
-  CaretElement.style.left = TargetX + 'px';
+  CaretElement.style.left = TargetXLayout + 'px';
 }
 
 function _placeDifficultyCaretInstant(Mode) {
@@ -14624,8 +14765,9 @@ function _placeSingleCaretInstant(CaretId, PillId, Mode) {
   if (!CaretElement || !PillElement) return;
   var TargetX = _getDifficultyCaretXForMode(Mode, PillElement);
   if (TargetX === null) return;
+  var TargetXLayout = TargetX / _getBodyZoom();
   CaretElement.style.transition = 'none';
-  CaretElement.style.left = TargetX + 'px';
+  CaretElement.style.left = TargetXLayout + 'px';
   requestAnimationFrame(function() {
     requestAnimationFrame(function() {
       if (CaretElement) CaretElement.style.transition = 'left 0.32s cubic-bezier(0.34,1.2,0.64,1)';

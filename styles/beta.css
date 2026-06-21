@@ -895,6 +895,16 @@ body.kb-at-edge #keyboardPanel #kb-shadow {
 #panelLandingReturning.sp-active::after,
 #panelLandingWelcome.sp-active::after  { display: none; }
 
+/* Difficulty panel's caret+label sit above the pill via negative offset
+   (bottom: calc(100% + 6px)) and get clipped by the parent containers'
+   overflow:hidden, which exists for the open/close height animation.
+   Lift the clip only while this panel is the active page, on both the
+   desktop settings rail and the phone toolbar instance. */
+#settingsPanelInner:has(#panelDifficultySettings.sp-active),
+#phonePanelArea:has(#panelDifficultySettings.sp-active) {
+  overflow: visible;
+}
+
 /* Gutter: a 1px line at the midpoint — centred above diffIcon */
 .sp-page.sp-active::after {
   content: '';

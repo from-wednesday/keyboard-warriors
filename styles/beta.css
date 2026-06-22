@@ -3093,8 +3093,8 @@ body.returning-screen #diffIconWrap .icon-tip { display: none; }
     "left right";
   position: relative;
 }
-#panelEndGameHistoryRecord #historyHeaderLeft  { grid-area: headerleft;  padding-right: 20px; min-width: 0; position: relative; }
-#panelEndGameHistoryRecord #historyHeaderRight { grid-area: headerright; padding-left:  20px; min-width: 0; }
+#panelEndGameHistoryRecord #historyHeaderLeft  { grid-area: headerleft;  padding-right: 20px; min-width: 0; position: relative; margin-bottom: 0; }
+#panelEndGameHistoryRecord #historyHeaderRight { grid-area: headerright; padding-left:  20px; min-width: 0; margin-bottom: 0; }
 #panelEndGameHistoryRecord .sp-col-left  { grid-area: left;  position: relative; }
 #panelEndGameHistoryRecord .sp-col-right { grid-area: right; }
 
@@ -3126,6 +3126,7 @@ body.returning-screen #diffIconWrap .icon-tip { display: none; }
 }
 
 #panelEndGameHistoryRecord .sp-report-bottom {
+  margin-top: 2px;
   margin-bottom: 8px;
 }
 

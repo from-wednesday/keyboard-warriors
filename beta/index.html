@@ -571,8 +571,7 @@
 </div>
   <!-- ── EndGame History View ─────────────────────────────── -->
     <div id="panelEndGameHistoryRecord" class="sp-page">
-   <div class="sp-col sp-col-left">
-        <div class="sp-report-col-header">
+      <div class="sp-report-col-header" id="historyHeaderLeft">
 <div class="more-info-wrap" style="margin-bottom:4px;">
         <p class="sp-title" onclick="toggleMoreInfo('csHistoryMoreInfo', event)" style="font-size:12px;margin:0;"></p>
 <div class="sp-endgame-header-left" onclick="_toggleEndGameHistory(event)">
@@ -600,17 +599,18 @@
       </div>
       <p class="sp-report-section-title" id="EndGameHistoryMasteredHeading"></p>
        </div>
-        <ul id="EndGameHistoryListLeft" class="sp-endgame-list sp-report-weakness"></ul>
-      </div>
-      <div class="sp-col sp-col-right">
-        <div class="sp-report-col-header sp-report-col-header-right" style="justify-content:space-between;margin-top:6px;">
-          <p class="sp-endgame-context-label" id="EndGameHistoryTimerLabel"></p>
-          <p class="sp-endgame-context-label" id="EndGameHistoryContextLabel"></p>
-        </div>
-        <ul id="EndGameHistoryListRight" class="sp-endgame-list sp-report-weakness"></ul>
+      <div class="sp-report-col-header sp-report-col-header-right" id="historyHeaderRight" style="justify-content:space-between;margin-top:6px;">
+        <p class="sp-endgame-context-label" id="EndGameHistoryTimerLabel"></p>
+        <p class="sp-endgame-context-label" id="EndGameHistoryContextLabel"></p>
       </div>
       <div class="sp-report-bottom">
         <div class="sp-report-advice-box" id="historyStatsBox"></div>
+      </div>
+      <div class="sp-col sp-col-left">
+        <ul id="EndGameHistoryListLeft" class="sp-endgame-list sp-report-weakness"></ul>
+      </div>
+      <div class="sp-col sp-col-right">
+        <ul id="EndGameHistoryListRight" class="sp-endgame-list sp-report-weakness"></ul>
       </div>
     </div>
 
@@ -12285,7 +12285,7 @@ function _refreshEndGameHistory() {
       }).length;
 
       var HasLine1 = AvgTimeText !== null;
-      var HasLine2 = FailCount > 0;
+      var HasLine2 = CloseCount > 0;
 
       if (HasLine1 || HasLine2) {
         var StatsColumn = document.createElement('div');
@@ -12293,7 +12293,7 @@ function _refreshEndGameHistory() {
           var AvgLine = document.createElement('p');
           AvgLine.className = 'sp-report-advice';
           AvgLine.style.margin = '0';
-          AvgLine.textContent = 'Your average answer time was: ' + AvgTimeText + ' seconds';
+          AvgLine.textContent = 'Your average answer time was: ' + AvgTimeText + ' seconds.';
           StatsColumn.appendChild(AvgLine);
         }
         if (HasLine2) {
@@ -12302,7 +12302,7 @@ function _refreshEndGameHistory() {
           FailLine.style.margin = HasLine1 ? '4px 0 0' : '0';
           var FailWord  = FailCount  === 1 ? 'fail'  : 'fails';
           var CloseVerb = CloseCount === 1 ? 'was'   : 'were';
-          FailLine.textContent = 'Out of ' + FailCount + ' ' + FailWord + ', ' + CloseCount + ' ' + CloseVerb + ' close to correct.';
+          FailLine.textContent = 'Out of ' + FailCount + ' ' + FailWord + ', ' + CloseCount + ' ' + CloseVerb + ' close to the correct answer.';
           StatsColumn.appendChild(FailLine);
         }
         HistoryStatsBox.appendChild(StatsColumn);

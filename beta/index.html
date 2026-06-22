@@ -8422,31 +8422,35 @@ function _allConflictTokensNormalised() {
     questionPool = shuffleArray(buildPool());
   }
 
-  // Update list item radio states immediately
-  document.querySelectorAll(
-    '#browserCompatList li[data-conflict-key], #cfFoundList li[data-conflict-key]'
-  ).forEach(function(ListItem) {
-    if (CanonicaliseShortcutToken(ListItem.dataset.conflictKey || '') !== NormalisedChord) return;
-    var Radio = ListItem.querySelector('.modal-radio');
-    if (Radio) Radio.classList.remove('on');
-    ListItem.classList.remove('conflict-dismissed');
-  });
+  if (_active) {
+    // Update list item radio states immediately
+    document.querySelectorAll(
+      '#browserCompatList li[data-conflict-key], #cfFoundList li[data-conflict-key]'
+    ).forEach(function(ListItem) {
+      if (CanonicaliseShortcutToken(ListItem.dataset.conflictKey || '') !== NormalisedChord) return;
+      var Radio = ListItem.querySelector('.modal-radio');
+      if (Radio) Radio.classList.remove('on');
+      ListItem.classList.remove('conflict-dismissed');
+    });
 
-  _syncConflictFilterPillStyles();
+    _syncConflictFilterPillStyles();
 
-  // Refresh lighting immediately so the key turns green right now
-  conflictsKbLighting.refresh();
+    // Refresh lighting immediately so the key turns green right now
+    conflictsKbLighting.refresh();
+  }
 
-  showToast('Confirmed the shortcut is working');
+  showToast('Confirmed ' + DisplayStringForToken(NormalisedChord) + ' is working');
 
   setTimeout(function() {
     if (NeedsExpunge) {
       blurDiagnosticConflicts.delete(NormalisedChord);
       _saveBlurDiagnosticConflicts();
     }
-    _refreshBrowserContent();
-    conflictsKbLighting.refresh();
-    _flashConflictListChipsGreen(NormalisedChord);
+    if (_active) {
+      _refreshBrowserContent();
+      conflictsKbLighting.refresh();
+      _flashConflictListChipsGreen(NormalisedChord);
+    }
   }, 1000);
 }
   // ── Conflict list chip flash ──────────────────────────────────────────────
@@ -8499,6 +8503,11 @@ function _allConflictTokensNormalised() {
   function _releaseKey(BrowserCode) {
     _heldKeys.delete(BrowserCode);
 
+    // The chord tracking above runs always, app-wide. Everything below is
+    // purely visual feedback on the on-screen keyboard, so it only matters
+    // while the Conflicts panel is actually open and showing that keyboard.
+    if (!_active) return;
+
     if (_isModifierCode(BrowserCode)) {
       // Modifier released: redraw all keys to reflect the reduced chord
       _applyAllKeyColours();
@@ -8520,7 +8529,6 @@ function _allConflictTokensNormalised() {
   }
   
   function _onKeydown(Event) {
-    if (!_active) return;
     if (Event.repeat) return;  // ignore key-repeat — lighting and flash are one-shot
 
     if (stickyKeysOn && _heldKeys.has(Event.code)) {
@@ -8533,15 +8541,21 @@ function _allConflictTokensNormalised() {
     _heldKeys.add(Event.code);
 
      if (_isModifierCode(Event.code)) {
-      _applyAllKeyColours();
-      var ModifierClassification = _classifyKeyWithCurrentChord(Event.code);
-      if (ModifierClassification === 'blocked' || ModifierClassification === 'sus') {
-        _applyKeyPressedColour(Event.code);
+      if (_active) {
+        _applyAllKeyColours();
+        var ModifierClassification = _classifyKeyWithCurrentChord(Event.code);
+        if (ModifierClassification === 'blocked' || ModifierClassification === 'sus') {
+          _applyKeyPressedColour(Event.code);
+        }
       }
       _unblockFiredChordIfDismissed(Event.code);
       return;
     }
 
+    // Restoration runs app-wide on every non-modifier press. The keyboard
+    // colour redraw and flash below are purely visual, so they're skipped
+    // entirely when the Conflicts panel isn't open and showing that keyboard.
+    if (_active) {
 // Non-modifier pressed: redraw the keyboard so any newly-completable
 // conflicts become visible, then light the pressed key.
 _applyAllKeyColours();
@@ -8558,14 +8572,13 @@ _applyKeyPressedColour(Event.code);
         _flashConflictListChipsGreen(ChordForFlash);
       }
     }
+    }
 
     _unblockFiredChordIfDismissed(Event.code);
   }
 
   function _onKeyup(Event) {
-    if (!_active) return;
     if (stickyKeysOn) return; // sticky toggling is handled entirely on keydown
-
     _releaseKey(Event.code);
   }
 
@@ -8576,18 +8589,13 @@ _applyKeyPressedColour(Event.code);
     _active   = true;
     _heldKeys = new Set();
     document.getElementById('keyboardPanel').classList.add('conflicts-panel-active');
-    document.addEventListener('keydown', _onKeydown, true);
-    document.addEventListener('keyup',   _onKeyup,   true);
     setTimeout(_applyAllKeyColours, 300);
   }
 
   function deactivate() {
     if (!_active) return;
     _active   = false;
-    _heldKeys = new Set();
     document.getElementById('keyboardPanel').classList.remove('conflicts-panel-active');
-    document.removeEventListener('keydown', _onKeydown, true);
-    document.removeEventListener('keyup',   _onKeyup,   true);
     _clearAllKeys();
   }
 
@@ -8614,10 +8622,18 @@ _applyKeyPressedColour(Event.code);
   // Clears all held keys and redraws resting state. Called when the window
   // loses focus so that keys intercepted by the browser don't get stuck lit.
   function resetOnBlur() {
-    if (!_active) return;
     _heldKeys = new Set();
-    _applyAllKeyColours();
+    if (_active) _applyAllKeyColours();
   }
+
+  // Chord tracking and dismissed/sus restoration need to work everywhere in
+  // the app, not just while the Conflicts panel is open, so these listeners
+  // are attached once, permanently, here, rather than in activate()/deactivate().
+  // The visual side-effects inside _onKeydown/_onKeyup/_releaseKey remain
+  // gated on _active so the on-screen keyboard is only ever tinted while the
+  // panel is actually showing it.
+  document.addEventListener('keydown', _onKeydown, true);
+  document.addEventListener('keyup',   _onKeyup,   true);
 
   return { activate: activate, deactivate: deactivate, refresh: refresh, markSusBlocked: markSusBlocked, resetOnBlur: resetOnBlur };
 }());
@@ -13547,9 +13563,7 @@ var _IsIphoneSafari = /iPhone/.test(navigator.userAgent);
 
 window.addEventListener('blur', function() {
   releaseAllKeys();
-  if (activeSettings === 'panelConflicts') {
-    conflictsKbLighting.resetOnBlur();
-  }
+  conflictsKbLighting.resetOnBlur();
   if (_IsIphoneSafari) return;
 
   if (gameState === 'playing') {

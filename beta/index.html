@@ -8666,6 +8666,49 @@ function getBrowserConflictSet() {
   return new Set(all.filter(function(k) { return !dismissedConflicts.has(k); }));
 }
 
+// ── App-wide dismissed-shortcut restore ─────────────────────────────────────
+// The Conflicted Shortcuts Settings Panel has its own, more elaborate version
+// of this check (conflictsKbLighting's _unblockFiredChordIfDismissed), but
+// that one only runs while the panel is open. This lightweight version runs
+// on every physical keypress everywhere in the app: the moment a shortcut
+// that's currently sitting in the dismissed (and/or user-found) list is
+// actually pressed successfully, we know it isn't a real problem after all,
+// so it's removed from both lists without the user needing to visit Settings.
+function _checkAppWideConflictRestore(Event) {
+  if (touchEnabled) return; // no physical conflicts to confirm from touch input
+  if (!dismissedConflicts.size) return;
+
+  Array.from(dismissedConflicts).forEach(function(CanonicalKey) {
+    if (!matchesShortcut(Event, CanonicalKey)) return;
+
+    dismissedConflicts.delete(CanonicalKey);
+    kbKeyOverrides.delete(CanonicalKey);
+    _saveKbKeyOverrides();
+    userManuallyUnblockedConflicts.delete(CanonicalKey);
+    _saveUserManuallyUnblockedConflicts();
+    userConfirmedWorkingConflicts.add(CanonicalKey);
+    _saveUserConfirmedWorkingConflicts();
+    _saveCustomDismissedConflicts();
+
+    if (blurDiagnosticConflicts.has(CanonicalKey)) {
+      blurDiagnosticConflicts.delete(CanonicalKey);
+      _saveBlurDiagnosticConflicts();
+    }
+
+    if (gameState !== 'playing' && gameState !== 'paused' && gameState !== 'readyToUnpause') {
+      questionPool = shuffleArray(buildPool());
+    }
+
+    // If the Conflicts panel happens to be open too, keep its view in sync.
+    if (activeSettings === 'panelConflicts') {
+      _refreshBrowserContent();
+      conflictsKbLighting.refresh();
+    }
+
+    showToast('Confirmed the shortcut is working');
+  });
+}
+
 /* ══════════════════════════════════════
    WELCOME SCREEN
    Shown on first load if no saved difficulty preference exists.
@@ -13274,6 +13317,9 @@ function handleKeydown(e) {
   }
 
 updateKeyboardLighting(e, true);
+  // App-wide: if this press satisfies a currently dismissed/user-found
+  // shortcut, restore it now. This is not limited to the Conflicts panel.
+  if (!e.repeat) _checkAppWideConflictRestore(e);
   // Sync the CapsLock key indicator with the real OS CapsLock state.
   // getModifierState reads the OS-level state directly, so it never drifts.
   // Uses a dedicated class outside the normal lighting lifecycle so it
@@ -13819,8 +13865,11 @@ function _blurDiagnosticBlockShortcut() {
 
 function _blurDiagnosticBlockAndReport() {
   // Block and send report. Stored canonical, same reason as above.
-  dismissedConflicts.add(CanonicaliseShortcutToken(_blurDiagnosticShortcutToken));
+  var CanonicalToken = CanonicaliseShortcutToken(_blurDiagnosticShortcutToken);
+  dismissedConflicts.add(CanonicalToken);
   _saveCustomDismissedConflicts();
+  blurDiagnosticConflicts.add(CanonicalToken);
+  _saveBlurDiagnosticConflicts();
   questionPool = shuffleArray(buildPool());
   _blurDiagnosticReplaceQuestion();
   var Params = _blurDiagnosticBuildMailtoParams();

@@ -13746,14 +13746,63 @@ function _activateBlurPauseScreen() {
   // The guard is cleared when the player unpauses or resets to idle.
   if (_blurDiagnosticFlowComplete) return;
 
-// Touch mode has no physical keyboard, so conflict diagnosis is meaningless.
-  // Show a simple neutral pause message, restore the keyboard to the panel angle, and return.
+// Touch mode: if the player also has a physical keyboard and the current question
+  // is a known conflict, show a targeted hint. Otherwise show the neutral pause message.
   if (touchEnabled) {
     hideConfirmHeading();
     titleEl.classList.remove('blurred');
     _resetTitleClasses();
-    titleEl.textContent = 'Lost you for a moment,\nso I paused your game.';
-    SetKeyboardPositionForPanel('panelPause');
+
+    var _btConflictInfo   = getBrowserConflicts();
+    var _btToken          = CanonicaliseShortcutToken((currentAnswer || '').split('|')[0]);
+    var _btIsConflicted   = _hasKeyboardConfirmed() && (
+      dismissedConflicts.has(_btToken) ||
+      (_btConflictInfo.susKeys && _btConflictInfo.susKeys.has(_btToken))
+    );
+
+    if (_btIsConflicted) {
+      titleEl.textContent = 'We lost you for a moment.';
+      _blurDiagnosticShortcutToken = currentAnswer;
+      _blurDiagnosticFlowComplete  = true;
+
+      var _btPausePanel = document.getElementById('panelPause');
+      if (_btPausePanel) _btPausePanel.classList.add('blur-pause-active');
+
+      var _btQuestion = _blurDiagnosticFindQuestion();
+      var _btLabelEl  = document.getElementById('blurDiagnosticQuestionLabel');
+      if (_btLabelEl) {
+        _btLabelEl.textContent = _btQuestion
+          ? (_btQuestion.display || '').replace(/\\\\/g, '\\')
+          : '';
+      }
+
+      var _btDotEl = document.getElementById('blurDiagnosticDot');
+      if (_btDotEl) { _btDotEl.style.background = '#eab308'; _btDotEl.style.transition = ''; }
+
+      var _btChips = document.getElementById('blurDiagnosticChipsArea');
+      if (_btChips) { _btChips.innerHTML = ''; _btChips.style.display = 'none'; }
+
+      var _btAction = document.getElementById('blurDiagnosticActionArea');
+      if (_btAction) {
+        _btAction.style.display = '';
+        _btAction.innerHTML = '<button class="segmented-pill-section segmented-pill-full" style="border-radius:12px;border:1.5px solid #d1d5db;" onclick="unpause()"><span class="diff-btn-text">restart</span></button>';
+      }
+
+      var _btBox = document.getElementById('blurDiagnosticBox');
+      if (_btBox) _btBox.classList.remove('blur-diagnostic-resolved');
+
+      var _btRightText = document.getElementById('blurDiagnosticRightText');
+      if (_btRightText) {
+        _btRightText.innerHTML = 'Can\u2019t help noticing the question is asking for a shortcut that might cause a problem like that.<br><br><strong>Restart now</strong> and answer it with the onscreen graphical keyboard\u2014not your actual keyboard.';
+        _btRightText.style.color = '#6b7280';
+      }
+
+      var _btBottomRow = document.getElementById('blurDiagnosticBottomRow');
+      if (_btBottomRow) { _btBottomRow.style.display = 'none'; _btBottomRow.innerHTML = ''; }
+    } else {
+      titleEl.textContent = 'Lost you for a moment,\nso I paused your game.';
+      SetKeyboardPositionForPanel('panelPause');
+    }
     return;
   }
 

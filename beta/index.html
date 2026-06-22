@@ -14813,6 +14813,7 @@ var LayoutRedrawDebounceTimer = null;
    game not actively running or counting down. All three must be true together.
    When any condition no longer holds, the title is restored from gameState.  */
 var _PortraitMediaQuery = window.matchMedia('(orientation: portrait)');
+var _PhoneWidthQuery    = window.matchMedia('(max-width: 500px)');
 
 function _titleForCurrentState() {
   // Returns what #title should say when the rotation hint is not showing.
@@ -14835,6 +14836,7 @@ function _syncRotationHint() {
   if (!_uiReady) return;
   var ShouldShow = (detectedOs === 'mobile')
     && _PortraitMediaQuery.matches
+    && _PhoneWidthQuery.matches
     && (gameState !== 'playing' && gameState !== 'counting');
 
   if (ShouldShow && !_rotationHintActive) {

@@ -13765,6 +13765,8 @@ function _activateBlurPauseScreen() {
       _blurDiagnosticShortcutToken = currentAnswer;
       _blurDiagnosticFlowComplete  = true;
 
+      clearToast();
+
       var _btPausePanel = document.getElementById('panelPause');
       if (_btPausePanel) _btPausePanel.classList.add('blur-pause-active');
 
@@ -13785,7 +13787,7 @@ function _activateBlurPauseScreen() {
       var _btAction = document.getElementById('blurDiagnosticActionArea');
       if (_btAction) {
         _btAction.style.display = '';
-        _btAction.innerHTML = '<button class="segmented-pill-section segmented-pill-full" style="border-radius:12px;border:1.5px solid #d1d5db;" onclick="unpause()"><span class="diff-btn-text">restart</span></button>';
+        _btAction.innerHTML = '<button class="segmented-pill-section segmented-pill-full" style="border-radius:12px;border:1.5px solid #d1d5db;" onclick="mainButtonClick()"><span class="diff-btn-text">restart</span></button>';
       }
 
       var _btBox = document.getElementById('blurDiagnosticBox');

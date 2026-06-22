@@ -4211,6 +4211,18 @@ function scrollPanelIntoViewIfNeeded(elementId, delayMs) {
   }, delayMs);
 }
 
+function _scrollToolbarToBottom() {
+  if (!touchEnabled) return;
+  setTimeout(function() {
+    var toolbar = document.getElementById('phoneToolbar');
+    if (!toolbar) return;
+    var rect = toolbar.getBoundingClientRect();
+    if (rect.bottom > window.innerHeight) {
+      window.scrollTo({ top: window.scrollY + rect.bottom - window.innerHeight, behavior: 'smooth' });
+    }
+  }, 50);
+}
+
 function hideConfirmHeading() {
   if (!_confirmHeadingActive) return;
   _confirmHeadingActive = false;
@@ -6210,6 +6222,7 @@ function _phoneOpenSettings(Page) {
     'confirm-diff-change', 'confirm-kill-punctuation', 'confirm-start-over'].indexOf(gameState) === -1;
   if (NoConfirmOverlayActive) _showPanelTip(Page);
   _syncStudyNotesInlineIcon();
+  _scrollToolbarToBottom();
 }
 
 function _phoneCloseSettings() {
@@ -10725,7 +10738,7 @@ hintUsedAtMs = null;
 wrongKeyCount = 0;
 partialNudgeFiredThisQuestion = false;
 partialCorrectKeyPressedThisQuestion = false;
-scrollPanelIntoViewIfNeeded('keyboardPanel', Math.min(3500, 1500 + ((questionPool[questionIndex]?.display) || '').length * 40));
+scrollPanelIntoViewIfNeeded('keyboardPanel', Math.min(2500, 1500 + ((questionPool[questionIndex]?.display) || '').length * 40));
 }
 
 function skipShortcut() {
@@ -10835,7 +10848,7 @@ hintUsedAtMs = null;
 wrongKeyCount = 0;
 partialNudgeFiredThisQuestion = false;
 partialCorrectKeyPressedThisQuestion = false;
-scrollPanelIntoViewIfNeeded('keyboardPanel', Math.min(3500, 1500 + ((questionPool[questionIndex]?.display) || '').length * 40));
+scrollPanelIntoViewIfNeeded('keyboardPanel', Math.min(2500, 1500 + ((questionPool[questionIndex]?.display) || '').length * 40));
 }
 
 function recordAnswer() {

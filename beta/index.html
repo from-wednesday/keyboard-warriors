@@ -12288,24 +12288,20 @@ function _refreshEndGameHistory() {
       var HasLine2 = CloseCount > 0;
 
       if (HasLine1 || HasLine2) {
-        var StatsColumn = document.createElement('div');
+        var StatsParts = [];
         if (HasLine1) {
-          var AvgLine = document.createElement('p');
-          AvgLine.className = 'sp-report-advice';
-          AvgLine.style.margin = '0';
-          AvgLine.textContent = 'Your average answer time was: ' + AvgTimeText + ' seconds.';
-          StatsColumn.appendChild(AvgLine);
+          StatsParts.push('Your average answer time was: ' + AvgTimeText + ' seconds.');
         }
         if (HasLine2) {
-          var FailLine = document.createElement('p');
-          FailLine.className = 'sp-report-advice';
-          FailLine.style.margin = HasLine1 ? '4px 0 0' : '0';
           var FailWord  = FailCount  === 1 ? 'fail'  : 'fails';
           var CloseVerb = CloseCount === 1 ? 'was'   : 'were';
-          FailLine.textContent = 'Out of ' + FailCount + ' ' + FailWord + ', ' + CloseCount + ' ' + CloseVerb + ' close to the correct answer.';
-          StatsColumn.appendChild(FailLine);
+          StatsParts.push('Out of ' + FailCount + ' ' + FailWord + ', ' + CloseCount + ' ' + CloseVerb + ' close to correct.');
         }
-        HistoryStatsBox.appendChild(StatsColumn);
+        var StatsLine = document.createElement('p');
+        StatsLine.className = 'sp-report-advice';
+        StatsLine.style.margin = '0';
+        StatsLine.textContent = StatsParts.join(' ');
+        HistoryStatsBox.appendChild(StatsLine);
       }
     }
   }

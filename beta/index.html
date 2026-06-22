@@ -6913,6 +6913,26 @@ function _BuildBrowserConflictLabel(RawLabel) {
   return { displayShortcut: DisplayShortcut, descriptor: DescriptorPart };
 }
 
+function DisplayStringForToken(ChordToken) {
+  var TokenDisplayMap = {
+    'Cmd':   currentOs === 'pc' ? 'Ctrl' : '⌘',
+    'Ctrl':  'Ctrl',
+    'Opt':   '⌥',
+    'Shift': '⇧',
+    'Alt':   'Alt',
+  };
+  var ArrowMap = {
+    'ARROWLEFT':  '←',
+    'ARROWRIGHT': '→',
+    'ARROWUP':    '↑',
+    'ARROWDOWN':  '↓',
+  };
+  return (ChordToken || '').split('+').map(function(Part) {
+    var Canonical = NormaliseToken(Part);
+    return TokenDisplayMap[Canonical] || ArrowMap[Canonical] || Part.trim();
+  }).join('+');
+}
+
 function _hasconflictsOverrides() {
   // Returns true if any toggles differ from the auto-blocked default,
   // or any diagnostic-added entries exist.

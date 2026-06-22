@@ -14035,14 +14035,13 @@ function GetPanelKeyboardAngle(PanelName) {
 var TabletKeyboardLowAngle = 80;
 
 // Single fixed angle used for ALL settings panels in phone layout (mini keyboard + toolbar
-// both active, i.e. viewport < MiniKeyboardBreakpointWidth). Slightly closer to face-on
-// than the keyboard-settings tablet angle (58°) so keys are clearly readable.
-var PhoneToolbarKeyboardAngle = 52;
+// both active, i.e. viewport < MiniKeyboardBreakpointWidth). 5
+var PhoneToolbarKeyboardAngle = 48;
 
 function SetKeyboardPositionForPanel(PanelName) {
   if (NoKeyboardMode) return;
-  // Ghost mode: always flat at 47, no dragging or toggling.
-  if (keyboardDisplayMode === 'ghost' && PanelName !== 'panelConflicts') { _animateToPartialAngle(47); return; }
+  // Ghost mode: always set, no dragging or toggling.
+  if (keyboardDisplayMode === 'ghost' && PanelName !== 'panelConflicts') { _animateToPartialAngle(48); return; }
   // Phone layout (mini keyboard + toolbar): all panels share one fixed angle so the
   // keyboard sits at the same depth regardless of which settings panel is open.
   if (window.innerWidth < MiniKeyboardBreakpointWidth) {
@@ -14139,7 +14138,7 @@ function _touchModalVisible() {
 // Interpolate stageTranslateY for any rotateX angle, using face and edge as anchors
 // with the original partial position (62°→89px) as a midpoint reference.
 
-var MiniKeyboardStageYScale = 0.05; // matches buildKeyboard's mini key-size ratio
+var MiniKeyboardStageYScale = 0; // matches buildKeyboard's mini key-size ratio
 
 function _interpolateStageY(RotateXDegrees) {
   var AnchorPartialAngle = 62;

@@ -2226,6 +2226,8 @@ var SkeletonAnimationComplete = new Promise(function(resolve) {
 });
 
 Promise.all([DomReady, StylesheetReady, SkeletonAnimationComplete]).then(function() {
+  history.scrollRestoration = 'manual';
+  window.scrollTo(0, 0);
   _initialiseLayout();
   _initialiseStageDragListeners();
   if (activeSettings !== null) _spAlignPanel();
@@ -4220,7 +4222,7 @@ function _scrollToolbarToBottom() {
     if (rect.bottom > window.innerHeight) {
       window.scrollTo({ top: window.scrollY + rect.bottom - window.innerHeight, behavior: 'smooth' });
     }
-  }, 250);
+  }, 400);
 }
 
 function hideConfirmHeading() {

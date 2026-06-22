@@ -1758,12 +1758,14 @@ function buildOsLabels() {
     if (activeSettings === 'panelKeyboard') updateModalToggles();
     if (activeSettings === 'panelEndGameReportCard')   _refreshReportPanel();
     if (activeSettings === 'panelCheatSheet')  _refreshCheatSheet();
+    _CheckCrossTrainSoftKeyPrompt();
   });
   rightLabel.addEventListener('click', function() {
     applyOsMode(rightOperatingSystem);
     if (activeSettings === 'panelKeyboard') updateModalToggles();
     if (activeSettings === 'panelEndGameReportCard')   _refreshReportPanel();
     if (activeSettings === 'panelCheatSheet')  _refreshCheatSheet();
+    _CheckCrossTrainSoftKeyPrompt();
   });
 }
 
@@ -1858,6 +1860,67 @@ function applyOsMode(os) {
   }
 }
 
+var _crossTrainSoftKeyPreviousState = null;
+var _crossTrainSoftKeyWasPlaying    = false;
+
+function _CheckCrossTrainSoftKeyPrompt() {
+  var IsCrossTraining = (detectedOs !== 'mobile' && detectedOs !== 'other' && detectedOs !== currentOs);
+  if (IsCrossTraining && !touchEnabled) {
+    _enterCrossTrainSoftKeyPrompt();
+  }
+}
+
+function _enterCrossTrainSoftKeyPrompt() {
+  _crossTrainSoftKeyPreviousState = gameState;
+  _crossTrainSoftKeyWasPlaying    = (gameState === 'playing');
+  if (_crossTrainSoftKeyWasPlaying) {
+    enterPause();
+  }
+  gameState = 'cross-train-softkey-prompt';
+  var NonNativeOsLabel = currentOs === 'pc' ? 'PC/Windows' : 'Mac';
+  showConfirmHeading(
+    'Can we activate soft keys for the on-screen keyboard to better simulate the ' + NonNativeOsLabel + ' OS experience?',
+    true, true
+  );
+  mainBtn.textContent = 'on-screen soft-keys';
+  mainBtn.style.background = '#10b981';
+  helpBtn.textContent = "I'll use my keyboard";
+  helpBtn.style.background = '#6b7280';
+  helpBtn.style.color = 'white';
+}
+
+function _exitCrossTrainSoftKeyPrompt() {
+  hideConfirmHeading();
+  var PrevState    = _crossTrainSoftKeyPreviousState || 'idle';
+  var PausedFamily = (PrevState === 'playing' || PrevState === 'paused' || PrevState === 'readyToUnpause');
+  if (PausedFamily) {
+    gameState = 'paused';
+    mainBtn.textContent = 'Unpause';
+    mainBtn.style.background = '';
+    helpBtn.textContent = 'Quit';
+    helpBtn.style.background = '#6b7280';
+    helpBtn.style.color = 'white';
+  } else {
+    gameState = PrevState;
+    mainBtn.textContent = PrevState === 'finished' ? 'Try again?' : 'Start';
+    mainBtn.style.background = '';
+    helpBtn.textContent = 'Help';
+    helpBtn.style.background = '';
+    helpBtn.style.color = '';
+  }
+  _crossTrainSoftKeyWasPlaying    = false;
+  _crossTrainSoftKeyPreviousState = null;
+}
+
+function ConfirmSoftKeys() {
+  _exitCrossTrainSoftKeyPrompt();
+  setTouchEnabled(true);
+}
+
+function DeclineSoftKeys() {
+  _exitCrossTrainSoftKeyPrompt();
+}
+
 function onOsToggle() {
   var nativeMac = (detectedOs === 'mac' || detectedOs === 'mobile');
   // On a Mac device: unchecked = Mac, checked = PC.
@@ -1867,6 +1930,7 @@ function onOsToggle() {
   applyOsMode(targetOs);
   if (activeSettings === 'panelKeyboard') updateModalToggles();
   if (activeSettings === 'panelConflicts') _refreshBrowserContent();
+  _CheckCrossTrainSoftKeyPrompt();
 }
 
 // Session-level flag: once the "recommend a keyboard" pill has been visible
@@ -3292,6 +3356,7 @@ function mainButtonClick() {
   if (gameState === 'confirm-quit')  { confirmQuitYes();  return; }
   if (gameState === 'confirm-kill-punctuation') { confirmKillPunctuationYes(); return; }
   if (gameState === 'confirm-diff-change') { confirmDiffChangeYes(); return; }
+  if (gameState === 'cross-train-softkey-prompt') { ConfirmSoftKeys(); return; }
   if (gameState === 'confirm-trophy') { confirmTrophyYes(); return; }
   if (gameState === 'confirm-start-over') { confirmStartOverYes(); return; }
 }
@@ -3348,6 +3413,7 @@ function helpButtonClick() {
   if (gameState === 'confirm-quit')            { confirmQuitNo();  return; }
   if (gameState === 'confirm-kill-punctuation') { confirmKillPunctuationNo(); return; }
   if (gameState === 'confirm-diff-change')     { confirmDiffChangeNo(); return; }
+  if (gameState === 'cross-train-softkey-prompt') { DeclineSoftKeys(); return; }
   if (gameState === 'confirm-trophy')      { confirmTrophyNo(); return; }
   if (gameState === 'confirm-start-over')  { confirmStartOverNo(); return; }
   if (gameState === 'finished')       { showTip(tipIndex + 1); tipIndex++; return; }

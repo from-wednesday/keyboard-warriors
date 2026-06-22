@@ -933,6 +933,12 @@
         </div>
 
       </div><!-- /.sp-col-right -->
+      <div id="crossTrainPromptRow" style="display:none;grid-column:1/-1;margin-top:10px;">
+        <div class="sp-seg-pill" style="width:100%;border-radius:12px;">
+          <button class="segmented-pill-section segmented-pill-half" onclick="_dismissCrossTrainPrompt()"><span class="diff-btn-text">No. I will use my keyboard.</span></button>
+          <button class="segmented-pill-section segmented-pill-half" onclick="_acceptCrossTrainPrompt()"><span class="diff-btn-text">Activate the graphical keyboard.</span></button>
+        </div>
+      </div>
     </div><!-- /#panelKeyboard -->
 
   </div><!-- /#settingsPanelInner -->
@@ -1858,6 +1864,24 @@ function applyOsMode(os) {
   }
 }
 
+function _showCrossTrainPrompt(OsLabel) {
+  var Row = document.getElementById('crossTrainPromptRow');
+  if (Row) Row.style.display = '';
+  showConfirmHeading('Can we activate soft keys for the on-screen keyboard to better simulate the ' + OsLabel + ' OS experience?');
+}
+
+function _dismissCrossTrainPrompt() {
+  var Row = document.getElementById('crossTrainPromptRow');
+  if (!Row || Row.style.display === 'none') return;
+  Row.style.display = 'none';
+  hideConfirmHeading();
+}
+
+function _acceptCrossTrainPrompt() {
+  _dismissCrossTrainPrompt();
+  setTouchEnabled(true);
+}
+
 function onOsToggle() {
   var nativeMac = (detectedOs === 'mac' || detectedOs === 'mobile');
   // On a Mac device: unchecked = Mac, checked = PC.
@@ -1866,6 +1890,13 @@ function onOsToggle() {
                            : (osToggleEl.checked ? 'mac' : 'pc');
   applyOsMode(targetOs);
   if (activeSettings === 'panelKeyboard') updateModalToggles();
+  if (activeSettings === 'panelConflicts') _refreshBrowserContent();
+  var IsCrossTraining = (detectedOs !== 'mobile' && detectedOs !== 'other' && detectedOs !== targetOs);
+  if (IsCrossTraining && !touchEnabled && activeSettings === 'panelKeyboard') {
+    _showCrossTrainPrompt(targetOs === 'mac' ? 'Mac' : 'PC/Windows');
+  } else {
+    _dismissCrossTrainPrompt();
+  }
 }
 
 // Session-level flag: once the "recommend a keyboard" pill has been visible
@@ -1949,7 +1980,7 @@ function updateMismatchPill() {
     var _pillHasExternalKeyboard = false;
     try { _pillHasExternalKeyboard = localStorage.getItem('kw_has_keyboard') === '1'; } catch(StorageError) {}
     if (!_pillHasExternalKeyboard && !_pillDismissedThisSession) {
-      osMismatchEl.textContent = 'We recommend training with a real mechanical keyboard.';
+      osMismatchEl.textContent = 'External keyboard is better.';
       osMismatchEl.classList.add('show');
       _startPillAutoHideTimer();
     } else {
@@ -6499,6 +6530,7 @@ function openSettings(page) {
   // If navigating away from the cheat sheet without going through
   // closeSettings, clear the tagline it set so it doesn't bleed into
   // the destination panel.
+  if (prevPage === 'panelKeyboard' && page !== 'panelKeyboard') _dismissCrossTrainPrompt();
   if (prevPage === 'panelCheatSheet' && page !== 'panelCheatSheet') {
     var _csTagline = document.getElementById('welcomeTagline');
     if (_csTagline) {
@@ -6596,6 +6628,7 @@ function closeSettings() {
   // Closing the panel always cancels any active confirm overlay
   _exitScoreClearConfirm();
   _exitDiffConfirm();
+  _dismissCrossTrainPrompt();
 
     var sp = document.getElementById('settingsPanel');
   if (sp) {

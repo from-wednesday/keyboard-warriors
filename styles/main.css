@@ -1,7 +1,5 @@
 /* ═══════════════════════════════════════════════════
    Keyboard Warriors CSS 
-   Load order: @import → Block 1 → Block 3 → misc
-   Do not reorder major sections.
    ═══════════════════════════════════════════════════ */
 
 @import url('https://fonts.googleapis.com/css2?family=Lato:wght@400;700&display=swap');
@@ -26,10 +24,6 @@ body {
   gap: 0;
 }
 
-/* When a settings panel has enough room to fit the window without scrolling,
-   the top group anchors to the top and keyboardWrap's stretched min-height
-   (set in _updateViewportFitLayout) pushes credit down to the bottom edge.
-   Outside this class, the page behaves exactly as it always has. */
 body.settings-fits-viewport {
   height: 100dvh;
   justify-content: flex-start;
@@ -894,6 +888,16 @@ body.kb-at-edge #keyboardPanel #kb-shadow {
 #panelDifficultySettings.sp-active::after,
 #panelLandingReturning.sp-active::after,
 #panelLandingWelcome.sp-active::after  { display: none; }
+
+/* Difficulty panel's caret+label sit above the pill via negative offset
+   (bottom: calc(100% + 6px)) and get clipped by the parent containers'
+   overflow:hidden, which exists for the open/close height animation.
+   Lift the clip only while this panel is the active page, on both the
+   desktop settings rail and the phone toolbar instance. */
+#settingsPanelInner:has(#panelDifficultySettings.sp-active),
+#phonePanelArea:has(#panelDifficultySettings.sp-active) {
+  overflow: visible;
+}
 
 /* Gutter: a 1px line at the midpoint — centred above diffIcon */
 .sp-page.sp-active::after {
@@ -2335,7 +2339,6 @@ li.conflict-dismissed .conflict-desc {
 }
 .diff-advanced-footer {
   font-size: 10px;
-  font-style: italic;
   color: #9ca3af;
   text-align: center;
   margin-top: 8px;
@@ -3066,6 +3069,61 @@ body.returning-screen #diffIconWrap .icon-tip { display: none; }
   position: relative;
 }
 
+/* ── History panel ───────────────────────────────── */
+
+/* Three rows: header row (toggle/lives lost + timer/app labels), then the
+   full-width stats roundrect, then the two history lists. Without an
+   explicit grid here the panel falls back to the generic .sp-page.sp-active
+   two-column grid (no rows/areas defined), and the bottom stats box
+   auto-places into row 2 of the LEFT column only, widening that column's
+   track and squeezing the right-hand list. */
+#panelEndGameHistoryRecord.sp-active {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  grid-template-rows: auto auto auto;
+  grid-template-areas:
+    "headerleft headerright"
+    "bottom bottom"
+    "left right";
+  position: relative;
+}
+#panelEndGameHistoryRecord #historyHeaderLeft  { grid-area: headerleft;  padding-right: 20px; min-width: 0; position: relative; margin-bottom: 0; }
+#panelEndGameHistoryRecord #historyHeaderRight { grid-area: headerright; padding-left:  20px; min-width: 0; margin-bottom: 0; }
+#panelEndGameHistoryRecord .sp-col-left  { grid-area: left;  position: relative; }
+#panelEndGameHistoryRecord .sp-col-right { grid-area: right; }
+
+/* Suppress the standard centred gutter — drawn manually instead, same as the Report Card.
+   Two separate dividers are needed: one for the header row, one for the list row,
+   so neither bleeds into the full-width stats box between them. */
+#panelEndGameHistoryRecord.sp-active::after {
+  display: none;
+}
+#panelEndGameHistoryRecord #historyHeaderLeft::after {
+  content: '';
+  position: absolute;
+  top: 16px;
+  right: 0;
+  width: 1px;
+  background: #e5e7eb;
+  bottom: 0;
+  pointer-events: none;
+}
+#panelEndGameHistoryRecord .sp-col-left::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  right: 0;
+  width: 1px;
+  background: #e5e7eb;
+  bottom: 0;
+  pointer-events: none;
+}
+
+#panelEndGameHistoryRecord .sp-report-bottom {
+  margin-top: 2px;
+  margin-bottom: 8px;
+}
+
 /* "Report Card" label — small grey, sits left of "Strengths" in same flex row */
 .sp-small-card-title {
   font-size: 10px;
@@ -3099,6 +3157,11 @@ body.returning-screen #diffIconWrap .icon-tip { display: none; }
   flex-shrink: 0;
   stroke: currentColor;
   overflow: visible;
+}
+/* Resting state: label reads dark, pill border/icon stay light.
+   Hover below still brings the pill + icon up to the same dark grey. */
+.sp-endgame-header-left .sp-small-card-title {
+  color: #374151;
 }
 @media (hover: none) {
   .sp-endgame-header-left:hover { color: #9ca3af; background: transparent; }
@@ -3378,6 +3441,12 @@ body.returning-screen #diffIconWrap .icon-tip { display: none; }
 }
 .sp-endgame-header-left:hover .sp-endgame-search-icon {
   opacity: 1;
+}
+
+/* Resting state: label reads dark, pill border/icon stay light.
+   Hover below still brings the pill + icon up to the same dark grey. */
+.sp-endgame-header-left .sp-small-card-title {
+  color: #374151;
 }
 
 .sp-endgame-context-label {
@@ -3915,6 +3984,21 @@ body.phone-layout-active {
 
 /* Left column divider line in report card panel */
 #phonePanelArea #panelEndGameReportCard .sp-col-left::after {
+  display: none;
+}
+
+/* History panel: same flex stacking as the Report Card above */
+#phonePanelArea #panelEndGameHistoryRecord.sp-active {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+/* Left column divider line in history panel */
+#phonePanelArea #panelEndGameHistoryRecord .sp-col-left::after {
+  display: none;
+}
+#phonePanelArea #panelEndGameHistoryRecord #historyHeaderLeft::after {
   display: none;
 }
 

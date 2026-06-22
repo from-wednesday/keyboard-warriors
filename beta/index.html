@@ -1865,6 +1865,7 @@ function applyOsMode(os) {
 }
 
 function _showCrossTrainPrompt(OsLabel) {
+  if (activeSettings !== 'panelKeyboard') openSettings('panelKeyboard');
   var Row = document.getElementById('crossTrainPromptRow');
   if (Row) Row.style.display = '';
   showConfirmHeading('Can we activate soft keys for the on-screen keyboard to better simulate the ' + OsLabel + ' OS experience?');
@@ -1892,7 +1893,7 @@ function onOsToggle() {
   if (activeSettings === 'panelKeyboard') updateModalToggles();
   if (activeSettings === 'panelConflicts') _refreshBrowserContent();
   var IsCrossTraining = (detectedOs !== 'mobile' && detectedOs !== 'other' && detectedOs !== targetOs);
-  if (IsCrossTraining && !touchEnabled && activeSettings === 'panelKeyboard') {
+  if (IsCrossTraining && !touchEnabled) {
     _showCrossTrainPrompt(targetOs === 'mac' ? 'Mac' : 'PC/Windows');
   } else {
     _dismissCrossTrainPrompt();

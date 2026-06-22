@@ -9,7 +9,7 @@
 <title>Keyboard Warriors</title>
 <script>
   const DefaultTitle = 'Keyboard Warriors';
-  const VersionLabel   = '0033';
+  const VersionLabel   = '0034';
   const TitlePrefix  = document.title !== DefaultTitle ? document.title.trim() + '_' : '';
   const DBG_DEVICE   = TitlePrefix + VersionLabel;
 </script>
@@ -308,7 +308,7 @@
                   stroke-linecap="butt"
                   stroke-dasharray="376.99 376.99"
                   stroke-dashoffset="376.99"
-                  transform="rotate(0 65 65)" />
+                  transform="rotate(-90 65 65)" />
           <!-- Round-capped dot that rides the leading tip of the arc.
                Rendered as a tiny filled circle positioned by JS. -->
           <circle id="questionTimerArcLeadingCap"
@@ -571,8 +571,7 @@
 </div>
   <!-- ── EndGame History View ─────────────────────────────── -->
     <div id="panelEndGameHistoryRecord" class="sp-page">
-   <div class="sp-col sp-col-left">
-        <div class="sp-report-col-header">
+      <div class="sp-report-col-header" id="historyHeaderLeft">
 <div class="more-info-wrap" style="margin-bottom:4px;">
         <p class="sp-title" onclick="toggleMoreInfo('csHistoryMoreInfo', event)" style="font-size:12px;margin:0;"></p>
 <div class="sp-endgame-header-left" onclick="_toggleEndGameHistory(event)">
@@ -600,13 +599,17 @@
       </div>
       <p class="sp-report-section-title" id="EndGameHistoryMasteredHeading"></p>
        </div>
+      <div class="sp-report-col-header sp-report-col-header-right" id="historyHeaderRight" style="justify-content:space-between;margin-top:6px;">
+        <p class="sp-endgame-context-label" id="EndGameHistoryTimerLabel"></p>
+        <p class="sp-endgame-context-label" id="EndGameHistoryContextLabel"></p>
+      </div>
+      <div class="sp-report-bottom">
+        <div class="sp-report-advice-box" id="historyStatsBox"></div>
+      </div>
+      <div class="sp-col sp-col-left">
         <ul id="EndGameHistoryListLeft" class="sp-endgame-list sp-report-weakness"></ul>
       </div>
       <div class="sp-col sp-col-right">
-        <div class="sp-report-col-header sp-report-col-header-right" style="justify-content:space-between;margin-top:6px;">
-          <p class="sp-endgame-context-label" id="EndGameHistoryTimerLabel"></p>
-          <p class="sp-endgame-context-label" id="EndGameHistoryContextLabel"></p>
-        </div>
         <ul id="EndGameHistoryListRight" class="sp-endgame-list sp-report-weakness"></ul>
       </div>
     </div>
@@ -1758,12 +1761,14 @@ function buildOsLabels() {
     if (activeSettings === 'panelKeyboard') updateModalToggles();
     if (activeSettings === 'panelEndGameReportCard')   _refreshReportPanel();
     if (activeSettings === 'panelCheatSheet')  _refreshCheatSheet();
+    _CheckCrossTrainSoftKeyPrompt();
   });
   rightLabel.addEventListener('click', function() {
     applyOsMode(rightOperatingSystem);
     if (activeSettings === 'panelKeyboard') updateModalToggles();
     if (activeSettings === 'panelEndGameReportCard')   _refreshReportPanel();
     if (activeSettings === 'panelCheatSheet')  _refreshCheatSheet();
+    _CheckCrossTrainSoftKeyPrompt();
   });
 }
 
@@ -1858,6 +1863,67 @@ function applyOsMode(os) {
   }
 }
 
+var _crossTrainSoftKeyPreviousState = null;
+var _crossTrainSoftKeyWasPlaying    = false;
+
+function _CheckCrossTrainSoftKeyPrompt() {
+  var IsCrossTraining = (detectedOs !== 'mobile' && detectedOs !== 'other' && detectedOs !== currentOs);
+  if (IsCrossTraining && !touchEnabled) {
+    _enterCrossTrainSoftKeyPrompt();
+  }
+}
+
+function _enterCrossTrainSoftKeyPrompt() {
+  _crossTrainSoftKeyPreviousState = gameState;
+  _crossTrainSoftKeyWasPlaying    = (gameState === 'playing');
+  if (_crossTrainSoftKeyWasPlaying) {
+    enterPause();
+  }
+  gameState = 'cross-train-softkey-prompt';
+  var NonNativeOsLabel = currentOs === 'pc' ? 'PC/Windows' : 'Mac';
+  showConfirmHeading(
+    'Can we activate soft keys for the on-screen keyboard to better simulate the ' + NonNativeOsLabel + ' OS experience?',
+    true, true
+  );
+  mainBtn.textContent = 'on-screen soft-keys';
+  mainBtn.style.background = '#10b981';
+  helpBtn.textContent = "I'll use my keyboard";
+  helpBtn.style.background = '#6b7280';
+  helpBtn.style.color = 'white';
+}
+
+function _exitCrossTrainSoftKeyPrompt() {
+  hideConfirmHeading();
+  var PrevState    = _crossTrainSoftKeyPreviousState || 'idle';
+  var PausedFamily = (PrevState === 'playing' || PrevState === 'paused' || PrevState === 'readyToUnpause');
+  if (PausedFamily) {
+    gameState = 'paused';
+    mainBtn.textContent = 'Unpause';
+    mainBtn.style.background = '';
+    helpBtn.textContent = 'Quit';
+    helpBtn.style.background = '#6b7280';
+    helpBtn.style.color = 'white';
+  } else {
+    gameState = PrevState;
+    mainBtn.textContent = PrevState === 'finished' ? 'Try again?' : 'Start';
+    mainBtn.style.background = '';
+    helpBtn.textContent = 'Help';
+    helpBtn.style.background = '';
+    helpBtn.style.color = '';
+  }
+  _crossTrainSoftKeyWasPlaying    = false;
+  _crossTrainSoftKeyPreviousState = null;
+}
+
+function ConfirmSoftKeys() {
+  _exitCrossTrainSoftKeyPrompt();
+  setTouchEnabled(true);
+}
+
+function DeclineSoftKeys() {
+  _exitCrossTrainSoftKeyPrompt();
+}
+
 function onOsToggle() {
   var nativeMac = (detectedOs === 'mac' || detectedOs === 'mobile');
   // On a Mac device: unchecked = Mac, checked = PC.
@@ -1866,6 +1932,8 @@ function onOsToggle() {
                            : (osToggleEl.checked ? 'mac' : 'pc');
   applyOsMode(targetOs);
   if (activeSettings === 'panelKeyboard') updateModalToggles();
+  if (activeSettings === 'panelConflicts') _refreshBrowserContent();
+  _CheckCrossTrainSoftKeyPrompt();
 }
 
 // Session-level flag: once the "recommend a keyboard" pill has been visible
@@ -2226,6 +2294,8 @@ var SkeletonAnimationComplete = new Promise(function(resolve) {
 });
 
 Promise.all([DomReady, StylesheetReady, SkeletonAnimationComplete]).then(function() {
+  history.scrollRestoration = 'manual';
+  window.scrollTo(0, 0);
   _initialiseLayout();
   _initialiseStageDragListeners();
   if (activeSettings !== null) _spAlignPanel();
@@ -2318,6 +2388,7 @@ const TOKEN_TO_BROWSER_CODE = {
 const TOKEN_SYNONYM_MAP = {
   'COMMAND':     'CMD',
   'CTRL':        'CMD',
+  'SEARCH':      'CMD',
   'OPT':         'OPTION',
   'ALT':         'OPTION',
   'WINDOWS':     'WIN',
@@ -2449,6 +2520,28 @@ function GetActiveShortcutString(ShortcutEntry) {
 function GetAllAlternatives(ShortcutString) {
   if (!ShortcutString) return [];
   return ShortcutString.split('|').map(function(s) { return s.trim(); }).filter(Boolean);
+}
+
+/* ── CanonicaliseShortcutToken ───────────────────────────────────────────────
+   The single shared translation used everywhere a shortcut needs to be
+   compared or stored as a key: question pool filtering, dismissed
+   conflicts, blur diagnostic entries, kill punctuation exclusions.
+   Parses one alternative (no pipes) via ParseShortcutString, which already
+   resolves CTRL to CMD, OPT to OPTION, SEARCH to CMD, and case, then
+   rebuilds it in one fixed modifier order. mac_sc/pc_sc wording and
+   conflict JSON wording never need to match each other literally; both
+   reduce to the same string here. ── */
+function CanonicaliseShortcutToken(ShortcutString) {
+  var Parsed = ParseShortcutString(ShortcutString);
+  if (!Parsed) return '';
+  var Parts = [];
+  if (Parsed.requiresCmd)     Parts.push('CMD');
+  if (Parsed.requiresControl) Parts.push('CONTROL');
+  if (Parsed.requiresWin)     Parts.push('WIN');
+  if (Parsed.requiresOption)  Parts.push('OPTION');
+  if (Parsed.requiresShift)   Parts.push('SHIFT');
+  if (Parsed.keyToken)        Parts.push(Parsed.keyToken);
+  return Parts.join('+');
 }
 
 /* ── TokenToBrowserCode ─────────────────────────────────────────────────────
@@ -3266,6 +3359,7 @@ function mainButtonClick() {
   if (gameState === 'confirm-quit')  { confirmQuitYes();  return; }
   if (gameState === 'confirm-kill-punctuation') { confirmKillPunctuationYes(); return; }
   if (gameState === 'confirm-diff-change') { confirmDiffChangeYes(); return; }
+  if (gameState === 'cross-train-softkey-prompt') { ConfirmSoftKeys(); return; }
   if (gameState === 'confirm-trophy') { confirmTrophyYes(); return; }
   if (gameState === 'confirm-start-over') { confirmStartOverYes(); return; }
 }
@@ -3322,6 +3416,7 @@ function helpButtonClick() {
   if (gameState === 'confirm-quit')            { confirmQuitNo();  return; }
   if (gameState === 'confirm-kill-punctuation') { confirmKillPunctuationNo(); return; }
   if (gameState === 'confirm-diff-change')     { confirmDiffChangeNo(); return; }
+  if (gameState === 'cross-train-softkey-prompt') { DeclineSoftKeys(); return; }
   if (gameState === 'confirm-trophy')      { confirmTrophyNo(); return; }
   if (gameState === 'confirm-start-over')  { confirmStartOverNo(); return; }
   if (gameState === 'finished')       { showTip(tipIndex + 1); tipIndex++; return; }
@@ -3380,41 +3475,60 @@ if (transitioning && gameState !== 'finished') return;
    position:absolute so they never push layout height. */
 function ShowHintToast(TokenString, colour) {
   kbToastEl.innerHTML = '';
-  var ChipsWrapper = BuildShortcutKeyChips(TokenString, false);
 
-  // ── Scale toast chips to 28px height (larger than report-card chips) ────────
-  ResizeChips(ChipsWrapper, 28);
-
-  // ── Colour the chips ──────────────────────────────────────────────────────
+  // ── Colour palette computed once, applied per alternative ─────────────────
+  var ChipBg, ChipBorder, ChipShadow, SepColour;
   if (colour) {
-    var IsGreen    = (colour === 'green');
-    var IsYellow   = (colour === 'yellow');
-    var ChipBg     = IsGreen ? '#10b981' : IsYellow ? '#f59e0b' : '#f97316';
-    var ChipBorder = IsGreen ? '#059669' : IsYellow ? '#d97706' : '#c2410c';
-    var ChipShadow = IsGreen ? '0 0 6px rgba(16,185,129,0.45)' : IsYellow ? '0 0 6px rgba(245,158,11,0.45)' : '0 0 6px rgba(249,115,22,0.45)';
-    var SepColour  = IsGreen ? '#059669' : IsYellow ? '#d97706' : '#c2410c';    
-    ChipsWrapper.querySelectorAll('.sp-report-chip-key').forEach(function(Chip) {
-      Chip.style.background  = ChipBg;
-      Chip.style.color       = 'white';
-      Chip.style.borderColor = ChipBorder;
-      Chip.style.boxShadow   = ChipShadow;
-    });
-    ChipsWrapper.querySelectorAll('span:not(.sp-report-chip-key)').forEach(function(Sep) {
-      Sep.style.color = SepColour;
-    });
+    var IsGreen  = (colour === 'green');
+    var IsYellow = (colour === 'yellow');
+    ChipBg     = IsGreen ? '#10b981' : IsYellow ? '#f59e0b' : '#f97316';
+    ChipBorder = IsGreen ? '#059669' : IsYellow ? '#d97706' : '#c2410c';
+    ChipShadow = IsGreen ? '0 0 6px rgba(16,185,129,0.45)' : IsYellow ? '0 0 6px rgba(245,158,11,0.45)' : '0 0 6px rgba(249,115,22,0.45)';
+    SepColour  = IsGreen ? '#059669' : IsYellow ? '#d97706' : '#c2410c';
   }
 
-  // ── Safari inline-flex fix ────────────────────────────────────────────────
+  // ── One chip group per pipe-separated alternative ─────────────────────────
+  var Alternatives = GetAllAlternatives(TokenString);
+  if (!Alternatives.length) Alternatives = [''];
+
+  // ── Outer flex container (Safari inline-flex fix applied at this level) ───
   // BuildShortcutKeyChips returns an inline-flex span. When appended as the
   // sole child of a block element (kbToastEl), Safari collapses the inline
-  // formatting context and merges chips. Switching to block-level flex on
-  // the wrapper — scoped to the toast only — fixes this without affecting
-  // report-card or cheat-sheet contexts where the wrapper stays inline-flex.
-  ChipsWrapper.style.display        = 'flex';
-  ChipsWrapper.style.justifyContent = 'center';
-  ChipsWrapper.style.marginLeft     = '0';
+  // formatting context and merges chips. A flex outer wrapper — scoped to the
+  // toast only — fixes this without affecting report-card or cheat-sheet
+  // contexts where each ChipsWrapper stays inline-flex.
+  var OuterWrapper = document.createElement('span');
+  OuterWrapper.style.cssText = 'display:flex;align-items:center;justify-content:center;margin-left:0;';
 
-  kbToastEl.appendChild(ChipsWrapper);
+  Alternatives.forEach(function(Alt, Index) {
+    if (Index > 0) {
+      var OrLabel = document.createElement('span');
+      OrLabel.textContent = ' or ';
+      OrLabel.style.cssText = 'margin:0 4px;color:#9ca3af;font-size:11px;font-weight:400;white-space:nowrap;flex-shrink:0;';
+      OuterWrapper.appendChild(OrLabel);
+    }
+
+    var ChipsWrapper = BuildShortcutKeyChips(Alt, false);
+    ResizeChips(ChipsWrapper, 28);
+    ChipsWrapper.style.display    = 'inline-flex';
+    ChipsWrapper.style.marginLeft = '0';
+
+    if (colour) {
+      ChipsWrapper.querySelectorAll('.sp-report-chip-key').forEach(function(Chip) {
+        Chip.style.background  = ChipBg;
+        Chip.style.color       = 'white';
+        Chip.style.borderColor = ChipBorder;
+        Chip.style.boxShadow   = ChipShadow;
+      });
+      ChipsWrapper.querySelectorAll('span:not(.sp-report-chip-key)').forEach(function(Sep) {
+        Sep.style.color = SepColour;
+      });
+    }
+
+    OuterWrapper.appendChild(ChipsWrapper);
+  });
+
+  kbToastEl.appendChild(OuterWrapper);
 }
 
 function toggleHelp() {
@@ -4186,6 +4300,18 @@ function scrollPanelIntoViewIfNeeded(elementId, delayMs) {
       }
     }
   }, delayMs);
+}
+
+function _scrollToolbarToBottom() {
+  if (!touchEnabled) return;
+  setTimeout(function() {
+    var toolbar = document.getElementById('phoneToolbar');
+    if (!toolbar) return;
+    var rect = toolbar.getBoundingClientRect();
+    if (rect.bottom > window.innerHeight) {
+      window.scrollTo({ top: window.scrollY + rect.bottom - window.innerHeight, behavior: 'smooth' });
+    }
+  }, 400);
 }
 
 function hideConfirmHeading() {
@@ -5997,7 +6123,7 @@ function _syncPhoneToolbarVisibility() {
      // if (gameState === 'welcome') {ToolbarElement.classList.remove('toolbar-visible'); return;}
   // alt: Only suppress the toolbar on the welcome screen when the keyboard is visible.
   // because: When the keyboard is hidden (NoKeyboardMode), the toolbar is the only way to reach panels.
-  if (gameState === 'welcome' && !NoKeyboardMode) {
+ if (gameState === 'welcome' && !NoKeyboardMode && window.innerWidth >= MiniKeyboardBreakpointWidth) {
     ToolbarElement.classList.remove('toolbar-visible');
     return;
   }
@@ -6187,6 +6313,7 @@ function _phoneOpenSettings(Page) {
     'confirm-diff-change', 'confirm-kill-punctuation', 'confirm-start-over'].indexOf(gameState) === -1;
   if (NoConfirmOverlayActive) _showPanelTip(Page);
   _syncStudyNotesInlineIcon();
+  _scrollToolbarToBottom();
 }
 
 function _phoneCloseSettings() {
@@ -6622,7 +6749,7 @@ function _closeAllModals() {
 
 function _closeAllModalsInstant() {
   if (activeSettings === null) return;
-  if (NoKeyboardMode) {
+  if (NoKeyboardMode || window.innerWidth < MiniKeyboardBreakpointWidth) {
     activeSettings = null;
     _panelTipInTitle = false;
     _exitScoreClearConfirm();
@@ -6868,12 +6995,31 @@ function _BuildBrowserConflictLabel(RawLabel) {
 
   // Replace known long token names with symbols
   var DisplayShortcut = ShortcutPart.split('+').map(function(Token) {
-    var Upper = Token.trim().toUpperCase();
-    var Canonical = TOKEN_SYNONYM_MAP[Upper] || Upper;
+    var Canonical = NormaliseToken(Token);
     return TokenDisplayMap[Canonical] || ArrowMap[Canonical] || Token.trim();
   }).join('+');
 
   return { displayShortcut: DisplayShortcut, descriptor: DescriptorPart };
+}
+
+function DisplayStringForToken(ChordToken) {
+  var TokenDisplayMap = {
+    'Cmd':   currentOs === 'pc' ? 'Ctrl' : '⌘',
+    'Ctrl':  'Ctrl',
+    'Opt':   '⌥',
+    'Shift': '⇧',
+    'Alt':   'Alt',
+  };
+  var ArrowMap = {
+    'ARROWLEFT':  '←',
+    'ARROWRIGHT': '→',
+    'ARROWUP':    '↑',
+    'ARROWDOWN':  '↓',
+  };
+  return (ChordToken || '').split('+').map(function(Part) {
+    var Canonical = NormaliseToken(Part);
+    return TokenDisplayMap[Canonical] || ArrowMap[Canonical] || Part.trim();
+  }).join('+');
 }
 
 function _hasconflictsOverrides() {
@@ -7819,10 +7965,10 @@ function _detectBrowserName() {
 // CMD resolves to ctrlKey on PC via _MatchesSingleAlternative, so this is correct
 // for both platforms.
 function _conflictBadToToken(BadString) {
-  return BadString
-    .replace(/\bCTRL\b/g,   'CMD')
-    .replace(/\bSEARCH\b/g, 'CMD')   // ChromeOS Search key acts like a modifier
-    .replace(/\bWIN\b/g,    'WIN');
+  // Delegates to the single shared canonicaliser so conflict JSON wording
+  // (CTRL/CMD/OPT/SEARCH, any case) and shortcut JSON wording always land
+  // on the same token string, regardless of which platform authored them.
+  return CanonicaliseShortcutToken(BadString);
 }
 
 // Builds a display label string from a conflict entry's bad + action fields.
@@ -8113,10 +8259,10 @@ function _allConflictTokensNormalised() {
   });
   return AllTokens
     .filter(function(RawToken) {
-      return !userConfirmedWorkingConflicts.has(NormaliseToken(RawToken));
+      return !userConfirmedWorkingConflicts.has(CanonicaliseShortcutToken(RawToken));
     })
     .map(function(RawToken) {
-      return NormaliseToken(RawToken);
+      return CanonicaliseShortcutToken(RawToken);
     });
 }
 
@@ -8145,8 +8291,8 @@ function _allConflictTokensNormalised() {
       // - User found (blur diagnostic) entry = always orange
       var IsBlurEntry = blurDiagnosticConflicts.has(ConflictEntry);
       var IsManuallyUnblocked = userManuallyUnblockedConflicts.has(ConflictEntry);
-      var IsManuallyBlocked = dismissedConflicts.has(ConflictEntry);
-      var IsSus = IsManuallyUnblocked || (!IsBlurEntry && _isSusToken(ConflictEntry));
+      var IsManuallyBlocked = !touchEnabled && dismissedConflicts.has(ConflictEntry);
+      var IsSus = IsManuallyUnblocked || touchEnabled && dismissedConflicts.has(ConflictEntry) || (!IsBlurEntry && _isSusToken(ConflictEntry));
       if (IsManuallyUnblocked) {
         if (BestMatch !== 'blocked') BestMatch = 'sus';
       } else if (!IsSus || IsManuallyBlocked || IsBlurEntry) {
@@ -8223,8 +8369,8 @@ function _allConflictTokensNormalised() {
 
         var IsBlurEntry = blurDiagnosticConflicts.has(ConflictEntry);
         var IsManuallyUnblocked = userManuallyUnblockedConflicts.has(ConflictEntry);
-        var IsManuallyBlocked = dismissedConflicts.has(ConflictEntry);
-        var IsSus = IsManuallyUnblocked || (!IsBlurEntry && _isSusToken(ConflictEntry));
+        var IsManuallyBlocked = !touchEnabled && dismissedConflicts.has(ConflictEntry);
+        var IsSus = IsManuallyUnblocked || touchEnabled && dismissedConflicts.has(ConflictEntry) || (!IsBlurEntry && _isSusToken(ConflictEntry));
 
         if (IsManuallyUnblocked) {
           if (ModifierMatch !== 'blocked') ModifierMatch = 'sus';
@@ -8349,7 +8495,7 @@ function _allConflictTokensNormalised() {
   var KeyToken = _browserCodeToToken(NonModifierBrowserCode);
   var ChordToken = KeyToken ? _buildChordToken(KeyToken) : _buildChordToken(null);
   if (!ChordToken) return;
-  var NormalisedChord = NormaliseToken(ChordToken);
+  var NormalisedChord = CanonicaliseShortcutToken(ChordToken);
 
   if (userConfirmedWorkingConflicts.has(NormalisedChord)) return;
 
@@ -8385,31 +8531,35 @@ function _allConflictTokensNormalised() {
     questionPool = shuffleArray(buildPool());
   }
 
-  // Update list item radio states immediately
-  document.querySelectorAll(
-    '#browserCompatList li[data-conflict-key], #cfFoundList li[data-conflict-key]'
-  ).forEach(function(ListItem) {
-    if (NormaliseToken(ListItem.dataset.conflictKey || '') !== NormalisedChord) return;
-    var Radio = ListItem.querySelector('.modal-radio');
-    if (Radio) Radio.classList.remove('on');
-    ListItem.classList.remove('conflict-dismissed');
-  });
+  if (_active) {
+    // Update list item radio states immediately
+    document.querySelectorAll(
+      '#browserCompatList li[data-conflict-key], #cfFoundList li[data-conflict-key]'
+    ).forEach(function(ListItem) {
+      if (CanonicaliseShortcutToken(ListItem.dataset.conflictKey || '') !== NormalisedChord) return;
+      var Radio = ListItem.querySelector('.modal-radio');
+      if (Radio) Radio.classList.remove('on');
+      ListItem.classList.remove('conflict-dismissed');
+    });
 
-  _syncConflictFilterPillStyles();
+    _syncConflictFilterPillStyles();
 
-  // Refresh lighting immediately so the key turns green right now
-  conflictsKbLighting.refresh();
+    // Refresh lighting immediately so the key turns green right now
+    conflictsKbLighting.refresh();
+  }
 
-  showToast('Confirmed the shortcut is working');
+  showToast('Confirmed ' + DisplayStringForToken(NormalisedChord) + ' is working');
 
   setTimeout(function() {
     if (NeedsExpunge) {
       blurDiagnosticConflicts.delete(NormalisedChord);
       _saveBlurDiagnosticConflicts();
     }
-    _refreshBrowserContent();
-    conflictsKbLighting.refresh();
-    _flashConflictListChipsGreen(NormalisedChord);
+    if (_active) {
+      _refreshBrowserContent();
+      conflictsKbLighting.refresh();
+      _flashConflictListChipsGreen(NormalisedChord);
+    }
   }, 1000);
 }
   // ── Conflict list chip flash ──────────────────────────────────────────────
@@ -8419,7 +8569,7 @@ function _allConflictTokensNormalised() {
   // that the shortcut is working, synced with the physical key lighting.
 
   function _flashConflictListChipsGreen(ChordToken) {
-    var NormalisedChord = NormaliseToken(ChordToken);
+    var NormalisedChord = CanonicaliseShortcutToken(ChordToken);
     var FLASH_DURATION_MS = 900;
     var GreenBg     = '#10b981';
     var GreenBorder = '#059669';
@@ -8431,7 +8581,7 @@ function _allConflictTokensNormalised() {
       '#browserCompatList li[data-conflict-key], #cfFoundList li[data-conflict-key]'
     );
     AllListItems.forEach(function (ListItem) {
-      if (NormaliseToken(ListItem.dataset.conflictKey || '') !== NormalisedChord) return;
+      if (CanonicaliseShortcutToken(ListItem.dataset.conflictKey || '') !== NormalisedChord) return;
       var Chips = ListItem.querySelectorAll('.sp-report-chip-key');
       Chips.forEach(function (Chip) {
         Chip.style.transition  = 'background 0.12s ease, color 0.12s ease, box-shadow 0.12s ease';
@@ -8462,6 +8612,11 @@ function _allConflictTokensNormalised() {
   function _releaseKey(BrowserCode) {
     _heldKeys.delete(BrowserCode);
 
+    // The chord tracking above runs always, app-wide. Everything below is
+    // purely visual feedback on the on-screen keyboard, so it only matters
+    // while the Conflicts panel is actually open and showing that keyboard.
+    if (!_active) return;
+
     if (_isModifierCode(BrowserCode)) {
       // Modifier released: redraw all keys to reflect the reduced chord
       _applyAllKeyColours();
@@ -8483,7 +8638,6 @@ function _allConflictTokensNormalised() {
   }
   
   function _onKeydown(Event) {
-    if (!_active) return;
     if (Event.repeat) return;  // ignore key-repeat — lighting and flash are one-shot
 
     if (stickyKeysOn && _heldKeys.has(Event.code)) {
@@ -8496,15 +8650,21 @@ function _allConflictTokensNormalised() {
     _heldKeys.add(Event.code);
 
      if (_isModifierCode(Event.code)) {
-      _applyAllKeyColours();
-      var ModifierClassification = _classifyKeyWithCurrentChord(Event.code);
-      if (ModifierClassification === 'blocked' || ModifierClassification === 'sus') {
-        _applyKeyPressedColour(Event.code);
+      if (_active) {
+        _applyAllKeyColours();
+        var ModifierClassification = _classifyKeyWithCurrentChord(Event.code);
+        if (ModifierClassification === 'blocked' || ModifierClassification === 'sus') {
+          _applyKeyPressedColour(Event.code);
+        }
       }
       _unblockFiredChordIfDismissed(Event.code);
       return;
     }
 
+    // Restoration runs app-wide on every non-modifier press. The keyboard
+    // colour redraw and flash below are purely visual, so they're skipped
+    // entirely when the Conflicts panel isn't open and showing that keyboard.
+    if (_active) {
 // Non-modifier pressed: redraw the keyboard so any newly-completable
 // conflicts become visible, then light the pressed key.
 _applyAllKeyColours();
@@ -8521,14 +8681,13 @@ _applyKeyPressedColour(Event.code);
         _flashConflictListChipsGreen(ChordForFlash);
       }
     }
+    }
 
     _unblockFiredChordIfDismissed(Event.code);
   }
 
   function _onKeyup(Event) {
-    if (!_active) return;
     if (stickyKeysOn) return; // sticky toggling is handled entirely on keydown
-
     _releaseKey(Event.code);
   }
 
@@ -8539,18 +8698,13 @@ _applyKeyPressedColour(Event.code);
     _active   = true;
     _heldKeys = new Set();
     document.getElementById('keyboardPanel').classList.add('conflicts-panel-active');
-    document.addEventListener('keydown', _onKeydown, true);
-    document.addEventListener('keyup',   _onKeyup,   true);
     setTimeout(_applyAllKeyColours, 300);
   }
 
   function deactivate() {
     if (!_active) return;
     _active   = false;
-    _heldKeys = new Set();
     document.getElementById('keyboardPanel').classList.remove('conflicts-panel-active');
-    document.removeEventListener('keydown', _onKeydown, true);
-    document.removeEventListener('keyup',   _onKeyup,   true);
     _clearAllKeys();
   }
 
@@ -8577,10 +8731,18 @@ _applyKeyPressedColour(Event.code);
   // Clears all held keys and redraws resting state. Called when the window
   // loses focus so that keys intercepted by the browser don't get stuck lit.
   function resetOnBlur() {
-    if (!_active) return;
     _heldKeys = new Set();
-    _applyAllKeyColours();
+    if (_active) _applyAllKeyColours();
   }
+
+  // Chord tracking and dismissed/sus restoration need to work everywhere in
+  // the app, not just while the Conflicts panel is open, so these listeners
+  // are attached once, permanently, here, rather than in activate()/deactivate().
+  // The visual side-effects inside _onKeydown/_onKeyup/_releaseKey remain
+  // gated on _active so the on-screen keyboard is only ever tinted while the
+  // panel is actually showing it.
+  document.addEventListener('keydown', _onKeydown, true);
+  document.addEventListener('keyup',   _onKeyup,   true);
 
   return { activate: activate, deactivate: deactivate, refresh: refresh, markSusBlocked: markSusBlocked, resetOnBlur: resetOnBlur };
 }());
@@ -8627,6 +8789,49 @@ function _saveCustomDismissedConflicts() {
 function getBrowserConflictSet() {
   var all = getBrowserConflicts().keys;
   return new Set(all.filter(function(k) { return !dismissedConflicts.has(k); }));
+}
+
+// ── App-wide dismissed-shortcut restore ─────────────────────────────────────
+// The Conflicted Shortcuts Settings Panel has its own, more elaborate version
+// of this check (conflictsKbLighting's _unblockFiredChordIfDismissed), but
+// that one only runs while the panel is open. This lightweight version runs
+// on every physical keypress everywhere in the app: the moment a shortcut
+// that's currently sitting in the dismissed (and/or user-found) list is
+// actually pressed successfully, we know it isn't a real problem after all,
+// so it's removed from both lists without the user needing to visit Settings.
+function _checkAppWideConflictRestore(Event) {
+  if (touchEnabled) return; // no physical conflicts to confirm from touch input
+  if (!dismissedConflicts.size) return;
+
+  Array.from(dismissedConflicts).forEach(function(CanonicalKey) {
+    if (!matchesShortcut(Event, CanonicalKey)) return;
+
+    dismissedConflicts.delete(CanonicalKey);
+    kbKeyOverrides.delete(CanonicalKey);
+    _saveKbKeyOverrides();
+    userManuallyUnblockedConflicts.delete(CanonicalKey);
+    _saveUserManuallyUnblockedConflicts();
+    userConfirmedWorkingConflicts.add(CanonicalKey);
+    _saveUserConfirmedWorkingConflicts();
+    _saveCustomDismissedConflicts();
+
+    if (blurDiagnosticConflicts.has(CanonicalKey)) {
+      blurDiagnosticConflicts.delete(CanonicalKey);
+      _saveBlurDiagnosticConflicts();
+    }
+
+    if (gameState !== 'playing' && gameState !== 'paused' && gameState !== 'readyToUnpause') {
+      questionPool = shuffleArray(buildPool());
+    }
+
+    // If the Conflicts panel happens to be open too, keep its view in sync.
+    if (activeSettings === 'panelConflicts') {
+      _refreshBrowserContent();
+      conflictsKbLighting.refresh();
+    }
+
+    showToast('Confirmed the shortcut is working');
+  });
 }
 
 /* ══════════════════════════════════════
@@ -9990,13 +10195,15 @@ var DIFF_RANGE = {
 // between layouts (e.g. UK, French, German, Nordic, Spanish keyboards).
 // Letters (KeyA-Z), digits (Digit0-9), modifiers, arrows, and function keys
 // are all stable and are never included here.
+// Written directly in canonical form (see CanonicaliseShortcutToken) since
+// buildPool() now compares against the canonicalised shortcut string.
 const UNSTABLE_PUNCTUATION_TOKENS = new Set([
-  ';', "CMD+;", "CMD+OPTION+;", "CMD+SHIFT+;", "CMD+SHIFT+OPTION+;",
-  "'", "CMD+'",
-  '/', "CMD+/", "CMD+OPTION+/",
-  '\\', "BACKSLASH", "CMD+BACKSLASH", "CMD+SHIFT+BACKSLASH", "CMD+OPTION+BACKSLASH",
-  '`', "GRAVE", "CMD+GRAVE", "CMD+OPTION+GRAVE", "CMD+SHIFT+GRAVE",
-  '~', "SHIFT+~", "SHIFT+GRAVE",
+  "SEMICOLON", "CMD+SEMICOLON", "CMD+OPTION+SEMICOLON", "CMD+SHIFT+SEMICOLON", "CMD+OPTION+SHIFT+SEMICOLON",
+  "QUOTE", "CMD+QUOTE",
+  "SLASH", "CMD+SLASH", "CMD+OPTION+SLASH",
+  "BACKSLASH", "CMD+BACKSLASH", "CMD+SHIFT+BACKSLASH", "CMD+OPTION+BACKSLASH",
+  "GRAVE", "CMD+GRAVE", "CMD+OPTION+GRAVE", "CMD+SHIFT+GRAVE",
+  "SHIFT+GRAVE",
 ]);
 
 function buildPool() {
@@ -10014,8 +10221,11 @@ function buildPool() {
     var d = ShortcutEntry.difficulty;
     if (d < diffRange.min || d > diffRange.max) return false;
 
-    // Browser conflict exclusion — check primary alternative only
-    var PrimaryString = ActiveString.split('|')[0];
+    // Browser conflict exclusion — check primary alternative only.
+    // Canonicalised so conflict JSON wording (CTRL/CMD/OPT, any case)
+    // always matches this shortcut's wording, regardless of which
+    // platform authored it.
+    var PrimaryString = CanonicaliseShortcutToken(ActiveString.split('|')[0]);
     if (!touchEnabled && browserSkip.has(PrimaryString)) return false;
     if (!touchEnabled && dismissedConflicts.has(PrimaryString)) return false;
 
@@ -10181,9 +10391,9 @@ function updateQuestionTimerArcVisual() {
   leadingCap.setAttribute('fill',  arcColour);
 
   // Position the leading cap dot at the tip of the arc.
-  // The arc starts at 3 o'clock (0°) and sweeps clockwise.
-  // Angle in degrees from 3 o'clock = (1 − fraction) × 360
-  var angleDegrees  = (1 - fraction) * 360;
+  // The arc starts at 12 o'clock (-90°) and sweeps clockwise.
+  // Angle in degrees from 3 o'clock = (1 − fraction) × 360 − 90
+  var angleDegrees  = (1 - fraction) * 360 - 90;
   var angleRadians  = angleDegrees * (Math.PI / 180);
   var capX          = 65 + 60 * Math.cos(angleRadians);
   var capY          = 65 + 60 * Math.sin(angleRadians);
@@ -10698,7 +10908,7 @@ hintUsedAtMs = null;
 wrongKeyCount = 0;
 partialNudgeFiredThisQuestion = false;
 partialCorrectKeyPressedThisQuestion = false;
-scrollPanelIntoViewIfNeeded('keyboardPanel', Math.min(3500, 1500 + ((questionPool[questionIndex]?.display) || '').length * 40));
+scrollPanelIntoViewIfNeeded('keyboardPanel', Math.min(2500, 1500 + ((questionPool[questionIndex]?.display) || '').length * 40));
 }
 
 function skipShortcut() {
@@ -10808,7 +11018,7 @@ hintUsedAtMs = null;
 wrongKeyCount = 0;
 partialNudgeFiredThisQuestion = false;
 partialCorrectKeyPressedThisQuestion = false;
-scrollPanelIntoViewIfNeeded('keyboardPanel', Math.min(3500, 1500 + ((questionPool[questionIndex]?.display) || '').length * 40));
+scrollPanelIntoViewIfNeeded('keyboardPanel', Math.min(2500, 1500 + ((questionPool[questionIndex]?.display) || '').length * 40));
 }
 
 function recordAnswer() {
@@ -12047,6 +12257,54 @@ function _refreshEndGameHistory() {
         RightList.appendChild(ListItem);
       }
   });
+
+  // ── History stats box ─────────────────────────────────────────────────────
+  var HistoryStatsBox = document.getElementById('historyStatsBox');
+  if (HistoryStatsBox) {
+    HistoryStatsBox.innerHTML = '';
+    if (lastCompletedReport) {
+      var Summaries = lastCompletedReport.questionSummaries;
+
+      // Average answer time: successes with a recorded time only
+      var SuccessTimesMs = Summaries
+        .filter(function(s) { return s.endType === 'success' && s.timeToAnswerMs !== null; })
+        .map(function(s) { return s.timeToAnswerMs; });
+      var AvgTimeText = null;
+      if (SuccessTimesMs.length > 0) {
+        var TotalMs = SuccessTimesMs.reduce(function(acc, t) { return acc + t; }, 0);
+        AvgTimeText = (TotalMs / SuccessTimesMs.length / 1000).toFixed(1);
+      }
+
+      // Fails and close-to-correct (partial OR near-miss; OR avoids double-counting)
+      var FailCount = Summaries.filter(function(s) { return s.endType !== 'success'; }).length;
+      var CloseCount = Summaries.filter(function(s) {
+        if (s.endType === 'success') return false;
+        var IsNearMiss = s.endType === 'timeout' && s.timeToAnswerMs !== null;
+        var IsPartial  = s.partialCorrectKey === true;
+        return IsNearMiss || IsPartial;
+      }).length;
+
+      var HasLine1 = AvgTimeText !== null;
+      var HasLine2 = CloseCount > 0;
+
+      if (HasLine1 || HasLine2) {
+        var StatsParts = [];
+        if (HasLine1) {
+          StatsParts.push('Your average answer time was: ' + AvgTimeText + ' seconds.');
+        }
+        if (HasLine2) {
+          var FailWord  = FailCount  === 1 ? 'fail'  : 'fails';
+          var CloseVerb = CloseCount === 1 ? 'was'   : 'were';
+          StatsParts.push('Out of ' + FailCount + ' ' + FailWord + ', ' + CloseCount + ' ' + CloseVerb + ' close to correct.');
+        }
+        var StatsLine = document.createElement('p');
+        StatsLine.className = 'sp-report-advice';
+        StatsLine.style.margin = '0';
+        StatsLine.textContent = StatsParts.join(' ');
+        HistoryStatsBox.appendChild(StatsLine);
+      }
+    }
+  }
 }
 
 function _refreshCheatSheet() {
@@ -13232,6 +13490,9 @@ function handleKeydown(e) {
   }
 
 updateKeyboardLighting(e, true);
+  // App-wide: if this press satisfies a currently dismissed/user-found
+  // shortcut, restore it now. This is not limited to the Conflicts panel.
+  if (!e.repeat) _checkAppWideConflictRestore(e);
   // Sync the CapsLock key indicator with the real OS CapsLock state.
   // getModifierState reads the OS-level state directly, so it never drifts.
   // Uses a dedicated class outside the normal lighting lifecycle so it
@@ -13459,9 +13720,7 @@ var _IsIphoneSafari = /iPhone/.test(navigator.userAgent);
 
 window.addEventListener('blur', function() {
   releaseAllKeys();
-  if (activeSettings === 'panelConflicts') {
-    conflictsKbLighting.resetOnBlur();
-  }
+  conflictsKbLighting.resetOnBlur();
   if (_IsIphoneSafari) return;
 
   if (gameState === 'playing') {
@@ -13477,6 +13736,56 @@ window.addEventListener('blur', function() {
   }
 });
 
+// Captured once, at load, from the tag's parsed HTML, so a re-entrant
+// call during the brief maximum-scale nudge below can never read back
+// an already-mutated value and bake it in as "original".
+var _OriginalViewportContent = (function() {
+  var Tag = document.querySelector('meta[name=viewport]');
+  return Tag ? Tag.getAttribute('content') : null;
+})();
+var _ViewportNudgeTimeout = null;
+
+function _nudgeViewportScaleOnReturn() {
+  // Safari can return from backgrounding with visualViewport.scale stuck
+  // above 1 (confirmed via remote debugging: scale ~1.6 after returning
+  // from the App Switcher, with no pinch/zoom or text-input focus involved).
+  // Mutating the existing <meta name=viewport> tag's content attribute does
+  // NOT clear this -- Safari caches the zoom state independently of the
+  // viewport tag's attribute value once it's been applied, so setAttribute()
+  // calls are silently ignored here. The tag has to be removed from the DOM
+  // and a fresh element inserted to force Safari to actually reprocess it.
+  // iOS does not reliably fire visibilitychange when the user leaves to
+  // another app (vs. switching tabs within Safari), so this is called from
+  // both visibilitychange and pageshow -- pageshow is the dependable signal
+  // for the "left the app, came back" case. The timeout is cleared and
+  // restarted if both fire for the same return, so they don't race.
+  if (_OriginalViewportContent === null) return;
+  clearTimeout(_ViewportNudgeTimeout);
+
+  var OldTag = document.querySelector('meta[name=viewport]');
+  if (OldTag) OldTag.remove();
+  var NudgeTag = document.createElement('meta');
+  NudgeTag.setAttribute('name', 'viewport');
+  NudgeTag.setAttribute('content', _OriginalViewportContent + ', maximum-scale=1');
+  document.head.appendChild(NudgeTag);
+  void document.body.offsetHeight; // force reflow so the new tag is processed immediately
+
+  _ViewportNudgeTimeout = setTimeout(function() {
+    var NudgeTagNow = document.querySelector('meta[name=viewport]');
+    if (NudgeTagNow) NudgeTagNow.remove();
+    var RestoredTag = document.createElement('meta');
+    RestoredTag.setAttribute('name', 'viewport');
+    RestoredTag.setAttribute('content', _OriginalViewportContent);
+    document.head.appendChild(RestoredTag);
+    void document.body.offsetHeight;
+  }, 300);
+}
+
+window.addEventListener('pageshow', function(Event) {
+  if (document.hidden) return;
+  _nudgeViewportScaleOnReturn();
+});
+
 document.addEventListener('visibilitychange', function() {
   if (document.hidden) {
     releaseAllKeys();
@@ -13487,16 +13796,7 @@ document.addEventListener('visibilitychange', function() {
       _activateBlurPauseScreen();
     }
   } else {
-    // Briefly lock maximum-scale to correct iPadOS Safari's zoom-on-return bug,
-    // then restore the original viewport after Safari has had time to settle.
-    var ViewportMetaTag = document.querySelector('meta[name=viewport]');
-    if (ViewportMetaTag) {
-      var OriginalContent = ViewportMetaTag.getAttribute('content');
-      ViewportMetaTag.setAttribute('content', OriginalContent + ', maximum-scale=1');
-      setTimeout(function() {
-        ViewportMetaTag.setAttribute('content', OriginalContent);
-      }, 300);
-    }
+    _nudgeViewportScaleOnReturn();
     if (_blurDiagnosticFoldPending) {
       _blurDiagnosticFoldPending = false;
       setTimeout(function() { SetKeyboardPositionForPanel('panelPause'); }, 600);
@@ -13583,14 +13883,65 @@ function _activateBlurPauseScreen() {
   // The guard is cleared when the player unpauses or resets to idle.
   if (_blurDiagnosticFlowComplete) return;
 
-// Touch mode has no physical keyboard, so conflict diagnosis is meaningless.
-  // Show a simple neutral pause message, restore the keyboard to the panel angle, and return.
+// Touch mode: if the player also has a physical keyboard and the current question
+  // is a known conflict, show a targeted hint. Otherwise show the neutral pause message.
   if (touchEnabled) {
     hideConfirmHeading();
     titleEl.classList.remove('blurred');
     _resetTitleClasses();
-    titleEl.textContent = 'Lost you for a moment,\nso I paused your game.';
-    SetKeyboardPositionForPanel('panelPause');
+
+    var _btConflictInfo   = getBrowserConflicts();
+    var _btToken          = CanonicaliseShortcutToken((currentAnswer || '').split('|')[0]);
+    var _btIsConflicted   = _hasKeyboardConfirmed() && (
+      dismissedConflicts.has(_btToken) ||
+      (_btConflictInfo.susKeys && _btConflictInfo.susKeys.has(_btToken))
+    );
+
+    if (_btIsConflicted) {
+      titleEl.textContent = 'We lost you for a moment.';
+      _blurDiagnosticShortcutToken = currentAnswer;
+      _blurDiagnosticFlowComplete  = true;
+
+      clearToast();
+
+      var _btPausePanel = document.getElementById('panelPause');
+      if (_btPausePanel) _btPausePanel.classList.add('blur-pause-active');
+
+      var _btQuestion = _blurDiagnosticFindQuestion();
+      var _btLabelEl  = document.getElementById('blurDiagnosticQuestionLabel');
+      if (_btLabelEl) {
+        _btLabelEl.textContent = _btQuestion
+          ? (_btQuestion.display || '').replace(/\\\\/g, '\\')
+          : '';
+      }
+
+      var _btDotEl = document.getElementById('blurDiagnosticDot');
+      if (_btDotEl) { _btDotEl.style.background = '#eab308'; _btDotEl.style.transition = ''; }
+
+      var _btChips = document.getElementById('blurDiagnosticChipsArea');
+      if (_btChips) { _btChips.innerHTML = ''; _btChips.style.display = 'none'; }
+
+      var _btAction = document.getElementById('blurDiagnosticActionArea');
+      if (_btAction) {
+        _btAction.style.display = '';
+        _btAction.innerHTML = '<button class="segmented-pill-section segmented-pill-full" style="border-radius:12px;border:1.5px solid #d1d5db;" onclick="mainButtonClick()"><span class="diff-btn-text">restart</span></button>';
+      }
+
+      var _btBox = document.getElementById('blurDiagnosticBox');
+      if (_btBox) _btBox.classList.remove('blur-diagnostic-resolved');
+
+      var _btRightText = document.getElementById('blurDiagnosticRightText');
+      if (_btRightText) {
+        _btRightText.innerHTML = 'Can\u2019t help noticing the question is asking for a shortcut that might cause a problem like that.<br><br><strong>Restart now</strong> and answer it with the onscreen graphical keyboard\u2014not your actual keyboard.';
+        _btRightText.style.color = '#6b7280';
+      }
+
+      var _btBottomRow = document.getElementById('blurDiagnosticBottomRow');
+      if (_btBottomRow) { _btBottomRow.style.display = 'none'; _btBottomRow.innerHTML = ''; }
+    } else {
+      titleEl.textContent = 'Lost you for a moment,\nso I paused your game.';
+      SetKeyboardPositionForPanel('panelPause');
+    }
     return;
   }
 
@@ -13723,9 +14074,11 @@ function _blurDiagnosticBuildMailtoParams() {
 }
 
 function _blurDiagnosticBlockShortcut() {
-  dismissedConflicts.add(_blurDiagnosticShortcutToken);
+  // Stored canonical so it matches the same form buildPool() checks against.
+  var CanonicalToken = CanonicaliseShortcutToken(_blurDiagnosticShortcutToken);
+  dismissedConflicts.add(CanonicalToken);
   _saveCustomDismissedConflicts();
-  blurDiagnosticConflicts.add(_blurDiagnosticShortcutToken);
+  blurDiagnosticConflicts.add(CanonicalToken);
   _saveBlurDiagnosticConflicts()
   questionPool = shuffleArray(buildPool());
   _blurDiagnosticReplaceQuestion();
@@ -13733,9 +14086,12 @@ function _blurDiagnosticBlockShortcut() {
 }
 
 function _blurDiagnosticBlockAndReport() {
-  // Block and send report
-  dismissedConflicts.add(_blurDiagnosticShortcutToken);
+  // Block and send report. Stored canonical, same reason as above.
+  var CanonicalToken = CanonicaliseShortcutToken(_blurDiagnosticShortcutToken);
+  dismissedConflicts.add(CanonicalToken);
   _saveCustomDismissedConflicts();
+  blurDiagnosticConflicts.add(CanonicalToken);
+  _saveBlurDiagnosticConflicts();
   questionPool = shuffleArray(buildPool());
   _blurDiagnosticReplaceQuestion();
   var Params = _blurDiagnosticBuildMailtoParams();
@@ -13964,11 +14320,22 @@ function GetPanelKeyboardAngle(PanelName) {
 // Low angle used for tablet tap-toggle and ghost mode.
 var TabletKeyboardLowAngle = 80;
 
+// Single fixed angle used for ALL settings panels in phone layout (mini keyboard + toolbar
+// both active, i.e. viewport < MiniKeyboardBreakpointWidth). 5
+var PhoneToolbarKeyboardAngle = 48;
+
 function SetKeyboardPositionForPanel(PanelName) {
   if (NoKeyboardMode) return;
-  // Ghost mode: always flat at 47, no dragging or toggling.
-if (keyboardDisplayMode === 'ghost' && PanelName !== 'panelConflicts') { _animateToPartialAngle(47); return; }
- // Tablet: animate to the panel's tablet angle; tap-toggle is handled separately.
+  // Ghost mode: always set, no dragging or toggling.
+  if (keyboardDisplayMode === 'ghost' && PanelName !== 'panelConflicts') { _animateToPartialAngle(48); return; }
+  // Phone layout (mini keyboard + toolbar): all panels share one fixed angle so the
+  // keyboard sits at the same depth regardless of which settings panel is open.
+  if (window.innerWidth < MiniKeyboardBreakpointWidth) {
+    _animateToPartialAngle(PhoneToolbarKeyboardAngle);
+    _tabletKbToggleAtLow = false;
+    return;
+  }
+  // Desktop / tablet: animate to the per-panel angle; tap-toggle handled separately.
   var Angle = GetPanelKeyboardAngle(PanelName);
   _animateToPartialAngle(Angle);
   // Reset tablet toggle state whenever a panel opens so it starts at the panel default.
@@ -14056,11 +14423,18 @@ function _touchModalVisible() {
 
 // Interpolate stageTranslateY for any rotateX angle, using face and edge as anchors
 // with the original partial position (62°→89px) as a midpoint reference.
+
+var MiniKeyboardStageYScale = 0; // matches buildKeyboard's mini key-size ratio
+
 function _interpolateStageY(RotateXDegrees) {
   var AnchorPartialAngle = 62;
   var AnchorPartialY     = 89;
   var AnchorEdgeAngle    = EdgeAngle;
   var AnchorEdgeY        = 118;
+  if (currentKbMode === 'mini') {
+    AnchorPartialY *= MiniKeyboardStageYScale;
+    AnchorEdgeY    *= MiniKeyboardStageYScale;
+  }
   if (RotateXDegrees <= 0) return 0;
   if (RotateXDegrees >= AnchorEdgeAngle) return AnchorEdgeY;
   if (RotateXDegrees <= AnchorPartialAngle) {
@@ -14439,6 +14813,7 @@ function syncDiffNeedle() {
   var needleAngle = (questionTimer === 1) ? 100 : (DIFF_ANGLES[String(state)] !== undefined ? DIFF_ANGLES[String(state)] : 0);
   if (needle) needle.style.transform = 'rotate(' + needleAngle + 'deg)';
   _diffState = state;
+  _syncPhoneDiffNeedle();
 }
 
 /* ── Active click handler — flip animation ───────────── */
@@ -14627,6 +15002,7 @@ var LayoutRedrawDebounceTimer = null;
    game not actively running or counting down. All three must be true together.
    When any condition no longer holds, the title is restored from gameState.  */
 var _PortraitMediaQuery = window.matchMedia('(orientation: portrait)');
+var _PhoneWidthQuery    = window.matchMedia('(max-width: 500px)');
 
 function _titleForCurrentState() {
   // Returns what #title should say when the rotation hint is not showing.
@@ -14649,6 +15025,7 @@ function _syncRotationHint() {
   if (!_uiReady) return;
   var ShouldShow = (detectedOs === 'mobile')
     && _PortraitMediaQuery.matches
+    && _PhoneWidthQuery.matches
     && (gameState !== 'playing' && gameState !== 'counting');
 
   if (ShouldShow && !_rotationHintActive) {
@@ -14892,6 +15269,11 @@ function _buildSkillsetPill() {
 
 drop.style.cssText =
   'position:fixed;left:' + (pillRect.left / zoom) + 'px;top:' + ((pillRect.top + pillRect.height / 2 - dropHeight / 2) / zoom) + 'px;width:' + (pillRect.width / zoom) + 'px;background:white;border:1.5px solid #9ca3af;border-radius:10px;overflow:hidden;z-index:601;box-shadow:0 4px 12px rgba(0,0,0,0.12);';
+    drop.classList.add('pulse-pop');
+    drop.addEventListener('animationend', function DropPopHandler() {
+      drop.classList.remove('pulse-pop');
+      drop.removeEventListener('animationend', DropPopHandler);
+    });
     document.body.appendChild(drop);
     SKILLSET_DEFS.forEach(function(def) {
       var isSelected = (def.label === currentSkillset);

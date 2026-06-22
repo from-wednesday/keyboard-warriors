@@ -3472,25 +3472,61 @@ if (transitioning && gameState !== 'finished') return;
    position:absolute so they never push layout height. */
 function ShowHintToast(TokenString, colour) {
   kbToastEl.innerHTML = '';
-  var ChipsWrapper = BuildShortcutKeyChips(TokenString, false);
 
-  // ── Scale toast chips to 28px height (larger than report-card chips) ────────
-  ResizeChips(ChipsWrapper, 28);
-
-  // ── Colour the chips ──────────────────────────────────────────────────────
+  // ── Colour palette computed once, applied per alternative ─────────────────
+  var ChipBg, ChipBorder, ChipShadow, SepColour;
   if (colour) {
-    var IsGreen    = (colour === 'green');
-    var IsYellow   = (colour === 'yellow');
-    var ChipBg     = IsGreen ? '#10b981' : IsYellow ? '#f59e0b' : '#f97316';
-    var ChipBorder = IsGreen ? '#059669' : IsYellow ? '#d97706' : '#c2410c';
-    var ChipShadow = IsGreen ? '0 0 6px rgba(16,185,129,0.45)' : IsYellow ? '0 0 6px rgba(245,158,11,0.45)' : '0 0 6px rgba(249,115,22,0.45)';
-    var SepColour  = IsGreen ? '#059669' : IsYellow ? '#d97706' : '#c2410c';    
-    ChipsWrapper.querySelectorAll('.sp-report-chip-key').forEach(function(Chip) {
-      Chip.style.background  = ChipBg;
-      Chip.style.color       = 'white';
-      Chip.style.borderColor = ChipBorder;
-      Chip.style.boxShadow   = ChipShadow;
-    });
+    var IsGreen  = (colour === 'green');
+    var IsYellow = (colour === 'yellow');
+    ChipBg     = IsGreen ? '#10b981' : IsYellow ? '#f59e0b' : '#f97316';
+    ChipBorder = IsGreen ? '#059669' : IsYellow ? '#d97706' : '#c2410c';
+    ChipShadow = IsGreen ? '0 0 6px rgba(16,185,129,0.45)' : IsYellow ? '0 0 6px rgba(245,158,11,0.45)' : '0 0 6px rgba(249,115,22,0.45)';
+    SepColour  = IsGreen ? '#059669' : IsYellow ? '#d97706' : '#c2410c';
+  }
+
+  // ── One chip group per pipe-separated alternative ─────────────────────────
+  var Alternatives = GetAllAlternatives(TokenString);
+  if (!Alternatives.length) Alternatives = [''];
+
+  // ── Outer flex container (Safari inline-flex fix applied at this level) ───
+  // BuildShortcutKeyChips returns an inline-flex span. When appended as the
+  // sole child of a block element (kbToastEl), Safari collapses the inline
+  // formatting context and merges chips. A flex outer wrapper — scoped to the
+  // toast only — fixes this without affecting report-card or cheat-sheet
+  // contexts where each ChipsWrapper stays inline-flex.
+  var OuterWrapper = document.createElement('span');
+  OuterWrapper.style.cssText = 'display:flex;align-items:center;justify-content:center;margin-left:0;';
+
+  Alternatives.forEach(function(Alt, Index) {
+    if (Index > 0) {
+      var OrLabel = document.createElement('span');
+      OrLabel.textContent = ' or ';
+      OrLabel.style.cssText = 'margin:0 4px;color:#9ca3af;font-size:11px;font-weight:400;white-space:nowrap;flex-shrink:0;';
+      OuterWrapper.appendChild(OrLabel);
+    }
+
+    var ChipsWrapper = BuildShortcutKeyChips(Alt, false);
+    ResizeChips(ChipsWrapper, 28);
+    ChipsWrapper.style.display    = 'inline-flex';
+    ChipsWrapper.style.marginLeft = '0';
+
+    if (colour) {
+      ChipsWrapper.querySelectorAll('.sp-report-chip-key').forEach(function(Chip) {
+        Chip.style.background  = ChipBg;
+        Chip.style.color       = 'white';
+        Chip.style.borderColor = ChipBorder;
+        Chip.style.boxShadow   = ChipShadow;
+      });
+      ChipsWrapper.querySelectorAll('span:not(.sp-report-chip-key)').forEach(function(Sep) {
+        Sep.style.color = SepColour;
+      });
+    }
+
+    OuterWrapper.appendChild(ChipsWrapper);
+  });
+
+  kbToastEl.appendChild(OuterWrapper);
+}
     ChipsWrapper.querySelectorAll('span:not(.sp-report-chip-key)').forEach(function(Sep) {
       Sep.style.color = SepColour;
     });

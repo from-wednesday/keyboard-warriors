@@ -14625,6 +14625,7 @@ function syncDiffNeedle() {
   var needleAngle = (questionTimer === 1) ? 100 : (DIFF_ANGLES[String(state)] !== undefined ? DIFF_ANGLES[String(state)] : 0);
   if (needle) needle.style.transform = 'rotate(' + needleAngle + 'deg)';
   _diffState = state;
+  _syncPhoneDiffNeedle();
 }
 
 /* ── Active click handler — flip animation ───────────── */

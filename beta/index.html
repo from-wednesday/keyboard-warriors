@@ -6645,7 +6645,7 @@ function _closeAllModals() {
 
 function _closeAllModalsInstant() {
   if (activeSettings === null) return;
-  if (NoKeyboardMode) {
+  if (NoKeyboardMode || window.innerWidth < MiniKeyboardBreakpointWidth) {
     activeSettings = null;
     _panelTipInTitle = false;
     _exitScoreClearConfirm();
@@ -10142,13 +10142,6 @@ function beginCountdown() {
 
 function beginResumeCountdown() {
   if (_countdownTimer) return;
-  // On phone, _phoneCloseSettings re-opens panelPause for routing when closing a sub-panel
-  // while paused. Collapse it immediately so the panel area clears before the countdown.
-  if (!NoKeyboardMode && window.innerWidth < MiniKeyboardBreakpointWidth && activeSettings !== null) {
-    activeSettings = null;
-    _phoneCollapsePanel();
-    _syncPhoneToolbarActiveState(null);
-  }
   _countdownMode = 'resume';
   _modalWasOpenOnPause = false;
   gameState = 'counting';

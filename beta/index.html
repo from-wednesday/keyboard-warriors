@@ -10142,6 +10142,13 @@ function beginCountdown() {
 
 function beginResumeCountdown() {
   if (_countdownTimer) return;
+  // On phone, _phoneCloseSettings re-opens panelPause for routing when closing a sub-panel
+  // while paused. Collapse it immediately so the panel area clears before the countdown.
+  if (!NoKeyboardMode && window.innerWidth < MiniKeyboardBreakpointWidth && activeSettings !== null) {
+    activeSettings = null;
+    _phoneCollapsePanel();
+    _syncPhoneToolbarActiveState(null);
+  }
   _countdownMode = 'resume';
   _modalWasOpenOnPause = false;
   gameState = 'counting';
@@ -14034,11 +14041,23 @@ function GetPanelKeyboardAngle(PanelName) {
 // Low angle used for tablet tap-toggle and ghost mode.
 var TabletKeyboardLowAngle = 80;
 
+// Single fixed angle used for ALL settings panels in phone layout (mini keyboard + toolbar
+// both active, i.e. viewport < MiniKeyboardBreakpointWidth). Slightly closer to face-on
+// than the keyboard-settings tablet angle (58°) so keys are clearly readable.
+var PhoneToolbarKeyboardAngle = 52;
+
 function SetKeyboardPositionForPanel(PanelName) {
   if (NoKeyboardMode) return;
   // Ghost mode: always flat at 47, no dragging or toggling.
-if (keyboardDisplayMode === 'ghost' && PanelName !== 'panelConflicts') { _animateToPartialAngle(47); return; }
- // Tablet: animate to the panel's tablet angle; tap-toggle is handled separately.
+  if (keyboardDisplayMode === 'ghost' && PanelName !== 'panelConflicts') { _animateToPartialAngle(47); return; }
+  // Phone layout (mini keyboard + toolbar): all panels share one fixed angle so the
+  // keyboard sits at the same depth regardless of which settings panel is open.
+  if (window.innerWidth < MiniKeyboardBreakpointWidth) {
+    _animateToPartialAngle(PhoneToolbarKeyboardAngle);
+    _tabletKbToggleAtLow = false;
+    return;
+  }
+  // Desktop / tablet: animate to the per-panel angle; tap-toggle handled separately.
   var Angle = GetPanelKeyboardAngle(PanelName);
   _animateToPartialAngle(Angle);
   // Reset tablet toggle state whenever a panel opens so it starts at the panel default.

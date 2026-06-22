@@ -609,6 +609,9 @@
         </div>
         <ul id="EndGameHistoryListRight" class="sp-endgame-list sp-report-weakness"></ul>
       </div>
+      <div class="sp-report-bottom">
+        <div class="sp-report-advice-box" id="historyStatsBox"></div>
+      </div>
     </div>
 
 <!-- ── Cheat Sheet Panel ─────────────────────────────── -->
@@ -12254,6 +12257,58 @@ function _refreshEndGameHistory() {
         RightList.appendChild(ListItem);
       }
   });
+
+  // ── History stats box ─────────────────────────────────────────────────────
+  var HistoryStatsBox = document.getElementById('historyStatsBox');
+  if (HistoryStatsBox) {
+    HistoryStatsBox.innerHTML = '';
+    if (lastCompletedReport) {
+      var Summaries = lastCompletedReport.questionSummaries;
+
+      // Average answer time: successes with a recorded time only
+      var SuccessTimesMs = Summaries
+        .filter(function(s) { return s.endType === 'success' && s.timeToAnswerMs !== null; })
+        .map(function(s) { return s.timeToAnswerMs; });
+      var AvgTimeText = null;
+      if (SuccessTimesMs.length > 0) {
+        var TotalMs = SuccessTimesMs.reduce(function(acc, t) { return acc + t; }, 0);
+        AvgTimeText = (TotalMs / SuccessTimesMs.length / 1000).toFixed(1);
+      }
+
+      // Fails and close-to-correct (partial OR near-miss; OR avoids double-counting)
+      var FailCount = Summaries.filter(function(s) { return s.endType !== 'success'; }).length;
+      var CloseCount = Summaries.filter(function(s) {
+        if (s.endType === 'success') return false;
+        var IsNearMiss = s.endType === 'timeout' && s.timeToAnswerMs !== null;
+        var IsPartial  = s.partialCorrectKey === true;
+        return IsNearMiss || IsPartial;
+      }).length;
+
+      var HasLine1 = AvgTimeText !== null;
+      var HasLine2 = FailCount > 0;
+
+      if (HasLine1 || HasLine2) {
+        var StatsColumn = document.createElement('div');
+        if (HasLine1) {
+          var AvgLine = document.createElement('p');
+          AvgLine.className = 'sp-report-advice';
+          AvgLine.style.margin = '0';
+          AvgLine.textContent = 'Your average answer time was: ' + AvgTimeText + ' seconds';
+          StatsColumn.appendChild(AvgLine);
+        }
+        if (HasLine2) {
+          var FailLine = document.createElement('p');
+          FailLine.className = 'sp-report-advice';
+          FailLine.style.margin = HasLine1 ? '4px 0 0' : '0';
+          var FailWord  = FailCount  === 1 ? 'fail'  : 'fails';
+          var CloseVerb = CloseCount === 1 ? 'was'   : 'were';
+          FailLine.textContent = 'Out of ' + FailCount + ' ' + FailWord + ', ' + CloseCount + ' ' + CloseVerb + ' close to correct.';
+          StatsColumn.appendChild(FailLine);
+        }
+        HistoryStatsBox.appendChild(StatsColumn);
+      }
+    }
+  }
 }
 
 function _refreshCheatSheet() {

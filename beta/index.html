@@ -350,6 +350,7 @@
   </div>
   <!-- Lives row: only visible when playerLives is finite. Mirrors questionRow. -->
   <div id="livesRow" class="lives-hidden"></div>
+</div>
 <div id="statsRow" class="page-initially-hidden">
   <span id="statLeft"></span>
   <div id="kbToast"></div>
@@ -3525,23 +3526,6 @@ function ShowHintToast(TokenString, colour) {
   });
 
   kbToastEl.appendChild(OuterWrapper);
-}
-    ChipsWrapper.querySelectorAll('span:not(.sp-report-chip-key)').forEach(function(Sep) {
-      Sep.style.color = SepColour;
-    });
-  }
-
-  // ── Safari inline-flex fix ────────────────────────────────────────────────
-  // BuildShortcutKeyChips returns an inline-flex span. When appended as the
-  // sole child of a block element (kbToastEl), Safari collapses the inline
-  // formatting context and merges chips. Switching to block-level flex on
-  // the wrapper — scoped to the toast only — fixes this without affecting
-  // report-card or cheat-sheet contexts where the wrapper stays inline-flex.
-  ChipsWrapper.style.display        = 'flex';
-  ChipsWrapper.style.justifyContent = 'center';
-  ChipsWrapper.style.marginLeft     = '0';
-
-  kbToastEl.appendChild(ChipsWrapper);
 }
 
 function toggleHelp() {

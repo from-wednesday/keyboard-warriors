@@ -3075,6 +3075,40 @@ body.returning-screen #diffIconWrap .icon-tip { display: none; }
   position: relative;
 }
 
+/* ── History panel ───────────────────────────────── */
+
+/* Mirrors the Report Card override above: without this, the History
+   panel falls back to the generic .sp-page.sp-active two-column grid
+   (no rows/areas defined), and the bottom stats box auto-places into
+   row 2 of the LEFT column only, widening that column's track and
+   squeezing the right-hand list. */
+#panelEndGameHistoryRecord.sp-active {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  grid-template-rows: auto auto;
+  grid-template-areas:
+    "left right"
+    "bottom bottom";
+  position: relative;
+}
+#panelEndGameHistoryRecord .sp-col-left  { grid-area: left;  position: relative; }
+#panelEndGameHistoryRecord .sp-col-right { grid-area: right; }
+
+/* Suppress the standard centred gutter — drawn manually instead, same as the Report Card */
+#panelEndGameHistoryRecord.sp-active::after {
+  display: none;
+}
+#panelEndGameHistoryRecord .sp-col-left::after {
+  content: '';
+  position: absolute;
+  top: 16px;
+  right: 0;
+  width: 1px;
+  background: #e5e7eb;
+  bottom: 0;
+  pointer-events: none;
+}
+
 /* "Report Card" label — small grey, sits left of "Strengths" in same flex row */
 .sp-small-card-title {
   font-size: 10px;
@@ -3935,6 +3969,18 @@ body.phone-layout-active {
 
 /* Left column divider line in report card panel */
 #phonePanelArea #panelEndGameReportCard .sp-col-left::after {
+  display: none;
+}
+
+/* History panel: same flex stacking as the Report Card above */
+#phonePanelArea #panelEndGameHistoryRecord.sp-active {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+/* Left column divider line in history panel */
+#phonePanelArea #panelEndGameHistoryRecord .sp-col-left::after {
   display: none;
 }
 

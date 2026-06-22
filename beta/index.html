@@ -8202,8 +8202,8 @@ function _allConflictTokensNormalised() {
       // - User found (blur diagnostic) entry = always orange
       var IsBlurEntry = blurDiagnosticConflicts.has(ConflictEntry);
       var IsManuallyUnblocked = userManuallyUnblockedConflicts.has(ConflictEntry);
-      var IsManuallyBlocked = dismissedConflicts.has(ConflictEntry);
-      var IsSus = IsManuallyUnblocked || (!IsBlurEntry && _isSusToken(ConflictEntry));
+      var IsManuallyBlocked = !touchEnabled && dismissedConflicts.has(ConflictEntry);
+      var IsSus = IsManuallyUnblocked || touchEnabled && dismissedConflicts.has(ConflictEntry) || (!IsBlurEntry && _isSusToken(ConflictEntry));
       if (IsManuallyUnblocked) {
         if (BestMatch !== 'blocked') BestMatch = 'sus';
       } else if (!IsSus || IsManuallyBlocked || IsBlurEntry) {
@@ -8280,8 +8280,8 @@ function _allConflictTokensNormalised() {
 
         var IsBlurEntry = blurDiagnosticConflicts.has(ConflictEntry);
         var IsManuallyUnblocked = userManuallyUnblockedConflicts.has(ConflictEntry);
-        var IsManuallyBlocked = dismissedConflicts.has(ConflictEntry);
-        var IsSus = IsManuallyUnblocked || (!IsBlurEntry && _isSusToken(ConflictEntry));
+        var IsManuallyBlocked = !touchEnabled && dismissedConflicts.has(ConflictEntry);
+        var IsSus = IsManuallyUnblocked || touchEnabled && dismissedConflicts.has(ConflictEntry) || (!IsBlurEntry && _isSusToken(ConflictEntry));
 
         if (IsManuallyUnblocked) {
           if (ModifierMatch !== 'blocked') ModifierMatch = 'sus';

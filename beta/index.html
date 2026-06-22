@@ -14126,11 +14126,18 @@ function _touchModalVisible() {
 
 // Interpolate stageTranslateY for any rotateX angle, using face and edge as anchors
 // with the original partial position (62°→89px) as a midpoint reference.
+
+var MiniKeyboardStageYScale = 0.65; // matches buildKeyboard's mini key-size ratio
+
 function _interpolateStageY(RotateXDegrees) {
   var AnchorPartialAngle = 62;
   var AnchorPartialY     = 89;
   var AnchorEdgeAngle    = EdgeAngle;
   var AnchorEdgeY        = 118;
+  if (currentKbMode === 'mini') {
+    AnchorPartialY *= MiniKeyboardStageYScale;
+    AnchorEdgeY    *= MiniKeyboardStageYScale;
+  }
   if (RotateXDegrees <= 0) return 0;
   if (RotateXDegrees >= AnchorEdgeAngle) return AnchorEdgeY;
   if (RotateXDegrees <= AnchorPartialAngle) {

@@ -9,7 +9,7 @@
 <title>beta</title>
 <script>
   const DefaultTitle = 'Keyboard Warriors';
-  const VersionLabel   = '0034';
+  const VersionLabel   = '0035';
   const TitlePrefix  = document.title !== DefaultTitle ? document.title.trim() + '_' : '';
   const DBG_DEVICE   = TitlePrefix + VersionLabel;
 </script>
@@ -10211,15 +10211,13 @@ function buildPool() {
   var browserSkip = getBrowserConflictSet();
   var allShortcuts = UNIVERSAL_SHORTCUTS.concat(loadedAppShortcuts);
 
-  var filtered = allShortcuts.filter(function(ShortcutEntry) {
+  // Every check below except the difficulty cap itself — pulled out so the
+  // top-up pass (next difficulty level) can reuse the exact same filters.
+  function passesNonDifficultyFilters(ShortcutEntry) {
     var ActiveString = GetActiveShortcutString(ShortcutEntry);
 
     // No token string for this platform — exclude
     if (!ActiveString) return false;
-
-    // Difficulty cap
-    var d = ShortcutEntry.difficulty;
-    if (d < diffRange.min || d > diffRange.max) return false;
 
     // Browser conflict exclusion — check primary alternative only.
     // Canonicalised so conflict JSON wording (CTRL/CMD/OPT, any case)
@@ -10236,7 +10234,26 @@ function buildPool() {
     if (killPunctuationOn && UNSTABLE_PUNCTUATION_TOKENS.has(PrimaryString)) return false;
 
     return true;
+  }
+
+  var filtered = allShortcuts.filter(function(ShortcutEntry) {
+    var d = ShortcutEntry.difficulty;
+    if (d < diffRange.min || d > diffRange.max) return false;
+    return passesNonDifficultyFilters(ShortcutEntry);
   });
+
+  // Top-up: fewer than 10 unique questions at this difficulty range makes for
+  // a repetitive round, so pull in the next difficulty level up to fill the
+  // gap. Only one level up — if that still isn't enough, the round simply
+  // repeats as before.
+  var MIN_POOL_SIZE = 10;
+  if (filtered.length < MIN_POOL_SIZE) {
+    var nextLevel = diffRange.max + 1;
+    var topUp = allShortcuts.filter(function(ShortcutEntry) {
+      return ShortcutEntry.difficulty === nextLevel && passesNonDifficultyFilters(ShortcutEntry);
+    });
+    filtered = filtered.concat(topUp);
+  }
 
   // Cap: no more than 2 questions from the same named group per pool
   var groupCounts = {};

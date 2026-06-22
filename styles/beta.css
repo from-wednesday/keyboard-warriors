@@ -3077,28 +3077,34 @@ body.returning-screen #diffIconWrap .icon-tip { display: none; }
 
 /* ── History panel ───────────────────────────────── */
 
-/* Mirrors the Report Card override above: without this, the History
-   panel falls back to the generic .sp-page.sp-active two-column grid
-   (no rows/areas defined), and the bottom stats box auto-places into
-   row 2 of the LEFT column only, widening that column's track and
-   squeezing the right-hand list. */
+/* Three rows: header row (toggle/lives lost + timer/app labels), then the
+   full-width stats roundrect, then the two history lists. Without an
+   explicit grid here the panel falls back to the generic .sp-page.sp-active
+   two-column grid (no rows/areas defined), and the bottom stats box
+   auto-places into row 2 of the LEFT column only, widening that column's
+   track and squeezing the right-hand list. */
 #panelEndGameHistoryRecord.sp-active {
   display: grid;
   grid-template-columns: 1fr 1fr;
-  grid-template-rows: auto auto;
+  grid-template-rows: auto auto auto;
   grid-template-areas:
-    "left right"
-    "bottom bottom";
+    "headerleft headerright"
+    "bottom bottom"
+    "left right";
   position: relative;
 }
+#panelEndGameHistoryRecord #historyHeaderLeft  { grid-area: headerleft;  padding-right: 20px; min-width: 0; position: relative; }
+#panelEndGameHistoryRecord #historyHeaderRight { grid-area: headerright; padding-left:  20px; min-width: 0; }
 #panelEndGameHistoryRecord .sp-col-left  { grid-area: left;  position: relative; }
 #panelEndGameHistoryRecord .sp-col-right { grid-area: right; }
 
-/* Suppress the standard centred gutter — drawn manually instead, same as the Report Card */
+/* Suppress the standard centred gutter — drawn manually instead, same as the Report Card.
+   Two separate dividers are needed: one for the header row, one for the list row,
+   so neither bleeds into the full-width stats box between them. */
 #panelEndGameHistoryRecord.sp-active::after {
   display: none;
 }
-#panelEndGameHistoryRecord .sp-col-left::after {
+#panelEndGameHistoryRecord #historyHeaderLeft::after {
   content: '';
   position: absolute;
   top: 16px;
@@ -3107,6 +3113,20 @@ body.returning-screen #diffIconWrap .icon-tip { display: none; }
   background: #e5e7eb;
   bottom: 0;
   pointer-events: none;
+}
+#panelEndGameHistoryRecord .sp-col-left::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  right: 0;
+  width: 1px;
+  background: #e5e7eb;
+  bottom: 0;
+  pointer-events: none;
+}
+
+#panelEndGameHistoryRecord .sp-report-bottom {
+  margin-bottom: 8px;
 }
 
 /* "Report Card" label — small grey, sits left of "Strengths" in same flex row */
@@ -3981,6 +4001,9 @@ body.phone-layout-active {
 
 /* Left column divider line in history panel */
 #phonePanelArea #panelEndGameHistoryRecord .sp-col-left::after {
+  display: none;
+}
+#phonePanelArea #panelEndGameHistoryRecord #historyHeaderLeft::after {
   display: none;
 }
 

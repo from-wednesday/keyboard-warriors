@@ -10197,12 +10197,12 @@ var currentDifficulty = 'fundamentals';
 
 // Max difficulty value included per mode
 var DIFF_RANGE = {
-  ubiquitous:          { min: 0, max: 0 },
-  fundamentals:        { min: 0, max: 1 },
-  'fundamentals-plus': { min: 0, max: 2 },
-  normal:              { min: 0, max: 3 },
-  'normal-plus':       { min: 1, max: 4 },
-  hardcore:            { min: 2, max: 5 },
+  ubiquitous:          { min: 0, max: 0, target: 10, groupLimit: 2, overflowLevels: [1]       },
+  fundamentals:        { min: 0, max: 1, target: 12, groupLimit: 2, overflowLevels: [2]       },
+  'fundamentals-plus': { min: 1, max: 2, target: 14, groupLimit: 5, overflowLevels: [0, 3]   },
+  normal:              { min: 1, max: 3, target: 16, groupLimit: 4, overflowLevels: [0, 4]    },
+  'normal-plus':       { min: 2, max: 4, target: 18, groupLimit: 3, overflowLevels: [1, 5]    },
+  hardcore:            { min: 4, max: 5, target: 20, groupLimit: 2, overflowLevels: [3, 2]    },
 };
 
 // Shortcut tokens that are unreliable across international QWERTY variants.
@@ -10222,61 +10222,68 @@ const UNSTABLE_PUNCTUATION_TOKENS = new Set([
 ]);
 
 function buildPool() {
-  var diffRange = DIFF_RANGE[currentDifficulty] || { min: 0, max: 3 };
+  var diffRange   = DIFF_RANGE[currentDifficulty] || { min: 1, max: 3, target: 16, groupLimit: 4, overflowLevels: [0, 4] };
   var browserSkip = getBrowserConflictSet();
   var allShortcuts = UNIVERSAL_SHORTCUTS.concat(loadedAppShortcuts);
 
-  // Every check below except the difficulty cap itself — pulled out so the
-  // top-up pass (next difficulty level) can reuse the exact same filters.
   function passesNonDifficultyFilters(ShortcutEntry) {
     var ActiveString = GetActiveShortcutString(ShortcutEntry);
-
-    // No token string for this platform — exclude
     if (!ActiveString) return false;
-
-    // Browser conflict exclusion — check primary alternative only.
-    // Canonicalised so conflict JSON wording (CTRL/CMD/OPT, any case)
-    // always matches this shortcut's wording, regardless of which
-    // platform authored it.
     var PrimaryString = CanonicaliseShortcutToken(ActiveString.split('|')[0]);
     if (!touchEnabled && browserSkip.has(PrimaryString)) return false;
     if (!touchEnabled && dismissedConflicts.has(PrimaryString)) return false;
-
-    // Extended key exclusion: touch always blocks all; otherwise per-key via dismissedConflicts
     if (touchEnabled && requiresExtKey(ActiveString)) return false;
-
-    // Kill punctuation
     if (killPunctuationOn && UNSTABLE_PUNCTUATION_TOKENS.has(PrimaryString)) return false;
-
     return true;
   }
 
-  var filtered = allShortcuts.filter(function(ShortcutEntry) {
-    var d = ShortcutEntry.difficulty;
-    if (d < diffRange.min || d > diffRange.max) return false;
-    return passesNonDifficultyFilters(ShortcutEntry);
-  });
-
-  // Top-up: fewer than 10 unique questions at this difficulty range makes for
-  // a repetitive round, so pull in the next difficulty level up to fill the
-  // gap. Only one level up — if that still isn't enough, the round simply
-  // repeats as before.
-  var MIN_POOL_SIZE = 10;
-  if (filtered.length < MIN_POOL_SIZE) {
-    var nextLevel = diffRange.max + 1;
-    var topUp = allShortcuts.filter(function(ShortcutEntry) {
-      return ShortcutEntry.difficulty === nextLevel && passesNonDifficultyFilters(ShortcutEntry);
+  // Helper: apply group cap to a candidate list and append passing entries to pool.
+  function applyGroupCap(candidates, pool, cap, counts) {
+    candidates.forEach(function(ShortcutEntry) {
+      if (!ShortcutEntry.group) { pool.push(ShortcutEntry); return; }
+      counts[ShortcutEntry.group] = (counts[ShortcutEntry.group] || 0) + 1;
+      if (counts[ShortcutEntry.group] <= cap) pool.push(ShortcutEntry);
     });
-    filtered = filtered.concat(topUp);
   }
 
-  // Cap: no more than 2 questions from the same named group per pool
-  var groupCounts = {};
-  return filtered.filter(function(ShortcutEntry) {
-    if (!ShortcutEntry.group) return true;
-    groupCounts[ShortcutEntry.group] = (groupCounts[ShortcutEntry.group] || 0) + 1;
-    return groupCounts[ShortcutEntry.group] <= 2;
+  // Phase 1: primary difficulty range with the standard group cap of 2.
+  var primaryCandidates = allShortcuts.filter(function(ShortcutEntry) {
+    var d = ShortcutEntry.difficulty;
+    return d >= diffRange.min && d <= diffRange.max && passesNonDifficultyFilters(ShortcutEntry);
   });
+  var groupCounts = {};
+  var pool = [];
+  applyGroupCap(primaryCandidates, pool, 2, groupCounts);
+
+  // Phase 2: still under target — raise the group limit to let more questions
+  // through from the primary range candidates that were previously capped.
+  if (pool.length < diffRange.target && diffRange.groupLimit > 2) {
+    var phase2Candidates = primaryCandidates.filter(function(ShortcutEntry) {
+      if (!ShortcutEntry.group) return false; // ungrouped already passed phase 1
+      return (groupCounts[ShortcutEntry.group] || 0) >= 2;
+    });
+    applyGroupCap(phase2Candidates, pool, diffRange.groupLimit, groupCounts);
+  }
+
+  // Phase 3: still under target — add from each overflow difficulty level in order.
+  var alreadyInPool = new Set(pool.map(function(s) { return s; }));
+  diffRange.overflowLevels.forEach(function(level) {
+    if (pool.length >= diffRange.target) return;
+    var overflowCandidates = allShortcuts.filter(function(ShortcutEntry) {
+      return ShortcutEntry.difficulty === level
+        && !alreadyInPool.has(ShortcutEntry)
+        && passesNonDifficultyFilters(ShortcutEntry);
+    });
+    overflowCandidates.forEach(function(ShortcutEntry) {
+      if (pool.length < diffRange.target) {
+        pool.push(ShortcutEntry);
+        alreadyInPool.add(ShortcutEntry);
+      }
+    });
+  });
+
+  // If still under target the round simply repeats from the pool as before.
+  return pool;
 }
 
 

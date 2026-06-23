@@ -15388,6 +15388,47 @@ function _applySkillset(skillsetLabel) {
   // If the customise panel is open, re-render it to reflect the newly selected skillset.
 }
 
+// ── Sharing a Custom Set ─────────────────────────────────────────────────────
+// "Share my set" builds a mailto link with no recipient, containing a URL that
+// reproduces the current Custom Set (both active and benched apps) via the
+// apps and standby query parameters. The button is only enabled once the
+// current selection differs from every named skillset's default list, since
+// sharing an unmodified skillset is really just sharing its name.
+
+function _GetDefaultAppsListForSkillset(SkillsetDefinition) {
+  return appsLongList
+    .filter(function(App) {
+      if (!Array.isArray(App.skillset)) return false;
+      return SkillsetDefinition.tags.some(function(Tag) { return App.skillset.indexOf(Tag) !== -1; });
+    })
+    .map(function(App) { return App.label; });
+}
+
+function _CurrentAppsSetIsCustomised() {
+  var CurrentLabels = new Set(appsShortList);
+  var MatchesAnyDefault = SKILLSET_DEFS.some(function(Definition) {
+    var DefaultLabels = _GetDefaultAppsListForSkillset(Definition);
+    if (DefaultLabels.length !== appsShortList.length) return false;
+    return DefaultLabels.every(function(Label) { return CurrentLabels.has(Label); });
+  });
+  return !MatchesAnyDefault;
+}
+
+function _BuildShareCustomSetMailtoHref() {
+  var ShareUrl = new URL(window.location.href);
+  var ShareParams = new URLSearchParams();
+  ShareParams.set('apps', appsShortList.join(','));
+  if (appsStandbyList.length > 0) ShareParams.set('standby', appsStandbyList.join(','));
+  ShareUrl.search = ShareParams.toString();
+
+  var Subject = encodeURIComponent('I hand selected apps for you to train in on Keyboard Warriors');
+  var Body = encodeURIComponent(
+    "I've set up a list of apps to learn and train keyboard shortcuts for.\n\n" +
+    'This link will open Keyboard Warriors with the apps I selected for you preloaded:\n' + ShareUrl.toString()
+  );
+  return 'mailto:?subject=' + Subject + '&body=' + Body;
+}
+
 function skillsetPillClick(ClickEvent) {
   if (ClickEvent) ClickEvent.stopPropagation();
   if (skillsetPillOpen) { _closeSkillsetPill(); return; }
@@ -16016,15 +16057,35 @@ var IsBetaBuild = document.title !== 'Keyboard Warriors';
 
   // Footer row
   var FooterRow = document.createElement('div');
-  FooterRow.style.cssText = 'width:100%;text-align:center;margin-top:8px;padding-top:8px;border-top:1px solid rgba(0,0,0,0.08);';
+  FooterRow.style.cssText = 'width:100%;margin-top:8px;padding-top:8px;border-top:1px solid rgba(0,0,0,0.08);display:flex;align-items:center;justify-content:center;gap:8px;';
+
+  var MailIconWrap = document.createElement('span');
+  MailIconWrap.style.cssText = 'flex-shrink:0;display:inline-flex;align-items:center;color:#9ca3af;';
+  MailIconWrap.innerHTML = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="15" height="15"><rect x="2" y="4" width="20" height="16" rx="2"/><polyline points="2,4 12,13 22,4"/></svg>';
+
+  var ActionsPill = document.createElement('div');
+  ActionsPill.className = 'segmented-pill';
+  ActionsPill.style.cssText = 'width:auto;flex:1;';
+
+  var ShareButton = document.createElement('button');
+  ShareButton.className = 'segmented-pill-section segmented-pill-half';
+  ShareButton.innerHTML = '<span class="diff-btn-text">share my set</span>';
+  var SetIsShareable = _CurrentAppsSetIsCustomised();
+  ShareButton.classList.toggle('segmented-pill-inactive', !SetIsShareable);
+  ShareButton.title = SetIsShareable ? '' : 'Customise your set before sharing it.';
+  ShareButton.addEventListener('click', function() {
+    var Anchor = document.createElement('a');
+    Anchor.href   = _BuildShareCustomSetMailtoHref();
+    Anchor.target = '_blank';
+    Anchor.rel    = 'noopener';
+    document.body.appendChild(Anchor);
+    Anchor.click();
+    document.body.removeChild(Anchor);
+  });
 
   var RequestButton = document.createElement('button');
-  RequestButton.className = 'segmented-pill-section segmented-pill-full';
-  RequestButton.style.cssText = 'border-radius:16px;border:1.5px solid #d1d5db;padding:5px 14px;width:auto;display:inline-flex;align-items:center;gap:6px;';
-
-  var EnvelopeIcon = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="13" height="13" style="vertical-align:middle;flex-shrink:0;"><rect x="2" y="4" width="20" height="16" rx="2"/><polyline points="2,4 12,13 22,4"/></svg>';
-  RequestButton.innerHTML = EnvelopeIcon + '<span class="diff-btn-text">request support for another App</span>';
-
+  RequestButton.className = 'segmented-pill-section segmented-pill-half';
+  RequestButton.innerHTML = '<span class="diff-btn-text">request support for another App</span>';
   RequestButton.addEventListener('click', function () {
     var Subject = encodeURIComponent('Keyboard Warriors: app support request');
     var Body    = encodeURIComponent("I'd like to request support for [app name - ideally include a link]. I hope you can add it to Keyboard Warriors.");
@@ -16037,7 +16098,10 @@ var IsBetaBuild = document.title !== 'Keyboard Warriors';
     document.body.removeChild(Anchor);
   });
 
-  FooterRow.appendChild(RequestButton);
+  ActionsPill.appendChild(ShareButton);
+  ActionsPill.appendChild(RequestButton);
+  FooterRow.appendChild(MailIconWrap);
+  FooterRow.appendChild(ActionsPill);
   PanelElement.appendChild(FooterRow);
 }
 

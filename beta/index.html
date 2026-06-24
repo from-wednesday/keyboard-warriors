@@ -603,7 +603,7 @@
         <p class="sp-endgame-context-label" id="EndGameHistoryTimerLabel"></p>
         <p class="sp-endgame-context-label" id="EndGameHistoryContextLabel"></p>
       </div>
-      <div class="sp-report-bottom" style="margin-top:2px;">
+      <div class="sp-report-bottom" style="margin-top:-2px;">
         <div class="sp-report-advice-box" id="historyStatsBox"></div>
       </div>
       <div class="sp-col sp-col-left">
@@ -12487,8 +12487,8 @@ function _refreshEndGameHistory() {
       var HasLine2 = CloseCount > 0;
 
       if (HasLine1 || HasLine2) {
-        var TimerIconSvg   = '<svg style="display:inline;vertical-align:middle;margin-right:3px;flex-shrink:0;" width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="13" r="8"/><path d="M12 9v4l3 3"/><path d="M9 3h6"/><path d="M12 3v2"/></svg>';
-        var AccIconSvg     = '<svg style="display:inline;vertical-align:middle;margin-right:3px;flex-shrink:0;" width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="7"/><line x1="12" y1="2" x2="12" y2="7"/><line x1="12" y1="17" x2="12" y2="22"/><line x1="2" y1="12" x2="7" y2="12"/><line x1="17" y1="12" x2="22" y2="12"/></svg>';
+        var TimerIconSvg = '<svg style="display:inline;vertical-align:middle;margin-left:4px;flex-shrink:0;" width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="13" r="8"/><path d="M12 9v4l3 3"/><path d="M9 3h6"/><path d="M12 3v2"/></svg>';
+        var AccIconSvg   = '<svg style="display:inline;vertical-align:middle;margin-left:4px;flex-shrink:0;" width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="7"/><line x1="12" y1="2" x2="12" y2="7"/><line x1="12" y1="17" x2="12" y2="22"/><line x1="2" y1="12" x2="7" y2="12"/><line x1="17" y1="12" x2="22" y2="12"/></svg>';
         var StatsHtml = '';
         if (HasLine1) {
           StatsHtml += TimerIconSvg + 'Your average answer time was: ' + AvgTimeText + ' seconds.';
@@ -12496,13 +12496,14 @@ function _refreshEndGameHistory() {
         if (HasLine2) {
           var FailWord  = FailCount  === 1 ? 'fail'  : 'fails';
           var CloseVerb = CloseCount === 1 ? 'was'   : 'were';
-          StatsHtml += (HasLine1 ? '  ' : '') + AccIconSvg + 'Out of ' + FailCount + ' ' + FailWord + ', ' + CloseCount + ' ' + CloseVerb + ' close to correct.';
+          StatsHtml += (HasLine1 ? '&ensp;&ensp;' : '') + 'Out of ' + FailCount + ' ' + FailWord + ', ' + CloseCount + ' ' + CloseVerb + ' close to correct.' + AccIconSvg;
         }
         var StatsLine = document.createElement('p');
         StatsLine.className = 'sp-report-advice';
-        StatsLine.style.margin = '0';
+        StatsLine.style.cssText = 'margin:0;text-align:center;';
         StatsLine.innerHTML = StatsHtml;
         HistoryStatsBox.appendChild(StatsLine);
+      }
       }
     }
   }

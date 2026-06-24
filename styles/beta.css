@@ -4163,13 +4163,9 @@ body.phone-layout-active {
    context). Targeted overrides below
    correct anything the filter gets wrong.
 ══════════════════════════════════════ */
-[data-theme="dark"] body {
-  filter: invert(1) hue-rotate(180deg);
-  background: #e3dfe7; /* inverts to #1c2028 after filter */
-}
-
 [data-theme="dark"] html {
-  background: #1c2028; /* fills any area behind body (scroll overscroll, etc.) */
+  filter: invert(1) hue-rotate(180deg) brightness(0.92) contrast(1.08);
+  background: #e3dfe7; /* inverts to #1c2028 after the filter */
 }
 
 /* Re-invert elements that should not be colour-shifted.

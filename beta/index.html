@@ -9819,12 +9819,12 @@ function _pauseStartOverClick() {
   gameState = 'confirm-start-over';
     var _kbMemorySet = localStorage.getItem('kw_keyboard_memory') === 'true';
     var _confirmMsg = _kbMemorySet
-    ? 'Reset everything?\n\nYour keyboard settings are set to be remembered. Wipe clears those too. Preserve keeps them.'
-    : 'Reset everything?\n\nAll memory will be cleared to start over fresh.';
+    ? 'Your keyboard set up is set to be remembered.\nWipe everything or preserve the keyboard settings?'
+    : 'Reset everything?\nAll memory will be cleared to start over fresh.';
   showConfirmHeading(_confirmMsg, true, true);
-  mainBtn.textContent = 'Wipe';
+  mainBtn.textContent = _kbMemorySet ? 'Everything' : 'Wipe';
   mainBtn.style.background = '#10b981';
-  helpBtn.textContent = _kbMemorySet ? 'Preserve KB' : 'Keep';
+  helpBtn.textContent = _kbMemorySet ? 'Preserve' : 'Keep';
   helpBtn.style.background = '#6b7280';
   helpBtn.style.color = 'white';
   if (lockKeyEl) lockKeyEl.classList.add('active');

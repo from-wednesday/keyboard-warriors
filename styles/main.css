@@ -539,6 +539,7 @@ body.settings-fits-viewport #keyboardWrap {
   width: 100%;
   padding: 8px 60px 4px;
   position: relative;
+  z-index: 501;
   box-sizing: border-box;
   min-height: 37px;
 }

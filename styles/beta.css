@@ -4154,3 +4154,41 @@ body.phone-layout-active {
     padding-top: 40px;
   }
 }
+
+/* ══════════════════════════════════════
+   DARK MODE
+   Global invert+hue-rotate on <body>
+   (not <html>, so position:fixed elements
+   remain unaffected by the filter stacking
+   context). Targeted overrides below
+   correct anything the filter gets wrong.
+══════════════════════════════════════ */
+[data-theme="dark"] body {
+  filter: invert(1) hue-rotate(180deg);
+}
+
+/* Re-invert elements that should not be colour-shifted.
+   Currently empty — add targeted corrections here as needed.
+   Example pattern:
+   [data-theme="dark"] .scoreDisc.medal-gold .timer-time { color: #3b1a00; }
+*/
+
+/* Dark mode toggle knob — mirrors the OS toggle animation */
+.dm-toggle-row {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+.dm-toggle-label {
+  font-family: 'Lato', system-ui, sans-serif;
+  font-size: 12px;
+  color: #9ca3af;
+  user-select: none;
+  line-height: 1;
+}
+#dmKnobEl {
+  transition: transform 0.18s ease, stroke 0.18s ease;
+}
+#dmTrackRect {
+  transition: stroke 0.18s ease;
+}

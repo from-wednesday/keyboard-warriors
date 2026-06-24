@@ -9749,8 +9749,26 @@ function _pauseDifficultyNudgeClick() {
    Yes wipes all local data and transitions to the Welcome screen with the
    same animated crossfade used by _returningStartOver.
 ─────────────────────────────────────────────────────────────────────────── */
-var _startOverConfirmActive = false;
+function _doWipeStorage(opts) {
+  var keepKb = opts && opts.keepKeyboardSettings;
+  var kbKeys = [
+    'kw_keyboard_memory','kw_keyboard_settings','kw_has_keyboard',
+    'kw_touch_enabled','kw_kb_full','kw_kb_variant_mac',
+    'kw_kb_variant_pc','kw_kb_key_overrides'
+  ];
+  var wipeKeys = [
+    'kw_best','kw_app','kw_difficulty','kw_perfect','kw_timer','kw_lives',
+    'kw_coach_memory','kw_dismissed_conflicts','kw_blur_conflicts',
+    'kw_manual_unblocked','kw_confirmed_working','kw_preferred_skillset','kw_gyro'
+  ];
+  if (!keepKb) wipeKeys = wipeKeys.concat(kbKeys);
+  wipeKeys.forEach(function(k) { try { localStorage.removeItem(k); } catch(e) {} });
+  try { sessionStorage.removeItem('kw_welcomed'); } catch(e) {}
+  userManuallyUnblockedConflicts.clear();
+  dismissedConflicts.clear();
+}
 
+var _startOverConfirmActive = false;
 function _pauseStartOverClick() {
   if (_startOverConfirmActive) {
     // Second press of the same button = cancel
@@ -9781,10 +9799,14 @@ function _pauseStartOverClick() {
 
   // Wire main/help buttons
   gameState = 'confirm-start-over';
-  showConfirmHeading('Are you sure you want to reset & restart?\nAll memory will be cleared to start over fresh.', true, true);
+    var _kbMemorySet = localStorage.getItem('kw_keyboard_memory') === 'true';
+    var _confirmMsg = _kbMemorySet
+    ? 'Reset everything?\n\nYour keyboard settings are set to be remembered. Wipe clears those too. Preserve keeps them.'
+    : 'Reset everything?\n\nAll memory will be cleared to start over fresh.';
+  showConfirmHeading(_confirmMsg, true, true);
   mainBtn.textContent = 'Wipe';
   mainBtn.style.background = '#10b981';
-  helpBtn.textContent = 'Keep';
+  helpBtn.textContent = _kbMemorySet ? 'Preserve KB' : 'Keep';
   helpBtn.style.background = '#6b7280';
   helpBtn.style.color = 'white';
   if (lockKeyEl) lockKeyEl.classList.add('active');
@@ -9823,7 +9845,7 @@ function _exitStartOverConfirm() {
   if (lockKeyEl) lockKeyEl.classList.remove('active');
 }
 
-function confirmStartOverYes() {
+function confirmStartOverYes(keepKeyboardSettings) {
   _exitStartOverConfirm();
   mainBtn.style.background = '';
   helpBtn.style.background = '';
@@ -9833,26 +9855,8 @@ function confirmStartOverYes() {
   setTimeout(function() {
     if (panelInner) { panelInner.style.transition = 'opacity 0.3s ease'; panelInner.style.opacity = '0'; }
     setTimeout(function() {
-      // Wipe all local data
-      try { localStorage.removeItem('kw_best'); }         catch(e) {}
-      try { localStorage.removeItem('kw_app'); }          catch(e) {}
-      try { localStorage.removeItem('kw_difficulty'); }   catch(e) {}
-      try { localStorage.removeItem('kw_perfect'); }      catch(e) {}
-      try { localStorage.removeItem('kw_timer'); }        catch(e) {}
-      try { localStorage.removeItem('kw_lives'); }        catch(e) {}
-      try { localStorage.removeItem('kw_coach_memory'); } catch(e) {}
-      try { localStorage.removeItem('kw_dismissed_conflicts'); } catch(e) {}
-      try { localStorage.removeItem('kw_blur_conflicts'); } catch(e) {}
-      try { localStorage.removeItem('kw_manual_unblocked'); } catch(e) {}
-      userManuallyUnblockedConflicts.clear();
-      try { localStorage.removeItem('kw_has_keyboard'); }   catch(e) {}
-      try { localStorage.removeItem('kw_touch_enabled'); }  catch(e) {}
-      try { localStorage.removeItem('kw_kb_full'); }         catch(e) {}
-      try { sessionStorage.removeItem('kw_welcomed'); }      catch(e) {}
-      try {
-        var GyroDecision = localStorage.getItem('kw_gyro');
-        if (GyroDecision !== 'granted') localStorage.removeItem('kw_gyro');
-      } catch(e) {}
+      _doWipeStorage({ keepKeyboardSettings: !!keepKeyboardSettings });
+
       bestRecord = { time: null, accuracy: null };
       hasTrophy = false;
       questionTimer = null;
@@ -9875,7 +9879,13 @@ function confirmStartOverYes() {
 
 function confirmStartOverNo() {
   _exitStartOverConfirm();
-  // Restore paused button state
+  var _kbMemorySet = localStorage.getItem('kw_keyboard_memory') === 'true';
+  if (_kbMemorySet) {
+    // "Preserve KB" — wipe everything except keyboard settings, then restart
+    confirmStartOverYes(true);
+    return;
+  }
+  // Plain cancel — restore paused state
   gameState = 'paused';
   mainBtn.textContent = 'Unpause';
   mainBtn.style.background = '';
@@ -9924,18 +9934,8 @@ function _returningStartOver() {
     setTimeout(function() {
       // Reset storage and state, then show the welcome screen
       document.body.classList.remove('returning-screen');
-      try { localStorage.removeItem('kw_best'); }               catch(e) {}
-      try { localStorage.removeItem('kw_app'); }                catch(e) {}
-      try { localStorage.removeItem('kw_apps_short_list'); }    catch(e) {}
-      try { localStorage.removeItem('kw_difficulty'); }         catch(e) {}
-      try { localStorage.removeItem('kw_perfect'); }            catch(e) {}
-      try { localStorage.removeItem('kw_timer'); }              catch(e) {}
-      try { localStorage.removeItem('kw_lives'); }              catch(e) {}
-      try { localStorage.removeItem('kw_coach_memory'); }       catch(e) {}
-      try { localStorage.removeItem('kw_dismissed_conflicts'); } catch(e) {} //POSSIBLE DELETE
-      try { localStorage.removeItem('kw_blur_conflicts'); } catch(e) {} //POSSIBLE DELETE
-      try { localStorage.removeItem('kw_has_keyboard'); }       catch(e) {}
-      try { sessionStorage.removeItem('kw_welcomed'); }         catch(e) {}
+      _doWipeStorage({ keepKeyboardSettings: false });
+
       bestRecord = { time: null, accuracy: null };
       hasTrophy = false;
       questionTimer = null;

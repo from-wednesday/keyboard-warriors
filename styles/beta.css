@@ -4165,6 +4165,11 @@ body.phone-layout-active {
 ══════════════════════════════════════ */
 [data-theme="dark"] body {
   filter: invert(1) hue-rotate(180deg);
+  background: #e3dfe7; /* inverts to #1c2028 after filter */
+}
+
+[data-theme="dark"] html {
+  background: #1c2028; /* fills any area behind body (scroll overscroll, etc.) */
 }
 
 /* Re-invert elements that should not be colour-shifted.
@@ -4178,6 +4183,7 @@ body.phone-layout-active {
   display: flex;
   align-items: center;
   gap: 6px;
+  margin-bottom: 8px;
 }
 .dm-toggle-label {
   font-family: 'Lato', system-ui, sans-serif;

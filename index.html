@@ -9,7 +9,7 @@
 <title>Keyboard Warriors</title>
 <script>
   const DefaultTitle = 'Keyboard Warriors';
-  const VersionLabel   = '0034';
+  const VersionLabel   = '0036';
   const TitlePrefix  = document.title !== DefaultTitle ? document.title.trim() + '_' : '';
   const DBG_DEVICE   = TitlePrefix + VersionLabel;
 </script>
@@ -603,7 +603,7 @@
         <p class="sp-endgame-context-label" id="EndGameHistoryTimerLabel"></p>
         <p class="sp-endgame-context-label" id="EndGameHistoryContextLabel"></p>
       </div>
-      <div class="sp-report-bottom">
+      <div class="sp-report-bottom" style="margin-top:-2px;">
         <div class="sp-report-advice-box" id="historyStatsBox"></div>
       </div>
       <div class="sp-col sp-col-left">
@@ -657,6 +657,14 @@
           <button class="sp-seg-btn sp-seg-btn-right" onclick="_returningStartOver()"><span class="diff-btn-text">Forget and start over fresh</span></button>
         </div>
         <p class="sp-body sp-returning-privacy" style="text-align:center;"><strong><em>Made for you, and stored with you.</em></strong><br><strong>Keyboard Warriors</strong> runs entirely on your device using local memory.<br><em class="sp-returning-tagline">No clouds, no crumbs.</em></p>
+      </div>
+    </div>
+
+    <!-- ── Shared App List Landing ──────────────────────── -->
+    <div id="panelLandingSharedApps" class="sp-page">
+      <p class="sp-title" style="margin-bottom:10px;text-align:center;">It looks like a friend has<em> hand picked</em> a custom list of apps for you to train on.</p>
+      <div id="sharedAppsChoiceArea" class="sp-returning-inner">
+        <!-- content rendered by JS: either the two-button choice, or a simple instruction -->
       </div>
     </div>
 
@@ -6086,7 +6094,7 @@ function SetKeyboardMemoryToRemember() { SetKeyboardMemory(true);  }
 // activeSettings: null | 'panelKeyboard' | 'panelConflicts' | 'panelDifficultySettings' | 'panelPause' | 'panelLandingReturning' | 'panelLandingWelcome'
 var activeSettings = null;
 
-var SP_PAGE_ORDER = ['panelKeyboard', 'panelConflicts', 'panelDifficultySettings', 'panelPause', 'panelEndGameReportCard', 'panelEndGameHistoryRecord', 'panelCheatSheet', 'panelLandingReturning', 'panelLandingWelcome'];
+var SP_PAGE_ORDER = ['panelKeyboard', 'panelConflicts', 'panelDifficultySettings', 'panelPause', 'panelEndGameReportCard', 'panelEndGameHistoryRecord', 'panelCheatSheet', 'panelLandingReturning', 'panelLandingSharedApps', 'panelLandingWelcome'];
 
 function _spPageEl(page) {
   var ids = {
@@ -6097,6 +6105,7 @@ function _spPageEl(page) {
     panelEndGameHistoryRecord: 'panelEndGameHistoryRecord',
     panelCheatSheet:    'panelCheatSheet',
     panelLandingReturning:  'panelLandingReturning',
+    panelLandingSharedApps: 'panelLandingSharedApps',
     panelLandingWelcome:    'panelLandingWelcome',
     panelEndGameReportCard:     'panelEndGameReportCard',
   };
@@ -8189,7 +8198,22 @@ var BrowserCodeToTokenMap = {
 
   'F1':'F1','F2':'F2','F3':'F3','F4':'F4','F5':'F5','F6':'F6',
   'F7':'F7','F8':'F8','F9':'F9','F10':'F10','F11':'F11','F12':'F12',
+  'F13':'F13','F14':'F14','F15':'F15','F16':'F16',
+  'F17':'F17','F18':'F18','F19':'F19','F20':'F20',
+  'F21':'F21','F22':'F22','F23':'F23','F24':'F24',
+  'Escape':'ESCAPE','CapsLock':'CAPSLOCK',
+  'Insert':'INSERT','NumLock':'NUMLOCK',
+  'PrintScreen':'PRINTSCREEN','ScrollLock':'SCROLLLOCK','Pause':'PAUSE',
+  'ContextMenu':'CONTEXTMENU','Help':'HELP',
+  'Numpad0':'NUMPAD0','Numpad1':'NUMPAD1','Numpad2':'NUMPAD2','Numpad3':'NUMPAD3',
+  'Numpad4':'NUMPAD4','Numpad5':'NUMPAD5','Numpad6':'NUMPAD6','Numpad7':'NUMPAD7',
+  'Numpad8':'NUMPAD8','Numpad9':'NUMPAD9',
+  'NumpadAdd':'NUMPADADD','NumpadSubtract':'NUMPADSUBTRACT',
+  'NumpadMultiply':'NUMPADMULTIPLY','NumpadDivide':'NUMPADDIVIDE',
+  'NumpadDecimal':'NUMPADDECIMAL','NumpadEnter':'NUMPADENTER',
+  'NumpadEqual':'NUMPADEQUAL','NumpadComma':'NUMPADCOMMA',
 };
+
 
   function _browserCodeToToken(BrowserCode) {
     if (BrowserCode.startsWith('Key'))   return BrowserCode.slice(3);
@@ -9734,8 +9758,31 @@ function _pauseDifficultyNudgeClick() {
    Yes wipes all local data and transitions to the Welcome screen with the
    same animated crossfade used by _returningStartOver.
 ─────────────────────────────────────────────────────────────────────────── */
-var _startOverConfirmActive = false;
+function _doWipeStorage(opts) {
+  var keepKb = opts && opts.keepKeyboardSettings;
+  var kbKeys = [
+    'kw_keyboard_memory','kw_keyboard_settings','kw_has_keyboard',
+    'kw_touch_enabled','kw_kb_full','kw_kb_variant_mac',
+    'kw_kb_variant_pc','kw_kb_key_overrides'
+  ];
+var wipeKeys = [
+    'kw_best','kw_app','kw_difficulty','kw_perfect','kw_timer','kw_lives',
+    'kw_coach_memory','kw_dismissed_conflicts','kw_blur_conflicts',
+    'kw_manual_unblocked','kw_confirmed_working','kw_preferred_skillset','kw_gyro',
+    'kw_custom_set','kw_apps_short_list','kw_apps_standby_list'
+  ];
+  if (!keepKb) wipeKeys = wipeKeys.concat(kbKeys);
+  wipeKeys.forEach(function(k) { try { localStorage.removeItem(k); } catch(e) {} });
+  try { sessionStorage.removeItem('kw_welcomed'); } catch(e) {}
+  userManuallyUnblockedConflicts.clear();
+  dismissedConflicts.clear();
+  if (appsLongList && appsLongList.length) {
+    _applySkillset('Graphic Design');
+  }
+  CustomSetList = null;
+}
 
+var _startOverConfirmActive = false;
 function _pauseStartOverClick() {
   if (_startOverConfirmActive) {
     // Second press of the same button = cancel
@@ -9766,10 +9813,14 @@ function _pauseStartOverClick() {
 
   // Wire main/help buttons
   gameState = 'confirm-start-over';
-  showConfirmHeading('Are you sure you want to reset & restart?\nAll memory will be cleared to start over fresh.', true, true);
-  mainBtn.textContent = 'Wipe';
+    var _kbMemorySet = localStorage.getItem('kw_keyboard_memory') === 'true';
+    var _confirmMsg = _kbMemorySet
+    ? 'Your keyboard set up is set to be remembered.\nWipe everything or preserve the keyboard settings?'
+    : 'Reset everything?\nAll memory will be cleared to start over fresh.';
+  showConfirmHeading(_confirmMsg, true, true);
+  mainBtn.textContent = _kbMemorySet ? 'Everything' : 'Wipe';
   mainBtn.style.background = '#10b981';
-  helpBtn.textContent = 'Keep';
+  helpBtn.textContent = _kbMemorySet ? 'Preserve' : 'Keep';
   helpBtn.style.background = '#6b7280';
   helpBtn.style.color = 'white';
   if (lockKeyEl) lockKeyEl.classList.add('active');
@@ -9808,7 +9859,7 @@ function _exitStartOverConfirm() {
   if (lockKeyEl) lockKeyEl.classList.remove('active');
 }
 
-function confirmStartOverYes() {
+function confirmStartOverYes(keepKeyboardSettings) {
   _exitStartOverConfirm();
   mainBtn.style.background = '';
   helpBtn.style.background = '';
@@ -9818,26 +9869,8 @@ function confirmStartOverYes() {
   setTimeout(function() {
     if (panelInner) { panelInner.style.transition = 'opacity 0.3s ease'; panelInner.style.opacity = '0'; }
     setTimeout(function() {
-      // Wipe all local data
-      try { localStorage.removeItem('kw_best'); }         catch(e) {}
-      try { localStorage.removeItem('kw_app'); }          catch(e) {}
-      try { localStorage.removeItem('kw_difficulty'); }   catch(e) {}
-      try { localStorage.removeItem('kw_perfect'); }      catch(e) {}
-      try { localStorage.removeItem('kw_timer'); }        catch(e) {}
-      try { localStorage.removeItem('kw_lives'); }        catch(e) {}
-      try { localStorage.removeItem('kw_coach_memory'); } catch(e) {}
-      try { localStorage.removeItem('kw_dismissed_conflicts'); } catch(e) {}
-      try { localStorage.removeItem('kw_blur_conflicts'); } catch(e) {}
-      try { localStorage.removeItem('kw_manual_unblocked'); } catch(e) {}
-      userManuallyUnblockedConflicts.clear();
-      try { localStorage.removeItem('kw_has_keyboard'); }   catch(e) {}
-      try { localStorage.removeItem('kw_touch_enabled'); }  catch(e) {}
-      try { localStorage.removeItem('kw_kb_full'); }         catch(e) {}
-      try { sessionStorage.removeItem('kw_welcomed'); }      catch(e) {}
-      try {
-        var GyroDecision = localStorage.getItem('kw_gyro');
-        if (GyroDecision !== 'granted') localStorage.removeItem('kw_gyro');
-      } catch(e) {}
+      _doWipeStorage({ keepKeyboardSettings: !!keepKeyboardSettings });
+
       bestRecord = { time: null, accuracy: null };
       hasTrophy = false;
       questionTimer = null;
@@ -9860,7 +9893,13 @@ function confirmStartOverYes() {
 
 function confirmStartOverNo() {
   _exitStartOverConfirm();
-  // Restore paused button state
+  var _kbMemorySet = localStorage.getItem('kw_keyboard_memory') === 'true';
+  if (_kbMemorySet) {
+    // "Preserve KB" — wipe everything except keyboard settings, then restart
+    confirmStartOverYes(true);
+    return;
+  }
+  // Plain cancel — restore paused state
   gameState = 'paused';
   mainBtn.textContent = 'Unpause';
   mainBtn.style.background = '';
@@ -9909,18 +9948,8 @@ function _returningStartOver() {
     setTimeout(function() {
       // Reset storage and state, then show the welcome screen
       document.body.classList.remove('returning-screen');
-      try { localStorage.removeItem('kw_best'); }               catch(e) {}
-      try { localStorage.removeItem('kw_app'); }                catch(e) {}
-      try { localStorage.removeItem('kw_apps_short_list'); }    catch(e) {}
-      try { localStorage.removeItem('kw_difficulty'); }         catch(e) {}
-      try { localStorage.removeItem('kw_perfect'); }            catch(e) {}
-      try { localStorage.removeItem('kw_timer'); }              catch(e) {}
-      try { localStorage.removeItem('kw_lives'); }              catch(e) {}
-      try { localStorage.removeItem('kw_coach_memory'); }       catch(e) {}
-      try { localStorage.removeItem('kw_dismissed_conflicts'); } catch(e) {} //POSSIBLE DELETE
-      try { localStorage.removeItem('kw_blur_conflicts'); } catch(e) {} //POSSIBLE DELETE
-      try { localStorage.removeItem('kw_has_keyboard'); }       catch(e) {}
-      try { sessionStorage.removeItem('kw_welcomed'); }         catch(e) {}
+      _doWipeStorage({ keepKeyboardSettings: false });
+
       bestRecord = { time: null, accuracy: null };
       hasTrophy = false;
       questionTimer = null;
@@ -9988,6 +10017,136 @@ function _returningStartOver() {
   }, 480);
 }
 
+// ── Shared App List Landing ───────────────────────────────────────────────────
+// Reached when the page is opened via a link generated by the 'share my set'
+// button (see _BuildShareCustomSetMailtoHref). The apps/standby labels are
+// parsed from the URL at boot, before the keyboard-warriors-apps.json
+// manifest has necessarily finished loading, so they are held here and only
+// matched against appsLongList, and actually applied, once _onAppsLoaded
+// has run (see its tail) or once the player chooses to use them.
+var _PendingSharedAppLabels     = null;
+var _PendingSharedStandbyLabels = null;
+var _PendingSharedAppsMode      = null; // 'simple' | 'ask' | null
+
+function _ParseSharedAppsFromUrl() {
+  var UrlParams = new URLSearchParams(window.location.search);
+  var AppsParam = UrlParams.get('apps');
+  if (!AppsParam) return null;
+  var StandbyParam = UrlParams.get('standby');
+  return {
+    shortLabels:   AppsParam.split(',').map(function(Label) { return Label.trim(); }).filter(Boolean),
+    standbyLabels: StandbyParam ? StandbyParam.split(',').map(function(Label) { return Label.trim(); }).filter(Boolean) : [],
+  };
+}
+
+function _SharedAppsMatchSavedList(SharedShortLabels) {
+  var SavedRaw = null;
+  try { SavedRaw = localStorage.getItem('kw_apps_short_list'); } catch (StorageError) {}
+  if (!SavedRaw) return false;
+  var SavedLabels;
+  try { SavedLabels = JSON.parse(SavedRaw); } catch (ParseError) { return false; }
+  if (!Array.isArray(SavedLabels) || SavedLabels.length !== SharedShortLabels.length) return false;
+  var SavedSet = new Set(SavedLabels);
+  return SharedShortLabels.every(function(Label) { return SavedSet.has(Label); });
+}
+
+function _ShowSharedAppsScreen(NeedsAskFlow) {
+  _welcomeIsReturning = false;
+  gameState = 'welcome';
+  titleEl.textContent = 'Welcome to Keyboard Warriors';
+  var tagline = document.getElementById('welcomeTagline');
+  if (tagline) tagline.style.display = 'block';
+  openSettings('panelLandingSharedApps');
+  _RefreshSharedAppsPanel(NeedsAskFlow);
+}
+
+function _RefreshSharedAppsPanel(NeedsAskFlow) {
+  var ChoiceArea = document.getElementById('sharedAppsChoiceArea');
+  if (!ChoiceArea) return;
+  ChoiceArea.innerHTML = '';
+
+  if (NeedsAskFlow) {
+    var Pill = document.createElement('div');
+    Pill.className = 'sp-seg-pill sp-seg-pill-two';
+
+    var UseTheirsButton = document.createElement('button');
+    UseTheirsButton.className = 'sp-seg-btn sp-seg-btn-left';
+    UseTheirsButton.innerHTML = '<span class="diff-btn-text">Use their app list</span>';
+    UseTheirsButton.addEventListener('click', _SharedAppsUseTheirs);
+
+    var KeepOwnButton = document.createElement('button');
+    KeepOwnButton.className = 'sp-seg-btn sp-seg-btn-right';
+    KeepOwnButton.innerHTML = '<span class="diff-btn-text">Keep my own list</span>';
+    KeepOwnButton.addEventListener('click', _SharedAppsKeepOwn);
+
+    Pill.appendChild(UseTheirsButton);
+    Pill.appendChild(KeepOwnButton);
+    ChoiceArea.appendChild(Pill);
+  } else {
+    var Message = document.createElement('p');
+    Message.className = 'sp-body';
+    Message.style.textAlign = 'center';
+    Message.textContent = "You can choose the first App you'd like to train with via the 'now training on' selector in the top right corner of the screen.";
+    ChoiceArea.appendChild(Message);
+  }
+}
+
+function _SharedAppsUseTheirs(ClickEvent) {
+  var ClickedLabel = ClickEvent.currentTarget.querySelector('.diff-btn-text');
+  if (ClickedLabel) _popDiffLabel(ClickedLabel);
+  if (!_appListInitialised) {
+    showToast('Still loading, try again in a moment.');
+    return;
+  }
+  _ApplySharedAppsList(_PendingSharedAppLabels, _PendingSharedStandbyLabels);
+  _PendingSharedAppsMode = null;
+  setTimeout(_DismissSharedAppsScreen, 500);
+}
+
+function _SharedAppsKeepOwn(ClickEvent) {
+  var ClickedLabel = ClickEvent.currentTarget.querySelector('.diff-btn-text');
+  if (ClickedLabel) _popDiffLabel(ClickedLabel);
+  _PendingSharedAppsMode = null;
+  setTimeout(_DismissSharedAppsScreen, 500);
+}
+
+function _DismissSharedAppsScreen() {
+  var tagline = document.getElementById('welcomeTagline');
+  if (tagline) tagline.style.display = 'none';
+  closeSettings();
+  syncDiffNeedle();
+  resetToIdle();
+}
+
+function _ApplySharedAppsList(SharedShortLabels, SharedStandbyLabels) {
+  var ValidLabels    = new Set(appsLongList.map(function(App) { return App.label; }));
+  var FilteredShort   = (SharedShortLabels   || []).filter(function(Label) { return ValidLabels.has(Label); });
+  var FilteredStandby = (SharedStandbyLabels || []).filter(function(Label) { return ValidLabels.has(Label); });
+
+  if (FilteredShort.length === 0) {
+    showToast('That shared app list could not be loaded.');
+    return;
+  }
+
+  currentSkillset = 'Custom Set';
+  CustomSetList   = { shortList: FilteredShort.slice(), standbyList: FilteredStandby.slice() };
+  _SaveCustomSetList();
+
+  appsShortList   = FilteredShort.slice();
+  appsStandbyList = FilteredStandby.slice();
+  currentApp      = appsShortList[0];
+  try { localStorage.setItem('kw_app', currentApp); } catch (StorageError) {}
+  _saveAppsShortList();
+  buildAppPill();
+  _buildSkillsetPill();
+
+  var TotalShared  = (SharedShortLabels   || []).length + (SharedStandbyLabels   || []).length;
+  var TotalMatched = FilteredShort.length + FilteredStandby.length;
+  if (TotalMatched < TotalShared) {
+    showToast('Added ' + TotalMatched + ' of ' + TotalShared + ' shared apps.');
+  }
+}
+
 // On load: show appropriate landing screen every fresh session (sessionStorage resets on tab close)
 (function() {
   var seenThisSession = false;
@@ -10003,7 +10162,18 @@ function _returningStartOver() {
                      || localStorage.getItem('kw_timer')      !== null
                      || localStorage.getItem('kw_lives')      !== null;
     } catch(e) {}
-    setTimeout(hasPriorSession ? _showReturningScreen : _showWelcomeScreen, 80);
+
+    var SharedApps = _ParseSharedAppsFromUrl();
+    if (SharedApps && SharedApps.shortLabels.length > 0) {
+      _PendingSharedAppLabels     = SharedApps.shortLabels;
+      _PendingSharedStandbyLabels = SharedApps.standbyLabels;
+      var ListsAlreadyMatch = hasPriorSession && _SharedAppsMatchSavedList(SharedApps.shortLabels);
+      var NeedsAskFlow      = hasPriorSession && !ListsAlreadyMatch;
+      _PendingSharedAppsMode = NeedsAskFlow ? 'ask' : 'simple';
+      setTimeout(function() { _ShowSharedAppsScreen(NeedsAskFlow); }, 80);
+    } else {
+      setTimeout(hasPriorSession ? _showReturningScreen : _showWelcomeScreen, 80);
+    }
   }
 })();
 
@@ -10129,6 +10299,11 @@ function _onAppsLoaded(AllAppsFromJson) {
   buildAppPill();
   positionIcons();
   _initSkillsetPillAfterAppsLoad();
+
+  if (_PendingSharedAppsMode === 'simple') {
+    _ApplySharedAppsList(_PendingSharedAppLabels, _PendingSharedStandbyLabels);
+    _PendingSharedAppsMode = null;
+  }
 }
 
 
@@ -10182,12 +10357,12 @@ var currentDifficulty = 'fundamentals';
 
 // Max difficulty value included per mode
 var DIFF_RANGE = {
-  ubiquitous:          { min: 0, max: 0 },
-  fundamentals:        { min: 0, max: 1 },
-  'fundamentals-plus': { min: 0, max: 2 },
-  normal:              { min: 0, max: 3 },
-  'normal-plus':       { min: 1, max: 4 },
-  hardcore:            { min: 2, max: 5 },
+  ubiquitous:          { min: 0, max: 0, target: 10, groupLimit: 2, overflowLevels: [1]       },
+  fundamentals:        { min: 0, max: 1, target: 12, groupLimit: 2, overflowLevels: [2]       },
+  'fundamentals-plus': { min: 1, max: 2, target: 14, groupLimit: 5, overflowLevels: [0, 3]   },
+  normal:              { min: 1, max: 3, target: 16, groupLimit: 4, overflowLevels: [0, 4]    },
+  'normal-plus':       { min: 2, max: 4, target: 18, groupLimit: 3, overflowLevels: [1, 5]    },
+  hardcore:            { min: 4, max: 5, target: 20, groupLimit: 2, overflowLevels: [3, 2]    },
 };
 
 // Shortcut tokens that are unreliable across international QWERTY variants.
@@ -10207,44 +10382,68 @@ const UNSTABLE_PUNCTUATION_TOKENS = new Set([
 ]);
 
 function buildPool() {
-  var diffRange = DIFF_RANGE[currentDifficulty] || { min: 0, max: 3 };
+  var diffRange   = DIFF_RANGE[currentDifficulty] || { min: 1, max: 3, target: 16, groupLimit: 4, overflowLevels: [0, 4] };
   var browserSkip = getBrowserConflictSet();
   var allShortcuts = UNIVERSAL_SHORTCUTS.concat(loadedAppShortcuts);
 
-  var filtered = allShortcuts.filter(function(ShortcutEntry) {
+  function passesNonDifficultyFilters(ShortcutEntry) {
     var ActiveString = GetActiveShortcutString(ShortcutEntry);
-
-    // No token string for this platform — exclude
     if (!ActiveString) return false;
-
-    // Difficulty cap
-    var d = ShortcutEntry.difficulty;
-    if (d < diffRange.min || d > diffRange.max) return false;
-
-    // Browser conflict exclusion — check primary alternative only.
-    // Canonicalised so conflict JSON wording (CTRL/CMD/OPT, any case)
-    // always matches this shortcut's wording, regardless of which
-    // platform authored it.
     var PrimaryString = CanonicaliseShortcutToken(ActiveString.split('|')[0]);
     if (!touchEnabled && browserSkip.has(PrimaryString)) return false;
     if (!touchEnabled && dismissedConflicts.has(PrimaryString)) return false;
-
-    // Extended key exclusion: touch always blocks all; otherwise per-key via dismissedConflicts
     if (touchEnabled && requiresExtKey(ActiveString)) return false;
-
-    // Kill punctuation
     if (killPunctuationOn && UNSTABLE_PUNCTUATION_TOKENS.has(PrimaryString)) return false;
-
     return true;
+  }
+
+  // Helper: apply group cap to a candidate list and append passing entries to pool.
+  function applyGroupCap(candidates, pool, cap, counts) {
+    candidates.forEach(function(ShortcutEntry) {
+      if (!ShortcutEntry.group) { pool.push(ShortcutEntry); return; }
+      counts[ShortcutEntry.group] = (counts[ShortcutEntry.group] || 0) + 1;
+      if (counts[ShortcutEntry.group] <= cap) pool.push(ShortcutEntry);
+    });
+  }
+
+  // Phase 1: primary difficulty range with the standard group cap of 2.
+  var primaryCandidates = allShortcuts.filter(function(ShortcutEntry) {
+    var d = ShortcutEntry.difficulty;
+    return d >= diffRange.min && d <= diffRange.max && passesNonDifficultyFilters(ShortcutEntry);
+  });
+  var groupCounts = {};
+  var pool = [];
+  applyGroupCap(primaryCandidates, pool, 2, groupCounts);
+
+  // Phase 2: still under target — raise the group limit to let more questions
+  // through from the primary range candidates that were previously capped.
+  if (pool.length < diffRange.target && diffRange.groupLimit > 2) {
+    var phase2Candidates = primaryCandidates.filter(function(ShortcutEntry) {
+      if (!ShortcutEntry.group) return false; // ungrouped already passed phase 1
+      return (groupCounts[ShortcutEntry.group] || 0) >= 2;
+    });
+    applyGroupCap(phase2Candidates, pool, diffRange.groupLimit, groupCounts);
+  }
+
+  // Phase 3: still under target — add from each overflow difficulty level in order.
+  var alreadyInPool = new Set(pool.map(function(s) { return s; }));
+  diffRange.overflowLevels.forEach(function(level) {
+    if (pool.length >= diffRange.target) return;
+    var overflowCandidates = allShortcuts.filter(function(ShortcutEntry) {
+      return ShortcutEntry.difficulty === level
+        && !alreadyInPool.has(ShortcutEntry)
+        && passesNonDifficultyFilters(ShortcutEntry);
+    });
+    overflowCandidates.forEach(function(ShortcutEntry) {
+      if (pool.length < diffRange.target) {
+        pool.push(ShortcutEntry);
+        alreadyInPool.add(ShortcutEntry);
+      }
+    });
   });
 
-  // Cap: no more than 2 questions from the same named group per pool
-  var groupCounts = {};
-  return filtered.filter(function(ShortcutEntry) {
-    if (!ShortcutEntry.group) return true;
-    groupCounts[ShortcutEntry.group] = (groupCounts[ShortcutEntry.group] || 0) + 1;
-    return groupCounts[ShortcutEntry.group] <= 2;
-  });
+  // If still under target the round simply repeats from the pool as before.
+  return pool;
 }
 
 
@@ -12288,24 +12487,27 @@ function _refreshEndGameHistory() {
       var HasLine2 = CloseCount > 0;
 
       if (HasLine1 || HasLine2) {
-        var StatsParts = [];
+        var TimerIconSvg = '<svg style="display:inline;vertical-align:middle;margin-left:4px;flex-shrink:0;" width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="13" r="8"/><path d="M12 9v4l3 3"/><path d="M9 3h6"/><path d="M12 3v2"/></svg>';
+        var AccIconSvg   = '<svg style="display:inline;vertical-align:middle;margin-left:4px;flex-shrink:0;" width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="7"/><line x1="12" y1="2" x2="12" y2="7"/><line x1="12" y1="17" x2="12" y2="22"/><line x1="2" y1="12" x2="7" y2="12"/><line x1="17" y1="12" x2="22" y2="12"/></svg>';
+        var StatsHtml = '';
         if (HasLine1) {
-          StatsParts.push('Your average answer time was: ' + AvgTimeText + ' seconds.');
+          StatsHtml += TimerIconSvg + 'Your average answer time was: ' + AvgTimeText + ' seconds.';
         }
         if (HasLine2) {
           var FailWord  = FailCount  === 1 ? 'fail'  : 'fails';
           var CloseVerb = CloseCount === 1 ? 'was'   : 'were';
-          StatsParts.push('Out of ' + FailCount + ' ' + FailWord + ', ' + CloseCount + ' ' + CloseVerb + ' close to correct.');
+          StatsHtml += (HasLine1 ? '&ensp;&ensp;' : '') + 'Out of ' + FailCount + ' ' + FailWord + ', ' + CloseCount + ' ' + CloseVerb + ' close to correct.' + AccIconSvg;
         }
         var StatsLine = document.createElement('p');
         StatsLine.className = 'sp-report-advice';
-        StatsLine.style.margin = '0';
-        StatsLine.textContent = StatsParts.join(' ');
+        StatsLine.style.cssText = 'margin:0;text-align:center;';
+        StatsLine.innerHTML = StatsHtml;
         HistoryStatsBox.appendChild(StatsLine);
+      }
       }
     }
   }
-}
+
 
 function _refreshCheatSheet() {
   var List = document.getElementById('cheatSheetList');
@@ -14307,6 +14509,7 @@ var PanelKeyboardPositions = {
   panelEndGameHistoryRecord: { desktop: 80, tablet: 80 },
   panelCheatSheet:           { desktop: 47, tablet: 76 },
   panelLandingReturning:     { desktop: 47, tablet: 58 },
+  panelLandingSharedApps:    { desktop: 47, tablet: 58 },
   panelLandingWelcome:       { desktop: 47, tablet: 58 },
 };
 
@@ -15349,6 +15552,98 @@ function _applySkillset(skillsetLabel) {
   // If the customise panel is open, re-render it to reflect the newly selected skillset.
 }
 
+// ── Sharing a Custom Set ─────────────────────────────────────────────────────
+// "Share my set" builds a mailto link with no recipient, containing a URL that
+// reproduces the current Custom Set (both active and benched apps) via the
+// apps and standby query parameters. The button is only enabled once the
+// current selection differs from every named skillset's default list, since
+// sharing an unmodified skillset is really just sharing its name.
+
+function _GetDefaultAppsListForSkillset(SkillsetDefinition) {
+  return appsLongList
+    .filter(function(App) {
+      if (!Array.isArray(App.skillset)) return false;
+      return SkillsetDefinition.tags.some(function(Tag) { return App.skillset.indexOf(Tag) !== -1; });
+    })
+    .map(function(App) { return App.label; });
+}
+
+function _CurrentAppsSetIsCustomised() {
+  var CurrentLabels = new Set(appsShortList);
+  var MatchesAnyDefault = SKILLSET_DEFS.some(function(Definition) {
+    var DefaultLabels = _GetDefaultAppsListForSkillset(Definition);
+    if (DefaultLabels.length !== appsShortList.length) return false;
+    return DefaultLabels.every(function(Label) { return CurrentLabels.has(Label); });
+  });
+  return !MatchesAnyDefault;
+}
+
+function _BuildShareCustomSetMailtoHref() {
+  var ShareUrl = new URL(window.location.href);
+  var ShareParams = new URLSearchParams();
+  ShareParams.set('apps', appsShortList.join(','));
+  if (appsStandbyList.length > 0) ShareParams.set('standby', appsStandbyList.join(','));
+  ShareUrl.search = ShareParams.toString();
+
+  var Subject = encodeURIComponent('I hand selected apps for you to train in on Keyboard Warriors');
+  var Body = encodeURIComponent(
+    "I've set up a list of apps to learn and train keyboard shortcuts for.\n\n" +
+    'This link will open Keyboard Warriors with the apps I selected for you preloaded:\n' + ShareUrl.toString()
+  );
+  return 'mailto:?subject=' + Subject + '&body=' + Body;
+}
+
+// ── Sharing a Custom Set ─────────────────────────────────────────────────────
+// "Share my set" builds a mailto link with no recipient, containing a URL that
+// reproduces the current Custom Set (both active and benched apps) via the
+// apps and standby query parameters. The button is only enabled once the
+// current selection differs from every named skillset's default list, since
+// sharing an unmodified skillset is really just sharing its name.
+
+function _GetDefaultAppsListForSkillset(SkillsetDefinition) {
+  return appsLongList
+    .filter(function(App) {
+      if (!Array.isArray(App.skillset)) return false;
+      return SkillsetDefinition.tags.some(function(Tag) { return App.skillset.indexOf(Tag) !== -1; });
+    })
+    .map(function(App) { return App.label; });
+}
+
+function _CurrentAppsSetIsCustomised() {
+  var CurrentLabels = new Set(appsShortList);
+  var MatchesAnyDefault = SKILLSET_DEFS.some(function(Definition) {
+    var DefaultLabels = _GetDefaultAppsListForSkillset(Definition);
+    if (DefaultLabels.length !== appsShortList.length) return false;
+    return DefaultLabels.every(function(Label) { return CurrentLabels.has(Label); });
+  });
+  return !MatchesAnyDefault;
+}
+
+function _BuildShareCustomSetMailtoHref() {
+  var ShareParams = new URLSearchParams();
+  ShareParams.set('apps', appsShortList.join(','));
+  if (appsStandbyList.length > 0) ShareParams.set('standby', appsStandbyList.join(','));
+
+  // URLSearchParams encodes spaces as '+', which some mail clients display
+  // literally rather than treating as a space. Swap them for %20 here, before
+  // the whole message is folded into the mailto body's own encoding pass below.
+  var QueryString = ShareParams.toString().replace(/\+/g, '%20');
+
+  // Built with an explicit https:// origin, rather than trusting
+  // window.location.href directly, so mail clients reliably recognise this
+  // as a clickable URL once the body text below is decoded.
+  var ShareUrl = 'https://' + window.location.host + window.location.pathname + '?' + QueryString;
+
+  var BodyText =
+    "I've hand picked some Apps for you to practice your Keyboard Shortcuts in.\n\n" +
+    'Go to this link to load my list in Keyboard Warriors:\n' + ShareUrl;
+
+  var Subject = encodeURIComponent('the fastest way to level up in your favourite Apps');
+  var Body    = encodeURIComponent(BodyText);
+
+  return 'mailto:?subject=' + Subject + '&body=' + Body;
+}
+
 function skillsetPillClick(ClickEvent) {
   if (ClickEvent) ClickEvent.stopPropagation();
   if (skillsetPillOpen) { _closeSkillsetPill(); return; }
@@ -15977,15 +16272,35 @@ var IsBetaBuild = document.title !== 'Keyboard Warriors';
 
   // Footer row
   var FooterRow = document.createElement('div');
-  FooterRow.style.cssText = 'width:100%;text-align:center;margin-top:8px;padding-top:8px;border-top:1px solid rgba(0,0,0,0.08);';
+  FooterRow.style.cssText = 'width:100%;margin-top:8px;padding-top:8px;border-top:1px solid rgba(0,0,0,0.08);display:flex;align-items:center;justify-content:center;gap:8px;';
+
+  var MailIconWrap = document.createElement('span');
+  MailIconWrap.style.cssText = 'flex-shrink:0;display:inline-flex;align-items:center;color:#9ca3af;';
+  MailIconWrap.innerHTML = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="15" height="15"><rect x="2" y="4" width="20" height="16" rx="2"/><polyline points="2,4 12,13 22,4"/></svg>';
+
+  var ActionsPill = document.createElement('div');
+  ActionsPill.className = 'segmented-pill';
+  ActionsPill.style.cssText = 'width:auto;flex:1;';
+
+  var ShareButton = document.createElement('button');
+  ShareButton.className = 'segmented-pill-section segmented-pill-half';
+  ShareButton.innerHTML = '<span class="diff-btn-text">share my custom App set</span>';
+  var SetIsShareable = _CurrentAppsSetIsCustomised();
+  ShareButton.classList.toggle('segmented-pill-inactive', !SetIsShareable);
+  ShareButton.title = SetIsShareable ? '' : 'Customise your set before sharing it.';
+  ShareButton.addEventListener('click', function() {
+    var Anchor = document.createElement('a');
+    Anchor.href   = _BuildShareCustomSetMailtoHref();
+    Anchor.target = '_blank';
+    Anchor.rel    = 'noopener';
+    document.body.appendChild(Anchor);
+    Anchor.click();
+    document.body.removeChild(Anchor);
+  });
 
   var RequestButton = document.createElement('button');
-  RequestButton.className = 'segmented-pill-section segmented-pill-full';
-  RequestButton.style.cssText = 'border-radius:16px;border:1.5px solid #d1d5db;padding:5px 14px;width:auto;display:inline-flex;align-items:center;gap:6px;';
-
-  var EnvelopeIcon = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="13" height="13" style="vertical-align:middle;flex-shrink:0;"><rect x="2" y="4" width="20" height="16" rx="2"/><polyline points="2,4 12,13 22,4"/></svg>';
-  RequestButton.innerHTML = EnvelopeIcon + '<span class="diff-btn-text">request support for another App</span>';
-
+  RequestButton.className = 'segmented-pill-section segmented-pill-half';
+  RequestButton.innerHTML = '<span class="diff-btn-text">request support for another App</span>';
   RequestButton.addEventListener('click', function () {
     var Subject = encodeURIComponent('Keyboard Warriors: app support request');
     var Body    = encodeURIComponent("I'd like to request support for [app name - ideally include a link]. I hope you can add it to Keyboard Warriors.");
@@ -15998,7 +16313,10 @@ var IsBetaBuild = document.title !== 'Keyboard Warriors';
     document.body.removeChild(Anchor);
   });
 
-  FooterRow.appendChild(RequestButton);
+  ActionsPill.appendChild(ShareButton);
+  ActionsPill.appendChild(RequestButton);
+  FooterRow.appendChild(MailIconWrap);
+  FooterRow.appendChild(ActionsPill);
   PanelElement.appendChild(FooterRow);
 }
 

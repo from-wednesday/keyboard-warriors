@@ -24,6 +24,10 @@ body {
   gap: 0;
 }
 
+/* When a settings panel has enough room to fit the window without scrolling,
+   the top group anchors to the top and keyboardWrap's stretched min-height
+   (set in _updateViewportFitLayout) pushes credit down to the bottom edge.
+   Outside this class, the page behaves exactly as it always has. */
 body.settings-fits-viewport {
   height: 100dvh;
   justify-content: flex-start;
@@ -876,9 +880,10 @@ body.kb-at-edge #keyboardPanel #kb-shadow {
   grid-template-columns: 1fr 1fr;
 }
 
-/* Returning-user, Welcome, and Difficulty pages: full-width single column, centred */
+/* Returning-user, Welcome, Shared App List, and Difficulty pages: full-width single column, centred */
 #panelDifficultySettings.sp-active,
 #panelLandingReturning.sp-active,
+#panelLandingSharedApps.sp-active,
 #panelLandingWelcome.sp-active {
   display: flex;
   flex-direction: column;
@@ -887,6 +892,7 @@ body.kb-at-edge #keyboardPanel #kb-shadow {
 }
 #panelDifficultySettings.sp-active::after,
 #panelLandingReturning.sp-active::after,
+#panelLandingSharedApps.sp-active::after,
 #panelLandingWelcome.sp-active::after  { display: none; }
 
 /* Difficulty panel's caret+label sit above the pill via negative offset

@@ -9775,6 +9775,15 @@ function _doWipeStorage(opts) {
   try { sessionStorage.removeItem('kw_welcomed'); } catch(e) {}
   userManuallyUnblockedConflicts.clear();
   dismissedConflicts.clear();
+  if (appsLongList && appsLongList.length) {
+    var IsBetaBuild = document.title !== 'Keyboard Warriors';
+    var DefaultShortListLabels = IsBetaBuild
+      ? appsLongList.map(function(App) { return App.label; })
+      : appsLongList.filter(function(App) { return !App.beta; }).map(function(App) { return App.label; });
+    appsShortList   = DefaultShortListLabels;
+    appsStandbyList = _BuildStandbyDefaultsForSkillset('Graphic Design', appsLongList, DefaultShortListLabels);
+    currentApp      = appsShortList[0] || currentApp;
+  }
 }
 
 var _startOverConfirmActive = false;

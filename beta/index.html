@@ -9765,10 +9765,11 @@ function _doWipeStorage(opts) {
     'kw_touch_enabled','kw_kb_full','kw_kb_variant_mac',
     'kw_kb_variant_pc','kw_kb_key_overrides'
   ];
-  var wipeKeys = [
+var wipeKeys = [
     'kw_best','kw_app','kw_difficulty','kw_perfect','kw_timer','kw_lives',
     'kw_coach_memory','kw_dismissed_conflicts','kw_blur_conflicts',
-    'kw_manual_unblocked','kw_confirmed_working','kw_preferred_skillset','kw_gyro'
+    'kw_manual_unblocked','kw_confirmed_working','kw_preferred_skillset','kw_gyro',
+    'kw_custom_set','kw_apps_short_list','kw_apps_standby_list'
   ];
   if (!keepKb) wipeKeys = wipeKeys.concat(kbKeys);
   wipeKeys.forEach(function(k) { try { localStorage.removeItem(k); } catch(e) {} });
@@ -9784,6 +9785,7 @@ function _doWipeStorage(opts) {
     appsStandbyList = _BuildStandbyDefaultsForSkillset('Graphic Design', appsLongList, DefaultShortListLabels);
     currentApp      = appsShortList[0] || currentApp;
   }
+  CustomSetList = null;
 }
 
 var _startOverConfirmActive = false;

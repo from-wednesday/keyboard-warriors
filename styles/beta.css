@@ -539,6 +539,7 @@ body.settings-fits-viewport #keyboardWrap {
   width: 100%;
   padding: 8px 60px 4px;
   position: relative;
+  z-index: 501;
   box-sizing: border-box;
   min-height: 37px;
 }
@@ -1848,7 +1849,7 @@ li.conflict-dismissed .conflict-desc {
   opacity: 0;
   pointer-events: none;
   transition: opacity 0.3s;
-  z-index: 10;
+  z-index: 250;
 }
 #osMismatchPill.show { opacity: 1; }
 #osMismatchPill.show.clickable { pointer-events: auto; cursor: pointer; }
@@ -1868,7 +1869,7 @@ li.conflict-dismissed .conflict-desc {
   flex-shrink: 0;
   position: relative;
   overflow: visible;
-  z-index: 500;
+  z-index: 100;
   position: relative; 
 }
 #appSelectorLabel {

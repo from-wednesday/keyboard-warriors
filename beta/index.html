@@ -16,6 +16,15 @@
 <link rel="icon" type="image/png" href="/keyboard-warriors/keyboard-warriors-favicon.png">
 <script>
   (function() {
+    var saved = localStorage.getItem('kw_theme');
+    var prefersDark = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
+    if (saved === 'dark' || (!saved && prefersDark)) {
+      document.documentElement.setAttribute('data-theme', 'dark');
+    }
+  })();
+</script>
+<script>
+  (function() {
     var link = document.createElement('link');
     link.rel  = 'stylesheet';
     link.href = document.title.toLowerCase() === 'beta'
@@ -497,6 +506,19 @@
           <button class="segmented-pill-section segmented-pill-full" onclick="_reportImpossibleQuestion()" title="Report a problem">
             <span class="diff-btn-text"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="14" height="14"><rect x="2" y="4" width="20" height="16" rx="2"/><polyline points="2,4 12,13 22,4"/></svg></span>
           </button>
+        </div>
+        <div class="dm-toggle-row" style="margin-top:10px;">
+          <span class="dm-toggle-label" id="dmLabelLight">light</span>
+          <label class="os-switch" id="dmToggleLabel" title="Toggle dark mode">
+            <input type="checkbox" id="dmToggle" onchange="_onDarkModeToggle()">
+            <svg class="os-track" width="36" height="14" viewBox="0 0 36 14" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <rect id="dmTrackRect" x="1" y="1" width="34" height="12" rx="6"
+                    stroke="#9ca3af" stroke-width="1.5" fill="none"/>
+              <circle id="dmKnobEl" cx="7" cy="7" r="4"
+                      stroke="#9ca3af" stroke-width="1.5" fill="white"/>
+            </svg>
+          </label>
+          <span class="dm-toggle-label" id="dmLabelDark">dark</span>
         </div>
       </div>
        <!-- ── Blur Pause Diagnostic ─────────────────────── -->
@@ -16465,6 +16487,38 @@ function _closeCustomiseSkillsetPanel() {
   }
   if (SkillsetLabelElement) SkillsetLabelElement.textContent = 'skillset';
 }
+
+/* ── Dark mode ───────────────────────────────────────────────────────────── */
+function _applyTheme(isDark) {
+  if (isDark) {
+    document.documentElement.setAttribute('data-theme', 'dark');
+  } else {
+    document.documentElement.removeAttribute('data-theme');
+  }
+  var knob  = document.getElementById('dmKnobEl');
+  var track = document.getElementById('dmTrackRect');
+  var toggle = document.getElementById('dmToggle');
+  if (toggle)  toggle.checked = isDark;
+  if (knob)    knob.setAttribute('transform',  isDark ? 'translate(22,0)' : '');
+  if (track)   track.setAttribute('stroke',    isDark ? '#374151' : '#9ca3af');
+  if (knob)    knob.setAttribute('stroke',     isDark ? '#374151' : '#9ca3af');
+  try { localStorage.setItem('kw_theme', isDark ? 'dark' : 'light'); } catch(e) {}
+}
+
+function _onDarkModeToggle() {
+  var toggle = document.getElementById('dmToggle');
+  _applyTheme(toggle && toggle.checked);
+}
+
+function _initDarkModeToggle() {
+  var saved = localStorage.getItem('kw_theme');
+  var prefersDark = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
+  var isDark = saved === 'dark' || (!saved && prefersDark);
+  _applyTheme(isDark);
+}
+
+// Run once on load
+_initDarkModeToggle();
 </script>
 </body>
 </html>

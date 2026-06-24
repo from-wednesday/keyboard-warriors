@@ -1868,7 +1868,7 @@ li.conflict-dismissed .conflict-desc {
   flex-shrink: 0;
   position: relative;
   overflow: visible;
-  z-index: 500;
+  z-index: 100;
   position: relative; 
 }
 #appSelectorLabel {

@@ -2025,7 +2025,7 @@ function updateMismatchPill() {
     var _pillHasExternalKeyboard = false;
     try { _pillHasExternalKeyboard = localStorage.getItem('kw_has_keyboard') === '1'; } catch(StorageError) {}
     if (!_pillHasExternalKeyboard && !_pillDismissedThisSession) {
-      osMismatchEl.textContent = 'We recommend training with a real mechanical keyboard.';
+      osMismatchEl.textContent = 'Best with a real keyboard';
       osMismatchEl.classList.add('show');
       _startPillAutoHideTimer();
     } else {

@@ -475,6 +475,19 @@
         </span>
       </div>
       <div class="sp-col sp-col-right">
+        <div class="dm-toggle-row">
+          <span class="dm-toggle-label" id="dmLabelLight">light</span>
+          <label class="os-switch" id="dmToggleLabel" title="Toggle dark mode">
+            <input type="checkbox" id="dmToggle" onchange="_onDarkModeToggle()">
+            <svg class="os-track" width="36" height="14" viewBox="0 0 36 14" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <rect id="dmTrackRect" x="1" y="1" width="34" height="12" rx="6"
+                    stroke="#9ca3af" stroke-width="1.5" fill="none"/>
+              <circle id="dmKnobEl" cx="7" cy="7" r="4"
+                      stroke="#9ca3af" stroke-width="1.5" fill="white"/>
+            </svg>
+          </label>
+          <span class="dm-toggle-label" id="dmLabelDark">dark</span>
+        </div>
         <div class="more-info-wrap" style="margin-bottom:4px;">
           <p class="sp-body sp-clear-label" id="spClearLabel" onclick="toggleMoreInfo('ppClearRecordsMoreInfo', event)" style="margin:0;cursor:pointer;"><strong>Clear high score record?</strong></p>
           <span class="more-info-trigger" id="ppClearRecordsMoreInfoTrigger" onclick="toggleMoreInfo('ppClearRecordsMoreInfo', event)">
@@ -507,20 +520,7 @@
             <span class="diff-btn-text"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="14" height="14"><rect x="2" y="4" width="20" height="16" rx="2"/><polyline points="2,4 12,13 22,4"/></svg></span>
           </button>
         </div>
-        <div class="dm-toggle-row" style="margin-top:10px;">
-          <span class="dm-toggle-label" id="dmLabelLight">light</span>
-          <label class="os-switch" id="dmToggleLabel" title="Toggle dark mode">
-            <input type="checkbox" id="dmToggle" onchange="_onDarkModeToggle()">
-            <svg class="os-track" width="36" height="14" viewBox="0 0 36 14" fill="none" xmlns="http://www.w3.org/2000/svg">
-              <rect id="dmTrackRect" x="1" y="1" width="34" height="12" rx="6"
-                    stroke="#9ca3af" stroke-width="1.5" fill="none"/>
-              <circle id="dmKnobEl" cx="7" cy="7" r="4"
-                      stroke="#9ca3af" stroke-width="1.5" fill="white"/>
-            </svg>
-          </label>
-          <span class="dm-toggle-label" id="dmLabelDark">dark</span>
         </div>
-      </div>
        <!-- ── Blur Pause Diagnostic ─────────────────────── -->
     <div id="blurPauseDiagnostic" style="display:none;width:100%;grid-column:1/-1;">
       <!-- Two-column panel: fixed min-height so the pill row below never shifts position -->

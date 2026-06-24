@@ -662,7 +662,7 @@
 
     <!-- ── Shared App List Landing ──────────────────────── -->
     <div id="panelLandingSharedApps" class="sp-page">
-      <p class="sp-title" style="margin-bottom:10px;text-align:center;"><em>A friend has hand picked a custom list of apps for you to train on.</em></p>
+      <p class="sp-title" style="margin-bottom:10px;text-align:center;">It looks like a friend has<em> hand picked</em> a custom list of apps for you to train on.</p>
       <div id="sharedAppsChoiceArea" class="sp-returning-inner">
         <!-- content rendered by JS: either the two-button choice, or a simple instruction -->
       </div>
@@ -10081,7 +10081,7 @@ function _RefreshSharedAppsPanel(NeedsAskFlow) {
     var Message = document.createElement('p');
     Message.className = 'sp-body';
     Message.style.textAlign = 'center';
-    Message.textContent = 'Choose your first app to train for in the top right.';
+    Message.textContent = "You can choose the first App you'd like to train with via the 'now training on' selector in the top right corner of the screen.";
     ChoiceArea.appendChild(Message);
   }
 }
@@ -15627,10 +15627,10 @@ function _BuildShareCustomSetMailtoHref() {
   var ShareUrl = 'https://' + window.location.host + window.location.pathname + '?' + QueryString;
 
   var BodyText =
-    "I've set up a list of apps to train on in Keyboard Warriors and thought you might like to use it too.\n\n" +
-    'Open this link to load my list:\n' + ShareUrl;
+    "I've hand picked some Apps for you to practice your Keyboard Shortcuts in.\n\n" +
+    'Go to this link to load my list in Keyboard Warriors:\n' + ShareUrl;
 
-  var Subject = encodeURIComponent('Keyboard Warriors: a shared app training list');
+  var Subject = encodeURIComponent('the fastest way to level up in your favourite Apps');
   var Body    = encodeURIComponent(BodyText);
 
   return 'mailto:?subject=' + Subject + '&body=' + Body;
@@ -16276,7 +16276,7 @@ var IsBetaBuild = document.title !== 'Keyboard Warriors';
 
   var ShareButton = document.createElement('button');
   ShareButton.className = 'segmented-pill-section segmented-pill-half';
-  ShareButton.innerHTML = '<span class="diff-btn-text">share my set</span>';
+  ShareButton.innerHTML = '<span class="diff-btn-text">share my custom App set</span>';
   var SetIsShareable = _CurrentAppsSetIsCustomised();
   ShareButton.classList.toggle('segmented-pill-inactive', !SetIsShareable);
   ShareButton.title = SetIsShareable ? '' : 'Customise your set before sharing it.';

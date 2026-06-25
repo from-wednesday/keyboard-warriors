@@ -984,8 +984,8 @@
 
       <div class="sp-col-full" id="panelKeyboardAesthetics">
         <div class="modal-section-gap" style="margin-top:8px;"></div>
-        <div class="diff-advanced-panel diff-advanced-active kb-theme-panel-row">
-          <span class="diff-advanced-label">Keyboard Aesthetics</span>
+        <div class="kb-theme-row">
+    <span class="diff-advanced-label">Keyboard Aesthetics</span>
           <div class="segmented-pill kb-theme-pill" id="kbThemePill">
             <button class="segmented-pill-section kb-theme-btn segmented-pill-active" data-theme="mono" onclick="setKeyboardColourTheme('mono')">
               <span class="diff-btn-text">mono</span>
@@ -14596,7 +14596,7 @@ function handleKeyup(e) {
 // These are interim values. Wednesday will tune each panel individually
 // based on observation across devices.
 var PanelKeyboardPositions = {
-  panelKeyboard:             { desktop: 58, tablet: 58 },
+  panelKeyboard:             { desktop: 64, tablet: 64 },
   panelConflicts:            { desktop: 62, tablet: 76 },
   panelDifficultySettings:   { desktop: 74, tablet: 76 },
   panelPause:                { desktop: 67, tablet: 67 },
@@ -14607,7 +14607,6 @@ var PanelKeyboardPositions = {
   panelLandingSharedApps:    { desktop: 47, tablet: 58 },
   panelLandingWelcome:       { desktop: 47, tablet: 58 },
 };
-
 
 function GetPanelKeyboardAngle(PanelName) {
   var Config = PanelKeyboardPositions[PanelName];

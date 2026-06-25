@@ -4164,7 +4164,7 @@ body.phone-layout-active {
    correct anything the filter gets wrong.
 ══════════════════════════════════════ */
 [data-theme="dark"] html {
-  filter: invert(1) hue-rotate(180deg) brightness(0.92) contrast(1.08);
+  filter: invert(1) hue-rotate(180deg);
   background: #e3dfe7; /* inverts to #1c2028 after the filter */
 }
 

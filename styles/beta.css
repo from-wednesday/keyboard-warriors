@@ -4463,3 +4463,45 @@ html[data-theme="dark"] body {
 /* ── Dark mode: kb-variant-key background ──────────────────────────────── */
 /* key chips use bg #e5e7eb which inverts dark — lift it slightly            */
 [data-theme="dark"] .kb-variant-key                     { background: #c8cdd5; }
+
+/* ── Dark mode: inversion-exempt elements ───────────────────────────────────
+   Re-applying the same filter cancels the parent inversion, restoring these
+   elements to their original light-mode appearance. Add new exempt elements
+   here rather than trying to correct them with adjusted colour values.
+   ─────────────────────────────────────────────────────────────────────────── */
+
+/* Medals: all four, including ::before face disc */
+[data-theme="dark"] .scoreDisc.medal-gold,
+[data-theme="dark"] .scoreDisc.medal-silver,
+[data-theme="dark"] .scoreDisc.medal-bronze,
+[data-theme="dark"] .scoreDisc.medal-lead {
+  filter: invert(1) hue-rotate(180deg) brightness(1.087) contrast(0.926);
+}
+[data-theme="dark"] .scoreDisc.medal-gold::before,
+[data-theme="dark"] .scoreDisc.medal-silver::before,
+[data-theme="dark"] .scoreDisc.medal-bronze::before,
+[data-theme="dark"] .scoreDisc.medal-lead::before {
+  filter: invert(1) hue-rotate(180deg) brightness(1.087) contrast(0.926);
+}
+
+/* Segmented pill button inset shadows */
+[data-theme="dark"] .segmented-pill-section {
+  filter: invert(1) hue-rotate(180deg) brightness(1.087) contrast(0.926);
+}
+[data-theme="dark"] .segmented-pill-section.segmented-pill-active {
+  filter: none;
+}
+
+/* Graphical keyboard: shadow, key lighting outer glow, and front wall */
+[data-theme="dark"] #kb-shadow {
+  filter: invert(1) hue-rotate(180deg) brightness(1.087) contrast(0.926);
+}
+[data-theme="dark"] #kb-wall-bottom {
+  filter: invert(1) hue-rotate(180deg) brightness(1.087) contrast(0.926);
+}
+[data-theme="dark"] .key.lit-green-up,
+[data-theme="dark"] .key.lit-green-down,
+[data-theme="dark"] .key.lit-orange-up,
+[data-theme="dark"] .key.lit-orange-down {
+  filter: invert(1) hue-rotate(180deg) brightness(1.087) contrast(0.926);
+}

@@ -1692,15 +1692,21 @@ li.conflict-dismissed .conflict-desc {
    so it sits above the key's existing background-colour but underneath
    nothing, since lit states and ghost mode both set the background
    shorthand with !important and so always override it automatically.
-   To add a new theme: add one --keyboard-theme-tint-name variable below,
-   one matching line mapping it to a data-keyboard-theme value, and one
-   matching pill button colour further down. The selector list targeting
-   which keys receive the tint never needs to change.
+To add a new theme: add one --keyboard-theme-tint-name variable below,
+   one matching --keyboard-theme-swatch-name variable (the same colour at
+   full strength, used only for the active state of the picker pill below),
+   one matching line mapping the tint to a data-keyboard-theme value, and
+   one matching pill rule further down. The selector list targeting which
+   keys receive the tint never needs to change.
 ══════════════════════════════════════ */
 :root {
-  --keyboard-theme-tint-dieter:    linear-gradient(rgba(212, 106, 33, 0.38), rgba(212, 106, 33, 0.38));
-  --keyboard-theme-tint-aqua:      linear-gradient(135deg, rgba(94, 188, 217, 0.42), rgba(58, 188, 150, 0.38));
-  --keyboard-theme-tint-bubblegum: linear-gradient(rgba(236, 105, 170, 0.38), rgba(236, 105, 170, 0.38));
+  --keyboard-theme-tint-dieter:    linear-gradient(rgba(212, 106, 33, 0.38), rgba(212, 106, 33, 0.38));
+  --keyboard-theme-tint-aqua:      linear-gradient(135deg, rgba(94, 188, 217, 0.42), rgba(58, 188, 150, 0.38));
+  --keyboard-theme-tint-bubblegum: linear-gradient(rgba(236, 105, 170, 0.38), rgba(236, 105, 170, 0.38));
+
+  --keyboard-theme-swatch-dieter:    #d46a21;
+  --keyboard-theme-swatch-aqua:      linear-gradient(135deg, #5ebcd9, #3abc96);
+  --keyboard-theme-swatch-bubblegum: #ec69aa;
 }
 
 #keyboardPanel[data-keyboard-theme="dieter"]    { --keyboard-theme-tint: var(--keyboard-theme-tint-dieter); }
@@ -1723,12 +1729,15 @@ li.conflict-dismissed .conflict-desc {
 }
 
 /* ── Keyboard Aesthetics theme picker pill ──────────────────────────────────
-   Reuses the same tint variables as the key tint above, so every segment
-   shows exactly the colour its keys would receive. Equal-width segments;
-   only the active segment's label is shown, since four different
-   background colours make every label hard to read at once. The existing
-   segmented-pill active/inactive shadow states already supply the
-   "which one is selected" cue, so no extra override is needed for that. */
+   Labels stay visible on every segment. Only the active segment shows its
+   theme as a solid colour swatch (the --keyboard-theme-swatch-name
+   variables, full strength rather than the translucent in-key tint), using
+   `background` rather than `background-image` so it replaces the white
+   background painted by the generic .segmented-pill-active rule.
+   Mono has no swatch of its own, so its label carries a strikethrough
+   whenever it is not the active segment, giving it the same "not currently
+   selected" cue the colour segments get for free from their plain
+   background. */
 .kb-theme-row {
   display: flex;
   flex-direction: row;
@@ -1741,19 +1750,16 @@ li.conflict-dismissed .conflict-desc {
   white-space: nowrap;
 }
 #kbThemePill {
-  flex: 1;
+  flex: 1;
 }
 #kbThemePill .kb-theme-btn {
-  flex: 1;
+  flex: 1;
 }
-#kbThemePill .kb-theme-btn[data-theme="dieter"]    { background-image: var(--keyboard-theme-tint-dieter); }
-#kbThemePill .kb-theme-btn[data-theme="aqua"]      { background-image: var(--keyboard-theme-tint-aqua); }
-#kbThemePill .kb-theme-btn[data-theme="bubblegum"] { background-image: var(--keyboard-theme-tint-bubblegum); }
-#kbThemePill .kb-theme-btn .diff-btn-text {
-  opacity: 0;
-}
-#kbThemePill .kb-theme-btn.segmented-pill-active .diff-btn-text {
-  opacity: 1;
+#kbThemePill .kb-theme-btn.segmented-pill-active[data-theme="dieter"]    { background: var(--keyboard-theme-swatch-dieter);    color: white; }
+#kbThemePill .kb-theme-btn.segmented-pill-active[data-theme="aqua"]      { background: var(--keyboard-theme-swatch-aqua);      color: white; }
+#kbThemePill .kb-theme-btn.segmented-pill-active[data-theme="bubblegum"] { background: var(--keyboard-theme-swatch-bubblegum); color: white; }
+#kbThemePill .kb-theme-btn[data-theme="mono"]:not(.segmented-pill-active) .diff-btn-text {
+  text-decoration: line-through;
 }
 
 /* ══════════════════════════════════════

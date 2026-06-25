@@ -4246,6 +4246,20 @@ body.phone-layout-active {
   }
 }
 
+/* ── Wrench icon colour ─────────────────────────────────────────────────── */
+.app-option-wrench svg { color: #9ca3af; }
+.app-option-wrench:hover svg { color: #374151; }
+.app-option-wrench-bottom-row .app-option-wrench svg { color: #6b7280; }
+
+/* ── Wrench picker label states ─────────────────────────────────────────── */
+.wrench-label-active  { color: #374151; }
+.wrench-label-standby { color: #d1d5db; }
+
+/* ── Customise panel label states ───────────────────────────────────────── */
+.customise-label-available { color: #374151; }
+.customise-label-inpill    { color: #d1d5db; }
+.customise-label-beta      { color: #9ca3af; }
+
 /* ══════════════════════════════════════
    DARK MODE
    Global invert+hue-rotate on <body>
@@ -4411,3 +4425,26 @@ html[data-theme="dark"] body {
 [data-theme="dark"] .sp-report-weakness .sp-report-chip { border-color: #808080; }
 [data-theme="dark"] #phoneToolbarIcons                  { border-color: #808080; }
 [data-theme="dark"] .sp-seg-pill .diff-btn              { border-color: #808080; }
+
+/* ── Dark mode: wrench icon ─────────────────────────────────────────────── */
+[data-theme="dark"] .app-option-wrench svg              { color: #585858; }
+[data-theme="dark"] .app-option-wrench:hover svg        { color: #2b2b2b; }
+[data-theme="dark"] .app-option-wrench-bottom-row .app-option-wrench svg { color: #494949; }
+
+/* ── Dark mode: wrench picker label states ──────────────────────────────── */
+/* active (in short list) → readable primary; standby → dim but visible */
+[data-theme="dark"] .wrench-label-active                { color: #2b2b2b; }
+[data-theme="dark"] .wrench-label-standby               { color: #585858; }
+
+/* ── Dark mode: customise panel label states ────────────────────────────── */
+[data-theme="dark"] .customise-label-available          { color: #2b2b2b; }
+[data-theme="dark"] .customise-label-inpill             { color: #585858; }
+[data-theme="dark"] .customise-label-beta               { color: #494949; }
+
+/* ── Dark mode: compact keyboard row (touch-disabled state) ─────────────── */
+/* opacity:0.38 on .modal-kbsize-row.disabled looks too dark in dark mode    */
+[data-theme="dark"] .modal-kbsize-row.disabled          { opacity: 0.55; }
+
+/* ── Dark mode: kb-variant-key background ──────────────────────────────── */
+/* key chips use bg #e5e7eb which inverts dark — lift it slightly            */
+[data-theme="dark"] .kb-variant-key                     { background: #c8cdd5; }

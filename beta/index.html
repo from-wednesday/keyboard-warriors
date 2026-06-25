@@ -6,14 +6,23 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Keyboard Warriors</title>
+<title>beta</title>
 <script>
   const DefaultTitle = 'Keyboard Warriors';
-  const VersionLabel   = '0035';
+  const VersionLabel   = '0036';
   const TitlePrefix  = document.title !== DefaultTitle ? document.title.trim() + '_' : '';
   const DBG_DEVICE   = TitlePrefix + VersionLabel;
 </script>
 <link rel="icon" type="image/png" href="/keyboard-warriors/keyboard-warriors-favicon.png">
+<script>
+  (function() {
+    var saved = localStorage.getItem('kw_theme');
+    var prefersDark = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
+    if (saved === 'dark' || (!saved && prefersDark)) {
+      document.documentElement.setAttribute('data-theme', 'dark');
+    }
+  })();
+</script>
 <script>
   (function() {
     var link = document.createElement('link');
@@ -185,6 +194,10 @@
       <circle cx="11" cy="11" r="7"/>
       <line x1="16.5" y1="16.5" x2="22" y2="22"/>
     </g>
+  </symbol>
+
+  <symbol id="IconWrench" viewBox="0 0 24 24">
+    <path fill="currentColor" d="M14.7,6.3a1,1,0,0,0,0,1.4l1.6,1.6a1,1,0,0,0,1.4,0l3.77-3.77a6,6,0,0,1-7.94,7.94l-6.91,6.91a2.12,2.12,0,0,1-3-3l6.91-6.91a6,6,0,0,1,7.94-7.94Z"/>
   </symbol>
 
   <symbol id="IconStudyNotes" viewBox="0 0 112.5 84.6">
@@ -466,6 +479,30 @@
         </span>
       </div>
       <div class="sp-col sp-col-right">
+        <div class="dm-toggle-row">
+          <!-- Lightbulb icon -->
+          <svg class="dm-mode-icon" id="dmIconLight" viewBox="0 0 20 20" width="13" height="13" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+            <path stroke="currentColor" stroke-width="1.45" stroke-linecap="round" stroke-linejoin="round"
+              d="M7.5,13 C7.5,13 7,11.5 6,10 C5,8.5 5,7 5,6.5 A5,5 0 0,1 15,6.5 C15,7 15,8.5 14,10 C13,11.5 12.5,13 12.5,13 Z"/>
+            <line x1="7.8" y1="14.5" x2="12.2" y2="14.5" stroke="currentColor" stroke-width="1.45" stroke-linecap="round"/>
+            <line x1="8.5" y1="16.2" x2="11.5" y2="16.2" stroke="currentColor" stroke-width="1.45" stroke-linecap="round"/>
+          </svg>
+          <button class="dm-toggle-label" id="dmLabelLight" onclick="_applyTheme(false)" title="Light mode">light</button>
+          <label class="os-switch" id="dmToggleLabel" title="Toggle dark mode">
+            <input type="checkbox" id="dmToggle" onchange="_onDarkModeToggle()">
+            <svg class="os-track" width="36" height="14" viewBox="0 0 36 14" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <rect id="dmTrackRect" x="1" y="1" width="34" height="12" rx="6"
+                    stroke="#9ca3af" stroke-width="1.5" fill="none"/>
+              <circle id="dmKnobEl" cx="7" cy="7" r="4"
+                      stroke="#9ca3af" stroke-width="1.5" fill="white"/>
+            </svg>
+          </label>
+          <button class="dm-toggle-label" id="dmLabelDark" onclick="_applyTheme(true)" title="Dark mode">dark</button>
+          <!-- Crescent moon: from designer SVG -->
+          <svg class="dm-mode-icon" id="dmIconDark" viewBox="0 0 100.74 105.08" width="13" height="13" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+            <path fill="currentColor" d="M84.77,43.69c-2.43-10.4-8.76-19.24-17.83-24.88-4.29-2.67-8.96-4.47-13.89-5.38-.73-.13-2.68-.49-3.03,1.44-.14.79.21,1.58.89,2.01,7.52,4.68,12.77,12.01,14.78,20.64,2.01,8.63.54,17.52-4.14,25.04-7.24,11.65-20.65,17.58-34.14,15.12-4.09-.75-7.97-2.25-11.53-4.46-.21-.13-.44-.22-.68-.26-.64-.12-1.31.09-1.77.58-.64.68-.71,1.71-.17,2.47,3.08,4.32,6.93,7.93,11.43,10.73,4.3,2.68,8.98,4.49,13.91,5.39,16.27,2.98,32.43-4.18,41.17-18.23,5.64-9.07,7.41-19.79,4.99-30.2h0Z"/>
+          </svg>
+        </div>
         <div class="more-info-wrap" style="margin-bottom:4px;">
           <p class="sp-body sp-clear-label" id="spClearLabel" onclick="toggleMoreInfo('ppClearRecordsMoreInfo', event)" style="margin:0;cursor:pointer;"><strong>Clear high score record?</strong></p>
           <span class="more-info-trigger" id="ppClearRecordsMoreInfoTrigger" onclick="toggleMoreInfo('ppClearRecordsMoreInfo', event)">
@@ -498,7 +535,7 @@
             <span class="diff-btn-text"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="14" height="14"><rect x="2" y="4" width="20" height="16" rx="2"/><polyline points="2,4 12,13 22,4"/></svg></span>
           </button>
         </div>
-      </div>
+        </div>
        <!-- ── Blur Pause Diagnostic ─────────────────────── -->
     <div id="blurPauseDiagnostic" style="display:none;width:100%;grid-column:1/-1;">
       <!-- Two-column panel: fixed min-height so the pill row below never shifts position -->
@@ -929,8 +966,8 @@
           </div>
         </div><!-- /#modalKbSizeSection -->
 
-     <div class="modal-section-gap" style="margin-top:8px;"></div>
-      <p class="sp-title" onclick="toggleMoreInfo('kbSizeMoreInfo', event)" style="font-size:12px;">Non-English Keyboard</p>
+     <div class="modal-section-gap" style="margin-top:3px;"></div>
+      <p class="sp-title" style="font-size:12px;">Non-English Keyboard</p>
         <div class="modal-toggle-row" id="killPunctuationRow" style="margin-bottom:0;">
           <label onclick="onKillPunctuationToggle()" style="display:flex;align-items:center;gap:10px;">
            <span class="modal-radio" id="killPunctuationRadio">
@@ -944,6 +981,11 @@
         </div>
 
       </div><!-- /.sp-col-right -->
+
+      <div class="sp-col-full" style="text-align:center;padding:0 20px;width:100%;">
+        <p>hello world</p>
+      </div>
+
     </div><!-- /#panelKeyboard -->
 
   </div><!-- /#settingsPanelInner -->
@@ -976,8 +1018,8 @@
     </svg>
   </div>
 
-  <div id="kbFlipStage">
-  <div id="keyboardPanel">
+  <div id="kbFlipStage">
+  <div id="keyboardPanel" data-keyboard-theme="mono">
     <!-- Sentinel: zero-height element at the very top of the keyboard panel.
          Lives in the same 3D transform space as the keyboard, so its
          getBoundingClientRect().top always reflects the keyboard's true
@@ -1413,17 +1455,18 @@ var KeyboardMemory = false; // true = persist keyboard settings across sessions
 function SaveKeyboardSettings() {
   if (!KeyboardMemory) return;
   try {
-    var Bundle = {
-      KeyboardDisplayMode: keyboardDisplayMode,
-      KbVariantMac:        kbVariantMac,
-      KbVariantPc:         kbVariantPc,
-      TouchEnabled:        touchEnabled,
-      StickyKeysOn:        stickyKeysOn,
-      SoundEnabled:        soundEnabled,
-      HasFullKeyboard:     hasFullKeyboard,
-      KillPunctuationOn:   killPunctuationOn,
-      KbKeyOverrides:      Array.from(kbKeyOverrides),
-    };
+    var Bundle = {
+      KeyboardDisplayMode:  keyboardDisplayMode,
+      KbVariantMac:         kbVariantMac,
+      KbVariantPc:          kbVariantPc,
+      TouchEnabled:         touchEnabled,
+      StickyKeysOn:         stickyKeysOn,
+      SoundEnabled:         soundEnabled,
+      HasFullKeyboard:      hasFullKeyboard,
+      KillPunctuationOn:    killPunctuationOn,
+      KeyboardColourTheme:  keyboardColourTheme,
+      KbKeyOverrides:       Array.from(kbKeyOverrides),
+    };
     localStorage.setItem('kw_keyboard_settings', JSON.stringify(Bundle));
   } catch(StorageError) {}
 }
@@ -1493,13 +1536,17 @@ function LoadKeyboardSettings() {
     if (typeof Bundle.SoundEnabled === 'boolean') setSoundEnabled(Bundle.SoundEnabled);
   }
 
+  // Restore kill punctuation
+  if (typeof Bundle.KillPunctuationOn === 'boolean') {
+    killPunctuationOn = Bundle.KillPunctuationOn;
+    var KillPunctuationRadioElement = document.getElementById('killPunctuationRadio');
+    if (KillPunctuationRadioElement) KillPunctuationRadioElement.classList.toggle('on', killPunctuationOn);
+  }
 
-  // Restore kill punctuation
-  if (typeof Bundle.KillPunctuationOn === 'boolean') {
-    killPunctuationOn = Bundle.KillPunctuationOn;
-    var KillPunctuationRadioElement = document.getElementById('killPunctuationRadio');
-    if (KillPunctuationRadioElement) KillPunctuationRadioElement.classList.toggle('on', killPunctuationOn);
-  }
+  // Restore keyboard colour theme
+  if (Bundle.KeyboardColourTheme && KEYBOARD_COLOUR_THEMES.indexOf(Bundle.KeyboardColourTheme) !== -1) {
+    keyboardColourTheme = Bundle.KeyboardColourTheme;
+  }
 
   // Restore display mode last -- it may override touch/sticky locks if mismatched,
   // but we trust saved state is internally consistent (see architecture notes)
@@ -2025,7 +2072,7 @@ function updateMismatchPill() {
     var _pillHasExternalKeyboard = false;
     try { _pillHasExternalKeyboard = localStorage.getItem('kw_has_keyboard') === '1'; } catch(StorageError) {}
     if (!_pillHasExternalKeyboard && !_pillDismissedThisSession) {
-      osMismatchEl.textContent = 'Best with a real keyboard';
+      osMismatchEl.textContent = 'We recommend training with a real mechanical keyboard.';
       osMismatchEl.classList.add('show');
       _startPillAutoHideTimer();
     } else {
@@ -2164,8 +2211,13 @@ function SyncKeyboardSettingsToUI() {
   // Size toggle (both main and conflicts panel instance)
   updateKbSizeToggle();
 
-  // Lock none/ghost buttons when no physical keyboard is confirmed
-  _syncKeyboardDisplayPillLock();
+  // Lock none/ghost buttons when no physical keyboard is confirmed
+  _syncKeyboardDisplayPillLock();
+
+  // Keyboard colour theme: apply the tint attribute and sync the pill
+  var KeyboardPanelElementForTheme = document.getElementById('keyboardPanel');
+  if (KeyboardPanelElementForTheme) KeyboardPanelElementForTheme.dataset.keyboardTheme = keyboardColourTheme;
+  _syncKeyboardColourThemePill();
 }
 
 function ApplyDefaultKeyboardSettings() {
@@ -2173,10 +2225,11 @@ function ApplyDefaultKeyboardSettings() {
   // Called only when KeyboardMemory is false. Does not write to localStorage.
   var IsTouch = (detectedOs === 'mobile');
 
-  keyboardDisplayMode = 'graphical';
-  kbLeftCount         = 3;
-  kbFnLeft            = true;
-  killPunctuationOn   = false;
+  keyboardDisplayMode = 'graphical';
+  kbLeftCount         = 3;
+  kbFnLeft            = true;
+  killPunctuationOn   = false;
+  keyboardColourTheme = 'mono';
 
   if (IsTouch) {
     touchEnabled     = true;
@@ -4540,7 +4593,7 @@ runData.length = 0; lastCompletedReport = null; CoachAdviceAccepted = false;
   var WrenchIconColumn = document.createElement('span');
   WrenchIconColumn.className = 'app-option-icon-col';
   WrenchIconColumn.style.justifyContent = 'flex-start';
-  WrenchIconColumn.innerHTML = '<img src="/keyboard-warriors/images/wrench.svg" height="14" alt="Customise apps" style="display:block;">';
+  WrenchIconColumn.innerHTML = '<svg width="14" height="14" style="display:block;color:inherit;"><use href="#IconWrench"/></svg>';
 
   WrenchRow.appendChild(WrenchIconColumn);
   WrenchRow.addEventListener('click', function(ClickEvent) {
@@ -4675,8 +4728,9 @@ function _buildWrenchPickerRows() {
     var LabelSpan = document.createElement('span');
     LabelSpan.className = 'app-option-label-col';
     LabelSpan.style.cssText = 'flex:1;font-size:12px;white-space:nowrap;text-align:left;overflow:hidden;text-overflow:ellipsis;min-width:0;'
-      + (IsInShortList ? 'color:#374151;' : 'color:#d1d5db;text-decoration:line-through;')
+      + (IsInShortList ? '' : 'text-decoration:line-through;')
       + (IsBetaApp ? 'font-style:italic;' : '');
+    LabelSpan.className = IsInShortList ? 'wrench-label-active' : 'wrench-label-standby';
 
     LabelSpan.textContent = AppEntry.label + (IsBetaApp ? ' (beta)' : '');
 
@@ -4703,7 +4757,7 @@ function _buildWrenchPickerRows() {
   var WrenchIconColumn = document.createElement('span');
   WrenchIconColumn.className = 'app-option-icon-col';
   WrenchIconColumn.style.justifyContent = 'flex-start';
-  WrenchIconColumn.innerHTML = '<img src="/keyboard-warriors/images/wrench.svg" height="14" alt="Close customiser" style="display:block;">';
+  WrenchIconColumn.innerHTML = '<svg width="14" height="14" style="display:block;color:inherit;"><use href="#IconWrench"/></svg>';
 
   WrenchRow.appendChild(WrenchIconColumn);
   WrenchRow.addEventListener('click', function(ClickEvent) {
@@ -4738,14 +4792,18 @@ function _toggleWrenchPickerApp(AppLabel, RowElement, IconColumnElement, LabelSp
     appsShortList = appsShortList.filter(function(Label) { return Label !== AppLabel; });
     if (appsStandbyList.indexOf(AppLabel) === -1) appsStandbyList.push(AppLabel);
     _AnimateWrenchDot(IconColumnElement, false);
-    LabelSpanElement.style.color = '#d1d5db';
+    LabelSpanElement.style.color = '';
     LabelSpanElement.style.textDecoration = 'line-through';
+    LabelSpanElement.classList.add('wrench-label-standby');
+    LabelSpanElement.classList.remove('wrench-label-active');
   } else {
     appsShortList.push(AppLabel);
     appsStandbyList = appsStandbyList.filter(function(Label) { return Label !== AppLabel; });
     _AnimateWrenchDot(IconColumnElement, true);
-    LabelSpanElement.style.color = '#374151';
+    LabelSpanElement.style.color = '';
     LabelSpanElement.style.textDecoration = '';
+    LabelSpanElement.classList.add('wrench-label-active');
+    LabelSpanElement.classList.remove('wrench-label-standby');
   }
 }
 
@@ -5594,6 +5652,12 @@ function onAudibleToggle() {
 var keyboardDisplayMode = 'graphical'; // 'graphical' | 'ghost' | 'none'
 var killPunctuationOn = false;
 
+// Translucent tint applied to modifier and special function keys only.
+// 'mono' shows no tint. A new theme only needs a new entry here, plus a
+// matching colour variable block in beta.css; no other code changes.
+var keyboardColourTheme = 'mono';
+var KEYBOARD_COLOUR_THEMES = ['mono', 'dieter', 'aqua', 'bubblegum'];
+
 // Question Timer and Player Lives — default to infinity (null = no limit).
 // Values map to the five pill segments: 1, 3, 5, 10, null (infinity).
 var questionTimer = null;
@@ -5882,15 +5946,30 @@ function _returnAfterKillPunctuationConfirm(message) {
 }
 
 function setKillPunctuation(on) {
-  killPunctuationOn = on;
-  SaveKeyboardSettings();
-  var radio = document.getElementById('killPunctuationRadio');
-  if (radio) radio.classList.toggle('on', on);
-  // Rebuild pool immediately so the change takes effect mid-session if needed
-  if (gameState !== 'playing' && gameState !== 'paused' && gameState !== 'readyToUnpause') {
-    questionPool = shuffleArray(buildPool());
-  // Rebuild pool at the start of the next round
-  }
+  killPunctuationOn = on;
+  SaveKeyboardSettings();
+  var radio = document.getElementById('killPunctuationRadio');
+  if (radio) radio.classList.toggle('on', on);
+  // Rebuild pool immediately so the change takes effect mid-session if needed
+  if (gameState !== 'playing' && gameState !== 'paused' && gameState !== 'readyToUnpause') {
+    questionPool = shuffleArray(buildPool());
+  // Rebuild pool at the start of the next round
+  }
+}
+
+function setKeyboardColourTheme(theme) {
+  keyboardColourTheme = theme;
+  SaveKeyboardSettings();
+  var KeyboardPanelElement = document.getElementById('keyboardPanel');
+  if (KeyboardPanelElement) KeyboardPanelElement.dataset.keyboardTheme = theme;
+  _syncKeyboardColourThemePill();
+}
+
+function _syncKeyboardColourThemePill() {
+  var ThemeButtons = document.querySelectorAll('#kbThemePill .kb-theme-btn');
+  ThemeButtons.forEach(function(Button) {
+    Button.classList.toggle('segmented-pill-active', Button.dataset.theme === keyboardColourTheme);
+  });
 }
 
 function onStickyKeysToggle() {
@@ -14501,7 +14580,7 @@ function handleKeyup(e) {
 // These are interim values. Wednesday will tune each panel individually
 // based on observation across devices.
 var PanelKeyboardPositions = {
-  panelKeyboard:             { desktop: 58, tablet: 58 },
+  panelKeyboard:             { desktop: 64, tablet: 64 },
   panelConflicts:            { desktop: 62, tablet: 76 },
   panelDifficultySettings:   { desktop: 74, tablet: 76 },
   panelPause:                { desktop: 67, tablet: 67 },
@@ -14512,7 +14591,6 @@ var PanelKeyboardPositions = {
   panelLandingSharedApps:    { desktop: 47, tablet: 58 },
   panelLandingWelcome:       { desktop: 47, tablet: 58 },
 };
-
 
 function GetPanelKeyboardAngle(PanelName) {
   var Config = PanelKeyboardPositions[PanelName];
@@ -16238,7 +16316,7 @@ var IsBetaBuild = document.title !== 'Keyboard Warriors';
       DotColumn.appendChild(RadioDot);
 
       var LabelColumn = document.createElement('span');
-      LabelColumn.style.color          = InPill ? '#d1d5db' : (IsBetaApp ? '#9ca3af' : '#374151');
+      LabelColumn.className = InPill ? 'customise-label-inpill' : (IsBetaApp ? 'customise-label-beta' : 'customise-label-available');
       LabelColumn.style.fontStyle      = (IsBetaApp && !InPill) ? 'italic' : '';
       LabelColumn.style.width          = '100px'; /* ← adjust column width */
       LabelColumn.style.overflow       = 'hidden';
@@ -16465,6 +16543,51 @@ function _closeCustomiseSkillsetPanel() {
   }
   if (SkillsetLabelElement) SkillsetLabelElement.textContent = 'skillset';
 }
+
+/* ── Dark mode ───────────────────────────────────────────────────────────── */
+function _applyTheme(isDark) {
+  if (isDark) {
+    document.documentElement.setAttribute('data-theme', 'dark');
+  } else {
+    document.documentElement.removeAttribute('data-theme');
+  }
+  _syncDarkModeToggleUI();
+  try { localStorage.setItem('kw_theme', isDark ? 'dark' : 'light'); } catch(e) {}
+}
+
+function _syncDarkModeToggleUI() {
+  var isDark = document.documentElement.getAttribute('data-theme') === 'dark';
+  var knob       = document.getElementById('dmKnobEl');
+  var track      = document.getElementById('dmTrackRect');
+  var toggle     = document.getElementById('dmToggle');
+  var labelLight = document.getElementById('dmLabelLight');
+  var labelDark  = document.getElementById('dmLabelDark');
+  var iconLight  = document.getElementById('dmIconLight');
+  var iconDark   = document.getElementById('dmIconDark');
+  if (toggle)    toggle.checked = isDark;
+  if (knob)      knob.setAttribute('transform', isDark ? 'translate(22,0)' : '');
+  if (track)     track.setAttribute('stroke',   isDark ? '#374151' : '#9ca3af');
+  if (knob)      knob.setAttribute('stroke',    isDark ? '#374151' : '#9ca3af');
+  if (labelLight) labelLight.classList.toggle('dm-toggle-label-active', !isDark);
+  if (labelDark)  labelDark.classList.toggle('dm-toggle-label-active',  isDark);
+  if (iconLight)  iconLight.classList.toggle('dm-mode-icon-active',     !isDark);
+  if (iconDark)   iconDark.classList.toggle('dm-mode-icon-active',      isDark);
+}
+
+function _onDarkModeToggle() {
+  var toggle = document.getElementById('dmToggle');
+  _applyTheme(toggle && toggle.checked);
+}
+
+function _initDarkModeToggle() {
+  var saved = localStorage.getItem('kw_theme');
+  var prefersDark = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
+  var isDark = saved === 'dark' || (!saved && prefersDark);
+  _applyTheme(isDark);
+}
+
+// Run once on load
+_initDarkModeToggle();
 </script>
 </body>
 </html>

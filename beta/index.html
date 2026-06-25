@@ -11486,7 +11486,7 @@ lastCompletedReport = finalizeRunData(completedRun, questionPool, 0); EndGamePag
   // First run uses accuracy and skip count as a proxy since there is no prior record to compare against.
   let medal;
   if (wasFirstRecord || prevTime === null) {
-    const skipCount = 10 - answersLeft;
+    const skipCount = completedRun.filter(function(e) { return e.endType === 'skip'; }).length;
     if (finalAccuracy >= 90 && skipCount === 0)        medal = 'gold';
     else if (finalAccuracy >= 70 || skipCount <= 2)    medal = 'silver';
     else                                               medal = 'bronze';

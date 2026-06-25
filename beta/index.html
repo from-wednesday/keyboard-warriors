@@ -966,7 +966,7 @@
           </div>
         </div><!-- /#modalKbSizeSection -->
 
-     <div class="modal-section-gap" style="margin-top:3px;"></div>
+      <div class="modal-section-gap" style="margin-top:3px;"></div>
       <p class="sp-title" style="font-size:12px;">Non-English Keyboard</p>
         <div class="modal-toggle-row" id="killPunctuationRow" style="margin-bottom:0;">
           <label onclick="onKillPunctuationToggle()" style="display:flex;align-items:center;gap:10px;">
@@ -980,12 +980,12 @@
           </label>
         </div>
 
-     <div class="modal-section-gap" style="margin-top:3px;"></div>
-      <p class="sp-title" style="font-size:12px;">Non-English Keyboard</p>
-          
+      </div><!-- /.sp-col-right -->
+
+      <div class="sp-col-full" id="panelKeyboardAesthetics">
+        <div class="modal-section-gap" style="margin-top:4px;"></div>
         <div class="kb-theme-row">
     <span class="diff-advanced-label">Keyboard Aesthetics</span>
-         <div class="sp-seg-pill" id="kbThemePill">          
           <div class="segmented-pill kb-theme-pill" id="kbThemePill">
             <button class="segmented-pill-section kb-theme-btn segmented-pill-active" data-theme="mono" onclick="setKeyboardColourTheme('mono')">
               <span class="diff-btn-text">mono</span>
@@ -1000,12 +1000,13 @@
               <span class="diff-btn-text">bubblegum</span>
             </button>
           </div>
-        
-          
-      </div><!-- /.sp-col-right -->
-     </div><!-- /#panelKeyboardAesthetics -->
+        </div>
+      </div><!-- /#panelKeyboardAesthetics -->
     </div><!-- /#panelKeyboard -->
-   </div><!-- /#settingsPanelInner -->
+
+  </div><!-- /#settingsPanelInner -->
+
+
   </div><!-- /#settingsPanel -->
 
   <!-- Drag handle affordance: positioned by _spAlignPanel using stage.offsetTop

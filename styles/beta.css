@@ -4292,9 +4292,6 @@ html[data-theme="dark"] body {
 .dm-toggle-label-active {
   color: #374151;
 }
-[data-theme='dark'] .dm-toggle-label-active {
-  color: #d1d5db;
-}
 .dm-mode-icon {
   color: #9ca3af;
   transition: color 0.18s ease;
@@ -4303,12 +4300,22 @@ html[data-theme="dark"] body {
 .dm-mode-icon-active {
   color: #374151;
 }
-[data-theme='dark'] .dm-mode-icon-active {
-  color: #d1d5db;
-}
 #dmKnobEl {
   transition: transform 0.18s ease, stroke 0.18s ease;
 }
 #dmTrackRect {
   transition: stroke 0.18s ease;
 }
+
+/* ── Global dark-mode grey correction ──────────────────────────────────────
+   The html filter (invert+hue-rotate+brightness+contrast) maps standard
+   Tailwind greys to near-invisible values. These overrides supply
+   pre-inversion-correct equivalents so colours read as intended after filtering.
+   Pattern: target visual → pre-inversion CSS value
+     #374151 (dark)  → #c6c6c6   #6b7280 (mid-dark) → #909090
+     #9ca3af (mid)   → #676767   dm-active           → #1e1e1e
+──────────────────────────────────────────────────────────────────────────── */
+[data-theme='dark'] .dm-toggle-label          { color: #676767; }
+[data-theme='dark'] .dm-toggle-label-active   { color: #1e1e1e; }
+[data-theme='dark'] .dm-mode-icon             { color: #676767; }
+[data-theme='dark'] .dm-mode-icon-active      { color: #1e1e1e; }

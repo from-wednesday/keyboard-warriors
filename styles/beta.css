@@ -4315,7 +4315,7 @@ html[data-theme="dark"] body {
      #374151 (dark)  → #c6c6c6   #6b7280 (mid-dark) → #909090
      #9ca3af (mid)   → #676767   dm-active           → #1e1e1e
 ──────────────────────────────────────────────────────────────────────────── */
-[data-theme='dark'] .dm-toggle-label          { color: #676767; }
+[data-theme='dark'] .dm-toggle-label          { color: #535353; }
 [data-theme='dark'] .dm-toggle-label-active   { color: #1e1e1e; }
-[data-theme='dark'] .dm-mode-icon             { color: #676767; }
+[data-theme='dark'] .dm-mode-icon             { color: #535353; }
 [data-theme='dark'] .dm-mode-icon-active      { color: #1e1e1e; }

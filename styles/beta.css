@@ -3210,18 +3210,25 @@ body.returning-screen #diffIconWrap .icon-tip { display: none; }
 #panelKeyboard.sp-active::after {
   display: none;
 }
-#panelKeyboard .sp-col-left {
-  position: relative;
+#panelKeyboard.sp-active {
+  grid-template-columns: 1fr 1fr;
+  grid-template-rows: auto auto;
+  grid-template-areas:
+    "left right"
+    "aesthetics aesthetics";
 }
+#panelKeyboard .sp-col-left  { grid-area: left;  position: relative; }
+#panelKeyboard .sp-col-right { grid-area: right; }
+#panelKeyboard .sp-col-full  { grid-area: aesthetics; }
 #panelKeyboard .sp-col-left::after {
-  content: '';
-  position: absolute;
-  top: 16px;
-  right: 0;
-  bottom: 40px;
-  width: 1px;
-  background: #e5e7eb;
-  pointer-events: none;
+  content: '';
+  position: absolute;
+  top: 16px;
+  right: 0;
+  bottom: 0;
+  width: 1px;
+  background: #e5e7eb;
+  pointer-events: none;
 }
 
 /* "Report Card" label — small grey, sits left of "Strengths" in same flex row */

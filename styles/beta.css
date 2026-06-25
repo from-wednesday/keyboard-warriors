@@ -923,6 +923,7 @@ body.kb-at-edge #keyboardPanel #kb-shadow {
 }
 .sp-col-left  { padding-right: 20px; }
 .sp-col-right { padding-left:  20px; }
+.sp-col-full  { grid-column: 1 / -1; }
 
 /* ── Both columns always align content from the top ── */
 .sp-col-left,

@@ -4510,13 +4510,8 @@ html[data-theme="dark"] body {
   filter: invert(1) hue-rotate(180deg) brightness(1.087) contrast(0.926);
 }
 
-/* Segmented pill button inset shadows */
-[data-theme="dark"] .segmented-pill-section {
-  filter: invert(1) hue-rotate(180deg) brightness(1.087) contrast(0.926);
-}
-[data-theme="dark"] .segmented-pill-section.segmented-pill-active {
-  filter: none;
-}
+/* Segmented pill button inset shadows are semi-transparent and read correctly
+   in both themes without any filter override. */
 
 /* Graphical keyboard: shadow, key lighting outer glow, and front wall */
 [data-theme="dark"] #kb-shadow {

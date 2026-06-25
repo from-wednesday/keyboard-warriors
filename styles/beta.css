@@ -4464,6 +4464,21 @@ html[data-theme="dark"] body {
 /* key chips use bg #e5e7eb which inverts dark — lift it slightly            */
 [data-theme="dark"] .kb-variant-key                     { background: #c8cdd5; }
 
+/* ── Dark mode: progress dots and life hearts ───────────────────────────────
+   The default #b3bdc9 grey maps too dark after inversion. This pre-filter
+   value (~#939aa3) reads as the intended mid-grey after the inversion pass.
+   ─────────────────────────────────────────────────────────────────────────── */
+[data-theme="dark"] .prog-dot circle                    { stroke: #939aa3; }
+[data-theme="dark"] .prog-dot .dot-fill                 { fill: #939aa3; }
+[data-theme="dark"] .life-heart svg path                { fill: #939aa3; }
+
+/* ── Dark mode: score disc initial-round colour ─────────────────────────────
+   The base CSS background (#1f2937) maps to an unexpectedly light tone on
+   first render before JS touches the element. This override ensures the disc
+   reads as a consistent dark charcoal on first load and every subsequent round.
+   ─────────────────────────────────────────────────────────────────────────── */
+[data-theme="dark"] .scoreDisc                          { background: #1f2937; }
+
 /* ── Dark mode: medal face disc ─────────────────────────────────────────────
    The ::before pseudo-element is not touched by JS so can be re-inverted
    here. The rim gradient is handled in JS (see rimTick and medal assignment).

@@ -11087,9 +11087,9 @@ function enterDefeat() {
   }
 
   // Lead medal on the scoreDisc
-  scoreDisc.className = 'scoreDisc medal-lead';
-  currentMedal = 'lead';
-
+scoreDisc.className = 'scoreDisc medal-lead';
+  currentMedal = 'lead';
+  _syncMedalFilter();
   if (detectedOs === 'mobile' && _requiresGyroPrompt() && !_GyroPromptShownThisSession) {
     _GyroPromptShownThisSession = true;
     setTimeout(ShowGyroModal, 2500);
@@ -11532,9 +11532,10 @@ lastCompletedReport = finalizeRunData(completedRun, questionPool, 0); EndGamePag
   fillProgressDot(9);
   setTimeout(hideProgressDots, 0);
   setTimeout(hideLivesHearts, 0);
-  scoreDisc.className = 'scoreDisc medal-' + medal;
-  currentMedal = medal;
-
+  scoreDisc.className = 'scoreDisc medal-' + medal;
+  currentMedal = medal;
+  _syncMedalFilter();
+  
   // Gyro prompt: deferred to the first medal so the player has a moment of
   // engagement before being asked. Trophy sequences get a longer delay.
   if (detectedOs === 'mobile' && _requiresGyroPrompt() && !_GyroPromptShownThisSession) {
@@ -13507,19 +13508,20 @@ function _isDarkMode() {
   return document.documentElement.getAttribute('data-theme') === 'dark';
 }
 
+function _syncMedalFilter() {
+  if (!currentMedal) return;
+  scoreDisc.style.filter = _isDarkMode()
+    ? 'invert(1) hue-rotate(180deg) brightness(1.087) contrast(0.926)'
+    : '';
+}
+
 function rimTick() {
   if (!currentMedal) { rimRafId = null; return; }
   const force    = (rimTarget - rimCurrent) * RIM_STIFFNESS;
   rimVelocity    = rimVelocity * RIM_DAMPING + force;
   rimCurrent    += rimVelocity;
   const faceAngle = Math.round((rimTarget / 15) * 5);
-  // In dark mode the HTML-level inversion filter would corrupt the medal
-  // gradients, so we wrap the scoreDisc in a re-inversion to cancel it out.
-  if (_isDarkMode()) {
-    scoreDisc.style.filter = 'invert(1) hue-rotate(180deg) brightness(1.087) contrast(0.926)';
-  } else {
-    scoreDisc.style.filter = '';
-  }
+  _syncMedalFilter();
   scoreDisc.style.background = MEDAL_RIM[currentMedal](rimCurrent);
   updateMedalFaceStyle(faceAngle);
   if (Math.abs(rimVelocity) > 0.01 || Math.abs(rimCurrent - rimTarget) > 0.01) {
@@ -16571,6 +16573,7 @@ function _applyTheme(isDark) {
     document.documentElement.removeAttribute('data-theme');
   }
   _syncDarkModeToggleUI();
+  _syncMedalFilter();
   try { localStorage.setItem('kw_theme', isDark ? 'dark' : 'light'); } catch(e) {}
 }
 

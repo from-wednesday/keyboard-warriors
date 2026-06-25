@@ -1681,11 +1681,80 @@ li.conflict-dismissed .conflict-desc {
 .key.lit-fading .mod-sym-only,
 .key.lit-fading .mod-word,
 .key.lit-fading .util-sym-only {
-  transition: color 0.8s ease !important;
+  transition: color 0.8s ease !important;
 }
 
 /* ══════════════════════════════════════
-   BREAKPOINTS (in process - I am changing numbers to Var because numbers get out of sync)
+   KEYBOARD COLOUR THEMES
+   A translucent tint layered over modifier and special function keys only
+   (never letters, numerals, or punctuation). Painted with background-image
+   so it sits above the key's existing background-colour but underneath
+   nothing, since lit states and ghost mode both set the background
+   shorthand with !important and so always override it automatically.
+   To add a new theme: add one --keyboard-theme-tint-name variable below,
+   one matching line mapping it to a data-keyboard-theme value, and one
+   matching pill button colour further down. The selector list targeting
+   which keys receive the tint never needs to change.
+══════════════════════════════════════ */
+:root {
+  --keyboard-theme-tint-dieter:    linear-gradient(rgba(212, 106, 33, 0.38), rgba(212, 106, 33, 0.38));
+  --keyboard-theme-tint-aqua:      linear-gradient(135deg, rgba(94, 188, 217, 0.42), rgba(58, 188, 150, 0.38));
+  --keyboard-theme-tint-bubblegum: linear-gradient(rgba(236, 105, 170, 0.38), rgba(236, 105, 170, 0.38));
+}
+
+#keyboardPanel[data-keyboard-theme="dieter"]    { --keyboard-theme-tint: var(--keyboard-theme-tint-dieter); }
+#keyboardPanel[data-keyboard-theme="aqua"]      { --keyboard-theme-tint: var(--keyboard-theme-tint-aqua); }
+#keyboardPanel[data-keyboard-theme="bubblegum"] { --keyboard-theme-tint: var(--keyboard-theme-tint-bubblegum); }
+
+#keyboardPanel:not([data-keyboard-theme="mono"]) .key[data-key="Escape"],
+#keyboardPanel:not([data-keyboard-theme="mono"]) .key[data-key^="F"],
+#keyboardPanel:not([data-keyboard-theme="mono"]) .key[data-key^="Control"],
+#keyboardPanel:not([data-keyboard-theme="mono"]) .key[data-key^="Alt"],
+#keyboardPanel:not([data-keyboard-theme="mono"]) .key[data-key^="Meta"],
+#keyboardPanel:not([data-keyboard-theme="mono"]) .key[data-key^="Shift"],
+#keyboardPanel:not([data-keyboard-theme="mono"]) .key[data-key="Tab"],
+#keyboardPanel:not([data-keyboard-theme="mono"]) .key[data-key="Enter"],
+#keyboardPanel:not([data-keyboard-theme="mono"]) .key[data-key="Backspace"],
+#keyboardPanel:not([data-keyboard-theme="mono"]) .key[data-key^="Arrow"],
+#keyboardPanel:not([data-keyboard-theme="mono"]) .key[data-key="CapsLock"],
+#keyboardPanel:not([data-keyboard-theme="mono"]) .key.lock-key {
+  background-image: var(--keyboard-theme-tint);
+}
+
+/* ── Keyboard Aesthetics theme picker pill ──────────────────────────────────
+   Reuses the same tint variables as the key tint above, so every segment
+   shows exactly the colour its keys would receive. Equal-width segments;
+   only the active segment's label is shown, since four different
+   background colours make every label hard to read at once. The existing
+   segmented-pill active/inactive shadow states already supply the
+   "which one is selected" cue, so no extra override is needed for that. */
+.kb-theme-panel-row {
+  flex-direction: row;
+  align-items: center;
+  gap: 10px;
+}
+.kb-theme-panel-row .diff-advanced-label {
+  width: auto;
+  white-space: nowrap;
+}
+#kbThemePill {
+  flex: 1;
+}
+#kbThemePill .kb-theme-btn {
+  flex: 1;
+}
+#kbThemePill .kb-theme-btn[data-theme="dieter"]    { background-image: var(--keyboard-theme-tint-dieter); }
+#kbThemePill .kb-theme-btn[data-theme="aqua"]      { background-image: var(--keyboard-theme-tint-aqua); }
+#kbThemePill .kb-theme-btn[data-theme="bubblegum"] { background-image: var(--keyboard-theme-tint-bubblegum); }
+#kbThemePill .kb-theme-btn .diff-btn-text {
+  opacity: 0;
+}
+#kbThemePill .kb-theme-btn.segmented-pill-active .diff-btn-text {
+  opacity: 1;
+}
+
+/* ══════════════════════════════════════
+   BREAKPOINTS (in process - I am changing numbers to Var because numbers get out of sync)
     1.	1600px wide AND 870px tall – scales the whole UI to 120% zoom
 	2.	2000px wide AND 1060px tall – scales to 145% zoom
 	3.	2600px wide AND 1270px tall – scales to 175% zoom
@@ -3116,19 +3185,40 @@ body.returning-screen #diffIconWrap .icon-tip { display: none; }
   pointer-events: none;
 }
 #panelEndGameHistoryRecord .sp-col-left::after {
-  content: '';
-  position: absolute;
-  top: 0;
-  right: 0;
-  width: 1px;
-  background: #e5e7eb;
-  bottom: 0;
-  pointer-events: none;
+  content: '';
+  position: absolute;
+  top: 0;
+  right: 0;
+  width: 1px;
+  background: #e5e7eb;
+  bottom: 0;
+  pointer-events: none;
 }
 
 #panelEndGameHistoryRecord .sp-report-bottom {
-  margin-top: 2px;
-  margin-bottom: 8px;
+  margin-top: 2px;
+  margin-bottom: 8px;
+}
+
+/* Keyboard Settings panel: the generic centred divider runs the full panel
+   height, which would cut through the full-width aesthetics row below the
+   two columns. Suppressed and redrawn scoped to the columns only, matching
+   the pattern already used above for the Report Card and History panels. */
+#panelKeyboard.sp-active::after {
+  display: none;
+}
+#panelKeyboard .sp-col-left {
+  position: relative;
+}
+#panelKeyboard .sp-col-left::after {
+  content: '';
+  position: absolute;
+  top: 16px;
+  right: 0;
+  bottom: 0;
+  width: 1px;
+  background: #e5e7eb;
+  pointer-events: none;
 }
 
 /* "Report Card" label — small grey, sits left of "Strengths" in same flex row */

@@ -4168,6 +4168,10 @@ html[data-theme="dark"] {
   background: #e3dfe7; /* pre-filter value; inverts to approx #1c2028 dark blue-grey */
 }
 
+html[data-theme="dark"] body {
+  background: transparent;
+}
+
 /* Re-invert elements that should not be colour-shifted.
    Currently empty — add targeted corrections here as needed.
    Example pattern:

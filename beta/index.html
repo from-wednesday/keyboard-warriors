@@ -982,13 +982,13 @@
 
       </div><!-- /.sp-col-right -->
 
-      <div class="sp-col-full" style="text-align:center;">
+      <div class="sp-col-full">
         <p class="sp-title">Keyboard Aesthetics</p>
-            <div class="sp-seg-pill" id="kbDisplayPill" style="margin-bottom:6px;">
-          <button class="sp-seg-btn" id="kbDisplayNoneBtn" onclick="setKeyboardDisplayMode('none')"><span class="diff-btn-text">Monochrome</span></button>
-          <button class="sp-seg-btn" id="kbDisplayGhostBtn" onclick="setKeyboardDisplayMode('ghost')"><span class="diff-btn-text">Dieter</span></button>
-          <button class="sp-seg-btn diff-btn-active" id="kbDisplayGraphicalBtn" onclick="setKeyboardDisplayMode('graphical')"><span class="diff-btn-text">Aqua</span></button>
-          <button class="sp-seg-btn diff-btn-active" id="kbDisplayGraphicalBtn" onclick="setKeyboardDisplayMode('graphical')"><span class="diff-btn-text">Poprocks</span></button>
+        <div class="sp-seg-pill kb-theme-pill" id="kbThemePill">
+          <button class="sp-seg-btn kb-theme-btn" data-theme="mono" onclick="setKeyboardColourTheme('mono')"><span class="diff-btn-text">Monochrome</span></button>
+          <button class="sp-seg-btn kb-theme-btn" data-theme="dieter" onclick="setKeyboardColourTheme('dieter')"><span class="diff-btn-text">Dieter</span></button>
+          <button class="sp-seg-btn kb-theme-btn" data-theme="aqua" onclick="setKeyboardColourTheme('aqua')"><span class="diff-btn-text">Aqua</span></button>
+          <button class="sp-seg-btn kb-theme-btn" data-theme="bubblegum" onclick="setKeyboardColourTheme('bubblegum')"><span class="diff-btn-text">Poprocks</span></button>
         </div>
       </div>
 

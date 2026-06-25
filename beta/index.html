@@ -13500,15 +13500,25 @@ let rimRafId    = null;
 const RIM_STIFFNESS = 0.10; // spring pull strength
 const RIM_DAMPING   = 0.72; // < 1 allows overshoot; higher = less
 
+function _isDarkMode() {
+  return document.documentElement.getAttribute('data-theme') === 'dark';
+}
+
 function rimTick() {
   if (!currentMedal) { rimRafId = null; return; }
   const force    = (rimTarget - rimCurrent) * RIM_STIFFNESS;
   rimVelocity    = rimVelocity * RIM_DAMPING + force;
   rimCurrent    += rimVelocity;
-  const faceAngle = Math.round((rimTarget / 15) * 5); // ±5° face, keyed off target
+  const faceAngle = Math.round((rimTarget / 15) * 5);
+  // In dark mode the HTML-level inversion filter would corrupt the medal
+  // gradients, so we wrap the scoreDisc in a re-inversion to cancel it out.
+  if (_isDarkMode()) {
+    scoreDisc.style.filter = 'invert(1) hue-rotate(180deg) brightness(1.087) contrast(0.926)';
+  } else {
+    scoreDisc.style.filter = '';
+  }
   scoreDisc.style.background = MEDAL_RIM[currentMedal](rimCurrent);
   updateMedalFaceStyle(faceAngle);
-  // Keep ticking until settled
   if (Math.abs(rimVelocity) > 0.01 || Math.abs(rimCurrent - rimTarget) > 0.01) {
     rimRafId = requestAnimationFrame(rimTick);
   } else {

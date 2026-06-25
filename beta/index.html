@@ -11459,16 +11459,16 @@ lastCompletedReport = finalizeRunData(completedRun, questionPool, 0); EndGamePag
 
   const finalAccuracy
  = calcAccuracy() ?? 0;
-  const wasFirstRecord = bestRecord.time === null;
   const prevTime     = bestRecord.time;
   const prevAccuracy = bestRecord.accuracy;
+  const wasFirstRecord = prevTime === null;
 
   let newBestTime = false;
   let newBestAcc  = false;
-  if (bestRecord.time === null || totalTime < bestRecord.time) {
+  if (prevTime === null || totalTime < prevTime) {
     bestRecord.time = totalTime; newBestTime = true;
   }
-  if (bestRecord.accuracy === null || finalAccuracy > bestRecord.accuracy) {
+  if (prevAccuracy === null || finalAccuracy > prevAccuracy) {
     bestRecord.accuracy = finalAccuracy; newBestAcc = true;
   }
   const justEarnedTrophy = finalAccuracy >= 100 && !hasTrophy;

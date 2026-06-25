@@ -4308,14 +4308,106 @@ html[data-theme="dark"] body {
 }
 
 /* ── Global dark-mode grey correction ──────────────────────────────────────
-   The html filter (invert+hue-rotate+brightness+contrast) maps standard
-   Tailwind greys to near-invisible values. These overrides supply
-   pre-inversion-correct equivalents so colours read as intended after filtering.
-   Pattern: target visual → pre-inversion CSS value
-     #374151 (dark)  → #c6c6c6   #6b7280 (mid-dark) → #909090
-     #9ca3af (mid)   → #676767   dm-active           → #1e1e1e
+   filter: invert(1) hue-rotate(180deg) brightness(0.92) contrast(1.08) on <html>
+   maps light-mode greys to near-invisible post-filter values. Each override
+   supplies a pre-inversion CSS value that reads correctly after filtering.
+   Light-mode colours are NOT touched — all rules are scoped to [data-theme="dark"].
+
+   Mapping  →  pre-inversion CSS value  →  visual result after filter
+   #9ca3af  →  #585858                  →  ~155 (readable mid-grey)
+   #6b7280  →  #494949                  →  ~170 (clear secondary)
+   #374151  →  #2b2b2b                  →  ~200 (strong / primary)
+   #d1d5db  →  #808080                  →  ~115 (soft border/divider)
 ──────────────────────────────────────────────────────────────────────────── */
-[data-theme='dark'] .dm-toggle-label          { color: #535353; }
-[data-theme='dark'] .dm-toggle-label-active   { color: #1e1e1e; }
-[data-theme='dark'] .dm-mode-icon             { color: #535353; }
-[data-theme='dark'] .dm-mode-icon-active      { color: #1e1e1e; }
+
+/* Toggle row */
+[data-theme="dark"] .dm-toggle-label                    { color: #585858; }
+[data-theme="dark"] .dm-toggle-label-active             { color: #2b2b2b; }
+[data-theme="dark"] .dm-mode-icon                       { color: #585858; }
+[data-theme="dark"] .dm-mode-icon-active                { color: #2b2b2b; }
+
+/* ── #9ca3af → #585858 ── dim labels, icons, subtle strokes ── */
+[data-theme="dark"] #credit                             { color: #585858; }
+[data-theme="dark"] #osToggleWrap .os-label             { color: #585858; }
+[data-theme="dark"] #appSelectorLabel                   { color: #585858; }
+[data-theme="dark"] #appPill                            { border-color: #585858; }
+[data-theme="dark"] .app-option                         { color: #585858; }
+[data-theme="dark"] .app-caret-svg                      { color: #585858; }
+[data-theme="dark"] .more-info-icon                     { color: #585858; }
+[data-theme="dark"] .segmented-pill-section             { color: #585858; }
+[data-theme="dark"] .segmented-pill-section svg         { stroke: #585858; }
+[data-theme="dark"] .diff-subtitle                      { color: #585858; }
+[data-theme="dark"] .diff-advanced-footer               { color: #585858; }
+[data-theme="dark"] .diff-advanced-label                { color: #585858; }
+[data-theme="dark"] #kbIcon                             { color: #585858; }
+[data-theme="dark"] #browserIcon                        { color: #585858; }
+[data-theme="dark"] .diff-btn                           { color: #585858; }
+[data-theme="dark"] #stickyRadio.touch-owns-sticky      { color: #585858; }
+[data-theme="dark"] .modal-toggle-row.no-keyboard .modal-toggle-label { color: #585858; }
+[data-theme="dark"] .kb-variant-key                     { border-bottom-color: #585858; }
+[data-theme="dark"] #confirmBracket                     { fill: #585858; }
+[data-theme="dark"] .sp-report-section-title.sp-title-empty { text-decoration-color: #585858; }
+
+/* ── #6b7280 → #494949 ── secondary / mid labels ── */
+[data-theme="dark"] #statLeft,
+[data-theme="dark"] #statRight                          { color: #494949; }
+[data-theme="dark"] .modal-inline-val                   { color: #494949; }
+[data-theme="dark"] .kb-variant-label                   { color: #494949; }
+[data-theme="dark"] .sp-hint                            { color: #494949; }
+[data-theme="dark"] #welcomeTagline                     { color: #494949; }
+[data-theme="dark"] .sp-conflict-list                   { color: #494949; }
+[data-theme="dark"] #kbIcon:hover                       { color: #494949; }
+[data-theme="dark"] #browserIcon:hover                  { color: #494949; }
+[data-theme="dark"] .conflict-desc                      { color: #494949; }
+[data-theme="dark"] .app-option.selected                { color: #494949; }
+[data-theme="dark"] .more-info-trigger:hover .more-info-icon { color: #494949; }
+[data-theme="dark"] .more-info-body                     { color: #494949; }
+[data-theme="dark"] .sp-report-list li                  { color: #494949; }
+[data-theme="dark"] .sp-report-question-label           { color: #494949; }
+[data-theme="dark"] .sp-report-advice a:hover           { color: #494949; }
+[data-theme="dark"] .sp-endgame-list li                 { color: #494949; }
+
+/* ── #374151 → #2b2b2b ── primary labels / active states ── */
+[data-theme="dark"] .modal-left-label                   { color: #2b2b2b; }
+[data-theme="dark"] .modal-right-label                  { color: #2b2b2b; }
+[data-theme="dark"] .modal-inline-label                 { color: #2b2b2b; }
+[data-theme="dark"] .kb-variant-option.selected         { border-color: #2b2b2b; }
+[data-theme="dark"] .kb-variant-key                     { color: #2b2b2b; }
+[data-theme="dark"] .modal-toggle-label                 { color: #2b2b2b; }
+[data-theme="dark"] .modal-section-title                { color: #2b2b2b; }
+[data-theme="dark"] #stickyRadio.on                     { color: #2b2b2b; }
+[data-theme="dark"] #settingsPanelInner                 { color: #2b2b2b; }
+[data-theme="dark"] .sp-title                           { color: #2b2b2b; }
+[data-theme="dark"] .sp-body                            { color: #2b2b2b; }
+[data-theme="dark"] .app-option:hover                   { color: #2b2b2b; }
+[data-theme="dark"] #modalKbSizeSection p               { color: #2b2b2b; }
+[data-theme="dark"] .kb-size-word-label                 { color: #2b2b2b; }
+[data-theme="dark"] .segmented-pill-section.segmented-pill-active       { color: #2b2b2b; }
+[data-theme="dark"] .segmented-pill-section.segmented-pill-active svg   { stroke: #2b2b2b; }
+[data-theme="dark"] .sp-nudge-text                      { color: #2b2b2b; }
+[data-theme="dark"] .sp-seg-pill .diff-btn.diff-btn-active              { color: #2b2b2b; }
+[data-theme="dark"] #brIconWrap.sp-icon-active #browserIcon             { color: #2b2b2b; }
+[data-theme="dark"] #diffIconWrap.sp-icon-active #diffIcon              { color: #2b2b2b; }
+[data-theme="dark"] .phone-icon-btn.sp-icon-active .phone-icon-label    { color: #2b2b2b; }
+[data-theme="dark"] .phone-icon-btn.sp-icon-active svg                  { color: #2b2b2b; }
+
+/* ── #d1d5db → #808080 ── borders and dividers ── */
+[data-theme="dark"] .kb-variant-option:hover            { border-color: #808080; }
+[data-theme="dark"] #stickyRadio                        { color: #808080; }
+[data-theme="dark"] .diff-btn                           { border-color: #808080; }
+[data-theme="dark"] .sp-key-chip                        { border-color: #808080; }
+[data-theme="dark"] .more-info-popup                    { border-color: #808080; }
+[data-theme="dark"] .segmented-pill                     { border-color: #808080; }
+[data-theme="dark"] .segmented-pill-section + .segmented-pill-section   { border-left-color: #808080; }
+[data-theme="dark"] .segmented-pill-inactive            { color: #808080; }
+[data-theme="dark"] .segmented-pill-inactive svg        { stroke: #808080; }
+[data-theme="dark"] .sp-clear-label-inactive            { color: #808080 !important; }
+[data-theme="dark"] .diff-slider-knob                   { border-color: #808080; }
+[data-theme="dark"] .sp-seg-pill                        { border-color: #808080; }
+[data-theme="dark"] .sp-seg-pill .diff-btn + .diff-btn  { border-left-color: #808080; }
+[data-theme="dark"] .sp-seg-pill .diff-btn.diff-btn-inactive            { color: #808080; }
+[data-theme="dark"] .sp-endgame-header-left             { border-color: #808080; }
+[data-theme="dark"] .sp-report-strength .sp-report-chip { border-color: #808080; }
+[data-theme="dark"] .sp-report-weakness .sp-report-chip { border-color: #808080; }
+[data-theme="dark"] #phoneToolbarIcons                  { border-color: #808080; }
+[data-theme="dark"] .sp-seg-pill .diff-btn              { border-color: #808080; }

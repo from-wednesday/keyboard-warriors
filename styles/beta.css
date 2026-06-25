@@ -3218,7 +3218,7 @@ body.returning-screen #diffIconWrap .icon-tip { display: none; }
   position: absolute;
   top: 16px;
   right: 0;
-  bottom: 100;
+  bottom: 40px;
   width: 1px;
   background: #e5e7eb;
   pointer-events: none;

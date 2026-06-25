@@ -4273,8 +4273,9 @@ html[data-theme="dark"] body {
 .dm-toggle-row {
   display: flex;
   align-items: center;
+  justify-content: center;
   gap: 6px;
-  margin-bottom: 8px;
+  margin-bottom: 18px;
 }
 .dm-toggle-label {
   font-family: 'Lato', system-ui, sans-serif;
@@ -4282,6 +4283,28 @@ html[data-theme="dark"] body {
   color: #9ca3af;
   user-select: none;
   line-height: 1;
+  cursor: pointer;
+  background: none;
+  border: none;
+  padding: 0;
+  transition: color 0.18s ease;
+}
+.dm-toggle-label-active {
+  color: #374151;
+}
+[data-theme='dark'] .dm-toggle-label-active {
+  color: #d1d5db;
+}
+.dm-mode-icon {
+  color: #9ca3af;
+  transition: color 0.18s ease;
+  flex-shrink: 0;
+}
+.dm-mode-icon-active {
+  color: #374151;
+}
+[data-theme='dark'] .dm-mode-icon-active {
+  color: #d1d5db;
 }
 #dmKnobEl {
   transition: transform 0.18s ease, stroke 0.18s ease;

@@ -1779,8 +1779,11 @@ document.head.appendChild(medalFaceStyleEl);
 
 function updateMedalFaceStyle(angle) {
   if (!currentMedal) return;
+  var darkModeFilter = _isDarkMode()
+    ? ' filter: invert(1) hue-rotate(180deg) brightness(1.087) contrast(0.926) !important;'
+    : '';
   medalFaceStyleEl.textContent =
-    '.scoreDisc.medal-' + currentMedal + '::before { background: ' + MEDAL_FACE[currentMedal](angle) + ' !important; }';
+    '.scoreDisc.medal-' + currentMedal + '::before { background: ' + MEDAL_FACE[currentMedal](angle) + ' !important;' + darkModeFilter + ' }';
 }
 
 const osToggleEl     = document.getElementById('osToggle');

@@ -1729,14 +1729,16 @@ li.conflict-dismissed .conflict-desc {
    background colours make every label hard to read at once. The existing
    segmented-pill active/inactive shadow states already supply the
    "which one is selected" cue, so no extra override is needed for that. */
-.kb-theme-panel-row {
-  flex-direction: row;
-  align-items: center;
-  gap: 10px;
+.kb-theme-row {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 10px;
+  width: 100%;
 }
-.kb-theme-panel-row .diff-advanced-label {
-  width: auto;
-  white-space: nowrap;
+.kb-theme-row .diff-advanced-label {
+  width: auto;
+  white-space: nowrap;
 }
 #kbThemePill {
   flex: 1;

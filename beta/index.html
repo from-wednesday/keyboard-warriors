@@ -16495,14 +16495,19 @@ function _applyTheme(isDark) {
   } else {
     document.documentElement.removeAttribute('data-theme');
   }
-  var knob  = document.getElementById('dmKnobEl');
-  var track = document.getElementById('dmTrackRect');
-  var toggle = document.getElementById('dmToggle');
-  if (toggle)  toggle.checked = isDark;
-  if (knob)    knob.setAttribute('transform',  isDark ? 'translate(22,0)' : '');
-  if (track)   track.setAttribute('stroke',    isDark ? '#374151' : '#9ca3af');
-  if (knob)    knob.setAttribute('stroke',     isDark ? '#374151' : '#9ca3af');
+  _syncDarkModeToggleUI();
   try { localStorage.setItem('kw_theme', isDark ? 'dark' : 'light'); } catch(e) {}
+}
+
+function _syncDarkModeToggleUI() {
+  var isDark = document.documentElement.getAttribute('data-theme') === 'dark';
+  var knob   = document.getElementById('dmKnobEl');
+  var track  = document.getElementById('dmTrackRect');
+  var toggle = document.getElementById('dmToggle');
+  if (toggle) toggle.checked = isDark;
+  if (knob)   knob.setAttribute('transform', isDark ? 'translate(22,0)' : '');
+  if (track)  track.setAttribute('stroke',   isDark ? '#374151' : '#9ca3af');
+  if (knob)   knob.setAttribute('stroke',    isDark ? '#374151' : '#9ca3af');
 }
 
 function _onDarkModeToggle() {

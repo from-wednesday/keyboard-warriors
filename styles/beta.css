@@ -1700,18 +1700,18 @@ To add a new theme: add one --keyboard-theme-tint-name variable below,
    keys receive the tint never needs to change.
 ══════════════════════════════════════ */
 :root {
-  --keyboard-theme-tint-dieter:    linear-gradient(rgba(212, 106, 33, 0.38), rgba(212, 106, 33, 0.38));
-  --keyboard-theme-tint-aqua:      linear-gradient(135deg, rgba(94, 188, 217, 0.42), rgba(58, 188, 150, 0.38));
-  --keyboard-theme-tint-bubblegum: linear-gradient(rgba(236, 105, 170, 0.38), rgba(236, 105, 170, 0.38));
+  --keyboard-theme-tint-dieter:    linear-gradient(169deg, #FFBD6F, #FD8451);
+  --keyboard-theme-tint-aqua:      linear-gradient(169deg, #1FC5A8, #5761B2);
+  --keyboard-theme-tint-poprocks:  linear-gradient(169deg, #FE9090, #FF61D2);
 
-  --keyboard-theme-swatch-dieter:    #d46a21;
-  --keyboard-theme-swatch-aqua:      linear-gradient(135deg, #5ebcd9, #3abc96);
-  --keyboard-theme-swatch-bubblegum: #ec69aa;
+  --keyboard-theme-swatch-dieter:    linear-gradient(169deg, #FFBD6F, #FD8451);
+  --keyboard-theme-swatch-aqua:      linear-gradient(169deg, #1FC5A8, #5761B2);
+  --keyboard-theme-swatch-poprocks:  linear-gradient(169deg, #FE9090, #FF61D2);
 }
 
 #keyboardPanel[data-keyboard-theme="dieter"]    { --keyboard-theme-tint: var(--keyboard-theme-tint-dieter); }
 #keyboardPanel[data-keyboard-theme="aqua"]      { --keyboard-theme-tint: var(--keyboard-theme-tint-aqua); }
-#keyboardPanel[data-keyboard-theme="bubblegum"] { --keyboard-theme-tint: var(--keyboard-theme-tint-bubblegum); }
+#keyboardPanel[data-keyboard-theme="poprocks"] { --keyboard-theme-tint: var(--keyboard-theme-tint-bubblegum); }
 
 #keyboardPanel:not([data-keyboard-theme="mono"]) .key[data-key="Escape"],
 #keyboardPanel:not([data-keyboard-theme="mono"]) .key[data-key^="F"],

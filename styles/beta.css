@@ -1986,10 +1986,11 @@ To add a new theme: add one --keyboard-theme-tint-name variable below,
   overflow: hidden;
 }
 .wrench-full-row-icon {
-  width: 100%;
-  height: 100%;
+  width: 66%;
+  height: 66%;
+  display: block;
+  padding-left: 1px;
 }
-
 .app-option-wrench:hover { opacity: 1; }
 #appPill.open {
   /* Height driven by JS spring animator -- no CSS override needed */

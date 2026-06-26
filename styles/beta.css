@@ -4485,12 +4485,14 @@ html[data-theme="dark"] body {
 [data-theme="dark"] .prog-dot .dot-fill                 { fill: #939aa3; }
 [data-theme="dark"] .life-heart svg path                { fill: #939aa3; }
 
-/* ── Dark mode: score disc background ───────────────────────────────────────
-   #1f2937 inverts to a light warm grey under the html filter chain, so a
-   pre-inverted value is needed here. This applies at all times in dark mode,
-   keeping the disc a consistent dark charcoal across every round.
+/* ── Dark mode: score disc ───────────────────────────────────────────────────
+   Re-applying the same filter as the html element cancels the inversion,
+   keeping the disc identical in appearance between light and dark modes.
+   JS updates background directly during gameplay so this applies at rest only.
    ─────────────────────────────────────────────────────────────────────────── */
-[data-theme="dark"] .scoreDisc                          { background: #d6cfc0; }
+[data-theme="dark"] .scoreDisc {
+  filter: invert(1) hue-rotate(180deg) brightness(1.087) contrast(0.926);
+}
 
 /* ── Dark mode: medal face disc ─────────────────────────────────────────────
    ::before inherits the corrective filter from its parent .scoreDisc.medal-*,

@@ -4493,15 +4493,9 @@ html[data-theme="dark"] body {
 [data-theme="dark"] .scoreDisc                          { background: #1f2937; }
 
 /* ── Dark mode: medal face disc ─────────────────────────────────────────────
-   The ::before pseudo-element is not touched by JS so can be re-inverted
-   here. The rim gradient is handled in JS (see rimTick and medal assignment).
+   ::before inherits the corrective filter from its parent .scoreDisc.medal-*,
+   so no separate rule is needed here.
    ─────────────────────────────────────────────────────────────────────────── */
-[data-theme="dark"] .scoreDisc.medal-gold::before,
-[data-theme="dark"] .scoreDisc.medal-silver::before,
-[data-theme="dark"] .scoreDisc.medal-bronze::before,
-[data-theme="dark"] .scoreDisc.medal-lead::before {
-  filter: invert(1) hue-rotate(180deg) brightness(1.087) contrast(0.926);
-}
 
 /* ── Dark mode: inversion-exempt elements ───────────────────────────────────
    Re-applying the same filter cancels the parent inversion, restoring these
@@ -4516,12 +4510,7 @@ html[data-theme="dark"] body {
 [data-theme="dark"] .scoreDisc.medal-lead {
   filter: invert(1) hue-rotate(180deg) brightness(1.087) contrast(0.926);
 }
-[data-theme="dark"] .scoreDisc.medal-gold::before,
-[data-theme="dark"] .scoreDisc.medal-silver::before,
-[data-theme="dark"] .scoreDisc.medal-bronze::before,
-[data-theme="dark"] .scoreDisc.medal-lead::before {
-  filter: invert(1) hue-rotate(180deg) brightness(1.087) contrast(0.926);
-}
+
 
 /* Segmented pill button inset shadows are semi-transparent and read correctly
    in both themes without any filter override. */

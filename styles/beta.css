@@ -1989,7 +1989,7 @@ To add a new theme: add one --keyboard-theme-tint-name variable below,
   width: 66%;
   height: 66%;
   display: block;
-  padding-left: 1px;
+  padding-left: -10px;
 }
 .wrench-full-row-icon--app {
   width: 58%;

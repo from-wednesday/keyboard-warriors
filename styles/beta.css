@@ -1977,9 +1977,9 @@ To add a new theme: add one --keyboard-theme-tint-name variable below,
   transition: border-color 0.15s, background-color 0.15s;
 }
 .app-option-wrench {
-  border-top: 1px solid rgba(0,0,0,0.06);
+  border-top: 1px solid rgba(0,0,0,0.05);
   opacity: 0.3;
-  height: 28px;
+  height: 38px;
   align-items: center;
   padding-top: 0;
   padding-left: 0;
@@ -2050,7 +2050,7 @@ To add a new theme: add one --keyboard-theme-tint-name variable below,
 /* Left icon column: fixed width, centres caret/dot */
 .app-option-icon-col {
   flex-shrink: 0;
-  width: 22px;
+  width: 72px;
   display: flex;
   align-items: center;
   justify-content: center;

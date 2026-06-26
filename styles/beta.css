@@ -1979,8 +1979,8 @@ To add a new theme: add one --keyboard-theme-tint-name variable below,
 .app-option-wrench {
   border-top: 1px solid rgba(0,0,0,0.06);
   opacity: 0.3;
-  height: 14px;
-  align-items: left;
+  height: 20px;
+  align-items: center;
   padding-top: 0;
   padding-left: 0;
   overflow: hidden;
@@ -2056,9 +2056,10 @@ To add a new theme: add one --keyboard-theme-tint-name variable below,
 /* Left icon column: fixed width, centres caret/dot */
 .app-option-icon-col {
   flex-shrink: 0;
-  width: 16px;
+  width: 22px;
   display: flex;
-  align-items: left;
+  align-items: center;
+  justify-content: center;
 }
 
 /* Right label column: left-aligned, fills remaining width */

@@ -1757,7 +1757,7 @@ To add a new theme: add one --keyboard-theme-tint-name variable below,
 }
 #kbThemePill .kb-theme-btn.segmented-pill-active[data-theme="dieter"]    { background: var(--keyboard-theme-swatch-dieter);    color: white; }
 #kbThemePill .kb-theme-btn.segmented-pill-active[data-theme="aqua"]      { background: var(--keyboard-theme-swatch-aqua);      color: white; }
-#kbThemePill .kb-theme-btn.segmented-pill-active[data-theme="bubblegum"] { background: var(--keyboard-theme-swatch-bubblegum); color: white; }
+#kbThemePill .kb-theme-btn.segmented-pill-active[data-theme="poprocks"] { background: var(--keyboard-theme-swatch-bubblegum); color: white; }
 #kbThemePill .kb-theme-btn[data-theme="mono"]:not(.segmented-pill-active) .diff-btn-text {
   text-decoration: line-through;
 }

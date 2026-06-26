@@ -4600,8 +4600,8 @@ runData.length = 0; lastCompletedReport = null; CoachAdviceAccepted = false;
   var WrenchRow = document.createElement('div');
   WrenchRow.className = 'app-option app-option-wrench';
 
-  WrenchRow.innerHTML = '<svg class="wrench-full-row-icon" style="display:block;color:inherit;"><use href="#IconWrench"/></svg>';
-  WrenchRow.addEventListener('click', function(ClickEvent) {
+  WrenchRow.innerHTML = '<svg class="wrench-full-row-icon" style="color:inherit;"><use href="#IconWrench"/></svg>';
+    WrenchRow.addEventListener('click', function(ClickEvent) {
     ClickEvent.stopPropagation();
     _openWrenchPicker();
   });
@@ -4759,8 +4759,8 @@ function _buildWrenchPickerRows() {
   WrenchRow.className = 'app-option app-option-wrench';
   WrenchRow.style.borderTop = '1px solid rgba(0,0,0,0.08)';
 
-  WrenchRow.innerHTML = '<svg class="wrench-full-row-icon" style="display:block;color:inherit;"><use href="#IconWrench"/></svg>';
-  WrenchRow.addEventListener('click', function(ClickEvent) {
+  WrenchRow.innerHTML = '<svg class="wrench-full-row-icon" style="color:inherit;"><use href="#IconWrench"/></svg>';
+    WrenchRow.addEventListener('click', function(ClickEvent) {
     ClickEvent.stopPropagation();
     _closeWrenchPicker();
   });

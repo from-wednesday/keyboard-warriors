@@ -2059,7 +2059,6 @@ To add a new theme: add one --keyboard-theme-tint-name variable below,
   width: 16px;
   display: flex;
   align-items: left;
-  justify-content: center;
 }
 
 /* Right label column: left-aligned, fills remaining width */

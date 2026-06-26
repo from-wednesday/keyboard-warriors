@@ -16497,18 +16497,12 @@ function _AnimateAppPillResize() {
 function _openCustomiseSkillsetPanel() {
   if (CustomiseSkillsetPanelIsOpen) return;
   CustomiseSkillsetPanelIsOpen = true;
-  _SyncHeadingVisibility(); 
+  _SyncHeadingVisibility();
 
-  var isNamedSkillset = SKILLSET_DEFS.some(function(d) { return d.label === currentSkillset; });
-  if (!isNamedSkillset) {
-    // Only seed and apply CustomSetList when in Custom Set mode
-    _EnsureCustomSetListSeeded();
-    appsShortList   = CustomSetList.shortList.slice();
-    appsStandbyList = CustomSetList.standbyList.slice();
-    _saveAppsShortList();
-    buildAppPill();
-    _AnimateAppPillResize();
-  }
+  // Seed CustomSetList from the current live lists if not already seeded.
+  // Do not push it back into appsShortList here — that only happens when
+  // the user actively toggles an app in _ToggleCustomSetApp.
+  _EnsureCustomSetListSeeded();
 
   var PanelElement         = document.getElementById('customiseSkillsetPanel');
   var RightBracketElement  = document.getElementById('customiseSkillsetRightBracket');

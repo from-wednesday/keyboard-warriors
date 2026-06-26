@@ -4600,7 +4600,7 @@ runData.length = 0; lastCompletedReport = null; CoachAdviceAccepted = false;
   var WrenchRow = document.createElement('div');
   WrenchRow.className = 'app-option app-option-wrench';
 
-  WrenchRow.innerHTML = '<svg class="wrench-full-row-icon" style="color:inherit;"><use href="#IconWrench"/></svg>';
+  WrenchRow.innerHTML = '<svg class="wrench-full-row-icon wrench-full-row-icon--app" style="color:inherit;"><use href="#IconWrench"/></svg>';
     WrenchRow.addEventListener('click', function(ClickEvent) {
     ClickEvent.stopPropagation();
     _openWrenchPicker();

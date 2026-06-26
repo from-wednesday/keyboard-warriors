@@ -1701,11 +1701,11 @@ To add a new theme: add one --keyboard-theme-tint-name variable below,
 ══════════════════════════════════════ */
 :root {
   --keyboard-theme-tint-dieter:    linear-gradient(169deg, #FFBD6F, #FD8451);
-  --keyboard-theme-tint-aqua:      linear-gradient(169deg, #1FC5A8, #5761B2);
+  --keyboard-theme-tint-aqua:      linear-gradient(169deg, #00F0FF, #29FFA6);
   --keyboard-theme-tint-poprocks:  linear-gradient(169deg, #FE9090, #FF61D2);
 
   --keyboard-theme-swatch-dieter:    linear-gradient(169deg, #FFBD6F, #FD8451);
-  --keyboard-theme-swatch-aqua:      linear-gradient(169deg, #1FC5A8, #5761B2);
+  --keyboard-theme-swatch-aqua:      linear-gradient(169deg, #00F0FF, #29FFA6);
   --keyboard-theme-swatch-poprocks:  linear-gradient(169deg, #FE9090, #FF61D2);
 }
 

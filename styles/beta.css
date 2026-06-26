@@ -1994,7 +1994,7 @@ To add a new theme: add one --keyboard-theme-tint-name variable below,
 .wrench-full-row-icon--app {
   width: 58%;
   height: 58%;
-  margin-left: -28px;
+  margin-left: -18px;
 }
 .app-option-wrench:hover { opacity: 1; }
 #appPill.open {

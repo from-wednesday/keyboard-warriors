@@ -1989,12 +1989,12 @@ To add a new theme: add one --keyboard-theme-tint-name variable below,
   width: 66%;
   height: 66%;
   display: block;
-  padding-left: 0px;
+  padding-left: 20px;
 }
 .wrench-full-row-icon--app {
   width: 58%;
   height: 58%;
-  margin-left: -32px;
+  margin-left: -38px;
 }
 .app-option-wrench:hover { opacity: 1; }
 #appPill.open {

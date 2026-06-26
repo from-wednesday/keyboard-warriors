@@ -4600,12 +4600,7 @@ runData.length = 0; lastCompletedReport = null; CoachAdviceAccepted = false;
   var WrenchRow = document.createElement('div');
   WrenchRow.className = 'app-option app-option-wrench';
 
-  var WrenchIconColumn = document.createElement('span');
-  WrenchIconColumn.className = 'app-option-icon-col';
-  WrenchIconColumn.style.justifyContent = 'flex-start';
-  WrenchIconColumn.innerHTML = '<svg width="68" height="22" style="display:block;color:inherit;"><use href="#IconWrench"/></svg>';
-
-  WrenchRow.appendChild(WrenchIconColumn);
+  WrenchRow.innerHTML = '<svg class="wrench-full-row-icon" style="display:block;color:inherit;"><use href="#IconWrench"/></svg>';
   WrenchRow.addEventListener('click', function(ClickEvent) {
     ClickEvent.stopPropagation();
     _openWrenchPicker();
@@ -4764,12 +4759,7 @@ function _buildWrenchPickerRows() {
   WrenchRow.className = 'app-option app-option-wrench';
   WrenchRow.style.borderTop = '1px solid rgba(0,0,0,0.08)';
 
-  var WrenchIconColumn = document.createElement('span');
-  WrenchIconColumn.className = 'app-option-icon-col';
-  WrenchIconColumn.style.justifyContent = 'flex-start';
-  WrenchIconColumn.innerHTML = '<svg width="68" height="22" style="display:block;color:inherit;"><use href="#IconWrench"/></svg>';
-
-  WrenchRow.appendChild(WrenchIconColumn);
+  WrenchRow.innerHTML = '<svg class="wrench-full-row-icon" style="display:block;color:inherit;"><use href="#IconWrench"/></svg>';
   WrenchRow.addEventListener('click', function(ClickEvent) {
     ClickEvent.stopPropagation();
     _closeWrenchPicker();

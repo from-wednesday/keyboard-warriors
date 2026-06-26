@@ -4485,12 +4485,12 @@ html[data-theme="dark"] body {
 [data-theme="dark"] .prog-dot .dot-fill                 { fill: #939aa3; }
 [data-theme="dark"] .life-heart svg path                { fill: #939aa3; }
 
-/* ── Dark mode: score disc initial-round colour ─────────────────────────────
-   The base CSS background (#1f2937) maps to an unexpectedly light tone on
-   first render before JS touches the element. This override ensures the disc
-   reads as a consistent dark charcoal on first load and every subsequent round.
+/* ── Dark mode: score disc background ───────────────────────────────────────
+   #1f2937 inverts to a light warm grey under the html filter chain, so a
+   pre-inverted value is needed here. This applies at all times in dark mode,
+   keeping the disc a consistent dark charcoal across every round.
    ─────────────────────────────────────────────────────────────────────────── */
-[data-theme="dark"] .scoreDisc                          { background: #1f2937; }
+[data-theme="dark"] .scoreDisc                          { background: #d6cfc0; }
 
 /* ── Dark mode: medal face disc ─────────────────────────────────────────────
    ::before inherits the corrective filter from its parent .scoreDisc.medal-*,

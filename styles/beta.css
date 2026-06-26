@@ -1977,13 +1977,19 @@ To add a new theme: add one --keyboard-theme-tint-name variable below,
   transition: border-color 0.15s, background-color 0.15s;
 }
 .app-option-wrench {
-  border-top: 1px solid rgba(0,0,0,0.05);
+  border-top: 1px solid rgba(0,0,0,0.06);
   opacity: 0.3;
-  height: 38px;
+  height: 20px;
   align-items: center;
   padding-top: 0;
   padding-left: 0;
+  overflow: hidden;
 }
+.wrench-full-row-icon {
+  width: 100%;
+  height: 100%;
+}
+
 .app-option-wrench:hover { opacity: 1; }
 #appPill.open {
   /* Height driven by JS spring animator -- no CSS override needed */
@@ -2050,11 +2056,12 @@ To add a new theme: add one --keyboard-theme-tint-name variable below,
 /* Left icon column: fixed width, centres caret/dot */
 .app-option-icon-col {
   flex-shrink: 0;
-  width: 72px;
+  width: 22px;
   display: flex;
   align-items: center;
   justify-content: center;
 }
+
 /* Right label column: left-aligned, fills remaining width */
 .app-option-label-col {
   flex: 1;

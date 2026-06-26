@@ -16,9 +16,8 @@
 <link rel="icon" type="image/png" href="/keyboard-warriors/keyboard-warriors-favicon.png">
 <script>
   (function() {
-    var saved = localStorage.getItem('kw_theme');
     var prefersDark = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
-    if (saved === 'dark' || (!saved && prefersDark)) {
+    if (prefersDark) {
       document.documentElement.setAttribute('data-theme', 'dark');
     }
   })();
@@ -16565,7 +16564,6 @@ function _applyTheme(isDark) {
   }
   _syncDarkModeToggleUI();
   _syncMedalFilter();
-  try { localStorage.setItem('kw_theme', isDark ? 'dark' : 'light'); } catch(e) {}
 }
 
 function _syncDarkModeToggleUI() {
@@ -16593,10 +16591,8 @@ function _onDarkModeToggle() {
 }
 
 function _initDarkModeToggle() {
-  var saved = localStorage.getItem('kw_theme');
   var prefersDark = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
-  var isDark = saved === 'dark' || (!saved && prefersDark);
-  _applyTheme(isDark);
+  _applyTheme(prefersDark);
 }
 
 // Run once on load

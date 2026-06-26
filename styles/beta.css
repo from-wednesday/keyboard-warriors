@@ -1991,6 +1991,12 @@ To add a new theme: add one --keyboard-theme-tint-name variable below,
   display: block;
   padding-left: 1px;
 }
+.wrench-full-row-icon--app {
+  width: 58%;
+  height: 58%;
+  padding-left: 0px;
+}
+
 .app-option-wrench:hover { opacity: 1; }
 #appPill.open {
   /* Height driven by JS spring animator -- no CSS override needed */

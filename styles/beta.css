@@ -4550,9 +4550,7 @@ html[data-theme="dark"] body {
 }
 /* Aqua and Poprocks keyboard themes: the page-wide inversion shifts their
    saturated gradients to dirty off-colours. Re-invert the tinted modifier
-   keys to pin them to their true light-mode appearance.
-   Key labels inside these keys also get re-inverted so they remain readable
-   against the bright gradient background rather than inverting independently. */
+   keys to pin them to their true light-mode appearance. */
 [data-theme="dark"] #keyboardPanel[data-keyboard-theme="aqua"] .key[data-key^="Control"],
 [data-theme="dark"] #keyboardPanel[data-keyboard-theme="aqua"] .key[data-key^="Alt"],
 [data-theme="dark"] #keyboardPanel[data-keyboard-theme="aqua"] .key[data-key^="FN"],
@@ -4564,7 +4562,87 @@ html[data-theme="dark"] body {
 [data-theme="dark"] #keyboardPanel[data-keyboard-theme="poprocks"] .key[data-key^="FN"],
 [data-theme="dark"] #keyboardPanel[data-keyboard-theme="poprocks"] .key[data-key^="Meta"],
 [data-theme="dark"] #keyboardPanel[data-keyboard-theme="poprocks"] .key[data-key^="Shift"],
-[data-theme="dark"] #keyboardPanel[data-keyboard-theme="poprocks"] .key[data-key="CapsLock"]
+[data-theme="dark"] #keyboardPanel[data-keyboard-theme="poprocks"] .key[data-key="CapsLock"] {
+  filter: invert(1) hue-rotate(180deg) brightness(1.087) contrast(0.926);
+}
+
+/* Key labels inside tinted modifier keys: re-invert so they remain dark and
+   readable against the bright gradient background in dark mode. */
+[data-theme="dark"] #keyboardPanel[data-keyboard-theme="aqua"] .key[data-key^="Control"] .letter-lbl,
+[data-theme="dark"] #keyboardPanel[data-keyboard-theme="aqua"] .key[data-key^="Control"] .mod-sym,
+[data-theme="dark"] #keyboardPanel[data-keyboard-theme="aqua"] .key[data-key^="Control"] .mod-sym-only,
+[data-theme="dark"] #keyboardPanel[data-keyboard-theme="aqua"] .key[data-key^="Control"] .mod-word,
+[data-theme="dark"] #keyboardPanel[data-keyboard-theme="aqua"] .key[data-key^="Control"] .util-lbl,
+[data-theme="dark"] #keyboardPanel[data-keyboard-theme="aqua"] .key[data-key^="Control"] .util-sym-only,
+[data-theme="dark"] #keyboardPanel[data-keyboard-theme="aqua"] .key[data-key^="Control"] .key-glyph-sym,
+[data-theme="dark"] #keyboardPanel[data-keyboard-theme="aqua"] .key[data-key^="Alt"] .letter-lbl,
+[data-theme="dark"] #keyboardPanel[data-keyboard-theme="aqua"] .key[data-key^="Alt"] .mod-sym,
+[data-theme="dark"] #keyboardPanel[data-keyboard-theme="aqua"] .key[data-key^="Alt"] .mod-sym-only,
+[data-theme="dark"] #keyboardPanel[data-keyboard-theme="aqua"] .key[data-key^="Alt"] .mod-word,
+[data-theme="dark"] #keyboardPanel[data-keyboard-theme="aqua"] .key[data-key^="Alt"] .util-lbl,
+[data-theme="dark"] #keyboardPanel[data-keyboard-theme="aqua"] .key[data-key^="Alt"] .util-sym-only,
+[data-theme="dark"] #keyboardPanel[data-keyboard-theme="aqua"] .key[data-key^="Alt"] .key-glyph-sym,
+[data-theme="dark"] #keyboardPanel[data-keyboard-theme="aqua"] .key[data-key^="FN"] .fn-lbl,
+[data-theme="dark"] #keyboardPanel[data-keyboard-theme="aqua"] .key[data-key^="Meta"] .mod-sym,
+[data-theme="dark"] #keyboardPanel[data-keyboard-theme="aqua"] .key[data-key^="Meta"] .mod-sym-only,
+[data-theme="dark"] #keyboardPanel[data-keyboard-theme="aqua"] .key[data-key^="Meta"] .mod-word,
+[data-theme="dark"] #keyboardPanel[data-keyboard-theme="aqua"] .key[data-key^="Shift"] .util-lbl,
+[data-theme="dark"] #keyboardPanel[data-keyboard-theme="aqua"] .key[data-key^="Shift"] .util-sym-only,
+[data-theme="dark"] #keyboardPanel[data-keyboard-theme="aqua"] .key[data-key="CapsLock"] .util-lbl,
+[data-theme="dark"] #keyboardPanel[data-keyboard-theme="poprocks"] .key[data-key^="Control"] .letter-lbl,
+[data-theme="dark"] #keyboardPanel[data-keyboard-theme="poprocks"] .key[data-key^="Control"] .mod-sym,
+[data-theme="dark"] #keyboardPanel[data-keyboard-theme="poprocks"] .key[data-key^="Control"] .mod-sym-only,
+[data-theme="dark"] #keyboardPanel[data-keyboard-theme="poprocks"] .key[data-key^="Control"] .mod-word,
+[data-theme="dark"] #keyboardPanel[data-keyboard-theme="poprocks"] .key[data-key^="Control"] .util-lbl,
+[data-theme="dark"] #keyboardPanel[data-keyboard-theme="poprocks"] .key[data-key^="Control"] .util-sym-only,
+[data-theme="dark"] #keyboardPanel[data-keyboard-theme="poprocks"] .key[data-key^="Control"] .key-glyph-sym,
+[data-theme="dark"] #keyboardPanel[data-keyboard-theme="poprocks"] .key[data-key^="Alt"] .letter-lbl,
+[data-theme="dark"] #keyboardPanel[data-keyboard-theme="poprocks"] .key[data-key^="Alt"] .mod-sym,
+[data-theme="dark"] #keyboardPanel[data-keyboard-theme="poprocks"] .key[data-key^="Alt"] .mod-sym-only,
+[data-theme="dark"] #keyboardPanel[data-keyboard-theme="poprocks"] .key[data-key^="Alt"] .mod-word,
+[data-theme="dark"] #keyboardPanel[data-keyboard-theme="poprocks"] .key[data-key^="Alt"] .util-lbl,
+[data-theme="dark"] #keyboardPanel[data-keyboard-theme="poprocks"] .key[data-key^="Alt"] .util-sym-only,
+[data-theme="dark"] #keyboardPanel[data-keyboard-theme="poprocks"] .key[data-key^="Alt"] .key-glyph-sym,
+[data-theme="dark"] #keyboardPanel[data-keyboard-theme="poprocks"] .key[data-key^="FN"] .fn-lbl,
+[data-theme="dark"] #keyboardPanel[data-keyboard-theme="poprocks"] .key[data-key^="Meta"] .mod-sym,
+[data-theme="dark"] #keyboardPanel[data-keyboard-theme="poprocks"] .key[data-key^="Meta"] .mod-sym-only,
+[data-theme="dark"] #keyboardPanel[data-keyboard-theme="poprocks"] .key[data-key^="Meta"] .mod-word,
+[data-theme="dark"] #keyboardPanel[data-keyboard-theme="poprocks"] .key[data-key^="Shift"] .util-lbl,
+[data-theme="dark"] #keyboardPanel[data-keyboard-theme="poprocks"] .key[data-key^="Shift"] .util-sym-only,
+[data-theme="dark"] #keyboardPanel[data-keyboard-theme="poprocks"] .key[data-key="CapsLock"] .util-lbl {
+  filter: invert(1) hue-rotate(180deg) brightness(1.087) contrast(0.926);
+}
+
+/* ── Theme-aware Start / confirm button ──────────────────────────────────────
+   When a non-mono keyboard theme is active, the main action button adopts
+   the theme gradient. Scoped via :has() on body to avoid JS involvement.   */
+body:has(#keyboardPanel[data-keyboard-theme="dieter"]) #mainBtn,
+body:has(#keyboardPanel[data-keyboard-theme="aqua"]) #mainBtn,
+body:has(#keyboardPanel[data-keyboard-theme="poprocks"]) #mainBtn {
+  background: var(--keyboard-theme-tint);
+  color: white;
+}
+body:has(#keyboardPanel[data-keyboard-theme="dieter"]) #mainBtn:hover,
+body:has(#keyboardPanel[data-keyboard-theme="aqua"]) #mainBtn:hover,
+body:has(#keyboardPanel[data-keyboard-theme="poprocks"]) #mainBtn:hover {
+  filter: brightness(0.92);
+}
+
+/* In dark mode the button itself gets the page-wide inversion, which shifts
+   the gradient colours. Re-invert to keep the button identical to light mode. */
+[data-theme="dark"] body:has(#keyboardPanel[data-keyboard-theme="dieter"]) #mainBtn,
+[data-theme="dark"] body:has(#keyboardPanel[data-keyboard-theme="aqua"]) #mainBtn,
+[data-theme="dark"] body:has(#keyboardPanel[data-keyboard-theme="poprocks"]) #mainBtn {
+  filter: invert(1) hue-rotate(180deg) brightness(1.087) contrast(0.926);
+}
+
+/* The active segment in the Keyboard Aesthetics pill also carries the theme
+   gradient and needs the same dark mode correction. */
+[data-theme="dark"] #kbThemePill .kb-theme-btn.segmented-pill-active[data-theme="dieter"],
+[data-theme="dark"] #kbThemePill .kb-theme-btn.segmented-pill-active[data-theme="aqua"],
+[data-theme="dark"] #kbThemePill .kb-theme-btn.segmented-pill-active[data-theme="poprocks"] {
+  filter: invert(1) hue-rotate(180deg) brightness(1.087) contrast(0.926);
+}
 [data-theme="dark"] #keyboardPanel[data-keyboard-theme="aqua"] .key[data-key^="Control"] .letter-lbl,
 [data-theme="dark"] #keyboardPanel[data-keyboard-theme="aqua"] .key[data-key^="Control"] .mod-sym,
 [data-theme="dark"] #keyboardPanel[data-keyboard-theme="aqua"] .key[data-key^="Control"] .mod-sym-only,

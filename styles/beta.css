@@ -1709,16 +1709,16 @@ To add a new theme: add one --keyboard-theme-tint-name variable below,
   --keyboard-theme-swatch-poprocks:  linear-gradient(169deg, #FE9090, #FF61D2);
 }
 
-#keyboardPanel[data-keyboard-theme="dieter"]    { --keyboard-theme-tint: var(--keyboard-theme-tint-dieter); }
-#keyboardPanel[data-keyboard-theme="aqua"]      { --keyboard-theme-tint: var(--keyboard-theme-tint-aqua); }
-#keyboardPanel[data-keyboard-theme="poprocks"] { --keyboard-theme-tint: var(--keyboard-theme-tint-bubblegum); }
+#keyboardPanel[data-keyboard-theme="dieter"]    { --keyboard-theme-tint: var(--keyboard-theme-tint-dieter); }
+#keyboardPanel[data-keyboard-theme="aqua"]      { --keyboard-theme-tint: var(--keyboard-theme-tint-aqua); }
+#keyboardPanel[data-keyboard-theme="poprocks"]  { --keyboard-theme-tint: var(--keyboard-theme-tint-poprocks); }
 
 #keyboardPanel:not([data-keyboard-theme="mono"]) .key[data-key^="Control"],
 #keyboardPanel:not([data-keyboard-theme="mono"]) .key[data-key^="Alt"],
 #keyboardPanel:not([data-keyboard-theme="mono"]) .key[data-key^="Meta"],
 #keyboardPanel:not([data-keyboard-theme="mono"]) .key[data-key^="Shift"],
-#keyboardPanel:not([data-keyboard-theme="mono"]) .key[data-key="CapsLock"]
-background-image: var(--keyboard-theme-tint);
+#keyboardPanel:not([data-keyboard-theme="mono"]) .key[data-key="CapsLock"] {
+  background-image: var(--keyboard-theme-tint);
 }
 
 /* ── Keyboard Aesthetics theme picker pill ──────────────────────────────────

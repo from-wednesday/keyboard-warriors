@@ -1714,6 +1714,7 @@ To add a new theme: add one --keyboard-theme-tint-name variable below,
 #keyboardPanel[data-keyboard-theme="poprocks"]  { --keyboard-theme-tint: var(--keyboard-theme-tint-poprocks); }
 
 #keyboardPanel:not([data-keyboard-theme="mono"]) .key[data-key^="Control"],
+#keyboardPanel:not([data-keyboard-theme="mono"]) .key[data-key^="Fn"],
 #keyboardPanel:not([data-keyboard-theme="mono"]) .key[data-key^="Alt"],
 #keyboardPanel:not([data-keyboard-theme="mono"]) .key[data-key^="Meta"],
 #keyboardPanel:not([data-keyboard-theme="mono"]) .key[data-key^="Shift"],

@@ -923,6 +923,7 @@ body.kb-at-edge #keyboardPanel #kb-shadow {
 }
 .sp-col-left  { padding-right: 20px; }
 .sp-col-right { padding-left:  20px; }
+.sp-col-full  { grid-column: 1 / -1; }
 
 /* ── Both columns always align content from the top ── */
 .sp-col-left,
@@ -1681,11 +1682,105 @@ li.conflict-dismissed .conflict-desc {
 .key.lit-fading .mod-sym-only,
 .key.lit-fading .mod-word,
 .key.lit-fading .util-sym-only {
-  transition: color 0.8s ease !important;
+  transition: color 0.8s ease !important;
 }
 
 /* ══════════════════════════════════════
-   BREAKPOINTS (in process - I am changing numbers to Var because numbers get out of sync)
+   KEYBOARD COLOUR THEMES
+   A translucent tint layered over modifier and special function keys only
+   (never letters, numerals, or punctuation). Painted with background-image
+   so it sits above the key's existing background-colour but underneath
+   nothing, since lit states and ghost mode both set the background
+   shorthand with !important and so always override it automatically.
+To add a new theme: add one --keyboard-theme-tint-name variable below,
+   one matching --keyboard-theme-swatch-name variable (the same colour at
+   full strength, used only for the active state of the picker pill below),
+   one matching line mapping the tint to a data-keyboard-theme value, and
+   one matching pill rule further down. The selector list targeting which
+   keys receive the tint never needs to change.
+══════════════════════════════════════ */
+:root {
+  --keyboard-theme-tint-dieter:    linear-gradient(169deg, #FFBD6F, #FD8451);
+  --keyboard-theme-tint-aqua:      linear-gradient(169deg, #00F0FF, #29FFA6);
+  --keyboard-theme-tint-poprocks:  linear-gradient(169deg, #FE9090, #FF61D2);
+
+  --keyboard-theme-swatch-dieter:    linear-gradient(169deg, #FFBD6F, #FD8451);
+  --keyboard-theme-swatch-aqua:      linear-gradient(169deg, #00F0FF, #29FFA6);
+  --keyboard-theme-swatch-poprocks:  linear-gradient(169deg, #FE9090, #FF61D2);
+}
+
+#keyboardPanel[data-keyboard-theme="dieter"]    { --keyboard-theme-tint: var(--keyboard-theme-tint-dieter); }
+#keyboardPanel[data-keyboard-theme="aqua"]      { --keyboard-theme-tint: var(--keyboard-theme-tint-aqua); }
+#keyboardPanel[data-keyboard-theme="poprocks"]  { --keyboard-theme-tint: var(--keyboard-theme-tint-poprocks); }
+
+#keyboardPanel:not([data-keyboard-theme="mono"]) .key[data-key^="Control"],
+#keyboardPanel:not([data-keyboard-theme="mono"]) .key[data-key^="Fn"],
+#keyboardPanel:not([data-keyboard-theme="mono"]) .key[data-key^="Alt"],
+#keyboardPanel:not([data-keyboard-theme="mono"]) .key[data-key^="Meta"],
+#keyboardPanel:not([data-keyboard-theme="mono"]) .key[data-key^="Shift"],
+#keyboardPanel:not([data-keyboard-theme="mono"]) .key[data-key="CapsLock"] {
+  background-image: var(--keyboard-theme-tint);
+}
+
+/* ── Keyboard Aesthetics theme picker pill ──────────────────────────────────
+   Labels stay visible on every segment. Only the active segment shows its
+   theme as a solid colour swatch (the --keyboard-theme-swatch-name
+   variables, full strength rather than the translucent in-key tint), using
+   `background` rather than `background-image` so it replaces the white
+   background painted by the generic .segmented-pill-active rule.
+   Mono has no swatch of its own, so its label carries a strikethrough
+   whenever it is not the active segment, giving it the same "not currently
+   selected" cue the colour segments get for free from their plain
+   background. */
+.kb-theme-row {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 10px;
+  width: 100%;
+}
+.kb-theme-row .diff-advanced-label {
+  width: auto;
+  white-space: nowrap;
+}
+#kbThemePill {
+  flex: 1;
+}
+#kbThemePill .kb-theme-btn {
+  flex: 1;
+}
+#kbThemePill .kb-theme-btn.segmented-pill-active[data-theme="mono"]     { background: white;                                  color: #374151; box-shadow: none; }
+#kbThemePill .kb-theme-btn.segmented-pill-active[data-theme="dieter"]    { background: var(--keyboard-theme-swatch-dieter);    color: white; }
+#kbThemePill .kb-theme-btn.segmented-pill-active[data-theme="aqua"]      { background: var(--keyboard-theme-swatch-aqua);      color: white; }
+#kbThemePill .kb-theme-btn.segmented-pill-active[data-theme="poprocks"] { background: var(--keyboard-theme-swatch-poprocks); color: white; }
+#kbThemePill .kb-theme-btn[data-theme="mono"]:not(.segmented-pill-active) .diff-btn-text {
+  text-decoration: line-through;
+}
+/* ── Theme-aware Start / confirm button ──────────────────────────────────────
+   When a non-mono keyboard theme is active, the main action button adopts
+   the theme gradient. Scoped via :has() on body to avoid JS involvement.
+   These per-theme rules must stay here; the tint variables are only defined
+   on #keyboardPanel and cannot be read from body-level selectors.           */
+body:has(#keyboardPanel[data-keyboard-theme="dieter"]) #mainBtn {
+  background: var(--keyboard-theme-tint-dieter);
+  color: white;
+}
+body:has(#keyboardPanel[data-keyboard-theme="aqua"]) #mainBtn {
+  background: var(--keyboard-theme-tint-aqua);
+  color: white;
+}
+body:has(#keyboardPanel[data-keyboard-theme="poprocks"]) #mainBtn {
+  background: var(--keyboard-theme-tint-poprocks);
+  color: white;
+}
+body:has(#keyboardPanel[data-keyboard-theme="dieter"]) #mainBtn:hover,
+body:has(#keyboardPanel[data-keyboard-theme="aqua"]) #mainBtn:hover,
+body:has(#keyboardPanel[data-keyboard-theme="poprocks"]) #mainBtn:hover {
+  filter: brightness(0.92);
+}
+
+/* ══════════════════════════════════════
+   BREAKPOINTS (in process - I am changing numbers to Var because numbers get out of sync)
     1.	1600px wide AND 870px tall – scales the whole UI to 120% zoom
 	2.	2000px wide AND 1060px tall – scales to 145% zoom
 	3.	2600px wide AND 1270px tall – scales to 175% zoom
@@ -1901,10 +1996,22 @@ li.conflict-dismissed .conflict-desc {
 .app-option-wrench {
   border-top: 1px solid rgba(0,0,0,0.06);
   opacity: 0.3;
-  height: 28px;
+  height: 20px;
   align-items: center;
   padding-top: 0;
   padding-left: 0;
+  overflow: hidden;
+}
+.wrench-full-row-icon {
+  width: 66%;
+  height: 66%;
+  display: block;
+  padding-left: 0px;
+}
+.wrench-full-row-icon--app {
+  width: 58%;
+  height: 58%;
+  margin-left: -18px;
 }
 .app-option-wrench:hover { opacity: 1; }
 #appPill.open {
@@ -1977,6 +2084,7 @@ li.conflict-dismissed .conflict-desc {
   align-items: center;
   justify-content: center;
 }
+
 /* Right label column: left-aligned, fills remaining width */
 .app-option-label-col {
   flex: 1;
@@ -3116,19 +3224,47 @@ body.returning-screen #diffIconWrap .icon-tip { display: none; }
   pointer-events: none;
 }
 #panelEndGameHistoryRecord .sp-col-left::after {
-  content: '';
-  position: absolute;
-  top: 0;
-  right: 0;
-  width: 1px;
-  background: #e5e7eb;
-  bottom: 0;
-  pointer-events: none;
+  content: '';
+  position: absolute;
+  top: 0;
+  right: 0;
+  width: 1px;
+  background: #e5e7eb;
+  bottom: 0;
+  pointer-events: none;
 }
 
 #panelEndGameHistoryRecord .sp-report-bottom {
-  margin-top: 2px;
-  margin-bottom: 8px;
+  margin-top: 2px;
+  margin-bottom: 8px;
+}
+
+/* Keyboard Settings panel: the generic centred divider runs the full panel
+   height, which would cut through the full-width aesthetics row below the
+   two columns. Suppressed and redrawn scoped to the columns only, matching
+   the pattern already used above for the Report Card and History panels. */
+#panelKeyboard.sp-active::after {
+  display: none;
+}
+#panelKeyboard.sp-active {
+  grid-template-columns: 1fr 1fr;
+  grid-template-rows: auto auto;
+  grid-template-areas:
+    "left right"
+    "aesthetics aesthetics";
+}
+#panelKeyboard .sp-col-left  { grid-area: left;  position: relative; }
+#panelKeyboard .sp-col-right { grid-area: right; }
+#panelKeyboard .sp-col-full  { grid-area: aesthetics; }
+#panelKeyboard .sp-col-left::after {
+  content: '';
+  position: absolute;
+  top: 16px;
+  right: 0;
+  bottom: 0;
+  width: 1px;
+  background: #e5e7eb;
+  pointer-events: none;
 }
 
 /* "Report Card" label — small grey, sits left of "Strengths" in same flex row */
@@ -4154,3 +4290,291 @@ body.phone-layout-active {
     padding-top: 40px;
   }
 }
+
+/* ── Wrench icon colour ─────────────────────────────────────────────────── */
+.app-option-wrench svg { color: #9ca3af; }
+.app-option-wrench:hover svg { color: #374151; }
+.app-option-wrench-bottom-row .app-option-wrench svg { color: #6b7280; }
+
+/* ── Wrench picker label states ─────────────────────────────────────────── */
+.wrench-label-active  { color: #374151; }
+.wrench-label-standby { color: #d1d5db; }
+
+/* ── Customise panel label states ───────────────────────────────────────── */
+.customise-label-available { color: #374151; }
+.customise-label-inpill    { color: #d1d5db; }
+.customise-label-beta      { color: #9ca3af; }
+
+/* ══════════════════════════════════════
+   DARK MODE
+   Global invert+hue-rotate on <body>
+   (not <html>, so position:fixed elements
+   remain unaffected by the filter stacking
+   context). Targeted overrides below
+   correct anything the filter gets wrong.
+══════════════════════════════════════ */
+html[data-theme="dark"] {
+  filter: invert(1) hue-rotate(180deg) brightness(0.92) contrast(1.08);
+  background: #e3dfe7; /* pre-filter value; inverts to approx #1c2028 dark blue-grey */
+}
+
+html[data-theme="dark"] body {
+  background: transparent;
+}
+
+/* Re-invert elements that should not be colour-shifted.
+   Currently empty — add targeted corrections here as needed.
+   Example pattern:
+   [data-theme="dark"] .scoreDisc.medal-gold .timer-time { color: #3b1a00; }
+*/
+
+/* Dark mode toggle knob — mirrors the OS toggle animation */
+.dm-toggle-row {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  margin-bottom: 18px;
+}
+.dm-toggle-label {
+  font-family: 'Lato', system-ui, sans-serif;
+  font-size: 12px;
+  color: #9ca3af;
+  user-select: none;
+  line-height: 1;
+  cursor: pointer;
+  background: none;
+  border: none;
+  padding: 0;
+  transition: color 0.18s ease;
+}
+.dm-toggle-label-active {
+  color: #374151;
+}
+.dm-mode-icon {
+  color: #9ca3af;
+  transition: color 0.18s ease;
+  flex-shrink: 0;
+}
+.dm-mode-icon-active {
+  color: #374151;
+}
+#dmKnobEl {
+  transition: transform 0.18s ease, stroke 0.18s ease;
+}
+#dmTrackRect {
+  transition: stroke 0.18s ease;
+}
+
+/* ── Global dark-mode grey correction ──────────────────────────────────────
+   filter: invert(1) hue-rotate(180deg) brightness(0.92) contrast(1.08) on <html>
+   maps light-mode greys to near-invisible post-filter values. Each override
+   supplies a pre-inversion CSS value that reads correctly after filtering.
+   Light-mode colours are NOT touched — all rules are scoped to [data-theme="dark"].
+
+   Mapping  →  pre-inversion CSS value  →  visual result after filter
+   #9ca3af  →  #585858                  →  ~155 (readable mid-grey)
+   #6b7280  →  #494949                  →  ~170 (clear secondary)
+   #374151  →  #2b2b2b                  →  ~200 (strong / primary)
+   #d1d5db  →  #808080                  →  ~115 (soft border/divider)
+──────────────────────────────────────────────────────────────────────────── */
+
+/* Toggle row */
+[data-theme="dark"] .dm-toggle-label                    { color: #585858; }
+[data-theme="dark"] .dm-toggle-label-active             { color: #2b2b2b; }
+[data-theme="dark"] .dm-mode-icon                       { color: #585858; }
+[data-theme="dark"] .dm-mode-icon-active                { color: #2b2b2b; }
+
+/* ── #9ca3af → #585858 ── dim labels, icons, subtle strokes ── */
+[data-theme="dark"] #credit                             { color: #585858; }
+[data-theme="dark"] #osToggleWrap .os-label             { color: #585858; }
+[data-theme="dark"] #appSelectorLabel                   { color: #585858; }
+[data-theme="dark"] #appPill                            { border-color: #585858; }
+[data-theme="dark"] .app-option                         { color: #585858; }
+[data-theme="dark"] .app-caret-svg                      { color: #585858; }
+[data-theme="dark"] .more-info-icon                     { color: #585858; }
+[data-theme="dark"] .segmented-pill-section             { color: #585858; }
+[data-theme="dark"] .segmented-pill-section svg         { stroke: #585858; }
+[data-theme="dark"] .diff-subtitle                      { color: #585858; }
+[data-theme="dark"] .diff-advanced-footer               { color: #585858; }
+[data-theme="dark"] .diff-advanced-label                { color: #585858; }
+[data-theme="dark"] #kbIcon                             { color: #585858; }
+[data-theme="dark"] #browserIcon                        { color: #585858; }
+[data-theme="dark"] .diff-btn                           { color: #585858; }
+[data-theme="dark"] #stickyRadio.touch-owns-sticky      { color: #585858; }
+[data-theme="dark"] .modal-toggle-row.no-keyboard .modal-toggle-label { color: #585858; }
+[data-theme="dark"] .kb-variant-key                     { border-bottom-color: #585858; }
+[data-theme="dark"] #confirmBracket                     { fill: #585858; }
+[data-theme="dark"] .sp-report-section-title.sp-title-empty { text-decoration-color: #585858; }
+
+/* ── #6b7280 → #494949 ── secondary / mid labels ── */
+[data-theme="dark"] #statLeft,
+[data-theme="dark"] #statRight                          { color: #494949; }
+[data-theme="dark"] .modal-inline-val                   { color: #494949; }
+[data-theme="dark"] .kb-variant-label                   { color: #494949; }
+[data-theme="dark"] .sp-hint                            { color: #494949; }
+[data-theme="dark"] #welcomeTagline                     { color: #494949; }
+[data-theme="dark"] .sp-conflict-list                   { color: #494949; }
+[data-theme="dark"] #kbIcon:hover                       { color: #494949; }
+[data-theme="dark"] #browserIcon:hover                  { color: #494949; }
+[data-theme="dark"] .conflict-desc                      { color: #494949; }
+[data-theme="dark"] .app-option.selected                { color: #494949; }
+[data-theme="dark"] .more-info-trigger:hover .more-info-icon { color: #494949; }
+[data-theme="dark"] .more-info-body                     { color: #494949; }
+[data-theme="dark"] .sp-report-list li                  { color: #494949; }
+[data-theme="dark"] .sp-report-question-label           { color: #494949; }
+[data-theme="dark"] .sp-report-advice a:hover           { color: #494949; }
+[data-theme="dark"] .sp-endgame-list li                 { color: #494949; }
+
+/* ── #374151 → #2b2b2b ── primary labels / active states ── */
+[data-theme="dark"] .modal-left-label                   { color: #2b2b2b; }
+[data-theme="dark"] .modal-right-label                  { color: #2b2b2b; }
+[data-theme="dark"] .modal-inline-label                 { color: #2b2b2b; }
+[data-theme="dark"] .kb-variant-option.selected         { border-color: #2b2b2b; }
+[data-theme="dark"] .kb-variant-key                     { color: #2b2b2b; }
+[data-theme="dark"] .modal-toggle-label                 { color: #2b2b2b; }
+[data-theme="dark"] .modal-section-title                { color: #2b2b2b; }
+[data-theme="dark"] #stickyRadio.on                     { color: #2b2b2b; }
+[data-theme="dark"] #settingsPanelInner                 { color: #2b2b2b; }
+[data-theme="dark"] .sp-title                           { color: #2b2b2b; }
+[data-theme="dark"] .sp-body                            { color: #2b2b2b; }
+[data-theme="dark"] .app-option:hover                   { color: #2b2b2b; }
+[data-theme="dark"] #modalKbSizeSection p               { color: #2b2b2b; }
+[data-theme="dark"] .kb-size-word-label                 { color: #2b2b2b; }
+[data-theme="dark"] .segmented-pill-section.segmented-pill-active       { color: #2b2b2b; }
+[data-theme="dark"] .segmented-pill-section.segmented-pill-active svg   { stroke: #2b2b2b; }
+[data-theme="dark"] .sp-nudge-text                      { color: #2b2b2b; }
+[data-theme="dark"] .sp-seg-pill .diff-btn.diff-btn-active              { color: #2b2b2b; }
+[data-theme="dark"] #brIconWrap.sp-icon-active #browserIcon             { color: #2b2b2b; }
+[data-theme="dark"] #diffIconWrap.sp-icon-active #diffIcon              { color: #2b2b2b; }
+[data-theme="dark"] .phone-icon-btn.sp-icon-active .phone-icon-label    { color: #2b2b2b; }
+[data-theme="dark"] .phone-icon-btn.sp-icon-active svg                  { color: #2b2b2b; }
+
+/* ── #d1d5db → #808080 ── borders and dividers ── */
+[data-theme="dark"] .kb-variant-option:hover            { border-color: #808080; }
+[data-theme="dark"] #stickyRadio                        { color: #808080; }
+[data-theme="dark"] .diff-btn                           { border-color: #808080; }
+[data-theme="dark"] .sp-key-chip                        { border-color: #808080; }
+[data-theme="dark"] .more-info-popup                    { border-color: #808080; }
+[data-theme="dark"] .segmented-pill                     { border-color: #808080; }
+[data-theme="dark"] .segmented-pill-section + .segmented-pill-section   { border-left-color: #808080; }
+[data-theme="dark"] .segmented-pill-inactive            { color: #808080; }
+[data-theme="dark"] .segmented-pill-inactive svg        { stroke: #808080; }
+[data-theme="dark"] .sp-clear-label-inactive            { color: #808080 !important; }
+[data-theme="dark"] .diff-slider-knob                   { border-color: #808080; }
+[data-theme="dark"] .sp-seg-pill                        { border-color: #808080; }
+[data-theme="dark"] .sp-seg-pill .diff-btn + .diff-btn  { border-left-color: #808080; }
+[data-theme="dark"] .sp-seg-pill .diff-btn.diff-btn-inactive            { color: #808080; }
+[data-theme="dark"] .sp-endgame-header-left             { border-color: #808080; }
+[data-theme="dark"] .sp-report-strength .sp-report-chip { border-color: #808080; }
+[data-theme="dark"] .sp-report-weakness .sp-report-chip { border-color: #808080; }
+[data-theme="dark"] #phoneToolbarIcons                  { border-color: #808080; }
+[data-theme="dark"] .sp-seg-pill .diff-btn              { border-color: #808080; }
+
+/* ── Dark mode: wrench icon ─────────────────────────────────────────────── */
+[data-theme="dark"] .app-option-wrench svg              { color: #585858; }
+[data-theme="dark"] .app-option-wrench:hover svg        { color: #2b2b2b; }
+[data-theme="dark"] .app-option-wrench-bottom-row .app-option-wrench svg { color: #494949; }
+
+/* ── Dark mode: wrench picker label states ──────────────────────────────── */
+/* active (in short list) → readable primary; standby → dim but visible */
+[data-theme="dark"] .wrench-label-active                { color: #2b2b2b; }
+[data-theme="dark"] .wrench-label-standby               { color: #585858; }
+
+/* ── Dark mode: customise panel label states ────────────────────────────── */
+[data-theme="dark"] .customise-label-available          { color: #2b2b2b; }
+[data-theme="dark"] .customise-label-inpill             { color: #585858; }
+[data-theme="dark"] .customise-label-beta               { color: #494949; }
+
+/* ── Dark mode: compact keyboard row (touch-disabled state) ─────────────── */
+/* opacity:0.38 on .modal-kbsize-row.disabled looks too dark in dark mode    */
+[data-theme="dark"] .modal-kbsize-row.disabled          { opacity: 0.55; }
+
+/* ── Dark mode: kb-variant-key background ──────────────────────────────── */
+/* key chips use bg #e5e7eb which inverts dark — lift it slightly            */
+[data-theme="dark"] .kb-variant-key                     { background: #c8cdd5; }
+
+/* ── Dark mode: progress dots and life hearts ───────────────────────────────
+   The default #b3bdc9 grey maps too dark after inversion. This pre-filter
+   value (~#939aa3) reads as the intended mid-grey after the inversion pass.
+   ─────────────────────────────────────────────────────────────────────────── */
+[data-theme="dark"] .prog-dot circle                    { stroke: #939aa3; }
+[data-theme="dark"] .prog-dot .dot-fill                 { fill: #939aa3; }
+[data-theme="dark"] .life-heart svg path                { fill: #939aa3; }
+
+/* ── Dark mode: score disc and medals ───────────────────────────────────────
+   Re-applying the same filter as the html element cancels the inversion,
+   keeping the disc and medal rim gradients identical between light and dark
+   modes. The ::before face disc inherits this filter from its parent, so no
+   separate rule is needed for it — adding one would double-invert and break
+   the face colours.
+   ─────────────────────────────────────────────────────────────────────────── */
+[data-theme="dark"] .scoreDisc,
+[data-theme="dark"] .scoreDisc.medal-gold,
+[data-theme="dark"] .scoreDisc.medal-silver,
+[data-theme="dark"] .scoreDisc.medal-bronze,
+[data-theme="dark"] .scoreDisc.medal-lead {
+  filter: invert(1) hue-rotate(180deg) brightness(1.087) contrast(0.926);
+}
+
+/* Segmented pill button inset shadows are semi-transparent and read correctly
+   in both themes without any filter override. */
+
+/* Graphical keyboard: shadow, key lighting outer glow, and front wall */
+[data-theme="dark"] #kb-shadow {
+  filter: invert(1) hue-rotate(180deg) brightness(1.087) contrast(0.926);
+}
+[data-theme="dark"] #kb-wall-bottom {
+  filter: invert(1) hue-rotate(180deg) brightness(1.087) contrast(0.926);
+}
+[data-theme="dark"] .key.lit-green-up,
+[data-theme="dark"] .key.lit-green-down,
+[data-theme="dark"] .key.lit-orange-up,
+[data-theme="dark"] .key.lit-orange-down {
+  filter: invert(1) hue-rotate(180deg) brightness(1.087) contrast(0.926);
+}
+/* ── All three colour themes: dark mode correction ───────────────────────────
+   The page-wide inversion on html[data-theme="dark"] shifts saturated gradients
+   to incorrect hues. Re-inverting these three coloured surfaces cancels that
+   effect and restores the intended appearance. opacity:0.9 makes them read
+   slightly darker in dark mode as intended.
+   Covered surfaces: tinted modifier keys, active pill segment, Start button.
+   Key labels are NOT re-inverted here — the page inversion already handles
+   them correctly once we stop double-inverting the key backgrounds.          */
+
+[data-theme="dark"] #keyboardPanel[data-keyboard-theme="dieter"] .key[data-key^="Control"],
+[data-theme="dark"] #keyboardPanel[data-keyboard-theme="dieter"] .key[data-key^="Fn"],
+[data-theme="dark"] #keyboardPanel[data-keyboard-theme="dieter"] .key[data-key^="Alt"],
+[data-theme="dark"] #keyboardPanel[data-keyboard-theme="dieter"] .key[data-key^="Meta"],
+[data-theme="dark"] #keyboardPanel[data-keyboard-theme="dieter"] .key[data-key^="Shift"],
+[data-theme="dark"] #keyboardPanel[data-keyboard-theme="dieter"] .key[data-key="CapsLock"],
+[data-theme="dark"] #keyboardPanel[data-keyboard-theme="aqua"] .key[data-key^="Control"],
+[data-theme="dark"] #keyboardPanel[data-keyboard-theme="aqua"] .key[data-key^="Fn"],
+[data-theme="dark"] #keyboardPanel[data-keyboard-theme="aqua"] .key[data-key^="Alt"],
+[data-theme="dark"] #keyboardPanel[data-keyboard-theme="aqua"] .key[data-key^="Meta"],
+[data-theme="dark"] #keyboardPanel[data-keyboard-theme="aqua"] .key[data-key^="Shift"],
+[data-theme="dark"] #keyboardPanel[data-keyboard-theme="aqua"] .key[data-key="CapsLock"],
+[data-theme="dark"] #keyboardPanel[data-keyboard-theme="poprocks"] .key[data-key^="Control"],
+[data-theme="dark"] #keyboardPanel[data-keyboard-theme="poprocks"] .key[data-key^="Fn"],
+[data-theme="dark"] #keyboardPanel[data-keyboard-theme="poprocks"] .key[data-key^="Alt"],
+[data-theme="dark"] #keyboardPanel[data-keyboard-theme="poprocks"] .key[data-key^="Meta"],
+[data-theme="dark"] #keyboardPanel[data-keyboard-theme="poprocks"] .key[data-key^="Shift"],
+[data-theme="dark"] #keyboardPanel[data-keyboard-theme="poprocks"] .key[data-key="CapsLock"] {
+  filter: invert(1) hue-rotate(180deg) brightness(1.087) contrast(0.926);
+  opacity: 0.95;
+}
+
+[data-theme="dark"] #kbThemePill .kb-theme-btn.segmented-pill-active[data-theme="dieter"],
+[data-theme="dark"] #kbThemePill .kb-theme-btn.segmented-pill-active[data-theme="aqua"],
+[data-theme="dark"] #kbThemePill .kb-theme-btn.segmented-pill-active[data-theme="poprocks"] {
+  filter: invert(1) hue-rotate(180deg) brightness(1.087) contrast(0.926);
+  opacity: 0.95;
+}
+
+[data-theme="dark"] body:has(#keyboardPanel[data-keyboard-theme="dieter"]) #mainBtn,
+[data-theme="dark"] body:has(#keyboardPanel[data-keyboard-theme="aqua"]) #mainBtn,
+[data-theme="dark"] body:has(#keyboardPanel[data-keyboard-theme="poprocks"]) #mainBtn {
+  filter: invert(1) hue-rotate(180deg) brightness(1.087) contrast(0.926);
+  opacity: 0.95;
+}
+

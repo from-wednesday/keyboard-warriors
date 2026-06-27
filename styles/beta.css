@@ -1708,15 +1708,17 @@ To add a new theme: add one --keyboard-theme-tint-name variable below,
   --keyboard-theme-swatch-aqua:      linear-gradient(169deg, #00F0FF, #29FFA6);
   --keyboard-theme-swatch-poprocks:  linear-gradient(169deg, #FE9090, #FF61D2);
 
-  /* Pale procedural noise tile for the Poprocks tint. White output with
-     varying transparency, so it reads as soft grain rather than grey static. */
-  --keyboard-theme-noise-poprocks: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='64' height='64'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix type='matrix' values='0 0 0 0 1 0 0 0 0 1 0 0 0 0 1 0 0 0 0.5 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  /* Pale procedural noise tile for the Poprocks tint. Low frequency and a
+     single octave give large, chunky blobs rather than fine static.
+     White output with varying transparency, so it reads as soft grain
+     rather than grey static. */
+  --keyboard-theme-noise-poprocks: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='64' height='64'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.12' numOctaves='1' stitchTiles='stitch'/%3E%3CfeColorMatrix type='matrix' values='0 0 0 0 1 0 0 0 0 1 0 0 0 0 1 0 0 0 0.7 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
 
-  /* Glossy top highlight for the Aqua tint, offset slightly from the top
-     edge then fading out quickly, in the style of classic glossy Mac UI. */
-  --keyboard-theme-highlight-aqua: linear-gradient(to bottom, rgba(255,255,255,0) 0%, rgba(255,255,255,0.65) 12%, rgba(255,255,255,0) 42%);
+  /* Glossy top highlight for the Aqua tint: a narrow ellipse inset from
+     the key's edges, so it never approaches the corner rounding, with a
+     short, fairly sharp fade rather than a soft full-width wash. */
+  --keyboard-theme-highlight-aqua: radial-gradient(ellipse 38% 14% at 50% 22%, rgba(255,255,255,0.8) 0%, rgba(255,255,255,0.8) 30%, rgba(255,255,255,0) 78%);
 }
-
 
 #keyboardPanel[data-keyboard-theme="dieter"]    { --keyboard-theme-tint: var(--keyboard-theme-tint-dieter); }
 #keyboardPanel[data-keyboard-theme="aqua"]      { --keyboard-theme-tint: var(--keyboard-theme-tint-aqua); }
@@ -4549,17 +4551,15 @@ html[data-theme="dark"] body {
 [data-theme="dark"] #kb-wall-bottom {
   filter: invert(1) hue-rotate(180deg) brightness(1.087) contrast(0.926);
 }
-/* Aqua keyboard theme: drifts towards a dirty, off-colour tint after the
-   page-wide inversion, more noticeably than Dieter or Poprocks, and the
-   modifier key labels pick up the same drift at their anti-aliased edges.
-   Pinned to its true light-mode appearance, the same way the medals above
-   are, rather than choosing a separate dark mode colour. */
-[data-theme="dark"] #keyboardPanel[data-keyboard-theme="aqua"] .key[data-key^="Control"],
-[data-theme="dark"] #keyboardPanel[data-keyboard-theme="aqua"] .key[data-key^="Alt"],
-[data-theme="dark"] #keyboardPanel[data-keyboard-theme="aqua"] .key[data-key^="Fn"],
-[data-theme="dark"] #keyboardPanel[data-keyboard-theme="aqua"] .key[data-key^="Meta"],
-[data-theme="dark"] #keyboardPanel[data-keyboard-theme="aqua"] .key[data-key^="Shift"],
-[data-theme="dark"] #keyboardPanel[data-keyboard-theme="aqua"] .key[data-key="CapsLock"] {
+/* Aqua & Poprocks keyboard themes darkmode interventions*/
+
+[data-theme="dark"] #keyboardPanel[data-keyboard-theme="poprocks"] .key[data-key^="Control"],
+[data-theme="dark"] #keyboardPanel[data-keyboard-theme="poprocks"] .key[data-key^="Alt"],
+[data-theme="dark"] #keyboardPanel[data-keyboard-theme="poprocks"] .key[data-key^="Fn"],
+[data-theme="dark"] #keyboardPanel[data-keyboard-theme="poprocks"] .key[data-key^="Meta"],
+[data-theme="dark"] #keyboardPanel[data-keyboard-theme="poprocks"] .key[data-key^="Shift"],
+[data-theme="dark"] #keyboardPanel[data-keyboard-theme="poprocks"] .key[data-key="CapsLock"] {
   filter: invert(1) hue-rotate(180deg) brightness(1.087) contrast(0.926);
 }
+
 

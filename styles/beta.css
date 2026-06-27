@@ -4518,15 +4518,20 @@ html[data-theme="dark"] body {
 [data-theme="dark"] #kb-wall-bottom {
   filter: invert(1) hue-rotate(180deg) brightness(1.087) contrast(0.926);
 }
-/* Aqua & Poprocks keyboard themes darkmode interventions*/
-
-[data-theme="dark"] #keyboardPanel[data-keyboard-theme="poprocks"] .key[data-key^="Control"],
-[data-theme="dark"] #keyboardPanel[data-keyboard-theme="poprocks"] .key[data-key^="Alt"],
-[data-theme="dark"] #keyboardPanel[data-keyboard-theme="poprocks"] .key[data-key^="Fn"],
-[data-theme="dark"] #keyboardPanel[data-keyboard-theme="poprocks"] .key[data-key^="Meta"],
-[data-theme="dark"] #keyboardPanel[data-keyboard-theme="poprocks"] .key[data-key^="Shift"],
-[data-theme="dark"] #keyboardPanel[data-keyboard-theme="poprocks"] .key[data-key="CapsLock"] {
+[data-theme="dark"] .key.lit-green-up,
+[data-theme="dark"] .key.lit-green-down,
+[data-theme="dark"] .key.lit-orange-up,
+[data-theme="dark"] .key.lit-orange-down {
   filter: invert(1) hue-rotate(180deg) brightness(1.087) contrast(0.926);
 }
-
-
+/* Aqua keyboard theme: drifts towards a dirty, off-colour tint after the
+   page-wide inversion, more noticeably than Dieter or Poprocks, and the
+   modifier key labels pick up the same drift at their anti-aliased edges.
+   Pinned to its true light-mode appearance, the same way the medals above
+   are, rather than choosing a separate dark mode colour. */
+[data-theme="dark"] #keyboardPanel[data-keyboard-theme="aqua"] .key[data-key^="Control"],
+[data-theme="dark"] #keyboardPanel[data-keyboard-theme="aqua"] .key[data-key^="Alt"],
+[data-theme="dark"] #keyboardPanel[data-keyboard-theme="aqua"] .key[data-key^="FN"],
+[data-theme="dark"] #keyboardPanel[data-keyboard-theme="aqua"] .key[data-key^="Meta"],
+[data-theme="dark"] #keyboardPanel[data-keyboard-theme="aqua"] .key[data-key^="Shift"],
+[data-theme="dark"] #keyboardPanel[data-keyboard-theme="aqua"] .key[data-key="CapsLock"] {

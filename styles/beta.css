@@ -1707,7 +1707,16 @@ To add a new theme: add one --keyboard-theme-tint-name variable below,
   --keyboard-theme-swatch-dieter:    linear-gradient(169deg, #FFBD6F, #FD8451);
   --keyboard-theme-swatch-aqua:      linear-gradient(169deg, #00F0FF, #29FFA6);
   --keyboard-theme-swatch-poprocks:  linear-gradient(169deg, #FE9090, #FF61D2);
+
+  /* Pale procedural noise tile for the Poprocks tint. White output with
+     varying transparency, so it reads as soft grain rather than grey static. */
+  --keyboard-theme-noise-poprocks: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='64' height='64'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix type='matrix' values='0 0 0 0 1 0 0 0 0 1 0 0 0 0 1 0 0 0 0.5 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+
+  /* Glossy top highlight for the Aqua tint, offset slightly from the top
+     edge then fading out quickly, in the style of classic glossy Mac UI. */
+  --keyboard-theme-highlight-aqua: linear-gradient(to bottom, rgba(255,255,255,0) 0%, rgba(255,255,255,0.65) 12%, rgba(255,255,255,0) 42%);
 }
+
 
 #keyboardPanel[data-keyboard-theme="dieter"]    { --keyboard-theme-tint: var(--keyboard-theme-tint-dieter); }
 #keyboardPanel[data-keyboard-theme="aqua"]      { --keyboard-theme-tint: var(--keyboard-theme-tint-aqua); }
@@ -1720,6 +1729,28 @@ To add a new theme: add one --keyboard-theme-tint-name variable below,
 #keyboardPanel:not([data-keyboard-theme="mono"]) .key[data-key^="Shift"],
 #keyboardPanel:not([data-keyboard-theme="mono"]) .key[data-key="CapsLock"] {
   background-image: var(--keyboard-theme-tint);
+}
+/* Poprocks: layers a pale noise texture above the colour tint, blended
+   softly so it reads as grain in the surface rather than dust on top. */
+#keyboardPanel[data-keyboard-theme="poprocks"] .key[data-key^="Control"],
+#keyboardPanel[data-keyboard-theme="poprocks"] .key[data-key^="Alt"],
+#keyboardPanel[data-keyboard-theme="poprocks"] .key[data-key^="Fn"],
+#keyboardPanel[data-keyboard-theme="poprocks"] .key[data-key^="Meta"],
+#keyboardPanel[data-keyboard-theme="poprocks"] .key[data-key^="Shift"],
+#keyboardPanel[data-keyboard-theme="poprocks"] .key[data-key="CapsLock"] {
+  background-image: var(--keyboard-theme-noise-poprocks), var(--keyboard-theme-tint);
+  background-blend-mode: soft-light, normal;
+}
+
+/* Aqua: layers a glossy white highlight above the colour tint, clipped
+   automatically to the key's rounded corners. */
+#keyboardPanel[data-keyboard-theme="aqua"] .key[data-key^="Control"],
+#keyboardPanel[data-keyboard-theme="aqua"] .key[data-key^="Alt"],
+#keyboardPanel[data-keyboard-theme="aqua"] .key[data-key^="Fn"],
+#keyboardPanel[data-keyboard-theme="aqua"] .key[data-key^="Meta"],
+#keyboardPanel[data-keyboard-theme="aqua"] .key[data-key^="Shift"],
+#keyboardPanel[data-keyboard-theme="aqua"] .key[data-key="CapsLock"] {
+  background-image: var(--keyboard-theme-highlight-aqua), var(--keyboard-theme-tint);
 }
 
 /* ── Keyboard Aesthetics theme picker pill ──────────────────────────────────
@@ -4525,6 +4556,7 @@ html[data-theme="dark"] body {
    are, rather than choosing a separate dark mode colour. */
 [data-theme="dark"] #keyboardPanel[data-keyboard-theme="aqua"] .key[data-key^="Control"],
 [data-theme="dark"] #keyboardPanel[data-keyboard-theme="aqua"] .key[data-key^="Alt"],
+[data-theme="dark"] #keyboardPanel[data-keyboard-theme="aqua"] .key[data-key^="Fn"],
 [data-theme="dark"] #keyboardPanel[data-keyboard-theme="aqua"] .key[data-key^="Meta"],
 [data-theme="dark"] #keyboardPanel[data-keyboard-theme="aqua"] .key[data-key^="Shift"],
 [data-theme="dark"] #keyboardPanel[data-keyboard-theme="aqua"] .key[data-key="CapsLock"] {

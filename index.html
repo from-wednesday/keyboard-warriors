@@ -9,11 +9,19 @@
 <title>Keyboard Warriors</title>
 <script>
   const DefaultTitle = 'Keyboard Warriors';
-  const VersionLabel   = '0035';
+  const VersionLabel   = '0036';
   const TitlePrefix  = document.title !== DefaultTitle ? document.title.trim() + '_' : '';
   const DBG_DEVICE   = TitlePrefix + VersionLabel;
 </script>
 <link rel="icon" type="image/png" href="/keyboard-warriors/keyboard-warriors-favicon.png">
+<script>
+  (function() {
+    var prefersDark = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
+    if (prefersDark) {
+      document.documentElement.setAttribute('data-theme', 'dark');
+    }
+  })();
+</script>
 <script>
   (function() {
     var link = document.createElement('link');
@@ -186,6 +194,11 @@
       <line x1="16.5" y1="16.5" x2="22" y2="22"/>
     </g>
   </symbol>
+
+  <symbol id="IconWrench" viewBox="0 0 243.14 80.27">
+    <path fill="currentColor" d="M207.63,20.93h-110.19c-3.31.18-7.38-1.95-9.76-4.56-2.6-2.82-4.77-5.42-7.81-7.59C69.68.97,56.23-.98,44.51,4.44c-2.09.96-.2,2.09-.2,2.09l20.99,13.06c.98.61,1.55,1.69,1.52,2.84l-.57,16.9c-.04,1.15-.69,2.19-1.7,2.73l-14.92,7.96c-1.02.54-2.24.5-3.22-.11l-17.59-10.56c-3.93-2.88-3.84-.21-3.84-.21,1.52,12.58,9.54,22.56,21.69,27.55l-.22.22c14.32,6.29,30.58,1.52,40.13-10.41,3.04-3.69,6.94-5.86,11.71-5.86h109.76c8.03,0,13.88-7.38,13.88-14.97s-6.07-14.75-14.32-14.75h.02ZM205.25,40.23h-101.49c-2.6,0-4.12-2.6-4.12-4.56.22-2.17,1.95-4.12,4.77-4.12h100.41c2.82,0,4.56,1.95,4.56,4.12.22,2.17-1.08,4.12-4.12,4.56h-.01Z"/>
+  </symbol>
+
 
   <symbol id="IconStudyNotes" viewBox="0 0 112.5 84.6">
     <path fill="currentColor" d="M110.2,19.8h-3.8c0,0,0,0,0-.1v-2.6c0-.2,0-.4,0-.6h0c-.2-.4-.6-.6-1.1-.5l-5.3.5c0,0,0,0,0-.1v-7.3c0-.3,0-.6-.4-.8-.3-.2-.6-.3-.9-.2l-5.1,1.5c0,0,0,0,0-.1V1.1c0-.4-.2-.7-.5-.9s-.7-.2-1.1,0l-34.6,19.7h-.3c-7-7.6-15.4-13.3-24.9-16.8C28.3,1.7,24.8.8,21.1,0c-.3-.1-.6,0-.8.2-.2.2-.4.5-.4.8v6.9c0,0,0,.1-.1.1-1.8,0-3.7,0-5.5,0s-.8.3-.9.7c0,.1-.1.2-.1.4v6c0,0,0,.1-.1.1-1.9.2-3.8.5-5.6.9,0,0-.2.1-.4.1-.3.2-.5.5-.5.9v2.7c0,0,0,.1,0,.1H2.2c-1.3,0-2.2.9-2.2,2.1v58.3c0,1.2.9,2.1,2.2,2.1h47.5c.6,0,.7.4.7.5.2.9,1,1.6,2.1,1.6h7.7c1,0,1.9-.7,2.1-1.6,0,0,0-.5.6-.5h47.5c1.3,0,2.2-.9,2.2-2.1V22c0-1.2-1.2-2.1-2.3-2.1h0ZM21.9,2.4c0,0,.1,0,.1,0,3,.6,6,1.5,8.8,2.6,9.2,3.4,17.5,9.1,24.5,16.7v57.1c0,0,0,0-.2,0-6.8-6.9-14.7-12.2-23.5-15.5-3.1-1.2-6.4-2.1-9.7-2.8h-.1c0,0,.1-58.1.1-58.1ZM8.8,17.8c1.5-.3,2.8-.5,4.3-.6,0,0,.1,0,.1.1v52c0,.3.1.5.3.7s.4.3.7.3c4.3,0,8.2,0,12,.7,7,1,13.6,3,20.3,6.2,0,0,0,.2,0,.2-8.2-2-16.6-2.9-24.9-2.7h0c-4.2,0-8.5.6-12.7,1.3,0,0-.1,0-.1,0V17.9s0-.1.1-.1h0ZM2.1,80.3V22c0,0,0-.1,0-.1h4.3c0,0,0,0,0,.1v55.3c0,.3,0,.6.4.8.2.2.5.3.8.2,4.5-.9,9.1-1.4,13.8-1.5,5.4-.2,10.6,0,15.8.9,3.8.6,7.7,1.4,11.4,2.5,0,0,0,.2,0,.2H2.1ZM26.6,68.9c-3.6-.5-7.2-.7-11.1-.7s-.1,0-.1,0V10.1c0,0,0-.1.1-.1,1.5,0,2.8,0,4.3.1,0,0,.1,0,.1.1v51c0,.5.4,1,.9,1.1,3.5.7,6.9,1.6,10.2,2.8,6.7,2.5,12.8,6.2,18.4,10.8,0,0,0,.2,0,.2-7.5-3.8-14.8-6.1-22.7-7.3h0ZM58.2,79.4l-.7.4V22s0-.1,0-.1L90.8,2.9c0,0,.2,0,.2,0v25.2h0c0,11.3-7.4,21.2-18.6,24.5h-.2c-.4.2-.7.6-.7,1v1l-7.9,4c-.2,0-.3.4-.2.7,0,.2.3.3.4.3s.2,0,.2,0l7.3-3.7v1c0,2.3-.3,4.6-.9,6.7,0,0,0,0,0,0l-6.6,3.4c-.2,0-.3.4-.2.7,0,.2.3.3.4.3s.2,0,.2,0l5.6-2.8c0,0,.2,0,.2,0-2,5.9-6.2,10.8-11.8,14h0ZM89.2,42.5c-3.2,12-10.4,22.8-20.7,30.4,0,0-.2,0-.2,0,3.2-4.6,5-10,5-15.7v-2.3s0,0,0,0c6.6-2.2,12.1-6.6,15.4-12.1.2-.3.3-.2.3,0h0ZM93,29.2V11.8s0-.1,0-.1l4.4-1.3h0v7.2h0v50.7s0,0,0,0l-32.3,9.4c0,0-.2,0,0-.2,17.4-10.2,28-28.8,28-48.5h0ZM98.9,70.2c.4,0,.7-.5.7-1V18.5c0,0,0-.1,0-.1l4.3-.4c0,0,.1,0,0,.1v58c0,0,0,0,0,0l-36.3,3.1c0,0-.2-.2,0-.2l31.2-8.9h0ZM110.3,80.3c0,0,0,0,0,0h-29c.5,0,1.1,0,1.6,0,2.9-.3,5.8-.5,8.7-.8l7.3-.6,5-.4h1.5c.6,0,1.1-.6,1.1-1.2V22.1c0,0,0-.1,0-.1h3.8c0,0,.1,0,0,.1v58.2h0Z"/>
@@ -466,6 +479,30 @@
         </span>
       </div>
       <div class="sp-col sp-col-right">
+        <div class="dm-toggle-row">
+          <!-- Lightbulb icon -->
+          <svg class="dm-mode-icon" id="dmIconLight" viewBox="0 0 20 20" width="13" height="13" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+            <path stroke="currentColor" stroke-width="1.45" stroke-linecap="round" stroke-linejoin="round"
+              d="M7.5,13 C7.5,13 7,11.5 6,10 C5,8.5 5,7 5,6.5 A5,5 0 0,1 15,6.5 C15,7 15,8.5 14,10 C13,11.5 12.5,13 12.5,13 Z"/>
+            <line x1="7.8" y1="14.5" x2="12.2" y2="14.5" stroke="currentColor" stroke-width="1.45" stroke-linecap="round"/>
+            <line x1="8.5" y1="16.2" x2="11.5" y2="16.2" stroke="currentColor" stroke-width="1.45" stroke-linecap="round"/>
+          </svg>
+          <button class="dm-toggle-label" id="dmLabelLight" onclick="_applyTheme(false)" title="Light mode">light</button>
+          <label class="os-switch" id="dmToggleLabel" title="Toggle dark mode">
+            <input type="checkbox" id="dmToggle" onchange="_onDarkModeToggle()">
+            <svg class="os-track" width="36" height="14" viewBox="0 0 36 14" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <rect id="dmTrackRect" x="1" y="1" width="34" height="12" rx="6"
+                    stroke="#9ca3af" stroke-width="1.5" fill="none"/>
+              <circle id="dmKnobEl" cx="7" cy="7" r="4"
+                      stroke="#9ca3af" stroke-width="1.5" fill="white"/>
+            </svg>
+          </label>
+          <button class="dm-toggle-label" id="dmLabelDark" onclick="_applyTheme(true)" title="Dark mode">dark</button>
+          <!-- Crescent moon: from designer SVG -->
+          <svg class="dm-mode-icon" id="dmIconDark" viewBox="0 0 100.74 105.08" width="13" height="13" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+            <path fill="currentColor" d="M84.77,43.69c-2.43-10.4-8.76-19.24-17.83-24.88-4.29-2.67-8.96-4.47-13.89-5.38-.73-.13-2.68-.49-3.03,1.44-.14.79.21,1.58.89,2.01,7.52,4.68,12.77,12.01,14.78,20.64,2.01,8.63.54,17.52-4.14,25.04-7.24,11.65-20.65,17.58-34.14,15.12-4.09-.75-7.97-2.25-11.53-4.46-.21-.13-.44-.22-.68-.26-.64-.12-1.31.09-1.77.58-.64.68-.71,1.71-.17,2.47,3.08,4.32,6.93,7.93,11.43,10.73,4.3,2.68,8.98,4.49,13.91,5.39,16.27,2.98,32.43-4.18,41.17-18.23,5.64-9.07,7.41-19.79,4.99-30.2h0Z"/>
+          </svg>
+        </div>
         <div class="more-info-wrap" style="margin-bottom:4px;">
           <p class="sp-body sp-clear-label" id="spClearLabel" onclick="toggleMoreInfo('ppClearRecordsMoreInfo', event)" style="margin:0;cursor:pointer;"><strong>Clear high score record?</strong></p>
           <span class="more-info-trigger" id="ppClearRecordsMoreInfoTrigger" onclick="toggleMoreInfo('ppClearRecordsMoreInfo', event)">
@@ -498,7 +535,7 @@
             <span class="diff-btn-text"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="14" height="14"><rect x="2" y="4" width="20" height="16" rx="2"/><polyline points="2,4 12,13 22,4"/></svg></span>
           </button>
         </div>
-      </div>
+        </div>
        <!-- ── Blur Pause Diagnostic ─────────────────────── -->
     <div id="blurPauseDiagnostic" style="display:none;width:100%;grid-column:1/-1;">
       <!-- Two-column panel: fixed min-height so the pill row below never shifts position -->
@@ -886,7 +923,7 @@
           </div>
         </div>
 
-        <div class="modal-section-gap"></div>
+     <div class="modal-section-gap" style="margin-top:8px;"></div>
         <div id="modalKbSizeSection">
           <div class="more-info-wrap">
             <p class="sp-title" onclick="toggleMoreInfo('kbSizeMoreInfo', event)" style="font-size:12px;">Keyboard Size</p>
@@ -929,8 +966,8 @@
           </div>
         </div><!-- /#modalKbSizeSection -->
 
-     <div class="modal-section-gap" style="margin-top:8px;"></div>
-      <p class="sp-title" onclick="toggleMoreInfo('kbSizeMoreInfo', event)" style="font-size:12px;">Non-English Keyboard</p>
+     <div class="modal-section-gap" style="margin-top:12px;"></div>
+      <p class="sp-title" style="font-size:12px;">Non-English Keyboard</p>
         <div class="modal-toggle-row" id="killPunctuationRow" style="margin-bottom:0;">
           <label onclick="onKillPunctuationToggle()" style="display:flex;align-items:center;gap:10px;">
            <span class="modal-radio" id="killPunctuationRadio">
@@ -944,6 +981,17 @@
         </div>
 
       </div><!-- /.sp-col-right -->
+
+      <div class="sp-col-full">
+        <p class="sp-title">Keyboard Aesthetics</p>
+        <div class="sp-seg-pill kb-theme-pill" id="kbThemePill">
+          <button class="sp-seg-btn kb-theme-btn  segmented-pill-active" data-theme="mono" onclick="setKeyboardColourTheme('mono')"><span class="diff-btn-text">Monochrome</span></button>
+          <button class="sp-seg-btn kb-theme-btn" data-theme="dieter" onclick="setKeyboardColourTheme('dieter')"><span class="diff-btn-text">Dieter</span></button>
+          <button class="sp-seg-btn kb-theme-btn" data-theme="poprocks" onclick="setKeyboardColourTheme('poprocks')"><span class="diff-btn-text">Poprocks</span></button>
+          <button class="sp-seg-btn kb-theme-btn" data-theme="aqua" onclick="setKeyboardColourTheme('aqua')"><span class="diff-btn-text">Aqua</span></button>
+        </div>
+      </div>
+
     </div><!-- /#panelKeyboard -->
 
   </div><!-- /#settingsPanelInner -->
@@ -976,8 +1024,8 @@
     </svg>
   </div>
 
-  <div id="kbFlipStage">
-  <div id="keyboardPanel">
+  <div id="kbFlipStage">
+  <div id="keyboardPanel" data-keyboard-theme="mono">
     <!-- Sentinel: zero-height element at the very top of the keyboard panel.
          Lives in the same 3D transform space as the keyboard, so its
          getBoundingClientRect().top always reflects the keyboard's true
@@ -1413,17 +1461,18 @@ var KeyboardMemory = false; // true = persist keyboard settings across sessions
 function SaveKeyboardSettings() {
   if (!KeyboardMemory) return;
   try {
-    var Bundle = {
-      KeyboardDisplayMode: keyboardDisplayMode,
-      KbVariantMac:        kbVariantMac,
-      KbVariantPc:         kbVariantPc,
-      TouchEnabled:        touchEnabled,
-      StickyKeysOn:        stickyKeysOn,
-      SoundEnabled:        soundEnabled,
-      HasFullKeyboard:     hasFullKeyboard,
-      KillPunctuationOn:   killPunctuationOn,
-      KbKeyOverrides:      Array.from(kbKeyOverrides),
-    };
+    var Bundle = {
+      KeyboardDisplayMode:  keyboardDisplayMode,
+      KbVariantMac:         kbVariantMac,
+      KbVariantPc:          kbVariantPc,
+      TouchEnabled:         touchEnabled,
+      StickyKeysOn:         stickyKeysOn,
+      SoundEnabled:         soundEnabled,
+      HasFullKeyboard:      hasFullKeyboard,
+      KillPunctuationOn:    killPunctuationOn,
+      KeyboardColourTheme:  keyboardColourTheme,
+      KbKeyOverrides:       Array.from(kbKeyOverrides),
+    };
     localStorage.setItem('kw_keyboard_settings', JSON.stringify(Bundle));
   } catch(StorageError) {}
 }
@@ -1493,13 +1542,17 @@ function LoadKeyboardSettings() {
     if (typeof Bundle.SoundEnabled === 'boolean') setSoundEnabled(Bundle.SoundEnabled);
   }
 
+  // Restore kill punctuation
+  if (typeof Bundle.KillPunctuationOn === 'boolean') {
+    killPunctuationOn = Bundle.KillPunctuationOn;
+    var KillPunctuationRadioElement = document.getElementById('killPunctuationRadio');
+    if (KillPunctuationRadioElement) KillPunctuationRadioElement.classList.toggle('on', killPunctuationOn);
+  }
 
-  // Restore kill punctuation
-  if (typeof Bundle.KillPunctuationOn === 'boolean') {
-    killPunctuationOn = Bundle.KillPunctuationOn;
-    var KillPunctuationRadioElement = document.getElementById('killPunctuationRadio');
-    if (KillPunctuationRadioElement) KillPunctuationRadioElement.classList.toggle('on', killPunctuationOn);
-  }
+  // Restore keyboard colour theme
+  if (Bundle.KeyboardColourTheme && KEYBOARD_COLOUR_THEMES.indexOf(Bundle.KeyboardColourTheme) !== -1) {
+    keyboardColourTheme = Bundle.KeyboardColourTheme;
+  }
 
   // Restore display mode last -- it may override touch/sticky locks if mismatched,
   // but we trust saved state is internally consistent (see architecture notes)
@@ -2025,7 +2078,7 @@ function updateMismatchPill() {
     var _pillHasExternalKeyboard = false;
     try { _pillHasExternalKeyboard = localStorage.getItem('kw_has_keyboard') === '1'; } catch(StorageError) {}
     if (!_pillHasExternalKeyboard && !_pillDismissedThisSession) {
-      osMismatchEl.textContent = 'Best with a real keyboard';
+      osMismatchEl.textContent = 'We recommend training with a real mechanical keyboard.';
       osMismatchEl.classList.add('show');
       _startPillAutoHideTimer();
     } else {
@@ -2164,8 +2217,13 @@ function SyncKeyboardSettingsToUI() {
   // Size toggle (both main and conflicts panel instance)
   updateKbSizeToggle();
 
-  // Lock none/ghost buttons when no physical keyboard is confirmed
-  _syncKeyboardDisplayPillLock();
+  // Lock none/ghost buttons when no physical keyboard is confirmed
+  _syncKeyboardDisplayPillLock();
+
+  // Keyboard colour theme: apply the tint attribute and sync the pill
+  var KeyboardPanelElementForTheme = document.getElementById('keyboardPanel');
+  if (KeyboardPanelElementForTheme) KeyboardPanelElementForTheme.dataset.keyboardTheme = keyboardColourTheme;
+  _syncKeyboardColourThemePill();
 }
 
 function ApplyDefaultKeyboardSettings() {
@@ -2173,10 +2231,11 @@ function ApplyDefaultKeyboardSettings() {
   // Called only when KeyboardMemory is false. Does not write to localStorage.
   var IsTouch = (detectedOs === 'mobile');
 
-  keyboardDisplayMode = 'graphical';
-  kbLeftCount         = 3;
-  kbFnLeft            = true;
-  killPunctuationOn   = false;
+  keyboardDisplayMode = 'graphical';
+  kbLeftCount         = 3;
+  kbFnLeft            = true;
+  killPunctuationOn   = false;
+  keyboardColourTheme = 'mono';
 
   if (IsTouch) {
     touchEnabled     = true;
@@ -4537,13 +4596,8 @@ runData.length = 0; lastCompletedReport = null; CoachAdviceAccepted = false;
   var WrenchRow = document.createElement('div');
   WrenchRow.className = 'app-option app-option-wrench';
 
-  var WrenchIconColumn = document.createElement('span');
-  WrenchIconColumn.className = 'app-option-icon-col';
-  WrenchIconColumn.style.justifyContent = 'flex-start';
-  WrenchIconColumn.innerHTML = '<img src="/keyboard-warriors/images/wrench.svg" height="14" alt="Customise apps" style="display:block;">';
-
-  WrenchRow.appendChild(WrenchIconColumn);
-  WrenchRow.addEventListener('click', function(ClickEvent) {
+  WrenchRow.innerHTML = '<svg class="wrench-full-row-icon wrench-full-row-icon--app" style="color:inherit;"><use href="#IconWrench"/></svg>';
+    WrenchRow.addEventListener('click', function(ClickEvent) {
     ClickEvent.stopPropagation();
     _openWrenchPicker();
   });
@@ -4675,8 +4729,9 @@ function _buildWrenchPickerRows() {
     var LabelSpan = document.createElement('span');
     LabelSpan.className = 'app-option-label-col';
     LabelSpan.style.cssText = 'flex:1;font-size:12px;white-space:nowrap;text-align:left;overflow:hidden;text-overflow:ellipsis;min-width:0;'
-      + (IsInShortList ? 'color:#374151;' : 'color:#d1d5db;text-decoration:line-through;')
+      + (IsInShortList ? '' : 'text-decoration:line-through;')
       + (IsBetaApp ? 'font-style:italic;' : '');
+    LabelSpan.className = IsInShortList ? 'wrench-label-active' : 'wrench-label-standby';
 
     LabelSpan.textContent = AppEntry.label + (IsBetaApp ? ' (beta)' : '');
 
@@ -4700,13 +4755,8 @@ function _buildWrenchPickerRows() {
   WrenchRow.className = 'app-option app-option-wrench';
   WrenchRow.style.borderTop = '1px solid rgba(0,0,0,0.08)';
 
-  var WrenchIconColumn = document.createElement('span');
-  WrenchIconColumn.className = 'app-option-icon-col';
-  WrenchIconColumn.style.justifyContent = 'flex-start';
-  WrenchIconColumn.innerHTML = '<img src="/keyboard-warriors/images/wrench.svg" height="14" alt="Close customiser" style="display:block;">';
-
-  WrenchRow.appendChild(WrenchIconColumn);
-  WrenchRow.addEventListener('click', function(ClickEvent) {
+  WrenchRow.innerHTML = '<svg class="wrench-full-row-icon" style="color:inherit;"><use href="#IconWrench"/></svg>';
+    WrenchRow.addEventListener('click', function(ClickEvent) {
     ClickEvent.stopPropagation();
     _closeWrenchPicker();
   });
@@ -4738,14 +4788,18 @@ function _toggleWrenchPickerApp(AppLabel, RowElement, IconColumnElement, LabelSp
     appsShortList = appsShortList.filter(function(Label) { return Label !== AppLabel; });
     if (appsStandbyList.indexOf(AppLabel) === -1) appsStandbyList.push(AppLabel);
     _AnimateWrenchDot(IconColumnElement, false);
-    LabelSpanElement.style.color = '#d1d5db';
+    LabelSpanElement.style.color = '';
     LabelSpanElement.style.textDecoration = 'line-through';
+    LabelSpanElement.classList.add('wrench-label-standby');
+    LabelSpanElement.classList.remove('wrench-label-active');
   } else {
     appsShortList.push(AppLabel);
     appsStandbyList = appsStandbyList.filter(function(Label) { return Label !== AppLabel; });
     _AnimateWrenchDot(IconColumnElement, true);
-    LabelSpanElement.style.color = '#374151';
+    LabelSpanElement.style.color = '';
     LabelSpanElement.style.textDecoration = '';
+    LabelSpanElement.classList.add('wrench-label-active');
+    LabelSpanElement.classList.remove('wrench-label-standby');
   }
 }
 
@@ -5594,6 +5648,12 @@ function onAudibleToggle() {
 var keyboardDisplayMode = 'graphical'; // 'graphical' | 'ghost' | 'none'
 var killPunctuationOn = false;
 
+// Translucent tint applied to modifier and special function keys only.
+// 'mono' shows no tint. A new theme only needs a new entry here, plus a
+// matching colour variable block in beta.css; no other code changes.
+var keyboardColourTheme = 'mono';
+var KEYBOARD_COLOUR_THEMES = ['mono', 'dieter', 'aqua', 'poprocks'];
+
 // Question Timer and Player Lives — default to infinity (null = no limit).
 // Values map to the five pill segments: 1, 3, 5, 10, null (infinity).
 var questionTimer = null;
@@ -5882,15 +5942,30 @@ function _returnAfterKillPunctuationConfirm(message) {
 }
 
 function setKillPunctuation(on) {
-  killPunctuationOn = on;
-  SaveKeyboardSettings();
-  var radio = document.getElementById('killPunctuationRadio');
-  if (radio) radio.classList.toggle('on', on);
-  // Rebuild pool immediately so the change takes effect mid-session if needed
-  if (gameState !== 'playing' && gameState !== 'paused' && gameState !== 'readyToUnpause') {
-    questionPool = shuffleArray(buildPool());
-  // Rebuild pool at the start of the next round
-  }
+  killPunctuationOn = on;
+  SaveKeyboardSettings();
+  var radio = document.getElementById('killPunctuationRadio');
+  if (radio) radio.classList.toggle('on', on);
+  // Rebuild pool immediately so the change takes effect mid-session if needed
+  if (gameState !== 'playing' && gameState !== 'paused' && gameState !== 'readyToUnpause') {
+    questionPool = shuffleArray(buildPool());
+  // Rebuild pool at the start of the next round
+  }
+}
+
+function setKeyboardColourTheme(theme) {
+  keyboardColourTheme = theme;
+  SaveKeyboardSettings();
+  var KeyboardPanelElement = document.getElementById('keyboardPanel');
+  if (KeyboardPanelElement) KeyboardPanelElement.dataset.keyboardTheme = theme;
+  _syncKeyboardColourThemePill();
+}
+
+function _syncKeyboardColourThemePill() {
+  var ThemeButtons = document.querySelectorAll('#kbThemePill .kb-theme-btn');
+  ThemeButtons.forEach(function(Button) {
+    Button.classList.toggle('segmented-pill-active', Button.dataset.theme === keyboardColourTheme);
+  });
 }
 
 function onStickyKeysToggle() {
@@ -9934,7 +10009,6 @@ function _returningContinue() {
   closeSettings();
   syncDiffNeedle();
   resetToIdle();
-  beginCountdown();
 }
 
 function _returningStartOver() {
@@ -10999,9 +11073,9 @@ function enterDefeat() {
   }
 
   // Lead medal on the scoreDisc
-  scoreDisc.className = 'scoreDisc medal-lead';
-  currentMedal = 'lead';
-
+scoreDisc.className = 'scoreDisc medal-lead';
+  currentMedal = 'lead';
+  _syncMedalFilter();
   if (detectedOs === 'mobile' && _requiresGyroPrompt() && !_GyroPromptShownThisSession) {
     _GyroPromptShownThisSession = true;
     setTimeout(ShowGyroModal, 2500);
@@ -11371,16 +11445,16 @@ lastCompletedReport = finalizeRunData(completedRun, questionPool, 0); EndGamePag
 
   const finalAccuracy
  = calcAccuracy() ?? 0;
-  const wasFirstRecord = bestRecord.time === null;
   const prevTime     = bestRecord.time;
   const prevAccuracy = bestRecord.accuracy;
+  const wasFirstRecord = prevTime === null;
 
   let newBestTime = false;
   let newBestAcc  = false;
-  if (bestRecord.time === null || totalTime < bestRecord.time) {
+  if (prevTime === null || totalTime < prevTime) {
     bestRecord.time = totalTime; newBestTime = true;
   }
-  if (bestRecord.accuracy === null || finalAccuracy > bestRecord.accuracy) {
+  if (prevAccuracy === null || finalAccuracy > prevAccuracy) {
     bestRecord.accuracy = finalAccuracy; newBestAcc = true;
   }
   const justEarnedTrophy = finalAccuracy >= 100 && !hasTrophy;
@@ -11398,7 +11472,7 @@ lastCompletedReport = finalizeRunData(completedRun, questionPool, 0); EndGamePag
   // First run uses accuracy and skip count as a proxy since there is no prior record to compare against.
   let medal;
   if (wasFirstRecord || prevTime === null) {
-    const skipCount = 10 - answersLeft;
+    const skipCount = completedRun.filter(function(e) { return e.endType === 'skip'; }).length;
     if (finalAccuracy >= 90 && skipCount === 0)        medal = 'gold';
     else if (finalAccuracy >= 70 || skipCount <= 2)    medal = 'silver';
     else                                               medal = 'bronze';
@@ -11444,9 +11518,10 @@ lastCompletedReport = finalizeRunData(completedRun, questionPool, 0); EndGamePag
   fillProgressDot(9);
   setTimeout(hideProgressDots, 0);
   setTimeout(hideLivesHearts, 0);
-  scoreDisc.className = 'scoreDisc medal-' + medal;
-  currentMedal = medal;
-
+  scoreDisc.className = 'scoreDisc medal-' + medal;
+  currentMedal = medal;
+  _syncMedalFilter();
+  
   // Gyro prompt: deferred to the first medal so the player has a moment of
   // engagement before being asked. Trophy sequences get a longer delay.
   if (detectedOs === 'mobile' && _requiresGyroPrompt() && !_GyroPromptShownThisSession) {
@@ -13415,15 +13490,26 @@ let rimRafId    = null;
 const RIM_STIFFNESS = 0.10; // spring pull strength
 const RIM_DAMPING   = 0.72; // < 1 allows overshoot; higher = less
 
+function _isDarkMode() {
+  return document.documentElement.getAttribute('data-theme') === 'dark';
+}
+
+function _syncMedalFilter() {
+  if (!currentMedal) return;
+  scoreDisc.style.filter = _isDarkMode()
+    ? 'invert(1) hue-rotate(180deg) brightness(1.087) contrast(0.926)'
+    : '';
+}
+
 function rimTick() {
   if (!currentMedal) { rimRafId = null; return; }
   const force    = (rimTarget - rimCurrent) * RIM_STIFFNESS;
   rimVelocity    = rimVelocity * RIM_DAMPING + force;
   rimCurrent    += rimVelocity;
-  const faceAngle = Math.round((rimTarget / 15) * 5); // ±5° face, keyed off target
+  const faceAngle = Math.round((rimTarget / 15) * 5);
+  _syncMedalFilter();
   scoreDisc.style.background = MEDAL_RIM[currentMedal](rimCurrent);
   updateMedalFaceStyle(faceAngle);
-  // Keep ticking until settled
   if (Math.abs(rimVelocity) > 0.01 || Math.abs(rimCurrent - rimTarget) > 0.01) {
     rimRafId = requestAnimationFrame(rimTick);
   } else {
@@ -14501,7 +14587,7 @@ function handleKeyup(e) {
 // These are interim values. Wednesday will tune each panel individually
 // based on observation across devices.
 var PanelKeyboardPositions = {
-  panelKeyboard:             { desktop: 58, tablet: 58 },
+  panelKeyboard:             { desktop: 64, tablet: 64 },
   panelConflicts:            { desktop: 62, tablet: 76 },
   panelDifficultySettings:   { desktop: 74, tablet: 76 },
   panelPause:                { desktop: 67, tablet: 67 },
@@ -14512,7 +14598,6 @@ var PanelKeyboardPositions = {
   panelLandingSharedApps:    { desktop: 47, tablet: 58 },
   panelLandingWelcome:       { desktop: 47, tablet: 58 },
 };
-
 
 function GetPanelKeyboardAngle(PanelName) {
   var Config = PanelKeyboardPositions[PanelName];
@@ -16238,7 +16323,7 @@ var IsBetaBuild = document.title !== 'Keyboard Warriors';
       DotColumn.appendChild(RadioDot);
 
       var LabelColumn = document.createElement('span');
-      LabelColumn.style.color          = InPill ? '#d1d5db' : (IsBetaApp ? '#9ca3af' : '#374151');
+      LabelColumn.className = InPill ? 'customise-label-inpill' : (IsBetaApp ? 'customise-label-beta' : 'customise-label-available');
       LabelColumn.style.fontStyle      = (IsBetaApp && !InPill) ? 'italic' : '';
       LabelColumn.style.width          = '100px'; /* ← adjust column width */
       LabelColumn.style.overflow       = 'hidden';
@@ -16408,18 +16493,12 @@ function _AnimateAppPillResize() {
 function _openCustomiseSkillsetPanel() {
   if (CustomiseSkillsetPanelIsOpen) return;
   CustomiseSkillsetPanelIsOpen = true;
-  _SyncHeadingVisibility(); 
+  _SyncHeadingVisibility();
 
-  var isNamedSkillset = SKILLSET_DEFS.some(function(d) { return d.label === currentSkillset; });
-  if (!isNamedSkillset) {
-    // Only seed and apply CustomSetList when in Custom Set mode
-    _EnsureCustomSetListSeeded();
-    appsShortList   = CustomSetList.shortList.slice();
-    appsStandbyList = CustomSetList.standbyList.slice();
-    _saveAppsShortList();
-    buildAppPill();
-    _AnimateAppPillResize();
-  }
+  // Seed CustomSetList from the current live lists if not already seeded.
+  // Do not push it back into appsShortList here — that only happens when
+  // the user actively toggles an app in _ToggleCustomSetApp.
+  _EnsureCustomSetListSeeded();
 
   var PanelElement         = document.getElementById('customiseSkillsetPanel');
   var RightBracketElement  = document.getElementById('customiseSkillsetRightBracket');
@@ -16465,6 +16544,49 @@ function _closeCustomiseSkillsetPanel() {
   }
   if (SkillsetLabelElement) SkillsetLabelElement.textContent = 'skillset';
 }
+
+/* ── Dark mode ───────────────────────────────────────────────────────────── */
+function _applyTheme(isDark) {
+  if (isDark) {
+    document.documentElement.setAttribute('data-theme', 'dark');
+  } else {
+    document.documentElement.removeAttribute('data-theme');
+  }
+  _syncDarkModeToggleUI();
+  _syncMedalFilter();
+}
+
+function _syncDarkModeToggleUI() {
+  var isDark = document.documentElement.getAttribute('data-theme') === 'dark';
+  var knob       = document.getElementById('dmKnobEl');
+  var track      = document.getElementById('dmTrackRect');
+  var toggle     = document.getElementById('dmToggle');
+  var labelLight = document.getElementById('dmLabelLight');
+  var labelDark  = document.getElementById('dmLabelDark');
+  var iconLight  = document.getElementById('dmIconLight');
+  var iconDark   = document.getElementById('dmIconDark');
+  if (toggle)    toggle.checked = isDark;
+  if (knob)      knob.setAttribute('transform', isDark ? 'translate(22,0)' : '');
+  if (track)     track.setAttribute('stroke',   isDark ? '#374151' : '#9ca3af');
+  if (knob)      knob.setAttribute('stroke',    isDark ? '#374151' : '#9ca3af');
+  if (labelLight) labelLight.classList.toggle('dm-toggle-label-active', !isDark);
+  if (labelDark)  labelDark.classList.toggle('dm-toggle-label-active',  isDark);
+  if (iconLight)  iconLight.classList.toggle('dm-mode-icon-active',     !isDark);
+  if (iconDark)   iconDark.classList.toggle('dm-mode-icon-active',      isDark);
+}
+
+function _onDarkModeToggle() {
+  var toggle = document.getElementById('dmToggle');
+  _applyTheme(toggle && toggle.checked);
+}
+
+function _initDarkModeToggle() {
+  var prefersDark = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
+  _applyTheme(prefersDark);
+}
+
+// Run once on load
+_initDarkModeToggle();
 </script>
 </body>
 </html>

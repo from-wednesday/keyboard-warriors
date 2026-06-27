@@ -1755,6 +1755,30 @@ To add a new theme: add one --keyboard-theme-tint-name variable below,
 #kbThemePill .kb-theme-btn[data-theme="mono"]:not(.segmented-pill-active) .diff-btn-text {
   text-decoration: line-through;
 }
+/* ── Theme-aware Start / confirm button ──────────────────────────────────────
+   When a non-mono keyboard theme is active, the main action button adopts
+   the theme gradient. Scoped via :has() on body to avoid JS involvement.   */
+body:has(#keyboardPanel[data-keyboard-theme="dieter"]) #mainBtn {
+  background: var(--keyboard-theme-tint-dieter);
+  color: white;
+}
+body:has(#keyboardPanel[data-keyboard-theme="aqua"]) #mainBtn {
+  background: var(--keyboard-theme-tint-aqua);
+  color: white;
+}
+body:has(#keyboardPanel[data-keyboard-theme="poprocks"]) #mainBtn {
+  background: var(--keyboard-theme-tint-poprocks);
+  color: white;
+}
+body:has(#keyboardPanel[data-keyboard-theme="dieter"]) #mainBtn:hover {
+  filter: brightness(0.92);
+}
+body:has(#keyboardPanel[data-keyboard-theme="aqua"]) #mainBtn:hover {
+  filter: brightness(0.92);
+}
+body:has(#keyboardPanel[data-keyboard-theme="poprocks"]) #mainBtn:hover {
+  filter: brightness(0.92);
+}
 
 /* ══════════════════════════════════════
    BREAKPOINTS (in process - I am changing numbers to Var because numbers get out of sync)

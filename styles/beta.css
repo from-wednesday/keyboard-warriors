@@ -4517,26 +4517,6 @@ html[data-theme="dark"] body {
   filter: invert(1) hue-rotate(180deg) brightness(1.087) contrast(0.926);
 }
 
-/* ── Dark mode: medal face disc ─────────────────────────────────────────────
-   ::before inherits the corrective filter from its parent .scoreDisc.medal-*,
-   so no separate rule is needed here.
-   ─────────────────────────────────────────────────────────────────────────── */
-
-/* ── Dark mode: inversion-exempt elements ───────────────────────────────────
-   Re-applying the same filter cancels the parent inversion, restoring these
-   elements to their original light-mode appearance. Add new exempt elements
-   here rather than trying to correct them with adjusted colour values.
-   ─────────────────────────────────────────────────────────────────────────── */
-
-/* Medals: all four, including ::before face disc */
-[data-theme="dark"] .scoreDisc.medal-gold,
-[data-theme="dark"] .scoreDisc.medal-silver,
-[data-theme="dark"] .scoreDisc.medal-bronze,
-[data-theme="dark"] .scoreDisc.medal-lead {
-  filter: invert(1) hue-rotate(180deg) brightness(1.087) contrast(0.926);
-}
-
-
 /* Segmented pill button inset shadows are semi-transparent and read correctly
    in both themes without any filter override. */
 

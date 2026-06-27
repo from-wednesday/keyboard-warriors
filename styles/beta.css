@@ -1713,19 +1713,12 @@ To add a new theme: add one --keyboard-theme-tint-name variable below,
 #keyboardPanel[data-keyboard-theme="aqua"]      { --keyboard-theme-tint: var(--keyboard-theme-tint-aqua); }
 #keyboardPanel[data-keyboard-theme="poprocks"] { --keyboard-theme-tint: var(--keyboard-theme-tint-bubblegum); }
 
-#keyboardPanel:not([data-keyboard-theme="mono"]) .key[data-key="Escape"],
-#keyboardPanel:not([data-keyboard-theme="mono"]) .key[data-key^="F"],
 #keyboardPanel:not([data-keyboard-theme="mono"]) .key[data-key^="Control"],
 #keyboardPanel:not([data-keyboard-theme="mono"]) .key[data-key^="Alt"],
 #keyboardPanel:not([data-keyboard-theme="mono"]) .key[data-key^="Meta"],
 #keyboardPanel:not([data-keyboard-theme="mono"]) .key[data-key^="Shift"],
-#keyboardPanel:not([data-keyboard-theme="mono"]) .key[data-key="Tab"],
-#keyboardPanel:not([data-keyboard-theme="mono"]) .key[data-key="Enter"],
-#keyboardPanel:not([data-keyboard-theme="mono"]) .key[data-key="Backspace"],
-#keyboardPanel:not([data-keyboard-theme="mono"]) .key[data-key^="Arrow"],
-#keyboardPanel:not([data-keyboard-theme="mono"]) .key[data-key="CapsLock"],
-#keyboardPanel:not([data-keyboard-theme="mono"]) .key.lock-key {
-  background-image: var(--keyboard-theme-tint);
+#keyboardPanel:not([data-keyboard-theme="mono"]) .key[data-key="CapsLock"]
+background-image: var(--keyboard-theme-tint);
 }
 
 /* ── Keyboard Aesthetics theme picker pill ──────────────────────────────────

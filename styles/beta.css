@@ -1749,6 +1749,7 @@ To add a new theme: add one --keyboard-theme-tint-name variable below,
 #kbThemePill .kb-theme-btn {
   flex: 1;
 }
+#kbThemePill .kb-theme-btn.segmented-pill-active[data-theme="mono"]     { background: white;                                  color: #374151; box-shadow: none; }
 #kbThemePill .kb-theme-btn.segmented-pill-active[data-theme="dieter"]    { background: var(--keyboard-theme-swatch-dieter);    color: white; }
 #kbThemePill .kb-theme-btn.segmented-pill-active[data-theme="aqua"]      { background: var(--keyboard-theme-swatch-aqua);      color: white; }
 #kbThemePill .kb-theme-btn.segmented-pill-active[data-theme="poprocks"] { background: var(--keyboard-theme-swatch-poprocks); color: white; }
@@ -4591,19 +4592,3 @@ html[data-theme="dark"] body {
   opacity: 0.95;
 }
 
-/* ── Theme-aware Start / confirm button ──────────────────────────────────────
-   When a non-mono keyboard theme is active, the main action button adopts
-   the theme gradient. Scoped via :has() on body to avoid JS involvement.
-   These per-theme rules must stay here; the tint variables are only defined
-   on #keyboardPanel and cannot be read from body-level selectors.           */
-body:has(#keyboardPanel[data-keyboard-theme="dieter"]) #mainBtn,
-body:has(#keyboardPanel[data-keyboard-theme="aqua"]) #mainBtn,
-body:has(#keyboardPanel[data-keyboard-theme="poprocks"]) #mainBtn {
-  background: var(--keyboard-theme-tint);
-  color: white;
-}
-body:has(#keyboardPanel[data-keyboard-theme="dieter"]) #mainBtn:hover,
-body:has(#keyboardPanel[data-keyboard-theme="aqua"]) #mainBtn:hover,
-body:has(#keyboardPanel[data-keyboard-theme="poprocks"]) #mainBtn:hover {
-  filter: brightness(0.92);
-}

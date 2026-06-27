@@ -4524,14 +4524,64 @@ html[data-theme="dark"] body {
 [data-theme="dark"] .key.lit-orange-down {
   filter: invert(1) hue-rotate(180deg) brightness(1.087) contrast(0.926);
 }
-/* Aqua keyboard theme: drifts towards a dirty, off-colour tint after the
-   page-wide inversion, more noticeably than Dieter or Poprocks, and the
-   modifier key labels pick up the same drift at their anti-aliased edges.
-   Pinned to its true light-mode appearance, the same way the medals above
-   are, rather than choosing a separate dark mode colour. */
+/* Aqua and Poprocks keyboard themes: the page-wide inversion shifts their
+   saturated gradients to dirty off-colours. Re-invert the tinted modifier
+   keys to pin them to their true light-mode appearance.
+   Key labels inside these keys also get re-inverted so they remain readable
+   against the bright gradient background rather than inverting independently. */
 [data-theme="dark"] #keyboardPanel[data-keyboard-theme="aqua"] .key[data-key^="Control"],
 [data-theme="dark"] #keyboardPanel[data-keyboard-theme="aqua"] .key[data-key^="Alt"],
 [data-theme="dark"] #keyboardPanel[data-keyboard-theme="aqua"] .key[data-key^="FN"],
 [data-theme="dark"] #keyboardPanel[data-keyboard-theme="aqua"] .key[data-key^="Meta"],
 [data-theme="dark"] #keyboardPanel[data-keyboard-theme="aqua"] .key[data-key^="Shift"],
-[data-theme="dark"] #keyboardPanel[data-keyboard-theme="aqua"] .key[data-key="CapsLock"] {
+[data-theme="dark"] #keyboardPanel[data-keyboard-theme="aqua"] .key[data-key="CapsLock"],
+[data-theme="dark"] #keyboardPanel[data-keyboard-theme="poprocks"] .key[data-key^="Control"],
+[data-theme="dark"] #keyboardPanel[data-keyboard-theme="poprocks"] .key[data-key^="Alt"],
+[data-theme="dark"] #keyboardPanel[data-keyboard-theme="poprocks"] .key[data-key^="FN"],
+[data-theme="dark"] #keyboardPanel[data-keyboard-theme="poprocks"] .key[data-key^="Meta"],
+[data-theme="dark"] #keyboardPanel[data-keyboard-theme="poprocks"] .key[data-key^="Shift"],
+[data-theme="dark"] #keyboardPanel[data-keyboard-theme="poprocks"] .key[data-key="CapsLock"]
+[data-theme="dark"] #keyboardPanel[data-keyboard-theme="aqua"] .key[data-key^="Control"] .letter-lbl,
+[data-theme="dark"] #keyboardPanel[data-keyboard-theme="aqua"] .key[data-key^="Control"] .mod-sym,
+[data-theme="dark"] #keyboardPanel[data-keyboard-theme="aqua"] .key[data-key^="Control"] .mod-sym-only,
+[data-theme="dark"] #keyboardPanel[data-keyboard-theme="aqua"] .key[data-key^="Control"] .mod-word,
+[data-theme="dark"] #keyboardPanel[data-keyboard-theme="aqua"] .key[data-key^="Control"] .util-lbl,
+[data-theme="dark"] #keyboardPanel[data-keyboard-theme="aqua"] .key[data-key^="Control"] .util-sym-only,
+[data-theme="dark"] #keyboardPanel[data-keyboard-theme="aqua"] .key[data-key^="Control"] .key-glyph-sym,
+[data-theme="dark"] #keyboardPanel[data-keyboard-theme="aqua"] .key[data-key^="Alt"] .letter-lbl,
+[data-theme="dark"] #keyboardPanel[data-keyboard-theme="aqua"] .key[data-key^="Alt"] .mod-sym,
+[data-theme="dark"] #keyboardPanel[data-keyboard-theme="aqua"] .key[data-key^="Alt"] .mod-sym-only,
+[data-theme="dark"] #keyboardPanel[data-keyboard-theme="aqua"] .key[data-key^="Alt"] .mod-word,
+[data-theme="dark"] #keyboardPanel[data-keyboard-theme="aqua"] .key[data-key^="Alt"] .util-lbl,
+[data-theme="dark"] #keyboardPanel[data-keyboard-theme="aqua"] .key[data-key^="Alt"] .util-sym-only,
+[data-theme="dark"] #keyboardPanel[data-keyboard-theme="aqua"] .key[data-key^="Alt"] .key-glyph-sym,
+[data-theme="dark"] #keyboardPanel[data-keyboard-theme="aqua"] .key[data-key^="FN"] .fn-lbl,
+[data-theme="dark"] #keyboardPanel[data-keyboard-theme="aqua"] .key[data-key^="Meta"] .mod-sym,
+[data-theme="dark"] #keyboardPanel[data-keyboard-theme="aqua"] .key[data-key^="Meta"] .mod-sym-only,
+[data-theme="dark"] #keyboardPanel[data-keyboard-theme="aqua"] .key[data-key^="Meta"] .mod-word,
+[data-theme="dark"] #keyboardPanel[data-keyboard-theme="aqua"] .key[data-key^="Shift"] .util-lbl,
+[data-theme="dark"] #keyboardPanel[data-keyboard-theme="aqua"] .key[data-key^="Shift"] .util-sym-only,
+[data-theme="dark"] #keyboardPanel[data-keyboard-theme="aqua"] .key[data-key="CapsLock"] .util-lbl,
+[data-theme="dark"] #keyboardPanel[data-keyboard-theme="poprocks"] .key[data-key^="Control"] .letter-lbl,
+[data-theme="dark"] #keyboardPanel[data-keyboard-theme="poprocks"] .key[data-key^="Control"] .mod-sym,
+[data-theme="dark"] #keyboardPanel[data-keyboard-theme="poprocks"] .key[data-key^="Control"] .mod-sym-only,
+[data-theme="dark"] #keyboardPanel[data-keyboard-theme="poprocks"] .key[data-key^="Control"] .mod-word,
+[data-theme="dark"] #keyboardPanel[data-keyboard-theme="poprocks"] .key[data-key^="Control"] .util-lbl,
+[data-theme="dark"] #keyboardPanel[data-keyboard-theme="poprocks"] .key[data-key^="Control"] .util-sym-only,
+[data-theme="dark"] #keyboardPanel[data-keyboard-theme="poprocks"] .key[data-key^="Control"] .key-glyph-sym,
+[data-theme="dark"] #keyboardPanel[data-keyboard-theme="poprocks"] .key[data-key^="Alt"] .letter-lbl,
+[data-theme="dark"] #keyboardPanel[data-keyboard-theme="poprocks"] .key[data-key^="Alt"] .mod-sym,
+[data-theme="dark"] #keyboardPanel[data-keyboard-theme="poprocks"] .key[data-key^="Alt"] .mod-sym-only,
+[data-theme="dark"] #keyboardPanel[data-keyboard-theme="poprocks"] .key[data-key^="Alt"] .mod-word,
+[data-theme="dark"] #keyboardPanel[data-keyboard-theme="poprocks"] .key[data-key^="Alt"] .util-lbl,
+[data-theme="dark"] #keyboardPanel[data-keyboard-theme="poprocks"] .key[data-key^="Alt"] .util-sym-only,
+[data-theme="dark"] #keyboardPanel[data-keyboard-theme="poprocks"] .key[data-key^="Alt"] .key-glyph-sym,
+[data-theme="dark"] #keyboardPanel[data-keyboard-theme="poprocks"] .key[data-key^="FN"] .fn-lbl,
+[data-theme="dark"] #keyboardPanel[data-keyboard-theme="poprocks"] .key[data-key^="Meta"] .mod-sym,
+[data-theme="dark"] #keyboardPanel[data-keyboard-theme="poprocks"] .key[data-key^="Meta"] .mod-sym-only,
+[data-theme="dark"] #keyboardPanel[data-keyboard-theme="poprocks"] .key[data-key^="Meta"] .mod-word,
+[data-theme="dark"] #keyboardPanel[data-keyboard-theme="poprocks"] .key[data-key^="Shift"] .util-lbl,
+[data-theme="dark"] #keyboardPanel[data-keyboard-theme="poprocks"] .key[data-key^="Shift"] .util-sym-only,
+[data-theme="dark"] #keyboardPanel[data-keyboard-theme="poprocks"] .key[data-key="CapsLock"] .util-lbl {
+  filter: invert(1) hue-rotate(180deg) brightness(1.087) contrast(0.926);
+}

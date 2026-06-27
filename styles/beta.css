@@ -4502,12 +4502,18 @@ html[data-theme="dark"] body {
 [data-theme="dark"] .prog-dot .dot-fill                 { fill: #939aa3; }
 [data-theme="dark"] .life-heart svg path                { fill: #939aa3; }
 
-/* ── Dark mode: score disc ───────────────────────────────────────────────────
+/* ── Dark mode: score disc and medals ───────────────────────────────────────
    Re-applying the same filter as the html element cancels the inversion,
-   keeping the disc identical in appearance between light and dark modes.
-   JS updates background directly during gameplay so this applies at rest only.
+   keeping the disc and medal rim gradients identical between light and dark
+   modes. The ::before face disc inherits this filter from its parent, so no
+   separate rule is needed for it — adding one would double-invert and break
+   the face colours.
    ─────────────────────────────────────────────────────────────────────────── */
-[data-theme="dark"] .scoreDisc {
+[data-theme="dark"] .scoreDisc,
+[data-theme="dark"] .scoreDisc.medal-gold,
+[data-theme="dark"] .scoreDisc.medal-silver,
+[data-theme="dark"] .scoreDisc.medal-bronze,
+[data-theme="dark"] .scoreDisc.medal-lead {
   filter: invert(1) hue-rotate(180deg) brightness(1.087) contrast(0.926);
 }
 

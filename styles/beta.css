@@ -4574,21 +4574,21 @@ html[data-theme="dark"] body {
 [data-theme="dark"] #keyboardPanel[data-keyboard-theme="poprocks"] .key[data-key^="Shift"],
 [data-theme="dark"] #keyboardPanel[data-keyboard-theme="poprocks"] .key[data-key="CapsLock"] {
   filter: invert(1) hue-rotate(180deg) brightness(1.087) contrast(0.926);
-  opacity: 0.9;
+  opacity: 0.8;
 }
 
 [data-theme="dark"] #kbThemePill .kb-theme-btn.segmented-pill-active[data-theme="dieter"],
 [data-theme="dark"] #kbThemePill .kb-theme-btn.segmented-pill-active[data-theme="aqua"],
 [data-theme="dark"] #kbThemePill .kb-theme-btn.segmented-pill-active[data-theme="poprocks"] {
   filter: invert(1) hue-rotate(180deg) brightness(1.087) contrast(0.926);
-  opacity: 0.9;
+  opacity: 0.8;
 }
 
 [data-theme="dark"] body:has(#keyboardPanel[data-keyboard-theme="dieter"]) #mainBtn,
 [data-theme="dark"] body:has(#keyboardPanel[data-keyboard-theme="aqua"]) #mainBtn,
 [data-theme="dark"] body:has(#keyboardPanel[data-keyboard-theme="poprocks"]) #mainBtn {
   filter: invert(1) hue-rotate(180deg) brightness(1.087) contrast(0.926);
-  opacity: 0.9;
+  opacity: 0.8;
 }
 
 /* ── Theme-aware Start / confirm button ──────────────────────────────────────

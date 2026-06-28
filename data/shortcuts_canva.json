@@ -1,0 +1,621 @@
+[
+  {
+    "display": "add a Text box",
+    "mac_sc": "T",
+    "pc_sc": "T",
+    "difficulty": 2
+  },
+  {
+    "display": "add a Rectangle shape",
+    "mac_sc": "R",
+    "pc_sc": "R",
+    "difficulty": 2
+  },
+  {
+    "display": "add a Circle shape",
+    "mac_sc": "C",
+    "pc_sc": "C",
+    "difficulty": 2
+  },
+  {
+    "display": "add a Line",
+    "mac_sc": "L",
+    "pc_sc": "L",
+    "difficulty": 2
+  },
+  {
+    "display": "delete the selected Element",
+    "mac_sc": "DELETE|BACKSPACE",
+    "pc_sc": "DELETE|BACKSPACE",
+    "difficulty": 0
+  },
+  {
+    "display": "duplicate the selection",
+    "mac_sc": "CMD+D",
+    "pc_sc": "CTRL+D",
+    "difficulty": 1
+  },
+  {
+    "display": "select All elements",
+    "mac_sc": "CMD+A",
+    "pc_sc": "CTRL+A",
+    "difficulty": 1
+  },
+  {
+    "display": "deselect All elements",
+    "mac_sc": "ESC",
+    "pc_sc": "ESC",
+    "difficulty": 2
+  },
+  {
+    "display": "undo last Action",
+    "mac_sc": "CMD+Z",
+    "pc_sc": "CTRL+Z",
+    "difficulty": 0
+  },
+  {
+    "display": "redo last Action",
+    "mac_sc": "CMD+SHIFT+Z",
+    "pc_sc": "CTRL+SHIFT+Z",
+    "difficulty": 1
+  },
+  {
+    "display": "copy the selection",
+    "mac_sc": "CMD+C",
+    "pc_sc": "CTRL+C",
+    "difficulty": 0
+  },
+  {
+    "display": "paste from Clipboard",
+    "mac_sc": "CMD+V",
+    "pc_sc": "CTRL+V",
+    "difficulty": 0
+  },
+  {
+    "display": "cut the selection",
+    "mac_sc": "CMD+X",
+    "pc_sc": "CTRL+X",
+    "difficulty": 0
+  },
+  {
+    "display": "group the selected Elements",
+    "mac_sc": "CMD+G",
+    "pc_sc": "CTRL+G",
+    "difficulty": 2
+  },
+  {
+    "display": "ungroup the selected Elements",
+    "mac_sc": "CMD+SHIFT+G",
+    "pc_sc": "CTRL+SHIFT+G",
+    "difficulty": 3
+  },
+  {
+    "display": "lock or Unlock element",
+    "mac_sc": "CMD+OPTION+L",
+    "pc_sc": "CTRL+ALT+L",
+    "difficulty": 4
+  },
+  {
+    "display": "bold the selected Text",
+    "mac_sc": "CMD+B",
+    "pc_sc": "CTRL+B",
+    "difficulty": 0
+  },
+  {
+    "display": "italicise the selected Text",
+    "mac_sc": "CMD+I",
+    "pc_sc": "CTRL+I",
+    "difficulty": 0
+  },
+  {
+    "display": "underline the selected Text",
+    "mac_sc": "CMD+U",
+    "pc_sc": "CTRL+U",
+    "difficulty": 0
+  },
+  {
+    "display": "convert text to All caps",
+    "mac_sc": "CMD+SHIFT+K",
+    "pc_sc": "CTRL+SHIFT+K",
+    "difficulty": 3
+  },
+  {
+    "display": "copy Text style",
+    "mac_sc": "CMD+OPTION+C",
+    "pc_sc": "CTRL+ALT+C",
+    "difficulty": 3
+  },
+  {
+    "display": "paste Text style",
+    "mac_sc": "CMD+OPTION+V",
+    "pc_sc": "CTRL+ALT+V",
+    "difficulty": 3
+  },
+  {
+    "display": "align text to Left",
+    "mac_sc": "CMD+SHIFT+L",
+    "pc_sc": "CTRL+SHIFT+L",
+    "difficulty": 3,
+    "group": "text_alignment"
+  },
+  {
+    "display": "align text to Center",
+    "mac_sc": "CMD+SHIFT+C",
+    "pc_sc": "CTRL+SHIFT+C",
+    "difficulty": 3,
+    "group": "text_alignment"
+  },
+  {
+    "display": "align text to Right",
+    "mac_sc": "CMD+SHIFT+R",
+    "pc_sc": "CTRL+SHIFT+R",
+    "difficulty": 3,
+    "group": "text_alignment"
+  },
+  {
+    "display": "bring element Forward",
+    "mac_sc": "CMD+BRACKETRIGHT",
+    "pc_sc": "CTRL+BRACKETRIGHT",
+    "difficulty": 3,
+    "group": "layer_depth"
+  },
+  {
+    "display": "send element Backward",
+    "mac_sc": "CMD+BRACKETLEFT",
+    "pc_sc": "CTRL+BRACKETLEFT",
+    "difficulty": 3,
+    "group": "layer_depth"
+  },
+  {
+    "display": "bring element to Front",
+    "mac_sc": "CMD+OPTION+BRACKETRIGHT",
+    "pc_sc": "CTRL+ALT+BRACKETRIGHT",
+    "difficulty": 4,
+    "group": "layer_front_back"
+  },
+  {
+    "display": "send element to Back",
+    "mac_sc": "CMD+OPTION+BRACKETLEFT",
+    "pc_sc": "CTRL+ALT+BRACKETLEFT",
+    "difficulty": 4,
+    "group": "layer_front_back"
+  },
+  {
+    "display": "zoom In on canvas",
+    "mac_sc": "CMD+PLUS",
+    "pc_sc": "CTRL+PLUS",
+    "difficulty": 1
+  },
+  {
+    "display": "zoom Out on canvas",
+    "mac_sc": "CMD+MINUS",
+    "pc_sc": "CTRL+MINUS",
+    "difficulty": 1
+  },
+  {
+    "display": "zoom to Fit screen",
+    "mac_sc": "CMD+0",
+    "pc_sc": "CTRL+0",
+    "difficulty": 2
+  },
+  {
+    "display": "zoom to Actual size",
+    "mac_sc": "CMD+1",
+    "pc_sc": "CTRL+1",
+    "difficulty": 2
+  },
+  {
+    "display": "zoom to Fill window",
+    "mac_sc": "CMD+2",
+    "pc_sc": "CTRL+2",
+    "difficulty": 3
+  },
+  {
+    "display": "toggle Presenter mode",
+    "mac_sc": "CMD+OPTION+P",
+    "pc_sc": "CTRL+ALT+P",
+    "difficulty": 4
+  },
+  {
+    "display": "toggle Grid view",
+    "mac_sc": "CMD+OPTION+G",
+    "pc_sc": "CTRL+ALT+G",
+    "difficulty": 4
+  },
+  {
+    "display": "show or Hide rulers",
+    "mac_sc": "SHIFT+R",
+    "pc_sc": "SHIFT+R",
+    "difficulty": 3
+  },
+  {
+    "display": "show or Hide guides",
+    "mac_sc": "CMD+SEMICOLON",
+    "pc_sc": "CTRL+SEMICOLON",
+    "difficulty": 3
+  },
+  {
+    "display": "toggle Full screen mode",
+    "mac_sc": "CMD+OPTION+F",
+    "pc_sc": "CTRL+ALT+F",
+    "difficulty": 4
+  },
+  {
+    "display": "toggle Sidebar panel",
+    "mac_sc": "CMD+SLASH",
+    "pc_sc": "CTRL+SLASH",
+    "difficulty": 3
+  },
+  {
+    "display": "add a new Blank page",
+    "mac_sc": "CMD+RETURN",
+    "pc_sc": "CTRL+ENTER",
+    "difficulty": 2
+  },
+  {
+    "display": "delete the current Page",
+    "mac_sc": "CMD+OPTION+DELETE",
+    "pc_sc": "CTRL+ALT+DELETE",
+    "difficulty": 4
+  },
+  {
+    "display": "move to Next page",
+    "mac_sc": "OPTION+ARROWDOWN",
+    "pc_sc": "ALT+ARROWDOWN",
+    "difficulty": 3,
+    "group": "page_navigation"
+  },
+  {
+    "display": "move to Previous page",
+    "mac_sc": "OPTION+ARROWUP",
+    "pc_sc": "ALT+ARROWUP",
+    "difficulty": 3,
+    "group": "page_navigation"
+  },
+  {
+    "display": "scroll to Top of design",
+    "mac_sc": "HOME",
+    "pc_sc": "HOME",
+    "difficulty": 2
+  },
+  {
+    "display": "scroll to Bottom of design",
+    "mac_sc": "END",
+    "pc_sc": "END",
+    "difficulty": 2
+  },
+  {
+    "display": "nudge element up by 1 pixel",
+    "mac_sc": "ARROWUP",
+    "pc_sc": "ARROWUP",
+    "difficulty": 1,
+    "group": "nudge_pixel"
+  },
+  {
+    "display": "nudge element up by 10 pixels",
+    "mac_sc": "SHIFT+ARROWUP",
+    "pc_sc": "SHIFT+ARROWUP",
+    "difficulty": 2,
+    "group": "nudge_ten_pixels"
+  },
+  {
+    "display": "nudge element down by 1 pixel",
+    "mac_sc": "ARROWDOWN",
+    "pc_sc": "ARROWDOWN",
+    "difficulty": 1,
+    "group": "nudge_pixel"
+  },
+  {
+    "display": "nudge element down by 10 pixels",
+    "mac_sc": "SHIFT+ARROWDOWN",
+    "pc_sc": "SHIFT+ARROWDOWN",
+    "difficulty": 2,
+    "group": "nudge_ten_pixels"
+  },
+  {
+    "display": "nudge element left by 1 pixel",
+    "mac_sc": "ARROWLEFT",
+    "pc_sc": "ARROWLEFT",
+    "difficulty": 1,
+    "group": "nudge_pixel"
+  },
+  {
+    "display": "nudge element left by 10 pixels",
+    "mac_sc": "SHIFT+ARROWLEFT",
+    "pc_sc": "SHIFT+ARROWLEFT",
+    "difficulty": 2,
+    "group": "nudge_ten_pixels"
+  },
+  {
+    "display": "nudge element right by 1 pixel",
+    "mac_sc": "ARROWRIGHT",
+    "pc_sc": "ARROWRIGHT",
+    "difficulty": 1,
+    "group": "nudge_pixel"
+  },
+  {
+    "display": "nudge element right by 10 pixels",
+    "mac_sc": "SHIFT+ARROWRIGHT",
+    "pc_sc": "SHIFT+ARROWRIGHT",
+    "difficulty": 2,
+    "group": "nudge_ten_pixels"
+  },
+  {
+    "display": "go to Next slide",
+    "mac_sc": "ARROWRIGHT",
+    "pc_sc": "ARROWRIGHT",
+    "difficulty": 1,
+    "group": "slide_nav"
+  },
+  {
+    "display": "go to Previous slide",
+    "mac_sc": "ARROWLEFT",
+    "pc_sc": "ARROWLEFT",
+    "difficulty": 1,
+    "group": "slide_nav"
+  },
+  {
+    "display": "go to First slide",
+    "mac_sc": "UP",
+    "pc_sc": "UP",
+    "difficulty": 2
+  },
+  {
+    "display": "exit Presentation mode",
+    "mac_sc": "ESC",
+    "pc_sc": "ESC",
+    "difficulty": 1
+  },
+  {
+    "display": "display Blank black screen",
+    "mac_sc": "B",
+    "pc_sc": "B",
+    "difficulty": 4
+  },
+  {
+    "display": "display Blank white screen",
+    "mac_sc": "W",
+    "pc_sc": "W",
+    "difficulty": 4
+  },
+  {
+    "display": "toggle Pointer visibility",
+    "mac_sc": "P",
+    "pc_sc": "P",
+    "difficulty": 4
+  },
+  {
+    "display": "align elements to Top",
+    "mac_sc": "OPTION+SHIFT+T",
+    "pc_sc": "ALT+SHIFT+T",
+    "difficulty": 4
+  },
+  {
+    "display": "align elements to Bottom",
+    "mac_sc": "OPTION+SHIFT+B",
+    "pc_sc": "ALT+SHIFT+B",
+    "difficulty": 4
+  },
+  {
+    "display": "align elements to Left edge",
+    "mac_sc": "OPTION+SHIFT+L",
+    "pc_sc": "ALT+SHIFT+L",
+    "difficulty": 4
+  },
+  {
+    "display": "align elements to Right edge",
+    "mac_sc": "OPTION+SHIFT+R",
+    "pc_sc": "ALT+SHIFT+R",
+    "difficulty": 4
+  },
+  {
+    "display": "align elements to Center horizontally",
+    "mac_sc": "OPTION+SHIFT+C",
+    "pc_sc": "ALT+SHIFT+C",
+    "difficulty": 4
+  },
+  {
+    "display": "align elements to Middle vertically",
+    "mac_sc": "OPTION+SHIFT+M",
+    "pc_sc": "ALT+SHIFT+M",
+    "difficulty": 4
+  },
+  {
+    "display": "increase Font size",
+    "mac_sc": "CMD+SHIFT+PERIOD",
+    "pc_sc": "CTRL+SHIFT+PERIOD",
+    "difficulty": 2
+  },
+  {
+    "display": "decrease Font size",
+    "mac_sc": "CMD+SHIFT+COMMA",
+    "pc_sc": "CTRL+SHIFT+COMMA",
+    "difficulty": 2
+  },
+  {
+    "display": "justify the selected Text",
+    "mac_sc": "CMD+SHIFT+J",
+    "pc_sc": "CTRL+SHIFT+J",
+    "difficulty": 3
+  },
+  {
+    "display": "remove Formatting from text",
+    "mac_sc": "CMD+BACKSLASH",
+    "pc_sc": "CTRL+BACKSLASH",
+    "difficulty": 4
+  },
+  {
+    "display": "insert Hyperlink",
+    "mac_sc": "CMD+K",
+    "pc_sc": "CTRL+K",
+    "difficulty": 2
+  },
+  {
+    "display": "open Templates panel",
+    "mac_sc": "SHIFT+T",
+    "pc_sc": "SHIFT+T",
+    "difficulty": 3
+  },
+  {
+    "display": "open Elements panel",
+    "mac_sc": "SHIFT+E",
+    "pc_sc": "SHIFT+E",
+    "difficulty": 3
+  },
+  {
+    "display": "open Uploads panel",
+    "mac_sc": "SHIFT+U",
+    "pc_sc": "SHIFT+U",
+    "difficulty": 3
+  },
+  {
+    "display": "open Text panel",
+    "mac_sc": "SHIFT+X",
+    "pc_sc": "SHIFT+X",
+    "difficulty": 3
+  },
+  {
+    "display": "open Draw panel",
+    "mac_sc": "SHIFT+D",
+    "pc_sc": "SHIFT+D",
+    "difficulty": 3
+  },
+  {
+    "display": "open Projects panel",
+    "mac_sc": "SHIFT+P",
+    "pc_sc": "SHIFT+P",
+    "difficulty": 3
+  },
+  {
+    "display": "open Apps panel",
+    "mac_sc": "SHIFT+A",
+    "pc_sc": "SHIFT+A",
+    "difficulty": 4
+  },
+  {
+    "display": "constrain Proportions while scaling",
+    "mac_sc": "SHIFT",
+    "pc_sc": "SHIFT",
+    "difficulty": 1
+  },
+  {
+    "display": "scale from Center point",
+    "mac_sc": "OPTION",
+    "pc_sc": "ALT",
+    "difficulty": 2
+  },
+  {
+    "display": "bypass Grid snapping",
+    "mac_sc": "CMD",
+    "pc_sc": "CTRL",
+    "difficulty": 3
+  },
+  {
+    "display": "open keyboard Shortcuts manual",
+    "mac_sc": "SHIFT+QUESTION",
+    "pc_sc": "SHIFT+QUESTION",
+    "difficulty": 2
+  },
+  {
+    "display": "download current Design",
+    "mac_sc": "CMD+SHIFT+S",
+    "pc_sc": "CTRL+SHIFT+S",
+    "difficulty": 3
+  },
+  {
+    "display": "toggle Comment panel",
+    "mac_sc": "CMD+OPTION+M",
+    "pc_sc": "CTRL+ALT+M",
+    "difficulty": 4
+  },
+  {
+    "display": "add a new Comment",
+    "mac_sc": "OPTION+CMD+M",
+    "pc_sc": "ALT+CTRL+M",
+    "difficulty": 3
+  },
+  {
+    "display": "zoom to 100%",
+    "mac_sc": "CMD+NUMPAD0",
+    "pc_sc": "CTRL+NUMPAD0",
+    "difficulty": 3
+  },
+  {
+    "display": "zoom to 200%",
+    "mac_sc": "CMD+NUMPAD2",
+    "pc_sc": "CTRL+NUMPAD2",
+    "difficulty": 4
+  },
+  {
+    "display": "zoom to 50%",
+    "mac_sc": "CMD+NUMPAD5",
+    "pc_sc": "CTRL+NUMPAD5",
+    "difficulty": 4
+  },
+  {
+    "display": "select the Element hidden behind",
+    "mac_sc": "CMD+CLICK",
+    "pc_sc": "CTRL+CLICK",
+    "difficulty": 3
+  },
+  {
+    "display": "select Next element in focus",
+    "mac_sc": "TAB",
+    "pc_sc": "TAB",
+    "difficulty": 2
+  },
+  {
+    "display": "select Previous element in focus",
+    "mac_sc": "SHIFT+TAB",
+    "pc_sc": "SHIFT+TAB",
+    "difficulty": 3
+  },
+  {
+    "display": "collapse the Sidebar area",
+    "mac_sc": "CMD+BRACKETLEFT",
+    "pc_sc": "CTRL+BRACKETLEFT",
+    "difficulty": 4
+  },
+  {
+    "display": "expand the Sidebar area",
+    "mac_sc": "CMD+BRACKETRIGHT",
+    "pc_sc": "CTRL+BRACKETRIGHT",
+    "difficulty": 4
+  },
+  {
+    "display": "preview Animation styles",
+    "mac_sc": "ENTER",
+    "pc_sc": "ENTER",
+    "difficulty": 3
+  },
+  {
+    "display": "close current Document view",
+    "mac_sc": "CMD+W",
+    "pc_sc": "CTRL+W",
+    "difficulty": 1
+  },
+  {
+    "display": "open standard Print settings",
+    "mac_sc": "CMD+P",
+    "pc_sc": "CTRL+P",
+    "difficulty": 1
+  },
+  {
+    "display": "force Page break in view",
+    "mac_sc": "CMD+SHIFT+RETURN",
+    "pc_sc": "CTRL+SHIFT+ENTER",
+    "difficulty": 4
+  },
+  {
+    "display": "show Grid baseline alignment",
+    "mac_sc": "OPTION+SHIFT+G",
+    "pc_sc": "ALT+SHIFT+G",
+    "difficulty": 4
+  },
+  {
+    "display": "toggle margins Visibility",
+    "mac_sc": "SHIFT+M",
+    "pc_sc": "SHIFT+M",
+    "difficulty": 3
+  }
+]

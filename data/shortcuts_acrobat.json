@@ -1,0 +1,626 @@
+[
+  {
+    "display": "open an Existing document",
+    "mac_sc": "CMD+O",
+    "pc_sc": "CTRL+O",
+    "difficulty": 1
+  },
+  {
+    "display": "save changes to Document",
+    "mac_sc": "CMD+S",
+    "pc_sc": "CTRL+S",
+    "difficulty": 0
+  },
+  {
+    "display": "save As a new document file",
+    "mac_sc": "CMD+SHIFT+S",
+    "pc_sc": "CTRL+SHIFT+S",
+    "difficulty": 2
+  },
+  {
+    "display": "print the current Document layout",
+    "mac_sc": "CMD+P",
+    "pc_sc": "CTRL+P",
+    "difficulty": 1
+  },
+  {
+    "display": "close the active Document window",
+    "mac_sc": "CMD+W",
+    "pc_sc": "CTRL+W",
+    "difficulty": 1
+  },
+  {
+    "display": "exit the Application framework safely",
+    "mac_sc": "CMD+Q",
+    "pc_sc": "CTRL+Q",
+    "difficulty": 1
+  },
+  {
+    "display": "undo the last Action",
+    "mac_sc": "CMD+Z",
+    "pc_sc": "CTRL+Z",
+    "difficulty": 0
+  },
+  {
+    "display": "redo the last Action",
+    "mac_sc": "CMD+SHIFT+Z",
+    "pc_sc": "CTRL+SHIFT+Z",
+    "difficulty": 1
+  },
+  {
+    "display": "open Acrobat preferences Dialog window",
+    "mac_sc": "CMD+K",
+    "pc_sc": "CTRL+K",
+    "difficulty": 2
+  },
+  {
+    "display": "go to Next page layout",
+    "mac_sc": "ARROWDOWN",
+    "pc_sc": "ARROWDOWN",
+    "difficulty": 1,
+    "group": "page_navigation"
+  },
+  {
+    "display": "go to Previous page layout",
+    "mac_sc": "ARROWUP",
+    "pc_sc": "ARROWUP",
+    "difficulty": 1,
+    "group": "page_navigation"
+  },
+  {
+    "display": "go to First slide page boundary",
+    "mac_sc": "HOME",
+    "pc_sc": "HOME",
+    "difficulty": 1
+  },
+  {
+    "display": "go to Last slide page boundary",
+    "mac_sc": "END",
+    "pc_sc": "END",
+    "difficulty": 1
+  },
+  {
+    "display": "scroll down One screen view frame",
+    "mac_sc": "PAGEDOWN",
+    "pc_sc": "PAGEDOWN",
+    "difficulty": 1,
+    "group": "page_scroll"
+  },
+  {
+    "display": "scroll up One screen view frame",
+    "mac_sc": "PAGEUP",
+    "pc_sc": "PAGEUP",
+    "difficulty": 1,
+    "group": "page_scroll"
+  },
+  {
+    "display": "go forward in View history stack",
+    "mac_sc": "CMD+ARROWRIGHT",
+    "pc_sc": "ALT+ARROWRIGHT",
+    "difficulty": 3
+  },
+  {
+    "display": "go backward in View history stack",
+    "mac_sc": "CMD+ARROWLEFT",
+    "pc_sc": "ALT+ARROWLEFT",
+    "difficulty": 3
+  },
+  {
+    "display": "open find Toolbar mini search menu",
+    "mac_sc": "CMD+F",
+    "pc_sc": "CTRL+F",
+    "difficulty": 1
+  },
+  {
+    "display": "open advanced Search comprehensive index utility",
+    "mac_sc": "CMD+SHIFT+F",
+    "pc_sc": "CTRL+SHIFT+F",
+    "difficulty": 3
+  },
+  {
+    "display": "find next Matching text query instance",
+    "mac_sc": "CMD+G",
+    "pc_sc": "CTRL+G",
+    "difficulty": 2
+  },
+  {
+    "display": "find previous Matching text query instance",
+    "mac_sc": "CMD+SHIFT+G",
+    "pc_sc": "CTRL+SHIFT+G",
+    "difficulty": 3
+  },
+  {
+    "display": "zoom In document view canvas",
+    "mac_sc": "CMD+EQUAL",
+    "pc_sc": "CTRL+EQUAL",
+    "difficulty": 2
+  },
+  {
+    "display": "zoom Out document view canvas",
+    "mac_sc": "CMD+MINUS",
+    "pc_sc": "CTRL+MINUS",
+    "difficulty": 2
+  },
+  {
+    "display": "zoom to Actual size 100 percent scale",
+    "mac_sc": "CMD+1",
+    "pc_sc": "CTRL+1",
+    "difficulty": 2
+  },
+  {
+    "display": "fit page Layout to view screen boundaries",
+    "mac_sc": "CMD+0",
+    "pc_sc": "CTRL+0",
+    "difficulty": 2
+  },
+  {
+    "display": "fit visible Width of page layout to viewport",
+    "mac_sc": "CMD+2",
+    "pc_sc": "CTRL+2",
+    "difficulty": 3
+  },
+  {
+    "display": "fit visible Height of page layout to viewport",
+    "mac_sc": "CMD+3",
+    "pc_sc": "CTRL+3",
+    "difficulty": 3
+  },
+  {
+    "display": "toggle full Screen viewing performance presentation mode",
+    "mac_sc": "CMD+L",
+    "pc_sc": "CTRL+L",
+    "difficulty": 2
+  },
+  {
+    "display": "select All elements inside active document page text",
+    "mac_sc": "CMD+A",
+    "pc_sc": "CTRL+A",
+    "difficulty": 1
+  },
+  {
+    "display": "deselect All elements inside active document page selections",
+    "mac_sc": "CMD+SHIFT+A",
+    "pc_sc": "CTRL+SHIFT+A",
+    "difficulty": 2
+  },
+  {
+    "display": "copy selected Text or structural object",
+    "mac_sc": "CMD+C",
+    "pc_sc": "CTRL+C",
+    "difficulty": 0
+  },
+  {
+    "display": "cut selected Form field item properties",
+    "mac_sc": "CMD+X",
+    "pc_sc": "CTRL+X",
+    "difficulty": 0
+  },
+  {
+    "display": "paste element from Clipboard data index",
+    "mac_sc": "CMD+V",
+    "pc_sc": "CTRL+V",
+    "difficulty": 0
+  },
+  {
+    "display": "activate primary Text selection tool selector",
+    "mac_sc": "V",
+    "pc_sc": "V",
+    "difficulty": 2
+  },
+  {
+    "display": "activate graphic Snapshot capture utility block",
+    "mac_sc": "G",
+    "pc_sc": "G",
+    "difficulty": 3
+  },
+  {
+    "display": "activate hand Navigation panning tool canvas controller",
+    "mac_sc": "H",
+    "pc_sc": "H",
+    "difficulty": 2
+  },
+  {
+    "display": "cycle through interactive Selection tool modes layout",
+    "mac_sc": "SHIFT+V",
+    "pc_sc": "SHIFT+V",
+    "difficulty": 3
+  },
+  {
+    "display": "insert pages From another document source file",
+    "mac_sc": "CMD+SHIFT+I",
+    "pc_sc": "CTRL+SHIFT+I",
+    "difficulty": 3
+  },
+  {
+    "display": "extract selected Pages from active document layout",
+    "mac_sc": "CMD+SHIFT+E",
+    "pc_sc": "CTRL+SHIFT+E",
+    "difficulty": 3
+  },
+  {
+    "display": "delete selected Pages from active document layout",
+    "mac_sc": "CMD+SHIFT+D",
+    "pc_sc": "CTRL+SHIFT+D",
+    "difficulty": 3
+  },
+  {
+    "display": "replace selected Pages with another document source file",
+    "mac_sc": "CMD+SHIFT+R",
+    "pc_sc": "CTRL+SHIFT+R",
+    "difficulty": 3
+  },
+  {
+    "display": "rotate active Document page views clockwise orientation",
+    "mac_sc": "CMD+SHIFT+PLUS",
+    "pc_sc": "CTRL+SHIFT+PLUS",
+    "difficulty": 2
+  },
+  {
+    "display": "rotate active Document page views counterclockwise orientation",
+    "mac_sc": "CMD+SHIFT+MINUS",
+    "pc_sc": "CTRL+SHIFT+MINUS",
+    "difficulty": 2
+  },
+  {
+    "display": "open organize Pages Grid thumbnail panel overlay view",
+    "mac_sc": "CMD+OPTION+O",
+    "pc_sc": "CTRL+ALT+O",
+    "difficulty": 4
+  },
+  {
+    "display": "show or Hide left navigation side panel drawer",
+    "mac_sc": "F4",
+    "pc_sc": "F4",
+    "difficulty": 2
+  },
+  {
+    "display": "show or Hide bookmarks Navigation shortcut hierarchy sidebar panel",
+    "mac_sc": "CMD+B",
+    "pc_sc": "CTRL+B",
+    "difficulty": 3
+  },
+  {
+    "display": "show or Hide pages Thumbnail navigation layout sidebar panel",
+    "mac_sc": "CMD+T",
+    "pc_sc": "CTRL+T",
+    "difficulty": 3
+  },
+  {
+    "display": "show or Hide layers Visibility structure control sidebar panel",
+    "mac_sc": "CMD+Y",
+    "pc_sc": "CTRL+Y",
+    "difficulty": 4
+  },
+  {
+    "display": "show or Hide signatures Verification panel asset trace drawer",
+    "mac_sc": "CMD+S",
+    "pc_sc": "CTRL+S",
+    "difficulty": 4
+  },
+  {
+    "display": "show or Hide output Preview window color metric analysis utility",
+    "mac_sc": "CMD+OPTION+U",
+    "pc_sc": "CTRL+ALT+U",
+    "difficulty": 5
+  },
+  {
+    "display": "scroll viewport canvas display view up",
+    "mac_sc": "ARROWUP",
+    "pc_sc": "ARROWUP",
+    "difficulty": 1,
+    "group": "scroll_view"
+  },
+  {
+    "display": "nudge selected Form field frame boundary element position up",
+    "mac_sc": "SHIFT+ARROWUP",
+    "pc_sc": "SHIFT+ARROWUP",
+    "difficulty": 2,
+    "group": "nudge_field"
+  },
+  {
+    "display": "scroll viewport canvas display view down",
+    "mac_sc": "ARROWDOWN",
+    "pc_sc": "ARROWDOWN",
+    "difficulty": 1,
+    "group": "scroll_view"
+  },
+  {
+    "display": "nudge selected Form field frame boundary element position down",
+    "mac_sc": "SHIFT+ARROWDOWN",
+    "pc_sc": "SHIFT+ARROWDOWN",
+    "difficulty": 2,
+    "group": "nudge_field"
+  },
+  {
+    "display": "scroll viewport canvas display view left",
+    "mac_sc": "ARROWLEFT",
+    "pc_sc": "ARROWLEFT",
+    "difficulty": 1,
+    "group": "scroll_view"
+  },
+  {
+    "display": "nudge selected Form field frame boundary element position left",
+    "mac_sc": "SHIFT+ARROWLEFT",
+    "pc_sc": "SHIFT+ARROWLEFT",
+    "difficulty": 2,
+    "group": "nudge_field"
+  },
+  {
+    "display": "scroll viewport canvas display view right",
+    "mac_sc": "ARROWRIGHT",
+    "pc_sc": "ARROWRIGHT",
+    "difficulty": 1,
+    "group": "scroll_view"
+  },
+  {
+    "display": "nudge selected Form field frame boundary element position right",
+    "mac_sc": "SHIFT+ARROWRIGHT",
+    "pc_sc": "SHIFT+ARROWRIGHT",
+    "difficulty": 2,
+    "group": "nudge_field"
+  },
+  {
+    "display": "open Document properties structural file metadata dialog container panel",
+    "mac_sc": "CMD+D",
+    "pc_sc": "CTRL+D",
+    "difficulty": 2
+  },
+  {
+    "display": "open page Number entry tracking search field interface box prompt",
+    "mac_sc": "CMD+SHIFT+N",
+    "pc_sc": "CTRL+SHIFT+N",
+    "difficulty": 3
+  },
+  {
+    "display": "activate typewriter Content text insert tool box module",
+    "mac_sc": "SHIFT+T",
+    "pc_sc": "SHIFT+T",
+    "difficulty": 3
+  },
+  {
+    "display": "activate highlight Markup line styling overlay highlight brush annotation tool",
+    "mac_sc": "U",
+    "pc_sc": "U",
+    "difficulty": 2
+  },
+  {
+    "display": "activate sticky Note comment notation container block entry annotation tool",
+    "mac_sc": "S",
+    "pc_sc": "S",
+    "difficulty": 2
+  },
+  {
+    "display": "cycle through Commenting annotations markup draw brush tools layout",
+    "mac_sc": "SHIFT+U",
+    "pc_sc": "SHIFT+U",
+    "difficulty": 3
+  },
+  {
+    "display": "Start read aloud",
+    "mac_sc": "CMD+SHIFT+Y",
+    "pc_sc": "CTRL+SHIFT+Y",
+    "difficulty": 4
+  },
+  {
+    "display": "Stop read aloud",
+    "mac_sc": "CMD+SHIFT+C|CMD+SHIFT+Y",
+    "pc_sc": "CTRL+SHIFT+C|CTRL+SHIFT+Y",
+    "difficulty": 4
+  },
+  {
+    "display": "open accessibility Checker",
+    "mac_sc": "CMD+OPTION+A",
+    "pc_sc": "CTRL+ALT+A",
+    "difficulty": 4
+  },
+  {
+    "display": "open JavaScript debugging Terminal engine console logging code dialog container window",
+    "mac_sc": "CMD+J",
+    "pc_sc": "CTRL+J",
+    "difficulty": 5
+  },
+  {
+    "display": "toggle ribbons Document menu bar visibility header configuration section display state",
+    "mac_sc": "CMD+F1",
+    "pc_sc": "CTRL+F1",
+    "difficulty": 3
+  },
+  {
+    "display": "open web Page conversion download link wizard configuration structural setup frame container",
+    "mac_sc": "CMD+SHIFT+O",
+    "pc_sc": "CTRL+SHIFT+O",
+    "difficulty": 4
+  },
+  {
+    "display": "activate measurement Spatial dimensions distance dimension check inspection ruler vector tool layout",
+    "mac_sc": "M",
+    "pc_sc": "M",
+    "difficulty": 3
+  },
+  {
+    "display": "activate callout Box text pointer text reference pointing square label annotation tool",
+    "mac_sc": "X",
+    "pc_sc": "X",
+    "difficulty": 3
+  },
+  {
+    "display": "activate standard Line drawing straight path layout border continuous pen brush tool",
+    "mac_sc": "L",
+    "pc_sc": "L",
+    "difficulty": 2
+  },
+  {
+    "display": "activate rectangle Shape drawing vector boundary block path solid line markup tool",
+    "mac_sc": "R",
+    "pc_sc": "R",
+    "difficulty": 2
+  },
+  {
+    "display": "activate oval Shape drawing ellipse round vector outline curve continuous path markup tool",
+    "mac_sc": "O",
+    "pc_sc": "O",
+    "difficulty": 2
+  },
+  {
+    "display": "activate pencil Drawing hand drawn organic brush stroke lines overlay continuous vector drawing tool",
+    "mac_sc": "P",
+    "pc_sc": "P",
+    "difficulty": 2
+  },
+  {
+    "display": "activate cross Out strike through font character line editing line typography markup tool",
+    "mac_sc": "D",
+    "pc_sc": "D",
+    "difficulty": 2
+  },
+  {
+    "display": "activate underline Typography underline accent lines border drawing font styling notation markup tool",
+    "mac_sc": "J",
+    "pc_sc": "J",
+    "difficulty": 2
+  },
+  {
+    "display": "open dynamic Stamp overlay watermark signatures validation selection image asset repository menu window",
+    "mac_sc": "K",
+    "pc_sc": "K",
+    "difficulty": 3
+  },
+  {
+    "display": "open primary Signature certificate certification signing trace file digital tracking validation management framework console",
+    "mac_sc": "CMD+OPTION+S",
+    "pc_sc": "CTRL+ALT+S",
+    "difficulty": 5
+  },
+  {
+    "display": "toggle readout Mode magnification lens frame target floating view windows layout container configuration state",
+    "mac_sc": "CMD+OPTION+M",
+    "pc_sc": "CTRL+ALT+M",
+    "difficulty": 4
+  },
+  {
+    "display": "toggle reading Order tree structural flow accessibility tag hierarchy order inspection map grid layout tracking display overlay",
+    "mac_sc": "CMD+SHIFT+U",
+    "pc_sc": "CTRL+SHIFT+U",
+    "difficulty": 4
+  },
+  {
+    "display": "open optimization Document file weight file compression export configurations pipeline setup modal window control board wizard",
+    "mac_sc": "CMD+OPTION+X",
+    "pc_sc": "CTRL+ALT+X",
+    "difficulty": 4
+  },
+  {
+    "display": "open redact Content marking tool layer privacy blocks mask solid filled geometric bounds selection indicator manager board setup drawer",
+    "mac_sc": "CMD+SHIFT+Y",
+    "pc_sc": "CTRL+SHIFT+Y",
+    "difficulty": 4
+  },
+  {
+    "display": "apply structural Redaction layout privacy mask burning permanently changes modifications down flat onto underlying document stream data pipeline blocks matrix",
+    "mac_sc": "CMD+SHIFT+X",
+    "pc_sc": "CTRL+SHIFT+X",
+    "difficulty": 5
+  },
+  {
+    "display": "open page Number selection jumping tracking prompt locator box window field input interface panel grid view",
+    "mac_sc": "CMD+SHIFT+N",
+    "pc_sc": "CTRL+SHIFT+N",
+    "difficulty": 3
+  },
+  {
+    "display": "cascade all Open document frame windows layered across desktop viewing canvas space interface management workspace",
+    "mac_sc": "CMD+SHIFT+J",
+    "pc_sc": "CTRL+SHIFT+J",
+    "difficulty": 4
+  },
+  {
+    "display": "tile all Open document frame windows horizontally stacked split screen views panel alignment tracking board grid layout",
+    "mac_sc": "CMD+SHIFT+K",
+    "pc_sc": "CTRL+SHIFT+K",
+    "difficulty": 4
+  },
+  {
+    "display": "tile all Open document frame windows vertically side by side split views alignment configuration template panel grid interface module",
+    "mac_sc": "CMD+SHIFT+L",
+    "pc_sc": "CTRL+SHIFT+L",
+    "difficulty": 4
+  },
+  {
+    "display": "toggle primary Navigation tab selection bar visibility layout section header framework stripe controls display indicator state",
+    "mac_sc": "F8",
+    "pc_sc": "F8",
+    "difficulty": 3
+  },
+  {
+    "display": "toggle secondary Tool selection sidebar layout bar visibility configuration section shelf display panel controls indicator status",
+    "mac_sc": "F9",
+    "pc_sc": "F9",
+    "difficulty": 3
+  },
+  {
+    "display": "open full Document structuring structural accessibility text tags visual hierarchical tree indexing grid analysis navigation panel drawer map",
+    "mac_sc": "CMD+OPTION+T",
+    "pc_sc": "CTRL+ALT+T",
+    "difficulty": 5
+  },
+  {
+    "display": "open interactive Form field data template design parameters layout building editing grid matrix configuration section toolbox editor panel canvas console",
+    "mac_sc": "CMD+OPTION+F",
+    "pc_sc": "CTRL+ALT+F",
+    "difficulty": 5
+  },
+  {
+    "display": "activate text Callout pointer bubble bounding box annotation text insertion vector tool layer layout options properties parameters",
+    "mac_sc": "SHIFT+X",
+    "pc_sc": "SHIFT+X",
+    "difficulty": 3
+  },
+  {
+    "display": "activate continuous Polygon line segments vector boundary shape path construction drawing pen brush tool configuration selection properties",
+    "mac_sc": "SHIFT+L",
+    "pc_sc": "SHIFT+L",
+    "difficulty": 3
+  },
+  {
+    "display": "activate polygon Cloud custom bounding border frame geometry accent layout drawing shape annotation vector stroke line tool selection panel properties",
+    "mac_sc": "SHIFT+C",
+    "pc_sc": "SHIFT+C",
+    "difficulty": 3
+  },
+  {
+    "display": "open attachment File binder embedded asset repository checklist verification tracker catalog dashboard panel list drawer view display overlay option layout",
+    "mac_sc": "CMD+OPTION+A",
+    "pc_sc": "CTRL+ALT+A",
+    "difficulty": 4
+  },
+  {
+    "display": "toggle thin Line vector smoothing viewport rendering engine anti aliasing calculation tracking configuration profile preferences selection adjustment option status",
+    "mac_sc": "CMD+OPTION+5",
+    "pc_sc": "CTRL+ALT+5",
+    "difficulty": 4
+  },
+  {
+    "display": "toggle automatic Horizontal vertical single page view grid column stack flow scrolling configuration state orientation profile tracking preference template parameters",
+    "mac_sc": "CMD+OPTION+6",
+    "pc_sc": "CTRL+ALT+6",
+    "difficulty": 4
+  },
+  {
+    "display": "toggle continuous Scrolling multi page vertical assembly block layout flow visualization alignment configuration profile option preference parameter grid tracking template",
+    "mac_sc": "CMD+OPTION+7",
+    "pc_sc": "CTRL+ALT+7",
+    "difficulty": 4
+  },
+  {
+    "display": "toggle side By side double two page layout viewing grid matrix spreadsheet layout alignment configuration visualization template option tracking parameters profiles status",
+    "mac_sc": "CMD+OPTION+8",
+    "pc_sc": "CTRL+ALT+8",
+    "difficulty": 4
+  },
+  {
+    "display": "toggle continuous Side by side double two page layout viewing grid scrolling column stack layout sequence configuration tracking options profile parameters template status map",
+    "mac_sc": "CMD+OPTION+9",
+    "pc_sc": "CTRL+ALT+9",
+    "difficulty": 4
+  }
+]

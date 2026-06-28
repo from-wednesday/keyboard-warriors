@@ -1,0 +1,651 @@
+[
+ {
+    "display": "Switch to Mac in the top left. Press ENTER.",
+    "mac_sc": "NULL",
+    "pc_sc": "ENTER",
+    "difficulty": 0
+  },
+  {
+    "display": "Keynote is a Mac only App. Press ENTER.",
+    "mac_sc": "NULL",
+    "pc_sc": "ENTER",
+    "difficulty": 0
+  }, 
+  {
+    "display": "Switch to Mac in the top left. Press ENTER.",
+    "mac_sc": "NULL",
+    "pc_sc": "ENTER",
+    "difficulty": 3
+  },
+  {
+    "display": "Keynote is a Mac only App. Press ENTER.",
+    "mac_sc": "NULL",
+    "pc_sc": "ENTER",
+    "difficulty": 3
+  }, 
+
+  {
+    "display": "Switch to Mac in the top left. Press ENTER.",
+    "mac_sc": "NULL",
+    "pc_sc": "ENTER",
+    "difficulty": 5
+  },
+  {
+    "display": "Keynote is a Mac only App. Press ENTER.",
+    "mac_sc": "NULL",
+    "pc_sc": "ENTER",
+    "difficulty": 5
+  }, 
+  {
+    "display": "Save the Presentation",
+    "mac_sc": "CMD+S",
+    "pc_sc": "NULL",
+    "difficulty": 0
+  },
+  {
+    "display": "Duplicate the Presentation",
+    "mac_sc": "CMD+SHIFT+S",
+    "pc_sc": "NULL",
+    "difficulty": 2
+  },
+  {
+    "display": "redo the last Action",
+    "mac_sc": "CMD+SHIFT+Z",
+    "pc_sc": "NULL",
+    "difficulty": 1
+  },
+  {
+    "display": "Open an existing presentation",
+    "mac_sc": "CMD+O",
+    "pc_sc": "NULL",
+    "difficulty": 1
+  },
+  {
+    "display": "print the Presentation slide layout",
+    "mac_sc": "CMD+P",
+    "pc_sc": "NULL",
+    "difficulty": 2
+  },
+  {
+    "display": "close the current Window view",
+    "mac_sc": "CMD+W",
+    "pc_sc": "NULL",
+    "difficulty": 2
+  },
+  {
+    "display": "open Keynote Preferences",
+    "mac_sc": "CMD+COMMA",
+    "pc_sc": "NULL",
+    "difficulty": 4
+  },
+  {
+    "display": "hide the Application windows",
+    "mac_sc": "CMD+H",
+    "pc_sc": "NULL",
+    "difficulty": 1
+  },
+  {
+    "display": "go to Next slide layout",
+    "mac_sc": "ARROWDOWN",
+    "pc_sc": "NULL",
+    "difficulty": 1
+  },
+  {
+    "display": "go to Previous slide layout",
+    "mac_sc": "ARROWUP",
+    "pc_sc": "NULL",
+    "difficulty": 1
+  },
+  {
+    "display": "go to End of presentation slides",
+    "mac_sc": "END",
+    "pc_sc": "NULL",
+    "difficulty": 1
+  },
+  {
+    "display": "go to Start of presentation slides",
+    "mac_sc": "HOME",
+    "pc_sc": "NULL",
+    "difficulty": 1
+  },
+  {
+    "display": "scroll navigator Down one view",
+    "mac_sc": "PAGEDOWN",
+    "pc_sc": "NULL",
+    "difficulty": 2
+  },
+  {
+    "display": "scroll navigator Up one view",
+    "mac_sc": "PAGEUP",
+    "pc_sc": "NULL",
+    "difficulty": 2
+  },
+  {
+    "display": "add a new Blank slide",
+    "mac_sc": "SHIFT+CMD+N",
+    "pc_sc": "NULL",
+    "difficulty": 3
+  },
+  {
+    "display": "duplicate Slide",
+    "mac_sc": "CMD+D",
+    "pc_sc": "NULL",
+    "difficulty": 2
+  },
+  {
+    "display": "delete Slide",
+    "mac_sc": "DELETE|BACKSPACE",
+    "pc_sc": "NULL",
+    "difficulty": 1
+  },
+  {
+    "display": "Indent Slide level",
+    "mac_sc": "TAB",
+    "pc_sc": "NULL",
+    "difficulty": 2
+  },
+  {
+    "display": "Outdent Slide level",
+    "mac_sc": "SHIFT+TAB",
+    "pc_sc": "NULL",
+    "difficulty": 3
+  },
+  {
+    "display": "skip or unskip slide",
+    "mac_sc": "CMD+SHIFT+K",
+    "pc_sc": "NULL",
+    "difficulty": 4
+  },
+  {
+    "display": "select All",
+    "mac_sc": "CMD+A",
+    "pc_sc": "NULL",
+    "difficulty": 1
+  },
+  {
+    "display": "deselect All",
+    "mac_sc": "CMD+SHIFT+A",
+    "pc_sc": "NULL",
+    "difficulty": 2
+  },
+  {
+    "display": "Copy Properties",
+    "mac_sc": "CMD+C",
+    "pc_sc": "NULL",
+    "difficulty": 2
+  },
+  {
+    "display": "Paste",
+    "mac_sc": "CMD+V",
+    "pc_sc": "NULL",
+    "difficulty": 0
+  },
+  {
+    "display": "Cut",
+    "mac_sc": "CMD+X",
+    "pc_sc": "NULL",
+    "difficulty": 0
+  },
+  {
+    "display": "Group",
+    "mac_sc": "CMD+OPTION+G",
+    "pc_sc": "NULL",
+    "difficulty": 3
+  },
+  {
+    "display": "Ungroup",
+    "mac_sc": "CMD+OPTION+SHIFT+G",
+    "pc_sc": "NULL",
+    "difficulty": 4
+  },
+  {
+    "display": "Lock Object",
+    "mac_sc": "CMD+L",
+    "pc_sc": "NULL",
+    "difficulty": 2
+  },
+  {
+    "display": "Unlock Object",
+    "mac_sc": "CMD+OPTION+L",
+    "pc_sc": "NULL",
+    "difficulty": 3
+  },
+  {
+    "display": "Bold text",
+    "mac_sc": "CMD+B",
+    "pc_sc": "NULL",
+    "difficulty": 1
+  },
+  {
+    "display": "italicise text",
+    "mac_sc": "CMD+I",
+    "pc_sc": "NULL",
+    "difficulty": 1
+  },
+  {
+    "display": "Underline text",
+    "mac_sc": "CMD+U",
+    "pc_sc": "NULL",
+    "difficulty": 1
+  },
+  {
+    "display": "increase font size",
+    "mac_sc": "CMD+EQUAL",
+    "pc_sc": "NULL",
+    "difficulty": 3
+  },
+  {
+    "display": "decrease font size",
+    "mac_sc": "CMD+MINUS",
+    "pc_sc": "NULL",
+    "difficulty": 3
+  },
+  {
+    "display": "make text Superscript",
+    "mac_sc": "CMD+CONTROL+EQUAL",
+    "pc_sc": "NULL",
+    "difficulty": 4
+  },
+  {
+    "display": "make text Subscript",
+    "mac_sc": "CMD+CONTROL+MINUS",
+    "pc_sc": "NULL",
+    "difficulty": 4
+  },
+  {
+    "display": "copy Paragraph Style",
+    "mac_sc": "CMD+OPTION+C",
+    "pc_sc": "NULL",
+    "difficulty": 4
+  },
+  {
+    "display": "paste Paragraph Style",
+    "mac_sc": "CMD+OPTION+V",
+    "pc_sc": "NULL",
+    "difficulty": 4
+  },
+  {
+    "display": "align text to Left boundary",
+    "mac_sc": "CMD+BRACKETLEFT",
+    "pc_sc": "NULL",
+    "difficulty": 3
+  },
+  {
+    "display": "align text block to Right boundary",
+    "mac_sc": "CMD+BRACKETRIGHT",
+    "pc_sc": "NULL",
+    "difficulty": 3
+  },
+  {
+    "display": "align text block to Center midpoint",
+    "mac_sc": "CMD+PIPE",
+    "pc_sc": "NULL",
+    "difficulty": 3
+  },
+  {
+    "display": "bring Forward one layer",
+    "mac_sc": "CMD+OPTION+SHIFT+F",
+    "pc_sc": "NULL",
+    "difficulty": 4
+  },
+  {
+    "display": "send Backward one layer",
+    "mac_sc": "CMD+OPTION+SHIFT+B",
+    "pc_sc": "NULL",
+    "difficulty": 4
+  },
+  {
+    "display": "bring to Top of stack",
+    "mac_sc": "CMD+SHIFT+F",
+    "pc_sc": "NULL",
+    "difficulty": 4
+  },
+  {
+    "display": "send to Bottom of stack",
+    "mac_sc": "CMD+SHIFT+B",
+    "pc_sc": "NULL",
+    "difficulty": 4
+  },
+  {
+    "display": "open/close inspector panel",
+    "mac_sc": "CMD+OPTION+I",
+    "pc_sc": "NULL",
+    "difficulty": 3
+  },
+  {
+    "display": "show or hide Ruler",
+    "mac_sc": "CMD+R",
+    "pc_sc": "NULL",
+    "difficulty": 2
+  },
+  {
+    "display": "Zoom to Fit window",
+    "mac_sc": "CMD+OPTION+0",
+    "pc_sc": "NULL",
+    "difficulty": 3
+  },
+  {
+    "display": "Zoom to actual size",
+    "mac_sc": "CMD+0",
+    "pc_sc": "NULL",
+    "difficulty": 3
+  },
+  {
+    "display": "toggle snap to guide",
+    "mac_sc": "CMD+OPTION+SEMICOLON",
+    "pc_sc": "NULL",
+    "difficulty": 4
+  },
+  {
+    "display": "edit Slide Layouts (masters)",
+    "mac_sc": "CMD+SHIFT+E",
+    "pc_sc": "NULL",
+    "difficulty": 5
+  },
+  {
+    "display": "play from this slide",
+    "mac_sc": "CMD+OPTION+P",
+    "pc_sc": "NULL",
+    "difficulty": 3
+  },
+  {
+    "display": "play from start",
+    "mac_sc": "CMD+OPTION+SHIFT+P",
+    "pc_sc": "NULL",
+    "difficulty": 3
+  },
+  {
+    "display": "exit active Presentation preview mode",
+    "mac_sc": "ESC",
+    "pc_sc": "NULL",
+    "difficulty": 1
+  },
+  {
+    "display": "fade display output to Black screen state",
+    "mac_sc": "B",
+    "pc_sc": "NULL",
+    "difficulty": 3
+  },
+  {
+    "display": "fade display output to White screen state",
+    "mac_sc": "W",
+    "pc_sc": "NULL",
+    "difficulty": 3
+  },
+  {
+    "display": "show/hide presenter notes",
+    "mac_sc": "CMD+SHIFT+H",
+    "pc_sc": "NULL",
+    "difficulty": 3
+  },
+  {
+    "display": "swap primary & presenter displays",
+    "mac_sc": "X",
+    "pc_sc": "NULL",
+    "difficulty": 4
+  },
+  {
+    "display": "reset presentation Timer",
+    "mac_sc": "R",
+    "pc_sc": "NULL",
+    "difficulty": 4
+  },
+  {
+    "display": "nudge up by 1 point",
+    "mac_sc": "ARROWUP",
+    "pc_sc": "NULL",
+    "difficulty": 1,
+    "group": "nudge"
+  },
+  {
+    "display": "nudge up by 10 points",
+    "mac_sc": "SHIFT+ARROWUP",
+    "pc_sc": "NULL",
+    "difficulty": 2,
+    "group": "nudge"
+  },
+  {
+    "display": "nudge down by 1 point",
+    "mac_sc": "ARROWDOWN",
+    "pc_sc": "NULL",
+    "difficulty": 1,
+    "group": "nudge"
+  },
+  {
+    "display": "nudge down by 10 points",
+    "mac_sc": "SHIFT+ARROWDOWN",
+    "pc_sc": "NULL",
+    "difficulty": 2,
+    "group": "nudge"
+  },
+  {
+    "display": "nudge left by 1 point",
+    "mac_sc": "ARROWLEFT",
+    "pc_sc": "NULL",
+    "difficulty": 1,
+    "group": "nudge"
+  },
+  {
+    "display": "nudge left by 10 points",
+    "mac_sc": "SHIFT+ARROWLEFT",
+    "pc_sc": "NULL",
+    "difficulty": 2,
+    "group": "nudge"
+  },
+  {
+    "display": "nudge right by 1 point",
+    "mac_sc": "ARROWRIGHT",
+    "pc_sc": "NULL",
+    "difficulty": 1,
+    "group": "nudge"
+  },
+  {
+    "display": "nudge right by 10 points",
+    "mac_sc": "SHIFT+ARROWRIGHT",
+    "pc_sc": "NULL",
+    "difficulty": 2,
+    "group": "nudge"
+  },
+  {
+    "display": "insert an Equation syntax formula block",
+    "mac_sc": "CMD+OPTION+E",
+    "pc_sc": "NULL",
+    "difficulty": 3
+  },
+  {
+    "display": "insert a Hyperlink redirection path location locator",
+    "mac_sc": "CMD+K",
+    "pc_sc": "NULL",
+    "difficulty": 2
+  },
+  {
+    "display": "open comments Commentary text dialogue note box window",
+    "mac_sc": "CMD+SHIFT+K",
+    "pc_sc": "NULL",
+    "difficulty": 3
+  },
+  {
+    "display": "add row Above selected table cell area",
+    "mac_sc": "OPTION+ARROWUP",
+    "pc_sc": "NULL",
+    "difficulty": 3,
+    "group": "table_cell_rows"
+  },
+  {
+    "display": "add row Below selected table cell area",
+    "mac_sc": "OPTION+ARROWDOWN",
+    "pc_sc": "NULL",
+    "difficulty": 3,
+    "group": "table_cell_rows"
+  },
+  {
+    "display": "add column to Right side of selected table cell area",
+    "mac_sc": "OPTION+ARROWRIGHT",
+    "pc_sc": "NULL",
+    "difficulty": 3,
+    "group": "table_cell_cols"
+  },
+  {
+    "display": "add column to Left side of selected table cell area",
+    "mac_sc": "OPTION+ARROWLEFT",
+    "pc_sc": "NULL",
+    "difficulty": 3,
+    "group": "table_cell_cols"
+  },
+  {
+    "display": "make vector Path line point editable contour status",
+    "mac_sc": "RETURN",
+    "pc_sc": "NULL",
+    "difficulty": 3
+  },
+  {
+    "display": "open spelling Checker verify dictionary window utility",
+    "mac_sc": "CMD+COLON",
+    "pc_sc": "NULL",
+    "difficulty": 3
+  },
+  {
+    "display": "find next Matching keyword term pattern instance query",
+    "mac_sc": "CMD+G",
+    "pc_sc": "NULL",
+    "difficulty": 2
+  },
+  {
+    "display": "find previous Matching keyword term pattern instance query",
+    "mac_sc": "CMD+SHIFT+G",
+    "pc_sc": "NULL",
+    "difficulty": 3
+  },
+  {
+    "display": "show text Fonts palette window engine selection",
+    "mac_sc": "CMD+T",
+    "pc_sc": "NULL",
+    "difficulty": 2
+  },
+  {
+    "display": "show colors Palette window engine canvas selector",
+    "mac_sc": "CMD+SHIFT+C",
+    "pc_sc": "NULL",
+    "difficulty": 2
+  },
+  {
+    "display": "toggle visibility Of comment block annotations marks panel",
+    "mac_sc": "CMD+SHIFT+T",
+    "pc_sc": "NULL",
+    "difficulty": 4
+  },
+  {
+    "display": "select parent Object container frame hierarchy outline block",
+    "mac_sc": "ESC",
+    "pc_sc": "NULL",
+    "difficulty": 3
+  },
+  {
+    "display": "show slides Outline side panel workflow hierarchy layout structure",
+    "mac_sc": "CMD+OPTION+CONTROL+O",
+    "pc_sc": "NULL",
+    "difficulty": 4
+  },
+  {
+    "display": "show slide List layout view structure framework selector thumbnail panel",
+    "mac_sc": "CMD+OPTION+CONTROL+V",
+    "pc_sc": "NULL",
+    "difficulty": 4
+  },
+  {
+    "display": "show lightbox Slide grid matrix panel view visualization layout monitor",
+    "mac_sc": "CMD+OPTION+CONTROL+L",
+    "pc_sc": "NULL",
+    "difficulty": 4
+  },
+  {
+    "display": "minimize the current Active operating window framework matrix module view",
+    "mac_sc": "CMD+M",
+    "pc_sc": "NULL",
+    "difficulty": 1
+  },
+  {
+    "display": "open search And replace content strings match panel dialog box window",
+    "mac_sc": "CMD+F",
+    "pc_sc": "NULL",
+    "difficulty": 2
+  },
+  {
+    "display": "remove typography Character styling formatting properties parameters from text selections",
+    "mac_sc": "CMD+OPTION+SHIFT+V",
+    "pc_sc": "NULL",
+    "difficulty": 3
+  },
+  {
+    "display": "constrain uniform Scaling proportional aspect ratio resizing parameters updates across bounding box edits",
+    "mac_sc": "SHIFT",
+    "pc_sc": "NULL",
+    "difficulty": 1
+  },
+  {
+    "display": "resize bounding Box frame outlines symmetrically moving uniform outward step away from center midpoint core anchor",
+    "mac_sc": "OPTION",
+    "pc_sc": "NULL",
+    "difficulty": 2
+  },
+  {
+    "display": "toggle snap Alignment guidance vectors rules overlay constraints state on drag",
+    "mac_sc": "CMD",
+    "pc_sc": "NULL",
+    "difficulty": 3
+  },
+  {
+    "display": "open built In standard internal electronic electronic documentation operation help reference guide textbook index system panel manual",
+    "mac_sc": "CMD+SHIFT+QUESTION",
+    "pc_sc": "NULL",
+    "difficulty": 2
+  },
+  {
+    "display": "go to Slide number input prompt during presentation",
+    "mac_sc": "FORWARDSLASH",
+    "pc_sc": "NULL",
+    "difficulty": 4
+  },
+  {
+    "display": "open primary Presentation display configuration selection grid matrix screen customizer options panel window",
+    "mac_sc": "O",
+    "pc_sc": "NULL",
+    "difficulty": 4
+  },
+  {
+    "display": "pause active Slide performance presentation execution state temporarily",
+    "mac_sc": "H",
+    "pc_sc": "NULL",
+    "difficulty": 3
+  },
+  {
+    "display": "show or Hide application window toolbar framework layout view",
+    "mac_sc": "CMD+OPTION+T",
+    "pc_sc": "NULL",
+    "difficulty": 3
+  },
+  {
+    "display": "insert a custom Text placeholder layout bounding container block on active frame",
+    "mac_sc": "OPTION+CMD+T",
+    "pc_sc": "NULL",
+    "difficulty": 3
+  },
+  {
+    "display": "clear cell Values content text internal cell grid matrix parameters completely leaving cell blocks empty layout structures structure background unchanged",
+    "mac_sc": "OPTION+DELETE",
+    "pc_sc": "NULL",
+    "difficulty": 3
+  },
+  {
+    "display": "select the entire Table row structural block line from active internal cell point focusing alignment parameters highlights selector matrix",
+    "mac_sc": "SHIFT+SPACE",
+    "pc_sc": "NULL",
+    "difficulty": 3
+  },
+  {
+    "display": "select the entire Table column structural vertical strip section array alignment block from cell selection focus matrix indicator box parameters tracking indicators",
+    "mac_sc": "CONTROL+SPACE",
+    "pc_sc": "NULL",
+    "difficulty": 3
+  }
+]

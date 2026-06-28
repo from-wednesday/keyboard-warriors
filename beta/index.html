@@ -3469,13 +3469,9 @@ function helpButtonClick() {
   resetEndScreenInactivityTimer();
   if (gameState === 'idle')           { showTip(tipIndex + 1); tipIndex++; return; }  if (gameState === 'playing')        { toggleHelp(); return; }
   // Difficulty panel: refresh the footer message
-  if ((gameState === 'idle' || gameState === 'welcome' || gameState === 'paused' || gameState === 'finished') && activeSettings === 'panelDifficultySettings' && !_trophySequenceActive) {
-    var footer = document.getElementById('diffAdvancedFooter');
-    if (footer && footer.classList.contains('diff-advanced-footer-visible')) {
-      footer.textContent = _pickDiffPanelFooterMessage();
-      _popDiffLabel(footer);
-    }
-      return; 
+  if (activeSettings === 'panelDifficultySettings' && !_trophySequenceActive) {
+    _showPanelTip('panelDifficultySettings');
+    return;
   }
   if (gameState === 'readyToUnpause') { _enterReadyToUnpauseCleanup(); enterPause(); enterConfirmQuit(); return; }
   if (gameState === 'paused')         { enterConfirmQuit(); return; }

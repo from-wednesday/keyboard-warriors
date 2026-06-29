@@ -3389,6 +3389,7 @@ function updateTimer() {
 function resetscoreDisc() {
   scoreDisc.style.background = '';
   scoreDisc.style.removeProperty('--face-rot');
+  scoreDisc.style.removeProperty('filter');
   currentMedal = null;
   scoreDisc.className = 'scoreDisc';
   timerDiv.textContent = formatTime(Math.floor(totalTime));
@@ -4431,6 +4432,7 @@ function _resetToIdleSilently() {
   clearLivesRow();
   scoreDisc.style.background = '';
   scoreDisc.style.removeProperty('--face-rot');
+  scoreDisc.style.removeProperty('filter');
   currentMedal = null;
   scoreDisc.className = 'scoreDisc';
   timerDiv.textContent = '0:00';
@@ -4479,6 +4481,7 @@ function resetToIdle() {
   clearLivesRow();
   scoreDisc.style.background = '';
   scoreDisc.style.removeProperty('--face-rot');
+  scoreDisc.style.removeProperty('filter');
   currentMedal = null;
   scoreDisc.className = 'scoreDisc';
   timerDiv.textContent = '0:00';

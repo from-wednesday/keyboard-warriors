@@ -2441,7 +2441,8 @@ body:has(#keyboardPanel[data-keyboard-theme="poprocks"]) #mainBtn:hover {
 .segmented-pill-section.diff-btn-label-pop,
 .diff-slider-side-label.diff-btn-label-pop,
 .diff-knob-label.diff-btn-label-pop,
-.diff-advanced-footer.diff-btn-label-pop {
+.diff-advanced-footer.diff-btn-label-pop,
+.phone-icon-label.diff-btn-label-pop {
   display: inline-block; /* required for transform on inline/block elements */
   animation: diffLabelPop 0.35s cubic-bezier(0.22, 0.61, 0.36, 1) forwards;
 }

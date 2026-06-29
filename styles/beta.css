@@ -4385,7 +4385,6 @@ html[data-theme="dark"] body {
 [data-theme="dark"] .dm-mode-icon-active                { color: #2b2b2b; }
 
 /* ── #9ca3af → #585858 ── dim labels, icons, subtle strokes ── */
-[data-theme="dark"] #credit                             { color: #585858; }
 [data-theme="dark"] #osToggleWrap .os-label             { color: #585858; }
 [data-theme="dark"] #appSelectorLabel                   { color: #585858; }
 [data-theme="dark"] #appPill                            { border-color: #585858; }
@@ -4406,6 +4405,9 @@ html[data-theme="dark"] body {
 [data-theme="dark"] .kb-variant-key                     { border-bottom-color: #585858; }
 [data-theme="dark"] #confirmBracket                     { fill: #585858; }
 [data-theme="dark"] .sp-report-section-title.sp-title-empty { text-decoration-color: #585858; }
+/* Credit line: deliberately dimmer than the standard #9ca3af mapping above,
+   for slightly less contrast against the dark background. */
+[data-theme="dark"] #credit { color: #646464; }
 
 /* ── #6b7280 → #494949 ── secondary / mid labels ── */
 [data-theme="dark"] #statLeft,

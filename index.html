@@ -375,11 +375,11 @@
   <div id="phonePanelArea"></div>
   <div id="phoneToolbarIcons">
     <div class="phone-icon-btn" id="phoneKbIconWrap">
-      <svg viewBox="0 0 111.9 49.8" style="color:#9ca3af;overflow:visible;"><use href="#IconKeyboard"/></svg>
+      <svg viewBox="0 0 111.9 49.8" style="overflow:visible;"><use href="#IconKeyboard"/></svg>
       <span class="phone-icon-label">Keyboard</span>
     </div>
     <div class="phone-icon-btn" id="phoneDiffIconWrap">
-      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 96.6 64" style="color:#9ca3af;">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 96.6 64">
         <use href="#IconDifficultyDial"/>
         <g id="phoneDiffNeedle" style="transform:rotate(-60deg);transform-origin:48.2px 48.1px;transition:transform 0.35s cubic-bezier(0.34,1.56,0.64,1);">
           <use href="#IconDifficultyNeedle"/>
@@ -388,11 +388,11 @@
       <span class="phone-icon-label">Difficulty</span>
     </div>
     <div class="phone-icon-btn" id="phoneBrIconWrap">
-<svg viewBox="0 0 85.1 61.1" style="color:#9ca3af;overflow:visible;"><use href="#IconConflicts"/></svg>
+      <svg viewBox="0 0 85.1 61.1" style="overflow:visible;"><use href="#IconConflicts"/></svg>
       <span class="phone-icon-label">Conflicts</span>
     </div>
     <div class="phone-icon-btn" id="phoneStudyNotesIconWrap">
-      <svg viewBox="0 0 112.5 84.6" style="color:#9ca3af;"><use href="#IconStudyNotes"/></svg>
+      <svg viewBox="0 0 112.5 84.6"><use href="#IconStudyNotes"/></svg>
       <span class="phone-icon-label">Study Notes</span>
     </div>
   </div>
@@ -440,7 +440,7 @@
     <span class="diff-btn-text">user found</span>
   </button>
   <button id="cfBtnKeyboard" class="segmented-pill-section segmented-pill-quarter" onclick="setConflictFilter('keyboard')" title="extended keys">
-<svg viewBox="0 0 139.9 49.8" style="height:14px;width:auto;"><use href="#IconExtKeyboard"/></svg>
+<svg class="diff-btn-text" viewBox="0 0 139.9 49.8" style="height:14px;width:auto;color:inherit;"><use href="#IconExtKeyboard"/></svg>
   </button>
 </div>
         <ul id="browserCompatList" class="sp-conflict-list"></ul>
@@ -640,7 +640,7 @@
         <p class="sp-endgame-context-label" id="EndGameHistoryTimerLabel"></p>
         <p class="sp-endgame-context-label" id="EndGameHistoryContextLabel"></p>
       </div>
-      <div class="sp-report-bottom" style="margin-top:-2px;">
+      <div class="sp-report-bottom" style="margin-top:-2px; margin-bottom:2px;">
         <div class="sp-report-advice-box" id="historyStatsBox"></div>
       </div>
       <div class="sp-col sp-col-left">
@@ -756,7 +756,7 @@
           </div>
         </div>
       </div>
-<p id="diffAdvancedFooter" class="diff-advanced-footer" style="color: #f0f4f8;"><em>Full controls unlocked.</em> Use <strong>Difficulty</strong> to expand your knowledge. Use <strong>Timer &amp; Lives</strong> to convert them to &lsquo;muscle memory&rsquo;.</p>
+<p id="diffAdvancedFooter" class="diff-advanced-footer"><em>Full controls unlocked.</em> Use <strong>Difficulty</strong> to expand your knowledge. Use <strong>Timer &amp; Lives</strong> to convert them to &lsquo;muscle memory&rsquo;.</p>
 
     </div>
 
@@ -1707,6 +1707,29 @@ function pulseBtn(el) {
   });
 }
 
+/* Adds press-in-then-pop behaviour to a button.
+   labelEl: the child span whose text should squash and pop (optional; falls back to el itself).
+   On pointerdown the label shrinks; on pointerup it pops via _popDiffLabel. */
+function attachPressPopBehaviour(el, labelEl) {
+  if (!el || el._pressPopAttached) return;
+  el._pressPopAttached = true;
+  var target = labelEl || el;
+
+  el.addEventListener('pointerdown', function(e) {
+    if (!e.isPrimary) return;
+    target.classList.remove('diff-btn-label-pop');
+    target.classList.add('press-in');
+  });
+
+  function release() {
+    target.classList.remove('press-in');
+    _popDiffLabel(target);
+  }
+
+  el.addEventListener('pointerup',     release);
+  el.addEventListener('pointercancel', function() { target.classList.remove('press-in'); });
+}
+
 function pulseKbIcon() {
   var icon = document.getElementById('kbIcon');
   if (!icon) return;
@@ -1793,8 +1816,8 @@ osMismatchEl.addEventListener('click', function() {
 const osKnobEl  = document.getElementById('osKnobEl');
 
 // MAC_SVG / PC_SVG inline strings for label rendering
-const MAC_ICON_SVG = '<svg width="10" height="12" viewBox="0 0 686.7 761.2" fill="#9ca3af" xmlns="http://www.w3.org/2000/svg"><path d="M563.7,589c-27.7,41.3-57,81.7-101.7,82.3-44.7,1-59-26.3-109.7-26.3s-66.7,25.7-109,27.3c-43.7,1.7-76.7-44-104.7-84.3-57-82.3-100.7-234-42-336,29-50.7,81-82.7,137.3-83.7,42.7-.7,83.3,29,109.7,29s75.3-35.7,127-30.3c21.7,1,82.3,8.7,121.3,66-3,2-72.3,42.7-71.7,127,1,100.7,88.3,134.3,89.3,134.7-1,2.3-14,48-46,94.3h0ZM373.3,55.7c24.3-27.7,64.7-48.7,98-50,4.3,39-11.3,78.3-34.7,106.3-23,28.3-61,50.3-98.3,47.3-5-38.3,13.7-78.3,35-103.7h0Z"/></svg>';
-const PC_ICON_SVG  = '<svg width="11" height="11" viewBox="0 0 102.73 104.6" fill="#9ca3af" xmlns="http://www.w3.org/2000/svg"><path d="M16,50.4h26.6v-27.7l-26.6,6.3v21.4Z"/><path d="M86,12.6l-37,8.6v29.2h37V12.6Z"/><path d="M16,76.2l26.6,6.3v-25.6H16v19.3Z"/><path d="M49,84l37,8.6v-35.7h-37v27.1Z"/></svg>';
+const MAC_ICON_SVG = '<svg width="10" height="12" viewBox="0 0 686.7 761.2" fill="currentColor" xmlns="http://www.w3.org/2000/svg"><path d="M563.7,589c-27.7,41.3-57,81.7-101.7,82.3-44.7,1-59-26.3-109.7-26.3s-66.7,25.7-109,27.3c-43.7,1.7-76.7-44-104.7-84.3-57-82.3-100.7-234-42-336,29-50.7,81-82.7,137.3-83.7,42.7-.7,83.3,29,109.7,29s75.3-35.7,127-30.3c21.7,1,82.3,8.7,121.3,66-3,2-72.3,42.7-71.7,127,1,100.7,88.3,134.3,89.3,134.7-1,2.3-14,48-46,94.3h0ZM373.3,55.7c24.3-27.7,64.7-48.7,98-50,4.3,39-11.3,78.3-34.7,106.3-23,28.3-61,50.3-98.3,47.3-5-38.3,13.7-78.3,35-103.7h0Z"/></svg>';
+const PC_ICON_SVG  = '<svg width="11" height="11" viewBox="0 0 102.73 104.6" fill="currentColor" xmlns="http://www.w3.org/2000/svg"><path d="M16,50.4h26.6v-27.7l-26.6,6.3v21.4Z"/><path d="M86,12.6l-37,8.6v29.2h37V12.6Z"/><path d="M16,76.2l26.6,6.3v-25.6H16v19.3Z"/><path d="M49,84l37,8.6v-35.7h-37v27.1Z"/></svg>';
 
 function buildOsLabels() {
   // Detected device is always on the LEFT (white dot = current).
@@ -1846,7 +1869,8 @@ function updateToggleVisual(os) {
 
 function applyOsMode(os) {
   currentOs = os;
-  var savedPos = _kbPos;
+  var savedPos          = _kbPos;
+  var savedPartialAngle = _kbPartialAngle;
   var panel = document.getElementById('keyboardPanel');
   var stage = document.getElementById('kbFlipStage');
   var wrap  = document.getElementById('keyboardWrap');
@@ -1888,8 +1912,9 @@ function applyOsMode(os) {
     var RestoreRotateX;
     var RestoreStageY;
     if (savedPos === 'partial') {
-      RestoreRotateX = _kbPartialAngle;
-      RestoreStageY  = _interpolateStageY(_kbPartialAngle);
+      _kbPartialAngle = savedPartialAngle;
+      RestoreRotateX  = savedPartialAngle;
+      RestoreStageY   = _interpolateStageY(savedPartialAngle);
     } else {
       // edge
       RestoreRotateX = KbNamedPositions.edge.panelRotateX;
@@ -2291,7 +2316,7 @@ var _phoneStudyBtn = document.getElementById('phoneStudyNotesIconWrap');
 if (_phoneStudyBtn) _phoneStudyBtn.addEventListener('click', function() {
   var HasContent = !!(lastCompletedReport || (questionPool && questionPool.length > 0 && (gameState === 'playing' || gameState === 'paused' || gameState === 'readyToUnpause')));
   if (!HasContent) {
-    showToast('Start training to build Study Notes.');
+    showToast('Study Notes need to see you play first.');
     return;
   }
   if (gameState === 'finished' && lastCompletedReport) {
@@ -2363,6 +2388,17 @@ var SkeletonAnimationComplete = new Promise(function(resolve) {
 Promise.all([DomReady, StylesheetReady, SkeletonAnimationComplete]).then(function() {
   history.scrollRestoration = 'manual';
   window.scrollTo(0, 0);
+  attachPressPopBehaviour(document.getElementById('mainBtn'));
+  attachPressPopBehaviour(document.getElementById('helpBtn'));
+
+  // Apply press-in-then-pop to all statically rendered segmented pill buttons.
+  // Dynamically built pills (difficulty, report card actions) are handled
+  // at the point their labels are popped via _popDiffLabel.
+  document.querySelectorAll('.segmented-pill-section, .sp-seg-btn, .diff-btn').forEach(function(Btn) {
+    var LabelSpan = Btn.querySelector('.diff-btn-text, .phone-icon-label') || null;
+    attachPressPopBehaviour(Btn, LabelSpan);
+  });
+
   _initialiseLayout();
   _initialiseStageDragListeners();
   if (activeSettings !== null) _spAlignPanel();
@@ -2976,18 +3012,19 @@ function ShowExtendedKeyChip(BrowserCode, ColourState) {
   // Match the larger toast chip size
   ResizeChips(ChipsWrapper, 28);
 
+  var _extChipDark = _isDarkMode();
   if (EffectiveColour === 'green') {
     ChipsWrapper.querySelectorAll('.sp-report-chip-key').forEach(function(Chip) {
       Chip.style.background  = '#10b981';
       Chip.style.color       = 'white';
-      Chip.style.borderColor = '#059669';
+      Chip.style.borderColor = _extChipDark ? 'transparent' : '#059669';
       Chip.style.boxShadow   = '0 0 6px rgba(16,185,129,0.45)';
     });
   } else if (EffectiveColour === 'orange') {
     ChipsWrapper.querySelectorAll('.sp-report-chip-key').forEach(function(Chip) {
       Chip.style.background  = '#f97316';
       Chip.style.color       = 'white';
-      Chip.style.borderColor = '#c2410c';
+      Chip.style.borderColor = _extChipDark ? 'transparent' : '#c2410c';
       Chip.style.boxShadow   = '0 0 6px rgba(249,115,22,0.45)';
     });
   }
@@ -3389,6 +3426,7 @@ function updateTimer() {
 function resetscoreDisc() {
   scoreDisc.style.background = '';
   scoreDisc.style.removeProperty('--face-rot');
+  scoreDisc.style.removeProperty('filter');
   currentMedal = null;
   scoreDisc.className = 'scoreDisc';
   timerDiv.textContent = formatTime(Math.floor(totalTime));
@@ -3469,13 +3507,9 @@ function helpButtonClick() {
   resetEndScreenInactivityTimer();
   if (gameState === 'idle')           { showTip(tipIndex + 1); tipIndex++; return; }  if (gameState === 'playing')        { toggleHelp(); return; }
   // Difficulty panel: refresh the footer message
-  if ((gameState === 'idle' || gameState === 'welcome' || gameState === 'paused' || gameState === 'finished') && activeSettings === 'panelDifficultySettings' && !_trophySequenceActive) {
-    var footer = document.getElementById('diffAdvancedFooter');
-    if (footer && footer.classList.contains('diff-advanced-footer-visible')) {
-      footer.textContent = _pickDiffPanelFooterMessage();
-      _popDiffLabel(footer);
-    }
-      return; 
+  if (activeSettings === 'panelDifficultySettings' && !_trophySequenceActive) {
+    _showPanelTip('panelDifficultySettings');
+    return;
   }
   if (gameState === 'readyToUnpause') { _enterReadyToUnpauseCleanup(); enterPause(); enterConfirmQuit(); return; }
   if (gameState === 'paused')         { enterConfirmQuit(); return; }
@@ -3548,10 +3582,11 @@ function ShowHintToast(TokenString, colour) {
   if (colour) {
     var IsGreen  = (colour === 'green');
     var IsYellow = (colour === 'yellow');
+    var IsDark   = _isDarkMode();
     ChipBg     = IsGreen ? '#10b981' : IsYellow ? '#f59e0b' : '#f97316';
-    ChipBorder = IsGreen ? '#059669' : IsYellow ? '#d97706' : '#c2410c';
+    ChipBorder = IsGreen ? (IsDark ? 'transparent' : '#059669') : IsYellow ? (IsDark ? 'transparent' : '#d97706') : (IsDark ? 'transparent' : '#c2410c');
     ChipShadow = IsGreen ? '0 0 6px rgba(16,185,129,0.45)' : IsYellow ? '0 0 6px rgba(245,158,11,0.45)' : '0 0 6px rgba(249,115,22,0.45)';
-    SepColour  = IsGreen ? '#059669' : IsYellow ? '#d97706' : '#c2410c';
+    SepColour  = ChipBorder;
   }
 
   // ── One chip group per pipe-separated alternative ─────────────────────────
@@ -4435,6 +4470,7 @@ function _resetToIdleSilently() {
   clearLivesRow();
   scoreDisc.style.background = '';
   scoreDisc.style.removeProperty('--face-rot');
+  scoreDisc.style.removeProperty('filter');
   currentMedal = null;
   scoreDisc.className = 'scoreDisc';
   timerDiv.textContent = '0:00';
@@ -4483,6 +4519,7 @@ function resetToIdle() {
   clearLivesRow();
   scoreDisc.style.background = '';
   scoreDisc.style.removeProperty('--face-rot');
+  scoreDisc.style.removeProperty('filter');
   currentMedal = null;
   scoreDisc.className = 'scoreDisc';
   timerDiv.textContent = '0:00';
@@ -5764,6 +5801,7 @@ function setKeyboardDisplayMode(mode) {
   if (NoneBtn)      NoneBtn.classList.toggle('diff-btn-active',      mode === 'none');
   if (GhostBtn)     GhostBtn.classList.toggle('diff-btn-active',     mode === 'ghost');
   if (GraphicalBtn) GraphicalBtn.classList.toggle('diff-btn-active', mode === 'graphical');
+  if (mode !== previous) _popDiffLabel(document.querySelector('#kbDisplayPill .diff-btn-active'));
 
   // Ghost class on keyboard panel
   var KeyboardPanelElement = document.getElementById('keyboardPanel');
@@ -5954,11 +5992,13 @@ function setKillPunctuation(on) {
 }
 
 function setKeyboardColourTheme(theme) {
-  keyboardColourTheme = theme;
-  SaveKeyboardSettings();
-  var KeyboardPanelElement = document.getElementById('keyboardPanel');
-  if (KeyboardPanelElement) KeyboardPanelElement.dataset.keyboardTheme = theme;
-  _syncKeyboardColourThemePill();
+  var previousTheme = keyboardColourTheme;
+  keyboardColourTheme = theme;
+  SaveKeyboardSettings();
+  var KeyboardPanelElement = document.getElementById('keyboardPanel');
+  if (KeyboardPanelElement) KeyboardPanelElement.dataset.keyboardTheme = theme;
+  _syncKeyboardColourThemePill();
+  if (theme !== previousTheme) _popDiffLabel(document.querySelector('#kbThemePill .segmented-pill-active'));
 }
 
 function _syncKeyboardColourThemePill() {
@@ -6253,6 +6293,8 @@ function _syncStudyNotesInlineIcon() {
   el.classList.toggle('study-notes-icon-hidden', !ShouldShow);
 }
 
+var _PhoneToolbarPreviousActiveIconId = null;
+
 function _syncPhoneToolbarActiveState(ActivePage) {  var PhoneIconMap = {
     panelKeyboard:           'phoneKbIconWrap',
     panelDifficultySettings: 'phoneDiffIconWrap',
@@ -6264,10 +6306,13 @@ function _syncPhoneToolbarActiveState(ActivePage) {  var PhoneIconMap = {
     var IconElement = document.getElementById(IconId);
     if (IconElement) IconElement.classList.remove('sp-icon-active');
   });
-  if (ActivePage && PhoneIconMap[ActivePage]) {
-    var ActiveElement = document.getElementById(PhoneIconMap[ActivePage]);
+  var ActiveIconId = ActivePage ? PhoneIconMap[ActivePage] : null;
+  if (ActiveIconId) {
+    var ActiveElement = document.getElementById(ActiveIconId);
     if (ActiveElement) ActiveElement.classList.add('sp-icon-active');
+    if (ActiveIconId !== _PhoneToolbarPreviousActiveIconId) _popDiffLabel(ActiveElement);
   }
+  _PhoneToolbarPreviousActiveIconId = ActiveIconId;
   // Mirror needle angle from the main diff icon to the phone diff icon
   _syncPhoneDiffNeedle();
 }
@@ -7185,10 +7230,12 @@ function _initConflictFilterPill() {
 }
 
 function setConflictFilter(filter) {
+  var previousFilter = _activeConflictFilter;
   _activeConflictFilter = filter;
   _cfPageIndex = 0;  // reset to first page on tab switch
   _syncConflictFilterPillStyles();
   _refreshBrowserContent();
+  if (filter !== previousFilter) _popDiffLabel(document.querySelector('#cfFilterPill .segmented-pill-active'));
 }
 
 function _syncConflictFilterPillStyles() {
@@ -9014,7 +9061,7 @@ runData.length = 0; lastCompletedReport = null; CoachAdviceAccepted = false;
 // Pops the label text of a difficulty pill button with a brief scale animation.
 function _popDiffLabel(btnEl) {
   if (!btnEl) return;
-  var spanEl = btnEl.querySelector('.diff-btn-text') || btnEl;
+  var spanEl = btnEl.querySelector('.diff-btn-text, .phone-icon-label') || btnEl;
   spanEl.classList.remove('diff-btn-label-pop');
   void spanEl.offsetWidth;
   spanEl.classList.add('diff-btn-label-pop');
@@ -11655,20 +11702,25 @@ lastCompletedReport = finalizeRunData(completedRun, questionPool, 0); EndGamePag
       }
     }, livesDelay);
 
-    // Step 5: reveal footer with colour-in effect after lives pop completes
+// Step 5: reveal footer with opacity fade after lives pop completes
     setTimeout(function() {
       _trophySequenceActive = false;
       var footer = document.getElementById('diffAdvancedFooter');
       if (footer) {
-        footer.style.color = '#f0f4f8'; // page background colour -- invisible
+        footer.style.transition = 'none';
+        footer.style.opacity = '0';
         footer.style.display = 'block';
         footer.classList.add('diff-advanced-footer-visible');
-        // Transition colour in over 1 second
-        setTimeout(function() {
-          footer.style.transition = 'color 1s ease';
-          footer.style.color = '#9ca3af';
-          setTimeout(function() { footer.style.transition = ''; }, 1050);
-        }, 50);
+        requestAnimationFrame(function() {
+          requestAnimationFrame(function() {
+            footer.style.transition = 'opacity 1s ease';
+            footer.style.opacity = '1';
+            setTimeout(function() {
+              footer.style.transition = '';
+              footer.style.opacity = '';
+            }, 1050);
+          });
+        });
       }
     }, livesDelay + 340 + 350);
   }
@@ -13356,19 +13408,25 @@ function _applyCoachSuggestionsWithAnimation(SuggestionsArray) {
 
     function RunNextStep() {
       if (RemainingSteps.length === 0) {
-        // All done -- reveal the footer below the advanced panel with the colour-wipe animation
+      // Reveal the footer below the advanced panel with an opacity fade
         setTimeout(function() {
           var FooterElement = document.getElementById('diffAdvancedFooter');
           if (!FooterElement) return;
           FooterElement.textContent = 'The coach has adjusted your settings, but you still have final say.';
-          FooterElement.style.color = '#f0f4f8'; // start invisible (matches page background)
+          FooterElement.style.transition = 'none';
+          FooterElement.style.opacity = '0';
           FooterElement.style.display = 'block';
           FooterElement.classList.add('diff-advanced-footer-visible');
-          setTimeout(function() {
-            FooterElement.style.transition = 'color 1s ease';
-            FooterElement.style.color = '#9ca3af';
-            setTimeout(function() { FooterElement.style.transition = ''; }, 1050);
-          }, 50);
+          requestAnimationFrame(function() {
+            requestAnimationFrame(function() {
+              FooterElement.style.transition = 'opacity 1s ease';
+              FooterElement.style.opacity = '1';
+              setTimeout(function() {
+                FooterElement.style.transition = '';
+                FooterElement.style.opacity = '';
+              }, 1050);
+            });
+          });
         }, 400);
         return;
       }

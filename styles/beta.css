@@ -3255,12 +3255,14 @@ body.returning-screen #diffIconWrap .icon-tip { display: none; }
 #panelKeyboard .sp-col-left  { grid-area: left;  position: relative; }
 #panelKeyboard .sp-col-right { grid-area: right; }
 #panelKeyboard .sp-col-full  { grid-area: aesthetics; }
-#panelKeyboard .sp-col-left::after {
+[data-theme="dark"] .sp-report-chips-lit .sp-report-chip-key {
+  border-color: transparent !important;
+}#panelKeyboard .sp-col-left::after {
   content: '';
   position: absolute;
   top: 16px;
   right: 0;
-  bottom: 0;
+  bottom: 60px;
   width: 1px;
   background: #e5e7eb;
   pointer-events: none;

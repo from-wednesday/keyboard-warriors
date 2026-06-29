@@ -11656,14 +11656,18 @@ lastCompletedReport = finalizeRunData(completedRun, questionPool, 0); EndGamePag
       _trophySequenceActive = false;
       var footer = document.getElementById('diffAdvancedFooter');
       if (footer) {
-        footer.classList.add('diff-advanced-footer-reveal-hidden');
-        footer.style.transition = 'opacity 1s ease';
+        footer.style.transition = 'none';
+        footer.style.opacity = '0';
         footer.style.display = 'block';
         footer.classList.add('diff-advanced-footer-visible');
         requestAnimationFrame(function() {
           requestAnimationFrame(function() {
-            footer.classList.remove('diff-advanced-footer-reveal-hidden');
-          setTimeout(function() { footer.style.transition = ''; }, 1050);
+            footer.style.transition = 'opacity 1s ease';
+            footer.style.opacity = '1';
+            setTimeout(function() {
+              footer.style.transition = '';
+              footer.style.opacity = '';
+            }, 1050);
           });
         });
       }
@@ -13358,14 +13362,18 @@ function _applyCoachSuggestionsWithAnimation(SuggestionsArray) {
           var FooterElement = document.getElementById('diffAdvancedFooter');
           if (!FooterElement) return;
           FooterElement.textContent = 'The coach has adjusted your settings, but you still have final say.';
-          FooterElement.classList.add('diff-advanced-footer-reveal-hidden');
-          FooterElement.style.transition = 'opacity 1s ease';
+          FooterElement.style.transition = 'none';
+          FooterElement.style.opacity = '0';
           FooterElement.style.display = 'block';
           FooterElement.classList.add('diff-advanced-footer-visible');
           requestAnimationFrame(function() {
             requestAnimationFrame(function() {
-              FooterElement.classList.remove('diff-advanced-footer-reveal-hidden');
-            setTimeout(function() { FooterElement.style.transition = ''; }, 1050);
+              FooterElement.style.transition = 'opacity 1s ease';
+              FooterElement.style.opacity = '1';
+              setTimeout(function() {
+                FooterElement.style.transition = '';
+                FooterElement.style.opacity = '';
+              }, 1050);
             });
           });
         }, 400);

@@ -1046,9 +1046,10 @@ body.kb-at-edge #keyboardPanel #kb-shadow {
   animation: btnPulse 0.45s cubic-bezier(0.25, 0.46, 0.45, 0.94);
 }
 
-/* Pressed-in state: applied on pointerdown, removed on pointerup before the pop plays. */
+/* Pressed-in state: applied to a label span on pointerdown, removed on pointerup before the pop plays. */
 .press-in {
-  transform: scale(0.92);
+  display: inline-block;
+  transform: scale(0.88);
   transition: transform 0.08s ease;
 }
 #appPill.pulse {

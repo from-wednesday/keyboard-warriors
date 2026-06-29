@@ -3252,9 +3252,25 @@ body.returning-screen #diffIconWrap .icon-tip { display: none; }
     "left right"
     "aesthetics aesthetics";
 }
-#panelKeyboard .sp-col-left  { grid-area: left;  border-right: 1px solid #e5e7eb; }
+#panelKeyboard .sp-col-left  { grid-area: left; }
 #panelKeyboard .sp-col-right { grid-area: right; }
 #panelKeyboard .sp-col-full  { grid-area: aesthetics; }
+
+/* Divider stops before the full-width aesthetics row.
+   Height is capped at 200px (panel 300px minus ~100px aesthetics row). */
+#panelKeyboard.sp-active {
+  position: relative;
+}
+#panelKeyboard.sp-active::before {
+  content: '';
+  position: absolute;
+  left: 50%;
+  top: 16px;
+  height: 200px;
+  width: 1px;
+  background: #e5e7eb;
+  pointer-events: none;
+}
 
 [data-theme="dark"] .sp-report-chips-lit .sp-report-chip-key {
   border-color: transparent !important;

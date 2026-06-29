@@ -3261,9 +3261,9 @@ body.returning-screen #diffIconWrap .icon-tip { display: none; }
 #panelKeyboard .sp-col-right::before {
   content: '';
   position: absolute;
-  left: -1px;
+  left: -20px;
   top: 16px;
-  height: 185px;
+  height: 180px;
   width: 1px;
   background: #e5e7eb;
   pointer-events: none;
@@ -4041,9 +4041,7 @@ body.phone-layout-active #keyboardWrap {
 }
 
 .phone-icon-btn.phone-icon-inactive {
-  opacity: 0.38;
-  pointer-events: none;
-  cursor: default;
+  opacity: 0.65;
 }
 
 .phone-icon-label {
@@ -4056,7 +4054,7 @@ body.phone-layout-active #keyboardWrap {
   pointer-events: none;
 }
 
-.phone-icon-btn.sp-icon-active .phone-icon-label { color: #374151; }
+.phone-icon-btn.sp-icon-active .phone-icon-label,
 .phone-icon-btn.sp-icon-active svg { color: #374151; }
 .phone-gauge-stroke {
   fill: none;

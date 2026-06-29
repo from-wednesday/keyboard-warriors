@@ -1707,6 +1707,27 @@ function pulseBtn(el) {
   });
 }
 
+/* Adds press-in-then-pop behaviour to an element.
+   On pointerdown the element scales down; on pointerup it pops out via pulseBtn. */
+function attachPressPopBehaviour(el) {
+  if (!el || el._pressPopAttached) return;
+  el._pressPopAttached = true;
+
+  el.addEventListener('pointerdown', function(e) {
+    if (!e.isPrimary) return;
+    el.classList.remove('pulse');
+    el.classList.add('press-in');
+  });
+
+  function release() {
+    el.classList.remove('press-in');
+    pulseBtn(el);
+  }
+
+  el.addEventListener('pointerup',     release);
+  el.addEventListener('pointercancel', function() { el.classList.remove('press-in'); });
+}
+
 function pulseKbIcon() {
   var icon = document.getElementById('kbIcon');
   if (!icon) return;
@@ -2365,6 +2386,8 @@ var SkeletonAnimationComplete = new Promise(function(resolve) {
 Promise.all([DomReady, StylesheetReady, SkeletonAnimationComplete]).then(function() {
   history.scrollRestoration = 'manual';
   window.scrollTo(0, 0);
+  attachPressPopBehaviour(document.getElementById('mainBtn'));
+  attachPressPopBehaviour(document.getElementById('helpBtn'));
   _initialiseLayout();
   _initialiseStageDragListeners();
   if (activeSettings !== null) _spAlignPanel();

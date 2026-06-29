@@ -3559,7 +3559,7 @@ body.returning-screen #diffIconWrap .icon-tip { display: none; }
   transition: background 0.15s ease, color 0.15s ease, box-shadow 0.15s ease;
 }
 [data-theme="dark"] .sp-report-chips-lit .sp-report-chip-key {
-  border-color: #047a57 !important;
+  border-color: transparent !important;
 }
 
 /* ── EndGame History panel ───────────────────────────────────────────────── */

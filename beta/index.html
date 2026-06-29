@@ -5765,6 +5765,7 @@ function setKeyboardDisplayMode(mode) {
   if (NoneBtn)      NoneBtn.classList.toggle('diff-btn-active',      mode === 'none');
   if (GhostBtn)     GhostBtn.classList.toggle('diff-btn-active',     mode === 'ghost');
   if (GraphicalBtn) GraphicalBtn.classList.toggle('diff-btn-active', mode === 'graphical');
+  if (mode !== previous) _popDiffLabel(document.querySelector('#kbDisplayPill .diff-btn-active'));
 
   // Ghost class on keyboard panel
   var KeyboardPanelElement = document.getElementById('keyboardPanel');
@@ -5955,11 +5956,13 @@ function setKillPunctuation(on) {
 }
 
 function setKeyboardColourTheme(theme) {
-  keyboardColourTheme = theme;
-  SaveKeyboardSettings();
-  var KeyboardPanelElement = document.getElementById('keyboardPanel');
-  if (KeyboardPanelElement) KeyboardPanelElement.dataset.keyboardTheme = theme;
-  _syncKeyboardColourThemePill();
+  var previousTheme = keyboardColourTheme;
+  keyboardColourTheme = theme;
+  SaveKeyboardSettings();
+  var KeyboardPanelElement = document.getElementById('keyboardPanel');
+  if (KeyboardPanelElement) KeyboardPanelElement.dataset.keyboardTheme = theme;
+  _syncKeyboardColourThemePill();
+  if (theme !== previousTheme) _popDiffLabel(document.querySelector('#kbThemePill .segmented-pill-active'));
 }
 
 function _syncKeyboardColourThemePill() {
@@ -6254,6 +6257,8 @@ function _syncStudyNotesInlineIcon() {
   el.classList.toggle('study-notes-icon-hidden', !ShouldShow);
 }
 
+var _PhoneToolbarPreviousActiveIconId = null;
+
 function _syncPhoneToolbarActiveState(ActivePage) {  var PhoneIconMap = {
     panelKeyboard:           'phoneKbIconWrap',
     panelDifficultySettings: 'phoneDiffIconWrap',
@@ -6265,10 +6270,13 @@ function _syncPhoneToolbarActiveState(ActivePage) {  var PhoneIconMap = {
     var IconElement = document.getElementById(IconId);
     if (IconElement) IconElement.classList.remove('sp-icon-active');
   });
-  if (ActivePage && PhoneIconMap[ActivePage]) {
-    var ActiveElement = document.getElementById(PhoneIconMap[ActivePage]);
+  var ActiveIconId = ActivePage ? PhoneIconMap[ActivePage] : null;
+  if (ActiveIconId) {
+    var ActiveElement = document.getElementById(ActiveIconId);
     if (ActiveElement) ActiveElement.classList.add('sp-icon-active');
+    if (ActiveIconId !== _PhoneToolbarPreviousActiveIconId) _popDiffLabel(ActiveElement);
   }
+  _PhoneToolbarPreviousActiveIconId = ActiveIconId;
   // Mirror needle angle from the main diff icon to the phone diff icon
   _syncPhoneDiffNeedle();
 }
@@ -7186,10 +7194,12 @@ function _initConflictFilterPill() {
 }
 
 function setConflictFilter(filter) {
+  var previousFilter = _activeConflictFilter;
   _activeConflictFilter = filter;
   _cfPageIndex = 0;  // reset to first page on tab switch
   _syncConflictFilterPillStyles();
   _refreshBrowserContent();
+  if (filter !== previousFilter) _popDiffLabel(document.querySelector('#cfFilterPill .segmented-pill-active'));
 }
 
 function _syncConflictFilterPillStyles() {
@@ -9015,7 +9025,7 @@ runData.length = 0; lastCompletedReport = null; CoachAdviceAccepted = false;
 // Pops the label text of a difficulty pill button with a brief scale animation.
 function _popDiffLabel(btnEl) {
   if (!btnEl) return;
-  var spanEl = btnEl.querySelector('.diff-btn-text') || btnEl;
+  var spanEl = btnEl.querySelector('.diff-btn-text, .phone-icon-label') || btnEl;
   spanEl.classList.remove('diff-btn-label-pop');
   void spanEl.offsetWidth;
   spanEl.classList.add('diff-btn-label-pop');

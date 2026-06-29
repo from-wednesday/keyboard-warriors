@@ -2976,18 +2976,19 @@ function ShowExtendedKeyChip(BrowserCode, ColourState) {
   // Match the larger toast chip size
   ResizeChips(ChipsWrapper, 28);
 
+  var _extChipDark = _isDarkMode();
   if (EffectiveColour === 'green') {
     ChipsWrapper.querySelectorAll('.sp-report-chip-key').forEach(function(Chip) {
       Chip.style.background  = '#10b981';
       Chip.style.color       = 'white';
-      Chip.style.borderColor = '#059669';
+      Chip.style.borderColor = _extChipDark ? '#047a57' : '#059669';
       Chip.style.boxShadow   = '0 0 6px rgba(16,185,129,0.45)';
     });
   } else if (EffectiveColour === 'orange') {
     ChipsWrapper.querySelectorAll('.sp-report-chip-key').forEach(function(Chip) {
       Chip.style.background  = '#f97316';
       Chip.style.color       = 'white';
-      Chip.style.borderColor = '#c2410c';
+      Chip.style.borderColor = _extChipDark ? '#92340a' : '#c2410c';
       Chip.style.boxShadow   = '0 0 6px rgba(249,115,22,0.45)';
     });
   }
@@ -3545,10 +3546,11 @@ function ShowHintToast(TokenString, colour) {
   if (colour) {
     var IsGreen  = (colour === 'green');
     var IsYellow = (colour === 'yellow');
+    var IsDark   = _isDarkMode();
     ChipBg     = IsGreen ? '#10b981' : IsYellow ? '#f59e0b' : '#f97316';
-    ChipBorder = IsGreen ? '#059669' : IsYellow ? '#d97706' : '#c2410c';
+    ChipBorder = IsGreen ? (IsDark ? '#047a57' : '#059669') : IsYellow ? (IsDark ? '#a07800' : '#d97706') : (IsDark ? '#92340a' : '#c2410c');
     ChipShadow = IsGreen ? '0 0 6px rgba(16,185,129,0.45)' : IsYellow ? '0 0 6px rgba(245,158,11,0.45)' : '0 0 6px rgba(249,115,22,0.45)';
-    SepColour  = IsGreen ? '#059669' : IsYellow ? '#d97706' : '#c2410c';
+    SepColour  = ChipBorder;
   }
 
   // ── One chip group per pipe-separated alternative ─────────────────────────

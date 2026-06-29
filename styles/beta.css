@@ -3558,6 +3558,9 @@ body.returning-screen #diffIconWrap .icon-tip { display: none; }
   box-shadow: 0 0 6px rgba(16,185,129,0.45) !important;
   transition: background 0.15s ease, color 0.15s ease, box-shadow 0.15s ease;
 }
+[data-theme="dark"] .sp-report-chips-lit .sp-report-chip-key {
+  border-color: #047a57 !important;
+}
 
 /* ── EndGame History panel ───────────────────────────────────────────────── */
 .sp-endgame-header-left {

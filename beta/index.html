@@ -1707,25 +1707,27 @@ function pulseBtn(el) {
   });
 }
 
-/* Adds press-in-then-pop behaviour to an element.
-   On pointerdown the element scales down; on pointerup it pops out via pulseBtn. */
-function attachPressPopBehaviour(el) {
+/* Adds press-in-then-pop behaviour to a button.
+   labelEl: the child span whose text should squash and pop (optional; falls back to el itself).
+   On pointerdown the label shrinks; on pointerup it pops via _popDiffLabel. */
+function attachPressPopBehaviour(el, labelEl) {
   if (!el || el._pressPopAttached) return;
   el._pressPopAttached = true;
+  var target = labelEl || el;
 
   el.addEventListener('pointerdown', function(e) {
     if (!e.isPrimary) return;
-    el.classList.remove('pulse');
-    el.classList.add('press-in');
+    target.classList.remove('diff-btn-label-pop');
+    target.classList.add('press-in');
   });
 
   function release() {
-    el.classList.remove('press-in');
-    pulseBtn(el);
+    target.classList.remove('press-in');
+    _popDiffLabel(target);
   }
 
   el.addEventListener('pointerup',     release);
-  el.addEventListener('pointercancel', function() { el.classList.remove('press-in'); });
+  el.addEventListener('pointercancel', function() { target.classList.remove('press-in'); });
 }
 
 function pulseKbIcon() {
@@ -2388,6 +2390,15 @@ Promise.all([DomReady, StylesheetReady, SkeletonAnimationComplete]).then(functio
   window.scrollTo(0, 0);
   attachPressPopBehaviour(document.getElementById('mainBtn'));
   attachPressPopBehaviour(document.getElementById('helpBtn'));
+
+  // Apply press-in-then-pop to all statically rendered segmented pill buttons.
+  // Dynamically built pills (difficulty, report card actions) are handled
+  // at the point their labels are popped via _popDiffLabel.
+  document.querySelectorAll('.segmented-pill-section, .sp-seg-btn, .diff-btn').forEach(function(Btn) {
+    var LabelSpan = Btn.querySelector('.diff-btn-text, .phone-icon-label') || null;
+    attachPressPopBehaviour(Btn, LabelSpan);
+  });
+
   _initialiseLayout();
   _initialiseStageDragListeners();
   if (activeSettings !== null) _spAlignPanel();

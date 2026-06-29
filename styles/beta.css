@@ -3261,7 +3261,7 @@ body.returning-screen #diffIconWrap .icon-tip { display: none; }
 #panelKeyboard .sp-col-right::before {
   content: '';
   position: absolute;
-  left: -20px;
+  left: -10px;
   top: 16px;
   height: 180px;
   width: 1px;

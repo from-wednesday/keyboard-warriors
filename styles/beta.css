@@ -145,7 +145,7 @@ body.settings-fits-viewport #keyboardWrap {
 #mainBtn { background: #10b981; color: white; }
 #mainBtn:hover { background: #059669; }
 #helpBtn { background: #6b7280; color: white; font-size: 12px; transition: background 0.8s ease; }
-#helpBtn:hover { background: #4b5563; }
+#helpBtn:hover { background: #555459; }
 #helpBtn:active { background: #9ca3af; transition: background 0s; }
 #mainBtn:disabled, #helpBtn:disabled {
   opacity: 0.45;
@@ -157,7 +157,7 @@ body.settings-fits-viewport #keyboardWrap {
    TIMER
 ══════════════════════════════════════ */
 .scoreDisc {
-  background: #4b5563;
+  background: #555459;
   color: white;
   border-radius: 50%;
   width: 130px;
@@ -247,9 +247,9 @@ body.settings-fits-viewport #keyboardWrap {
 }
 
 /* CHANGE 5: paused timer is clickable to unpause */
-.scoreDisc.paused        { background: #4b5563; cursor: pointer; }
+.scoreDisc.paused        { background: #555459; cursor: pointer; }
 .scoreDisc.green         { background: #10b981; }
-.scoreDisc.finished      { background: #4b5563; }
+.scoreDisc.finished      { background: #555459; }
 
 /* ── Medal states ───────────────────────────────────────────────────────────
    Outer rim = chiselled conic gradient. ::before = metal face disc (3px inset).
@@ -411,11 +411,11 @@ body.settings-fits-viewport #keyboardWrap {
 .scoreDisc.medal-bronze .accuracy-icon { opacity:0.75; color: rgba(30,8,0,0.85);    filter: none; }
 /* Penalty gradients — sharp split at 50%, rapid transition in */
 .scoreDisc.penalty-time  {
-  background: linear-gradient(to bottom, #ef4444 0%, #ef4444 50%, #4b5563 50%, #4b5563 100%);
+  background: linear-gradient(to bottom, #ef4444 0%, #ef4444 50%, #555459 50%, #555459 100%);
   transition: background 0.08s ease;
 }
 .scoreDisc.penalty-acc   {
-  background: linear-gradient(to bottom, #4b5563 0%, #4b5563 50%, #f59e0b 50%, #f59e0b 100%);
+  background: linear-gradient(to bottom, #555459 0%, #555459 50%, #f59e0b 50%, #f59e0b 100%);
   transition: background 0.08s ease;
 }
 

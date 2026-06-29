@@ -3252,20 +3252,12 @@ body.returning-screen #diffIconWrap .icon-tip { display: none; }
     "left right"
     "aesthetics aesthetics";
 }
-#panelKeyboard .sp-col-left  { grid-area: left;  position: relative; }
+#panelKeyboard .sp-col-left  { grid-area: left;  border-right: 1px solid #e5e7eb; }
 #panelKeyboard .sp-col-right { grid-area: right; }
 #panelKeyboard .sp-col-full  { grid-area: aesthetics; }
+
 [data-theme="dark"] .sp-report-chips-lit .sp-report-chip-key {
   border-color: transparent !important;
-}#panelKeyboard .sp-col-left::after {
-  content: '';
-  position: absolute;
-  top: 16px;
-  right: 0;
-  bottom: 60px;
-  width: 1px;
-  background: #e5e7eb;
-  pointer-events: none;
 }
 
 /* "Report Card" label — small grey, sits left of "Strengths" in same flex row */

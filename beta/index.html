@@ -11663,11 +11663,12 @@ lastCompletedReport = finalizeRunData(completedRun, questionPool, 0); EndGamePag
         requestAnimationFrame(function() {
           requestAnimationFrame(function() {
             footer.classList.remove('diff-advanced-footer-reveal-hidden');
-            setTimeout(function() { footer.style.transition = ''; }, 1050);
+          setTimeout(function() { footer.style.transition = ''; }, 1050);
           });
         });
       }
     }, livesDelay + 340 + 350);
+  }
 }
 
 /* ══════════════════════════════════════
@@ -13364,7 +13365,7 @@ function _applyCoachSuggestionsWithAnimation(SuggestionsArray) {
           requestAnimationFrame(function() {
             requestAnimationFrame(function() {
               FooterElement.classList.remove('diff-advanced-footer-reveal-hidden');
-              setTimeout(function() { FooterElement.style.transition = ''; }, 1050);
+            setTimeout(function() { FooterElement.style.transition = ''; }, 1050);
             });
           });
         }, 400);

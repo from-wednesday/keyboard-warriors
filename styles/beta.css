@@ -4029,6 +4029,8 @@ body.phone-layout-active #keyboardWrap {
   box-shadow: inset 0 3px 0 rgba(0,0,0,0.04), inset 0 -3px 0 rgba(255,255,255,0.70);
   background: transparent;
   transition: background 0s, box-shadow 0s;
+  /* Default icon colour controlled here so active state can override it */
+  color: #9ca3af;
 }
 
 .phone-icon-btn + .phone-icon-btn {
@@ -4038,6 +4040,7 @@ body.phone-layout-active #keyboardWrap {
 .phone-icon-btn.sp-icon-active {
   background: white;
   box-shadow: none;
+  color: #272029;
 }
 
 .phone-icon-btn.phone-icon-inactive {
@@ -4054,8 +4057,7 @@ body.phone-layout-active #keyboardWrap {
   pointer-events: none;
 }
 
-.phone-icon-btn.sp-icon-active .phone-icon-label,
-.phone-icon-btn.sp-icon-active svg { color: #374151; }
+.phone-icon-btn.sp-icon-active .phone-icon-label { font-weight: 700; }
 .phone-gauge-stroke {
   fill: none;
   stroke: currentColor;

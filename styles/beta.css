@@ -3261,7 +3261,7 @@ body.returning-screen #diffIconWrap .icon-tip { display: none; }
 #panelKeyboard .sp-col-right::before {
   content: '';
   position: absolute;
-  left: -20px;
+  left: 0px;
   top: 16px;
   height: 180px;
   width: 1px;
@@ -4057,7 +4057,10 @@ body.phone-layout-active #keyboardWrap {
   pointer-events: none;
 }
 
-.phone-icon-btn.sp-icon-active .phone-icon-label { font-weight: 700; }
+.phone-icon-btn.sp-icon-active .phone-icon-label {
+  color: #272029;
+  font-weight: 700;
+}
 .phone-gauge-stroke {
   fill: none;
   stroke: currentColor;

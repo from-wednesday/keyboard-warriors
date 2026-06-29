@@ -3243,7 +3243,7 @@ body.returning-screen #diffIconWrap .icon-tip { display: none; }
    two columns. Suppressed and redrawn scoped to the columns only, matching
    the pattern already used above for the Report Card and History panels. */
 #panelKeyboard.sp-active::after {
-  display: none;
+  display: none;
 }
 #panelKeyboard.sp-active {
   grid-template-columns: 1fr 1fr;
@@ -3253,20 +3253,17 @@ body.returning-screen #diffIconWrap .icon-tip { display: none; }
     "aesthetics aesthetics";
 }
 #panelKeyboard .sp-col-left  { grid-area: left; }
-#panelKeyboard .sp-col-right { grid-area: right; }
+#panelKeyboard .sp-col-right { grid-area: right; position: relative; }
 #panelKeyboard .sp-col-full  { grid-area: aesthetics; }
 
-/* Divider stops before the full-width aesthetics row.
-   Height is capped at 200px (panel 300px minus ~100px aesthetics row). */
-#panelKeyboard.sp-active {
-  position: relative;
-}
-#panelKeyboard.sp-active::before {
+/* Divider: on the right column's ::before so it sits between columns
+   but cannot escape into the full-width aesthetics row below. */
+#panelKeyboard .sp-col-right::before {
   content: '';
   position: absolute;
-  left: 50%;
+  left: -20px;
   top: 16px;
-  height: 200px;
+  height: 180px;
   width: 1px;
   background: #e5e7eb;
   pointer-events: none;

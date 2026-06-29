@@ -11651,24 +11651,23 @@ lastCompletedReport = finalizeRunData(completedRun, questionPool, 0); EndGamePag
       }
     }, livesDelay);
 
-    // Step 5: reveal footer with colour-in effect after lives pop completes
+// Step 5: reveal footer with opacity fade after lives pop completes
     setTimeout(function() {
       _trophySequenceActive = false;
       var footer = document.getElementById('diffAdvancedFooter');
       if (footer) {
-        footer.style.color = '#f0f4f8'; // page background colour -- invisible
+        footer.classList.add('diff-advanced-footer-reveal-hidden');
+        footer.style.transition = 'opacity 1s ease';
         footer.style.display = 'block';
         footer.classList.add('diff-advanced-footer-visible');
-        // Transition colour in over 1 second
-        setTimeout(function() {
-          footer.style.transition = 'color 1s ease';
-          footer.style.color = '#9ca3af';
-          setTimeout(function() { footer.style.transition = ''; }, 1050);
-        }, 50);
+        requestAnimationFrame(function() {
+          requestAnimationFrame(function() {
+            footer.classList.remove('diff-advanced-footer-reveal-hidden');
+            setTimeout(function() { footer.style.transition = ''; }, 1050);
+          });
+        });
       }
     }, livesDelay + 340 + 350);
-  }
-}
 
 /* ══════════════════════════════════════
    ADAPTIVE TRAINING SYSTEM
@@ -13352,19 +13351,21 @@ function _applyCoachSuggestionsWithAnimation(SuggestionsArray) {
 
     function RunNextStep() {
       if (RemainingSteps.length === 0) {
-        // All done -- reveal the footer below the advanced panel with the colour-wipe animation
+      // Reveal the footer below the advanced panel with an opacity fade
         setTimeout(function() {
           var FooterElement = document.getElementById('diffAdvancedFooter');
           if (!FooterElement) return;
           FooterElement.textContent = 'The coach has adjusted your settings, but you still have final say.';
-          FooterElement.style.color = '#f0f4f8'; // start invisible (matches page background)
+          FooterElement.classList.add('diff-advanced-footer-reveal-hidden');
+          FooterElement.style.transition = 'opacity 1s ease';
           FooterElement.style.display = 'block';
           FooterElement.classList.add('diff-advanced-footer-visible');
-          setTimeout(function() {
-            FooterElement.style.transition = 'color 1s ease';
-            FooterElement.style.color = '#9ca3af';
-            setTimeout(function() { FooterElement.style.transition = ''; }, 1050);
-          }, 50);
+          requestAnimationFrame(function() {
+            requestAnimationFrame(function() {
+              FooterElement.classList.remove('diff-advanced-footer-reveal-hidden');
+              setTimeout(function() { FooterElement.style.transition = ''; }, 1050);
+            });
+          });
         }, 400);
         return;
       }

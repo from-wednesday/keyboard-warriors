@@ -2466,12 +2466,6 @@ body:has(#keyboardPanel[data-keyboard-theme="poprocks"]) #mainBtn:hover {
   pointer-events: auto;
 }
 
-/* Transient class applied during the trophy reveal animation only.
-   Using opacity keeps the reveal theme-agnostic. */
-.diff-advanced-footer.diff-advanced-footer-reveal-hidden {
-  opacity: 0;
-}
-
 /* Horizontal divider on difficulty panel — inset to align with pill corner radius */
 /* ── Advanced settings rounded rect panel ─────────────────────────────────── */
 .diff-advanced-panel {
@@ -4400,6 +4394,7 @@ html[data-theme="dark"] body {
 [data-theme="dark"] .more-info-icon                     { color: #585858; }
 [data-theme="dark"] .segmented-pill-section             { color: #585858; }
 [data-theme="dark"] .segmented-pill-section svg         { stroke: #585858; }
+[data-theme="dark"] .diff-subtitle                      { color: #585858; }
 [data-theme="dark"] .diff-subtitle                      { color: #585858; }
 [data-theme="dark"] .diff-advanced-footer               { color: #585858; }
 [data-theme="dark"] .diff-advanced-label                { color: #585858; }

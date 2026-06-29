@@ -2291,7 +2291,7 @@ var _phoneStudyBtn = document.getElementById('phoneStudyNotesIconWrap');
 if (_phoneStudyBtn) _phoneStudyBtn.addEventListener('click', function() {
   var HasContent = !!(lastCompletedReport || (questionPool && questionPool.length > 0 && (gameState === 'playing' || gameState === 'paused' || gameState === 'readyToUnpause')));
   if (!HasContent) {
-    showToast('Start training to build Study Notes.');
+    showToast('Study Notes need to see you play first.');
     return;
   }
   if (gameState === 'finished' && lastCompletedReport) {

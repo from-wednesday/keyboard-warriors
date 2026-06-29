@@ -1846,7 +1846,8 @@ function updateToggleVisual(os) {
 
 function applyOsMode(os) {
   currentOs = os;
-  var savedPos = _kbPos;
+  var savedPos          = _kbPos;
+  var savedPartialAngle = _kbPartialAngle;
   var panel = document.getElementById('keyboardPanel');
   var stage = document.getElementById('kbFlipStage');
   var wrap  = document.getElementById('keyboardWrap');
@@ -1888,8 +1889,9 @@ function applyOsMode(os) {
     var RestoreRotateX;
     var RestoreStageY;
     if (savedPos === 'partial') {
-      RestoreRotateX = _kbPartialAngle;
-      RestoreStageY  = _interpolateStageY(_kbPartialAngle);
+      _kbPartialAngle = savedPartialAngle;
+      RestoreRotateX  = savedPartialAngle;
+      RestoreStageY   = _interpolateStageY(savedPartialAngle);
     } else {
       // edge
       RestoreRotateX = KbNamedPositions.edge.panelRotateX;

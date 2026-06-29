@@ -145,7 +145,7 @@ body.settings-fits-viewport #keyboardWrap {
 #mainBtn { background: #10b981; color: white; }
 #mainBtn:hover { background: #059669; }
 #helpBtn { background: #6b7280; color: white; font-size: 12px; transition: background 0.8s ease; }
-#helpBtn:hover { background: #4b5563; }
+#helpBtn:hover { background: #555459; }
 #helpBtn:active { background: #9ca3af; transition: background 0s; }
 #mainBtn:disabled, #helpBtn:disabled {
   opacity: 0.45;
@@ -157,7 +157,7 @@ body.settings-fits-viewport #keyboardWrap {
    TIMER
 ══════════════════════════════════════ */
 .scoreDisc {
-  background: #1f2937;
+  background: #555459;
   color: white;
   border-radius: 50%;
   width: 130px;
@@ -247,9 +247,9 @@ body.settings-fits-viewport #keyboardWrap {
 }
 
 /* CHANGE 5: paused timer is clickable to unpause */
-.scoreDisc.paused        { background: #4b5563; cursor: pointer; }
+.scoreDisc.paused        { background: #555459; cursor: pointer; }
 .scoreDisc.green         { background: #10b981; }
-.scoreDisc.finished      { background: #1f2937; }
+.scoreDisc.finished      { background: #555459; }
 
 /* ── Medal states ───────────────────────────────────────────────────────────
    Outer rim = chiselled conic gradient. ::before = metal face disc (3px inset).
@@ -411,11 +411,11 @@ body.settings-fits-viewport #keyboardWrap {
 .scoreDisc.medal-bronze .accuracy-icon { opacity:0.75; color: rgba(30,8,0,0.85);    filter: none; }
 /* Penalty gradients — sharp split at 50%, rapid transition in */
 .scoreDisc.penalty-time  {
-  background: linear-gradient(to bottom, #ef4444 0%, #ef4444 50%, #1f2937 50%, #1f2937 100%);
+  background: linear-gradient(to bottom, #ef4444 0%, #ef4444 50%, #555459 50%, #555459 100%);
   transition: background 0.08s ease;
 }
 .scoreDisc.penalty-acc   {
-  background: linear-gradient(to bottom, #1f2937 0%, #1f2937 50%, #f59e0b 50%, #f59e0b 100%);
+  background: linear-gradient(to bottom, #555459 0%, #555459 50%, #f59e0b 50%, #f59e0b 100%);
   transition: background 0.08s ease;
 }
 
@@ -427,7 +427,7 @@ body.settings-fits-viewport #keyboardWrap {
   font-weight: 600;
   text-align: center;
   line-height: 1.3;
-  color: #1f2937;
+  color: #272029;
   opacity: 1;
   transition: opacity 0.3s, filter 0.4s;
   filter: none;
@@ -1044,6 +1044,13 @@ body.kb-at-edge #keyboardPanel #kb-shadow {
 }
 #mainBtn.pulse {
   animation: btnPulse 0.45s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+}
+
+/* Pressed-in state: applied to a label span on pointerdown, removed on pointerup before the pop plays. */
+.press-in {
+  display: inline-block;
+  transform: scale(0.88);
+  transition: transform 0.08s ease;
 }
 #appPill.pulse {
   animation: btnPulse 0.45s cubic-bezier(0.25, 0.46, 0.45, 0.94);
@@ -2135,10 +2142,10 @@ body:has(#keyboardPanel[data-keyboard-theme="poprocks"]) #mainBtn:hover {
 }
 /* Trophy unlock message — pops in with gold colour at peak, settles to normal */
 @keyframes trophyMessagePop {
-  0%   { opacity: 0; transform: scale(0.88); color: #1f2937; }
+  0%   { opacity: 0; transform: scale(0.88); color: #272029; }
   45%  { opacity: 1; transform: scale(1.06); color: #c88810; }
   70%  { transform: scale(0.99); color: #b8730a; }
-  100% { opacity: 1; transform: scale(1);    color: #1f2937; }
+  100% { opacity: 1; transform: scale(1);    color: #272029; }
 }
 #title.trophy-pop {
   animation: trophyMessagePop 0.9s cubic-bezier(0.22, 0.61, 0.36, 1) forwards;
@@ -2441,7 +2448,8 @@ body:has(#keyboardPanel[data-keyboard-theme="poprocks"]) #mainBtn:hover {
 .segmented-pill-section.diff-btn-label-pop,
 .diff-slider-side-label.diff-btn-label-pop,
 .diff-knob-label.diff-btn-label-pop,
-.diff-advanced-footer.diff-btn-label-pop {
+.diff-advanced-footer.diff-btn-label-pop,
+.phone-icon-label.diff-btn-label-pop {
   display: inline-block; /* required for transform on inline/block elements */
   animation: diffLabelPop 0.35s cubic-bezier(0.22, 0.61, 0.36, 1) forwards;
 }
@@ -2464,7 +2472,6 @@ body:has(#keyboardPanel[data-keyboard-theme="poprocks"]) #mainBtn:hover {
 .diff-advanced-footer.diff-advanced-footer-visible {
   display: block;
   pointer-events: auto;
-  /* colour is set by JS -- starts as page bg colour, transitions to #9ca3af */
 }
 
 /* Horizontal divider on difficulty panel — inset to align with pill corner radius */
@@ -3244,7 +3251,7 @@ body.returning-screen #diffIconWrap .icon-tip { display: none; }
    two columns. Suppressed and redrawn scoped to the columns only, matching
    the pattern already used above for the Report Card and History panels. */
 #panelKeyboard.sp-active::after {
-  display: none;
+  display: none;
 }
 #panelKeyboard.sp-active {
   grid-template-columns: 1fr 1fr;
@@ -3253,18 +3260,25 @@ body.returning-screen #diffIconWrap .icon-tip { display: none; }
     "left right"
     "aesthetics aesthetics";
 }
-#panelKeyboard .sp-col-left  { grid-area: left;  position: relative; }
-#panelKeyboard .sp-col-right { grid-area: right; }
+#panelKeyboard .sp-col-left  { grid-area: left; }
+#panelKeyboard .sp-col-right { grid-area: right; position: relative; }
 #panelKeyboard .sp-col-full  { grid-area: aesthetics; }
-#panelKeyboard .sp-col-left::after {
+
+/* Divider: on the right column's ::before so it sits between columns
+   but cannot escape into the full-width aesthetics row below. */
+#panelKeyboard .sp-col-right::before {
   content: '';
   position: absolute;
+  left: 0px;
   top: 16px;
-  right: 0;
-  bottom: 0;
+  height: 180px;
   width: 1px;
   background: #e5e7eb;
   pointer-events: none;
+}
+
+[data-theme="dark"] .sp-report-chips-lit .sp-report-chip-key {
+  border-color: transparent !important;
 }
 
 /* "Report Card" label — small grey, sits left of "Strengths" in same flex row */
@@ -3558,6 +3572,9 @@ body.returning-screen #diffIconWrap .icon-tip { display: none; }
   border-color: #059669 !important;
   box-shadow: 0 0 6px rgba(16,185,129,0.45) !important;
   transition: background 0.15s ease, color 0.15s ease, box-shadow 0.15s ease;
+}
+[data-theme="dark"] .sp-report-chips-lit .sp-report-chip-key {
+  border-color: transparent !important;
 }
 
 /* ── EndGame History panel ───────────────────────────────────────────────── */
@@ -3899,14 +3916,14 @@ body.returning-screen #diffIconWrap .icon-tip { display: none; }
 .touch-modal-heading {
   font-size: 17px;
   font-weight: 700;
-  color: #1f2937;
+  color: #272029;
   margin: 0 0 10px;
   line-height: 1.3;
 }
 
 .touch-modal-body {
   font-size: 14px;
-  color: #1f2937;
+  color: #272029;
   line-height: 1.65;
   margin: 0 0 8px;
 }
@@ -4020,6 +4037,8 @@ body.phone-layout-active #keyboardWrap {
   box-shadow: inset 0 3px 0 rgba(0,0,0,0.04), inset 0 -3px 0 rgba(255,255,255,0.70);
   background: transparent;
   transition: background 0s, box-shadow 0s;
+  /* Default icon colour controlled here so active state can override it */
+  color: #9ca3af;
 }
 
 .phone-icon-btn + .phone-icon-btn {
@@ -4029,12 +4048,11 @@ body.phone-layout-active #keyboardWrap {
 .phone-icon-btn.sp-icon-active {
   background: white;
   box-shadow: none;
+  color: #272029;
 }
 
 .phone-icon-btn.phone-icon-inactive {
-  opacity: 0.38;
-  pointer-events: none;
-  cursor: default;
+  opacity: 0.65;
 }
 
 .phone-icon-label {
@@ -4047,8 +4065,10 @@ body.phone-layout-active #keyboardWrap {
   pointer-events: none;
 }
 
-.phone-icon-btn.sp-icon-active .phone-icon-label { color: #374151; }
-.phone-icon-btn.sp-icon-active svg { color: #374151; }
+.phone-icon-btn.sp-icon-active .phone-icon-label {
+  color: #272029;
+  font-weight: 700;
+}
 .phone-gauge-stroke {
   fill: none;
   stroke: currentColor;
@@ -4058,7 +4078,7 @@ body.phone-layout-active #keyboardWrap {
 }
 
 .phone-icon-btn.sp-icon-active .phone-gauge-stroke {
-  stroke: #1f2937;
+  stroke: #272029;
 }
 
 /* Phone layout: stack game UI and keyboard vertically, allow scrolling */
@@ -4386,7 +4406,6 @@ html[data-theme="dark"] body {
 [data-theme="dark"] .dm-mode-icon-active                { color: #2b2b2b; }
 
 /* ── #9ca3af → #585858 ── dim labels, icons, subtle strokes ── */
-[data-theme="dark"] #credit                             { color: #585858; }
 [data-theme="dark"] #osToggleWrap .os-label             { color: #585858; }
 [data-theme="dark"] #appSelectorLabel                   { color: #585858; }
 [data-theme="dark"] #appPill                            { border-color: #585858; }
@@ -4396,16 +4415,22 @@ html[data-theme="dark"] body {
 [data-theme="dark"] .segmented-pill-section             { color: #585858; }
 [data-theme="dark"] .segmented-pill-section svg         { stroke: #585858; }
 [data-theme="dark"] .diff-subtitle                      { color: #585858; }
+[data-theme="dark"] .diff-subtitle                      { color: #585858; }
 [data-theme="dark"] .diff-advanced-footer               { color: #585858; }
 [data-theme="dark"] .diff-advanced-label                { color: #585858; }
 [data-theme="dark"] #kbIcon                             { color: #585858; }
 [data-theme="dark"] #browserIcon                        { color: #585858; }
+[data-theme="dark"] #diffIcon                           { color: #585858; }
+[data-theme="dark"] #diffIcon #Needle                   { color: #585858; }
 [data-theme="dark"] .diff-btn                           { color: #585858; }
 [data-theme="dark"] #stickyRadio.touch-owns-sticky      { color: #585858; }
 [data-theme="dark"] .modal-toggle-row.no-keyboard .modal-toggle-label { color: #585858; }
 [data-theme="dark"] .kb-variant-key                     { border-bottom-color: #585858; }
 [data-theme="dark"] #confirmBracket                     { fill: #585858; }
 [data-theme="dark"] .sp-report-section-title.sp-title-empty { text-decoration-color: #585858; }
+/* Credit line: deliberately dimmer than the standard #9ca3af mapping above,
+   for slightly less contrast against the dark background. */
+[data-theme="dark"] #credit { color: #646464; }
 
 /* ── #6b7280 → #494949 ── secondary / mid labels ── */
 [data-theme="dark"] #statLeft,

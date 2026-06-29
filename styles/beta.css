@@ -2464,7 +2464,12 @@ body:has(#keyboardPanel[data-keyboard-theme="poprocks"]) #mainBtn:hover {
 .diff-advanced-footer.diff-advanced-footer-visible {
   display: block;
   pointer-events: auto;
-  /* colour is set by JS -- starts as page bg colour, transitions to #9ca3af */
+}
+
+/* Transient class applied during the trophy reveal animation only.
+   Using opacity keeps the reveal theme-agnostic. */
+.diff-advanced-footer.diff-advanced-footer-reveal-hidden {
+  opacity: 0;
 }
 
 /* Horizontal divider on difficulty panel — inset to align with pill corner radius */

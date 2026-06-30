@@ -4568,6 +4568,36 @@ const appPillEl = document.getElementById('appPill');
 
 var AppPillWrenchOpen = false;
 
+// Press-in-then-pop feedback on the currently visible app label, only while
+// the pill is closed (a single label showing). Opening/closing itself is
+// still handled by the existing onclick on #appPill — this just adds the
+// visual squash-and-pop on press, matching the difficulty pill's behaviour.
+var _appPillPressTarget = null;
+
+appPillEl.addEventListener('pointerdown', function(PointerEvent) {
+  if (!PointerEvent.isPrimary) return;
+  if (appPillEl.classList.contains('open')) return;
+  if (gameState === 'playing' || gameState === 'paused' || gameState === 'readyToUnpause' || gameState === 'counting') return;
+  var LabelElement = appPillEl.querySelector('.app-option.selected .app-option-label-col');
+  if (!LabelElement) return;
+  _appPillPressTarget = LabelElement;
+  LabelElement.classList.remove('diff-btn-label-pop');
+  LabelElement.classList.add('press-in');
+});
+
+function _releaseAppPillPress() {
+  if (!_appPillPressTarget) return;
+  _appPillPressTarget.classList.remove('press-in');
+  _popDiffLabel(_appPillPressTarget);
+  _appPillPressTarget = null;
+}
+
+appPillEl.addEventListener('pointerup', _releaseAppPillPress);
+appPillEl.addEventListener('pointercancel', function() {
+  if (_appPillPressTarget) _appPillPressTarget.classList.remove('press-in');
+  _appPillPressTarget = null;
+});
+
 function _saveAppsShortList() {
   if (!_appListInitialised) return;
   try { localStorage.setItem('kw_apps_short_list', JSON.stringify(appsShortList)); } catch (StorageError) {}

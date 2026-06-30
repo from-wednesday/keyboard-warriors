@@ -4511,6 +4511,19 @@ html[data-theme="dark"] body {
 [data-theme="dark"] .customise-label-inpill             { color: #585858; }
 [data-theme="dark"] .customise-label-beta               { color: #494949; }
 
+/* ── Skillset pill press feedback ───────────────────────────────────────────
+   Pure CSS :active state, so it can never desync from the pill's own click
+   handler that opens the dropdown. Label shrinks instantly on press, then
+   springs back with a slight overshoot on release. */
+#skillsetPill .skillset-pill-label {
+  display: inline-block;
+  transition: transform 0.32s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+#skillsetPill:active .skillset-pill-label {
+  transform: scale(0.88);
+  transition: transform 0.08s ease;
+}
+
 /* ── Dark mode: compact keyboard row (touch-disabled state) ─────────────── */
 /* opacity:0.38 on .modal-kbsize-row.disabled looks too dark in dark mode    */
 [data-theme="dark"] .modal-kbsize-row.disabled          { opacity: 0.55; }

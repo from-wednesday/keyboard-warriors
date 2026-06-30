@@ -1052,13 +1052,6 @@ body.kb-at-edge #keyboardPanel #kb-shadow {
   transform: scale(0.88);
   transition: transform 0.08s ease;
 }
-
-/* SVG icons already have their own display value (block) -- don't override it,
-   just apply the press-in scale. */
-svg.press-in {
-  display: block;
-  transform: scale(0.88);
-}
 #appPill.pulse {
   animation: btnPulse 0.45s cubic-bezier(0.25, 0.46, 0.45, 0.94);
 }

@@ -4548,6 +4548,15 @@ html[data-theme="dark"] body {
   transition: transform 0.08s ease;
 }
 
+/* Report Card / History toggle press feedback: same spring-back pattern. */
+.sp-endgame-header-left {
+  transition: transform 0.32s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+.sp-endgame-header-left:active {
+  transform: scale(0.92);
+  transition: transform 0.08s ease;
+}
+
 /* ── Dark mode: compact keyboard row (touch-disabled state) ─────────────── */
 /* opacity:0.38 on .modal-kbsize-row.disabled looks too dark in dark mode    */
 [data-theme="dark"] .modal-kbsize-row.disabled          { opacity: 0.55; }

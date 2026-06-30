@@ -15628,7 +15628,7 @@ function _buildSkillsetPill() {
   caretSvg.style.cssText = 'display:block;color:#9ca3af;flex-shrink:0;transition:transform 0.2s ease;transform:' + (skillsetPillOpen ? 'rotate(90deg)' : 'none') + ';';
   var cp = document.createElementNS('http://www.w3.org/2000/svg','path'); cp.setAttribute('d','M1.5 1 L6 3.5 L1.5 6 Z');
   caretSvg.appendChild(cp); caretCol.appendChild(caretSvg);
-  var labelCol = document.createElement('span'); labelCol.style.cssText = 'flex:1;text-align:left;'; labelCol.textContent = currentSkillset;
+  var labelCol = document.createElement('span'); labelCol.className = 'skillset-pill-label'; labelCol.style.cssText = 'flex:1;text-align:left;'; labelCol.textContent = currentSkillset;
   selectedRow.appendChild(caretCol); selectedRow.appendChild(labelCol);
   pill.appendChild(selectedRow);
 

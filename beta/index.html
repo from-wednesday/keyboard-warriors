@@ -2399,14 +2399,6 @@ Promise.all([DomReady, StylesheetReady, SkeletonAnimationComplete]).then(functio
     attachPressPopBehaviour(Btn, LabelSpan);
   });
 
-  // Settings icons: press-in-then-pop on the icon itself, not the wrap.
-  // Difficulty icon targets the outer #diffIcon SVG (not #Needle) so the
-  // dial and needle scale together as one unit without fighting the
-  // needle's own rotation transform.
-  attachPressPopBehaviour(document.getElementById('kbIconWrap'),       document.getElementById('kbIcon'));
-  attachPressPopBehaviour(document.getElementById('brIconWrap'),       document.getElementById('browserIcon'));
-  attachPressPopBehaviour(document.getElementById('diffIconWrap'),     document.getElementById('diffIcon'));
-
   _initialiseLayout();
   _initialiseStageDragListeners();
   if (activeSettings !== null) _spAlignPanel();

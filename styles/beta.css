@@ -1640,7 +1640,8 @@ li.conflict-dismissed .conflict-desc {
 .resting-available .mod-sym-only,
 .resting-available .mod-word,
 .resting-available .util-sym-only,
-.resting-available .key-glyph-sym { color: #065f46 !important; }
+.resting-available .key-glyph-sym,
+.resting-available .delete-svg { color: #065f46 !important; }
 
 .resting-sus {
   background: rgba(251, 240, 152, 0.9) !important;
@@ -1655,7 +1656,8 @@ li.conflict-dismissed .conflict-desc {
 .resting-sus .mod-sym-only,
 .resting-sus .mod-word,
 .resting-sus .util-sym-only,
-.resting-sus .key-glyph-sym { color: #7a6a00 !important; }
+.resting-sus .key-glyph-sym,
+.resting-sus .delete-svg { color: #7a6a00 !important; }
 
 .resting-blocked {
   background: rgba(247, 220, 200, 0.9) !important;
@@ -1670,8 +1672,8 @@ li.conflict-dismissed .conflict-desc {
 .resting-blocked .mod-sym-only,
 .resting-blocked .mod-word,
 .resting-blocked .util-sym-only,
-.resting-blocked .key-glyph-sym { color: #9a3412 !important; }
-
+.resting-blocked .key-glyph-sym,
+.resting-blocked .delete-svg { color: #9a3412 !important; }
 
 /* ── Fade transition back to resting state ───────────────────────────────────
    When conflictsKbLighting removes the full-strength lit class after a keyup,
@@ -3757,7 +3759,8 @@ body.returning-screen #diffIconWrap .icon-tip { display: none; }
 #keyboardPanel.conflicts-panel-active.ghost-mode .key .mod-word,
 #keyboardPanel.conflicts-panel-active.ghost-mode .key .util-sym-only,
 #keyboardPanel.conflicts-panel-active.ghost-mode .key .key-glyph-sym,
-#keyboardPanel.conflicts-panel-active.ghost-mode .key .win-svg {
+#keyboardPanel.conflicts-panel-active.ghost-mode .key .win-svg,
+#keyboardPanel.conflicts-panel-active.ghost-mode .key .delete-svg {
   opacity: 1 !important;
 }
 

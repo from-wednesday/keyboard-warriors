@@ -1386,8 +1386,6 @@ li.conflict-dismissed .conflict-desc {
   height: 14px;
   color: #555;
 }
-.key.lit-green-up   .win-svg, .key.lit-green-down  .win-svg,
-.key.lit-orange-up  .win-svg, .key.lit-orange-down .win-svg { color: white; }
 
 /* PC Backspace/Delete key glyph — replaces the unicode "⌫" character */
 .key .delete-svg {
@@ -1581,7 +1579,8 @@ li.conflict-dismissed .conflict-desc {
 .key.lit-green-up .mod-word,      .key.lit-green-down .mod-word,
 .key.lit-green-up .util-sym-only, .key.lit-green-down .util-sym-only,
 .key.lit-green-up .key-glyph-sym, .key.lit-green-down .key-glyph-sym,
-.key.lit-green-up .delete-svg,    .key.lit-green-down .delete-svg { color: white !important; }
+.key.lit-green-up .delete-svg,    .key.lit-green-down .delete-svg,
+.key.lit-green-up .win-svg,       .key.lit-green-down .win-svg { color: white !important; }
 
 /* ── ORANGE UP: resting coloured state ── */
 .key.lit-orange-up {
@@ -1608,7 +1607,8 @@ li.conflict-dismissed .conflict-desc {
 .key.lit-orange-up .mod-word,      .key.lit-orange-down .mod-word,
 .key.lit-orange-up .util-sym-only, .key.lit-orange-down .util-sym-only,
 .key.lit-orange-up .key-glyph-sym, .key.lit-orange-down .key-glyph-sym,
-.key.lit-orange-up .delete-svg,    .key.lit-orange-down .delete-svg { color: white !important; }
+.key.lit-orange-up .delete-svg,    .key.lit-orange-down .delete-svg,
+.key.lit-orange-up .win-svg,       .key.lit-orange-down .win-svg { color: white !important; }
 
 /* ── YELLOW status indicator ─────────────────────────────────────────────
    Used for CapsLock and SUS conflicted keys. Neutral soft yellow: not green (not correct) and not orange (not wrong).

@@ -1389,6 +1389,13 @@ li.conflict-dismissed .conflict-desc {
 .key.lit-green-up   .win-svg, .key.lit-green-down  .win-svg,
 .key.lit-orange-up  .win-svg, .key.lit-orange-down .win-svg { color: white; }
 
+/* PC Backspace/Delete key glyph — replaces the unicode "⌫" character */
+.key .delete-svg {
+  width: 16px;
+  height: auto;
+  color: #555;
+}
+
 /* Mini-only: mod key with symbol only, centred */
 .key .mod-sym-only {
   font-size: 14px;
@@ -1573,7 +1580,8 @@ li.conflict-dismissed .conflict-desc {
 .key.lit-green-up .mod-sym-only,  .key.lit-green-down .mod-sym-only,
 .key.lit-green-up .mod-word,      .key.lit-green-down .mod-word,
 .key.lit-green-up .util-sym-only, .key.lit-green-down .util-sym-only,
-.key.lit-green-up .key-glyph-sym, .key.lit-green-down .key-glyph-sym { color: white !important; }
+.key.lit-green-up .key-glyph-sym, .key.lit-green-down .key-glyph-sym,
+.key.lit-green-up .delete-svg,    .key.lit-green-down .delete-svg { color: white !important; }
 
 /* ── ORANGE UP: resting coloured state ── */
 .key.lit-orange-up {
@@ -1599,7 +1607,8 @@ li.conflict-dismissed .conflict-desc {
 .key.lit-orange-up .mod-sym-only,  .key.lit-orange-down .mod-sym-only,
 .key.lit-orange-up .mod-word,      .key.lit-orange-down .mod-word,
 .key.lit-orange-up .util-sym-only, .key.lit-orange-down .util-sym-only,
-.key.lit-orange-up .key-glyph-sym, .key.lit-orange-down .key-glyph-sym { color: white !important; }
+.key.lit-orange-up .key-glyph-sym, .key.lit-orange-down .key-glyph-sym,
+.key.lit-orange-up .delete-svg,    .key.lit-orange-down .delete-svg { color: white !important; }
 
 /* ── YELLOW status indicator ─────────────────────────────────────────────
    Used for CapsLock and SUS conflicted keys. Neutral soft yellow: not green (not correct) and not orange (not wrong).
@@ -3675,7 +3684,8 @@ body.returning-screen #diffIconWrap .icon-tip { display: none; }
 #keyboardPanel.ghost-mode .key .util-sym-only,
 #keyboardPanel.ghost-mode .key .key-glyph-sym,
 #keyboardPanel.ghost-mode .key .lock-svg,
-#keyboardPanel.ghost-mode .key .win-svg { opacity: 0; }
+#keyboardPanel.ghost-mode .key .win-svg,
+#keyboardPanel.ghost-mode .key .delete-svg { opacity: 0; }
 #keyboardPanel.ghost-mode #kb-wall-bottom,
 #keyboardPanel.ghost-mode #kb-shadow,
 #keyboardPanel.ghost-mode #kb-base-edge { display: none; }
@@ -3705,6 +3715,8 @@ body.returning-screen #diffIconWrap .icon-tip { display: none; }
 #keyboardPanel.ghost-mode .key.lit-green-down .util-sym-only,
 #keyboardPanel.ghost-mode .key.lit-green-up  .key-glyph-sym,
 #keyboardPanel.ghost-mode .key.lit-green-down .key-glyph-sym,
+#keyboardPanel.ghost-mode .key.lit-green-up  .delete-svg,
+#keyboardPanel.ghost-mode .key.lit-green-down .delete-svg,
 #keyboardPanel.ghost-mode .key.lit-orange-up  .letter-lbl,
 #keyboardPanel.ghost-mode .key.lit-orange-down .letter-lbl,
 #keyboardPanel.ghost-mode .key.lit-orange-up  .sym-main,
@@ -3718,7 +3730,9 @@ body.returning-screen #diffIconWrap .icon-tip { display: none; }
 #keyboardPanel.ghost-mode .key.lit-orange-up  .util-sym-only,
 #keyboardPanel.ghost-mode .key.lit-orange-down .util-sym-only,
 #keyboardPanel.ghost-mode .key.lit-orange-up  .key-glyph-sym,
-#keyboardPanel.ghost-mode .key.lit-orange-down .key-glyph-sym {
+#keyboardPanel.ghost-mode .key.lit-orange-down .key-glyph-sym,
+#keyboardPanel.ghost-mode .key.lit-orange-up  .delete-svg,
+#keyboardPanel.ghost-mode .key.lit-orange-down .delete-svg {
   opacity: 1 !important;
   color: white !important;
 }

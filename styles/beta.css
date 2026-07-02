@@ -4603,7 +4603,27 @@ html[data-theme="dark"] body {
 .key:active .mod-word,
 .key:active .key-glyph-sym,
 .key:active .sym-main,
-.key:active .sym-sub {
+.key:active .sym-sub,
+.key.lit-green-down .letter-lbl,
+.key.lit-green-down .fn-lbl,
+.key.lit-green-down .util-lbl,
+.key.lit-green-down .util-sym-only,
+.key.lit-green-down .mod-sym,
+.key.lit-green-down .mod-sym-only,
+.key.lit-green-down .mod-word,
+.key.lit-green-down .key-glyph-sym,
+.key.lit-green-down .sym-main,
+.key.lit-green-down .sym-sub,
+.key.lit-orange-down .letter-lbl,
+.key.lit-orange-down .fn-lbl,
+.key.lit-orange-down .util-lbl,
+.key.lit-orange-down .util-sym-only,
+.key.lit-orange-down .mod-sym,
+.key.lit-orange-down .mod-sym-only,
+.key.lit-orange-down .mod-word,
+.key.lit-orange-down .key-glyph-sym,
+.key.lit-orange-down .sym-main,
+.key.lit-orange-down .sym-sub {
   transform: scale(0.82);
   transition: transform 0.08s ease;
 }

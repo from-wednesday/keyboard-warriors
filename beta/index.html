@@ -2033,7 +2033,8 @@ function onOsToggle() {
                            : (osToggleEl.checked ? 'mac' : 'pc');
   applyOsMode(targetOs);
   if (activeSettings === 'panelKeyboard') updateModalToggles();
-  if (activeSettings === 'panelConflicts') _refreshBrowserContent();
+  // Conflicted Shortcuts panel is intentionally NOT refreshed here: conflicts
+  // reflect the real device/browser, not the cross-training OS toggle.
   _CheckCrossTrainSoftKeyPrompt();
 }
 

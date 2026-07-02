@@ -4579,6 +4579,35 @@ html[data-theme="dark"] body {
   transition: transform 0.08s ease;
 }
 
+/* Keyboard key label press feedback. Applied to the label spans rather than
+   the key itself, which already carries a translateZ transform for the 3D
+   tilt and must not be disturbed. */
+.key .letter-lbl,
+.key .fn-lbl,
+.key .util-lbl,
+.key .util-sym-only,
+.key .mod-sym,
+.key .mod-sym-only,
+.key .mod-word,
+.key .key-glyph-sym,
+.key .sym-main,
+.key .sym-sub {
+  transition: transform 0.32s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+.key:active .letter-lbl,
+.key:active .fn-lbl,
+.key:active .util-lbl,
+.key:active .util-sym-only,
+.key:active .mod-sym,
+.key:active .mod-sym-only,
+.key:active .mod-word,
+.key:active .key-glyph-sym,
+.key:active .sym-main,
+.key:active .sym-sub {
+  transform: scale(0.82);
+  transition: transform 0.08s ease;
+}
+
 /* ── Dark mode: compact keyboard row (touch-disabled state) ─────────────── */
 /* opacity:0.38 on .modal-kbsize-row.disabled looks too dark in dark mode    */
 [data-theme="dark"] .modal-kbsize-row.disabled          { opacity: 0.55; }

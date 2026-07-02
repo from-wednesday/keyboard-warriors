@@ -54,8 +54,6 @@
      SVG SYMBOL DEFINITIONS
      Defined once here, 
      referenced via <use href="#SymbolId">.
-     All paths use fill="currentColor" so colour is controlled at the use site. 
-     Avoid strokes in shapes.
 ══════════════════════════════════════ -->
 <svg xmlns="http://www.w3.org/2000/svg" style="display:none;" aria-hidden="true">
 
@@ -221,10 +219,10 @@
     <path fill="currentColor" d="M49,84l37,8.6v-35.7h-37v27.1Z"/>
   </symbol>
   
-  <symbol id="IconKeyGlyphOption" viewBox="0 0 85.04 71">
-    <path fill-rule="evenodd" fill="currentColor" d="M75.7,59.57h-20.86c-2.29,0-4.36-1.37-5.26-3.47-4.35-10.19-13.54-31.69-17.89-41.88-1.99-4.67-6.58-7.69-11.65-7.69h-11.15c-1.92,0-3.48,1.56-3.48,3.48s1.56,3.48,3.48,3.48h11.15c2.29,0,4.36,1.37,5.26,3.47,4.35,10.19,13.54,31.69,17.89,41.88,1.99,4.67,6.58,7.69,11.65,7.69h20.86c1.92,0,3.48-1.56,3.48-3.48s-1.56-3.47-3.48-3.48Z"/>
-    <path fill-rule="evenodd" fill="currentColor" d="M75.7,6.52h-26.93c-1.92,0-3.47,1.56-3.47,3.48s1.56,3.48,3.47,3.48h26.93c1.92,0,3.48-1.56,3.48-3.48s-1.56-3.48-3.48-3.48Z"/>
-  </symbol>
+  <symbol id="IconKeyGlyphOption" viewBox="47.91 147.91 333.33 133.33" fill="none" stroke="currentColor" stroke-width="36" stroke-linecap="round" stroke-linejoin="round">
+      <line x1="281.24" y1="147.91" x2="381.24" y2="147.91"/>
+      <polyline points="381.24,281.24 214.57,281.24 158.91,147.91 47.91,147.91"/>
+ </symbol>
   
   <symbol id="IconKeyGlyphControl" viewBox="0 0 56 38">
     <polyline points="6,32 28,7 50,32" fill="none" stroke="currentColor" stroke-width="7" stroke-linecap="round" stroke-linejoin="round"/>
@@ -1183,7 +1181,7 @@ function _setGhostLockHint(visible) {
    KEY GLYPH SVG CONSTANTS
 ══════════════════════════════════════ */
 
-const OPTION_SYM_SVG  = `<svg class="key-glyph-sym key-glyph-option" viewBox="0 0 85.04 71"><use href="#IconKeyGlyphOption"/></svg>`;
+const OPTION_SYM_SVG = `<svg class="key-glyph-sym key-glyph-option" viewBox="47.91 147.91 333.33 133.33"><use href="#IconKeyGlyphOption"/></svg>`;
 const CONTROL_SYM_SVG = `<svg class="key-glyph-sym key-glyph-control" viewBox="0 0 56 38"><use href="#IconKeyGlyphControl"/></svg>`;
 const RETURN_SYM_SVG  = `<svg class="key-glyph-sym key-glyph-return" viewBox="0 0 58 46"><use href="#IconKeyGlyphReturn"/></svg>`;
 const LOCK_SVG        = `<svg class="lock-svg" width="14" height="14" viewBox="0 0 24 24"><use href="#IconLockPadlock"/></svg>`;

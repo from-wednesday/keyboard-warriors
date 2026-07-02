@@ -1412,7 +1412,7 @@ li.conflict-dismissed .conflict-desc {
 .key.lock-key { cursor: pointer; }
 .key.lock-key:hover  { background: #e8e8ea; }
 .key.lock-key.active { background: #f5f5f7; }
-.key .lock-svg { width: 14px; height: 14px; opacity: 0.55; stroke: #555; transition: opacity 0.4s ease; }
+.key .lock-svg { width: 14px; height: 14px; opacity: 0.55; stroke: currentColor; transition: opacity 0.4s ease; }
 
 /* Spacebar */
 .key.space-key { width: 180px; }
@@ -1579,6 +1579,7 @@ li.conflict-dismissed .conflict-desc {
 .key.lit-green-up .mod-word,      .key.lit-green-down .mod-word,
 .key.lit-green-up .util-sym-only, .key.lit-green-down .util-sym-only,
 .key.lit-green-up .key-glyph-sym, .key.lit-green-down .key-glyph-sym,
+.key.lit-green-up .lock-svg,      .key.lit-green-down .lock-svg,
 .key.lit-green-up .delete-svg,    .key.lit-green-down .delete-svg,
 .key.lit-green-up .win-svg,       .key.lit-green-down .win-svg { color: white !important; }
 
@@ -1607,6 +1608,7 @@ li.conflict-dismissed .conflict-desc {
 .key.lit-orange-up .mod-word,      .key.lit-orange-down .mod-word,
 .key.lit-orange-up .util-sym-only, .key.lit-orange-down .util-sym-only,
 .key.lit-orange-up .key-glyph-sym, .key.lit-orange-down .key-glyph-sym,
+.key.lit-orange-up .lock-svg,      .key.lit-orange-down .lock-svg,
 .key.lit-orange-up .delete-svg,    .key.lit-orange-down .delete-svg,
 .key.lit-orange-up .win-svg,       .key.lit-orange-down .win-svg { color: white !important; }
 
@@ -1641,6 +1643,7 @@ li.conflict-dismissed .conflict-desc {
 .resting-available .mod-word,
 .resting-available .util-sym-only,
 .resting-available .key-glyph-sym,
+.resting-available .lock-svg,
 .resting-available .delete-svg { color: #065f46 !important; }
 
 .resting-sus {
@@ -1657,6 +1660,7 @@ li.conflict-dismissed .conflict-desc {
 .resting-sus .mod-word,
 .resting-sus .util-sym-only,
 .resting-sus .key-glyph-sym,
+.resting-sus .lock-svg,
 .resting-sus .delete-svg { color: #7a6a00 !important; }
 
 .resting-blocked {
@@ -1673,6 +1677,7 @@ li.conflict-dismissed .conflict-desc {
 .resting-blocked .mod-word,
 .resting-blocked .util-sym-only,
 .resting-blocked .key-glyph-sym,
+.resting-blocked .lock-svg,
 .resting-blocked .delete-svg { color: #9a3412 !important; }
 
 /* ── Fade transition back to resting state ───────────────────────────────────

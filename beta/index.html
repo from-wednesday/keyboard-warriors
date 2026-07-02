@@ -52,10 +52,10 @@
 
 <!-- ══════════════════════════════════════
      SVG SYMBOL DEFINITIONS
-     Defined once here, referenced everywhere
-     via <use href="#SymbolId">.
-     All paths use fill="currentColor" so
-     colour is controlled at the use site. But beware of stroke only shapes?
+     Defined once here, 
+     referenced via <use href="#SymbolId">.
+     All paths use fill="currentColor" so colour is controlled at the use site. 
+     Avoid strokes in shapes.
 ══════════════════════════════════════ -->
 <svg xmlns="http://www.w3.org/2000/svg" style="display:none;" aria-hidden="true">
 
@@ -222,13 +222,31 @@
     <path fill="currentColor" d="M49,84l37,8.6v-35.7h-37v27.1Z"/>
   </symbol>
 
-</svg>
-  
-</svg>
+  <symbol id="IconKeyGlyphOption" viewBox="47.91 147.91 333.33 133.33">
+    <line x1="281.24" y1="147.91" x2="381.24" y2="147.91" fill="none" stroke="currentColor" stroke-width="36" stroke-linecap="round" stroke-linejoin="round"/>
+    <polyline points="381.24,281.24 214.57,281.24 158.91,147.91 47.91,147.91" fill="none" stroke="currentColor" stroke-width="36" stroke-linecap="round" stroke-linejoin="round"/>
+  </symbol>
 
+  <symbol id="IconKeyGlyphControl" viewBox="0 0 56 38">
+    <polyline points="6,32 28,7 50,32" fill="none" stroke="currentColor" stroke-width="7" stroke-linecap="round" stroke-linejoin="round"/>
+  </symbol>
+
+  <symbol id="IconKeyGlyphReturn" viewBox="0 0 58 46">
+    <polyline points="10,34 3,27 10,20" fill="none" stroke="currentColor" stroke-width="6.5" stroke-linecap="round" stroke-linejoin="round"/>
+    <path d="M3,27 L40,27 L40,10" fill="none" stroke="currentColor" stroke-width="6.5" stroke-linecap="round" stroke-linejoin="round"/>
+  </symbol>
+
+  <symbol id="IconLockPadlock" viewBox="0 0 24 24">
+    <rect x="5" y="11" width="14" height="10" rx="2" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+    <path d="M8 11V7a4 4 0 0 1 8 0v4" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+  </symbol>
+
+</svg>
 
 <!-- ══════════════════════════════════════
-     GYRO PERMISSION MODAL
+end:       SVG SYMBOL DEFINITIONS
+     ══════════════════════════════════════
+start:     GYRO PERMISSION MODAL
      Shown once on iOS/iPadOS (localStorage persists the decision).
      iOS 13+ requires a user gesture before DeviceOrientationEvent.requestPermission.
 ══════════════════════════════════════ -->
@@ -1167,38 +1185,12 @@ function _setGhostLockHint(visible) {
 
 /* ══════════════════════════════════════
    KEY GLYPH SVG CONSTANTS
-   Vector symbols for full-size Mac keys.
-   Match the Command symbol aesthetic used
-   in shortcut chips — clean stroke paths,
-   no emoji, no OS-dependent rendering.
-   Only injected when isMini is false and
-   currentOs is 'mac' (see buildKey util).
 ══════════════════════════════════════ */
 
-// Option (⌥)matches the Apple keycap.
-const OPTION_SYM_SVG = `<svg class="key-glyph-sym key-glyph-option" viewBox="47.91 147.91 333.33 133.33" fill="none" stroke="currentColor" stroke-width="36" stroke-linecap="round" stroke-linejoin="round" xmlns="http://www.w3.org/2000/svg"><line x1="281.24" y1="147.91" x2="381.24" y2="147.91"/><polyline points="381.24,281.24 214.57,281.24 158.91,147.91 47.91,147.91"/></svg>`;
-// Control (⌃): upward-pointing caret / chevron.
-const CONTROL_SYM_SVG = `<svg class="key-glyph-sym key-glyph-control" viewBox="0 0 56 38" fill="none" stroke="currentColor" stroke-width="7" stroke-linecap="round" stroke-linejoin="round" xmlns="http://www.w3.org/2000/svg"><polyline points="6,32 28,7 50,32"/></svg>`;
-
-// Return (↩): right-angle arrow — horizontal stem then downward hook with
-// arrowhead pointing left, matching the standard Apple keycap return glyph.
-const RETURN_SYM_SVG = `<svg class="key-glyph-sym key-glyph-return" viewBox="0 0 58 46" fill="none" stroke="currentColor" stroke-width="6.5" stroke-linecap="round" stroke-linejoin="round" xmlns="http://www.w3.org/2000/svg"><polyline points="10,34 3,27 10,20"/><path d="M3,27 L40,27 L40,10"/></svg>`;
-
-const LOCK_SVG = `<svg class="lock-svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-  <rect x="5" y="11" width="14" height="10" rx="2"/>
-  <path d="M8 11V7a4 4 0 0 1 8 0v4"/>
-</svg>`;
-
-// PC Backspace/Delete key glyph — replaces the Unicode "⌫" character, whose
-// appearance is decided by the system font and looks inconsistent on PC.
-const PC_DELETE_SVG = `<svg class="delete-svg" viewBox="0 0 73 54" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
-  <path d="M48.1,31.9L43.2,27l4.9-4.9c1.2-1.2,1.2-3.1,0-4.2c-1.2-1.1-3.1-1.1-4.2,0L39,22.8l-4.9-4.9c-1.2-1.1-3.1-1.1-4.2,0
-c-1.2,1.2-1.2,3.1,0,4.2l4.9,4.9l-4.9,4.9c-1.2,1.2-1.2,3.1,0,4.2c1.2,1.1,3.1,1.1,4.2,0l4.9-4.9l4.9,4.9c1.2,1.1,3.1,1.1,4.2,0
-C49.3,35,49.3,33.1,48.1,31.9C48.1,31.9,48.1,31.9,48.1,31.9z"/>
-  <path d="M56,3H26.9c-3.3,0-6.5,1.5-8.6,4.1L7.5,20.6c-3.3,3.6-3.3,9.2,0,12.8l10.9,13.5c2.1,2.6,5.2,4.1,8.6,4.1H56
-c6.1,0,11-4.9,11-11l0,0V14C67,7.9,62.1,3,56,3z M61,40c0,2.8-2.2,5-5,5H26.4c-1.2,0-2.4-0.5-3.1-1.5L12,29.5c-1.4-1.4-1.4-3.6,0-5
-l11.3-14C24.1,9.5,25.2,9,26.4,9H56c2.8,0,5,2.2,5,5V40z"/>
-</svg>`;
+const OPTION_SYM_SVG  = `<svg class="key-glyph-sym key-glyph-option" viewBox="47.91 147.91 333.33 133.33"><use href="#IconKeyGlyphOption"/></svg>`;
+const CONTROL_SYM_SVG = `<svg class="key-glyph-sym key-glyph-control" viewBox="0 0 56 38"><use href="#IconKeyGlyphControl"/></svg>`;
+const RETURN_SYM_SVG  = `<svg class="key-glyph-sym key-glyph-return" viewBox="0 0 58 46"><use href="#IconKeyGlyphReturn"/></svg>`;
+const LOCK_SVG        = `<svg class="lock-svg" width="14" height="14" viewBox="0 0 24 24"><use href="#IconLockPadlock"/></svg>`;
 
 function buildKey(cfg, isMini) {
   const el = document.createElement('div');

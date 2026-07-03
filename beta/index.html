@@ -15211,7 +15211,6 @@ function syncDiffNeedle() {
 /* ── Active click handler — flip animation ───────────── */
 function diffIconClick() {
   resetEndScreenInactivityTimer();
-  if (gameState === 'playing') { showToast('Change difficulty between games.'); return; }
   if (activeSettings === 'panelDifficultySettings' || activeSettings === 'panelLandingReturning') {
     closeSettings();
   } else {

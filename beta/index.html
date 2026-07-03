@@ -1379,6 +1379,11 @@ function buildKey(cfg, isMini) {
       break;
   }
 
+  if (!isMini && cfg.id) {
+    const CrossTrainingLabelHtml = BuildCrossTrainingModifierLabel(cfg.id);
+    if (CrossTrainingLabelHtml) el.innerHTML = CrossTrainingLabelHtml;
+  }
+
   if (cfg.id) { keyEls[cfg.id] = el; el.dataset.key = cfg.id; }
 
   // Keys that stretch to fill remaining row width

@@ -1413,11 +1413,6 @@ li.conflict-dismissed .conflict-desc {
 }
 
 /* PC Backspace/Delete key glyph — replaces the unicode "⌫" character */
-  height: 14px;
-  color: #555;
-}
-
-/* PC Backspace/Delete key glyph — replaces the unicode "⌫" character */
 .key .delete-svg {
   width: 16px;
   height: auto;

@@ -1376,13 +1376,43 @@ li.conflict-dismissed .conflict-desc {
   bottom: 4px;
   left: 0; right: 0;
   text-align: center;
-  font-size: 8px;
-  color: #555;
-  font-weight: 400;
-  line-height: 1;
-}
 .key .win-svg {
   width: 14px;
+  height: 14px;
+  color: #555;
+}
+
+/* Cross-training modifier labels: training meaning on top, physical key
+   underneath, separated by a thin rule. Content uses .util-lbl, .mod-sym
+   and .win-svg so lit-state colours stay correct without extra rules. */
+.key .key-cross-train-top,
+.key .key-cross-train-bottom {
+  position: absolute;
+  left: 0;
+  right: 0;
+  height: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: visible;
+}
+.key .key-cross-train-top    { top: 5px; }
+.key .key-cross-train-bottom { top: 22px; }
+.key .key-cross-train-top .mod-sym,
+.key .key-cross-train-bottom .mod-sym {
+  margin-bottom: 0;
+}
+.key .key-cross-train-divider {
+  position: absolute;
+  top: 19px;
+  left: 25%;
+  right: 25%;
+  height: 1px;
+  background: #9aa0a8;
+  opacity: 0.6;
+}
+
+/* PC Backspace/Delete key glyph — replaces the unicode "⌫" character */
   height: 14px;
   color: #555;
 }

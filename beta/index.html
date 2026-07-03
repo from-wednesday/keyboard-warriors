@@ -3752,7 +3752,9 @@ function clearHelp() {
   // overrides it with 'partial'. Order matters here.
   if (gameState === 'readyToUnpause') { _enterReadyToUnpauseCleanup(); enterPause(); }
   else if (gameState === 'playing')   { enterPause(); }
-  // Open panel after pausing so it wins the keyboard position.
+  // Open panel after pausing. Since a settings page (panelPause) is already
+  // active at this point, openSettings will not re-apply a keyboard angle --
+  // the angle enterPause set stays as-is.
   openSettings('panelCheatSheet');
   // Always set title + tagline last, overwriting any blur/text from enterPause.
   _resetTitleClasses();
@@ -6482,9 +6484,10 @@ function _phoneOpenSettings(Page) {
 
   _phoneOpenPanel(Page, WasAlreadyOpen, PreviousPage);
   // Folds the keyboard partway whenever it is visible alongside the
-  // toolbar. Already does nothing when the keyboard is genuinely hidden,
-  // so this is safe to call unconditionally here.
-  SetKeyboardPositionForPanel(Page);
+  // toolbar. Only applied when opening settings from face -- switching
+  // between panels while settings are already open leaves the keyboard
+  // at its current angle until the user changes it themselves.
+  if (!WasAlreadyOpen) SetKeyboardPositionForPanel(Page);
   _syncPhoneToolbarActiveState(Page);
 
   var NoConfirmOverlayActive = ['confirm-reset', 'confirm-quit', 'confirm-trophy',
@@ -6792,9 +6795,12 @@ function openSettings(page) {
   if (page === 'panelEndGameReportCard')     _refreshReportPanel();
   if (page === 'panelCheatSheet')    _refreshCheatSheet();
 
-  // Align panel width to keyboard and set the configured keyboard fold angle.
+  // Align panel width to keyboard. The keyboard fold angle is only applied
+  // here when opening settings from face (game/idle) -- switching between
+  // panels while settings are already open leaves the keyboard at whatever
+  // angle it is currently at, until the user drags or taps it themselves.
   _spAlignPanel();
-  SetKeyboardPositionForPanel(page);
+  if (!wasOpen) SetKeyboardPositionForPanel(page);
   // Re-align affordance vertical position after padding-top transition completes (550ms).
   setTimeout(function() { if (activeSettings !== null) _spAlignPanel(); }, 580);
 

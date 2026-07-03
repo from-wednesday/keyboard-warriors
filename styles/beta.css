@@ -2932,6 +2932,15 @@ body:has(#keyboardPanel[data-keyboard-theme="poprocks"]) #mainBtn:hover {
   pointer-events: auto;
   touch-action: none;
 }
+
+/* Touch: the invisible drag target grows well beyond the visible handle
+   graphic, since a fingertip is far less precise than a mouse pointer. */
+@media (hover: none) {
+  #kbDragHandle {
+    top: -36px;
+    height: 80px;
+  }
+}
 #keyboardWrap.settings-open #kbDragHandle:active {
   cursor: grabbing;
 }
@@ -2988,8 +2997,10 @@ body:has(#keyboardPanel[data-keyboard-theme="poprocks"]) #mainBtn:hover {
   pointer-events: none !important;
 }
 
-/* Show on hover via .handle-hover class toggled by JS on #kbDragHandle */
-#kbHandleAffordance.handle-hover {
+/* Show on hover via .handle-hover class toggled by JS on #kbDragHandle,
+   or on touch via .handle-revealed toggled by JS after a keyboard tap */
+#kbHandleAffordance.handle-hover,
+#kbHandleAffordance.handle-revealed {
   opacity: 1;
 }
 
@@ -3002,13 +3013,6 @@ body:has(#keyboardPanel[data-keyboard-theme="poprocks"]) #mainBtn:hover {
 #keyboardWrap.kb-at-face #kbHandleAffordance {
   opacity: 0 !important;
   transition: none;
-}
-
-/* Touch: always visible when settings are open */
-@media (hover: none) {
-  #keyboardWrap.settings-open #kbHandleAffordance {
-    opacity: 1;
-  }
 }
 
 /* ─── DROP SHADOW ─────────────────────────────────────

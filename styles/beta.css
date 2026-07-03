@@ -3179,17 +3179,6 @@ body:has(#keyboardPanel[data-keyboard-theme="poprocks"]) #mainBtn:hover {
   animation: AppPillHexRingOut 0.9s cubic-bezier(0.33, 1, 0.68, 1) 0.15s forwards;
 }
 
-
-/* Returning screen: all settings icons passive, no hover, no interaction */
-body.returning-screen #kbIconWrap,
-body.returning-screen #brIconWrap,
-body.returning-screen #diffIconWrap {
-  opacity: 0.4;
-  pointer-events: none;
-}
-body.returning-screen #kbIconWrap  .icon-tip,
-body.returning-screen #brIconWrap  .icon-tip,
-body.returning-screen #diffIconWrap .icon-tip { display: none; }
 #kbIconWrap.sp-icon-active  #kbIcon      { color: #374151; }
 #brIconWrap.sp-icon-active  #browserIcon { color: #374151; }
 #diffIconWrap.sp-icon-active #diffIcon   { color: #374151; }

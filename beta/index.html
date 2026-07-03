@@ -1230,8 +1230,22 @@ function GetModifierRole(BrowserCode) {
   return null;
 }
 
+function GetPhysicalKeyboardHardware() {
+  // The key layout of the physical keyboard actually in front of the person.
+  // iOS/iPadOS is assumed to be a Mac layout keyboard and Android is assumed
+  // to be a PC layout keyboard, since neither can be detected directly yet.
+  // 'other' (Linux, ChromeOS, unrecognised) has no confident guess.
+  if (detectedOs === 'mac') return 'mac';
+  if (detectedOs === 'pc')  return 'pc';
+  if (detectedOs === 'mobile') return /android/i.test(navigator.userAgent || '') ? 'pc' : 'mac';
+  return null;
+}
+
 function IsCrossTrainingWithPhysicalKeyboard() {
-  return detectedOs !== 'mobile' && detectedOs !== 'other' && detectedOs !== currentOs && _hasKeyboardConfirmed();
+  const PhysicalHardware = GetPhysicalKeyboardHardware();
+  if (!PhysicalHardware) return false;
+  const TrainingHardware = currentOs === 'pc' ? 'pc' : 'mac';
+  return PhysicalHardware !== TrainingHardware && _hasKeyboardConfirmed();
 }
 
 function BuildModifierLabelMarkup(LabelEntry) {
@@ -1250,7 +1264,7 @@ function BuildCrossTrainingModifierLabel(BrowserCode) {
   if (!Role) return null;
 
   const TrainingHardware = currentOs === 'pc' ? 'pc' : 'mac';
-  const PhysicalHardware  = detectedOs === 'pc' ? 'pc' : 'mac';
+  const PhysicalHardware  = GetPhysicalKeyboardHardware();
 
   const TrainingLabel = MODIFIER_LABELS_BY_HARDWARE[TrainingHardware][Role];
 

@@ -1904,10 +1904,7 @@ function applyOsMode(os) {
   updateMismatchPill();
   document.getElementById('keyboardPanel').classList.toggle('pc-keys', os === 'pc');
   document.body.classList.toggle('pc-mode', os === 'pc');
-  // Carry the current 3/4-key setting over to the new OS instead of pulling
-  // in that OS's own remembered/default variant. This is what keeps the
-  // modifier key count fixed when the OS toggle is switched -- it now only
-  // changes via the explicit 3/4 switch in Keyboard Settings.
+  // Carry the current 3/4-key setting over to the new OS
   if (currentOs === 'mac') kbVariantMac = activeVariantKey();
   else                     kbVariantPc  = activeVariantKey();
   SaveKeyboardSettings();

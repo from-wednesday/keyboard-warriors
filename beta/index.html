@@ -2036,6 +2036,7 @@ function onOsToggle() {
                            : (osToggleEl.checked ? 'mac' : 'pc');
   applyOsMode(targetOs);
   if (activeSettings === 'panelKeyboard') updateModalToggles();
+  if (activeSettings === 'panelCheatSheet') _refreshCheatSheet();
   // Conflicted Shortcuts panel is intentionally NOT refreshed here: conflicts
   // reflect the real device/browser, not the cross-training OS toggle.
   _CheckCrossTrainSoftKeyPrompt();
@@ -12530,7 +12531,7 @@ var LabelElement = document.createElement('span');
     }
 
     ListItem.appendChild(LabelElement);
-    var ChipsWrapper = BuildShortcutKeyChips(ShortcutChipText, true);
+    var ChipsWrapper = BuildShortcutChipsOrOsOnlyNote(ShortcutChipText, true);
     ChipsWrapper.style.flexShrink = '0';
     ListItem.appendChild(ChipsWrapper);
     
@@ -12872,13 +12873,13 @@ var AnsweredTimingMap = {};
       dot.style.marginTop = '5px';
       dot.style.background = (IsActiveGame && Idx === 0) ? '#f59e0b' : '#fbbf24';
 
-      var label = document.createElement('span');
+var label = document.createElement('span');
       label.className = 'sp-report-question-label';
       label.textContent = (Question.display || '').replace(/\\\\/g, '\\');
 
       li.appendChild(dot);
       li.appendChild(label);
-      li.appendChild(BuildShortcutKeyChips(ShortcutDisplay, true));
+      li.appendChild(BuildShortcutChipsOrOsOnlyNote(ShortcutDisplay, true));
       ListRight.appendChild(li);
     });
 
@@ -12945,6 +12946,21 @@ function HighlightReportListItems(ShortcutToken) {
       ListItem.classList.add('practice-done');
     }
   });
+}
+
+// Returns either the shortcut key chips, or a small note when the shortcut
+// has no equivalent on the currently selected training OS (its pc_sc or
+// mac_sc field is null/'none'/empty in the shortcuts JSON).
+function BuildShortcutChipsOrOsOnlyNote(ShortcutValue, IsWeakness) {
+  var HasNoOsEquivalent = ShortcutValue === null || ShortcutValue === undefined
+    || ShortcutValue === 'none' || ShortcutValue === '';
+  if (HasNoOsEquivalent) {
+    var NoteElement = document.createElement('small');
+    NoteElement.className = 'sp-report-os-only-note';
+    NoteElement.textContent = currentOs === 'pc' ? 'Mac only' : 'PC only';
+    return NoteElement;
+  }
+  return BuildShortcutKeyChips(ShortcutValue, IsWeakness);
 }
 
 function BuildShortcutKeyChips(TokenString, IsWeakness) {

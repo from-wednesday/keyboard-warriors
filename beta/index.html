@@ -3130,6 +3130,16 @@ function updateKeyboardLighting(e, isDown) {
     }
     // Otherwise light it
     heldKeys.add(code);
+    if (gameState !== 'playing') {
+      // Outside active play there is no question to judge correctness
+      // against, so every key reads as green (matches the physical
+      // keyboard's own non-playing behaviour further down this function).
+      greenHeld.add(code);
+      stickyLit.set(code, 'green');
+      if (isExtKey) ShowExtendedKeyChip(ResolvedCode, null);
+      else          setKeyLit(ResolvedCode, 'green-down');
+      return;
+    }
     const isCorrect = isKeyPartOfShortcut(e, currentAnswer);
     const colour = isCorrect ? 'green' : 'orange';
     stickyLit.set(code, colour);
@@ -4460,6 +4470,9 @@ function hideConfirmHeading() {
 function _resetToIdleSilently() {
   gameState = 'idle';
   _wasPlaying = false;
+  idleHeldTokens.clear();
+  _idlePreviewActive = false;
+  kbToastEl.classList.remove('show');
   _exitScoreClearConfirm();
   _exitDiffConfirm();
   _exitQuitConfirm();
@@ -4503,6 +4516,9 @@ function _resetToIdleSilently() {
 function resetToIdle() {
   gameState = 'idle';
   _wasPlaying = false;
+  idleHeldTokens.clear();
+  _idlePreviewActive = false;
+  kbToastEl.classList.remove('show');
   // Clean up any lingering confirm overlay listeners so they cannot fire
   // after the state has been reset (e.g. stale guard from a cancelled confirm)
   _exitScoreClearConfirm();
@@ -8346,27 +8362,10 @@ function _saveUserConfirmedWorkingConflicts() {
   } catch(e) {}
 }
 
-var conflictsKbLighting = (function () {
-  var _active    = false;
-  // All browser codes currently held down, tracked as a Set
-  var _heldKeys  = new Set();
-
-  // CSS class constants
-  var CLS_GREEN    = 'lit-green-up';
-  var CLS_ORANGE   = 'lit-orange-up';
-  var CLS_YELLOW   = 'lit-yellow-up';
-  var CLS_RESTING_AVAILABLE = 'resting-available';
-  var CLS_RESTING_SUS       = 'resting-sus';
-  var CLS_RESTING_BLOCKED   = 'resting-blocked';
-
-  var ALL_MODULE_CLASSES = [
-    CLS_GREEN, CLS_ORANGE, CLS_YELLOW,
-    CLS_RESTING_AVAILABLE, CLS_RESTING_SUS, CLS_RESTING_BLOCKED,
-    'lit-fading',
-  ];
-
-  // ── Token helpers ────────────────────────────────────────────────────────
-
+/* ── Shared browser-code ↔ canonical-token helpers ───────────────────────────
+   Used by conflictsKbLighting (chord tracking for the Conflicts panel) and
+   by the idle shortcut preview (see near handleKeydown) — kept in one place
+   so both features stay in sync with the same code-to-token mapping. ── */
 var BrowserCodeToTokenMap = {
   'Equal':'EQUAL','Minus':'MINUS',
   'BracketLeft':'BRACKETLEFT','BracketRight':'BRACKETRIGHT',
@@ -8398,28 +8397,51 @@ var BrowserCodeToTokenMap = {
   'NumpadEqual':'NUMPADEQUAL','NumpadComma':'NUMPADCOMMA',
 };
 
+function _browserCodeToToken(BrowserCode) {
+  if (BrowserCode.startsWith('Key'))   return BrowserCode.slice(3);
+  if (BrowserCode.startsWith('Digit')) return BrowserCode.slice(5);
+  return BrowserCodeToTokenMap[BrowserCode] || null;
+}
 
-  function _browserCodeToToken(BrowserCode) {
-    if (BrowserCode.startsWith('Key'))   return BrowserCode.slice(3);
-    if (BrowserCode.startsWith('Digit')) return BrowserCode.slice(5);
-    return BrowserCodeToTokenMap[BrowserCode] || null;
+// Returns the canonical modifier token for a held browser code, or null
+// if the code is not a modifier key.
+function _modifierTokenForCode(BrowserCode) {
+  if (currentOs === 'pc') {
+    if (BrowserCode === 'ControlLeft' || BrowserCode === 'ControlRight') return 'CMD';
+  } else {
+    if (BrowserCode === 'MetaLeft'    || BrowserCode === 'MetaRight')    return 'CMD';
   }
+  if (BrowserCode === 'ShiftLeft'   || BrowserCode === 'ShiftRight')     return 'SHIFT';
+  if (BrowserCode === 'AltLeft'     || BrowserCode === 'AltRight')       return 'OPTION';
+  if (BrowserCode === 'ControlLeft' || BrowserCode === 'ControlRight')   return 'CONTROL';
+  if (BrowserCode === 'MetaLeft'    || BrowserCode === 'MetaRight')      return 'WIN';
+  if (BrowserCode === 'Fn')                                               return 'FN';
+  return null;
+}
 
-  // Returns the canonical modifier token for a held browser code, or null
-  // if the code is not a modifier key.
-  function _modifierTokenForCode(BrowserCode) {
-    if (currentOs === 'pc') {
-      if (BrowserCode === 'ControlLeft' || BrowserCode === 'ControlRight') return 'CMD';
-    } else {
-      if (BrowserCode === 'MetaLeft'    || BrowserCode === 'MetaRight')    return 'CMD';
-    }
-    if (BrowserCode === 'ShiftLeft'   || BrowserCode === 'ShiftRight')     return 'SHIFT';
-    if (BrowserCode === 'AltLeft'     || BrowserCode === 'AltRight')       return 'OPTION';
-    if (BrowserCode === 'ControlLeft' || BrowserCode === 'ControlRight')   return 'CONTROL';
-    if (BrowserCode === 'MetaLeft'    || BrowserCode === 'MetaRight')      return 'WIN';
-    if (BrowserCode === 'Fn')                                               return 'FN';
-    return null;
-  }
+var conflictsKbLighting = (function () {
+  var _active    = false;
+  // All browser codes currently held down, tracked as a Set
+  var _heldKeys  = new Set();
+
+  // CSS class constants
+  var CLS_GREEN    = 'lit-green-up';
+  var CLS_ORANGE   = 'lit-orange-up';
+  var CLS_YELLOW   = 'lit-yellow-up';
+  var CLS_RESTING_AVAILABLE = 'resting-available';
+  var CLS_RESTING_SUS       = 'resting-sus';
+  var CLS_RESTING_BLOCKED   = 'resting-blocked';
+
+  var ALL_MODULE_CLASSES = [
+    CLS_GREEN, CLS_ORANGE, CLS_YELLOW,
+    CLS_RESTING_AVAILABLE, CLS_RESTING_SUS, CLS_RESTING_BLOCKED,
+    'lit-fading',
+  ];
+
+  // ── Token helpers ────────────────────────────────────────────────────────
+  // BrowserCodeToTokenMap, _browserCodeToToken, and _modifierTokenForCode now
+  // live at top level (shared with the idle shortcut preview) — see just
+  // above this module's declaration.
 
   function _isModifierCode(BrowserCode) {
     return _modifierTokenForCode(BrowserCode) !== null;
@@ -10483,6 +10505,11 @@ function _onAppsLoaded(AllAppsFromJson) {
   positionIcons();
   _initSkillsetPillAfterAppsLoad();
 
+  // Warm the shortcut cache for the current app so the idle shortcut
+  // preview (see near handleKeydown) has data ready the moment someone
+  // starts pressing keys, without waiting on a fetch mid-interaction.
+  loadAppShortcutsIfNeeded(currentApp, function() {});
+
   if (_PendingSharedAppsMode === 'simple') {
     _ApplySharedAppsList(_PendingSharedAppLabels, _PendingSharedStandbyLabels);
     _PendingSharedAppsMode = null;
@@ -10689,6 +10716,9 @@ function beginCountdown() {
   if (_countdownTimer) return;
   _stopReadyPromptTimer();
   hideConfirmHeading();
+  idleHeldTokens.clear();
+  _idlePreviewActive = false;
+  kbToastEl.classList.remove('show');
   _countdownMode    = 'start';
   gameState         = 'counting';
   mainBtn.textContent = 'Cancel';
@@ -13903,6 +13933,120 @@ function showTip(index) {
   _startReadyPromptTimer();
 }
 
+/* ══════════════════════════════════════
+   IDLE SHORTCUT PREVIEW
+   While gameState is 'idle', held keys (real or on-screen) are compared
+   against the current app's full shortcut list. An exact match — no
+   missing or extra keys — shows its chip in the stats-row toast and its
+   description in the title, so people can explore shortcuts freely
+   before starting a round.
+══════════════════════════════════════ */
+var idleHeldTokens           = new Set();
+var _idlePreviewActive       = false;
+var _idlePreviewSavedText    = '';
+var _idlePreviewSavedBlurred = false;
+
+// Builds the canonical "CMD+SHIFT+Z"-style string for whatever is
+// currently held, in the same modifier order CanonicaliseShortcutToken
+// uses, so it can be compared directly against pool entries.
+function _buildIdleHeldChordString() {
+  var ModifierOrder = ['CMD', 'CONTROL', 'WIN', 'OPTION', 'SHIFT'];
+  var Parts = [];
+  ModifierOrder.forEach(function(Mod) {
+    if (idleHeldTokens.has(Mod)) Parts.push(Mod);
+  });
+  idleHeldTokens.forEach(function(Token) {
+    if (ModifierOrder.indexOf(Token) === -1) Parts.push(Token);
+  });
+  return Parts.join('+');
+}
+
+function _registerIdleKeydown(e) {
+  var Token = _modifierTokenForCode(e.code) || _browserCodeToToken(e.code);
+  if (!Token) return;
+  if (CurrentInputIsTouch) {
+    // On-screen keys behave like sticky keys: tapping toggles them on,
+    // tapping again toggles them off, since there is no real key-up.
+    if (idleHeldTokens.has(Token)) idleHeldTokens.delete(Token);
+    else idleHeldTokens.add(Token);
+  } else {
+    idleHeldTokens.add(Token);
+  }
+  _updateIdleShortcutPreview();
+}
+
+function _registerIdleKeyup(e) {
+  var Token = _modifierTokenForCode(e.code) || _browserCodeToToken(e.code);
+  if (!Token || !idleHeldTokens.has(Token)) return;
+  idleHeldTokens.delete(Token);
+  _updateIdleShortcutPreview();
+}
+
+function _showIdleShortcutMatch(ShortcutEntry, MatchedTokenString) {
+  kbToastEl.innerHTML = '';
+  var ChipsWrapper = BuildShortcutKeyChips(MatchedTokenString, false);
+  ResizeChips(ChipsWrapper, 28);
+  ChipsWrapper.querySelectorAll('.sp-report-chip-key').forEach(function(Chip) {
+    Chip.style.background  = '#10b981';
+    Chip.style.color       = 'white';
+    Chip.style.borderColor = _isDarkMode() ? 'transparent' : '#059669';
+    Chip.style.boxShadow   = '0 0 6px rgba(16,185,129,0.45)';
+  });
+  kbToastEl.appendChild(ChipsWrapper);
+  kbToastEl.classList.add('show');
+
+  if (!_idlePreviewActive) {
+    _idlePreviewSavedText    = titleEl.textContent;
+    _idlePreviewSavedBlurred = titleEl.classList.contains('blurred');
+    _idlePreviewActive = true;
+  }
+  titleEl.classList.remove('blurred');
+  _resetTitleClasses();
+  titleEl.textContent = ShortcutEntry.display || '';
+}
+
+function _hideIdleShortcutMatch() {
+  kbToastEl.classList.remove('show');
+  kbToastEl.innerHTML = '';
+  if (!_idlePreviewActive) return;
+  _idlePreviewActive = false;
+  _resetTitleClasses();
+  titleEl.textContent = _idlePreviewSavedText;
+  if (_idlePreviewSavedBlurred) titleEl.classList.add('blurred');
+  _idlePreviewSavedText    = '';
+  _idlePreviewSavedBlurred = false;
+}
+
+function _updateIdleShortcutPreview() {
+  if (gameState !== 'idle') return;
+
+  if (idleHeldTokens.size === 0) { _hideIdleShortcutMatch(); return; }
+
+  // Shortcuts for the current app may not be loaded yet if the player
+  // switched apps without starting a round — kick off the fetch and try
+  // again once it resolves.
+  if (loadedAppName !== currentApp) {
+    loadAppShortcutsIfNeeded(currentApp, _updateIdleShortcutPreview);
+    return;
+  }
+
+  var HeldChordString = _buildIdleHeldChordString();
+  var Pool = UNIVERSAL_SHORTCUTS.concat(loadedAppShortcuts);
+
+  for (var i = 0; i < Pool.length; i++) {
+    var ActiveString = GetActiveShortcutString(Pool[i]);
+    if (!ActiveString) continue;
+    var Alternatives = GetAllAlternatives(ActiveString);
+    for (var j = 0; j < Alternatives.length; j++) {
+      if (CanonicaliseShortcutToken(Alternatives[j]) === HeldChordString) {
+        _showIdleShortcutMatch(Pool[i], Alternatives[j]);
+        return;
+      }
+    }
+  }
+  _hideIdleShortcutMatch();
+}
+
 function handleKeydown(e) {
   // FIX 1d: detect a physical keyboard on mobile via isTrusted.
   // Real browser KeyboardEvents are trusted; the synthetic ones fired by
@@ -13916,6 +14060,7 @@ updateKeyboardLighting(e, true);
   // App-wide: if this press satisfies a currently dismissed/user-found
   // shortcut, restore it now. This is not limited to the Conflicts panel.
   if (!e.repeat) _checkAppWideConflictRestore(e);
+  if (gameState === 'idle' && !e.repeat) _registerIdleKeydown(e);
   // Sync the CapsLock key indicator with the real OS CapsLock state.
   // getModifierState reads the OS-level state directly, so it never drifts.
   // Uses a dedicated class outside the normal lighting lifecycle so it
@@ -14129,6 +14274,10 @@ function releaseAllKeys() {
   });
   heldKeys.clear();
   greenHeld.clear();
+  if (idleHeldTokens.size > 0) {
+    idleHeldTokens.clear();
+    _updateIdleShortcutPreview();
+  }
 }
 
 var _blurPauseActive              = false;
@@ -14687,6 +14836,7 @@ function _blurDiagnosticSendReport(EncodedSubject, EncodedBody) {
 
 function handleKeyup(e) {
   updateKeyboardLighting(e, false);
+  if (gameState === 'idle') _registerIdleKeyup(e);
   // In sticky or touch mode, key-up never clears anything (toggle is handled in updateKeyboardLighting)
   if (stickyKeysOn) return;
   // On Mac, releasing a modifier suppresses keyup for any keys held while it

@@ -1355,7 +1355,7 @@ li.conflict-dismissed .conflict-desc {
   color: #777;
   flex-shrink: 0;
 }
-.key .key-glyph-option  { width: 14px; height: 14px; }
+.key .key-glyph-option  { width: 18px; height: 18px; }
 .key .key-glyph-control { width: 11px; height: 8px; }
 .key .key-glyph-return  { width: 14px; height: 12px; }
 
@@ -2936,11 +2936,17 @@ body:has(#keyboardPanel[data-keyboard-theme="poprocks"]) #mainBtn:hover {
 #keyboardWrap.kb-settings-active:not(.kb-at-face) #keyboardPanel:active {
   cursor: grabbing;
 }
-/* Individual keys take no part in settings-time gripping, so pressing the
-   keyboard here can never light a key or trigger its own action. The panel
-   itself stays a normal hit target, since it is now the grip surface. */
-#keyboardWrap.kb-settings-active #keyboardPanel .key {
-  pointer-events: none;
+/* Below the phone-toolbar breakpoint, settings panels render in the toolbar
+   area rather than behind the keyboard, so there is nothing for gripping to
+   reveal. Keys keep their normal press behaviour and the grab cursor is
+   switched off, matching the bail-out in _onKeyboardGripPointerDown. */
+@media (max-width: 819px) {
+  #keyboardWrap.kb-settings-active #keyboardPanel .key {
+    pointer-events: auto;
+  }
+  #keyboardWrap.kb-settings-active:not(.kb-at-face) #keyboardPanel {
+    cursor: default;
+  }
 }
 
 /* ─── DRAG HANDLE AFFORDANCE ──────────────────────────

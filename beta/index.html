@@ -14850,7 +14850,13 @@ function _syncKeyboardSettingsActiveClass() {
   var KeyboardWrapElement = document.getElementById('keyboardWrap');
   if (KeyboardWrapElement) KeyboardWrapElement.classList.toggle('kb-settings-active', activeSettings !== null);
 }
-
+// True whenever the app is showing the phone toolbar layout, where settings
+// panels render below the keyboard rather than being hidden behind it. Used
+// to switch the keyboard grip gesture off, since there is nothing behind
+// the keyboard in that layout for it to protect.
+function _isPhoneToolbarLayout() {
+  return NoKeyboardMode || window.innerWidth < MiniKeyboardBreakpointWidth;
+}
 function _touchModalVisible() {
   var gyro = document.getElementById('gyroModal');
   var kb   = document.getElementById('keyboardRecommendModal');
@@ -15100,6 +15106,7 @@ function _onKeyboardGripPointerDown(Event) {
   if (activeSettings === null) return;
   if (_kbPos === 'face') return;
   if (keyboardDisplayMode === 'ghost' && activeSettings !== 'panelConflicts') return;
+  if (_isPhoneToolbarLayout()) return;
 
   Event.preventDefault();
   Event.stopPropagation();

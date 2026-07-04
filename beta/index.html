@@ -7860,6 +7860,18 @@ document.getElementById('gameContainer').addEventListener('click', function(e) {
     return;
   }
 
+  // Background click while a settings panel is open, on a non-active,
+  // non-paused screen (idle, welcome, or finished): abandon the panel
+  // and return to the idle screen.
+  var BackgroundClickResetStates = ['idle', 'welcome', 'finished'];
+  if (activeSettings !== null && BackgroundClickResetStates.indexOf(gameState) !== -1) {
+    _welcomeIsReturning = false;
+    document.body.classList.remove('returning-screen');
+    _closeSkillsetPill();
+    resetToIdle();
+    return;
+  }
+
   if (gameState === 'paused') {
     pulseBtn(document.getElementById('mainBtn'));
     return;

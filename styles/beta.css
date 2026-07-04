@@ -2930,7 +2930,10 @@ body:has(#keyboardPanel[data-keyboard-theme="poprocks"]) #mainBtn:hover {
 #keyboardWrap.kb-settings-active #kbDragHandle {
   pointer-events: auto;
 }
-#keyboardWrap.kb-settings-active #kbDragHandle:active {
+#keyboardWrap.kb-settings-active:not(.kb-at-face) #keyboardPanel {
+  cursor: grab;
+}
+#keyboardWrap.kb-settings-active:not(.kb-at-face) #keyboardPanel:active {
   cursor: grabbing;
 }
 /* Individual keys take no part in settings-time gripping, so pressing the

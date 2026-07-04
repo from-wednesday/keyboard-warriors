@@ -14805,8 +14805,6 @@ var _kbDragDirectionConfirmed = false;
 
 // Pixels of pointer movement required before committing to a drag.
 var DragThresholdPixels = 6;
-// Degrees the drag can overshoot the min/max angle before snapping back on release.
-var DragOvershootDegrees = 3;
 
 // ── Touch drag-handle reveal state ──────────────────────────────────────────
 // On touch devices the handle is hidden until the keyboard is tapped, then
@@ -15131,6 +15129,15 @@ function _onKeyboardGripPointerDown(Event) {
 function _onKeyboardGripPointerMove(Event) {
   if (Event.pointerId !== _kbDragPointerId) return;
 
+  // A mouse reports whether its button is still down via Event.buttons.
+  // If it reads zero here, the release happened without us ever receiving
+  // the matching pointerup, so the drag must stop now rather than keep
+  // tracking a mouse that is no longer held.
+  if (Event.pointerType === 'mouse' && Event.buttons === 0) {
+    _endKeyboardGripDrag();
+    return;
+  }
+
   var DeltaY      = Event.clientY - _kbDragStartClientY;
   var DeltaX      = Event.clientX - _kbDragStartClientX;
   var TotalTravel = Math.sqrt(DeltaX * DeltaX + DeltaY * DeltaY);
@@ -15144,19 +15151,22 @@ function _onKeyboardGripPointerMove(Event) {
   var DegreesPerPixel = 0.5;
   var NewAngle        = _kbDragStartAngle + DeltaY * DegreesPerPixel;
 
-  // Allow DragOvershootDegrees beyond each extreme during live drag.
+  // Clamped to the exact bounds used on release, so the live drag position
+  // and the settled position after letting go are always identical.
   var ClampedAngle = Math.max(
-    PartialDragMinAngle - DragOvershootDegrees,
-    Math.min(EdgeAngle + DragOvershootDegrees, NewAngle)
+    PartialDragMinAngle,
+    Math.min(PartialDragMaxAngle, NewAngle)
   );
 
   _applyPartialAngleInstant(ClampedAngle);
   Event.preventDefault();
 }
 
-function _onKeyboardGripPointerUp(Event) {
-  if (Event.pointerId !== _kbDragPointerId) return;
-
+// Shared cleanup for every way a keyboard angle drag can end: a normal
+// release, a cancelled gesture, the browser taking capture away from us,
+// or a mouse pointermove reporting its button already released. Keeping
+// this in one place means every exit path settles the keyboard the same way.
+function _endKeyboardGripDrag() {
   var WasDrag = _kbDragActive;
   _kbDragActive    = false;
   _kbDragPointerId = null;
@@ -15170,15 +15180,19 @@ function _onKeyboardGripPointerUp(Event) {
   var aff = document.getElementById('kbHandleAffordance');
   if (aff) { aff.style.transition = ''; aff.classList.remove('dragging'); }
 
-  // Releasing the grip counts as activity, so the idle fade timer restarts.
+  // Any end to the grip counts as activity, so the idle fade timer restarts.
   _touchKeyboardActivity();
 
   if (!WasDrag) return;
 
   // _animateToPartialAngle already clamps to the valid partial range, so the
-  // angle passed in here is exactly where the user released the drag.
+  // angle passed in here is exactly where the drag was when it ended.
   _animateToPartialAngle(_kbPartialAngle);
+}
 
+function _onKeyboardGripPointerUp(Event) {
+  if (Event.pointerId !== _kbDragPointerId) return;
+  _endKeyboardGripDrag();
   Event.preventDefault();
 }
 
@@ -15195,17 +15209,14 @@ function _initialiseStageDragListeners() {
   panel.addEventListener('pointerup',   _onKeyboardGripPointerUp);
   panel.addEventListener('pointercancel', function(Event) {
     if (Event.pointerId !== _kbDragPointerId) return;
-    _kbDragActive    = false;
-    _kbDragPointerId = null;
-    var stage = document.getElementById('kbFlipStage');
-    panel.style.transition = '';
-    if (stage) stage.style.transition = '';
-    // Snap back to the nearest valid extreme on cancel too.
-    if (_kbPartialAngle <= PartialDragMinAngle) {
-      _animateToPartialAngle(PartialDragMinAngle);
-    } else if (_kbPartialAngle >= PartialDragMaxAngle) {
-      setKbPosition('edge');
-    }
+    _endKeyboardGripDrag();
+  });
+  // Fires whenever the browser ends our pointer capture for any reason
+  // other than the events above, guarding against the keyboard being left
+  // mid-rotation with no way to stop it.
+  panel.addEventListener('lostpointercapture', function(Event) {
+    if (Event.pointerId !== _kbDragPointerId) return;
+    _endKeyboardGripDrag();
   });
 
   // Mouse hover on the thin strip previews the handle before any press,

@@ -6451,6 +6451,7 @@ function _phoneOpenSettings(Page) {
   var WasAlreadyOpen = activeSettings !== null;
   var PreviousPage   = activeSettings;
   activeSettings     = Page;
+  _syncKeyboardSettingsActiveClass();
 
   // Clean up Cheat Sheet tagline if navigating away from it
   if (PreviousPage === 'panelCheatSheet' && Page !== 'panelCheatSheet') {
@@ -6501,6 +6502,7 @@ function _phoneCloseSettings() {
   if (activeSettings === null) return;
    var ClosingPage = activeSettings;
   activeSettings  = null;
+  _syncKeyboardSettingsActiveClass();
   conflictsKbLighting.deactivate();
     _syncStudyNotesInlineIcon();
 
@@ -6761,6 +6763,7 @@ function openSettings(page) {
   var wasOpen  = activeSettings !== null;
   var prevPage = activeSettings;
   activeSettings = page;
+  _syncKeyboardSettingsActiveClass();
   conflictsKbLighting.deactivate();
 
   // Ghost lock hint: hide while any settings panel is open (keyboard is folded down)
@@ -6858,6 +6861,7 @@ function closeSettings() {
   if (activeSettings === null) return;
   var closingPage = activeSettings;
   activeSettings = null;
+  _syncKeyboardSettingsActiveClass();
   var closingWrap = document.getElementById('keyboardWrap');
   if (closingWrap) closingWrap.style.minHeight = '';
   conflictsKbLighting.deactivate();
@@ -6935,6 +6939,7 @@ function _closeAllModalsInstant() {
   if (activeSettings === null) return;
   if (NoKeyboardMode || window.innerWidth < MiniKeyboardBreakpointWidth) {
     activeSettings = null;
+    _syncKeyboardSettingsActiveClass();
     _panelTipInTitle = false;
     _exitScoreClearConfirm();
     _exitDiffConfirm();
@@ -6944,6 +6949,7 @@ function _closeAllModalsInstant() {
     return;
   }
   activeSettings = null;
+  _syncKeyboardSettingsActiveClass();
   conflictsKbLighting.deactivate();
   _syncStudyNotesInlineIcon();
   _panelTipInTitle = false;  // clear any tip that was live in the title
@@ -14837,6 +14843,16 @@ function _resetKeyboardAffordanceReveal() {
   if (affordance) affordance.classList.remove('handle-revealed');
 }
 
+// Keeps a single class on the keyboard wrap in step with whether any
+// settings panel is open, regardless of which of the two settings layouts
+// (desktop icon rail or phone toolbar) is currently active. The keyboard
+// grip listener and its CSS both read this one class, rather than each
+// layout having to remember to set its own separate signal.
+function _syncKeyboardSettingsActiveClass() {
+  var KeyboardWrapElement = document.getElementById('keyboardWrap');
+  if (KeyboardWrapElement) KeyboardWrapElement.classList.toggle('kb-settings-active', activeSettings !== null);
+}
+
 function _touchModalVisible() {
   var gyro = document.getElementById('gyroModal');
   var kb   = document.getElementById('keyboardRecommendModal');
@@ -15074,17 +15090,25 @@ function setKbPosition(pos) {
 // the keyboard panel. This keeps the keyboard body from intercepting clicks
 // on the settings content behind it when a panel is open.
 
-function _onDragHandlePointerDown(Event) {
+// Fires from a press anywhere on the keyboard panel while a settings panel
+// is open. Runs in the capture phase, meaning it sees the press before any
+// key underneath does, so the panel can fully absorb it: no key lights up,
+// and the press cannot fall through to whatever sits behind the keyboard.
+// The first press only reveals the grip handle. Once revealed, a further
+// press anywhere on the panel starts the actual angle drag, for mouse and
+// touch alike.
+function _onKeyboardGripPointerDown(Event) {
   if (!Event.isPrimary) return;
+  if (activeSettings === null) return;
   if (_kbPos === 'face') return;
-  // No drag in ghost mode (fixed angle), except on the Conflicts panel.
   if (keyboardDisplayMode === 'ghost' && activeSettings !== 'panelConflicts') return;
 
-  // Touch: the first tap only reveals the drag handle. A second touch,
-  // once revealed, performs the actual drag.
-  if (detectedOs === 'mobile' && !_kbAffordanceRevealed) {
+  Event.preventDefault();
+  Event.stopPropagation();
+
+  if (!_kbAffordanceRevealed) {
+    _kbDragPointerId = null;
     _touchKeyboardActivity();
-    Event.preventDefault();
     return;
   }
 
@@ -15095,17 +15119,15 @@ function _onDragHandlePointerDown(Event) {
   _kbDragStartClientX       = Event.clientX;
   _kbDragStartAngle         = (_kbPos === 'edge') ? EdgeAngle : _kbPartialAngle;
 
-  // Kill the tilt transition so affordance tracks drag instantly
   var aff = document.getElementById('kbHandleAffordance');
   if (aff) { aff.style.transition = 'opacity 0.22s ease'; aff.classList.add('dragging'); }
 
-  var handle = document.getElementById('kbDragHandle');
-  if (handle) handle.setPointerCapture(Event.pointerId);
-  if (detectedOs === 'mobile') _touchKeyboardActivity();
-  Event.preventDefault();
+  var panel = document.getElementById('keyboardPanel');
+  if (panel) panel.setPointerCapture(Event.pointerId);
+  _touchKeyboardActivity();
 }
 
-function _onDragHandlePointerMove(Event) {
+function _onKeyboardGripPointerMove(Event) {
   if (Event.pointerId !== _kbDragPointerId) return;
 
   var DeltaY      = Event.clientY - _kbDragStartClientY;
@@ -15131,7 +15153,7 @@ function _onDragHandlePointerMove(Event) {
   Event.preventDefault();
 }
 
-function _onDragHandlePointerUp(Event) {
+function _onKeyboardGripPointerUp(Event) {
   if (Event.pointerId !== _kbDragPointerId) return;
 
   var WasDrag = _kbDragActive;
@@ -15147,8 +15169,8 @@ function _onDragHandlePointerUp(Event) {
   var aff = document.getElementById('kbHandleAffordance');
   if (aff) { aff.style.transition = ''; aff.classList.remove('dragging'); }
 
-  // Any release on the handle counts as activity, so the idle fade timer restarts.
-  if (detectedOs === 'mobile') _touchKeyboardActivity();
+  // Releasing the grip counts as activity, so the idle fade timer restarts.
+  _touchKeyboardActivity();
 
   if (!WasDrag) return;
 
@@ -15161,31 +15183,21 @@ function _onDragHandlePointerUp(Event) {
 
 function _initialiseStageDragListeners() {
   var handle = document.getElementById('kbDragHandle');
-  if (!handle) return;
-  handle.addEventListener('pointerdown',   _onDragHandlePointerDown);
-  handle.addEventListener('pointermove',   _onDragHandlePointerMove);
-  handle.addEventListener('pointerup',     _onDragHandlePointerUp);
+  var panel  = document.getElementById('keyboardPanel');
+  if (!handle || !panel) return;
 
-  // Touch: tapping the keyboard body (not just the drag handle) reveals
-  // the drag affordance, or refreshes its two-second idle timer if it is
-  // already showing.
-  var stage = document.getElementById('kbFlipStage');
-  if (stage) {
-    stage.addEventListener('click', function(e) {
-      if (detectedOs !== 'mobile') return;
-      if (_kbPos === 'face') return;
-      if (keyboardDisplayMode === 'ghost' && activeSettings !== 'panelConflicts') return;
-      if (!activeSettings) return;
-      _touchKeyboardActivity();
-    });
-  }
-  handle.addEventListener('pointercancel', function(Event) {
+  // The grip listener sits on the panel itself, in the capture phase, so it
+  // sees every press anywhere on the keyboard, including the thin strip,
+  // before any key underneath can react to it.
+  panel.addEventListener('pointerdown', _onKeyboardGripPointerDown, true);
+  panel.addEventListener('pointermove', _onKeyboardGripPointerMove);
+  panel.addEventListener('pointerup',   _onKeyboardGripPointerUp);
+  panel.addEventListener('pointercancel', function(Event) {
     if (Event.pointerId !== _kbDragPointerId) return;
     _kbDragActive    = false;
     _kbDragPointerId = null;
-    var panel = document.getElementById('keyboardPanel');
     var stage = document.getElementById('kbFlipStage');
-    if (panel) panel.style.transition = '';
+    panel.style.transition = '';
     if (stage) stage.style.transition = '';
     // Snap back to the nearest valid extreme on cancel too.
     if (_kbPartialAngle <= PartialDragMinAngle) {
@@ -15194,23 +15206,17 @@ function _initialiseStageDragListeners() {
       setKbPosition('edge');
     }
   });
-  // Affordance hover: show/hide via class so CSS can transition it.
-  // Guard against auto-animations moving the handle under the cursor.
+
+  // Mouse hover on the thin strip previews the handle before any press,
+  // for discoverability. Touch has no hover, so it relies entirely on the
+  // grip listener above to reveal the handle on first press.
   handle.addEventListener('mouseenter', function() {
     var aff = document.getElementById('kbHandleAffordance');
     if (aff && !aff.classList.contains('aff-transitioning')) aff.classList.add('handle-hover');
   });
   handle.addEventListener('mouseleave', function() {
     var aff = document.getElementById('kbHandleAffordance');
-    if (aff) aff.classList.remove('handle-hover', 'handle-active');
-  });
-  handle.addEventListener('mousedown', function() {
-    var aff = document.getElementById('kbHandleAffordance');
-    if (aff) { aff.classList.remove('handle-hover'); aff.classList.add('handle-active'); }
-  });
-  handle.addEventListener('mouseup', function() {
-    var aff = document.getElementById('kbHandleAffordance');
-    if (aff) { aff.classList.remove('handle-active'); aff.classList.add('handle-hover'); }
+    if (aff) aff.classList.remove('handle-hover');
   });
 }
 

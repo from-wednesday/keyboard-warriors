@@ -3452,6 +3452,18 @@ body:has(#keyboardPanel[data-keyboard-theme="poprocks"]) #mainBtn:hover {
   font-style: italic;
 }
 
+/* Shown in place of shortcut chips when a shortcut has no equivalent on the
+   currently selected training OS. */
+.sp-report-os-only-note {
+  margin-left: 6px;
+  flex-shrink: 0;
+  white-space: nowrap;
+  font-size: 10px;
+  font-style: italic;
+  color: #9ca3af;
+  align-self: center;
+}
+
 /* Shortcut chip — light style for strengths (unchecked equivalent) */
 .sp-report-strength .sp-report-chip {
   display: inline-block;

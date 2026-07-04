@@ -14818,16 +14818,16 @@ var _kbDragDirectionConfirmed = false;
 // Pixels of pointer movement required before committing to a drag.
 var DragThresholdPixels = 6;
 
-// ── Touch drag-handle reveal state ──────────────────────────────────────────
-// On touch devices the handle is hidden until the keyboard is tapped, then
-// fades away again after two seconds of no further tap or drag activity.
+// ── Drag-handle reveal state ─────────────────────────────────────────────────
+// The handle is hidden until the keyboard is pressed or dragged, then fades
+// away again after one second of no further activity.
 var _kbAffordanceRevealed   = false;
 var _kbAffordanceIdleTimer  = null;
-var KbAffordanceIdleDelayMs = 2000;
+var KbAffordanceIdleDelayMs = 1000;
 
 // Reveals the drag handle and restarts its idle fade-out timer. Called on a
-// keyboard tap and on every drag start or release, so any activity keeps
-// the handle visible for a further two seconds.
+// keyboard press and on every drag start or release, so any activity keeps
+// the handle visible for a further second.
 function _touchKeyboardActivity() {
   if (NoKeyboardMode) return;
   if (keyboardDisplayMode === 'ghost' && activeSettings !== 'panelConflicts') return;
@@ -14838,7 +14838,7 @@ function _touchKeyboardActivity() {
   _kbAffordanceIdleTimer = setTimeout(_hideKeyboardAffordanceOnIdle, KbAffordanceIdleDelayMs);
 }
 
-// Fires two seconds after the last tap or drag activity. Leaves the handle
+// Fires one second after the last tap or drag activity. Leaves the handle
 // alone if a drag is still in progress, since the next release restarts the timer.
 function _hideKeyboardAffordanceOnIdle() {
   _kbAffordanceIdleTimer = null;
@@ -14990,7 +14990,7 @@ function _onKeyboardFoldTransitionEnd(Event) {
 
 // Animate to a partial angle with the standard CSS transition
 // (used after drag release, auto-settle, and the edge-tap-to-partial gesture).
-function _animateToPartialAngle(RotateXDegrees) {
+function _animateToPartialAngle(RotateXDegrees, SkipAffordanceSuppression) {
   var ClampedAngle = Math.max(PartialDragMinAngle, Math.min(PartialDragMaxAngle, RotateXDegrees));
   var StageY       = _interpolateStageY(ClampedAngle);
   var panel        = document.getElementById('keyboardPanel');
@@ -15007,12 +15007,17 @@ function _animateToPartialAngle(RotateXDegrees) {
   panel.style.transform  = 'rotateX(' + ClampedAngle + 'deg)';
   stage.style.transform  = 'translateY(' + StageY + 'px)';
 
-  // Suppress affordance hover flash while the keyboard is in motion.
-  var _affAnim = document.getElementById('kbHandleAffordance');
-  if (_affAnim) {
-    _affAnim.classList.remove('handle-hover', 'handle-active');
-    _affAnim.classList.add('aff-transitioning');
-    setTimeout(function() { _affAnim.classList.remove('aff-transitioning'); }, 1000);
+  // Suppress affordance hover flash while the keyboard animates on its own
+  // (for example when a settings panel opens). Skipped when this angle change
+  // is the direct result of the user's own drag release, since the handle is
+  // already visible and should simply stay that way.
+  if (!SkipAffordanceSuppression) {
+    var _affAnim = document.getElementById('kbHandleAffordance');
+    if (_affAnim) {
+      _affAnim.classList.remove('handle-hover', 'handle-active');
+      _affAnim.classList.add('aff-transitioning');
+      setTimeout(function() { _affAnim.classList.remove('aff-transitioning'); }, 1000);
+    }
   }
 
   panel.classList.add('kb-edged');
@@ -15206,7 +15211,9 @@ function _endKeyboardGripDrag() {
 
   // _animateToPartialAngle already clamps to the valid partial range, so the
   // angle passed in here is exactly where the drag was when it ended.
-  _animateToPartialAngle(_kbPartialAngle);
+  // The handle stays visible rather than being hidden and reappearing, since
+  // the user just finished interacting with it directly.
+  _animateToPartialAngle(_kbPartialAngle, true);
 }
 
 function _onKeyboardGripPointerUp(Event) {

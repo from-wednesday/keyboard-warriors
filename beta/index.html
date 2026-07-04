@@ -4471,7 +4471,7 @@ function _resetToIdleSilently() {
   gameState = 'idle';
   _wasPlaying = false;
   idleHeldTokens.clear();
-  _idlePreviewActive = false;
+  _resetIdlePreviewState();
   kbToastEl.classList.remove('show');
   _exitScoreClearConfirm();
   _exitDiffConfirm();
@@ -4517,7 +4517,7 @@ function resetToIdle() {
   gameState = 'idle';
   _wasPlaying = false;
   idleHeldTokens.clear();
-  _idlePreviewActive = false;
+  _resetIdlePreviewState();
   kbToastEl.classList.remove('show');
   // Clean up any lingering confirm overlay listeners so they cannot fire
   // after the state has been reset (e.g. stale guard from a cancelled confirm)
@@ -10729,7 +10729,7 @@ function beginCountdown() {
   _stopReadyPromptTimer();
   hideConfirmHeading();
   idleHeldTokens.clear();
-  _idlePreviewActive = false;
+  _resetIdlePreviewState();
   kbToastEl.classList.remove('show');
   _countdownMode    = 'start';
   gameState         = 'counting';
@@ -13958,6 +13958,23 @@ var _idlePreviewActive       = false;
 var _idlePreviewSavedText    = '';
 var _idlePreviewSavedBlurred = false;
 
+// Timing for the calmer idle preview: a chord must be held for
+// IdlePreviewHoldThresholdMs before its heading appears. Once something
+// is showing, releasing it keeps the heading up for IdlePreviewReleaseHoldMs,
+// then the heading blanks for a further IdlePreviewCooldownMs before the
+// default idle heading returns. A new matching chord held at any point
+// while a heading is already showing swaps in instantly, bypassing the
+// hold threshold.
+var IdlePreviewHoldThresholdMs = 500;
+var IdlePreviewReleaseHoldMs   = 1500;
+var IdlePreviewCooldownMs      = 1500;
+
+var _idlePreviewDisplayedToken = null; // token currently shown, once past the hold threshold
+var _idlePreviewPendingToken   = null; // token waiting on the hold threshold
+var _idlePreviewPendingTimer   = null;
+var _idlePreviewReleaseTimer   = null;
+var _idlePreviewCooldownTimer  = null;
+
 // Builds the canonical "CMD+SHIFT+Z"-style string for whatever is
 // currently held, in the same modifier order CanonicaliseShortcutToken
 // uses, so it can be compared directly against pool entries.
@@ -14012,6 +14029,36 @@ function _showIdleShortcutMatch(ShortcutEntry, MatchedTokenString) {
     _idlePreviewSavedBlurred = titleEl.classList.contains('blurred');
     _idlePreviewActive = true;
   }
+  titleEl.classList.remove('blurred');
+  _resetTitleClasses();
+  titleEl.textContent = ShortcutEntry.display || '';
+}
+
+// Blanks the heading and hides the toast once the release-hold period has
+// elapsed, without yet restoring the default idle heading. That final
+// restore is a separate step, after the cooldown period.
+function _clearIdleShortcutMatchToBlank() {
+  kbToastEl.classList.remove('show');
+  kbToastEl.innerHTML = '';
+  _resetTitleClasses();
+  titleEl.textContent = '';
+}
+
+// Ends the idle preview session and restores whatever heading was showing
+// before the preview began.
+function _restoreIdleDefaultHeading() {
+  if (!_idlePreviewActive) return;
+  _idlePreviewActive = false;
+  _resetTitleClasses();
+  titleEl.textContent = _idlePreviewSavedText;
+  if (_idlePreviewSavedBlurred) titleEl.classList.add('blurred');
+  _idlePreviewSavedText    = '';
+  _idlePreviewSavedBlurred = false;
+}
+
+// Cancels every idle-preview timer and resets its state, used whenever the
+// game leaves the idle state so nothing fires late into a different screen.
+func
   titleEl.classList.remove('blurred');
   _resetTitleClasses();
   titleEl.textContent = ShortcutEntry.display || '';

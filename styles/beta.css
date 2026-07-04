@@ -1244,6 +1244,7 @@ li.conflict-dismissed .conflict-desc {
   z-index: 1;
   gap: 4px;
   pointer-events: auto;
+  touch-action: none;
 }
 .kb-row {
   display: flex;
@@ -2924,28 +2925,18 @@ body:has(#keyboardPanel[data-keyboard-theme="poprocks"]) #mainBtn:hover {
   pointer-events: none;
   cursor: grab;
   border-radius: 8px 8px 0 0;
-  /* Prevent the browser attempting scroll when the user drags the keyboard
-     angle handle on touch devices — all touch handling is done in JS. */
   touch-action: none;
 }
-#keyboardWrap.settings-open #kbDragHandle {
+#keyboardWrap.kb-settings-active #kbDragHandle {
   pointer-events: auto;
-  touch-action: none;
 }
-
-/* Touch: the invisible drag target grows well beyond the visible handle
-   graphic, since a fingertip is far less precise than a mouse pointer. */
-@media (hover: none) {
-  #kbDragHandle {
-    top: -36px;
-    height: 80px;
-  }
-}
-#keyboardWrap.settings-open #kbDragHandle:active {
+#keyboardWrap.kb-settings-active #kbDragHandle:active {
   cursor: grabbing;
 }
-/* Disable the keyboard body as a hit target while settings are open. */
-#keyboardWrap.settings-open #keyboardPanel {
+/* Individual keys take no part in settings-time gripping, so pressing the
+   keyboard here can never light a key or trigger its own action. The panel
+   itself stays a normal hit target, since it is now the grip surface. */
+#keyboardWrap.kb-settings-active #keyboardPanel .key {
   pointer-events: none;
 }
 
@@ -3002,11 +2993,6 @@ body:has(#keyboardPanel[data-keyboard-theme="poprocks"]) #mainBtn:hover {
 #kbHandleAffordance.handle-hover,
 #kbHandleAffordance.handle-revealed {
   opacity: 1;
-}
-
-/* Subtle press feedback */
-#kbHandleAffordance.handle-active {
-  opacity: 0.55;
 }
 
 /* Never show when keyboard is at face position */

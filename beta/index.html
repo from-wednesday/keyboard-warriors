@@ -6,7 +6,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Keyboard Warriors</title>
+<title>beta</title>
 <script>
   const DefaultTitle = 'Keyboard Warriors';
   const VersionLabel   = '0036';
@@ -14058,52 +14058,111 @@ function _restoreIdleDefaultHeading() {
 
 // Cancels every idle-preview timer and resets its state, used whenever the
 // game leaves the idle state so nothing fires late into a different screen.
-func
-  titleEl.classList.remove('blurred');
-  _resetTitleClasses();
-  titleEl.textContent = ShortcutEntry.display || '';
-}
-
-function _hideIdleShortcutMatch() {
-  kbToastEl.classList.remove('show');
-  kbToastEl.innerHTML = '';
-  if (!_idlePreviewActive) return;
-  _idlePreviewActive = false;
-  _resetTitleClasses();
-  titleEl.textContent = _idlePreviewSavedText;
-  if (_idlePreviewSavedBlurred) titleEl.classList.add('blurred');
-  _idlePreviewSavedText    = '';
-  _idlePreviewSavedBlurred = false;
+function _resetIdlePreviewState() {
+  clearTimeout(_idlePreviewPendingTimer);
+  clearTimeout(_idlePreviewReleaseTimer);
+  clearTimeout(_idlePreviewCooldownTimer);
+  _idlePreviewPendingTimer   = null;
+  _idlePreviewReleaseTimer   = null;
+  _idlePreviewCooldownTimer  = null;
+  _idlePreviewPendingToken   = null;
+  _idlePreviewDisplayedToken = null;
+  _idlePreviewActive         = false;
 }
 
 function _updateIdleShortcutPreview() {
   if (gameState !== 'idle') return;
 
-  if (idleHeldTokens.size === 0) { _hideIdleShortcutMatch(); return; }
+  var MatchedEntry = null;
+  var MatchedToken = null;
 
-  // Shortcuts for the current app may not be loaded yet if the player
-  // switched apps without starting a round — kick off the fetch and try
-  // again once it resolves.
-  if (loadedAppName !== currentApp) {
-    loadAppShortcutsIfNeeded(currentApp, _updateIdleShortcutPreview);
-    return;
-  }
+  if (idleHeldTokens.size > 0) {
+    // Shortcuts for the current app may not be loaded yet if the player
+    // switched apps without starting a round — kick off the fetch and try
+    // again once it resolves.
+    if (loadedAppName !== currentApp) {
+      loadAppShortcutsIfNeeded(currentApp, _updateIdleShortcutPreview);
+      return;
+    }
 
-  var HeldChordString = _buildIdleHeldChordString();
-  var Pool = UNIVERSAL_SHORTCUTS.concat(loadedAppShortcuts);
+    var HeldChordString = _buildIdleHeldChordString();
+    var Pool = UNIVERSAL_SHORTCUTS.concat(loadedAppShortcuts);
 
-  for (var i = 0; i < Pool.length; i++) {
-    var ActiveString = GetActiveShortcutString(Pool[i]);
-    if (!ActiveString) continue;
-    var Alternatives = GetAllAlternatives(ActiveString);
-    for (var j = 0; j < Alternatives.length; j++) {
-      if (CanonicaliseShortcutToken(Alternatives[j]) === HeldChordString) {
-        _showIdleShortcutMatch(Pool[i], Alternatives[j]);
-        return;
+    for (var i = 0; i < Pool.length && !MatchedEntry; i++) {
+      var ActiveString = GetActiveShortcutString(Pool[i]);
+      if (!ActiveString) continue;
+      var Alternatives = GetAllAlternatives(ActiveString);
+      for (var j = 0; j < Alternatives.length; j++) {
+        if (CanonicaliseShortcutToken(Alternatives[j]) === HeldChordString) {
+          MatchedEntry = Pool[i];
+          MatchedToken = Alternatives[j];
+          break;
+        }
       }
     }
   }
-  _hideIdleShortcutMatch();
+
+  if (MatchedEntry) {
+    _onIdlePreviewMatchFound(MatchedEntry, MatchedToken);
+  } else {
+    _onIdlePreviewNoMatch();
+  }
+}
+
+// A matching chord is currently held. If a heading is already on screen,
+// swap to the new one immediately. Otherwise the chord must be held for
+// IdlePreviewHoldThresholdMs before its heading appears.
+function _onIdlePreviewMatchFound(ShortcutEntry, MatchedTokenString) {
+  clearTimeout(_idlePreviewReleaseTimer);
+  clearTimeout(_idlePreviewCooldownTimer);
+  _idlePreviewReleaseTimer  = null;
+  _idlePreviewCooldownTimer = null;
+
+  if (_idlePreviewDisplayedToken === MatchedTokenString) return;
+
+  if (_idlePreviewDisplayedToken !== null) {
+    clearTimeout(_idlePreviewPendingTimer);
+    _idlePreviewPendingTimer   = null;
+    _idlePreviewPendingToken   = null;
+    _idlePreviewDisplayedToken = MatchedTokenString;
+    _showIdleShortcutMatch(ShortcutEntry, MatchedTokenString);
+    return;
+  }
+
+  if (_idlePreviewPendingToken === MatchedTokenString) return;
+
+  clearTimeout(_idlePreviewPendingTimer);
+  _idlePreviewPendingToken = MatchedTokenString;
+  _idlePreviewPendingTimer = setTimeout(function() {
+    _idlePreviewPendingTimer   = null;
+    _idlePreviewPendingToken   = null;
+    _idlePreviewDisplayedToken = MatchedTokenString;
+    _showIdleShortcutMatch(ShortcutEntry, MatchedTokenString);
+  }, IdlePreviewHoldThresholdMs);
+}
+
+// Nothing currently held matches a shortcut. Cancel any pending threshold
+// timer, then if a heading is showing, start the release-hold countdown
+// followed by the blank cooldown before the default heading returns.
+function _onIdlePreviewNoMatch() {
+  if (_idlePreviewPendingTimer) {
+    clearTimeout(_idlePreviewPendingTimer);
+    _idlePreviewPendingTimer = null;
+    _idlePreviewPendingToken = null;
+  }
+
+  if (_idlePreviewDisplayedToken === null) return;
+  if (_idlePreviewReleaseTimer) return;
+
+  _idlePreviewReleaseTimer = setTimeout(function() {
+    _idlePreviewReleaseTimer  = null;
+    _idlePreviewDisplayedToken = null;
+    _clearIdleShortcutMatchToBlank();
+    _idlePreviewCooldownTimer = setTimeout(function() {
+      _idlePreviewCooldownTimer = null;
+      _restoreIdleDefaultHeading();
+    }, IdlePreviewCooldownMs);
+  }, IdlePreviewReleaseHoldMs);
 }
 
 function handleKeydown(e) {

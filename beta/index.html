@@ -218,14 +218,10 @@
     <path fill="currentColor" d="M49,84l37,8.6v-35.7h-37v27.1Z"/>
   </symbol>
   
-<symbol id="IconKeyGlyphOption" viewBox="-20 -20 373.33 173.33">
-  <path fill="currentColor" d="
-    M 233.33,18 L 333.33,18 A 18 18 0 0 1 333.33,-18 L 233.33,-18 A 18 18 0 0 1 233.33,18 Z
-    M 333.33,115.33 L 166.66,115.33 A 18 18 0 0 1 166.66,151.33 L 333.33,151.33 A 18 18 0 0 1 333.33,115.33 Z
-    M 183.271,126.396 L 127.611,-6.934 A 18 18 0 0 1 94.389,6.934 L 150.049,140.264 A 18 18 0 0 1 183.271,126.396 Z
-    M 111,-18 L 0,-18 A 18 18 0 0 1 0,18 L 111,18 A 18 18 0 0 1 111,-18 Z
-  "/>
-</symbol>
+  <symbol id="IconKeyGlyphOption" viewBox="-18 -18 369.33 169.33">
+      <line x1="233.33" y1="0" x2="333.33" y2="0" fill="none" stroke="currentColor" stroke-width="36" stroke-linecap="round" stroke-linejoin="round"/>
+      <polyline points="333.33,133.33 166.66,133.33 111,0 0,0" fill="none" stroke="currentColor" stroke-width="36" stroke-linecap="round" stroke-linejoin="round"/>
+ </symbol>
   
   <symbol id="IconKeyGlyphControl" viewBox="0 0 56 38">
     <polyline points="6,32 28,7 50,32" fill="none" stroke="currentColor" stroke-width="7" stroke-linecap="round" stroke-linejoin="round"/>
@@ -1184,8 +1180,7 @@ function _setGhostLockHint(visible) {
    KEY GLYPH SVG CONSTANTS
 ══════════════════════════════════════ */
 
-const OPTION_SYM_SVG = `<svg class="key-glyph-sym key-glyph-option" viewBox="-20 -20 373.33 173.33"><use href="#IconKeyGlyphOption"/></svg>`;
-.key .key-glyph-option { width: 20px; height: 9.28px; }
+const OPTION_SYM_SVG = `<svg class="key-glyph-sym key-glyph-option" viewBox="-18 -18 369.33 169.33"><use href="#IconKeyGlyphOption"/></svg>`;
 const CONTROL_SYM_SVG = `<svg class="key-glyph-sym key-glyph-control" viewBox="0 0 56 38"><use href="#IconKeyGlyphControl"/></svg>`;
 const RETURN_SYM_SVG  = `<svg class="key-glyph-sym key-glyph-return" viewBox="0 0 58 46"><use href="#IconKeyGlyphReturn"/></svg>`;
 const LOCK_SVG        = `<svg class="lock-svg" width="14" height="14" viewBox="0 0 24 24"><use href="#IconLockPadlock"/></svg>`;
@@ -15179,9 +15174,9 @@ function _onKeyboardGripPointerUp(Event) {
 
   if (!WasDrag) return;
 
-  // Clamp to the valid partial range and stay exactly where the user released.
-  // No settle: the angle they dragged to is the angle they get.
-  _animateToPartialAngle(Math.max(PartialDragMinAngle, Math.min(EdgeAngle, _kbPartialAngle)));
+  // _animateToPartialAngle already clamps to the valid partial range, so the
+  // angle passed in here is exactly where the user released the drag.
+  _animateToPartialAngle(_kbPartialAngle);
 
   Event.preventDefault();
 }

@@ -13969,12 +13969,14 @@ var _idlePreviewSavedBlurred = false;
 var IdlePreviewHoldThresholdMs = 100;
 var IdlePreviewReleaseHoldMs   = 2000;
 var IdlePreviewCooldownMs      = 1500;
+var IdleReleaseSettleDelayMs   = 120; // time given for a chord's keys to finish releasing before re-evaluating
 
 var _idlePreviewDisplayedToken = null; // token currently shown, once past the hold threshold
 var _idlePreviewPendingToken   = null; // token waiting on the hold threshold
 var _idlePreviewPendingTimer   = null;
 var _idlePreviewReleaseTimer   = null;
 var _idlePreviewCooldownTimer  = null;
+var _idleReleaseSettleTimer    = null; // brief buffer after a keyup so a staggered chord release is read as one event
 
 // Builds the canonical "CMD+SHIFT+Z"-style string for whatever is
 // currently held, in the same modifier order CanonicaliseShortcutToken
@@ -13994,6 +13996,7 @@ function _buildIdleHeldChordString() {
 function _registerIdleKeydown(e) {
   var Token = _modifierTokenForCode(e.code) || _browserCodeToToken(e.code);
   if (!Token) return;
+  var HeldCountBeforeChange = idleHeldTokens.size;
   if (CurrentInputIsTouch) {
     // On-screen keys behave like sticky keys: tapping toggles them on,
     // tapping again toggles them off, since there is no real key-up.
@@ -14002,14 +14005,33 @@ function _registerIdleKeydown(e) {
   } else {
     idleHeldTokens.add(Token);
   }
-  _updateIdleShortcutPreview();
+  var WasARelease = idleHeldTokens.size < HeldCountBeforeChange;
+  _scheduleIdlePreviewUpdate(WasARelease);
 }
 
 function _registerIdleKeyup(e) {
   var Token = _modifierTokenForCode(e.code) || _browserCodeToToken(e.code);
   if (!Token || !idleHeldTokens.has(Token)) return;
   idleHeldTokens.delete(Token);
-  _updateIdleShortcutPreview();
+  _scheduleIdlePreviewUpdate(true);
+}
+
+// Presses are evaluated immediately for responsiveness. Releases wait a
+// brief settle period, so a chord's fingers lifting at slightly different
+// moments are read as a single release rather than a sequence of partial
+// matches. Any further keydown or keyup during the wait cancels and
+// restarts it, so a fast run of releases is still read as one settled state.
+function _scheduleIdlePreviewUpdate(IsRelease) {
+  clearTimeout(_idleReleaseSettleTimer);
+  _idleReleaseSettleTimer = null;
+  if (!IsRelease) {
+    _updateIdleShortcutPreview();
+    return;
+  }
+  _idleReleaseSettleTimer = setTimeout(function() {
+    _idleReleaseSettleTimer = null;
+    _updateIdleShortcutPreview();
+  }, IdleReleaseSettleDelayMs);
 }
 
 function _showIdleShortcutMatch(ShortcutEntry, MatchedTokenString) {
@@ -14063,9 +14085,11 @@ function _resetIdlePreviewState() {
   clearTimeout(_idlePreviewPendingTimer);
   clearTimeout(_idlePreviewReleaseTimer);
   clearTimeout(_idlePreviewCooldownTimer);
+  clearTimeout(_idleReleaseSettleTimer);
   _idlePreviewPendingTimer   = null;
   _idlePreviewReleaseTimer   = null;
   _idlePreviewCooldownTimer  = null;
+  _idleReleaseSettleTimer    = null;
   _idlePreviewPendingToken   = null;
   _idlePreviewDisplayedToken = null;
   _idlePreviewActive         = false;

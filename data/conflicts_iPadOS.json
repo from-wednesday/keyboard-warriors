@@ -6,7 +6,18 @@
     { "bad": "CMD+SPACE", "action": "search" },
     { "bad": "CMD+TAB", "action": "app switcher" },
     { "bad": "CMD+Q", "action": "quit application", "sus": true },
-    { "bad": "OPT+CMD+D", "action": "show dock", "sus": true }
+    { "bad": "OPT+CMD+D", "action": "show dock", "sus": true },
+    { "bad": "CMD+`", "action": "cycle open app windows", "sus": true },
+    
+    { "bad": "GLOBE+UP", "action": "open app switcher", "sus": true },
+    { "bad": "GLOBE+DOWN", "action": "show all windows / exposé", "sus": true },
+    { "bad": "GLOBE+LEFT", "action": "switch to previous app", "sus": true },
+    { "bad": "GLOBE+RIGHT", "action": "switch to next app", "sus": true },
+    
+    { "bad": "CTRL+SHIFT+GLOBE+LEFT", "action": "tile window left", "sus": true },
+    { "bad": "CTRL+SHIFT+GLOBE+RIGHT", "action": "tile window right", "sus": true },
+    { "bad": "CTRL+SHIFT+GLOBE+UP", "action": "tile window top / split view top", "sus": true },
+    { "bad": "CTRL+SHIFT+GLOBE+DOWN", "action": "tile window bottom / split view bottom", "sus": true }
   ],
   "browser_conflicts": {
     "Safari": [
@@ -34,7 +45,10 @@
       { "bad": "CMD+R", "action": "reload tab" },
       { "bad": "CMD+SHIFT+N", "action": "new incognito tab" },
       { "bad": "CMD+SHIFT+T", "action": "reopen closed tab", "sus": true },
-      { "bad": "CMD+N", "action": "new tab or new window", "sus": true }
+      { "bad": "CMD+N", "action": "new tab", "sus": true },
+      { "bad": "OPT+CMD+N", "action": "new window", "sus": true },
+      { "bad": "SHIFT+CMD+W", "action": "close all tabs in tab grid", "sus": true },
+      { "bad": "SHIFT+CMD+\\", "action": "go to tab grid", "sus": true }
     ],
     "Firefox": [
       { "bad": "CMD+T", "action": "new tab" },
@@ -51,7 +65,8 @@
       { "bad": "CMD+L", "action": "focus address bar", "sus": true },
       { "bad": "CMD+R", "action": "reload tab", "sus": true },
       { "bad": "CMD+SHIFT+N", "action": "new InPrivate tab", "sus": true },
-      { "bad": "CMD+SHIFT+T", "action": "reopen closed tab", "sus": true }
+      { "bad": "CMD+SHIFT+T", "action": "reopen closed tab", "sus": true },
+      { "bad": "OPT+CMD+N", "action": "new window", "sus": true }
     ],
     "Comet": [
       { "bad": "CMD+T", "action": "new tab", "sus": true },

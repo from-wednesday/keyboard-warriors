@@ -1244,6 +1244,7 @@ li.conflict-dismissed .conflict-desc {
   z-index: 1;
   gap: 4px;
   pointer-events: auto;
+  touch-action: none;
 }
 .kb-row {
   display: flex;
@@ -1354,9 +1355,9 @@ li.conflict-dismissed .conflict-desc {
   color: #777;
   flex-shrink: 0;
 }
-.key .key-glyph-option  { width: 12px; height: 8px; }
+.key .key-glyph-option  { width: 18px; height: 18px; }
 .key .key-glyph-control { width: 11px; height: 8px; }
-.key .key-glyph-return  { width: 11px; height: 9px; }
+.key .key-glyph-return  { width: 14px; height: 12px; }
 
 .key .util-lbl {
   font-size: 9px;
@@ -1386,8 +1387,13 @@ li.conflict-dismissed .conflict-desc {
   height: 14px;
   color: #555;
 }
-.key.lit-green-up   .win-svg, .key.lit-green-down  .win-svg,
-.key.lit-orange-up  .win-svg, .key.lit-orange-down .win-svg { color: white; }
+
+/* PC Backspace/Delete key glyph — replaces the unicode "⌫" character */
+.key .delete-svg {
+  width: 16px;
+  height: auto;
+  color: #555;
+}
 
 /* Mini-only: mod key with symbol only, centred */
 .key .mod-sym-only {
@@ -1407,7 +1413,7 @@ li.conflict-dismissed .conflict-desc {
 .key.lock-key { cursor: pointer; }
 .key.lock-key:hover  { background: #e8e8ea; }
 .key.lock-key.active { background: #f5f5f7; }
-.key .lock-svg { width: 14px; height: 14px; opacity: 0.55; stroke: #555; transition: opacity 0.4s ease; }
+.key .lock-svg { width: 14px; height: 14px; opacity: 0.55; stroke: currentColor; transition: opacity 0.4s ease; }
 
 /* Spacebar */
 .key.space-key { width: 180px; }
@@ -1573,7 +1579,10 @@ li.conflict-dismissed .conflict-desc {
 .key.lit-green-up .mod-sym-only,  .key.lit-green-down .mod-sym-only,
 .key.lit-green-up .mod-word,      .key.lit-green-down .mod-word,
 .key.lit-green-up .util-sym-only, .key.lit-green-down .util-sym-only,
-.key.lit-green-up .key-glyph-sym, .key.lit-green-down .key-glyph-sym { color: white !important; }
+.key.lit-green-up .key-glyph-sym, .key.lit-green-down .key-glyph-sym,
+.key.lit-green-up .lock-svg,      .key.lit-green-down .lock-svg,
+.key.lit-green-up .delete-svg,    .key.lit-green-down .delete-svg,
+.key.lit-green-up .win-svg,       .key.lit-green-down .win-svg { color: white !important; }
 
 /* ── ORANGE UP: resting coloured state ── */
 .key.lit-orange-up {
@@ -1599,7 +1608,10 @@ li.conflict-dismissed .conflict-desc {
 .key.lit-orange-up .mod-sym-only,  .key.lit-orange-down .mod-sym-only,
 .key.lit-orange-up .mod-word,      .key.lit-orange-down .mod-word,
 .key.lit-orange-up .util-sym-only, .key.lit-orange-down .util-sym-only,
-.key.lit-orange-up .key-glyph-sym, .key.lit-orange-down .key-glyph-sym { color: white !important; }
+.key.lit-orange-up .key-glyph-sym, .key.lit-orange-down .key-glyph-sym,
+.key.lit-orange-up .lock-svg,      .key.lit-orange-down .lock-svg,
+.key.lit-orange-up .delete-svg,    .key.lit-orange-down .delete-svg,
+.key.lit-orange-up .win-svg,       .key.lit-orange-down .win-svg { color: white !important; }
 
 /* ── YELLOW status indicator ─────────────────────────────────────────────
    Used for CapsLock and SUS conflicted keys. Neutral soft yellow: not green (not correct) and not orange (not wrong).
@@ -1631,7 +1643,9 @@ li.conflict-dismissed .conflict-desc {
 .resting-available .mod-sym-only,
 .resting-available .mod-word,
 .resting-available .util-sym-only,
-.resting-available .key-glyph-sym { color: #065f46 !important; }
+.resting-available .key-glyph-sym,
+.resting-available .lock-svg,
+.resting-available .delete-svg { color: #065f46 !important; }
 
 .resting-sus {
   background: rgba(251, 240, 152, 0.9) !important;
@@ -1646,7 +1660,9 @@ li.conflict-dismissed .conflict-desc {
 .resting-sus .mod-sym-only,
 .resting-sus .mod-word,
 .resting-sus .util-sym-only,
-.resting-sus .key-glyph-sym { color: #7a6a00 !important; }
+.resting-sus .key-glyph-sym,
+.resting-sus .lock-svg,
+.resting-sus .delete-svg { color: #7a6a00 !important; }
 
 .resting-blocked {
   background: rgba(247, 220, 200, 0.9) !important;
@@ -1661,8 +1677,9 @@ li.conflict-dismissed .conflict-desc {
 .resting-blocked .mod-sym-only,
 .resting-blocked .mod-word,
 .resting-blocked .util-sym-only,
-.resting-blocked .key-glyph-sym { color: #9a3412 !important; }
-
+.resting-blocked .key-glyph-sym,
+.resting-blocked .lock-svg,
+.resting-blocked .delete-svg { color: #9a3412 !important; }
 
 /* ── Fade transition back to resting state ───────────────────────────────────
    When conflictsKbLighting removes the full-strength lit class after a keyup,
@@ -2908,20 +2925,28 @@ body:has(#keyboardPanel[data-keyboard-theme="poprocks"]) #mainBtn:hover {
   pointer-events: none;
   cursor: grab;
   border-radius: 8px 8px 0 0;
-  /* Prevent the browser attempting scroll when the user drags the keyboard
-     angle handle on touch devices — all touch handling is done in JS. */
   touch-action: none;
 }
-#keyboardWrap.settings-open #kbDragHandle {
+#keyboardWrap.kb-settings-active #kbDragHandle {
   pointer-events: auto;
-  touch-action: none;
 }
-#keyboardWrap.settings-open #kbDragHandle:active {
+#keyboardWrap.kb-settings-active:not(.kb-at-face) #keyboardPanel {
+  cursor: grab;
+}
+#keyboardWrap.kb-settings-active:not(.kb-at-face) #keyboardPanel:active {
   cursor: grabbing;
 }
-/* Disable the keyboard body as a hit target while settings are open. */
-#keyboardWrap.settings-open #keyboardPanel {
-  pointer-events: none;
+/* Below the phone-toolbar breakpoint, settings panels render in the toolbar
+   area rather than behind the keyboard, so there is nothing for gripping to
+   reveal. Keys keep their normal press behaviour and the grab cursor is
+   switched off, matching the bail-out in _onKeyboardGripPointerDown. */
+@media (max-width: 819px) {
+  #keyboardWrap.kb-settings-active #keyboardPanel .key {
+    pointer-events: auto;
+  }
+  #keyboardWrap.kb-settings-active:not(.kb-at-face) #keyboardPanel {
+    cursor: default;
+  }
 }
 
 /* ─── DRAG HANDLE AFFORDANCE ──────────────────────────
@@ -2972,27 +2997,17 @@ body:has(#keyboardPanel[data-keyboard-theme="poprocks"]) #mainBtn:hover {
   pointer-events: none !important;
 }
 
-/* Show on hover via .handle-hover class toggled by JS on #kbDragHandle */
-#kbHandleAffordance.handle-hover {
+/* Show on hover via .handle-hover class toggled by JS on #kbDragHandle,
+   or on touch via .handle-revealed toggled by JS after a keyboard tap */
+#kbHandleAffordance.handle-hover,
+#kbHandleAffordance.handle-revealed {
   opacity: 1;
-}
-
-/* Subtle press feedback */
-#kbHandleAffordance.handle-active {
-  opacity: 0.55;
 }
 
 /* Never show when keyboard is at face position */
 #keyboardWrap.kb-at-face #kbHandleAffordance {
   opacity: 0 !important;
   transition: none;
-}
-
-/* Touch: always visible when settings are open */
-@media (hover: none) {
-  #keyboardWrap.settings-open #kbHandleAffordance {
-    opacity: 1;
-  }
 }
 
 /* ─── DROP SHADOW ─────────────────────────────────────
@@ -3163,17 +3178,6 @@ body:has(#keyboardPanel[data-keyboard-theme="poprocks"]) #mainBtn:hover {
   animation: AppPillHexRingOut 0.9s cubic-bezier(0.33, 1, 0.68, 1) 0.15s forwards;
 }
 
-
-/* Returning screen: all settings icons passive, no hover, no interaction */
-body.returning-screen #kbIconWrap,
-body.returning-screen #brIconWrap,
-body.returning-screen #diffIconWrap {
-  opacity: 0.4;
-  pointer-events: none;
-}
-body.returning-screen #kbIconWrap  .icon-tip,
-body.returning-screen #brIconWrap  .icon-tip,
-body.returning-screen #diffIconWrap .icon-tip { display: none; }
 #kbIconWrap.sp-icon-active  #kbIcon      { color: #374151; }
 #brIconWrap.sp-icon-active  #browserIcon { color: #374151; }
 #diffIconWrap.sp-icon-active #diffIcon   { color: #374151; }
@@ -3448,6 +3452,18 @@ body.returning-screen #diffIconWrap .icon-tip { display: none; }
   font-style: italic;
 }
 
+/* Shown in place of shortcut chips when a shortcut has no equivalent on the
+   currently selected training OS. */
+.sp-report-os-only-note {
+  margin-left: 6px;
+  flex-shrink: 0;
+  white-space: nowrap;
+  font-size: 10px;
+  font-style: italic;
+  color: #9ca3af;
+  align-self: center;
+}
+
 /* Shortcut chip — light style for strengths (unchecked equivalent) */
 .sp-report-strength .sp-report-chip {
   display: inline-block;
@@ -3675,7 +3691,8 @@ body.returning-screen #diffIconWrap .icon-tip { display: none; }
 #keyboardPanel.ghost-mode .key .util-sym-only,
 #keyboardPanel.ghost-mode .key .key-glyph-sym,
 #keyboardPanel.ghost-mode .key .lock-svg,
-#keyboardPanel.ghost-mode .key .win-svg { opacity: 0; }
+#keyboardPanel.ghost-mode .key .win-svg,
+#keyboardPanel.ghost-mode .key .delete-svg { opacity: 0; }
 #keyboardPanel.ghost-mode #kb-wall-bottom,
 #keyboardPanel.ghost-mode #kb-shadow,
 #keyboardPanel.ghost-mode #kb-base-edge { display: none; }
@@ -3705,6 +3722,8 @@ body.returning-screen #diffIconWrap .icon-tip { display: none; }
 #keyboardPanel.ghost-mode .key.lit-green-down .util-sym-only,
 #keyboardPanel.ghost-mode .key.lit-green-up  .key-glyph-sym,
 #keyboardPanel.ghost-mode .key.lit-green-down .key-glyph-sym,
+#keyboardPanel.ghost-mode .key.lit-green-up  .delete-svg,
+#keyboardPanel.ghost-mode .key.lit-green-down .delete-svg,
 #keyboardPanel.ghost-mode .key.lit-orange-up  .letter-lbl,
 #keyboardPanel.ghost-mode .key.lit-orange-down .letter-lbl,
 #keyboardPanel.ghost-mode .key.lit-orange-up  .sym-main,
@@ -3718,7 +3737,9 @@ body.returning-screen #diffIconWrap .icon-tip { display: none; }
 #keyboardPanel.ghost-mode .key.lit-orange-up  .util-sym-only,
 #keyboardPanel.ghost-mode .key.lit-orange-down .util-sym-only,
 #keyboardPanel.ghost-mode .key.lit-orange-up  .key-glyph-sym,
-#keyboardPanel.ghost-mode .key.lit-orange-down .key-glyph-sym {
+#keyboardPanel.ghost-mode .key.lit-orange-down .key-glyph-sym,
+#keyboardPanel.ghost-mode .key.lit-orange-up  .delete-svg,
+#keyboardPanel.ghost-mode .key.lit-orange-down .delete-svg {
   opacity: 1 !important;
   color: white !important;
 }
@@ -3743,7 +3764,8 @@ body.returning-screen #diffIconWrap .icon-tip { display: none; }
 #keyboardPanel.conflicts-panel-active.ghost-mode .key .mod-word,
 #keyboardPanel.conflicts-panel-active.ghost-mode .key .util-sym-only,
 #keyboardPanel.conflicts-panel-active.ghost-mode .key .key-glyph-sym,
-#keyboardPanel.conflicts-panel-active.ghost-mode .key .win-svg {
+#keyboardPanel.conflicts-panel-active.ghost-mode .key .win-svg,
+#keyboardPanel.conflicts-panel-active.ghost-mode .key .delete-svg {
   opacity: 1 !important;
 }
 
@@ -4510,6 +4532,101 @@ html[data-theme="dark"] body {
 [data-theme="dark"] .customise-label-available          { color: #2b2b2b; }
 [data-theme="dark"] .customise-label-inpill             { color: #585858; }
 [data-theme="dark"] .customise-label-beta               { color: #494949; }
+
+/* ── Skillset pill press feedback ───────────────────────────────────────────
+   Pure CSS :active state, so it can never desync from either pill's own click
+   handler that opens its dropdown. Label shrinks instantly on press, then
+   springs back with a slight overshoot on release. Shared by both Skillset
+   pills: the welcome screen one (#skillsetPill) and the wrench-picker one
+   (#appSelectorSkillsetPill). */
+#skillsetPill .skillset-pill-label,
+#appSelectorSkillsetPill .skillset-pill-label {
+  display: inline-block;
+  transition: transform 0.32s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+#skillsetPill:active .skillset-pill-label,
+#appSelectorSkillsetPill:active .skillset-pill-label {
+  transform: scale(0.88);
+  transition: transform 0.08s ease;
+}
+
+/* Wrench icon press feedback: same spring-back pattern, applied directly to
+   the SVG since the wrench row has no separate label span. */
+.wrench-full-row-icon {
+  transition: transform 0.32s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+.app-option-wrench:active .wrench-full-row-icon {
+  transform: scale(0.85);
+  transition: transform 0.08s ease;
+}
+
+/* "more"/"less" toggle press feedback: same spring-back pattern applied to
+   the whole row's contents (icon + text), since neither has its own span. */
+.app-option-skillsets {
+  transition: transform 0.32s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+.app-option-skillsets:active {
+  transform: scale(0.92);
+  transition: transform 0.08s ease;
+}
+
+/* Report Card / History toggle press feedback: same spring-back pattern. */
+.sp-endgame-header-left {
+  transition: transform 0.32s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+.sp-endgame-header-left:active {
+  transform: scale(0.92);
+  transition: transform 0.08s ease;
+}
+
+/* Keyboard key label press feedback. Applied to the label spans rather than
+   the key itself, which already carries a translateZ transform for the 3D
+   tilt and must not be disturbed. */
+.key .letter-lbl,
+.key .fn-lbl,
+.key .util-lbl,
+.key .util-sym-only,
+.key .mod-sym,
+.key .mod-sym-only,
+.key .mod-word,
+.key .key-glyph-sym,
+.key .sym-main,
+.key .sym-sub {
+  transition: transform 0.32s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+.key:active .letter-lbl,
+.key:active .fn-lbl,
+.key:active .util-lbl,
+.key:active .util-sym-only,
+.key:active .mod-sym,
+.key:active .mod-sym-only,
+.key:active .mod-word,
+.key:active .key-glyph-sym,
+.key:active .sym-main,
+.key:active .sym-sub,
+.key.lit-green-down .letter-lbl,
+.key.lit-green-down .fn-lbl,
+.key.lit-green-down .util-lbl,
+.key.lit-green-down .util-sym-only,
+.key.lit-green-down .mod-sym,
+.key.lit-green-down .mod-sym-only,
+.key.lit-green-down .mod-word,
+.key.lit-green-down .key-glyph-sym,
+.key.lit-green-down .sym-main,
+.key.lit-green-down .sym-sub,
+.key.lit-orange-down .letter-lbl,
+.key.lit-orange-down .fn-lbl,
+.key.lit-orange-down .util-lbl,
+.key.lit-orange-down .util-sym-only,
+.key.lit-orange-down .mod-sym,
+.key.lit-orange-down .mod-sym-only,
+.key.lit-orange-down .mod-word,
+.key.lit-orange-down .key-glyph-sym,
+.key.lit-orange-down .sym-main,
+.key.lit-orange-down .sym-sub {
+  transform: scale(0.82);
+  transition: transform 0.08s ease;
+}
 
 /* ── Dark mode: compact keyboard row (touch-disabled state) ─────────────── */
 /* opacity:0.38 on .modal-kbsize-row.disabled looks too dark in dark mode    */

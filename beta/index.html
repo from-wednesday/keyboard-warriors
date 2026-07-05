@@ -3758,6 +3758,11 @@ function clearHelp() {
     aff.classList.add('aff-transitioning');
     setTimeout(function() { aff.classList.remove('aff-transitioning'); }, 1500);
   }
+  // Freestyle mode is only for the plain idle screen. Wipe its tracked
+  // keys and cancel its timers so nothing from it can later overwrite the
+  // Cheat Sheet's own heading once this panel is showing.
+  idleHeldTokens.clear();
+  _resetIdlePreviewState();
   // Save title text before pausing (enterPause may overwrite it).
   _cheatsheetSavedTitle = titleEl.textContent;
   // Pause first so enterPause's setKbPosition('edge') fires before openSettings
@@ -4563,6 +4568,7 @@ function resetToIdle() {
   scoreDisc.className = 'scoreDisc';
   timerDiv.textContent = '0:00';
   greenHits = 0; totalHits = 0; hintPenaltyPct = 0; updateAccuracyDisplay(); dbgRefreshCtx(); dbgRefreshAccuracy();
+  showToast('freestyle mode');
   // Pulse Start once keyboard has returned to face position, then every 6 seconds
   setTimeout(function pulseAndReschedule() {
     if (gameState !== 'idle') return;
@@ -14228,7 +14234,7 @@ updateKeyboardLighting(e, true);
   // App-wide: if this press satisfies a currently dismissed/user-found
   // shortcut, restore it now. This is not limited to the Conflicts panel.
   if (!e.repeat) _checkAppWideConflictRestore(e);
-  if (gameState === 'idle' && !e.repeat) _registerIdleKeydown(e);
+  if (gameState === 'idle' && activeSettings !== 'panelCheatSheet' && !e.repeat) _registerIdleKeydown(e);
   // Sync the CapsLock key indicator with the real OS CapsLock state.
   // getModifierState reads the OS-level state directly, so it never drifts.
   // Uses a dedicated class outside the normal lighting lifecycle so it
@@ -15004,7 +15010,7 @@ function _blurDiagnosticSendReport(EncodedSubject, EncodedBody) {
 
 function handleKeyup(e) {
   updateKeyboardLighting(e, false);
-  if (gameState === 'idle') _registerIdleKeyup(e);
+  if (gameState === 'idle' && activeSettings !== 'panelCheatSheet') _registerIdleKeyup(e);
   // In sticky or touch mode, key-up never clears anything (toggle is handled in updateKeyboardLighting)
   if (stickyKeysOn) return;
   // On Mac, releasing a modifier suppresses keyup for any keys held while it

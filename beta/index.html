@@ -13965,8 +13965,8 @@ var _idlePreviewSavedBlurred = false;
 // default idle heading returns. A new matching chord held at any point
 // while a heading is already showing swaps in instantly, bypassing the
 // hold threshold.
-var IdlePreviewHoldThresholdMs = 500;
-var IdlePreviewReleaseHoldMs   = 1500;
+var IdlePreviewHoldThresholdMs = 100;
+var IdlePreviewReleaseHoldMs   = 2000;
 var IdlePreviewCooldownMs      = 1500;
 
 var _idlePreviewDisplayedToken = null; // token currently shown, once past the hold threshold

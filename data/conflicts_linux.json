@@ -4,10 +4,24 @@
     { "bad": "ALT+F4", "action": "close window", "sus": true },
     { "bad": "CTRL+ALT+DEL", "action": "logout or system action", "sus": true },
     { "bad": "SUPER", "action": "open launcher or overview", "sus": true },
-    { "bad": "CTRL+ALT+RIGHT", "action": "workspace switch", "sus": true },
-    { "bad": "CTRL+ALT+LEFT", "action": "workspace switch", "sus": true },
-    { "bad": "PRINTSCREEN", "action": "screenshot tool", "sus": true }
+    { "bad": "PRINTSCREEN", "action": "screenshot tool", "sus": true },
+    { "bad": "ALT+F2", "action": "open open run system command dialog", "sus": true },
+    { "bad": "CTRL+ALT+T", "action": "launch native terminal console", "sus": true },
+    
+    { "bad": "CTRL+ALT+LEFT", "action": "switch to workspace left", "sus": true },
+    { "bad": "CTRL+ALT+RIGHT", "action": "switch to workspace right", "sus": true },
+    { "bad": "CTRL+ALT+UP", "action": "switch to workspace above", "sus": true },
+    { "bad": "CTRL+ALT+DOWN", "action": "switch to workspace below", "sus": true },
+    
+    { "bad": "SUPER+PAGEUP", "action": "navigate to previous workspace", "sus": true },
+    { "bad": "SUPER+PAGEDOWN", "action": "navigate to next workspace", "sus": true },
+    
+    { "bad": "SUPER+UP", "action": "maximize active workspace window", "sus": true },
+    { "bad": "SUPER+DOWN", "action": "restore or minimize active window", "sus": true },
+    { "bad": "SUPER+LEFT", "action": "snap current window to left split", "sus": true },
+    { "bad": "SUPER+RIGHT", "action": "snap current window to right split", "sus": true }
   ],
+  
   "browser_conflicts": {
     "Chrome": [
       { "bad": "CTRL+T", "action": "new tab" },
@@ -15,7 +29,8 @@
       { "bad": "CTRL+L", "action": "focus address bar" },
       { "bad": "CTRL+SHIFT+N", "action": "new incognito window" },
       { "bad": "CTRL+SHIFT+T", "action": "reopen closed tab", "sus": true },
-      { "bad": "F11", "action": "fullscreen", "sus": true }
+      { "bad": "F11", "action": "fullscreen", "sus": true },
+      { "bad": "CTRL+Q", "action": "quit browser application completely", "sus": true }
     ],
     "Firefox": [
       { "bad": "CTRL+T", "action": "new tab" },
@@ -23,7 +38,8 @@
       { "bad": "CTRL+L", "action": "focus address bar" },
       { "bad": "CTRL+SHIFT+P", "action": "open private window", "sus": true },
       { "bad": "CTRL+SHIFT+T", "action": "reopen closed tab", "sus": true },
-      { "bad": "F11", "action": "fullscreen", "sus": true }
+      { "bad": "F11", "action": "fullscreen", "sus": true },
+      { "bad": "CTRL+Q", "action": "quit browser application completely", "sus": true }
     ],
     "Edge": [
       { "bad": "CTRL+T", "action": "new tab" },
@@ -31,26 +47,29 @@
       { "bad": "CTRL+L", "action": "focus address bar" },
       { "bad": "CTRL+SHIFT+DELETE", "action": "clear browsing data" },
       { "bad": "F12", "action": "dev tools", "sus": true },
-      { "bad": "F11", "action": "fullscreen", "sus": true }
+      { "bad": "F11", "action": "fullscreen", "sus": true },
+      { "bad": "CTRL+Q", "action": "quit browser application completely", "sus": true }
     ],
     "Brave": [
       { "bad": "CTRL+T", "action": "new tab" },
       { "bad": "CTRL+W", "action": "close tab" },
+      { "bad": "CTRL+L", "action": "focus address bar", "sus": true },
       { "bad": "CTRL+SHIFT+N", "action": "new private window" },
       { "bad": "CTRL+SHIFT+T", "action": "reopen closed tab", "sus": true },
-      { "bad": "F11", "action": "fullscreen", "sus": true }
+      { "bad": "F11", "action": "fullscreen", "sus": true },
+      { "bad": "CTRL+Q", "action": "quit browser application completely", "sus": true }
     ]
   },
+  
   "extended_keys": [
     { "position": 1,  "extraKey": "PRINTSCREEN" },
     { "position": 2,  "extraKey": "SCROLLLOCK" },
     { "position": 3,  "extraKey": "PAUSE" },
-    { "position": 4,  "extraKey": "NUMLOCK" },
-    { "position": 5,  "extraKey": "INSERT" },
-    { "position": 6,  "extraKey": "HOME" },
-    { "position": 7,  "extraKey": "PAGEUP" },
-    { "position": 8,  "extraKey": "DELETE" },
-    { "position": 9,  "extraKey": "END" },
-    { "position": 10, "extraKey": "PAGEDOWN" }
+    { "position": 4,  "extraKey": "INSERT" },
+    { "position": 5,  "extraKey": "HOME" },
+    { "position": 6,  "extraKey": "PAGEUP" },
+    { "position": 7,  "extraKey": "DELETE" },
+    { "position": 8,  "extraKey": "END" },
+    { "position": 9,  "extraKey": "PAGEDOWN" }
   ]
 }

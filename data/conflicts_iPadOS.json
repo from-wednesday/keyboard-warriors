@@ -19,6 +19,7 @@
     { "bad": "CTRL+SHIFT+GLOBE+UP", "action": "tile window top / split view top", "sus": true },
     { "bad": "CTRL+SHIFT+GLOBE+DOWN", "action": "tile window bottom / split view bottom", "sus": true }
   ],
+  
   "browser_conflicts": {
     "Safari": [
       { "bad": "CMD+T", "action": "new tab" },

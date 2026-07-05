@@ -13977,6 +13977,22 @@ var _idlePreviewPendingTimer   = null;
 var _idlePreviewReleaseTimer   = null;
 var _idlePreviewCooldownTimer  = null;
 var _idleReleaseSettleTimer    = null; // brief buffer after a keyup so a staggered chord release is read as one event
+var _idlePreviewHeldTokensSnapshot = null; // the exact keys held at the moment the current token locked in
+
+// Returns true if every currently held key was already part of the chord
+// that is currently displayed, and at least one of that chord's keys has
+// since been let go. This is what "still releasing the same chord" looks
+// like, and must never be read as a fresh match, even if the leftover keys
+// happen to form a different, genuine shortcut of their own.
+function _isReleasingFromDisplayedChord() {
+  if (_idlePreviewDisplayedToken === null) return false;
+  if (!_idlePreviewHeldTokensSnapshot) return false;
+  if (idleHeldTokens.size >= _idlePreviewHeldTokensSnapshot.size) return false;
+  var HeldTokensArray = Array.from(idleHeldTokens);
+  return HeldTokensArray.every(function(Token) {
+    return _idlePreviewHeldTokensSnapshot.has(Token);
+  });
+}
 
 // Builds the canonical "CMD+SHIFT+Z"-style string for whatever is
 // currently held, in the same modifier order CanonicaliseShortcutToken
@@ -14086,17 +14102,23 @@ function _resetIdlePreviewState() {
   clearTimeout(_idlePreviewReleaseTimer);
   clearTimeout(_idlePreviewCooldownTimer);
   clearTimeout(_idleReleaseSettleTimer);
-  _idlePreviewPendingTimer   = null;
-  _idlePreviewReleaseTimer   = null;
-  _idlePreviewCooldownTimer  = null;
-  _idleReleaseSettleTimer    = null;
-  _idlePreviewPendingToken   = null;
-  _idlePreviewDisplayedToken = null;
-  _idlePreviewActive         = false;
+  _idlePreviewPendingTimer       = null;
+  _idlePreviewReleaseTimer       = null;
+  _idlePreviewCooldownTimer      = null;
+  _idleReleaseSettleTimer        = null;
+  _idlePreviewPendingToken       = null;
+  _idlePreviewDisplayedToken     = null;
+  _idlePreviewHeldTokensSnapshot = null;
+  _idlePreviewActive             = false;
 }
 
 function _updateIdleShortcutPreview() {
   if (gameState !== 'idle') return;
+
+  if (_isReleasingFromDisplayedChord()) {
+    _onIdlePreviewNoMatch();
+    return;
+  }
 
   var MatchedEntry = null;
   var MatchedToken = null;
@@ -14147,9 +14169,10 @@ function _onIdlePreviewMatchFound(ShortcutEntry, MatchedTokenString) {
 
   if (_idlePreviewDisplayedToken !== null) {
     clearTimeout(_idlePreviewPendingTimer);
-    _idlePreviewPendingTimer   = null;
-    _idlePreviewPendingToken   = null;
-    _idlePreviewDisplayedToken = MatchedTokenString;
+    _idlePreviewPendingTimer       = null;
+    _idlePreviewPendingToken       = null;
+    _idlePreviewDisplayedToken     = MatchedTokenString;
+    _idlePreviewHeldTokensSnapshot = new Set(idleHeldTokens);
     _showIdleShortcutMatch(ShortcutEntry, MatchedTokenString);
     return;
   }
@@ -14159,9 +14182,10 @@ function _onIdlePreviewMatchFound(ShortcutEntry, MatchedTokenString) {
   clearTimeout(_idlePreviewPendingTimer);
   _idlePreviewPendingToken = MatchedTokenString;
   _idlePreviewPendingTimer = setTimeout(function() {
-    _idlePreviewPendingTimer   = null;
-    _idlePreviewPendingToken   = null;
-    _idlePreviewDisplayedToken = MatchedTokenString;
+    _idlePreviewPendingTimer       = null;
+    _idlePreviewPendingToken       = null;
+    _idlePreviewDisplayedToken     = MatchedTokenString;
+    _idlePreviewHeldTokensSnapshot = new Set(idleHeldTokens);
     _showIdleShortcutMatch(ShortcutEntry, MatchedTokenString);
   }, IdlePreviewHoldThresholdMs);
 }
@@ -14180,8 +14204,9 @@ function _onIdlePreviewNoMatch() {
   if (_idlePreviewReleaseTimer) return;
 
   _idlePreviewReleaseTimer = setTimeout(function() {
-    _idlePreviewReleaseTimer  = null;
-    _idlePreviewDisplayedToken = null;
+    _idlePreviewReleaseTimer      = null;
+    _idlePreviewDisplayedToken     = null;
+    _idlePreviewHeldTokensSnapshot = null;
     _clearIdleShortcutMatchToBlank();
     _idlePreviewCooldownTimer = setTimeout(function() {
       _idlePreviewCooldownTimer = null;

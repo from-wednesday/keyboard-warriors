@@ -1,94 +1,96 @@
 {
   "os_conflicts": [
-    { "bad": "CTRL+ALT+DEL", "action": "security interrupt" },
-    { "bad": "CTRL+SHIFT+ESC", "action": "task manager" },
-    { "bad": "ALT+TAB", "action": "switch apps" },
-    { "bad": "ALT+F4", "action": "quit the application" },
-     { "bad": "WIN", "action": "open the Start menu" },
-    { "bad": "WIN+A", "action": "quick settings" },
-    { "bad": "WIN+D", "action": "show/hide desktop" },
-    { "bad": "WIN+E", "action": "file explorer" },
-    { "bad": "WIN+F", "action": "feedback hub" }
+    { "bad": "CTRL+ALT+DEL", "action": "security interrupt system hook" },
+    { "bad": "CTRL+SHIFT+ESC", "action": "launch task manager" },
+    { "bad": "ALT+TAB", "action": "switch active application view" },
+    { "bad": "ALT+F4", "action": "quit active application window" },
+    { "bad": "WIN", "action": "open systemic start menu" },
+    { "bad": "WIN+A", "action": "open quick settings panel" },
+    { "bad": "WIN+D", "action": "show or hide desktop canvas" },
+    { "bad": "WIN+E", "action": "launch file explorer windows" },
+    { "bad": "WIN+F", "action": "open system feedback hub" },
+    { "bad": "WIN+G", "action": "open xbox game bar overlay", "sus": true },
+    { "bad": "WIN+L", "action": "lock windows workstation immediately", "sus": true },
+    { "bad": "WIN+R", "action": "open system run command dialog", "sus": true },
+    { "bad": "WIN+V", "action": "open advanced clipboard history manager", "sus": true },
+    { "bad": "WIN+PRINTSCREEN", "action": "capture and autosave screenshot", "sus": true },
+    
+    { "bad": "WIN+UP", "action": "maximize layout window", "sus": true },
+    { "bad": "WIN+DOWN", "action": "minimize or restore layout window", "sus": true },
+    { "bad": "WIN+LEFT", "action": "snap active window to left layout", "sus": true },
+    { "bad": "WIN+RIGHT", "action": "snap active window to right layout", "sus": true },
+    
+    { "bad": "WIN+CTRL+LEFT", "action": "navigate to previous virtual desktop", "sus": true },
+    { "bad": "WIN+CTRL+RIGHT", "action": "navigate to next virtual desktop", "sus": true }
   ],
+  
   "browser_conflicts": {
     "Chrome": [
-      { "bad": "CTRL+T", "action": "new tab" },
-      { "bad": "CTRL+W", "action": "close tab" },
-      { "bad": "CTRL+N", "action": "new window" },
-      { "bad": "SHIFT+ESC", "action": "task manager", "sus": true },
-      { "bad": "CTRL+SHIFT+N", "action": "new incognito window" },
-      { "bad": "F11", "action": "fullscreen", "sus": true },
-      { "bad": "CTRL+SHIFT+T", "action": "reopen closed tab" }
-    ],
-    "Safari": [
-      { "bad": "CTRL+T", "action": "new tab" },
-      { "bad": "CTRL+W", "action": "close tab" },
-      { "bad": "CTRL+N", "action": "new window", "sus": true }
+      { "bad": "CTRL+T", "action": "new browser tab" },
+      { "bad": "CTRL+W", "action": "close browser tab" },
+      { "bad": "CTRL+N", "action": "open new browser window" },
+      { "bad": "SHIFT+ESC", "action": "open chrome internal task manager", "sus": true },
+      { "bad": "CTRL+SHIFT+N", "action": "open new incognito window" },
+      { "bad": "CTRL+SHIFT+T", "action": "reopen last closed tab" },
+      { "bad": "F11", "action": "toggle fullscreen mode", "sus": true },
+      { "bad": "CTRL+L", "action": "focus location address bar", "sus": true }
     ],
     "Firefox": [
       { "bad": "CTRL+T", "action": "new tab" },
       { "bad": "CTRL+W", "action": "close tab" },
       { "bad": "CTRL+N", "action": "new window" },
-      { "bad": "CTRL+SHIFT+P", "action": "open private window" },
+      { "bad": "CTRL+SHIFT+P", "action": "open private browsing window", "sus": true },
       { "bad": "CTRL+SHIFT+T", "action": "reopen closed tab", "sus": true },
-      { "bad": "F11", "action": "fullscreen", "sus": true }
+      { "bad": "F11", "action": "toggle fullscreen layout mode", "sus": true },
+      { "bad": "CTRL+L", "action": "focus location address bar", "sus": true }
     ],
     "Edge": [
-      { "bad": "SHIFT+ESC", "action": "task manager" },
-      { "bad": "CTRL+T", "action": "new tab" },
-      { "bad": "CTRL+SHIFT+T", "action": "reopen closed tab" },
-      { "bad": "CTRL+SHIFT+R", "action": "hard reload", "sus": true },
-      { "bad": "CTRL+SHIFT+S", "action": "Web Capture tool" },
-      { "bad": "CTRL+SHIFT+DELETE", "action": "clear browsing data" },
-      { "bad": "F11", "action": "fullscreen", "sus": true },
-      { "bad": "F12", "action": "dev tools", "sus": true }
-    ],
-    "Comet": [
       { "bad": "CTRL+T", "action": "new tab" },
       { "bad": "CTRL+W", "action": "close tab" },
-      { "bad": "CTRL+L", "action": "focus address bar", "sus": true },
-      { "bad": "CTRL+SHIFT+S", "action": "summarize page" },
-      { "bad": "CTRL+J", "action": "toggle assistant" },
-      { "bad": "CTRL+K", "action": "command palette", "sus": true }
-    ],
-    "Opera": [
-      { "bad": "CTRL+T", "action": "new tab" },
-      { "bad": "CTRL+SHIFT+I", "action": "dev tools", "sus": true },
-      { "bad": "CTRL+SHIFT+T", "action": "reopen closed tab" },
-      { "bad": "F11", "action": "fullscreen" }
+      { "bad": "CTRL+N", "action": "new window" },
+      { "bad": "CTRL+SHIFT+N", "action": "open new InPrivate window" },
+      { "bad": "CTRL+SHIFT+T", "action": "reopen closed tab", "sus": true },
+      { "bad": "F11", "action": "toggle fullscreen layout mode", "sus": true },
+      { "bad": "F12", "action": "open browser dev tools manager", "sus": true },
+      { "bad": "CTRL+SHIFT+M", "action": "open browser profile switcher context", "sus": true }
     ],
     "Brave": [
       { "bad": "CTRL+T", "action": "new tab" },
       { "bad": "CTRL+W", "action": "close tab" },
       { "bad": "CTRL+N", "action": "new window" },
-      { "bad": "CTRL+SHIFT+N", "action": "new private window" },
+      { "bad": "CTRL+SHIFT+N", "action": "new private window layout" },
       { "bad": "CTRL+SHIFT+T", "action": "reopen closed tab", "sus": true },
-      { "bad": "F11", "action": "fullscreen", "sus": true }
+      { "bad": "F11", "action": "fullscreen window frame", "sus": true },
+      { "bad": "CTRL+L", "action": "focus address bar layout", "sus": true }
     ],
     "Vivaldi": [
       { "bad": "CTRL+T", "action": "new tab" },
       { "bad": "CTRL+W", "action": "close tab" },
-      { "bad": "CTRL+SHIFT+N", "action": "new private window" },
+      { "bad": "CTRL+SHIFT+N", "action": "new private window layout" },
       { "bad": "CTRL+SHIFT+T", "action": "reopen closed tab", "sus": true },
-      { "bad": "F11", "action": "fullscreen", "sus": true }
+      { "bad": "F11", "action": "fullscreen window viewport", "sus": true },
+      { "bad": "CTRL+F12", "action": "open vivaldi settings overlay dashboard", "sus": true }
     ],
     "Arc": [
-      { "bad": "CTRL+T", "action": "new tab" },
-      { "bad": "CTRL+W", "action": "close tab" },
-      { "bad": "CTRL+SHIFT+T", "action": "reopen closed tab", "sus": true },
-      { "bad": "F11", "action": "fullscreen", "sus": true }
+      { "bad": "CTRL+T", "action": "open command bar prompt layout" },
+      { "bad": "CTRL+W", "action": "close active tab item" },
+      { "bad": "CTRL+SHIFT+T", "action": "reopen closed tab context", "sus": true },
+      { "bad": "F11", "action": "toggle application fullscreen layout", "sus": true },
+      { "bad": "CTRL+S", "action": "toggle sidebar dashboard visibility", "sus": true },
+      { "bad": "CTRL+1", "action": "switch to sidebar space 1" },
+      { "bad": "CTRL+2", "action": "switch to sidebar space 2" }
     ]
   },
+  
   "extended_keys": [
     { "position": 1,  "extraKey": "PRINTSCREEN" },
     { "position": 2,  "extraKey": "SCROLLLOCK" },
     { "position": 3,  "extraKey": "PAUSE" },
-    { "position": 4,  "extraKey": "NUMLOCK" },
-    { "position": 5,  "extraKey": "INSERT" },
-    { "position": 6,  "extraKey": "HOME" },
-    { "position": 7,  "extraKey": "PAGEUP" },
-    { "position": 8,  "extraKey": "DELETE" },
-    { "position": 9,  "extraKey": "END" },
-    { "position": 10, "extraKey": "PAGEDOWN" }
+    { "position": 4,  "extraKey": "INSERT" },
+    { "position": 5,  "extraKey": "HOME" },
+    { "position": 6,  "extraKey": "PAGEUP" },
+    { "position": 7,  "extraKey": "DELETE" },
+    { "position": 8,  "extraKey": "END" },
+    { "position": 9,  "extraKey": "PAGEDOWN" }
   ]
 }

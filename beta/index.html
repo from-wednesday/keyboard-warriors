@@ -9,7 +9,7 @@
 <title>beta</title>
 <script>
   const DefaultTitle = 'Keyboard Warriors';
-  const VersionLabel   = '0036';
+  const VersionLabel   = '0037';
   const TitlePrefix  = document.title !== DefaultTitle ? document.title.trim() + '_' : '';
   const DBG_DEVICE   = TitlePrefix + VersionLabel;
 </script>
@@ -1998,6 +1998,7 @@ function _enterCrossTrainSoftKeyPrompt() {
 
 function _exitCrossTrainSoftKeyPrompt() {
   hideConfirmHeading();
+  transitioning = false;
   var PrevState    = _crossTrainSoftKeyPreviousState || 'idle';
   var PausedFamily = (PrevState === 'playing' || PrevState === 'paused' || PrevState === 'readyToUnpause');
   if (PausedFamily) {

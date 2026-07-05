@@ -1,48 +1,64 @@
 {
   "os_conflicts": [
-    { "bad": "CTRL+SHIFT+Q", "action": "sign out", "sus": true },
-    { "bad": "SEARCH+L", "action": "lock screen" },
-    { "bad": "CTRL+SEARCH+S", "action": "show keyboard shortcuts" },
-    { "bad": "ALT+SHIFT+M", "action": "files app", "sus": true },
-    { "bad": "SHIFT+ALT+N", "action": "notifications", "sus": true },
-    { "bad": "SEARCH", "action": "open launcher", "sus": true },
-    { "bad": "CTRL+ALT+/", "action": "show keyboard shortcuts", "sus": true }
+    { "bad": "CTRL+SHIFT+Q", "action": "sign out of user account", "sus": true },
+    { "bad": "SEARCH+L", "action": "lock chromebook screen" },
+    { "bad": "CTRL+SEARCH+S", "action": "show layout keyboard shortcuts" },
+    { "bad": "ALT+SHIFT+M", "action": "launch files app manager", "sus": true },
+    { "bad": "SHIFT+ALT+N", "action": "open status notifications", "sus": true },
+    { "bad": "SEARCH", "action": "open search launcher app drawer", "sus": true },
+    { "bad": "CTRL+ALT+/", "action": "open systemic shortcut cheat sheet", "sus": true },
+    { "bad": "ALT+[", "action": "snap window to left side", "sus": true },
+    { "bad": "ALT+]", "action": "snap window to right side", "sus": true },
+    { "bad": "ALT+=", "action": "maximize system window", "sus": true },
+    { "bad": "ALT+-", "action": "minimize system window", "sus": true },
+    { "bad": "CTRL+SHIFT+L", "action": "lock system screen orientation", "sus": true }
   ],
   "browser_conflicts": {
     "Chrome": [
-      { "bad": "CTRL+T", "action": "new tab" },
-      { "bad": "CTRL+W", "action": "close tab" },
-      { "bad": "CTRL+L", "action": "focus address bar" },
-      { "bad": "CTRL+SHIFT+T", "action": "reopen closed tab", "sus": true },
-      { "bad": "CTRL+SHIFT+I", "action": "dev tools", "sus": true },
-      { "bad": "SEARCH+ESC", "action": "task manager", "sus": true },
-      { "bad": "F11", "action": "fullscreen", "sus": true }
+      { "bad": "CTRL+T", "action": "new browser tab" },
+      { "bad": "CTRL+W", "action": "close browser tab" },
+      { "bad": "CTRL+L", "action": "focus address location bar" },
+      { "bad": "CTRL+SHIFT+T", "action": "reopen last closed tab", "sus": true },
+      { "bad": "CTRL+SHIFT+I", "action": "open web developer tools", "sus": true },
+      { "bad": "SEARCH+ESC", "action": "launch chromeos task manager", "sus": true },
+      { "bad": "F11", "action": "toggle layout fullscreen", "sus": true },
+      { "bad": "CTRL+N", "action": "open new browser window", "sus": true },
+      { "bad": "CTRL+SHIFT+N", "action": "open new incognito window", "sus": true },
+      { "bad": "CTRL+SHIFT+W", "action": "close active browser window", "sus": true },
+      { "bad": "CTRL+1", "action": "switch to tab 1" },
+      { "bad": "CTRL+2", "action": "switch to tab 2" },
+      { "bad": "CTRL+3", "action": "switch to tab 3" },
+      { "bad": "CTRL+4", "action": "switch to tab 4" },
+      { "bad": "CTRL+5", "action": "switch to tab 5" },
+      { "bad": "CTRL+6", "action": "switch to tab 6" },
+      { "bad": "CTRL+7", "action": "switch to tab 7" },
+      { "bad": "CTRL+8", "action": "switch to tab 8" },
+      { "bad": "CTRL+9", "action": "switch to final tab" }
     ],
     "Firefox": [
       { "bad": "CTRL+T", "action": "new tab" },
       { "bad": "CTRL+W", "action": "close tab" },
       { "bad": "CTRL+L", "action": "focus address bar" },
       { "bad": "CTRL+SHIFT+P", "action": "open private window", "sus": true },
-      { "bad": "F11", "action": "fullscreen", "sus": true }
+      { "bad": "F11", "action": "fullscreen window via container wrapper", "sus": true }
     ],
     "Edge": [
       { "bad": "CTRL+T", "action": "new tab" },
       { "bad": "CTRL+W", "action": "close tab" },
       { "bad": "CTRL+L", "action": "focus address bar" },
-      { "bad": "F12", "action": "dev tools", "sus": true },
-      { "bad": "F11", "action": "fullscreen", "sus": true }
+      { "bad": "F12", "action": "container dev tools layout", "sus": true },
+      { "bad": "F11", "action": "fullscreen window via container wrapper", "sus": true }
     ]
   },
   "extended_keys": [
     { "position": 1,  "extraKey": "PRINTSCREEN" },
     { "position": 2,  "extraKey": "SCROLLLOCK" },
     { "position": 3,  "extraKey": "PAUSE" },
-    { "position": 4,  "extraKey": "NUMLOCK" },
-    { "position": 5,  "extraKey": "INSERT" },
-    { "position": 6,  "extraKey": "HOME" },
-    { "position": 7,  "extraKey": "PAGEUP" },
-    { "position": 8,  "extraKey": "DELETE" },
-    { "position": 9,  "extraKey": "END" },
-    { "position": 10, "extraKey": "PAGEDOWN" }
+    { "position": 4,  "extraKey": "INSERT" },
+    { "position": 5,  "extraKey": "HOME" },
+    { "position": 6,  "extraKey": "PAGEUP" },
+    { "position": 7,  "extraKey": "DELETE" },
+    { "position": 8,  "extraKey": "END" },
+    { "position": 9,  "extraKey": "PAGEDOWN" }
   ]
 }

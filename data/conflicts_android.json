@@ -2,35 +2,50 @@
   "os_conflicts": [
     { "bad": "ALT+TAB", "action": "switch apps", "sus": true },
     { "bad": "ALT+ESC", "action": "switch apps", "sus": true },
-    { "bad": "WIN", "action": "open launcher or system UI", "sus": true }
+    { "bad": "WIN", "action": "open launcher or system UI", "sus": true },
+    { "bad": "WIN+D", "action": "go to home screen", "sus": true },
+    { "bad": "WIN+P", "action": "open notification panel", "sus": true },
+    { "bad": "WIN+N", "action": "open notification shade", "sus": true },
+    { "bad": "WIN+ENTER", "action": "launch search voice assistant", "sus": true },
+    { "bad": "WIN+SPACE", "action": "switch input language layout", "sus": true },
+    { "bad": "WIN+CTRL+S", "action": "system screenshot capture", "sus": true },
+    { "bad": "WIN+CTRL+LEFT", "action": "snap split view left", "sus": true },
+    { "bad": "WIN+CTRL+RIGHT", "action": "snap split view right", "sus": true }
   ],
+  
   "browser_conflicts": {
     "Chrome": [
       { "bad": "CTRL+L", "action": "focus address bar", "sus": true },
       { "bad": "CTRL+T", "action": "new tab", "sus": true },
       { "bad": "CTRL+W", "action": "close tab", "sus": true },
-      { "bad": "CTRL+TAB", "action": "next tab", "sus": true }
+      { "bad": "CTRL+TAB", "action": "next tab", "sus": true },
+      { "bad": "CTRL+SHIFT+TAB", "action": "previous tab", "sus": true },
+      { "bad": "CTRL+N", "action": "new tab", "sus": true },
+      { "bad": "CTRL+SHIFT+N", "action": "new incognito tab", "sus": true },
+      { "bad": "CTRL+R", "action": "reload page", "sus": true }
     ],
     "Firefox": [
       { "bad": "CTRL+L", "action": "focus address bar", "sus": true },
       { "bad": "CTRL+T", "action": "new tab", "sus": true },
-      { "bad": "CTRL+W", "action": "close tab", "sus": true }
+      { "bad": "CTRL+W", "action": "close tab", "sus": true },
+      { "bad": "CTRL+TAB", "action": "next tab", "sus": true }
     ],
     "Edge": [
       { "bad": "CTRL+L", "action": "focus address bar", "sus": true },
-      { "bad": "CTRL+T", "action": "new tab", "sus": true }
+      { "bad": "CTRL+T", "action": "new tab", "sus": true },
+      { "bad": "CTRL+W", "action": "close tab", "sus": true }
     ]
   },
+  
   "extended_keys": [
     { "position": 1,  "extraKey": "PRINTSCREEN" },
     { "position": 2,  "extraKey": "SCROLLLOCK" },
     { "position": 3,  "extraKey": "PAUSE" },
-    { "position": 4,  "extraKey": "NUMLOCK" },
-    { "position": 5,  "extraKey": "INSERT" },
-    { "position": 6,  "extraKey": "HOME" },
-    { "position": 7,  "extraKey": "PAGEUP" },
-    { "position": 8,  "extraKey": "DELETE" },
-    { "position": 9,  "extraKey": "END" },
-    { "position": 10, "extraKey": "PAGEDOWN" }
+    { "position": 4,  "extraKey": "INSERT" },
+    { "position": 5,  "extraKey": "HOME" },
+    { "position": 6,  "extraKey": "PAGEUP" },
+    { "position": 7,  "extraKey": "DELETE" },
+    { "position": 8,  "extraKey": "END" },
+    { "position": 9,  "extraKey": "PAGEDOWN" }
   ]
 }

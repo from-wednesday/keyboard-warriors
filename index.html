@@ -40,7 +40,7 @@
      until the stylesheet and DOM are both ready. Moving them to beta.css
      would create a flash of unstyled content on slower connections. */
   @keyframes SkeletonGrow {
-    from { width: 18px; border-radius: 9px; }
+    from { width: 16px; border-radius: 8px; }
     to   { width: 100%; border-radius: 16px; }
   }
   .page-initially-hidden {
@@ -51,11 +51,8 @@
 </head><body>
 
 <!-- ══════════════════════════════════════
-     SVG SYMBOL DEFINITIONS
-     Defined once here, referenced everywhere
-     via <use href="#SymbolId">.
-     All paths use fill="currentColor" so
-     colour is controlled at the use site. But beware of stroke only shapes?
+     SVG SYMBOL defined once here,
+     referenced via <use href="#SymbolId">
 ══════════════════════════════════════ -->
 <svg xmlns="http://www.w3.org/2000/svg" style="display:none;" aria-hidden="true">
 
@@ -199,7 +196,6 @@
     <path fill="currentColor" d="M207.63,20.93h-110.19c-3.31.18-7.38-1.95-9.76-4.56-2.6-2.82-4.77-5.42-7.81-7.59C69.68.97,56.23-.98,44.51,4.44c-2.09.96-.2,2.09-.2,2.09l20.99,13.06c.98.61,1.55,1.69,1.52,2.84l-.57,16.9c-.04,1.15-.69,2.19-1.7,2.73l-14.92,7.96c-1.02.54-2.24.5-3.22-.11l-17.59-10.56c-3.93-2.88-3.84-.21-3.84-.21,1.52,12.58,9.54,22.56,21.69,27.55l-.22.22c14.32,6.29,30.58,1.52,40.13-10.41,3.04-3.69,6.94-5.86,11.71-5.86h109.76c8.03,0,13.88-7.38,13.88-14.97s-6.07-14.75-14.32-14.75h.02ZM205.25,40.23h-101.49c-2.6,0-4.12-2.6-4.12-4.56.22-2.17,1.95-4.12,4.77-4.12h100.41c2.82,0,4.56,1.95,4.56,4.12.22,2.17-1.08,4.12-4.12,4.56h-.01Z"/>
   </symbol>
 
-
   <symbol id="IconStudyNotes" viewBox="0 0 112.5 84.6">
     <path fill="currentColor" d="M110.2,19.8h-3.8c0,0,0,0,0-.1v-2.6c0-.2,0-.4,0-.6h0c-.2-.4-.6-.6-1.1-.5l-5.3.5c0,0,0,0,0-.1v-7.3c0-.3,0-.6-.4-.8-.3-.2-.6-.3-.9-.2l-5.1,1.5c0,0,0,0,0-.1V1.1c0-.4-.2-.7-.5-.9s-.7-.2-1.1,0l-34.6,19.7h-.3c-7-7.6-15.4-13.3-24.9-16.8C28.3,1.7,24.8.8,21.1,0c-.3-.1-.6,0-.8.2-.2.2-.4.5-.4.8v6.9c0,0,0,.1-.1.1-1.8,0-3.7,0-5.5,0s-.8.3-.9.7c0,.1-.1.2-.1.4v6c0,0,0,.1-.1.1-1.9.2-3.8.5-5.6.9,0,0-.2.1-.4.1-.3.2-.5.5-.5.9v2.7c0,0,0,.1,0,.1H2.2c-1.3,0-2.2.9-2.2,2.1v58.3c0,1.2.9,2.1,2.2,2.1h47.5c.6,0,.7.4.7.5.2.9,1,1.6,2.1,1.6h7.7c1,0,1.9-.7,2.1-1.6,0,0,0-.5.6-.5h47.5c1.3,0,2.2-.9,2.2-2.1V22c0-1.2-1.2-2.1-2.3-2.1h0ZM21.9,2.4c0,0,.1,0,.1,0,3,.6,6,1.5,8.8,2.6,9.2,3.4,17.5,9.1,24.5,16.7v57.1c0,0,0,0-.2,0-6.8-6.9-14.7-12.2-23.5-15.5-3.1-1.2-6.4-2.1-9.7-2.8h-.1c0,0,.1-58.1.1-58.1ZM8.8,17.8c1.5-.3,2.8-.5,4.3-.6,0,0,.1,0,.1.1v52c0,.3.1.5.3.7s.4.3.7.3c4.3,0,8.2,0,12,.7,7,1,13.6,3,20.3,6.2,0,0,0,.2,0,.2-8.2-2-16.6-2.9-24.9-2.7h0c-4.2,0-8.5.6-12.7,1.3,0,0-.1,0-.1,0V17.9s0-.1.1-.1h0ZM2.1,80.3V22c0,0,0-.1,0-.1h4.3c0,0,0,0,0,.1v55.3c0,.3,0,.6.4.8.2.2.5.3.8.2,4.5-.9,9.1-1.4,13.8-1.5,5.4-.2,10.6,0,15.8.9,3.8.6,7.7,1.4,11.4,2.5,0,0,0,.2,0,.2H2.1ZM26.6,68.9c-3.6-.5-7.2-.7-11.1-.7s-.1,0-.1,0V10.1c0,0,0-.1.1-.1,1.5,0,2.8,0,4.3.1,0,0,.1,0,.1.1v51c0,.5.4,1,.9,1.1,3.5.7,6.9,1.6,10.2,2.8,6.7,2.5,12.8,6.2,18.4,10.8,0,0,0,.2,0,.2-7.5-3.8-14.8-6.1-22.7-7.3h0ZM58.2,79.4l-.7.4V22s0-.1,0-.1L90.8,2.9c0,0,.2,0,.2,0v25.2h0c0,11.3-7.4,21.2-18.6,24.5h-.2c-.4.2-.7.6-.7,1v1l-7.9,4c-.2,0-.3.4-.2.7,0,.2.3.3.4.3s.2,0,.2,0l7.3-3.7v1c0,2.3-.3,4.6-.9,6.7,0,0,0,0,0,0l-6.6,3.4c-.2,0-.3.4-.2.7,0,.2.3.3.4.3s.2,0,.2,0l5.6-2.8c0,0,.2,0,.2,0-2,5.9-6.2,10.8-11.8,14h0ZM89.2,42.5c-3.2,12-10.4,22.8-20.7,30.4,0,0-.2,0-.2,0,3.2-4.6,5-10,5-15.7v-2.3s0,0,0,0c6.6-2.2,12.1-6.6,15.4-12.1.2-.3.3-.2.3,0h0ZM93,29.2V11.8s0-.1,0-.1l4.4-1.3h0v7.2h0v50.7s0,0,0,0l-32.3,9.4c0,0-.2,0,0-.2,17.4-10.2,28-28.8,28-48.5h0ZM98.9,70.2c.4,0,.7-.5.7-1V18.5c0,0,0-.1,0-.1l4.3-.4c0,0,.1,0,0,.1v58c0,0,0,0,0,0l-36.3,3.1c0,0-.2-.2,0-.2l31.2-8.9h0ZM110.3,80.3c0,0,0,0,0,0h-29c.5,0,1.1,0,1.6,0,2.9-.3,5.8-.5,8.7-.8l7.3-.6,5-.4h1.5c.6,0,1.1-.6,1.1-1.2V22.1c0,0,0-.1,0-.1h3.8c0,0,.1,0,0,.1v58.2h0Z"/>
     <path fill="currentColor" d="M64,51.4c0,0,.2,0,.2,0l20.2-10.2c.2,0,.3-.4.2-.7,0-.2-.4-.3-.7-.2l-20.2,10.2c-.2,0-.3.4-.2.7,0,.2.3.3.5.3h0Z"/>
@@ -211,14 +207,45 @@
     <path d="M3,0 C3,0 10,1 10,9 L10,33 C10,40 15,42 15,42 C15,42 10,44 10,51 L10,75 C10,83 3,84 3,84 L3,84 C3,84 8,82 8,74 L8,51 C8,43 12,42 12,42 C12,42 8,41 8,33 L8,10 C8,2 3,0 3,0 Z"/>
   </symbol>
   
+  <symbol id="IconAppleLogo" viewBox="0 0 686.7 761.2">
+    <path fill="currentColor" d="M563.7,589c-27.7,41.3-57,81.7-101.7,82.3-44.7,1-59-26.3-109.7-26.3s-66.7,25.7-109,27.3c-43.7,1.7-76.7-44-104.7-84.3-57-82.3-100.7-234-42-336,29-50.7,81-82.7,137.3-83.7,42.7-.7,83.3,29,109.7,29s75.3-35.7,127-30.3c21.7,1,82.3,8.7,121.3,66-3,2-72.3,42.7-71.7,127,1,100.7,88.3,134.3,89.3,134.7-1,2.3-14,48-46,94.3h0ZM373.3,55.7c24.3-27.7,64.7-48.7,98-50,4.3,39-11.3,78.3-34.7,106.3-23,28.3-61,50.3-98.3,47.3-5-38.3,13.7-78.3,35-103.7h0Z"/>
+  </symbol>
+
+  <symbol id="IconWindowsLogo" viewBox="0 0 102.73 104.6">
+    <path fill="currentColor" d="M16,50.4h26.6v-27.7l-26.6,6.3v21.4Z"/>
+    <path fill="currentColor" d="M86,12.6l-37,8.6v29.2h37V12.6Z"/>
+    <path fill="currentColor" d="M16,76.2l26.6,6.3v-25.6H16v19.3Z"/>
+    <path fill="currentColor" d="M49,84l37,8.6v-35.7h-37v27.1Z"/>
+  </symbol>
+  
+  <symbol id="IconKeyGlyphOption" viewBox="0 0 429.16 429.16">
+    <path fill="currentColor" d="M381.24,162.91h-99.53c-8.1,0-15.1-6.23-15.46-14.32-.38-8.59,6.48-15.68,14.99-15.68h99.53c8.1,0,15.1,6.23,15.46,14.32.38,8.59-6.48,15.68-14.99,15.68Z"/>
+    <path fill="currentColor" d="M380.77,296.24h-166.2c-6.06,0-11.52-3.64-13.85-9.23l-49.23-118.15c-1.5-3.6-5.02-5.95-8.92-5.95H48.38c-8.1,0-15.1-6.23-15.46-14.32-.38-8.59,6.48-15.68,14.98-15.68h111.1c6.06,0,11.52,3.64,13.85,9.23l49.59,119.01c1.28,3.08,4.3,5.09,7.64,5.09h151.15c8.51,0,15.36,7.09,14.99,15.68-.36,8.1-7.35,14.32-15.46,14.32Z"/>
+  </symbol>
+  
+  <symbol id="IconKeyGlyphControl" viewBox="0 0 56 38">
+    <polyline points="6,32 28,7 50,32" fill="none" stroke="currentColor" stroke-width="7" stroke-linecap="round" stroke-linejoin="round"/>
+  </symbol>
+
+  <symbol id="IconKeyGlyphReturn" viewBox="0 0 58 46">
+    <polyline points="10,34 3,27 10,20" fill="none" stroke="currentColor" stroke-width="6.5" stroke-linecap="round" stroke-linejoin="round"/>
+    <path d="M3,27 L40,27 L40,10" fill="none" stroke="currentColor" stroke-width="6.5" stroke-linecap="round" stroke-linejoin="round"/>
+  </symbol>
+
+  <symbol id="IconLockPadlock" viewBox="0 0 24 24">
+    <rect x="5" y="11" width="14" height="10" rx="2" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+    <path d="M8 11V7a4 4 0 0 1 8 0v4" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+  </symbol>
+  
 </svg>
 
-
 <!-- ══════════════════════════════════════
-     GYRO PERMISSION MODAL
-     Shown once on iOS/iPadOS (localStorage persists the decision).
-     iOS 13+ requires a user gesture before DeviceOrientationEvent.requestPermission.
-══════════════════════════════════════ -->
+end:    SYMBOLs
+     ══════════════════════════════════════
+start:  GYRO PERMISSION MODAL
+        Shown once on iOS/iPadOS (localStorage persists the decision).
+        iOS 13+ requires a user gesture before DeviceOrientationEvent.requestPermission.
+     ══════════════════════════════════════ -->
 <div id="gyroBackdrop" class="touch-modal-backdrop" style="display:none;" onclick="HideGyroModal()"></div>
 <div id="gyroModal" class="touch-modal-card" role="dialog" aria-modal="true" style="display:none;" onclick="if(event.target===this)onGyroDeny()">
   <p class="touch-modal-heading">One quick thing</p>
@@ -230,10 +257,7 @@
   </div>
 </div>
 
-
-
 <!-- OS toggle row: sits above the game panel -->
-
 
 <div id="osRow" class="page-initially-hidden">
   <div id="osToggleWrap">
@@ -1154,26 +1178,19 @@ function _setGhostLockHint(visible) {
 
 /* ══════════════════════════════════════
    KEY GLYPH SVG CONSTANTS
-   Vector symbols for full-size Mac keys.
-   Match the Command symbol aesthetic used
-   in shortcut chips — clean stroke paths,
-   no emoji, no OS-dependent rendering.
-   Only injected when isMini is false and
-   currentOs is 'mac' (see buildKey util).
 ══════════════════════════════════════ */
 
-// Option (⌥)matches the Apple keycap.
-const OPTION_SYM_SVG = `<svg class="key-glyph-sym key-glyph-option" viewBox="47.91 147.91 333.33 133.33" fill="none" stroke="currentColor" stroke-width="36" stroke-linecap="round" stroke-linejoin="round" xmlns="http://www.w3.org/2000/svg"><line x1="281.24" y1="147.91" x2="381.24" y2="147.91"/><polyline points="381.24,281.24 214.57,281.24 158.91,147.91 47.91,147.91"/></svg>`;
-// Control (⌃): upward-pointing caret / chevron.
-const CONTROL_SYM_SVG = `<svg class="key-glyph-sym key-glyph-control" viewBox="0 0 56 38" fill="none" stroke="currentColor" stroke-width="7" stroke-linecap="round" stroke-linejoin="round" xmlns="http://www.w3.org/2000/svg"><polyline points="6,32 28,7 50,32"/></svg>`;
-
-// Return (↩): right-angle arrow — horizontal stem then downward hook with
-// arrowhead pointing left, matching the standard Apple keycap return glyph.
-const RETURN_SYM_SVG = `<svg class="key-glyph-sym key-glyph-return" viewBox="0 0 58 46" fill="none" stroke="currentColor" stroke-width="6.5" stroke-linecap="round" stroke-linejoin="round" xmlns="http://www.w3.org/2000/svg"><polyline points="10,34 3,27 10,20"/><path d="M3,27 L40,27 L40,10"/></svg>`;
-
-const LOCK_SVG = `<svg class="lock-svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-  <rect x="5" y="11" width="14" height="10" rx="2"/>
-  <path d="M8 11V7a4 4 0 0 1 8 0v4"/>
+const OPTION_SYM_SVG = `<svg class="key-glyph-sym key-glyph-option" viewBox="0 0 429.16 429.16"><use href="#IconKeyGlyphOption"/></svg>`;
+const CONTROL_SYM_SVG = `<svg class="key-glyph-sym key-glyph-control" viewBox="0 0 56 38"><use href="#IconKeyGlyphControl"/></svg>`;
+const RETURN_SYM_SVG  = `<svg class="key-glyph-sym key-glyph-return" viewBox="0 0 58 46"><use href="#IconKeyGlyphReturn"/></svg>`;
+const LOCK_SVG        = `<svg class="lock-svg" width="14" height="14" viewBox="0 0 24 24"><use href="#IconLockPadlock"/></svg>`;
+const PC_DELETE_SVG = `<svg class="delete-svg" viewBox="0 0 73 54" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+  <path d="M48.1,31.9L43.2,27l4.9-4.9c1.2-1.2,1.2-3.1,0-4.2c-1.2-1.1-3.1-1.1-4.2,0L39,22.8l-4.9-4.9c-1.2-1.1-3.1-1.1-4.2,0
+c-1.2,1.2-1.2,3.1,0,4.2l4.9,4.9l-4.9,4.9c-1.2,1.2-1.2,3.1,0,4.2c1.2,1.1,3.1,1.1,4.2,0l4.9-4.9l4.9,4.9c1.2,1.1,3.1,1.1,4.2,0
+C49.3,35,49.3,33.1,48.1,31.9C48.1,31.9,48.1,31.9,48.1,31.9z"/>
+  <path d="M56,3H26.9c-3.3,0-6.5,1.5-8.6,4.1L7.5,20.6c-3.3,3.6-3.3,9.2,0,12.8l10.9,13.5c2.1,2.6,5.2,4.1,8.6,4.1H56
+c6.1,0,11-4.9,11-11l0,0V14C67,7.9,62.1,3,56,3z M61,40c0,2.8-2.2,5-5,5H26.4c-1.2,0-2.4-0.5-3.1-1.5L12,29.5c-1.4-1.4-1.4-3.6,0-5
+l11.3-14C24.1,9.5,25.2,9,26.4,9H56c2.8,0,5,2.2,5,5V40z"/>
 </svg>`;
 
 function buildKey(cfg, isMini) {
@@ -1252,6 +1269,8 @@ function buildKey(cfg, isMini) {
         el.innerHTML = `${RETURN_SYM_SVG}<span class="mod-word">return</span>`;
       } else if (isMini && currentOs === 'mac' && cfg.id === 'Enter') {
         el.innerHTML = RETURN_SYM_SVG;
+      } else if (currentOs === 'pc' && cfg.id === 'Backspace') {
+        el.innerHTML = PC_DELETE_SVG;
       } else {
         const isGlyph = utilText && utilText.length <= 2 && /\p{So}|\p{Sm}|[⇧↩↑↓←→⌫↵]/u.test(utilText);
         if (isGlyph) {
@@ -1284,7 +1303,7 @@ function buildKey(cfg, isMini) {
       el.addEventListener('mousedown', function(ev){ touchEnabled ? handleKeyTouch(ev, el) : showKbToast(ev); });
       break;
     case 'winkey':
-      el.innerHTML = `<svg class="win-svg" width="14" height="14" viewBox="0 0 102.73 104.6" fill="currentColor" xmlns="http://www.w3.org/2000/svg"><path d="M16,50.4h26.6v-27.7l-26.6,6.3v21.4Z"/><path d="M86,12.6l-37,8.6v29.2h37V12.6Z"/><path d="M16,76.2l26.6,6.3v-25.6H16v19.3Z"/><path d="M49,84l37,8.6v-35.7h-37v27.1Z"/></svg>`;
+    el.innerHTML = `<svg class="win-svg" width="14" height="14" viewBox="0 0 102.73 104.6" fill="currentColor"><use href="#IconWindowsLogo"/></svg>`;
       el.addEventListener('mousedown', function(ev){ touchEnabled ? handleKeyTouch(ev, el) : showKbToast(ev); });
       break;
   }
@@ -1603,13 +1622,9 @@ function buildKeyboard(isMini) {
       }
 
       let keyCfg = cfg;
-      // PC label overrides: Enter→enter, Backspace→backspace
-      if (currentOs === 'pc' && cfg.type === 'util') {
-        if (cfg.id === 'Enter') {
-          keyCfg = Object.assign({}, cfg, { label: 'enter', mini: '↵' });
-        } else if (cfg.id === 'Backspace') {
-          keyCfg = Object.assign({}, cfg, { label: '⌫', mini: '⌫' });
-        }
+      // PC label override: Enter → enter
+      if (currentOs === 'pc' && cfg.type === 'util' && cfg.id === 'Enter') {
+        keyCfg = Object.assign({}, cfg, { label: 'enter', mini: '↵' });
       }
       if (isMini) {
         keyCfg = Object.assign({}, keyCfg);
@@ -1815,9 +1830,9 @@ osMismatchEl.addEventListener('click', function() {
 
 const osKnobEl  = document.getElementById('osKnobEl');
 
-// MAC_SVG / PC_SVG inline strings for label rendering
-const MAC_ICON_SVG = '<svg width="10" height="12" viewBox="0 0 686.7 761.2" fill="currentColor" xmlns="http://www.w3.org/2000/svg"><path d="M563.7,589c-27.7,41.3-57,81.7-101.7,82.3-44.7,1-59-26.3-109.7-26.3s-66.7,25.7-109,27.3c-43.7,1.7-76.7-44-104.7-84.3-57-82.3-100.7-234-42-336,29-50.7,81-82.7,137.3-83.7,42.7-.7,83.3,29,109.7,29s75.3-35.7,127-30.3c21.7,1,82.3,8.7,121.3,66-3,2-72.3,42.7-71.7,127,1,100.7,88.3,134.3,89.3,134.7-1,2.3-14,48-46,94.3h0ZM373.3,55.7c24.3-27.7,64.7-48.7,98-50,4.3,39-11.3,78.3-34.7,106.3-23,28.3-61,50.3-98.3,47.3-5-38.3,13.7-78.3,35-103.7h0Z"/></svg>';
-const PC_ICON_SVG  = '<svg width="11" height="11" viewBox="0 0 102.73 104.6" fill="currentColor" xmlns="http://www.w3.org/2000/svg"><path d="M16,50.4h26.6v-27.7l-26.6,6.3v21.4Z"/><path d="M86,12.6l-37,8.6v29.2h37V12.6Z"/><path d="M16,76.2l26.6,6.3v-25.6H16v19.3Z"/><path d="M49,84l37,8.6v-35.7h-37v27.1Z"/></svg>';
+// MAC_SVG / PC_SVG symbols for label rendering
+const MAC_ICON_SVG = '<svg width="10" height="12" viewBox="0 0 686.7 761.2" fill="currentColor"><use href="#IconAppleLogo"/></svg>';
+const PC_ICON_SVG  = '<svg width="11" height="11" viewBox="0 0 102.73 104.6" fill="currentColor"><use href="#IconWindowsLogo"/></svg>';
 
 function buildOsLabels() {
   // Detected device is always on the LEFT (white dot = current).
@@ -1889,10 +1904,13 @@ function applyOsMode(os) {
   updateMismatchPill();
   document.getElementById('keyboardPanel').classList.toggle('pc-keys', os === 'pc');
   document.body.classList.toggle('pc-mode', os === 'pc');
+  // Carry the current 3/4-key setting over to the new OS
+  if (currentOs === 'mac') kbVariantMac = activeVariantKey();
+  else                     kbVariantPc  = activeVariantKey();
+  SaveKeyboardSettings();
   if (currentKbMode && currentKbMode !== 'none') {
     buildKeyboard(currentKbMode === 'mini');
   }
-  _syncKbCountFromVariant();
   if (activeSettings !== null) _spAlignPanel();
   if (activeSettings === 'panelConflicts') {
     conflictsKbLighting.deactivate();
@@ -2018,7 +2036,9 @@ function onOsToggle() {
                            : (osToggleEl.checked ? 'mac' : 'pc');
   applyOsMode(targetOs);
   if (activeSettings === 'panelKeyboard') updateModalToggles();
-  if (activeSettings === 'panelConflicts') _refreshBrowserContent();
+  if (activeSettings === 'panelCheatSheet') _refreshCheatSheet();
+  // Conflicted Shortcuts panel is intentionally NOT refreshed here: conflicts
+  // reflect the real device/browser, not the cross-training OS toggle.
   _CheckCrossTrainSoftKeyPrompt();
 }
 
@@ -3110,6 +3130,16 @@ function updateKeyboardLighting(e, isDown) {
     }
     // Otherwise light it
     heldKeys.add(code);
+    if (gameState !== 'playing') {
+      // Outside active play there is no question to judge correctness
+      // against, so every key reads as green (matches the physical
+      // keyboard's own non-playing behaviour further down this function).
+      greenHeld.add(code);
+      stickyLit.set(code, 'green');
+      if (isExtKey) ShowExtendedKeyChip(ResolvedCode, null);
+      else          setKeyLit(ResolvedCode, 'green-down');
+      return;
+    }
     const isCorrect = isKeyPartOfShortcut(e, currentAnswer);
     const colour = isCorrect ? 'green' : 'orange';
     stickyLit.set(code, colour);
@@ -3470,11 +3500,12 @@ function mainButtonClick() {
 }
 
 const IMPROVEMENT_TIPS = [
-  'Try saying the shortcut out loud before you press it.',
+  'Try saying the shortcut out loud as you press it.',
+  'Choose light or dark mode to keep you focused',
   'Focus on the shortcuts you keep skipping.\nRepetition will make them automatic.',
   'Accuracy before speed.',
   'Picture your fingers hitting each key in sequence.',
-  'Group shortcuts by hand.\nLeft-hand tools, right-hand combos.',
+  'In Freestyle mode you can experiment & explore.\nBetter than memorising lists!',
   'Play this daily for a week.\nSpaced repetition beats cramming.',
   'Try to improve your best time.',
   'Pressing the timer will pause your game.\nYou can reset scores and more.',
@@ -3490,10 +3521,10 @@ const IMPROVEMENT_TIPS = [
   'Celebrate streaks. How many can you do in a row?',
   'Some actions have more than one possible shortcut.',
   'Compare your scores over time to see your progress.',
-  'Share scores with classmates for friendly rivalry.',
+  'Share scores with peers for friendly rivalry.',
   'Eyes on work, not the keys. Trust the muscle memory.',
   'Mistakes teach more than perfect runs.',
-  'Channel your inner pro designer. Smooth & precise.',
+  'Channel your inner pro. Smooth & precise.',
   'Every rep trains your brain.',
   'Use the keyboard menu to ensure the game matches your setup.',
   'Practicing with time pressure can actually promote flow states.',
@@ -3727,13 +3758,20 @@ function clearHelp() {
     aff.classList.add('aff-transitioning');
     setTimeout(function() { aff.classList.remove('aff-transitioning'); }, 1500);
   }
+  // Freestyle mode is only for the plain idle screen. Wipe its tracked
+  // keys and cancel its timers so nothing from it can later overwrite the
+  // Cheat Sheet's own heading once this panel is showing.
+  idleHeldTokens.clear();
+  _resetIdlePreviewState();
   // Save title text before pausing (enterPause may overwrite it).
   _cheatsheetSavedTitle = titleEl.textContent;
   // Pause first so enterPause's setKbPosition('edge') fires before openSettings
   // overrides it with 'partial'. Order matters here.
   if (gameState === 'readyToUnpause') { _enterReadyToUnpauseCleanup(); enterPause(); }
   else if (gameState === 'playing')   { enterPause(); }
-  // Open panel after pausing so it wins the keyboard position.
+  // Open panel after pausing. Since a settings page (panelPause) is already
+  // active at this point, openSettings will not re-apply a keyboard angle --
+  // the angle enterPause set stays as-is.
   openSettings('panelCheatSheet');
   // Always set title + tagline last, overwriting any blur/text from enterPause.
   _resetTitleClasses();
@@ -4438,6 +4476,9 @@ function hideConfirmHeading() {
 function _resetToIdleSilently() {
   gameState = 'idle';
   _wasPlaying = false;
+  idleHeldTokens.clear();
+  _resetIdlePreviewState();
+  kbToastEl.classList.remove('show');
   _exitScoreClearConfirm();
   _exitDiffConfirm();
   _exitQuitConfirm();
@@ -4481,6 +4522,9 @@ function _resetToIdleSilently() {
 function resetToIdle() {
   gameState = 'idle';
   _wasPlaying = false;
+  idleHeldTokens.clear();
+  _resetIdlePreviewState();
+  kbToastEl.classList.remove('show');
   // Clean up any lingering confirm overlay listeners so they cannot fire
   // after the state has been reset (e.g. stale guard from a cancelled confirm)
   _exitScoreClearConfirm();
@@ -4524,6 +4568,7 @@ function resetToIdle() {
   scoreDisc.className = 'scoreDisc';
   timerDiv.textContent = '0:00';
   greenHits = 0; totalHits = 0; hintPenaltyPct = 0; updateAccuracyDisplay(); dbgRefreshCtx(); dbgRefreshAccuracy();
+  showToast('freestyle mode');
   // Pulse Start once keyboard has returned to face position, then every 6 seconds
   setTimeout(function pulseAndReschedule() {
     if (gameState !== 'idle') return;
@@ -4567,6 +4612,36 @@ var _appListInitialised = false;
 const appPillEl = document.getElementById('appPill');
 
 var AppPillWrenchOpen = false;
+
+// Press-in-then-pop feedback on the currently visible app label, only while
+// the pill is closed (a single label showing). Opening/closing itself is
+// still handled by the existing onclick on #appPill — this just adds the
+// visual squash-and-pop on press, matching the difficulty pill's behaviour.
+var _appPillPressTarget = null;
+
+appPillEl.addEventListener('pointerdown', function(PointerEvent) {
+  if (!PointerEvent.isPrimary) return;
+  if (appPillEl.classList.contains('open')) return;
+  if (gameState === 'playing' || gameState === 'paused' || gameState === 'readyToUnpause' || gameState === 'counting') return;
+  var LabelElement = appPillEl.querySelector('.app-option.selected .app-option-label-col');
+  if (!LabelElement) return;
+  _appPillPressTarget = LabelElement;
+  LabelElement.classList.remove('diff-btn-label-pop');
+  LabelElement.classList.add('press-in');
+});
+
+function _releaseAppPillPress() {
+  if (!_appPillPressTarget) return;
+  _appPillPressTarget.classList.remove('press-in');
+  _popDiffLabel(_appPillPressTarget);
+  _appPillPressTarget = null;
+}
+
+appPillEl.addEventListener('pointerup', _releaseAppPillPress);
+appPillEl.addEventListener('pointercancel', function() {
+  if (_appPillPressTarget) _appPillPressTarget.classList.remove('press-in');
+  _appPillPressTarget = null;
+});
 
 function _saveAppsShortList() {
   if (!_appListInitialised) return;
@@ -6400,6 +6475,7 @@ function _phoneOpenSettings(Page) {
   var WasAlreadyOpen = activeSettings !== null;
   var PreviousPage   = activeSettings;
   activeSettings     = Page;
+  _syncKeyboardSettingsActiveClass();
 
   // Clean up Cheat Sheet tagline if navigating away from it
   if (PreviousPage === 'panelCheatSheet' && Page !== 'panelCheatSheet') {
@@ -6433,9 +6509,10 @@ function _phoneOpenSettings(Page) {
 
   _phoneOpenPanel(Page, WasAlreadyOpen, PreviousPage);
   // Folds the keyboard partway whenever it is visible alongside the
-  // toolbar. Already does nothing when the keyboard is genuinely hidden,
-  // so this is safe to call unconditionally here.
-  SetKeyboardPositionForPanel(Page);
+  // toolbar. Only applied when opening settings from face -- switching
+  // between panels while settings are already open leaves the keyboard
+  // at its current angle until the user changes it themselves.
+  if (!WasAlreadyOpen) SetKeyboardPositionForPanel(Page);
   _syncPhoneToolbarActiveState(Page);
 
   var NoConfirmOverlayActive = ['confirm-reset', 'confirm-quit', 'confirm-trophy',
@@ -6449,6 +6526,7 @@ function _phoneCloseSettings() {
   if (activeSettings === null) return;
    var ClosingPage = activeSettings;
   activeSettings  = null;
+  _syncKeyboardSettingsActiveClass();
   conflictsKbLighting.deactivate();
     _syncStudyNotesInlineIcon();
 
@@ -6709,6 +6787,7 @@ function openSettings(page) {
   var wasOpen  = activeSettings !== null;
   var prevPage = activeSettings;
   activeSettings = page;
+  _syncKeyboardSettingsActiveClass();
   conflictsKbLighting.deactivate();
 
   // Ghost lock hint: hide while any settings panel is open (keyboard is folded down)
@@ -6743,9 +6822,12 @@ function openSettings(page) {
   if (page === 'panelEndGameReportCard')     _refreshReportPanel();
   if (page === 'panelCheatSheet')    _refreshCheatSheet();
 
-  // Align panel width to keyboard and set the configured keyboard fold angle.
+  // Align panel width to keyboard. The keyboard fold angle is only applied
+  // here when opening settings from face (game/idle) -- switching between
+  // panels while settings are already open leaves the keyboard at whatever
+  // angle it is currently at, until the user drags or taps it themselves.
   _spAlignPanel();
-  SetKeyboardPositionForPanel(page);
+  if (!wasOpen) SetKeyboardPositionForPanel(page);
   // Re-align affordance vertical position after padding-top transition completes (550ms).
   setTimeout(function() { if (activeSettings !== null) _spAlignPanel(); }, 580);
 
@@ -6803,6 +6885,7 @@ function closeSettings() {
   if (activeSettings === null) return;
   var closingPage = activeSettings;
   activeSettings = null;
+  _syncKeyboardSettingsActiveClass();
   var closingWrap = document.getElementById('keyboardWrap');
   if (closingWrap) closingWrap.style.minHeight = '';
   conflictsKbLighting.deactivate();
@@ -6880,6 +6963,7 @@ function _closeAllModalsInstant() {
   if (activeSettings === null) return;
   if (NoKeyboardMode || window.innerWidth < MiniKeyboardBreakpointWidth) {
     activeSettings = null;
+    _syncKeyboardSettingsActiveClass();
     _panelTipInTitle = false;
     _exitScoreClearConfirm();
     _exitDiffConfirm();
@@ -6889,6 +6973,7 @@ function _closeAllModalsInstant() {
     return;
   }
   activeSettings = null;
+  _syncKeyboardSettingsActiveClass();
   conflictsKbLighting.deactivate();
   _syncStudyNotesInlineIcon();
   _panelTipInTitle = false;  // clear any tip that was live in the title
@@ -7782,6 +7867,18 @@ document.getElementById('gameContainer').addEventListener('click', function(e) {
     return;
   }
 
+  // Background click while a settings panel is open, on a non-active,
+  // non-paused screen (idle, welcome, or finished): abandon the panel
+  // and return to the idle screen.
+  var BackgroundClickResetStates = ['idle', 'welcome', 'finished'];
+  if (activeSettings !== null && BackgroundClickResetStates.indexOf(gameState) !== -1) {
+    _welcomeIsReturning = false;
+    document.body.classList.remove('returning-screen');
+    _closeSkillsetPill();
+    resetToIdle();
+    return;
+  }
+
   if (gameState === 'paused') {
     pulseBtn(document.getElementById('mainBtn'));
     return;
@@ -8284,27 +8381,10 @@ function _saveUserConfirmedWorkingConflicts() {
   } catch(e) {}
 }
 
-var conflictsKbLighting = (function () {
-  var _active    = false;
-  // All browser codes currently held down, tracked as a Set
-  var _heldKeys  = new Set();
-
-  // CSS class constants
-  var CLS_GREEN    = 'lit-green-up';
-  var CLS_ORANGE   = 'lit-orange-up';
-  var CLS_YELLOW   = 'lit-yellow-up';
-  var CLS_RESTING_AVAILABLE = 'resting-available';
-  var CLS_RESTING_SUS       = 'resting-sus';
-  var CLS_RESTING_BLOCKED   = 'resting-blocked';
-
-  var ALL_MODULE_CLASSES = [
-    CLS_GREEN, CLS_ORANGE, CLS_YELLOW,
-    CLS_RESTING_AVAILABLE, CLS_RESTING_SUS, CLS_RESTING_BLOCKED,
-    'lit-fading',
-  ];
-
-  // ── Token helpers ────────────────────────────────────────────────────────
-
+/* ── Shared browser-code ↔ canonical-token helpers ───────────────────────────
+   Used by conflictsKbLighting (chord tracking for the Conflicts panel) and
+   by the idle shortcut preview (see near handleKeydown) — kept in one place
+   so both features stay in sync with the same code-to-token mapping. ── */
 var BrowserCodeToTokenMap = {
   'Equal':'EQUAL','Minus':'MINUS',
   'BracketLeft':'BRACKETLEFT','BracketRight':'BRACKETRIGHT',
@@ -8336,28 +8416,51 @@ var BrowserCodeToTokenMap = {
   'NumpadEqual':'NUMPADEQUAL','NumpadComma':'NUMPADCOMMA',
 };
 
+function _browserCodeToToken(BrowserCode) {
+  if (BrowserCode.startsWith('Key'))   return BrowserCode.slice(3);
+  if (BrowserCode.startsWith('Digit')) return BrowserCode.slice(5);
+  return BrowserCodeToTokenMap[BrowserCode] || null;
+}
 
-  function _browserCodeToToken(BrowserCode) {
-    if (BrowserCode.startsWith('Key'))   return BrowserCode.slice(3);
-    if (BrowserCode.startsWith('Digit')) return BrowserCode.slice(5);
-    return BrowserCodeToTokenMap[BrowserCode] || null;
+// Returns the canonical modifier token for a held browser code, or null
+// if the code is not a modifier key.
+function _modifierTokenForCode(BrowserCode) {
+  if (currentOs === 'pc') {
+    if (BrowserCode === 'ControlLeft' || BrowserCode === 'ControlRight') return 'CMD';
+  } else {
+    if (BrowserCode === 'MetaLeft'    || BrowserCode === 'MetaRight')    return 'CMD';
   }
+  if (BrowserCode === 'ShiftLeft'   || BrowserCode === 'ShiftRight')     return 'SHIFT';
+  if (BrowserCode === 'AltLeft'     || BrowserCode === 'AltRight')       return 'OPTION';
+  if (BrowserCode === 'ControlLeft' || BrowserCode === 'ControlRight')   return 'CONTROL';
+  if (BrowserCode === 'MetaLeft'    || BrowserCode === 'MetaRight')      return 'WIN';
+  if (BrowserCode === 'Fn')                                               return 'FN';
+  return null;
+}
 
-  // Returns the canonical modifier token for a held browser code, or null
-  // if the code is not a modifier key.
-  function _modifierTokenForCode(BrowserCode) {
-    if (currentOs === 'pc') {
-      if (BrowserCode === 'ControlLeft' || BrowserCode === 'ControlRight') return 'CMD';
-    } else {
-      if (BrowserCode === 'MetaLeft'    || BrowserCode === 'MetaRight')    return 'CMD';
-    }
-    if (BrowserCode === 'ShiftLeft'   || BrowserCode === 'ShiftRight')     return 'SHIFT';
-    if (BrowserCode === 'AltLeft'     || BrowserCode === 'AltRight')       return 'OPTION';
-    if (BrowserCode === 'ControlLeft' || BrowserCode === 'ControlRight')   return 'CONTROL';
-    if (BrowserCode === 'MetaLeft'    || BrowserCode === 'MetaRight')      return 'WIN';
-    if (BrowserCode === 'Fn')                                               return 'FN';
-    return null;
-  }
+var conflictsKbLighting = (function () {
+  var _active    = false;
+  // All browser codes currently held down, tracked as a Set
+  var _heldKeys  = new Set();
+
+  // CSS class constants
+  var CLS_GREEN    = 'lit-green-up';
+  var CLS_ORANGE   = 'lit-orange-up';
+  var CLS_YELLOW   = 'lit-yellow-up';
+  var CLS_RESTING_AVAILABLE = 'resting-available';
+  var CLS_RESTING_SUS       = 'resting-sus';
+  var CLS_RESTING_BLOCKED   = 'resting-blocked';
+
+  var ALL_MODULE_CLASSES = [
+    CLS_GREEN, CLS_ORANGE, CLS_YELLOW,
+    CLS_RESTING_AVAILABLE, CLS_RESTING_SUS, CLS_RESTING_BLOCKED,
+    'lit-fading',
+  ];
+
+  // ── Token helpers ────────────────────────────────────────────────────────
+  // BrowserCodeToTokenMap, _browserCodeToToken, and _modifierTokenForCode now
+  // live at top level (shared with the idle shortcut preview) — see just
+  // above this module's declaration.
 
   function _isModifierCode(BrowserCode) {
     return _modifierTokenForCode(BrowserCode) !== null;
@@ -10421,6 +10524,11 @@ function _onAppsLoaded(AllAppsFromJson) {
   positionIcons();
   _initSkillsetPillAfterAppsLoad();
 
+  // Warm the shortcut cache for the current app so the idle shortcut
+  // preview (see near handleKeydown) has data ready the moment someone
+  // starts pressing keys, without waiting on a fetch mid-interaction.
+  loadAppShortcutsIfNeeded(currentApp, function() {});
+
   if (_PendingSharedAppsMode === 'simple') {
     _ApplySharedAppsList(_PendingSharedAppLabels, _PendingSharedStandbyLabels);
     _PendingSharedAppsMode = null;
@@ -10627,6 +10735,9 @@ function beginCountdown() {
   if (_countdownTimer) return;
   _stopReadyPromptTimer();
   hideConfirmHeading();
+  idleHeldTokens.clear();
+  _resetIdlePreviewState();
+  kbToastEl.classList.remove('show');
   _countdownMode    = 'start';
   gameState         = 'counting';
   mainBtn.textContent = 'Cancel';
@@ -12469,7 +12580,7 @@ var LabelElement = document.createElement('span');
     }
 
     ListItem.appendChild(LabelElement);
-    var ChipsWrapper = BuildShortcutKeyChips(ShortcutChipText, true);
+    var ChipsWrapper = BuildShortcutChipsOrOsOnlyNote(ShortcutChipText, true);
     ChipsWrapper.style.flexShrink = '0';
     ListItem.appendChild(ChipsWrapper);
     
@@ -12811,13 +12922,13 @@ var AnsweredTimingMap = {};
       dot.style.marginTop = '5px';
       dot.style.background = (IsActiveGame && Idx === 0) ? '#f59e0b' : '#fbbf24';
 
-      var label = document.createElement('span');
+var label = document.createElement('span');
       label.className = 'sp-report-question-label';
       label.textContent = (Question.display || '').replace(/\\\\/g, '\\');
 
       li.appendChild(dot);
       li.appendChild(label);
-      li.appendChild(BuildShortcutKeyChips(ShortcutDisplay, true));
+      li.appendChild(BuildShortcutChipsOrOsOnlyNote(ShortcutDisplay, true));
       ListRight.appendChild(li);
     });
 
@@ -12884,6 +12995,21 @@ function HighlightReportListItems(ShortcutToken) {
       ListItem.classList.add('practice-done');
     }
   });
+}
+
+// Returns either the shortcut key chips, or a small note when the shortcut
+// has no equivalent on the currently selected training OS (its pc_sc or
+// mac_sc field is null/'none'/empty in the shortcuts JSON).
+function BuildShortcutChipsOrOsOnlyNote(ShortcutValue, IsWeakness) {
+  var HasNoOsEquivalent = ShortcutValue === null || ShortcutValue === undefined
+    || ShortcutValue === 'none' || ShortcutValue === '';
+  if (HasNoOsEquivalent) {
+    var NoteElement = document.createElement('small');
+    NoteElement.className = 'sp-report-os-only-note';
+    NoteElement.textContent = currentOs === 'pc' ? 'Mac only' : 'PC only';
+    return NoteElement;
+  }
+  return BuildShortcutKeyChips(ShortcutValue, IsWeakness);
 }
 
 function BuildShortcutKeyChips(TokenString, IsWeakness) {
@@ -13826,6 +13952,275 @@ function showTip(index) {
   _startReadyPromptTimer();
 }
 
+/* ══════════════════════════════════════
+   IDLE SHORTCUT PREVIEW
+   While gameState is 'idle', held keys (real or on-screen) are compared
+   against the current app's full shortcut list. An exact match — no
+   missing or extra keys — shows its chip in the stats-row toast and its
+   description in the title, so people can explore shortcuts freely
+   before starting a round.
+══════════════════════════════════════ */
+var idleHeldTokens           = new Set();
+var _idlePreviewActive       = false;
+var _idlePreviewSavedText    = '';
+var _idlePreviewSavedBlurred = false;
+
+// Timing for the calmer idle preview: a chord must be held for
+// IdlePreviewHoldThresholdMs before its heading appears. Once something
+// is showing, releasing it keeps the heading up for IdlePreviewReleaseHoldMs,
+// then the heading blanks for a further IdlePreviewCooldownMs before the
+// default idle heading returns. A new matching chord held at any point
+// while a heading is already showing swaps in instantly, bypassing the
+// hold threshold.
+var IdlePreviewHoldThresholdMs = 100;
+var IdlePreviewReleaseHoldMs   = 2000;
+var IdlePreviewCooldownMs      = 1500;
+var IdleReleaseSettleDelayMs   = 120; // time given for a chord's keys to finish releasing before re-evaluating
+
+var _idlePreviewDisplayedToken = null; // token currently shown, once past the hold threshold
+var _idlePreviewPendingToken   = null; // token waiting on the hold threshold
+var _idlePreviewPendingTimer   = null;
+var _idlePreviewReleaseTimer   = null;
+var _idlePreviewCooldownTimer  = null;
+var _idleReleaseSettleTimer    = null; // brief buffer after a keyup so a staggered chord release is read as one event
+var _idlePreviewHeldTokensSnapshot = null; // the exact keys held at the moment the current token locked in
+
+// Returns true if every currently held key was already part of the chord
+// that is currently displayed, and at least one of that chord's keys has
+// since been let go. This is what "still releasing the same chord" looks
+// like, and must never be read as a fresh match, even if the leftover keys
+// happen to form a different, genuine shortcut of their own.
+function _isReleasingFromDisplayedChord() {
+  if (_idlePreviewDisplayedToken === null) return false;
+  if (!_idlePreviewHeldTokensSnapshot) return false;
+  if (idleHeldTokens.size >= _idlePreviewHeldTokensSnapshot.size) return false;
+  var HeldTokensArray = Array.from(idleHeldTokens);
+  return HeldTokensArray.every(function(Token) {
+    return _idlePreviewHeldTokensSnapshot.has(Token);
+  });
+}
+
+// Builds the canonical "CMD+SHIFT+Z"-style string for whatever is
+// currently held, in the same modifier order CanonicaliseShortcutToken
+// uses, so it can be compared directly against pool entries.
+function _buildIdleHeldChordString() {
+  var ModifierOrder = ['CMD', 'CONTROL', 'WIN', 'OPTION', 'SHIFT'];
+  var Parts = [];
+  ModifierOrder.forEach(function(Mod) {
+    if (idleHeldTokens.has(Mod)) Parts.push(Mod);
+  });
+  idleHeldTokens.forEach(function(Token) {
+    if (ModifierOrder.indexOf(Token) === -1) Parts.push(Token);
+  });
+  return Parts.join('+');
+}
+
+function _registerIdleKeydown(e) {
+  var Token = _modifierTokenForCode(e.code) || _browserCodeToToken(e.code);
+  if (!Token) return;
+  var HeldCountBeforeChange = idleHeldTokens.size;
+  if (CurrentInputIsTouch) {
+    // On-screen keys behave like sticky keys: tapping toggles them on,
+    // tapping again toggles them off, since there is no real key-up.
+    if (idleHeldTokens.has(Token)) idleHeldTokens.delete(Token);
+    else idleHeldTokens.add(Token);
+  } else {
+    idleHeldTokens.add(Token);
+  }
+  var WasARelease = idleHeldTokens.size < HeldCountBeforeChange;
+  _scheduleIdlePreviewUpdate(WasARelease);
+}
+
+function _registerIdleKeyup(e) {
+  var Token = _modifierTokenForCode(e.code) || _browserCodeToToken(e.code);
+  if (!Token || !idleHeldTokens.has(Token)) return;
+  idleHeldTokens.delete(Token);
+  _scheduleIdlePreviewUpdate(true);
+}
+
+// Presses are evaluated immediately for responsiveness. Releases wait a
+// brief settle period, so a chord's fingers lifting at slightly different
+// moments are read as a single release rather than a sequence of partial
+// matches. Any further keydown or keyup during the wait cancels and
+// restarts it, so a fast run of releases is still read as one settled state.
+function _scheduleIdlePreviewUpdate(IsRelease) {
+  clearTimeout(_idleReleaseSettleTimer);
+  _idleReleaseSettleTimer = null;
+  if (!IsRelease) {
+    _updateIdleShortcutPreview();
+    return;
+  }
+  _idleReleaseSettleTimer = setTimeout(function() {
+    _idleReleaseSettleTimer = null;
+    _updateIdleShortcutPreview();
+  }, IdleReleaseSettleDelayMs);
+}
+
+function _showIdleShortcutMatch(ShortcutEntry, MatchedTokenString) {
+  kbToastEl.innerHTML = '';
+  var ChipsWrapper = BuildShortcutKeyChips(MatchedTokenString, false);
+  ResizeChips(ChipsWrapper, 28);
+  ChipsWrapper.querySelectorAll('.sp-report-chip-key').forEach(function(Chip) {
+    Chip.style.background  = '#10b981';
+    Chip.style.color       = 'white';
+    Chip.style.borderColor = _isDarkMode() ? 'transparent' : '#059669';
+    Chip.style.boxShadow   = '0 0 6px rgba(16,185,129,0.45)';
+  });
+  kbToastEl.appendChild(ChipsWrapper);
+  kbToastEl.classList.add('show');
+
+  if (!_idlePreviewActive) {
+    _idlePreviewSavedText    = titleEl.textContent;
+    _idlePreviewSavedBlurred = titleEl.classList.contains('blurred');
+    _idlePreviewActive = true;
+  }
+  titleEl.classList.remove('blurred');
+  _resetTitleClasses();
+  titleEl.textContent = ShortcutEntry.display || '';
+}
+
+// Blanks the heading and hides the toast once the release-hold period has
+// elapsed, without yet restoring the default idle heading. That final
+// restore is a separate step, after the cooldown period.
+function _clearIdleShortcutMatchToBlank() {
+  kbToastEl.classList.remove('show');
+  kbToastEl.innerHTML = '';
+  _resetTitleClasses();
+  titleEl.textContent = '';
+}
+
+// Ends the idle preview session and restores whatever heading was showing
+// before the preview began.
+function _restoreIdleDefaultHeading() {
+  if (!_idlePreviewActive) return;
+  _idlePreviewActive = false;
+  _resetTitleClasses();
+  titleEl.textContent = _idlePreviewSavedText;
+  if (_idlePreviewSavedBlurred) titleEl.classList.add('blurred');
+  _idlePreviewSavedText    = '';
+  _idlePreviewSavedBlurred = false;
+}
+
+// Cancels every idle-preview timer and resets its state, used whenever the
+// game leaves the idle state so nothing fires late into a different screen.
+function _resetIdlePreviewState() {
+  clearTimeout(_idlePreviewPendingTimer);
+  clearTimeout(_idlePreviewReleaseTimer);
+  clearTimeout(_idlePreviewCooldownTimer);
+  clearTimeout(_idleReleaseSettleTimer);
+  _idlePreviewPendingTimer       = null;
+  _idlePreviewReleaseTimer       = null;
+  _idlePreviewCooldownTimer      = null;
+  _idleReleaseSettleTimer        = null;
+  _idlePreviewPendingToken       = null;
+  _idlePreviewDisplayedToken     = null;
+  _idlePreviewHeldTokensSnapshot = null;
+  _idlePreviewActive             = false;
+}
+
+function _updateIdleShortcutPreview() {
+  if (gameState !== 'idle') return;
+
+  if (_isReleasingFromDisplayedChord()) {
+    _onIdlePreviewNoMatch();
+    return;
+  }
+
+  var MatchedEntry = null;
+  var MatchedToken = null;
+
+  if (idleHeldTokens.size > 0) {
+    // Shortcuts for the current app may not be loaded yet if the player
+    // switched apps without starting a round — kick off the fetch and try
+    // again once it resolves.
+    if (loadedAppName !== currentApp) {
+      loadAppShortcutsIfNeeded(currentApp, _updateIdleShortcutPreview);
+      return;
+    }
+
+    var HeldChordString = _buildIdleHeldChordString();
+    var Pool = UNIVERSAL_SHORTCUTS.concat(loadedAppShortcuts);
+
+    for (var i = 0; i < Pool.length && !MatchedEntry; i++) {
+      var ActiveString = GetActiveShortcutString(Pool[i]);
+      if (!ActiveString) continue;
+      var Alternatives = GetAllAlternatives(ActiveString);
+      for (var j = 0; j < Alternatives.length; j++) {
+        if (CanonicaliseShortcutToken(Alternatives[j]) === HeldChordString) {
+          MatchedEntry = Pool[i];
+          MatchedToken = Alternatives[j];
+          break;
+        }
+      }
+    }
+  }
+
+  if (MatchedEntry) {
+    _onIdlePreviewMatchFound(MatchedEntry, MatchedToken);
+  } else {
+    _onIdlePreviewNoMatch();
+  }
+}
+
+// A matching chord is currently held. If a heading is already on screen,
+// swap to the new one immediately. Otherwise the chord must be held for
+// IdlePreviewHoldThresholdMs before its heading appears.
+function _onIdlePreviewMatchFound(ShortcutEntry, MatchedTokenString) {
+  clearTimeout(_idlePreviewReleaseTimer);
+  clearTimeout(_idlePreviewCooldownTimer);
+  _idlePreviewReleaseTimer  = null;
+  _idlePreviewCooldownTimer = null;
+
+  if (_idlePreviewDisplayedToken === MatchedTokenString) return;
+
+  if (_idlePreviewDisplayedToken !== null) {
+    clearTimeout(_idlePreviewPendingTimer);
+    _idlePreviewPendingTimer       = null;
+    _idlePreviewPendingToken       = null;
+    _idlePreviewDisplayedToken     = MatchedTokenString;
+    _idlePreviewHeldTokensSnapshot = new Set(idleHeldTokens);
+    _showIdleShortcutMatch(ShortcutEntry, MatchedTokenString);
+    return;
+  }
+
+  if (_idlePreviewPendingToken === MatchedTokenString) return;
+
+  clearTimeout(_idlePreviewPendingTimer);
+  _idlePreviewPendingToken = MatchedTokenString;
+  _idlePreviewPendingTimer = setTimeout(function() {
+    _idlePreviewPendingTimer       = null;
+    _idlePreviewPendingToken       = null;
+    _idlePreviewDisplayedToken     = MatchedTokenString;
+    _idlePreviewHeldTokensSnapshot = new Set(idleHeldTokens);
+    _showIdleShortcutMatch(ShortcutEntry, MatchedTokenString);
+  }, IdlePreviewHoldThresholdMs);
+}
+
+// Nothing currently held matches a shortcut. Cancel any pending threshold
+// timer, then if a heading is showing, start the release-hold countdown
+// followed by the blank cooldown before the default heading returns.
+function _onIdlePreviewNoMatch() {
+  if (_idlePreviewPendingTimer) {
+    clearTimeout(_idlePreviewPendingTimer);
+    _idlePreviewPendingTimer = null;
+    _idlePreviewPendingToken = null;
+  }
+
+  if (_idlePreviewDisplayedToken === null) return;
+  if (_idlePreviewReleaseTimer) return;
+
+  _idlePreviewReleaseTimer = setTimeout(function() {
+    _idlePreviewReleaseTimer      = null;
+    _idlePreviewDisplayedToken     = null;
+    _idlePreviewHeldTokensSnapshot = null;
+    _clearIdleShortcutMatchToBlank();
+    _idlePreviewCooldownTimer = setTimeout(function() {
+      _idlePreviewCooldownTimer = null;
+      _restoreIdleDefaultHeading();
+    }, IdlePreviewCooldownMs);
+  }, IdlePreviewReleaseHoldMs);
+}
+
 function handleKeydown(e) {
   // FIX 1d: detect a physical keyboard on mobile via isTrusted.
   // Real browser KeyboardEvents are trusted; the synthetic ones fired by
@@ -13839,6 +14234,7 @@ updateKeyboardLighting(e, true);
   // App-wide: if this press satisfies a currently dismissed/user-found
   // shortcut, restore it now. This is not limited to the Conflicts panel.
   if (!e.repeat) _checkAppWideConflictRestore(e);
+  if (gameState === 'idle' && activeSettings !== 'panelCheatSheet' && !e.repeat) _registerIdleKeydown(e);
   // Sync the CapsLock key indicator with the real OS CapsLock state.
   // getModifierState reads the OS-level state directly, so it never drifts.
   // Uses a dedicated class outside the normal lighting lifecycle so it
@@ -14052,6 +14448,10 @@ function releaseAllKeys() {
   });
   heldKeys.clear();
   greenHeld.clear();
+  if (idleHeldTokens.size > 0) {
+    idleHeldTokens.clear();
+    _updateIdleShortcutPreview();
+  }
 }
 
 var _blurPauseActive              = false;
@@ -14610,6 +15010,7 @@ function _blurDiagnosticSendReport(EncodedSubject, EncodedBody) {
 
 function handleKeyup(e) {
   updateKeyboardLighting(e, false);
+  if (gameState === 'idle' && activeSettings !== 'panelCheatSheet') _registerIdleKeyup(e);
   // In sticky or touch mode, key-up never clears anything (toggle is handled in updateKeyboardLighting)
   if (stickyKeysOn) return;
   // On Mac, releasing a modifier suppresses keyup for any keys held while it
@@ -14663,9 +15064,6 @@ function GetPanelKeyboardAngle(PanelName) {
   return detectedOs === 'mobile' ? Config.tablet : Config.desktop;
 }
 
-// Low angle used for tablet tap-toggle and ghost mode.
-var TabletKeyboardLowAngle = 80;
-
 // Single fixed angle used for ALL settings panels in phone layout (mini keyboard + toolbar
 // both active, i.e. viewport < MiniKeyboardBreakpointWidth). 5
 var PhoneToolbarKeyboardAngle = 48;
@@ -14678,30 +15076,15 @@ function SetKeyboardPositionForPanel(PanelName) {
   // keyboard sits at the same depth regardless of which settings panel is open.
   if (window.innerWidth < MiniKeyboardBreakpointWidth) {
     _animateToPartialAngle(PhoneToolbarKeyboardAngle);
-    _tabletKbToggleAtLow = false;
+    _resetKeyboardAffordanceReveal();
     return;
   }
-  // Desktop / tablet: animate to the per-panel angle; tap-toggle handled separately.
+  // Desktop / tablet: animate to the per-panel angle.
   var Angle = GetPanelKeyboardAngle(PanelName);
   _animateToPartialAngle(Angle);
-  // Reset tablet toggle state whenever a panel opens so it starts at the panel default.
-  _tabletKbToggleAtLow = false;
-}
-
-// Tablet tap-toggle state: tracks whether we've toggled down to the low angle.
-var _tabletKbToggleAtLow = false;
-
-function _onTabletKeyboardTap() {
-  if (detectedOs !== 'mobile') return;
-  if (!activeSettings) return;
-  if (keyboardDisplayMode === 'ghost') return;
-  if (_kbDragActive) return;  // ignore taps that are actually drag releases
-  _tabletKbToggleAtLow = !_tabletKbToggleAtLow;
-  if (_tabletKbToggleAtLow) {
-    _animateToPartialAngle(TabletKeyboardLowAngle);
-  } else {
-    _animateToPartialAngle(GetPanelKeyboardAngle(activeSettings));
-  }
+  // Hide any revealed drag affordance whenever a panel opens, so touch users
+  // start from the same hidden state and must tap again to reveal it.
+  _resetKeyboardAffordanceReveal();
 }
 
 // 'partial' covers any angle between PartialDragMinAngle and PartialDragMaxAngle.
@@ -14755,11 +15138,65 @@ var _kbDragStartAngle         = 0;
 var _kbDragStartClientX       = 0;
 var _kbDragDirectionConfirmed = false;
 
+
 // Pixels of pointer movement required before committing to a drag.
 var DragThresholdPixels = 6;
-// Degrees the drag can overshoot the min/max angle before snapping back on release.
-var DragOvershootDegrees = 3;
 
+// ── Drag-handle reveal state ─────────────────────────────────────────────────
+// The handle is hidden until the keyboard is pressed or dragged, then fades
+// away again after one second of no further activity.
+var _kbAffordanceRevealed   = false;
+var _kbAffordanceIdleTimer  = null;
+var KbAffordanceIdleDelayMs = 1000;
+
+// Reveals the drag handle and restarts its idle fade-out timer. Called on a
+// keyboard press and on every drag start or release, so any activity keeps
+// the handle visible for a further second.
+function _touchKeyboardActivity() {
+  if (NoKeyboardMode) return;
+  if (keyboardDisplayMode === 'ghost' && activeSettings !== 'panelConflicts') return;
+  _kbAffordanceRevealed = true;
+  var affordance = document.getElementById('kbHandleAffordance');
+  if (affordance) affordance.classList.add('handle-revealed');
+  clearTimeout(_kbAffordanceIdleTimer);
+  _kbAffordanceIdleTimer = setTimeout(_hideKeyboardAffordanceOnIdle, KbAffordanceIdleDelayMs);
+}
+
+// Fires one second after the last tap or drag activity. Leaves the handle
+// alone if a drag is still in progress, since the next release restarts the timer.
+function _hideKeyboardAffordanceOnIdle() {
+  _kbAffordanceIdleTimer = null;
+  if (_kbDragActive) return;
+  _resetKeyboardAffordanceReveal();
+}
+
+// Immediately hides the drag handle and clears any pending idle timer.
+// Called whenever a settings panel opens, so touch users always start from
+// the same hidden state and must tap again to reveal it.
+function _resetKeyboardAffordanceReveal() {
+  clearTimeout(_kbAffordanceIdleTimer);
+  _kbAffordanceIdleTimer = null;
+  _kbAffordanceRevealed  = false;
+  var affordance = document.getElementById('kbHandleAffordance');
+  if (affordance) affordance.classList.remove('handle-revealed');
+}
+
+// Keeps a single class on the keyboard wrap in step with whether any
+// settings panel is open, regardless of which of the two settings layouts
+// (desktop icon rail or phone toolbar) is currently active. The keyboard
+// grip listener and its CSS both read this one class, rather than each
+// layout having to remember to set its own separate signal.
+function _syncKeyboardSettingsActiveClass() {
+  var KeyboardWrapElement = document.getElementById('keyboardWrap');
+  if (KeyboardWrapElement) KeyboardWrapElement.classList.toggle('kb-settings-active', activeSettings !== null);
+}
+// True whenever the app is showing the phone toolbar layout, where settings
+// panels render below the keyboard rather than being hidden behind it. Used
+// to switch the keyboard grip gesture off, since there is nothing behind
+// the keyboard in that layout for it to protect.
+function _isPhoneToolbarLayout() {
+  return NoKeyboardMode || window.innerWidth < MiniKeyboardBreakpointWidth;
+}
 function _touchModalVisible() {
   var gyro = document.getElementById('gyroModal');
   var kb   = document.getElementById('keyboardRecommendModal');
@@ -14796,8 +15233,8 @@ var _AffordanceCloseOffset = 18; // px toward keyboard top edge
 function _repositionAffordance() {
   var affordance = document.getElementById('kbHandleAffordance');
   if (!affordance) return;
-  // No affordance on tablet (tap-toggle instead) or in ghost mode (fixed angle).
-var suppress = (detectedOs === 'mobile') || (keyboardDisplayMode === 'ghost' && activeSettings !== 'panelConflicts');
+  // No affordance in ghost mode (fixed angle), except on the Conflicts panel.
+  var suppress = (keyboardDisplayMode === 'ghost' && activeSettings !== 'panelConflicts');
   affordance.style.visibility = suppress ? 'hidden' : '';
   if (suppress) return;
   var sentinel = document.getElementById('kbTopSentinel');
@@ -14877,7 +15314,7 @@ function _onKeyboardFoldTransitionEnd(Event) {
 
 // Animate to a partial angle with the standard CSS transition
 // (used after drag release, auto-settle, and the edge-tap-to-partial gesture).
-function _animateToPartialAngle(RotateXDegrees) {
+function _animateToPartialAngle(RotateXDegrees, SkipAffordanceSuppression) {
   var ClampedAngle = Math.max(PartialDragMinAngle, Math.min(PartialDragMaxAngle, RotateXDegrees));
   var StageY       = _interpolateStageY(ClampedAngle);
   var panel        = document.getElementById('keyboardPanel');
@@ -14894,12 +15331,17 @@ function _animateToPartialAngle(RotateXDegrees) {
   panel.style.transform  = 'rotateX(' + ClampedAngle + 'deg)';
   stage.style.transform  = 'translateY(' + StageY + 'px)';
 
-  // Suppress affordance hover flash while the keyboard is in motion.
-  var _affAnim = document.getElementById('kbHandleAffordance');
-  if (_affAnim) {
-    _affAnim.classList.remove('handle-hover', 'handle-active');
-    _affAnim.classList.add('aff-transitioning');
-    setTimeout(function() { _affAnim.classList.remove('aff-transitioning'); }, 1000);
+  // Suppress affordance hover flash while the keyboard animates on its own
+  // (for example when a settings panel opens). Skipped when this angle change
+  // is the direct result of the user's own drag release, since the handle is
+  // already visible and should simply stay that way.
+  if (!SkipAffordanceSuppression) {
+    var _affAnim = document.getElementById('kbHandleAffordance');
+    if (_affAnim) {
+      _affAnim.classList.remove('handle-hover', 'handle-active');
+      _affAnim.classList.add('aff-transitioning');
+      setTimeout(function() { _affAnim.classList.remove('aff-transitioning'); }, 1000);
+    }
   }
 
   panel.classList.add('kb-edged');
@@ -14997,13 +15439,26 @@ function setKbPosition(pos) {
 // the keyboard panel. This keeps the keyboard body from intercepting clicks
 // on the settings content behind it when a panel is open.
 
-function _onDragHandlePointerDown(Event) {
+// Fires from a press anywhere on the keyboard panel while a settings panel
+// is open. Runs in the capture phase, meaning it sees the press before any
+// key underneath does, so the panel can fully absorb it: no key lights up,
+// and the press cannot fall through to whatever sits behind the keyboard.
+// The first press only reveals the grip handle. Once revealed, a further
+// press anywhere on the panel starts the actual angle drag, for mouse and
+// touch alike.
+function _onKeyboardGripPointerDown(Event) {
   if (!Event.isPrimary) return;
+  if (activeSettings === null) return;
   if (_kbPos === 'face') return;
-  // No drag on tablet (tap-toggle handles it) or in ghost mode (fixed angle).
-  if (detectedOs === 'mobile') return;
   if (keyboardDisplayMode === 'ghost' && activeSettings !== 'panelConflicts') return;
+  if (_isPhoneToolbarLayout()) return;
 
+  Event.preventDefault();
+  Event.stopPropagation();
+
+  // Reveal the handle and arm drag tracking in the same press, so a single
+  // press-and-move gesture drags immediately. A press that lifts without
+  // moving simply leaves the handle revealed, ready for a follow-up drag.
   _kbDragActive             = false;
   _kbDragDirectionConfirmed = false;
   _kbDragPointerId          = Event.pointerId;
@@ -15011,17 +15466,25 @@ function _onDragHandlePointerDown(Event) {
   _kbDragStartClientX       = Event.clientX;
   _kbDragStartAngle         = (_kbPos === 'edge') ? EdgeAngle : _kbPartialAngle;
 
-  // Kill the tilt transition so affordance tracks drag instantly
   var aff = document.getElementById('kbHandleAffordance');
   if (aff) { aff.style.transition = 'opacity 0.22s ease'; aff.classList.add('dragging'); }
 
-  var handle = document.getElementById('kbDragHandle');
-  if (handle) handle.setPointerCapture(Event.pointerId);
-  Event.preventDefault();
+  var panel = document.getElementById('keyboardPanel');
+  if (panel) panel.setPointerCapture(Event.pointerId);
+  _touchKeyboardActivity();
 }
 
-function _onDragHandlePointerMove(Event) {
+function _onKeyboardGripPointerMove(Event) {
   if (Event.pointerId !== _kbDragPointerId) return;
+
+  // A mouse reports whether its button is still down via Event.buttons.
+  // If it reads zero here, the release happened without us ever receiving
+  // the matching pointerup, so the drag must stop now rather than keep
+  // tracking a mouse that is no longer held.
+  if (Event.pointerType === 'mouse' && Event.buttons === 0) {
+    _endKeyboardGripDrag();
+    return;
+  }
 
   var DeltaY      = Event.clientY - _kbDragStartClientY;
   var DeltaX      = Event.clientX - _kbDragStartClientX;
@@ -15036,19 +15499,22 @@ function _onDragHandlePointerMove(Event) {
   var DegreesPerPixel = 0.5;
   var NewAngle        = _kbDragStartAngle + DeltaY * DegreesPerPixel;
 
-  // Allow DragOvershootDegrees beyond each extreme during live drag.
+  // Clamped to the exact bounds used on release, so the live drag position
+  // and the settled position after letting go are always identical.
   var ClampedAngle = Math.max(
-    PartialDragMinAngle - DragOvershootDegrees,
-    Math.min(EdgeAngle + DragOvershootDegrees, NewAngle)
+    PartialDragMinAngle,
+    Math.min(PartialDragMaxAngle, NewAngle)
   );
 
   _applyPartialAngleInstant(ClampedAngle);
   Event.preventDefault();
 }
 
-function _onDragHandlePointerUp(Event) {
-  if (Event.pointerId !== _kbDragPointerId) return;
-
+// Shared cleanup for every way a keyboard angle drag can end: a normal
+// release, a cancelled gesture, the browser taking capture away from us,
+// or a mouse pointermove reporting its button already released. Keeping
+// this in one place means every exit path settles the keyboard the same way.
+function _endKeyboardGripDrag() {
   var WasDrag = _kbDragActive;
   _kbDragActive    = false;
   _kbDragPointerId = null;
@@ -15062,64 +15528,57 @@ function _onDragHandlePointerUp(Event) {
   var aff = document.getElementById('kbHandleAffordance');
   if (aff) { aff.style.transition = ''; aff.classList.remove('dragging'); }
 
+  // Any end to the grip counts as activity, so the idle fade timer restarts.
+  _touchKeyboardActivity();
+
   if (!WasDrag) return;
 
-  // Clamp to the valid partial range and stay exactly where the user released.
-  // No settle — the angle they dragged to is the angle they get.        _animateToPartialAngle(Math.max(PartialDragMinAngle, Math.min(EdgeAngle, _kbPartialAngle)));
+  // _animateToPartialAngle already clamps to the valid partial range, so the
+  // angle passed in here is exactly where the drag was when it ended.
+  // The handle stays visible rather than being hidden and reappearing, since
+  // the user just finished interacting with it directly.
+  _animateToPartialAngle(_kbPartialAngle, true);
+}
 
+function _onKeyboardGripPointerUp(Event) {
+  if (Event.pointerId !== _kbDragPointerId) return;
+  _endKeyboardGripDrag();
   Event.preventDefault();
 }
 
 function _initialiseStageDragListeners() {
   var handle = document.getElementById('kbDragHandle');
-  if (!handle) return;
-  handle.addEventListener('pointerdown',   _onDragHandlePointerDown);
-  handle.addEventListener('pointermove',   _onDragHandlePointerMove);
-  handle.addEventListener('pointerup',     _onDragHandlePointerUp);
+  var panel  = document.getElementById('keyboardPanel');
+  if (!handle || !panel) return;
 
-  // Tablet tap-toggle: tap the keyboard body (not just the drag handle)
-  // to toggle between the panel's default angle and the low angle (80°).
-  var stage = document.getElementById('kbFlipStage');
-  if (stage) {
-    stage.addEventListener('click', function(e) {
-      if (detectedOs !== 'mobile') return;
-      if (keyboardDisplayMode === 'ghost') return;
-      if (!activeSettings) return;
-      _onTabletKeyboardTap();
-    });
-  }
-  handle.addEventListener('pointercancel', function(Event) {
+  // The grip listener sits on the panel itself, in the capture phase, so it
+  // sees every press anywhere on the keyboard, including the thin strip,
+  // before any key underneath can react to it.
+  panel.addEventListener('pointerdown', _onKeyboardGripPointerDown, true);
+  panel.addEventListener('pointermove', _onKeyboardGripPointerMove);
+  panel.addEventListener('pointerup',   _onKeyboardGripPointerUp);
+  panel.addEventListener('pointercancel', function(Event) {
     if (Event.pointerId !== _kbDragPointerId) return;
-    _kbDragActive    = false;
-    _kbDragPointerId = null;
-    var panel = document.getElementById('keyboardPanel');
-    var stage = document.getElementById('kbFlipStage');
-    if (panel) panel.style.transition = '';
-    if (stage) stage.style.transition = '';
-    // Snap back to the nearest valid extreme on cancel too.
-    if (_kbPartialAngle <= PartialDragMinAngle) {
-      _animateToPartialAngle(PartialDragMinAngle);
-    } else if (_kbPartialAngle >= PartialDragMaxAngle) {
-      setKbPosition('edge');
-    }
+    _endKeyboardGripDrag();
   });
-  // Affordance hover: show/hide via class so CSS can transition it.
-  // Guard against auto-animations moving the handle under the cursor.
+  // Fires whenever the browser ends our pointer capture for any reason
+  // other than the events above, guarding against the keyboard being left
+  // mid-rotation with no way to stop it.
+  panel.addEventListener('lostpointercapture', function(Event) {
+    if (Event.pointerId !== _kbDragPointerId) return;
+    _endKeyboardGripDrag();
+  });
+
+  // Mouse hover on the thin strip previews the handle before any press,
+  // for discoverability. Touch has no hover, so it relies entirely on the
+  // grip listener above to reveal the handle on first press.
   handle.addEventListener('mouseenter', function() {
     var aff = document.getElementById('kbHandleAffordance');
     if (aff && !aff.classList.contains('aff-transitioning')) aff.classList.add('handle-hover');
   });
   handle.addEventListener('mouseleave', function() {
     var aff = document.getElementById('kbHandleAffordance');
-    if (aff) aff.classList.remove('handle-hover', 'handle-active');
-  });
-  handle.addEventListener('mousedown', function() {
-    var aff = document.getElementById('kbHandleAffordance');
-    if (aff) { aff.classList.remove('handle-hover'); aff.classList.add('handle-active'); }
-  });
-  handle.addEventListener('mouseup', function() {
-    var aff = document.getElementById('kbHandleAffordance');
-    if (aff) { aff.classList.remove('handle-active'); aff.classList.add('handle-hover'); }
+    if (aff) aff.classList.remove('handle-hover');
   });
 }
 
@@ -15165,7 +15624,6 @@ function syncDiffNeedle() {
 /* ── Active click handler — flip animation ───────────── */
 function diffIconClick() {
   resetEndScreenInactivityTimer();
-  if (gameState === 'playing') { showToast('Change difficulty between games.'); return; }
   if (activeSettings === 'panelDifficultySettings' || activeSettings === 'panelLandingReturning') {
     closeSettings();
   } else {
@@ -15598,7 +16056,7 @@ function _buildSkillsetPill() {
   caretSvg.style.cssText = 'display:block;color:#9ca3af;flex-shrink:0;transition:transform 0.2s ease;transform:' + (skillsetPillOpen ? 'rotate(90deg)' : 'none') + ';';
   var cp = document.createElementNS('http://www.w3.org/2000/svg','path'); cp.setAttribute('d','M1.5 1 L6 3.5 L1.5 6 Z');
   caretSvg.appendChild(cp); caretCol.appendChild(caretSvg);
-  var labelCol = document.createElement('span'); labelCol.style.cssText = 'flex:1;text-align:left;'; labelCol.textContent = currentSkillset;
+  var labelCol = document.createElement('span'); labelCol.className = 'skillset-pill-label'; labelCol.style.cssText = 'flex:1;text-align:left;'; labelCol.textContent = currentSkillset;
   selectedRow.appendChild(caretCol); selectedRow.appendChild(labelCol);
   pill.appendChild(selectedRow);
 
@@ -16084,6 +16542,7 @@ function _buildAppSelectorSkillsetPill() {
   CaretColumn.appendChild(CaretSvg);
 
   var LabelColumn = document.createElement('span');
+  LabelColumn.className = 'skillset-pill-label';
   LabelColumn.style.cssText = 'flex:1;text-align:left;';
   LabelColumn.textContent = currentSkillset;
 

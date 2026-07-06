@@ -1827,8 +1827,18 @@ const detectedOs = detectOs();
 // loading the matching conflicts JSON, and labelling the OS segment in the
 // Conflicted Shortcuts pill.
 const detectedMobilePlatform = detectedOs === 'mobile' ? _detectMobilePlatform() : null;
+
+// Returns true for devices that should default to Mac-style shortcuts:
+// real Macs, iPhones, and iPads. Android touch devices default to PC-style
+// shortcuts instead, since Android has no Cmd key and behaves like a PC
+// keyboard-wise.
+function _isMacLikeDevice() {
+  if (detectedOs === 'mac') return true;
+  return detectedOs === 'mobile' && detectedMobilePlatform !== 'android';
+}
+
 // 'currentOs' drives all game logic and keyboard rendering
-let currentOs = (detectedOs === 'mac' || detectedOs === 'mobile') ? 'mac' : 'pc';
+let currentOs = _isMacLikeDevice() ? 'mac' : 'pc';
 
 // Runtime style tag for medal face rotation (::before can't be set via JS directly)
 const medalFaceStyleEl = document.createElement('style');
@@ -1858,7 +1868,7 @@ function buildOsLabels() {
   // Detected device is always on the LEFT (white dot = current).
   // Toggled-away state is always on the RIGHT (grey dot).
   // On a Mac: left=Mac, right=PC.  On a PC: left=PC, right=Mac.
-  const nativeMac = (detectedOs === 'mac' || detectedOs === 'mobile');
+  const nativeMac = _isMacLikeDevice();
   const leftLabel  = document.getElementById('osLabelLeft');
   const rightLabel = document.getElementById('osLabelRight');
   if (nativeMac) {
@@ -1896,7 +1906,7 @@ function updateToggleVisual(os) {
   // On a Mac, left=Mac(unchecked), right=PC(checked).
   // On a PC,  left=PC(unchecked), right=Mac(checked).
   // "Checked" always means "not the native OS" — knob moves right + fills grey.
-  const nativeMac = (detectedOs === 'mac' || detectedOs === 'mobile');
+  const nativeMac = _isMacLikeDevice();
   const isToggled = nativeMac ? (os === 'pc') : (os === 'mac');
   osKnobEl.style.transform = isToggled ? 'translateX(22px)' : 'translateX(0)';
   osKnobEl.setAttribute('fill', isToggled ? '#9ca3af' : 'white');
@@ -1918,7 +1928,7 @@ function applyOsMode(os) {
 
   if (savedPos !== 'face') _resetFlipState();
 
-  var nativeMac = (detectedOs === 'mac' || detectedOs === 'mobile');
+  var nativeMac = _isMacLikeDevice();
   osToggleEl.checked = nativeMac ? (os === 'pc') : (os === 'mac');
   updateToggleVisual(os);
   updateMismatchPill();
@@ -2179,7 +2189,7 @@ function updateMismatchPill() {
 // (defaults to PC for unknown/other systems)
 buildOsLabels();
 // On PC: unchecked = PC (native/left). On Mac: unchecked = Mac (native/left).
-const nativeMac_init = (detectedOs === 'mac' || detectedOs === 'mobile');
+const nativeMac_init = _isMacLikeDevice();
 osToggleEl.checked = nativeMac_init ? (currentOs === 'pc') : (currentOs === 'mac');
 updateToggleVisual(currentOs);
 
@@ -8371,7 +8381,7 @@ function getBrowserConflicts() {
     };
   }
 
-  var IsMacOs     = (detectedOs === 'mac' || detectedOs === 'mobile');
+  var IsMacOs     = _isMacLikeDevice();
   var BrowserName = _detectBrowserName();
 
   // All OS and browser conflicts are included.

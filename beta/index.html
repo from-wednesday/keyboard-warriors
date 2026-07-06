@@ -8544,6 +8544,11 @@ function _allConflictTokensNormalised() {
       if (Parsed.requiresOption  && !HeldModifierTokens.has('OPTION'))  return;
       if (Parsed.requiresControl && !HeldModifierTokens.has('CONTROL')) return;
       if (Parsed.requiresWin     && !HeldModifierTokens.has('WIN'))     return;
+      // Fn, Globe, and Search can never be confirmed held (no browser event exists
+      // for them), so any conflict requiring one always reports as unsatisfied.
+      if (Parsed.requiresFn      && !HeldModifierTokens.has('FN'))      return;
+      if (Parsed.requiresGlobe   && !HeldModifierTokens.has('GLOBE'))   return;
+      if (Parsed.requiresSearch  && !HeldModifierTokens.has('SEARCH'))  return;
       // Match found. Determine colour:
       // - Sus entry in dismissedConflicts = user manually blocked it = orange
       // - Sus entry not in dismissedConflicts = sus, unblocked = yellow
@@ -8622,6 +8627,9 @@ function _allConflictTokensNormalised() {
         if (Parsed.requiresOption  && !HeldModifierTokens.has('OPTION'))  MissingModifiers.push('OPTION');
         if (Parsed.requiresControl && !HeldModifierTokens.has('CONTROL')) MissingModifiers.push('CONTROL');
         if (Parsed.requiresWin     && !HeldModifierTokens.has('WIN'))     MissingModifiers.push('WIN');
+        if (Parsed.requiresFn      && !HeldModifierTokens.has('FN'))      MissingModifiers.push('FN');
+        if (Parsed.requiresGlobe   && !HeldModifierTokens.has('GLOBE'))   MissingModifiers.push('GLOBE');
+        if (Parsed.requiresSearch  && !HeldModifierTokens.has('SEARCH'))  MissingModifiers.push('SEARCH');
 
         // Only light if this modifier is the final missing piece.
         if (MissingModifiers.length !== 1) return;

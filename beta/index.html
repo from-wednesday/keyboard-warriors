@@ -7057,6 +7057,57 @@ function _renderKeyChips(label) {
 // a listed shortcut. If it fires without a blur, the shortcut is auto-unblocked.
 var _conflictsPanelKeydownHandler = null;
 
+// Per-key fade timers for the extended-key grid's physical-press feedback,
+// keyed by browser code. Lets a held key's "linger then fade" resolve
+// independently of any other key, and stops a rapid re-tap from starting a
+// second competing fade while the first is still running.
+var _cfKeyPressFadeTimers = {};
+
+// Physical key press on an extended-key button that is already available
+// (green): snaps to full pressed green while held. No state change here —
+// purely visual, mirroring the graphical keyboard's own press feedback.
+function _cfShowKeyPressedFeedback(keyEl, browserCode) {
+  clearTimeout(_cfKeyPressFadeTimers[browserCode]);
+  delete _cfKeyPressFadeTimers[browserCode];
+  keyEl.style.transition = 'background 0.08s,color 0.08s,box-shadow 0.08s';
+  keyEl.style.background = '#10b981';
+  keyEl.style.color = 'white';
+  keyEl.style.boxShadow = 'inset 0 0 0 1px #059669,0 0 6px rgba(16,185,129,0.4)';
+  keyEl.dataset.physicallyPressed = '1';
+}
+
+// Physical key release: holds the pressed green for LINGER_MS, then eases
+// back to the key's normal resting tint over a slower transition, matching
+// the graphical keyboard's linger-then-fade release behaviour.
+function _cfReleaseKeyPressedFeedback(keyEl, browserCode) {
+  if (keyEl.dataset.physicallyPressed !== '1') return;
+  keyEl.dataset.physicallyPressed = '0';
+  clearTimeout(_cfKeyPressFadeTimers[browserCode]);
+  _cfKeyPressFadeTimers[browserCode] = setTimeout(function() {
+    delete _cfKeyPressFadeTimers[browserCode];
+    keyEl.style.transition = 'background 0.8s ease,color 0.8s ease,box-shadow 0.8s ease';
+    _cfApplyKeyStyle(keyEl, keyEl.dataset.blocked === '1');
+    setTimeout(function() {
+      keyEl.style.transition = 'background 0.08s,color 0.08s,box-shadow 0.08s';
+    }, 850);
+  }, LINGER_MS);
+}
+
+// Companion keyup handler for the extended-key grid's press feedback.
+// Registered and removed alongside the keydown verifier below.
+function _conflictsPanelKeyupHandler(e) {
+  if (activeSettings !== 'panelConflicts') return;
+  if (_activeConflictFilter !== 'keyboard') return;
+  var kbSubPanel = document.getElementById('cfKeyboardSubPanel');
+  if (!kbSubPanel) return;
+  var releasedCode = e.code;
+  var keyEls = kbSubPanel.querySelectorAll('[data-token]');
+  keyEls.forEach(function(keyEl) {
+    if (keyEl.dataset.browserCode !== releasedCode) return;
+    _cfReleaseKeyPressedFeedback(keyEl, releasedCode);
+  });
+}
+
 function _attachconflictsPanelKeypressVerifier() {
   _detachconflictsPanelKeypressVerifier();
   _conflictsPanelKeydownHandler = function(e) {
@@ -7091,31 +7142,39 @@ function _attachconflictsPanelKeypressVerifier() {
         keyEls.forEach(function(keyEl) {
           // Match on browserCode (e.code) — reliable regardless of JSON token string
           if (keyEl.dataset.browserCode !== pressedCode) return;
-          if (keyEl.dataset.blocked !== '1') return; // already available
-          e.preventDefault();
-          // Flash green-down (key held)
-          keyEl.style.background = '#10b981';
-          keyEl.style.color = 'white';
-          keyEl.style.boxShadow = 'inset 0 0 0 1px #059669,0 0 6px rgba(16,185,129,0.4)';
-          // After a short delay, settle to tint
-          setTimeout(function() {
-            dismissedConflicts.delete(pressedToken);
-            kbKeyOverrides.add(pressedToken);
-            _saveCustomDismissedConflicts();
-            _saveKbKeyOverrides();
-            if (gameState !== 'playing' && gameState !== 'paused' && gameState !== 'readyToUnpause') {
-              questionPool = shuffleArray(buildPool());
-            }
-            _syncConflictFilterPillStyles();
-            keyEl.dataset.blocked = '0';
-            _cfApplyKeyStyle(keyEl, false);
-            showToast('Key now available');
-          }, 180);
+
+          if (keyEl.dataset.blocked === '1') {
+            e.preventDefault();
+            // Flash green-down (key held)
+            keyEl.style.background = '#10b981';
+            keyEl.style.color = 'white';
+            keyEl.style.boxShadow = 'inset 0 0 0 1px #059669,0 0 6px rgba(16,185,129,0.4)';
+            // After a short delay, settle to tint
+            setTimeout(function() {
+              dismissedConflicts.delete(pressedToken);
+              kbKeyOverrides.add(pressedToken);
+              _saveCustomDismissedConflicts();
+              _saveKbKeyOverrides();
+              if (gameState !== 'playing' && gameState !== 'paused' && gameState !== 'readyToUnpause') {
+                questionPool = shuffleArray(buildPool());
+              }
+              _syncConflictFilterPillStyles();
+              keyEl.dataset.blocked = '0';
+              _cfApplyKeyStyle(keyEl, false);
+              showToast('Key now available');
+            }, 180);
+          } else if (!e.repeat) {
+            // Already available — press feedback only, no state change.
+            // The keyup handler below fades it back to its resting tint.
+            e.preventDefault();
+            _cfShowKeyPressedFeedback(keyEl, pressedCode);
+          }
         });
       }
     }
   };
   document.addEventListener('keydown', _conflictsPanelKeydownHandler);
+  document.addEventListener('keyup', _conflictsPanelKeyupHandler);
 }
 
 function _detachconflictsPanelKeypressVerifier() {
@@ -7123,6 +7182,7 @@ function _detachconflictsPanelKeypressVerifier() {
     document.removeEventListener('keydown', _conflictsPanelKeydownHandler);
     _conflictsPanelKeydownHandler = null;
   }
+  document.removeEventListener('keyup', _conflictsPanelKeyupHandler);
 }
 
 // Central toggle for blocked state — updates DOM, storage, pool, and toast.

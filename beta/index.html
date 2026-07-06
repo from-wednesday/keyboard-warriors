@@ -2476,6 +2476,29 @@ Promise.all([DomReady, StylesheetReady, SkeletonAnimationComplete]).then(functio
    IsKeyPartOfCurrentShortcut — used by the lighting system
 ══════════════════════════════════════ */
 
+// Returns true only when the physical keyboard's operating system differs
+// from the one currently being trained. This is when Option and Command
+// physically swap positions relative to Win and Alt on the training display.
+function _isCrossTrainingModifierPositions() {
+  return detectedOs !== 'mobile' && detectedOs !== 'other' && detectedOs !== currentOs;
+}
+
+// Swaps a physical Option-style key code for its Command or Windows-style
+// equivalent, and vice versa, whenever cross training is active, so the
+// physical key under the player's finger always behaves as whichever key
+// is drawn in that same position on the training keyboard. Never applies
+// to touch or on-screen keyboard input, since a click already names the
+// exact key intended regardless of the physical hardware in use.
+function _resolveCrossTrainingKeyCode(BrowserCode) {
+  if (CurrentInputIsTouch) return BrowserCode;
+  if (!_isCrossTrainingModifierPositions()) return BrowserCode;
+  if (BrowserCode === 'AltLeft')   return 'MetaLeft';
+  if (BrowserCode === 'AltRight')  return 'MetaRight';
+  if (BrowserCode === 'MetaLeft')  return 'AltLeft';
+  if (BrowserCode === 'MetaRight') return 'AltRight';
+  return BrowserCode;
+}
+
 /* ── Token → browser key code map ──────────────────────────────────────────
    Maps every canonical token to its browser KeyboardEvent.code string(s).
    Modifiers return arrays (L+R variants). Keys return a single string.
@@ -2783,10 +2806,20 @@ function _MatchesSingleAlternative(ShortcutString, Event) {
   var Parsed = ParseShortcutString(ShortcutString);
   if (!Parsed) return false;
 
+  // In cross training, the physical Option-style key and the physical
+  // Command or Windows-style key swap which requirement they satisfy, so
+  // the key under the player's finger always matches the position shown
+  // on the training keyboard rather than the key's native hardware identity.
+  var CrossTraining            = _isCrossTrainingModifierPositions();
+  var EventHasOptionFlag       = CrossTraining ? Event.metaKey : Event.altKey;
+  var EventHasCmdOrWinFlag     = CrossTraining ? Event.altKey  : Event.metaKey;
+  var EffectiveOptionKeyName   = CrossTraining ? 'Meta' : 'Alt';
+  var EffectiveCmdOrWinKeyName = CrossTraining ? 'Alt'  : 'Meta';
+
   // Modifier state from the event
-  var EventHasCmd     = currentOs === 'pc' ? Event.ctrlKey  : Event.metaKey;
+  var EventHasCmd     = currentOs === 'pc' ? Event.ctrlKey  : EventHasCmdOrWinFlag;
   var EventHasNoCmd   = currentOs === 'pc' ? (!Event.ctrlKey && !Event.metaKey) : (!Event.metaKey && !Event.ctrlKey);
-  var EventHasOption  = Event.altKey;
+  var EventHasOption  = EventHasOptionFlag;
   var EventHasShift   = Event.shiftKey;
   var EventHasControl = Event.ctrlKey; // literal Control on Mac (alongside Meta)
 
@@ -2802,7 +2835,7 @@ function _MatchesSingleAlternative(ShortcutString, Event) {
   }
   if (Parsed.requiresWin) {
     if (currentOs !== 'pc') return false;
-    if (!Event.metaKey) return false;
+    if (!EventHasCmdOrWinFlag) return false;
   }
 
   // Bare modifier shortcuts — no key token, just check the modifier key itself was pressed
@@ -2811,13 +2844,13 @@ function _MatchesSingleAlternative(ShortcutString, Event) {
     if (Parsed.requiresCmd && !Parsed.requiresShift && !Parsed.requiresOption) {
       return currentOs === 'pc'
         ? (ModifierKeyName === 'Control' && !EventHasShift && !EventHasOption)
-        : (ModifierKeyName === 'Meta'    && !EventHasShift && !EventHasOption);
+        : (ModifierKeyName === EffectiveCmdOrWinKeyName && !EventHasShift && !EventHasOption);
     }
     if (Parsed.requiresShift && !Parsed.requiresCmd && !Parsed.requiresOption) {
       return ModifierKeyName === 'Shift';
     }
     if (Parsed.requiresOption && !Parsed.requiresCmd && !Parsed.requiresShift) {
-      return ModifierKeyName === 'Alt';
+      return ModifierKeyName === EffectiveOptionKeyName;
     }
     return false;
   }
@@ -2900,7 +2933,7 @@ function isKeyPartOfShortcut(e, token) { return IsKeyPartOfCurrentShortcut(e, to
 function _IsKeyPartOfAlternative(Event, ShortcutString) {
   var Parsed = ParseShortcutString(ShortcutString);
   if (!Parsed) return false;
-  var EventCode = Event.code || '';
+  var EventCode = _resolveCrossTrainingKeyCode(Event.code || '');
 
   // Check if this event is pressing a required modifier
   var IsCmdKey     = currentOs === 'pc'
@@ -2909,11 +2942,13 @@ function _IsKeyPartOfAlternative(Event, ShortcutString) {
   var IsShiftKey   = EventCode === 'ShiftLeft'   || EventCode === 'ShiftRight';
   var IsOptionKey  = EventCode === 'AltLeft'      || EventCode === 'AltRight';
   var IsControlKey = EventCode === 'ControlLeft'  || EventCode === 'ControlRight';
+  var IsWinKey     = EventCode === 'MetaLeft'     || EventCode === 'MetaRight';
 
   if (IsCmdKey    && Parsed.requiresCmd)     return true;
   if (IsShiftKey  && Parsed.requiresShift)   return true;
   if (IsOptionKey && Parsed.requiresOption)  return true;
   if (IsControlKey && Parsed.requiresControl && currentOs === 'mac') return true;
+  if (IsWinKey    && Parsed.requiresWin      && currentOs === 'pc') return true;
 
   // Check if this event is pressing the required key
   if (Parsed.keyToken) return _KeyTokenMatchesEvent(Parsed.keyToken, Event);
@@ -3154,7 +3189,7 @@ function updateKeyboardLighting(e, isDown) {
     return;
   }
 
-  const code = NUMPAD_MAP[e.code] || e.code;
+  const code = _resolveCrossTrainingKeyCode(NUMPAD_MAP[e.code] || e.code);
   const RightToLeftKeyFallback = {
     'MetaRight':    'MetaLeft',
     'AltRight':     'AltLeft',
@@ -8545,17 +8580,18 @@ function _browserCodeToToken(BrowserCode) {
 
 // Returns the canonical modifier token for a held browser code, or null
 // if the code is not a modifier key.
-function _modifierTokenForCode(BrowserCode) {
+function _modifierTokenForCode(BrowserCode, ApplyCrossTrainingAlias) {
+  var EffectiveCode = ApplyCrossTrainingAlias ? _resolveCrossTrainingKeyCode(BrowserCode) : BrowserCode;
   if (currentOs === 'pc') {
-    if (BrowserCode === 'ControlLeft' || BrowserCode === 'ControlRight') return 'CMD';
+    if (EffectiveCode === 'ControlLeft' || EffectiveCode === 'ControlRight') return 'CMD';
   } else {
-    if (BrowserCode === 'MetaLeft'    || BrowserCode === 'MetaRight')    return 'CMD';
+    if (EffectiveCode === 'MetaLeft'    || EffectiveCode === 'MetaRight')    return 'CMD';
   }
-  if (BrowserCode === 'ShiftLeft'   || BrowserCode === 'ShiftRight')     return 'SHIFT';
-  if (BrowserCode === 'AltLeft'     || BrowserCode === 'AltRight')       return 'OPTION';
-  if (BrowserCode === 'ControlLeft' || BrowserCode === 'ControlRight')   return 'CONTROL';
-  if (BrowserCode === 'MetaLeft'    || BrowserCode === 'MetaRight')      return 'WIN';
-  if (BrowserCode === 'Fn')                                               return 'FN';
+  if (EffectiveCode === 'ShiftLeft'   || EffectiveCode === 'ShiftRight')     return 'SHIFT';
+  if (EffectiveCode === 'AltLeft'     || EffectiveCode === 'AltRight')       return 'OPTION';
+  if (EffectiveCode === 'ControlLeft' || EffectiveCode === 'ControlRight')   return 'CONTROL';
+  if (EffectiveCode === 'MetaLeft'    || EffectiveCode === 'MetaRight')      return 'WIN';
+  if (EffectiveCode === 'Fn')                                               return 'FN';
   return null;
 }
 
@@ -14147,7 +14183,7 @@ function _buildIdleHeldChordString() {
 }
 
 function _registerIdleKeydown(e) {
-  var Token = _modifierTokenForCode(e.code) || _browserCodeToToken(e.code);
+  var Token = _modifierTokenForCode(e.code, true) || _browserCodeToToken(e.code);
   if (!Token) return;
   var HeldCountBeforeChange = idleHeldTokens.size;
   if (CurrentInputIsTouch) {
@@ -14163,7 +14199,7 @@ function _registerIdleKeydown(e) {
 }
 
 function _registerIdleKeyup(e) {
-  var Token = _modifierTokenForCode(e.code) || _browserCodeToToken(e.code);
+  var Token = _modifierTokenForCode(e.code, true) || _browserCodeToToken(e.code);
   if (!Token || !idleHeldTokens.has(Token)) return;
   idleHeldTokens.delete(Token);
   _scheduleIdlePreviewUpdate(true);

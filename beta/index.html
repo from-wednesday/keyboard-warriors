@@ -1804,7 +1804,29 @@ function detectOs() {
   return 'other';
 }
 
+// Only meaningful once detectOs() has already returned 'mobile'. Tells the three
+// touch platforms apart so the right conflicts JSON can be loaded and the right
+// label shown in the Conflicted Shortcuts pill. iPadOS needs its own fallback
+// because Safari on iPadOS 13+ reports itself as desktop macOS in the user agent
+// string — the only remaining signal is that the device also has a touch screen.
+function _detectMobilePlatform() {
+  const ua = navigator.userAgent || '';
+  const platform = (navigator.userAgentData?.platform || navigator.platform || '').toLowerCase();
+  const isTouch = navigator.maxTouchPoints > 0;
+  if (/android/i.test(ua)) return 'android';
+  if (/ipad/i.test(ua)) return 'ipados';
+  if (/iphone|ipod/i.test(ua)) return 'ios';
+  if (isTouch && (/mac/i.test(platform) || /mac os x/i.test(ua))) return 'ipados';
+  return 'ios';
+}
+
 const detectedOs = detectOs();
+// Which touch platform we're on ('android' | 'ios' | 'ipados'), or null when
+// detectedOs isn't 'mobile'. Most game logic only needs the broader 'mobile'
+// check; this exists for the two places that need to tell the three apart —
+// loading the matching conflicts JSON, and labelling the OS segment in the
+// Conflicted Shortcuts pill.
+const detectedMobilePlatform = detectedOs === 'mobile' ? _detectMobilePlatform() : null;
 // 'currentOs' drives all game logic and keyboard rendering
 let currentOs = (detectedOs === 'mac' || detectedOs === 'mobile') ? 'mac' : 'pc';
 
@@ -7364,13 +7386,18 @@ var _cfPageIndex = 0;  // current page (0-based) for OS/Browser conflict lists
 var CF_PAGE_SIZE = 6;  // items per page
 
 function _initConflictFilterPill() {
-  // OS label — read detectedOs (already known) + existing MAC_ICON_SVG / PC_ICON_SVG strings
+  // OS label — read detectedOs/detectedMobilePlatform (already known) + existing icon strings
   var OsLabelHtml;
   if (detectedOs === 'mac') {
     OsLabelHtml = MAC_ICON_SVG + '&nbsp;Mac';
   } else if (detectedOs === 'mobile') {
-    var isIphone = /iPhone/.test(navigator.userAgent);
-    OsLabelHtml = MAC_ICON_SVG + '&nbsp;' + (isIphone ? 'iPhone' : 'iOS');
+    if (detectedMobilePlatform === 'android') {
+      OsLabelHtml = 'Android';
+    } else if (detectedMobilePlatform === 'ipados') {
+      OsLabelHtml = MAC_ICON_SVG + '&nbsp;iPad';
+    } else {
+      OsLabelHtml = MAC_ICON_SVG + '&nbsp;iPhone';
+    }
   } else {
     // 'pc', 'other' (Linux, ChromeOS etc.) — all Ctrl-based, use PC icon
     OsLabelHtml = PC_ICON_SVG + '&nbsp;PC';
@@ -8233,11 +8260,12 @@ function dbgNextQuestion() {
 var _conflictsCache = null; // populated by loadConflictsData() at startup
 
 function _osConflictFilePath() {
-  var ua = navigator.userAgent || '';
   if (detectedOs === 'mobile') {
-    if (/android/i.test(ua)) return '/keyboard-warriors/data/conflicts_android.json';
+    if (detectedMobilePlatform === 'android') return '/keyboard-warriors/data/conflicts_android.json';
+    if (detectedMobilePlatform === 'ipados')  return '/keyboard-warriors/data/conflicts_iPadOS.json';
     return '/keyboard-warriors/data/conflicts_iOS.json';
   }
+  var ua = navigator.userAgent || '';
   if (detectedOs === 'pc') {
     if (/CrOS/i.test(ua)) return '/keyboard-warriors/data/conflicts_chromeOS.json';
     if (/linux/i.test(ua)) return '/keyboard-warriors/data/conflicts_linux.json';

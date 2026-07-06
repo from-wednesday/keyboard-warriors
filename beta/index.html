@@ -1578,6 +1578,12 @@ function LoadKeyboardSettings() {
   }
 }
 
+// Mini Mac 3-key layout: Command keys narrow to match Option's mini width,
+// and Control absorbs the freed pixels from both Command keys so it can
+// comfortably fit the full word "control".
+const MiniMacThreeKeyModifierWidth = 35; // Option's mini width (52px scaled by 0.68, rounded)
+const MiniMacThreeKeyControlWidth  = 61; // Control's mini width plus both Command keys' freed pixels
+
 function buildKeyboard(isMini) {
   const rowIds = ['row-fn','row-num','row-q','row-a','row-z','row-bot'];
   rowIds.forEach(id => { document.getElementById(id).innerHTML = ''; });
@@ -1631,6 +1637,12 @@ function buildKeyboard(isMini) {
         if (cfg.type === 'space') keyCfg.w = Math.round((cfg.w || 180) * 0.68);
         if (cfg.type === 'arrow') { keyCfg.w = 27; keyCfg.h = 27; } // square on both OS mini
         if (cfg.type === 'winkey') keyCfg.w = Math.round(52 * 0.68);
+        if (currentOs === 'mac' && kbVariantMac === 'mac-3key' && (cfg.id === 'MetaLeft' || cfg.id === 'MetaRight')) {
+          keyCfg.w = MiniMacThreeKeyModifierWidth;
+        }
+        if (currentOs === 'mac' && kbVariantMac === 'mac-3key' && cfg.id === 'ControlLeft') {
+          keyCfg.w = MiniMacThreeKeyControlWidth;
+        }
       } else {
         if (cfg.type === 'arrow') { keyCfg = Object.assign({}, cfg); keyCfg.w = 40; keyCfg.h = 40; }
       }

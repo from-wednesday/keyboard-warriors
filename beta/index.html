@@ -13091,7 +13091,7 @@ function BuildShortcutKeyChips(TokenString, IsWeakness) {
   var ChipSymbols = currentOs === 'pc' ? PcChipSymbols : MacChipSymbols;
 
   // Canonical modifier rendering order
-  var ModifierOrder = ['CMD','CONTROL','WIN','OPTION','SHIFT','FN'];
+  var ModifierOrder = ['CMD','CONTROL','WIN','OPTION','SHIFT','FN','GLOBE','SEARCH'];
 
   // Parse tokens
   var RawTokens = PrimaryString.split('+').map(NormaliseToken).filter(Boolean);
@@ -13126,7 +13126,7 @@ function BuildShortcutKeyChips(TokenString, IsWeakness) {
   var RawSplitTokens = PrimaryString.split('+').map(function(T) { return T.trim().toUpperCase(); }).filter(Boolean);
   var NormalisedTokens = RawSplitTokens.map(NormaliseToken);
 
-  var ModifierOrder = ['CMD','CONTROL','WIN','OPTION','SHIFT','FN'];
+  var ModifierOrder = ['CMD','CONTROL','WIN','OPTION','SHIFT','FN','GLOBE','SEARCH'];
   var ModifierTokens    = [];
   var ModifierRawTokens = [];
   var KeyToken    = null;

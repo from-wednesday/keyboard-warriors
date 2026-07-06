@@ -2512,10 +2512,10 @@ const TOKEN_TO_BROWSER_CODE = {
 const TOKEN_SYNONYM_MAP = {
   'COMMAND':     'CMD',
   'CTRL':        'CMD',
-  'SEARCH':      'CMD',
   'OPT':         'OPTION',
   'ALT':         'OPTION',
   'WINDOWS':     'WIN',
+  'SUPER':       'WIN',
   'FUNCTION':    'FN',
   'APPS':        'CONTEXTMENU',
   'ENTER':       'RETURN',
@@ -2588,11 +2588,14 @@ function ParseShortcutString(ShortcutString) {
   var PrimaryAlternative = ShortcutString.split('|')[0];
   var RawTokens = PrimaryAlternative.split('+').map(NormaliseToken).filter(Boolean);
 
-  var RequiresCmd     = false;
+var RequiresCmd     = false;
   var RequiresShift   = false;
   var RequiresOption  = false;
   var RequiresControl = false;
   var RequiresWin     = false;
+  var RequiresGlobe   = false;
+  var RequiresSearch  = false;
+  var RequiresFn      = false;
   var KeyToken        = null;
 
   RawTokens.forEach(function(Token) {
@@ -2601,6 +2604,9 @@ function ParseShortcutString(ShortcutString) {
     else if (Token === 'OPTION')  RequiresOption  = true;
     else if (Token === 'CONTROL') RequiresControl = true;
     else if (Token === 'WIN')     RequiresWin     = true;
+    else if (Token === 'GLOBE')   RequiresGlobe   = true;
+    else if (Token === 'SEARCH')  RequiresSearch  = true;
+    else if (Token === 'FN')      RequiresFn      = true;
     else                          KeyToken        = Token;
   });
 
@@ -2610,6 +2616,9 @@ function ParseShortcutString(ShortcutString) {
     requiresOption:  RequiresOption,
     requiresControl: RequiresControl,
     requiresWin:     RequiresWin,
+    requiresGlobe:   RequiresGlobe,
+    requiresSearch:  RequiresSearch,
+    requiresFn:      RequiresFn,
     keyToken:        KeyToken,
     rawTokens:       RawTokens,
   };
@@ -2658,10 +2667,13 @@ function GetAllAlternatives(ShortcutString) {
 function CanonicaliseShortcutToken(ShortcutString) {
   var Parsed = ParseShortcutString(ShortcutString);
   if (!Parsed) return '';
-  var Parts = [];
+var Parts = [];
   if (Parsed.requiresCmd)     Parts.push('CMD');
   if (Parsed.requiresControl) Parts.push('CONTROL');
   if (Parsed.requiresWin)     Parts.push('WIN');
+  if (Parsed.requiresSearch)  Parts.push('SEARCH');
+  if (Parsed.requiresGlobe)   Parts.push('GLOBE');
+  if (Parsed.requiresFn)      Parts.push('FN');
   if (Parsed.requiresOption)  Parts.push('OPTION');
   if (Parsed.requiresShift)   Parts.push('SHIFT');
   if (Parsed.keyToken)        Parts.push(Parsed.keyToken);

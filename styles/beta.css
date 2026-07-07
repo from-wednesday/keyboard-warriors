@@ -1382,6 +1382,19 @@ li.conflict-dismissed .conflict-desc {
   font-weight: 400;
   line-height: 1;
 }
+/* Cross-training alias on the Win key: logo and caption sit on one line
+   rather than the logo alone with the caption stacked underneath. */
+.key .cross-training-alias-row {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 3px;
+  white-space: nowrap;
+}
+.key .cross-training-alias-row .mod-word {
+  position: static;
+  font-size: 8px;
+}
 .key .win-svg {
   width: 14px;
   height: 14px;

@@ -2527,6 +2527,11 @@ function _shouldShowCrossTrainingAlias() {
 function _resolveCrossTrainingKeyCode(BrowserCode) {
   if (CurrentInputIsTouch) return BrowserCode;
   if (!_isCrossTrainingModifierPositions()) return BrowserCode;
+  // Mac hardware training as PC: the right Command key stands in for Ctrl,
+  // Windows' primary modifier, rather than following the same left/right
+  // Alt alias every other modifier uses. See RightCommandActsAsCtrl in
+  // _MatchesSingleAlternative for why this needs its own check there too.
+  if (detectedOs === 'mac' && currentOs === 'pc' && BrowserCode === 'MetaRight') return 'ControlRight';
   if (BrowserCode === 'AltLeft')   return 'MetaLeft';
   if (BrowserCode === 'AltRight')  return 'MetaRight';
   if (BrowserCode === 'MetaLeft')  return 'AltLeft';
@@ -2851,8 +2856,16 @@ function _MatchesSingleAlternative(ShortcutString, Event) {
   var EffectiveOptionKeyName   = CrossTraining ? 'Meta' : 'Alt';
   var EffectiveCmdOrWinKeyName = CrossTraining ? 'Alt'  : 'Meta';
 
+  // Mac hardware training as PC only: the right Command key acts as a
+  // second Ctrl. Browser events only report whether a Command-style key
+  // is held at all, not which side, so the only reliable way to know it
+  // was specifically the right key is to check heldKeys, which
+  // _resolveCrossTrainingKeyCode already records as 'ControlRight' for
+  // this exact key.
+  var RightCommandActsAsCtrl = currentOs === 'pc' && detectedOs === 'mac' && heldKeys.has('ControlRight');
+
   // Modifier state from the event
-  var EventHasCmd     = currentOs === 'pc' ? Event.ctrlKey  : EventHasCmdOrWinFlag;
+  var EventHasCmd     = currentOs === 'pc' ? (Event.ctrlKey || RightCommandActsAsCtrl) : EventHasCmdOrWinFlag;
   var EventHasNoCmd   = currentOs === 'pc' ? (!Event.ctrlKey && !Event.metaKey) : (!Event.metaKey && !Event.ctrlKey);
   var EventHasOption  = EventHasOptionFlag;
   var EventHasShift   = Event.shiftKey;
@@ -2878,7 +2891,7 @@ function _MatchesSingleAlternative(ShortcutString, Event) {
     var ModifierKeyName = Event.key;
     if (Parsed.requiresCmd && !Parsed.requiresShift && !Parsed.requiresOption) {
       return currentOs === 'pc'
-        ? (ModifierKeyName === 'Control' && !EventHasShift && !EventHasOption)
+        ? ((ModifierKeyName === 'Control' || RightCommandActsAsCtrl) && !EventHasShift && !EventHasOption)
         : (ModifierKeyName === EffectiveCmdOrWinKeyName && !EventHasShift && !EventHasOption);
     }
     if (Parsed.requiresShift && !Parsed.requiresCmd && !Parsed.requiresOption) {

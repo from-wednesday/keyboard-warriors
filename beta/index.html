@@ -998,7 +998,7 @@ start:  GYRO PERMISSION MODAL
                 <circle class="modal-radio-fill" cx="9.5" cy="9.5" r="3.5" fill="#374151"/>
               </svg>
             </span>
-            <span class="modal-toggle-label" style="font-size:12px;">Kill Punctuation</span>
+            <span class="modal-toggle-label" style="font-size:12px;">Avoid Punctuation</span>
           </label>
         </div>
 
@@ -1280,7 +1280,7 @@ function buildKey(cfg, isMini) {
         if (isGlyph) {
           el.innerHTML = `<span class="util-sym-only">${utilText}</span>`;
         } else {
-          const AltCrossTrainingSuffix = (ShowCrossTrainingAlias && currentOs === 'pc' && cfg.id === 'AltLeft') ? '(⌘)' : '';
+          const AltCrossTrainingSuffix = (ShowCrossTrainingAlias && currentOs === 'pc' && cfg.id === 'AltLeft') ? '(<span class="sym-main">⌘</span>)' : '';
           el.innerHTML = `<span class="util-lbl">${utilText}${AltCrossTrainingSuffix}</span>`;
         }
       }
@@ -1309,8 +1309,12 @@ function buildKey(cfg, isMini) {
       el.addEventListener('mousedown', function(ev){ touchEnabled ? handleKeyTouch(ev, el) : showKbToast(ev); });
       break;
     case 'winkey': {
-      const WinCrossTrainingCaption = ShowCrossTrainingAlias ? '<span class="mod-word">win(opt)</span>' : '';
-      el.innerHTML = `<svg class="win-svg" width="14" height="14" viewBox="0 0 102.73 104.6" fill="currentColor"><use href="#IconWindowsLogo"/></svg>${WinCrossTrainingCaption}`;
+      const WinLogoSvg = `<svg class="win-svg" width="14" height="14" viewBox="0 0 102.73 104.6" fill="currentColor"><use href="#IconWindowsLogo"/></svg>`;
+      if (ShowCrossTrainingAlias) {
+        el.innerHTML = `<span class="cross-training-alias-row">${WinLogoSvg}<span class="mod-word">(opt)</span></span>`;
+      } else {
+        el.innerHTML = WinLogoSvg;
+      }
       el.addEventListener('mousedown', function(ev){ touchEnabled ? handleKeyTouch(ev, el) : showKbToast(ev); });
       break;
     }
@@ -2292,7 +2296,7 @@ function SyncKeyboardSettingsToUI() {
   var AudibleRadio = document.getElementById('audibleRadio');
   if (AudibleRadio) AudibleRadio.classList.toggle('on', soundEnabled);
 
-  // Kill punctuation radio
+  // Kill punctuation radio (user facing name = Avoid Punctuation)
   var KillPunctuationRadio = document.getElementById('killPunctuationRadio');
   if (KillPunctuationRadio) KillPunctuationRadio.classList.toggle('on', killPunctuationOn);
   // Rows that are disabled when touch is on
@@ -6810,7 +6814,7 @@ var _PANEL_TIPS = {
     var pool = [
       'have you tried ghost mode yet?',
       'touch enabled is ideal for cross training',
-      'kill punctuation suits a few non-English keyboards',
+      'avoid punctuation suits a few non-English keyboards',
       'does your keyboard have a number pad?',
       'there is a level before Easy with only ubiquitous shortcuts in it',
       'sticky keys help when modifier chords feel awkward',

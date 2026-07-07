@@ -1251,7 +1251,7 @@ function buildKey(cfg, isMini) {
       // Ensures these keys always render as clean vector symbols rather than
       // unicode characters or emoji, consistent with the Command symbol style.
       // Mini keyboards and PC mode fall through to the standard text path.
-      const _isFullMac = !isMini && currentOs === 'mac';
+      const _isFullMac = !isMini && _effectiveOs() === 'mac';
       const OptionCrossTrainingLabel = ShowCrossTrainingAlias ? 'option(⊞)' : 'option';
       if (_isFullMac && cfg.id === 'AltLeft') {
         el.innerHTML = `${OPTION_SYM_SVG}<span class="mod-word">${OptionCrossTrainingLabel}</span>`;
@@ -1262,9 +1262,9 @@ function buildKey(cfg, isMini) {
         el.innerHTML = `${CONTROL_SYM_SVG}<span class="mod-word">control</span>`;
       } else if (_isFullMac && cfg.id === 'Enter') {
         el.innerHTML = `${RETURN_SYM_SVG}<span class="mod-word">return</span>`;
-      } else if (isMini && currentOs === 'mac' && cfg.id === 'Enter') {
+      } else if (isMini && _effectiveOs() === 'mac' && cfg.id === 'Enter') {
         el.innerHTML = RETURN_SYM_SVG;
-      } else if (currentOs === 'pc' && cfg.id === 'Backspace') {
+      } else if (_effectiveOs() === 'pc' && cfg.id === 'Backspace') {
         el.innerHTML = PC_DELETE_SVG;
       } else {
         const isGlyph = utilText && utilText.length <= 2 && /\p{So}|\p{Sm}|[⇧↩↑↓←→⌫↵]/u.test(utilText);
@@ -1598,7 +1598,7 @@ function buildKeyboard(isMini) {
   document.getElementById('keyboardPanel').classList.toggle('mini-keys', isMini);
 
   // Swap in the PC bottom row when PC mode is active
-  const activeBottomRow = currentOs === 'pc'
+  const activeBottomRow = _effectiveOs() === 'pc'
     ? (PC_BOTTOM_ROWS[kbVariantPc] || PC_BOTTOM_ROWS['pc-fn-left'])
     : (MAC_BOTTOM_ROWS[kbVariantMac] || MAC_BOTTOM_ROWS['mac-3key']);
   const layout = FULL_LAYOUT.map((row, ri) => ri === 5 ? activeBottomRow : row);
@@ -1632,7 +1632,7 @@ function buildKeyboard(isMini) {
 
       let keyCfg = cfg;
       // PC label override: Enter → enter
-      if (currentOs === 'pc' && cfg.type === 'util' && cfg.id === 'Enter') {
+      if (_effectiveOs() === 'pc' && cfg.type === 'util' && cfg.id === 'Enter') {
         keyCfg = Object.assign({}, cfg, { label: 'enter', mini: '↵' });
       }
       if (isMini) {
@@ -1642,10 +1642,10 @@ function buildKeyboard(isMini) {
         if (cfg.type === 'space') keyCfg.w = Math.round((cfg.w || 180) * 0.68);
         if (cfg.type === 'arrow') { keyCfg.w = 27; keyCfg.h = 27; } // square on both OS mini
         if (cfg.type === 'winkey') keyCfg.w = Math.round(52 * 0.68);
-        if (currentOs === 'mac' && kbVariantMac === 'mac-3key' && (cfg.id === 'MetaLeft' || cfg.id === 'MetaRight')) {
+        if (_effectiveOs() === 'mac' && kbVariantMac === 'mac-3key' && (cfg.id === 'MetaLeft' || cfg.id === 'MetaRight')) {
           keyCfg.w = MiniMacThreeKeyModifierWidth;
         }
-        if (currentOs === 'mac' && kbVariantMac === 'mac-3key' && cfg.id === 'ControlLeft') {
+        if (_effectiveOs() === 'mac' && kbVariantMac === 'mac-3key' && cfg.id === 'ControlLeft') {
           keyCfg.w = MiniMacThreeKeyControlWidth;
         }
       } else {
@@ -1857,6 +1857,15 @@ function _isMacLikeDevice() {
 // 'currentOs' drives all game logic and keyboard rendering
 let currentOs = _isMacLikeDevice() ? 'mac' : 'pc';
 
+// The Conflicted Shortcuts Panel manages real device/browser conflicts only.
+// Cross-training must never leak into it, so whenever it is the active
+// settings page, every OS-dependent lookup (chip symbols, keyboard shape,
+// modifier matching) uses the device's real OS instead of whatever OS is
+// currently being trained. Everywhere else this is identical to currentOs.
+function _effectiveOs() {
+  return activeSettings === 'panelConflicts' ? (_isMacLikeDevice() ? 'mac' : 'pc') : currentOs;
+}
+
 // Runtime style tag for medal face rotation (::before can't be set via JS directly)
 const medalFaceStyleEl = document.createElement('style');
 medalFaceStyleEl.id = 'medalFaceStyle';
@@ -1949,7 +1958,7 @@ function applyOsMode(os) {
   osToggleEl.checked = nativeMac ? (os === 'pc') : (os === 'mac');
   updateToggleVisual(os);
   updateMismatchPill();
-  document.getElementById('keyboardPanel').classList.toggle('pc-keys', os === 'pc');
+  document.getElementById('keyboardPanel').classList.toggle('pc-keys', _effectiveOs() === 'pc');
   document.body.classList.toggle('pc-mode', os === 'pc');
   // Carry the current 3/4-key setting over to the new OS
   if (currentOs === 'mac') kbVariantMac = activeVariantKey();
@@ -2498,7 +2507,7 @@ Promise.all([DomReady, StylesheetReady, SkeletonAnimationComplete]).then(functio
 // from the one currently being trained. This is when Option and Command
 // physically swap positions relative to Win and Alt on the training display.
 function _isCrossTrainingModifierPositions() {
-  return detectedOs !== 'mobile' && detectedOs !== 'other' && detectedOs !== currentOs;
+  return detectedOs !== 'mobile' && detectedOs !== 'other' && detectedOs !== _effectiveOs();
 }
 
 // True only when the graphical keyboard should show a bracketed alias
@@ -2842,7 +2851,7 @@ function _MatchesSingleAlternative(ShortcutString, Event) {
   // the key under the player's finger always matches the position shown
   // on the training keyboard rather than the key's native hardware identity.
   var CrossTraining   = _isCrossTrainingModifierPositions();
-  var MacTrainingAsPc = currentOs === 'pc' && detectedOs === 'mac';
+  var MacTrainingAsPc = _effectiveOs() === 'pc' && detectedOs === 'mac';
 
   // Mac hardware training as PC only: the right Command key acts as a
   // second Ctrl rather than following the usual Alt alias. The browser's
@@ -2860,8 +2869,8 @@ function _MatchesSingleAlternative(ShortcutString, Event) {
   var RightCommandActsAsCtrl   = MacTrainingAsPc && heldKeys.has('ControlRight');
 
   // Modifier state from the event
-  var EventHasCmd     = currentOs === 'pc' ? (Event.ctrlKey || RightCommandActsAsCtrl) : EventHasCmdOrWinFlag;
-  var EventHasNoCmd   = currentOs === 'pc' ? (!Event.ctrlKey && !Event.metaKey) : (!Event.metaKey && !Event.ctrlKey);
+  var EventHasCmd     = _effectiveOs() === 'pc' ? (Event.ctrlKey || RightCommandActsAsCtrl) : EventHasCmdOrWinFlag;
+  var EventHasNoCmd   = _effectiveOs() === 'pc' ? (!Event.ctrlKey && !Event.metaKey) : (!Event.metaKey && !Event.ctrlKey);
   var EventHasOption  = EventHasOptionFlag;
   var EventHasShift   = Event.shiftKey;
   var EventHasControl = Event.ctrlKey; // literal Control on Mac (alongside Meta)
@@ -2873,11 +2882,11 @@ function _MatchesSingleAlternative(ShortcutString, Event) {
   // CONTROL on Mac: require ctrlKey but only when metaKey is also present
   // (to avoid clashing with CMD-only checks where ctrl is the CMD key on PC)
   if (Parsed.requiresControl) {
-    if (currentOs === 'pc') return false; // CONTROL token is Mac-only
+    if (_effectiveOs() === 'pc') return false; // CONTROL token is Mac-only
     if (!Event.ctrlKey) return false;
   }
   if (Parsed.requiresWin) {
-    if (currentOs !== 'pc') return false;
+    if (_effectiveOs() !== 'pc') return false;
     if (!EventHasCmdOrWinFlag) return false;
   }
 
@@ -2885,7 +2894,7 @@ function _MatchesSingleAlternative(ShortcutString, Event) {
   if (!Parsed.keyToken) {
     var ModifierKeyName = Event.key;
     if (Parsed.requiresCmd && !Parsed.requiresShift && !Parsed.requiresOption) {
-      return currentOs === 'pc'
+      return _effectiveOs() === 'pc'
         ? ((ModifierKeyName === 'Control' || RightCommandActsAsCtrl) && !EventHasShift && !EventHasOption)
         : (ModifierKeyName === EffectiveCmdOrWinKeyName && !EventHasShift && !EventHasOption);
     }
@@ -6632,7 +6641,11 @@ function _phoneOpenSettings(Page) {
   }
 
   // Populate content
-  if (Page === 'panelConflicts')    _refreshBrowserContent();
+  if (Page === 'panelConflicts') {
+    document.getElementById('keyboardPanel').classList.toggle('pc-keys', _effectiveOs() === 'pc');
+    if (currentKbMode && currentKbMode !== 'none') buildKeyboard(currentKbMode === 'mini');
+    _refreshBrowserContent();
+  }
   if (Page === 'panelKeyboard')   { updateModalToggles(); updateKbSizeToggle(); _syncKeyboardDisplayPillLock(); }
   if (Page === 'panelDifficultySettings') _refreshDifficultyPanel();
   if (Page === 'panelPause')      _refreshPausePanel();
@@ -6666,6 +6679,10 @@ function _phoneCloseSettings() {
   activeSettings  = null;
   _syncKeyboardSettingsActiveClass();
   conflictsKbLighting.deactivate();
+  if (ClosingPage === 'panelConflicts') {
+    document.getElementById('keyboardPanel').classList.toggle('pc-keys', _effectiveOs() === 'pc');
+    if (currentKbMode && currentKbMode !== 'none') buildKeyboard(currentKbMode === 'mini');
+  }
     _syncStudyNotesInlineIcon();
 
   _clearPanelTip();
@@ -6953,7 +6970,12 @@ function openSettings(page) {
   }
 
   // Populate content
-  if (page === 'panelConflicts') { _refreshBrowserContent(); conflictsKbLighting.activate(); }
+  if (page === 'panelConflicts') {
+    document.getElementById('keyboardPanel').classList.toggle('pc-keys', _effectiveOs() === 'pc');
+    if (currentKbMode && currentKbMode !== 'none') buildKeyboard(currentKbMode === 'mini');
+    _refreshBrowserContent();
+    conflictsKbLighting.activate();
+  }
   if (page === 'panelKeyboard')   { updateModalToggles(); updateKbSizeToggle(); _syncKeyboardDisplayPillLock(); }
   if (page === 'panelDifficultySettings') _refreshDifficultyPanel();
   if (page === 'panelPause')      _refreshPausePanel();
@@ -7027,6 +7049,10 @@ function closeSettings() {
   var closingWrap = document.getElementById('keyboardWrap');
   if (closingWrap) closingWrap.style.minHeight = '';
   conflictsKbLighting.deactivate();
+  if (closingPage === 'panelConflicts') {
+    document.getElementById('keyboardPanel').classList.toggle('pc-keys', _effectiveOs() === 'pc');
+    if (currentKbMode && currentKbMode !== 'none') buildKeyboard(currentKbMode === 'mini');
+  }
   _syncStudyNotesInlineIcon();
   
   // Clear any ambient panel tip
@@ -7392,7 +7418,7 @@ function _BuildBrowserConflictLabel(RawLabel) {
 
   // Translate token names to display symbols
   var TokenDisplayMap = {
-    'Cmd':   currentOs === 'pc' ? 'Ctrl' : '⌘',
+    'Cmd':   _effectiveOs() === 'pc' ? 'Ctrl' : '⌘',
     'Ctrl':  'Ctrl',
     'Opt':   '⌥',
     'Shift': '⇧',
@@ -7416,7 +7442,7 @@ function _BuildBrowserConflictLabel(RawLabel) {
 
 function DisplayStringForToken(ChordToken) {
   var TokenDisplayMap = {
-    'Cmd':   currentOs === 'pc' ? 'Ctrl' : '⌘',
+    'Cmd':   _effectiveOs() === 'pc' ? 'Ctrl' : '⌘',
     'Ctrl':  'Ctrl',
     'Opt':   '⌥',
     'Shift': '⇧',
@@ -8630,7 +8656,7 @@ function _browserCodeToToken(BrowserCode) {
 // if the code is not a modifier key.
 function _modifierTokenForCode(BrowserCode, ApplyCrossTrainingAlias) {
   var EffectiveCode = ApplyCrossTrainingAlias ? _resolveCrossTrainingKeyCode(BrowserCode) : BrowserCode;
-  if (currentOs === 'pc') {
+  if (_effectiveOs() === 'pc') {
     if (EffectiveCode === 'ControlLeft' || EffectiveCode === 'ControlRight') return 'CMD';
   } else {
     if (EffectiveCode === 'MetaLeft'    || EffectiveCode === 'MetaRight')    return 'CMD';
@@ -13298,7 +13324,7 @@ var MacChipSymbols = {
     'PERIOD':'.','SLASH':'/','GRAVE':'`',
     'LESSTHAN':'<','GREATERTHAN':'>','MORETHAN':'>',
   };
-  var ChipSymbols = currentOs === 'pc' ? PcChipSymbols : MacChipSymbols;
+  var ChipSymbols = _effectiveOs() === 'pc' ? PcChipSymbols : MacChipSymbols;
 
   // Canonical modifier rendering order
   var ModifierOrder = ['CMD','CONTROL','WIN','OPTION','SHIFT','FN','GLOBE','SEARCH'];
@@ -13329,7 +13355,7 @@ var MacChipSymbols = {
   // Long-form labels for non-CMD modifiers (symbol + word)
   var MacLongForm = { 'SHIFT': '⇧ Shift', 'OPTION': '⌥ Option', 'CONTROL': '⌃ Control', 'FN': 'fn', 'RETURN':'↩ return','TAB':'⇥ tab','HOME': '↖ home' , 'END' : "↘ end" ,'PAGEUP':'⇞ page up','PAGEDOWN':'⇟ page down'};
   var PcLongForm  = { 'SHIFT': '⇧ Shift', 'OPTION': 'Alt',      'CONTROL': 'Ctrl',       'FN': 'Fn'  };
-  var LongFormMap = currentOs === 'pc' ? PcLongForm : MacLongForm;
+  var LongFormMap = _effectiveOs() === 'pc' ? PcLongForm : MacLongForm;
 // Split without normalising so display overrides can read the raw token name.
   var RawSplitTokens = PrimaryString.split('+').map(function(T) { return T.trim().toUpperCase(); }).filter(Boolean);
 // Parse tokens -- keep both raw (for display overrides) and normalised (for symbol lookup).

@@ -2841,19 +2841,23 @@ function _MatchesSingleAlternative(ShortcutString, Event) {
   // Command or Windows-style key swap which requirement they satisfy, so
   // the key under the player's finger always matches the position shown
   // on the training keyboard rather than the key's native hardware identity.
-  var CrossTraining            = _isCrossTrainingModifierPositions();
-  var EventHasOptionFlag       = CrossTraining ? Event.metaKey : Event.altKey;
+  var CrossTraining   = _isCrossTrainingModifierPositions();
+  var MacTrainingAsPc = currentOs === 'pc' && detectedOs === 'mac';
+
+  // Mac hardware training as PC only: the right Command key acts as a
+  // second Ctrl rather than following the usual Alt alias. The browser's
+  // shared metaKey flag cannot tell which side is held, so without this,
+  // holding only the right Command key would appear to also satisfy an
+  // Alt requirement and wrongly block a Ctrl-only shortcut from matching.
+  // heldKeys can tell the sides apart, since _resolveCrossTrainingKeyCode
+  // records the left key as 'AltLeft' and the right key as 'ControlRight'.
+  var EventHasOptionFlag = CrossTraining
+    ? (MacTrainingAsPc ? heldKeys.has('AltLeft') : Event.metaKey)
+    : Event.altKey;
   var EventHasCmdOrWinFlag     = CrossTraining ? Event.altKey  : Event.metaKey;
   var EffectiveOptionKeyName   = CrossTraining ? 'Meta' : 'Alt';
   var EffectiveCmdOrWinKeyName = CrossTraining ? 'Alt'  : 'Meta';
-
-  // Mac hardware training as PC only: the right Command key acts as a
-  // second Ctrl. Browser events only report whether a Command-style key
-  // is held at all, not which side, so the only reliable way to know it
-  // was specifically the right key is to check heldKeys, which
-  // _resolveCrossTrainingKeyCode already records as 'ControlRight' for
-  // this exact key.
-  var RightCommandActsAsCtrl = currentOs === 'pc' && detectedOs === 'mac' && heldKeys.has('ControlRight');
+  var RightCommandActsAsCtrl   = MacTrainingAsPc && heldKeys.has('ControlRight');
 
   // Modifier state from the event
   var EventHasCmd     = currentOs === 'pc' ? (Event.ctrlKey || RightCommandActsAsCtrl) : EventHasCmdOrWinFlag;
@@ -2889,7 +2893,9 @@ function _MatchesSingleAlternative(ShortcutString, Event) {
       return ModifierKeyName === 'Shift';
     }
     if (Parsed.requiresOption && !Parsed.requiresCmd && !Parsed.requiresShift) {
-      return ModifierKeyName === EffectiveOptionKeyName;
+      return MacTrainingAsPc
+        ? heldKeys.has('AltLeft')
+        : ModifierKeyName === EffectiveOptionKeyName;
     }
     return false;
   }

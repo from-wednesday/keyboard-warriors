@@ -1201,6 +1201,11 @@ function buildKey(cfg, isMini) {
   if (cfg.w) el.style.width  = cfg.w + 'px';
   if (cfg.h) el.style.height = cfg.h + 'px';
 
+  // Full-size only: whether to show a bracketed alias hinting at the
+  // physical key needed during cross training (e.g. "alt(⌘)"). Requires a
+  // confirmed physical keyboard, since these hints assume real hardware.
+  const ShowCrossTrainingAlias = !isMini && _shouldShowCrossTrainingAlias();
+
   switch (cfg.type) {
     case 'fn':
       el.classList.add('fn');
@@ -1256,11 +1261,12 @@ function buildKey(cfg, isMini) {
       // unicode characters or emoji, consistent with the Command symbol style.
       // Mini keyboards and PC mode fall through to the standard text path.
       const _isFullMac = !isMini && currentOs === 'mac';
+      const OptionCrossTrainingLabel = ShowCrossTrainingAlias ? 'option(⊞)' : 'option';
       if (_isFullMac && cfg.id === 'AltLeft') {
-        el.innerHTML = `${OPTION_SYM_SVG}<span class="mod-word">option</span>`;
+        el.innerHTML = `${OPTION_SYM_SVG}<span class="mod-word">${OptionCrossTrainingLabel}</span>`;
         el.querySelector('.key-glyph-sym').style.cssText = 'position:absolute;top:4px;right:5px;left:auto;';
       } else if (_isFullMac && cfg.id === 'AltRight') {
-        el.innerHTML = `${OPTION_SYM_SVG}<span class="mod-word">option</span>`;
+        el.innerHTML = `${OPTION_SYM_SVG}<span class="mod-word">${OptionCrossTrainingLabel}</span>`;
       } else if (_isFullMac && (cfg.id === 'ControlLeft' || cfg.id === 'ControlRight')) {
         el.innerHTML = `${CONTROL_SYM_SVG}<span class="mod-word">control</span>`;
       } else if (_isFullMac && cfg.id === 'Enter') {
@@ -1274,7 +1280,8 @@ function buildKey(cfg, isMini) {
         if (isGlyph) {
           el.innerHTML = `<span class="util-sym-only">${utilText}</span>`;
         } else {
-          el.innerHTML = `<span class="util-lbl">${utilText}</span>`;
+          const AltCrossTrainingSuffix = (ShowCrossTrainingAlias && currentOs === 'pc' && cfg.id === 'AltLeft') ? '(⌘)' : '';
+          el.innerHTML = `<span class="util-lbl">${utilText}${AltCrossTrainingSuffix}</span>`;
         }
       }
       el.addEventListener('mousedown', function(ev){ touchEnabled ? handleKeyTouch(ev, el) : showKbToast(ev); });
@@ -1285,7 +1292,8 @@ function buildKey(cfg, isMini) {
         // Mini or symbol-only: centred single glyph
         el.innerHTML = `<span class="mod-sym-only">${cfg.sym || cfg.mini}</span>`;
       } else {
-        el.innerHTML = `<span class="mod-sym">${cfg.sym}</span><span class="mod-word">${cfg.word}</span>`;
+        const CommandCrossTrainingSuffix = (ShowCrossTrainingAlias && currentOs === 'mac' && (cfg.id === 'MetaLeft' || cfg.id === 'MetaRight')) ? '(alt)' : '';
+        el.innerHTML = `<span class="mod-sym">${cfg.sym}</span><span class="mod-word">${cfg.word}${CommandCrossTrainingSuffix}</span>`;
       }
       el.addEventListener('mousedown', function(ev){ touchEnabled ? handleKeyTouch(ev, el) : showKbToast(ev); });
       break;
@@ -1300,10 +1308,12 @@ function buildKey(cfg, isMini) {
       el.innerHTML = `<span class="letter-lbl">${cfg.label}</span>`;
       el.addEventListener('mousedown', function(ev){ touchEnabled ? handleKeyTouch(ev, el) : showKbToast(ev); });
       break;
-    case 'winkey':
-    el.innerHTML = `<svg class="win-svg" width="14" height="14" viewBox="0 0 102.73 104.6" fill="currentColor"><use href="#IconWindowsLogo"/></svg>`;
+    case 'winkey': {
+      const WinCrossTrainingCaption = ShowCrossTrainingAlias ? '<span class="mod-word">win(opt)</span>' : '';
+      el.innerHTML = `<svg class="win-svg" width="14" height="14" viewBox="0 0 102.73 104.6" fill="currentColor"><use href="#IconWindowsLogo"/></svg>${WinCrossTrainingCaption}`;
       el.addEventListener('mousedown', function(ev){ touchEnabled ? handleKeyTouch(ev, el) : showKbToast(ev); });
       break;
+    }
   }
 
   if (cfg.id) { keyEls[cfg.id] = el; el.dataset.key = cfg.id; }
@@ -2107,6 +2117,17 @@ function _cancelPillAutoHideTimer() {
   if (_pillAutoHideTimer) { clearTimeout(_pillAutoHideTimer); _pillAutoHideTimer = null; }
 }
 
+// Rebuilds the graphical keyboard the moment a physical keyboard is first
+// confirmed this session, so cross-training alias labels (which require a
+// confirmed keyboard) appear immediately rather than waiting on some
+// unrelated redraw to catch up.
+function _rebuildKeyboardIfHasKeyboardJustConfirmed(WasConfirmedBeforeThisCall) {
+  if (WasConfirmedBeforeThisCall) return;
+  if (!_hasKeyboardConfirmed()) return;
+  if (!currentKbMode || currentKbMode === 'none') return;
+  buildKeyboard(currentKbMode === 'mini');
+}
+
 function _setHasKeyboard(persist) {
   // Mark that a physical keyboard is present and suppress the mismatch pill.
   // persist=true (default): also writes kw_has_keyboard to localStorage so
@@ -2114,13 +2135,14 @@ function _setHasKeyboard(persist) {
   // persist=false: session-only — suppresses the pill this visit but does
   //   not write to storage (used for desktop devices on page load).
   if (persist === undefined) persist = true;
+  var WasConfirmedBeforeThisCall = _hasKeyboardConfirmed();
   _cancelPillAutoHideTimer();
   _pillDismissedThisSession = true;
   osMismatchEl.classList.remove('show', 'clickable');
-  if (!persist) return;
+  if (!persist) { _rebuildKeyboardIfHasKeyboardJustConfirmed(WasConfirmedBeforeThisCall); return; }
   var already = false;
   try { already = localStorage.getItem('kw_has_keyboard') === '1'; } catch(e) {}
-  if (already) return;
+  if (already) { _rebuildKeyboardIfHasKeyboardJustConfirmed(WasConfirmedBeforeThisCall); return; }
   try { localStorage.setItem('kw_has_keyboard', '1'); } catch(e) {}
   // Unlock none/ghost display modes now that a keyboard is confirmed
   _syncKeyboardDisplayPillLock();
@@ -2131,6 +2153,7 @@ function _setHasKeyboard(persist) {
       if (activeSettings === 'panelKeyboard') hideConfirmHeading();
     }, 3500);
   }
+  _rebuildKeyboardIfHasKeyboardJustConfirmed(WasConfirmedBeforeThisCall);
 }
 
 function _hasKeyboardConfirmed() {
@@ -2481,6 +2504,14 @@ Promise.all([DomReady, StylesheetReady, SkeletonAnimationComplete]).then(functio
 // physically swap positions relative to Win and Alt on the training display.
 function _isCrossTrainingModifierPositions() {
   return detectedOs !== 'mobile' && detectedOs !== 'other' && detectedOs !== currentOs;
+}
+
+// True only when the graphical keyboard should show a bracketed alias
+// hinting at the physical key needed during cross training (e.g. "alt(⌘)").
+// Requires a confirmed physical keyboard, since these hints describe real
+// hardware positions and would only confuse someone on a touch-only device.
+function _shouldShowCrossTrainingAlias() {
+  return _isCrossTrainingModifierPositions() && _hasKeyboardConfirmed();
 }
 
 // Swaps a physical Option-style key code for its Command or Windows-style
@@ -10795,31 +10826,45 @@ function buildPool() {
   }
 
   // Helper: apply group cap to a candidate list and append passing entries to pool.
-  function applyGroupCap(candidates, pool, cap, counts) {
+  // pushedSet records exactly which entries were actually accepted, so a later
+  // pass (see Phase 2 below) can tell them apart from ones that were rejected.
+  function applyGroupCap(candidates, pool, cap, counts, pushedSet) {
     candidates.forEach(function(ShortcutEntry) {
       if (!ShortcutEntry.group) { pool.push(ShortcutEntry); return; }
-      counts[ShortcutEntry.group] = (counts[ShortcutEntry.group] || 0) + 1;
-      if (counts[ShortcutEntry.group] <= cap) pool.push(ShortcutEntry);
+      var currentCount = counts[ShortcutEntry.group] || 0;
+      if (currentCount < cap) {
+        counts[ShortcutEntry.group] = currentCount + 1;
+        pool.push(ShortcutEntry);
+        if (pushedSet) pushedSet.add(ShortcutEntry);
+      }
     });
   }
 
   // Phase 1: primary difficulty range with the standard group cap of 2.
-  var primaryCandidates = allShortcuts.filter(function(ShortcutEntry) {
+  // Shuffled before the cap is applied so a different subset of an oversized
+  // group's members can be chosen each time buildPool() runs, rather than
+  // always the same members in file order. Phase 3 below deliberately keeps
+  // file order instead, since that order is used there as a fallback priority.
+  var primaryCandidates = shuffleArray(allShortcuts.filter(function(ShortcutEntry) {
     var d = ShortcutEntry.difficulty;
     return d >= diffRange.min && d <= diffRange.max && passesNonDifficultyFilters(ShortcutEntry);
-  });
+  }));
   var groupCounts = {};
   var pool = [];
-  applyGroupCap(primaryCandidates, pool, 2, groupCounts);
+  var pooledEntries = new Set();
+  applyGroupCap(primaryCandidates, pool, 2, groupCounts, pooledEntries);
 
   // Phase 2: still under target — raise the group limit to let more questions
   // through from the primary range candidates that were previously capped.
+  // pooledEntries excludes anything Phase 1 already accepted, so a group
+  // member is never considered twice.
   if (pool.length < diffRange.target && diffRange.groupLimit > 2) {
     var phase2Candidates = primaryCandidates.filter(function(ShortcutEntry) {
       if (!ShortcutEntry.group) return false; // ungrouped already passed phase 1
+      if (pooledEntries.has(ShortcutEntry)) return false; // already in the pool
       return (groupCounts[ShortcutEntry.group] || 0) >= 2;
     });
-    applyGroupCap(phase2Candidates, pool, diffRange.groupLimit, groupCounts);
+    applyGroupCap(phase2Candidates, pool, diffRange.groupLimit, groupCounts, pooledEntries);
   }
 
   // Phase 3: still under target — add from each overflow difficulty level in order.

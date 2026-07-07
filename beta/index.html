@@ -4519,8 +4519,11 @@ function scrollPanelIntoViewIfNeeded(elementId, delayMs) {
     var panel = document.getElementById(elementId);
     if (!panel) return;
     var rect = panel.getBoundingClientRect();
-    // Only scroll if the panel has not yet begun to appear on screen
-    if (rect.top >= window.innerHeight) {
+    // Scroll once two-thirds of the panel's height is below the visible
+    // screen -- i.e. only its top third (rect.height / 3) still fits above
+    // the bottom edge of the viewport. Below that line we leave the scroll
+    // position alone so small overlaps don't trigger unnecessary movement.
+    if (rect.top > window.innerHeight - (rect.height / 3)) {
       var toolbar = document.getElementById('phoneToolbar');
       if (toolbar) {
         var scrollTarget = toolbar.getBoundingClientRect().top + window.scrollY;

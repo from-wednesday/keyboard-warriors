@@ -1,0 +1,4735 @@
+/* ═══════════════════════════════════════════════════
+   Keyboard Warriors CSS 
+   ═══════════════════════════════════════════════════ */
+
+@import url('https://fonts.googleapis.com/css2?family=Lato:wght@400;700&display=swap');
+
+* { margin:0; padding:0; box-sizing:border-box; }
+
+.page-revealed {
+  visibility: visible;
+  opacity: 1;
+  transition: opacity 0.3s ease;
+}
+
+body {
+  font-family: system-ui, -apple-system, sans-serif;
+  background: #f0f4f8;
+  padding: 20px;
+  min-height: 100dvh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 0;
+}
+
+/* When a settings panel has enough room to fit the window without scrolling,
+   the top group anchors to the top and keyboardWrap's stretched min-height
+   (set in _updateViewportFitLayout) pushes credit down to the bottom edge.
+   Outside this class, the page behaves exactly as it always has. */
+body.settings-fits-viewport {
+  height: 100dvh;
+  justify-content: flex-start;
+}
+body.settings-fits-viewport #keyboardWrap {
+  align-items: flex-end;
+}
+
+/* ══════════════════════════════════════
+   GAME PANEL
+══════════════════════════════════════ */
+#gameContainer {
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  width: 100%;
+  background: #e0f2fe;
+  border-radius: 16px;
+  padding: 6px 60px 6px;
+  box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+  border: 1.5px solid white;
+  overflow: visible;
+  transition: background 0.55s ease;
+}
+
+/* Shift to a soft purple when any destructive confirm overlay is active */
+#gameContainer:has(.leftPanel.showing-confirm) {
+  background: #eee4fd;
+}
+
+/* Shift to a muted teal when the lead (defeat) medal is showing */
+#gameContainer:has(.scoreDisc.medal-lead) {
+  background: #eaf1f6;
+}
+.topRow {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+.leftPanel {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 6px;
+  flex-shrink: 0;
+  width: 140px;
+  position: relative;
+}
+.middlePanel {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0 20px;
+  overflow: visible;
+  /* Height driven by scoreDisc (130px) via topRow align-items:center */
+}
+.rightPanel {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+  flex-shrink: 0;
+  width: 130px;
+  justify-content: center;
+}
+
+/* ══════════════════════════════════════
+   BUTTONS
+══════════════════════════════════════ */
+#mainBtn, #helpBtn {
+  width: 130px;
+  height: 32px;
+  border: none;
+  outline: none;
+  border-radius: 16px;
+  font-weight: 600;
+  cursor: pointer;
+  font-size: 14px;
+  text-align: center;
+  padding: 0 16px;
+  box-shadow: none;
+  -webkit-appearance: none;
+  appearance: none;
+}
+#mainBtn:focus, #helpBtn:focus { outline: none; box-shadow: none; }
+
+/* binary confirmation states for destructive actions */
+.confirmButtonsWrap {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  min-height: 70px;
+}
+
+.confirmButtons {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+#confirmBracket {
+  width: 16px;
+  height: 70px;
+  margin-top: 3px;
+  flex-shrink: 0;
+  opacity: 0;
+  transition: opacity 0.2s ease;
+  pointer-events: none;
+  fill: #9ca3af;
+  overflow: visible;
+}
+.leftPanel.showing-confirm #confirmBracket { opacity: 1; }
+#mainBtn { background: #10b981; color: white; }
+#mainBtn:hover { background: #059669; }
+#helpBtn { background: #6b7280; color: white; font-size: 12px; transition: background 0.8s ease; }
+#helpBtn:hover { background: #555459; }
+#helpBtn:active { background: #9ca3af; transition: background 0s; }
+#mainBtn:disabled, #helpBtn:disabled {
+  opacity: 0.45;
+  cursor: default;
+  pointer-events: none;
+}
+
+/* ══════════════════════════════════════
+   TIMER
+══════════════════════════════════════ */
+.scoreDisc {
+  background: #555459;
+  color: white;
+  border-radius: 50%;
+  width: 130px;
+  height: 130px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-start;
+  gap: 0;
+  padding: 0;
+  transition: background 0.2s ease;
+  cursor: default;
+  overflow: hidden;
+  flex-shrink: 0;
+  position: relative;
+}
+/* Each half occupies exactly 50% so the divider always lands at centre */
+.scoreDisc .timer-top,
+.scoreDisc .timer-bottom {
+  flex: 1;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2px;
+}
+/* Top: number sits closest to divider (flex-end), icon floats up */
+.scoreDisc .timer-top    { justify-content: flex-end;   padding-bottom: 2px; }
+/* Bottom: number sits closest to divider (flex-start), icon floats down */
+.scoreDisc .timer-bottom { justify-content: flex-start;  padding-top: 8px; }
+.scoreDisc .timer-icon {
+  width: 14px;
+  height: 14px;
+  opacity: 0.55;
+}
+.scoreDisc .accuracy-icon {
+  width: 14px;
+  height: 14px;
+  opacity: 0.55;
+}
+.scoreDisc .timer-time {
+  font-size: 26px;
+  font-weight: 700;
+  font-family: 'Courier New', monospace;
+  letter-spacing: 1px;
+  line-height: 1;
+}
+/* SVG dashed divider — zero flex-shrink so it never collapses */
+.scoreDisc .timer-divider {
+  display: block;
+  width: 100%;
+  flex-shrink: 0;
+  overflow: visible;
+}
+/* Groove lines hidden during normal play */
+.scoreDisc .div-groove-dark,
+.scoreDisc .div-groove-light { display: none; }
+/* On medals: hide dashed, show solid groove */
+.scoreDisc.medal-gold   .div-dashed,
+.scoreDisc.medal-silver .div-dashed,
+.scoreDisc.medal-bronze .div-dashed,
+.scoreDisc.medal-lead   .div-dashed { display: none; }
+.scoreDisc.medal-gold   .div-groove-dark,
+.scoreDisc.medal-gold   .div-groove-light,
+.scoreDisc.medal-silver .div-groove-dark,
+.scoreDisc.medal-silver .div-groove-light,
+.scoreDisc.medal-bronze .div-groove-dark,
+.scoreDisc.medal-bronze .div-groove-light,
+.scoreDisc.medal-lead   .div-groove-dark,
+.scoreDisc.medal-lead   .div-groove-light { display: block; }
+/* Per-medal groove colours */
+.scoreDisc.medal-gold   .div-groove-dark  { stroke: rgba(50,20,0,0.80); }
+.scoreDisc.medal-gold   .div-groove-light { stroke: rgba(255,225,80,0.70); }
+.scoreDisc.medal-silver .div-groove-dark  { stroke: rgba(15,30,50,0.75); }
+.scoreDisc.medal-silver .div-groove-light { stroke: rgba(245,255,255,0.85); }
+.scoreDisc.medal-bronze .div-groove-dark  { stroke: rgba(30,8,0,0.80); }
+.scoreDisc.medal-bronze .div-groove-light { stroke: rgba(255,180,90,0.65); }
+.scoreDisc.medal-lead   .div-groove-dark  { stroke: rgba(5,6,9,0.85); }
+.scoreDisc.medal-lead   .div-groove-light { stroke: rgba(90,105,130,0.90); }
+/* Accuracy number */
+.scoreDisc .timer-accuracy {
+  font-size: 26px;
+  font-weight: 700;
+  font-family: 'Courier New', monospace;
+  letter-spacing: 1px;
+  line-height: 1;
+}
+
+/* CHANGE 5: paused timer is clickable to unpause */
+.scoreDisc.paused        { background: #555459; cursor: pointer; }
+.scoreDisc.green         { background: #10b981; }
+.scoreDisc.finished      { background: #555459; }
+
+/* ── Medal states ───────────────────────────────────────────────────────────
+   Outer rim = chiselled conic gradient. ::before = metal face disc (3px inset).
+   Drop shadow soft + translucent, offset bottom-right (light source top-left).
+──────────────────────────────────────────────────────────────────────────── */
+.scoreDisc.medal-gold,
+.scoreDisc.medal-silver,
+.scoreDisc.medal-bronze,
+.scoreDisc.medal-lead {
+  position: relative;
+  overflow: visible;
+  transition: background 0.6s ease, box-shadow 0.6s ease;
+  box-shadow:
+    4px 8px 20px rgba(0,0,0,0.28),
+    2px 3px  8px rgba(0,0,0,0.15);
+}
+.scoreDisc.medal-gold::before,
+.scoreDisc.medal-silver::before,
+.scoreDisc.medal-bronze::before,
+.scoreDisc.medal-lead::before {
+  content: '';
+  position: absolute;
+  inset: 3px;
+  border-radius: 50%;
+  z-index: 0;
+  box-shadow:
+    inset  1px  1px 1px rgba(255,255,255,0.55),
+    inset -1px -1px 1px rgba(0,0,0,0.55);
+}
+.scoreDisc.medal-gold   > *,
+.scoreDisc.medal-silver > *,
+.scoreDisc.medal-bronze > *,
+.scoreDisc.medal-lead   > * { position: relative; z-index: 2; }
+
+/* GOLD */
+.scoreDisc.medal-gold {
+  background: conic-gradient(
+    from 225deg,
+    #b8730a 0deg, #b8730a 1deg,
+    #fff9d6 14deg, #fff9d6 17deg,
+    #e8c060 35deg, #c88810 70deg,
+    #7c4d04 108deg, #3d1e00 128deg, #3d1e00 132deg,
+    #6b3e03 155deg, #a06818 185deg, #c8860a 210deg,
+    #f0d070 222deg, #b8730a 225deg, #b8730a 360deg
+  );
+  color: #3b1a00;
+  text-shadow: 0 1px 0 rgba(255,230,80,0.8);
+}
+.scoreDisc.medal-gold::before {
+  background: conic-gradient(
+    #c8860a 0deg, #fde68a 40deg, #f6c547 70deg, #b8730a 110deg,
+    #7c4d04 140deg, #e8b84b 175deg, #fef08a 200deg, #d4a017 230deg,
+    #8a5c08 265deg, #f0c040 295deg, #fde68a 325deg, #c8860a 360deg
+  );
+  box-shadow:
+    inset 1px 1px 1px rgba(255,248,180,0.65),
+    inset -1px -1px 1px rgba(35,12,0,0.65);
+}
+
+/* SILVER */
+.scoreDisc.medal-silver {
+  background: conic-gradient(
+    from 225deg,
+    #6a8090 0deg, #6a8090 1deg,
+    #ffffff 14deg, #ffffff 17deg,
+    #d8eaf5 35deg, #90aabf 70deg,
+    #3a5060 108deg, #1a2830 128deg, #1a2830 132deg,
+    #3a5060 155deg, #6a8898 185deg, #7a8fa6 210deg,
+    #c8dce8 222deg, #6a8090 225deg, #6a8090 360deg
+  );
+  color: #1a2530;
+  text-shadow: 0 1px 0 rgba(230,245,255,0.9);
+}
+.scoreDisc.medal-silver::before {
+  background: conic-gradient(
+    #7a8fa6 0deg, #dce8f0 40deg, #f4f8fb 70deg, #8fa8bf 110deg,
+    #4a6070 140deg, #c8d8e8 175deg, #f4f8fb 200deg, #90a8be 230deg,
+    #506070 265deg, #d0e0ee 295deg, #dce8f0 325deg, #7a8fa6 360deg
+  );
+  box-shadow:
+    inset 1px 1px 1px rgba(255,255,255,0.70),
+    inset -1px -1px 1px rgba(10,20,35,0.65);
+}
+
+/* BRONZE */
+.scoreDisc.medal-bronze {
+  background: conic-gradient(
+    from 225deg,
+    #6a3010 0deg, #6a3010 1deg,
+    #ffd4a0 14deg, #ffd4a0 17deg,
+    #d07040 35deg, #8b4515 70deg,
+    #3a1808 108deg, #1a0800 128deg, #1a0800 132deg,
+    #3a1808 155deg, #703018 185deg, #7a3e10 210deg,
+    #d08040 222deg, #6a3010 225deg, #6a3010 360deg
+  );
+  color: #2a0e00;
+  text-shadow: 0 1px 0 rgba(255,175,80,0.7);
+}
+.scoreDisc.medal-bronze::before {
+  background: conic-gradient(
+    #7a3e10 0deg, #e8915a 40deg, #c8703a 70deg, #8b4515 110deg,
+    #4a2008 140deg, #d4814a 175deg, #f0a060 200deg, #a05820 230deg,
+    #5a2a0a 265deg, #c07840 295deg, #e8915a 325deg, #7a3e10 360deg
+  );
+  box-shadow:
+    inset 1px 1px 1px rgba(255,200,120,0.60),
+    inset -1px -1px 1px rgba(20,5,0,0.70);
+}
+
+/* LEAD — wrought iron, charcoal-etched numbers */
+.scoreDisc.medal-lead {
+  background: conic-gradient(
+    from 225deg,
+    #30343c 0deg, #30343c 1deg,
+    #8090a0 14deg, #8090a0 17deg,
+    #505860 35deg, #343840 70deg,
+    #141820 108deg, #0a0c12 128deg, #0a0c12 132deg,
+    #141820 155deg, #282c34 185deg, #343840 210deg,
+    #687080 222deg, #30343c 225deg, #30343c 360deg
+  );
+  color: #0c1014;
+  text-shadow: none;
+  box-shadow:
+    2px 5px 14px rgba(0,0,0,0.45),
+    1px 2px  5px rgba(0,0,0,0.25);
+}
+.scoreDisc.medal-lead::before {
+  background: conic-gradient(
+    #30343c 0deg, #687080 40deg, #788898 70deg, #485060 110deg,
+    #181c24 140deg, #506070 175deg, #687888 200deg, #404858 230deg,
+    #20242c 265deg, #505860 295deg, #687080 325deg, #30343c 360deg
+  );
+  box-shadow:
+    inset 1px 1px 1px rgba(120,136,152,0.30),
+    inset -1px -1px 1px rgba(0,0,0,0.80);
+}
+/* Numbers: etched/chiseled — fully opaque, dark, with fine relief shadow */
+.scoreDisc.medal-lead .timer-time,
+.scoreDisc.medal-lead .timer-accuracy {
+  opacity: 1;
+  text-shadow:
+    0  1px 0 rgba(255,255,255,0.4),
+    0 -1px 0 rgba(0,0,0,0.6),
+    1px 0  0 rgba(0,0,0,0.6);
+}
+/* Icons: slightly lifted from the original dim */
+.scoreDisc.medal-lead .timer-icon    { opacity: 1; filter: none; }
+.scoreDisc.medal-lead .accuracy-icon { opacity: 0.58; filter: none; }
+.scoreDisc.medal-silver .timer-divider line { stroke: rgba(15,30,50,0.50); }
+.scoreDisc.medal-bronze .timer-divider line { stroke: rgba(30,8,0,0.55); }
+.scoreDisc.medal-lead   .timer-divider line { stroke: rgba(20,25,35,0.50); }
+/* Timer icon — bevel drop-shadow */
+.scoreDisc.medal-gold   .timer-icon { opacity:0.85; filter: drop-shadow(0 1px 0 rgba(255,230,80,0.7))  drop-shadow(0 -1px 0 rgba(50,20,0,0.5)); }
+.scoreDisc.medal-silver .timer-icon { opacity:0.85; filter: drop-shadow(0 1px 0 rgba(230,245,255,0.8)) drop-shadow(0 -1px 0 rgba(15,30,50,0.5)); }
+.scoreDisc.medal-bronze .timer-icon { opacity:0.85; filter: drop-shadow(0 1px 0 rgba(255,175,80,0.65)) drop-shadow(0 -1px 0 rgba(30,8,0,0.55)); }
+/* Accuracy icon */
+.scoreDisc.medal-gold   .accuracy-icon { opacity:0.75; color: rgba(50,20,0,0.85);   filter: none; }
+.scoreDisc.medal-silver .accuracy-icon { opacity:0.75; color: rgba(15,30,50,0.85);  filter: none; }
+.scoreDisc.medal-bronze .accuracy-icon { opacity:0.75; color: rgba(30,8,0,0.85);    filter: none; }
+/* Penalty gradients — sharp split at 50%, rapid transition in */
+.scoreDisc.penalty-time  {
+  background: linear-gradient(to bottom, #ef4444 0%, #ef4444 50%, #555459 50%, #555459 100%);
+  transition: background 0.08s ease;
+}
+.scoreDisc.penalty-acc   {
+  background: linear-gradient(to bottom, #555459 0%, #555459 50%, #f59e0b 50%, #f59e0b 100%);
+  transition: background 0.08s ease;
+}
+
+/* ══════════════════════════════════════
+   TITLE
+══════════════════════════════════════ */
+#title {
+  font-size: 24px;
+  font-weight: 600;
+  text-align: center;
+  line-height: 1.3;
+  color: #272029;
+  opacity: 1;
+  transition: opacity 0.3s, filter 0.4s;
+  filter: none;
+  white-space: pre-line;
+  overflow: visible;
+}
+#title.hidden  { opacity: 0; }
+#title.strike  { text-decoration: line-through; opacity: 0.45; transition: opacity 0.5s ease; }
+#title.strike.fading { opacity: 0; }
+#title.blurred { filter: blur(6px); opacity: 0.6; user-select: none; }
+
+#title.blur-instant,
+#questionRow.blur-instant { transition: none !important; }
+#questionRow.blurred { filter: blur(3px); opacity: 0.75; user-select: none; }
+#livesRow.blurred    { filter: blur(3px); opacity: 0.75; user-select: none; }
+
+/* ── Study Notes inline icon — grows from 1px wide to full width, centred ── */
+#studyNotesIconOuter {
+  overflow: visible;
+  height: 52px;
+  /* Snappy physical curve: rapid start, smooth deceleration */
+  transition: height 0.35s cubic-bezier(0.25, 1, 0.5, 1) 0s;
+}
+#studyNotesIconOuter.study-notes-icon-hidden {
+  height: 0px;
+  /* Slight delay so the horizontal collapse starts first, but they overlap */
+  transition: height 0.3s cubic-bezier(0.55, 0, 1, 0.45) 0.15s;
+}
+
+#studyNotesIconInline {
+  transform: scaleX(1);
+  transform-origin: center;
+  /* Starts just after the height begins to open, blending the two motions */
+  transition: transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1) 0.05s;
+}
+#studyNotesIconOuter.study-notes-icon-hidden #studyNotesIconInline {
+  transform: scaleX(0); /* Clean collapse to 0 */
+  /* Shrinks rapidly and immediately */
+  transition: transform 0.25s cubic-bezier(0.36, 0, 0.66, -0.56) 0s;
+}
+
+/* ══════════════════════════════════════
+   INFO ROWS (question count + best record)
+══════════════════════════════════════ */
+
+#questionRow {
+  width: 100%;
+  height: 23px;
+  padding: 0 60px 2px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  box-sizing: border-box;
+  flex-shrink: 0;
+}
+/* Individual progress dot */
+.prog-dot {
+  opacity: 0;
+  transition: opacity 0.18s ease;
+  flex-shrink: 0;
+}
+.prog-dot.visible { opacity: 1; }
+.prog-dot.fading  { opacity: 0; }
+/* Inner fill circle — hidden until answered */
+.prog-dot .dot-fill { opacity: 0; transition: opacity 0.15s ease; }
+.prog-dot.answered .dot-fill { opacity: 1; }
+
+/* Pop animation — used for both dot fill-reveal and heart-break.
+   Swap happens at peak (50%) where the scale change masks it. */
+@keyframes indicatorPop {
+  0%   { transform: scale(1);    }
+  50%  { transform: scale(1.35); }
+  100% { transform: scale(1);    }
+}
+.indicator-pop {
+  animation: indicatorPop 0.22s cubic-bezier(0.22, 0.61, 0.36, 1);
+}
+
+/* ── Lives row ───────────────────────────────────────────────────────────────
+   Exact mirror of questionRow: same fixed height, same horizontal padding.
+   Always present in layout so the container never shifts height.
+   Hearts are invisible (opacity 0) until shown; display:none only when
+   playerLives is null (infinite lives). */
+#livesRow {
+  width: 100%;
+  height: 23px;
+  padding: 2px 60px 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  box-sizing: border-box;
+  flex-shrink: 0;
+}
+#livesRow.lives-hidden { visibility: hidden; }
+.life-heart {
+  opacity: 0;
+  flex-shrink: 0;
+  transition: opacity 0.18s ease;
+}
+.life-heart.visible { opacity: 1; }
+.life-heart.fading  { opacity: 0; transition: opacity 0.4s ease; }
+/* Stats row: mirrors leftPanel/rightPanel widths, sits under game panel */
+#statsRow {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+  padding: 8px 60px 4px;
+  position: relative;
+  z-index: 501;
+  box-sizing: border-box;
+  min-height: 37px;
+}
+#statLeft, #statRight {
+  font-family: 'Lato', system-ui, sans-serif;
+  font-size: 13px;
+  color: #6b7280;
+  white-space: nowrap;
+}
+#statLeft  { width: 140px; text-align: center; }
+#statRight { width: 130px; text-align: center; }
+
+@keyframes statPulse {
+  0%   { transform: scale(1);    color: #6b7280; }
+  50%  { transform: scale(1.18); color: #f59e0b; }
+  100% { transform: scale(1);    color: #6b7280; }
+}
+.stat-pulse { animation: statPulse 0.5s ease-in-out; }
+
+#credit {
+  font-family: 'Lato', system-ui, sans-serif;
+  font-size: 12px;
+  color: #9ca3af;
+  text-align: center;
+  width: 100%;
+  padding: 8px 60px 0;
+  box-sizing: border-box;
+  transform: translateY(0);
+  transition: transform 0.85s cubic-bezier(0.4, 0, 0.2, 1);
+}
+/* Nudge credit and difficulty icon up into the keyboard shadow when face-down */
+#keyboardWrap.kb-at-face ~ #credit,
+#keyboardWrap.kb-at-face ~ #diffIconWrap {
+  transform: translateY(-22px);
+}
+
+/* Credit line and the difficulty icon travel together as one unit while a
+   settings panel is open on the desktop (icon-wrap) layout. They jump
+   straight to this offset, with no easing, rather than following the
+   keyboard's own slow fold. Tune the pixel value to taste. */
+#keyboardWrap.settings-open ~ #credit,
+#keyboardWrap.settings-open ~ #diffIconWrap {
+  transform: translateY(-40px);
+  transition: none;
+}
+
+/* Brief window switched on by JS right as settings closes (see
+   closeSettings and _closeAllModalsInstant in index.html), so the jump
+   back to the resting position above is also instant, not eased. */
+#keyboardWrap.settings-closing-snap ~ #credit,
+#keyboardWrap.settings-closing-snap ~ #diffIconWrap {
+  transition: none;
+}
+
+#credit {
+  margin-top: 8px;
+}
+
+/* Push credit further down when keyboard visibility is set to none */
+body.no-keyboard-mode #credit {
+  margin-top: 24px;
+}
+
+/* Extended key ghost chip — appears in statsRow when a key not on the
+   graphical keyboard is held. Styled to match the current keyboard mode. */
+/* Extended key chip : centred in #statsRow, shows chip-format feedback
+   for keys not present on the graphical keyboard (Home, End, PageUp etc.).
+   Background and colour are applied directly to the chip children by JS. */
+#extKeyChip {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  display: none;
+  align-items: center;
+  justify-content: center;
+  pointer-events: none;
+  z-index: 11;
+  white-space: nowrap;
+  transition: opacity 0.8s ease;
+}
+
+
+.modal-layout-rows {
+  display: table;
+  border-collapse: separate;
+  border-spacing: 0 6px;
+  width: auto;
+}
+.modal-inline-row {
+  display: table-row;
+}
+.modal-inline-row.disabled {
+  opacity: 0.38;
+  pointer-events: none;
+}
+.modal-inline-row.disabled .modal-left-label,
+.modal-inline-row.disabled .modal-right-label {
+  text-decoration: line-through;
+}
+/* Column 1: left label — right-aligned so it butts up against the switch */
+.modal-left-label {
+  display: table-cell;
+  text-align: right;
+  vertical-align: middle;
+  padding-right: 0px;
+  line-height: 1;
+  white-space: nowrap;
+  font-size: 12px;
+  color: #374151;
+}
+/* Column 2: the toggle switch itself */
+.modal-switch-wrap {
+  padding: 0 5px;
+  line-height: 1;
+  display: table-cell;
+  vertical-align: middle;
+  text-align: center;
+  white-space: nowrap;
+}
+/* Column 3: right label — left-aligned from the switch */
+.modal-right-label {
+  display: table-cell;
+  vertical-align: middle;
+  padding-left: 0px;
+  line-height: 1;
+  white-space: nowrap;
+  font-size: 12px;
+  color: #374151;
+}
+.modal-inline-val {
+  font-size: 12px;
+  color: #6b7280;
+}
+.modal-inline-label {
+  font-size: 12px;
+  color: #374151;
+}
+.modal-kbsize-icons {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+}
+
+/* Keyboard variant picker */
+.kb-variant-picker {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin-top: 4px;
+}
+.kb-variant-option {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  cursor: pointer;
+  padding: 6px 8px;
+  border-radius: 6px;
+  border: 1.5px solid transparent;
+  transition: border-color 0.15s;
+}
+.kb-variant-option:hover { border-color: #d1d5db; }
+.kb-variant-option.selected { border-color: #374151; }
+.kb-variant-keys {
+  display: flex;
+  gap: 3px;
+  align-items: center;
+  flex-shrink: 0;
+}
+.kb-variant-key {
+  background: #e5e7eb;
+  border-radius: 3px;
+  font-size: 9px;
+  font-family: system-ui, sans-serif;
+  color: #374151;
+  padding: 3px 5px;
+  white-space: nowrap;
+  border-bottom: 1.5px solid #9ca3af;
+}
+.kb-variant-key.wide { padding: 3px 14px; }
+.kb-variant-label {
+  font-size: 12px;
+  color: #6b7280;
+}
+
+/* Modal toggle rows */
+
+
+/* ── Keyboard modal shell ─────────────────────────────────────── */
+
+.modal-toggle-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 4px;
+  user-select: none;
+}
+.modal-toggle-row label {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  cursor: pointer;
+}
+.modal-toggle-row.disabled {
+  opacity: 0.4;
+  pointer-events: none;
+}
+.modal-toggle-row.disabled .modal-toggle-label {
+  text-decoration: line-through;
+}
+.modal-toggle-label {
+  font-size: 13px;
+  color: #374151;
+}
+.modal-section-gap { height: 4px; }
+.modal-section-title {
+  font-size: 12px;
+  font-weight: 700;
+  color: #374151;
+  margin: 0;
+}
+/* Radio dot toggle */
+.modal-radio {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  cursor: pointer;
+  width: 19px;
+  height: 19px;
+}
+.modal-radio input {
+  position: absolute;
+  opacity: 0;
+  width: 0; height: 0;
+  pointer-events: none;
+}
+.modal-radio-dot { display: block; }
+.modal-radio-fill { opacity: 0; transition: opacity 0.15s ease; }
+.modal-radio.on .modal-radio-fill { opacity: 1; }
+
+/* Sticky radio three-state appearance.
+   The SVG uses currentColor so all three states are driven here.
+   Off: light grey ring, no fill dot.
+   Touch-owns (touch on, sticky off): mid-grey ring and dot -- touch is always sticky.
+   On: dark ring and dot -- user has explicitly enabled sticky for the physical keyboard. */
+#stickyRadio                              { color: #d1d5db; }
+#stickyRadio.touch-owns-sticky            { color: #9ca3af; }
+#stickyRadio.touch-owns-sticky .modal-radio-fill { opacity: 1; }
+#stickyRadio.on                           { color: #374151; }
+
+/* Rows that are visible but signal the control is not yet editable (no keyboard confirmed).
+   Unlike .disabled, this does not suppress pointer events -- the JS handles the toast. */
+.modal-toggle-row.no-keyboard .modal-toggle-label { color: #9ca3af; }
+
+/* ══════════════════════════════════════
+   SETTINGS PANEL
+   Absolutely positioned inside #keyboardWrap, top-aligned.
+   As the keyboard tilts down it reveals this content above it.
+   Width/left aligned to keyboardPanel by JS.
+══════════════════════════════════════ */
+
+#settingsPanel {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  pointer-events: none;
+  z-index: 1; /* above bg, below keyboard 3D stage */
+  overflow: hidden;
+}
+
+#settingsPanelInner {
+  position: absolute;
+  background: transparent;
+  top: 0;
+  height: 300px; /* must match SettingsPanelFixedHeight in index.html */
+  overflow: hidden; /* never an internal scrollbar; taller content is paginated instead */
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  /* left and width set by JS to match keyboardPanel, or the Keyboard
+     Settings minimum width */
+  padding: 0 0 8px;
+  font-family: 'Lato', system-ui, sans-serif;
+  font-size: 13px;
+  color: #374151;
+  line-height: 1.55;
+  opacity: 0;
+  transform: translateY(-8px);
+  transition:
+    opacity   0.3s ease 0.25s,
+    transform 0.3s ease 0.25s;
+  pointer-events: none;
+}
+
+/* Overflow fog: a static gradient strip that sits just above the credit line.
+   Normally invisible (no content reaches it), but prevents overflow from
+   bleeding into the credit area — particularly in ghost mode or on history
+   screens with long content lists. */
+#panelFog {
+  width: 100%;
+  height: 48px;
+  margin-top: -48px;
+  background: linear-gradient(to bottom, transparent 0%, #f0f4f8 100%);
+  pointer-events: none;
+  position: relative;
+  z-index: 5;
+}
+
+/* At edge: shadow stays behind the keyboard, not cast onto content above */
+body.kb-at-edge #keyboardPanel #kb-shadow {
+  display: none;
+}
+
+#settingsPanel.sp-open #settingsPanelInner {
+  opacity: 1;
+  transform: translateY(0);
+  pointer-events: auto;
+}
+
+/* Fade content out quickly as the keyboard rises to face position */
+#settingsPanel.sp-closing #settingsPanelInner {
+  opacity: 0;
+  transform: translateY(-6px);
+  transition: opacity 0.2s ease, transform 0.2s ease;
+  pointer-events: none;
+}
+
+/* ── Two-column grid ──────────────────────────────── */
+.sp-page {
+  display: none;
+  gap: 0;
+  width: 100%;
+}
+.sp-page.sp-active {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+}
+
+/* Returning-user, Welcome, Shared App List, and Difficulty pages: full-width single column, centred */
+#panelDifficultySettings.sp-active,
+#panelLandingReturning.sp-active,
+#panelLandingSharedApps.sp-active,
+#panelLandingWelcome.sp-active {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+#panelDifficultySettings.sp-active::after,
+#panelLandingReturning.sp-active::after,
+#panelLandingSharedApps.sp-active::after,
+#panelLandingWelcome.sp-active::after  { display: none; }
+
+/* Difficulty panel's caret+label sit above the pill via negative offset
+   (bottom: calc(100% + 6px)) and get clipped by the parent containers'
+   overflow:hidden, which exists for the open/close height animation.
+   Lift the clip only while this panel is the active page, on both the
+   desktop settings rail and the phone toolbar instance. */
+#settingsPanelInner:has(#panelDifficultySettings.sp-active),
+#phonePanelArea:has(#panelDifficultySettings.sp-active) {
+  overflow: visible;
+}
+
+/* Gutter: a 1px line at the midpoint — centred above diffIcon */
+.sp-page.sp-active::after {
+  content: '';
+  position: absolute;
+  top: 16px;
+  bottom: 12px;
+  left: 50%;
+  width: 1px;
+  background: #e5e7eb;
+  pointer-events: none;
+}
+
+.sp-col {
+  min-width: 0;
+}
+.sp-col-left  { padding-right: 20px; }
+.sp-col-right { padding-left:  20px; }
+.sp-col-full  { grid-column: 1 / -1; }
+
+/* ── Both columns always align content from the top ── */
+.sp-col-left,
+.sp-col-right {
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  justify-content: flex-start;
+}
+
+/* ── Typography ──────────────────────────────────── */
+.sp-title {
+  font-size: 12px;
+  font-weight: 700;
+  color: #374151;
+  margin: 4px 0 5px 0;
+}
+.sp-body {
+  font-size: 12px;
+  color: #374151;
+  line-height: 1.6;
+  margin: 0 0 10px 0;
+}
+.sp-hint {
+  font-size: 11px;
+  color: #6b7280;
+  margin-top: 8px;
+}
+
+/* ── Welcome screen — middlePanel tagline ─────────── */
+#welcomeTagline {
+  display: none;
+  font-size: 14px;
+  font-style: italic;
+  color: #6b7280;
+  margin: 4px 0 0;
+  text-align: center;
+  line-height: 1.5;
+}
+.diff-btn {
+  flex: 1;
+  max-width: 140px;
+  padding: 9px 10px;
+  font-family: 'Lato', system-ui, sans-serif;
+  font-size: 13px;
+  font-weight: 600;
+  color: #9ca3af;
+  background: #f7f9fb;
+  border: 1.5px solid #d1d5db;
+  border-radius: 8px;
+  cursor: pointer;
+  line-height: 1.2;
+}
+.sp-key-chip {
+  display: inline-block;
+  font-size: 10px;
+  font-weight: 600;
+  color: #1e3a5f;
+  border: 1px solid #d1d5db;
+  border-radius: 3px;
+  padding: 1px 4px 0;
+  line-height: 1.6;
+  white-space: nowrap;
+}
+
+/* ── Browser conflict list ───────────────────────── */
+.sp-conflict-list {
+  margin: 0 0 8px 0;
+  padding-left: 0;
+  list-style: none;
+  font-size: 12px;
+  color: #6b7280;
+  line-height: 1.75;
+}
+.sp-conflict-list li {
+  margin-bottom: 6px;
+  display: flex;
+  align-items: center;
+  flex-wrap: nowrap;
+  gap: 0;
+  line-height: 1.6;
+  cursor: pointer;
+}
+
+/* ── Page switch wipe animation ──────────────────── */
+@keyframes spWipeIn {
+  from { opacity: 0; transform: translateY(12px); }
+  to   { opacity: 1; transform: translateY(0);    }
+}
+@keyframes spWipeInLeft {
+  from { opacity: 0; transform: translateY(-12px); }
+  to   { opacity: 1; transform: translateY(0);     }
+}
+@keyframes spWipeInUp {
+  from { opacity: 0; transform: translateY(14px); }
+  to   { opacity: 1; transform: translateY(0);    }
+}
+.sp-page.sp-wipe-in       { animation: spWipeIn     0.22s ease forwards; }
+.sp-page.sp-wipe-in-left  { animation: spWipeInLeft 0.22s ease forwards; }
+.sp-page.sp-wipe-in-up    { animation: spWipeInUp   0.22s ease forwards; }
+
+@keyframes spPageTurnRight {
+  from { opacity: 0; transform: translateX(18px); }
+  to   { opacity: 1; transform: translateX(0); }
+}
+@keyframes spPageTurnLeft {
+  from { opacity: 0; transform: translateX(-18px); }
+  to   { opacity: 1; transform: translateX(0); }
+}
+.sp-page.sp-page-turn-right { animation: spPageTurnRight 0.25s cubic-bezier(0.22, 0.61, 0.36, 1) forwards; }
+.sp-page.sp-page-turn-left  { animation: spPageTurnLeft  0.25s cubic-bezier(0.22, 0.61, 0.36, 1) forwards; }
+
+@keyframes btnPulse {
+  0%   { transform: scale(1); }
+  35%  { transform: scale(1.08); }
+  65%  { transform: scale(1.04); }
+  100% { transform: scale(1); }
+}
+#mainBtn.pulse {
+  animation: btnPulse 0.45s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+}
+
+/* Pressed-in state: applied to a label span on pointerdown, removed on pointerup before the pop plays. */
+.press-in {
+  display: inline-block;
+  transform: scale(0.88);
+  transition: transform 0.08s ease;
+}
+#appPill.pulse {
+  animation: btnPulse 0.45s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+}
+.app-option.pulse {
+  animation: btnPulse 0.45s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+}
+
+@keyframes pillGlow {
+  0%   { transform: scale(1);    box-shadow: 0 0 0 0   rgba(156,163,175,0); }
+  40%  { transform: scale(1.08); box-shadow: 0 0 0 4px rgba(156,163,175,0.35); }
+  100% { transform: scale(1);    box-shadow: 0 0 0 0   rgba(156,163,175,0); }
+}
+#appPill.pulse-glow {
+  animation: pillGlow 0.55s ease-out;
+}
+/* Generic versions — apply to any element */
+.pulse {
+  animation: btnPulse 0.45s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+}
+.pulse-glow {
+  animation: pillGlow 0.55s ease-out;
+}
+@keyframes pillPop {
+  0%   { transform: scale(1);    box-shadow: 0 0 0 0   rgba(156,163,175,0); }
+  30%  { transform: scale(1.08); box-shadow: 0 0 0 4px rgba(156,163,175,0.35); }
+  65%  { transform: scale(1.04); box-shadow: 0 0 0 2px rgba(156,163,175,0.2); }
+  100% { transform: scale(1);    box-shadow: 0 0 0 0   rgba(156,163,175,0); }
+}
+.pulse-pop {
+  animation: pillPop 0.45s cubic-bezier(0.25, 0.46, 0.45, 0.94) !important;
+}
+
+#kbToast {
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
+  background: transparent;
+  color: white;
+  font-size: 12px;
+  font-weight: 600;
+  padding: 5px 14px;
+  border-radius: 12px;
+  white-space: nowrap;
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 0.15s;
+  z-index: 510;
+  top: 50%;
+  transform: translate(-50%, -50%);
+}
+#kbToast.show { opacity: 1; }
+#kbToast.warning { background: #f59e0b; }
+
+/* ── Unified notification toast ─────────────────────────────────────────────
+   position:fixed so it floats above everything including modals.
+   JS positions it: centred above keyboard normally, or top-of-modal when
+   a modal is open. Drop shadow with top-left light source.              ── */
+#kwToast {
+  position: fixed;
+  background: rgba(28, 28, 32, 0.92);
+  color: #f3f4f6;
+  font-family: 'Lato', system-ui, sans-serif;
+  font-size: 13px;
+  font-weight: 500;
+  padding: 7px 18px;
+  border-radius: 12px;
+  white-space: nowrap;
+  pointer-events: none;
+  opacity: 0;
+  transform: translate(-50%, 0);
+  transition: opacity 0.22s ease;
+  box-shadow: 2px 3px 12px rgba(0,0,0,0.48), 1px 1px 3px rgba(0,0,0,0.28);
+  z-index: 210;
+  max-width: 340px;
+  white-space: normal;
+  text-align: center;
+  line-height: 1.4;
+}
+#kwToast.visible { opacity: 1; }
+
+/* ══════════════════════════════════════
+   KEYBOARD WRAPPER
+══════════════════════════════════════ */
+#keyboardWrap {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+  margin-top: 0;
+  position: relative;
+  min-height: 320px;
+  transition: min-height 0.75s cubic-bezier(0.4, 0, 0.2, 1), opacity 0.4s ease;
+}
+#kbIcon {
+  display: block;
+  cursor: pointer;
+  color: #9ca3af;
+  transition: color 0.2s ease;
+}
+@keyframes kbIconPulse {
+  0%   { transform: scale(1); }
+  40%  { transform: scale(1.22); }
+  100% { transform: scale(1); }
+}
+#kbIcon.pulse {
+  animation: kbIconPulse 0.5s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+}
+#kbIcon:hover {
+  color: #6b7280;
+  transform: scale(1.12);
+  transition: transform 0.18s ease;
+}
+#kbIcon.pulse:hover {
+  transform: none;
+  transition: none;
+}
+
+
+/* ── Browser icon (mirrors kbIcon, right side) ─────────────────── */
+#browserIcon {
+  display: block;
+  cursor: pointer;
+  color: #9ca3af;
+  transition: color 0.2s ease;
+}
+@keyframes browserIconPulse {
+  0%   { transform: scale(1); }
+  40%  { transform: scale(1.22); }
+  100% { transform: scale(1); }
+}
+#browserIcon.pulse {
+  animation: browserIconPulse 0.5s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+}
+#browserIcon:hover {
+  color: #6b7280;
+  transform: scale(1.12);
+  transition: transform 0.18s ease;
+}
+#browserIcon.pulse:hover {
+  transform: none;
+  transition: none;
+}
+
+/* ── Conflicts modal inner content ──────────────────────────────── */
+
+/* ── Conflict chip styles ─────────────────────────────────────────────────
+   Active (radio OFF): shadowed chip, normal descriptor text.
+   Blocked/dismissed (radio ON): flat chip, strikethrough descriptor.
+──────────────────────────────────────────────────────────────────────────── */
+.conflict-chip {
+  background: #f3f4f6;
+  box-shadow: 0 1.5px 0 #c9cdd3;
+}
+.conflict-desc {
+  color: #6b7280;
+}
+
+/* Dismissed/blocked (radio ON): flat chip, strikethrough label */
+li.conflict-dismissed .conflict-chip {
+  background: transparent;
+  box-shadow: none;
+}
+li.conflict-dismissed .conflict-desc {
+  text-decoration: line-through;
+  color: #c0c5cc;
+}
+
+#EndGameHistory .sp-col-right {
+  justify-content: flex-end;
+  overflow: visible;
+}
+
+#browserCompatList {
+  overflow: visible;
+}
+
+
+/* ══════════════════════════════════════
+   KEYBOARD PANEL
+   Outer: 14px → corner keys: 9px → base keys: 4px
+══════════════════════════════════════ */
+#keyboardPanel {
+  background: #b2b8c0;
+  border-radius: 14px;
+  padding: 9px;
+  box-shadow: 0 8px 24px rgba(0,0,0,0.18);
+  display: inline-flex;
+  flex-direction: column;
+  position: relative;
+  z-index: 1;
+  gap: 4px;
+  pointer-events: auto;
+  touch-action: none;
+}
+.kb-row {
+  display: flex;
+  gap: 4px;
+  position: relative;
+}
+
+/* Base key */
+.key {
+  background: #f5f5f7;
+  border-radius: 4px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  color: #1d1d1f;
+  font-family: system-ui, sans-serif;
+  box-shadow: 0 1px 0 #8a9099, inset 0 -1px 0 rgba(0,0,0,0.08);
+  user-select: none;
+  -webkit-touch-callout: none;
+  -webkit-user-select: none;
+  position: relative;
+  transition: background 0.07s;
+  width: 40px;
+  height: 40px;
+  flex-shrink: 0;
+  cursor: default;
+}
+.key.corner-tl { border-top-left-radius: 9px; }
+.key.corner-tr { border-top-right-radius: 9px; }
+.key.corner-bl { border-bottom-left-radius: 5px; }
+.key.corner-br { border-bottom-right-radius: 5px; }
+
+/* Keys that sit one step in from a panel corner get a mid-level radius.
+   Panel = 14px, true corner keys = 9px, these edge-adjacent keys = 6px. */
+/* ~` key: top-left */
+#keyboardPanel [data-key="Backquote"]  { border-top-left-radius: 6px; }
+/* delete key: top-right */
+#keyboardPanel [data-key="Backspace"]  { border-top-right-radius: 6px; }
+/* shift keys: all corners standard 4px — no overrides needed */
+/* Right arrow: bottom-right is a true panel corner → full concentric radius */
+#keyboardPanel [data-key="ArrowRight"] { border-bottom-right-radius: 9px; }
+
+/* Fn row */
+.key.fn {
+  background: #ffffff;
+  height: 28px;
+  box-shadow: 0 1px 0 #9aa0a8, inset 0 -1px 0 rgba(0,0,0,0.06);
+}
+.key.fn .fn-lbl {
+  font-size: 8.5px;
+  font-weight: 400;
+  color: #555;
+  position: absolute;
+  bottom: 4px;
+  left: 0; right: 0;
+  text-align: center;
+}
+
+/* Letter keys */
+.key .letter-lbl {
+  font-size: 14px;
+  font-weight: 500;
+  color: #555;
+  line-height: 1;
+}
+
+/* Symbol keys */
+.key .sym-sub {
+  position: absolute;
+  top: 4px; left: 5px;
+  font-size: 8px;
+  color: #777;
+  line-height: 1;
+}
+.key .sym-main {
+  font-size: 13px;
+  font-weight: 500;
+  color: #555;
+  line-height: 1;
+}
+/* PC mode: pull sym-sub away from the now-rounded corner,
+   centred above the main glyph with a small upward nudge */
+#keyboardPanel.pc-keys .key .sym-sub {
+  top: 5px;
+  left: 50%;
+  transform: translateX(-50%);
+}
+/* PC mini: sym-main shrinks to same size as sym-sub so the two
+   stacked symbols fit inside the smaller circular key */
+#keyboardPanel.pc-keys.mini-keys .key .sym-main {
+  font-size: 8px;
+}
+#keyboardPanel.pc-keys.mini-keys .key .sym-sub {
+  top: 3px;
+  font-size: 7px;
+}
+
+/* Utility keys */
+/* Key glyph SVGs — option (⌥), control (⌃), return (↩) on full-size Mac.
+   Absolutely positioned top-left like sym-sub so they sit in the key corner
+   consistently regardless of the key's flex layout. */
+.key .key-glyph-sym {
+  position: absolute;
+  top: 4px;
+  left: 5px;
+  display: block;
+  color: #777;
+  flex-shrink: 0;
+}
+.key .key-glyph-option  { width: 18px; height: 18px; }
+.key .key-glyph-control { width: 11px; height: 8px; }
+.key .key-glyph-return  { width: 14px; height: 12px; }
+
+.key .util-lbl {
+  font-size: 9px;
+  font-weight: 400;
+  color: #555;
+}
+
+/* Modifier keys */
+.key .mod-sym {
+  font-size: 16px;
+  color: #555;
+  line-height: 1;
+  margin-bottom: 2px;
+}
+.key .mod-word {
+  position: absolute;
+  bottom: 4px;
+  left: 0; right: 0;
+  text-align: center;
+  font-size: 8px;
+  color: #555;
+  font-weight: 400;
+  line-height: 1;
+}
+/* Cross-training alias on the Win key: logo and caption sit on one line
+   rather than the logo alone with the caption stacked underneath. */
+.key .cross-training-alias-row {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 3px;
+  white-space: nowrap;
+}
+.key .cross-training-alias-row .mod-word {
+  position: static;
+  font-size: 8px;
+}
+.key .win-svg {
+  width: 14px;
+  height: 14px;
+  color: #555;
+}
+
+/* PC Backspace/Delete key glyph — replaces the unicode "⌫" character */
+.key .delete-svg {
+  width: 16px;
+  height: auto;
+  color: #555;
+}
+
+/* Mini-only: mod key with symbol only, centred */
+.key .mod-sym-only {
+  font-size: 14px;
+  color: #555;
+  line-height: 1;
+}
+/* Mini-only: util key with symbol only, centred */
+.key .util-sym-only {
+  font-size: 14px;
+  color: #555;
+  line-height: 1;
+}
+
+/* Lock key
+   CHANGE 2: .active stays white — no yellow highlight */
+.key.lock-key { cursor: pointer; }
+.key.lock-key:hover  { background: #e8e8ea; }
+.key.lock-key.active { background: #f5f5f7; }
+.key .lock-svg { width: 14px; height: 14px; opacity: 0.55; stroke: currentColor; transition: opacity 0.4s ease; }
+
+/* Spacebar */
+.key.space-key { width: 180px; }
+
+/* Arrow keys */
+.arrow-stack {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+/* Left/right arrows: full height of bottom row, standard 4px rounding all corners.
+   Right arrow gets corner-br (9px) from its corner[] config for the keyboard corner. */
+.key.arrow-lr {
+  /* Width and height set by inline style in buildKeyboard so mini scales correctly.
+     No border-radius here — inherits 4px from .key; .corner-br overrides ▶ bottom-right. */
+}
+/* Mac: half-width arrows with square inner corners so they butt against updown stack */
+.key.arrow-half { width: 20px !important; }
+.key.arrow-sq-right { border-top-right-radius: 0 !important; border-bottom-right-radius: 0 !important; }
+.key.arrow-sq-left  { border-top-left-radius:  0 !important; border-bottom-left-radius:  0 !important; }
+.key.arrow-lr .letter-lbl { font-size: 11px; }
+/* Up/down: width, height and gap all set by inline style in buildKeyboard. */
+.key.arrow-ud {
+}
+.key.arrow-up   { border-radius: 4px 4px 0 0; }
+.key.arrow-down { border-radius: 0 0 4px 4px; }
+.key.arrow-ud .letter-lbl { font-size: 10px; }
+
+/* ══════════════════════════════════════
+   PC MODE — rounded keys
+   #keyboardPanel.pc-keys sets all keys
+   to near-circular. Concentric radii:
+   panel 14px → keys 50% (full circle).
+   Wide/tall keys use a fixed large px
+   value so they pill rather than ellipse.
+   Arrow halves get asymmetric rounding.
+══════════════════════════════════════ */
+#keyboardPanel.pc-keys .key {
+  border-radius: 50%;
+  transition: background 0.07s, border-radius 0.2s ease;
+}
+/* Wide utility keys: pill shape */
+#keyboardPanel.pc-keys [data-key="Backspace"],
+#keyboardPanel.pc-keys [data-key="Tab"],
+#keyboardPanel.pc-keys [data-key="CapsLock"],
+#keyboardPanel.pc-keys [data-key="Enter"],
+#keyboardPanel.pc-keys [data-key="ShiftLeft"],
+#keyboardPanel.pc-keys [data-key="ShiftRight"],
+#keyboardPanel.pc-keys [data-key="Space"],
+#keyboardPanel.pc-keys [data-key="ControlLeft"],
+#keyboardPanel.pc-keys [data-key="ControlRight"],
+#keyboardPanel.pc-keys [data-key="MetaLeft"],
+#keyboardPanel.pc-keys [data-key="AltLeft"],
+#keyboardPanel.pc-keys [data-key="AltRight"],
+#keyboardPanel.pc-keys [data-key="Fn"] {
+  border-radius: 40px;
+}
+/* Fn row keys inherit 50% border-radius from .pc-keys .key —
+   their 40×28 native dimensions produce a natural stadium shape.
+   Lock key stretches wider via flex and auto-pills. No override needed. */
+/* Fn row: pill shape — radius = half the key height (28÷2 = 14px).
+   This overrides 50% for fn keys so they pill rather than oval. */
+#keyboardPanel.pc-keys .key.fn {
+  border-radius: 14px;
+}
+
+/* Backquote and ArrowRight sit at panel corners but are sym/arrow keys
+   not covered by any pill rule — explicitly keep them circular.
+   The .corner-* classes are NOT overridden here: they would stomp the
+   pill rules (40px / 14px) applied to Esc, lock, ControlLeft, Backspace. */
+#keyboardPanel.pc-keys [data-key="Backquote"],
+#keyboardPanel.pc-keys [data-key="ArrowRight"] {
+  border-radius: 50%;
+}
+/* Up/down arrow halves — keep the flat join between them */
+#keyboardPanel.pc-keys .key.arrow-up   { border-radius: 40px 40px 8px 8px; }
+#keyboardPanel.pc-keys .key.arrow-down { border-radius: 8px 8px 40px 40px; }
+
+/* Mini keyboards (both Mac and PC): shrink regular key heights to
+   match the scaled-down width (~28px), keeping keys squarish.
+   Fn row scales proportionally. Wide flex keys keep natural height. */
+#keyboardPanel.mini-keys .key {
+  height: 28px;
+}
+#keyboardPanel.mini-keys .key.fn {
+  height: 19px;
+}
+/* PC mini overrides — already handled by the rules above now shared */
+/* Up/down arrow halves in mini PC: height now set correctly by JS (12px) */
+/* Wide/pill/flex keys: keep at 28px in all mini keyboards */
+#keyboardPanel.mini-keys [data-key="Backspace"],
+#keyboardPanel.mini-keys [data-key="Tab"],
+#keyboardPanel.mini-keys [data-key="CapsLock"],
+#keyboardPanel.mini-keys [data-key="Enter"],
+#keyboardPanel.mini-keys [data-key="ShiftLeft"],
+#keyboardPanel.mini-keys [data-key="ShiftRight"],
+#keyboardPanel.mini-keys [data-key="Space"],
+#keyboardPanel.mini-keys [data-key="ControlLeft"],
+#keyboardPanel.mini-keys [data-key="ControlRight"],
+#keyboardPanel.mini-keys [data-key="MetaLeft"],
+#keyboardPanel.mini-keys [data-key="AltLeft"],
+#keyboardPanel.mini-keys [data-key="AltRight"] {
+  height: 28px;
+}
+
+/* PC keyboard panel: rounder corners + cyan-tinted plastic body */
+#keyboardPanel.pc-keys {
+  border-radius: 22px;
+  background: #9eb8bf;
+}
+
+/* Mini Mac number row: nudge sym-main down-right to clear the sym-sub
+   which sits top-left. Only digit keys (Digit0-9, Minus, Equal, Backquote)
+   need this — letter keys have no sym-sub clash. */
+#keyboardPanel.mini-keys:not(.pc-keys) [data-key="Backquote"] .sym-main,
+#keyboardPanel.mini-keys:not(.pc-keys) [data-key="Digit1"] .sym-main,
+#keyboardPanel.mini-keys:not(.pc-keys) [data-key="Digit2"] .sym-main,
+#keyboardPanel.mini-keys:not(.pc-keys) [data-key="Digit3"] .sym-main,
+#keyboardPanel.mini-keys:not(.pc-keys) [data-key="Digit4"] .sym-main,
+#keyboardPanel.mini-keys:not(.pc-keys) [data-key="Digit5"] .sym-main,
+#keyboardPanel.mini-keys:not(.pc-keys) [data-key="Digit6"] .sym-main,
+#keyboardPanel.mini-keys:not(.pc-keys) [data-key="Digit7"] .sym-main,
+#keyboardPanel.mini-keys:not(.pc-keys) [data-key="Digit8"] .sym-main,
+#keyboardPanel.mini-keys:not(.pc-keys) [data-key="Digit9"] .sym-main,
+#keyboardPanel.mini-keys:not(.pc-keys) [data-key="Digit0"] .sym-main,
+#keyboardPanel.mini-keys:not(.pc-keys) [data-key="Minus"] .sym-main,
+#keyboardPanel.mini-keys:not(.pc-keys) [data-key="Equal"] .sym-main {
+  position: relative;
+  top: 4px;
+  left: 3px;
+}
+
+/* PC: fn-lbl centres in the key (both full and mini) */
+#keyboardPanel.pc-keys .key.fn .fn-lbl {
+  position: static;
+  font-size: 8px;
+}
+
+/* ══════════════════════════════════════
+   LIT STATES
+══════════════════════════════════════ */
+/* ── GREEN UP: resting coloured state — top highlight gives dimensionality ── */
+.key.lit-green-up {
+  background: #10b981 !important;
+  box-shadow:
+    inset 0 1px 0 rgba(180,255,220,0.55),
+    0 1px 0 #059669,
+    0 0 8px rgba(16,185,129,0.5) !important;
+}
+/* ── GREEN DOWN: key physically held — no bottom drop, 1px dark perimeter ── */
+.key.lit-green-down {
+  background: #10b981 !important;
+  box-shadow:
+    inset 0 0 0 1px #059669,
+    0 0 6px rgba(16,185,129,0.4) !important;
+}
+.key.lit-green-up .letter-lbl,    .key.lit-green-down .letter-lbl,
+.key.lit-green-up .sym-main,      .key.lit-green-down .sym-main,
+.key.lit-green-up .sym-sub,       .key.lit-green-down .sym-sub,
+.key.lit-green-up .util-lbl,      .key.lit-green-down .util-lbl,
+.key.lit-green-up .fn-lbl,        .key.lit-green-down .fn-lbl,
+.key.lit-green-up .mod-sym,       .key.lit-green-down .mod-sym,
+.key.lit-green-up .mod-sym-only,  .key.lit-green-down .mod-sym-only,
+.key.lit-green-up .mod-word,      .key.lit-green-down .mod-word,
+.key.lit-green-up .util-sym-only, .key.lit-green-down .util-sym-only,
+.key.lit-green-up .key-glyph-sym, .key.lit-green-down .key-glyph-sym,
+.key.lit-green-up .lock-svg,      .key.lit-green-down .lock-svg,
+.key.lit-green-up .delete-svg,    .key.lit-green-down .delete-svg,
+.key.lit-green-up .win-svg,       .key.lit-green-down .win-svg { color: white !important; }
+
+/* ── ORANGE UP: resting coloured state ── */
+.key.lit-orange-up {
+  background: #f97316 !important;
+  box-shadow:
+    inset 0 1px 0 rgba(255,220,160,0.60),
+    0 1px 0 #c2410c,
+    0 0 8px rgba(249,115,22,0.5) !important;
+}
+/* ── ORANGE DOWN: key physically held ── */
+.key.lit-orange-down {
+  background: #f97316 !important;
+  box-shadow:
+    inset 0 0 0 1px #c2410c,
+    0 0 6px rgba(249,115,22,0.4) !important;
+}
+.key.lit-orange-up .letter-lbl,    .key.lit-orange-down .letter-lbl,
+.key.lit-orange-up .sym-main,      .key.lit-orange-down .sym-main,
+.key.lit-orange-up .sym-sub,       .key.lit-orange-down .sym-sub,
+.key.lit-orange-up .util-lbl,      .key.lit-orange-down .util-lbl,
+.key.lit-orange-up .fn-lbl,        .key.lit-orange-down .fn-lbl,
+.key.lit-orange-up .mod-sym,       .key.lit-orange-down .mod-sym,
+.key.lit-orange-up .mod-sym-only,  .key.lit-orange-down .mod-sym-only,
+.key.lit-orange-up .mod-word,      .key.lit-orange-down .mod-word,
+.key.lit-orange-up .util-sym-only, .key.lit-orange-down .util-sym-only,
+.key.lit-orange-up .key-glyph-sym, .key.lit-orange-down .key-glyph-sym,
+.key.lit-orange-up .lock-svg,      .key.lit-orange-down .lock-svg,
+.key.lit-orange-up .delete-svg,    .key.lit-orange-down .delete-svg,
+.key.lit-orange-up .win-svg,       .key.lit-orange-down .win-svg { color: white !important; }
+
+/* ── YELLOW status indicator ─────────────────────────────────────────────
+   Used for CapsLock and SUS conflicted keys. Neutral soft yellow: not green (not correct) and not orange (not wrong).
+   Immune to the normal lighting lifecycle — cleared only by our own logic. */
+.key.lit-yellow-up {
+  background: #fef08a !important;
+  box-shadow: 0 1px 0 rgba(180, 160, 0, 0.25) !important;
+}
+.key.lit-yellow-up .letter-lbl,
+.key.lit-yellow-up .util-lbl,
+.key.lit-yellow-up .util-sym-only { color: #7a6a00 !important; }
+
+
+/* ── RESTING STATES for conflictsKbLighting panel ───────────────────────────
+   Half-strength colours. Keys sit here at rest; full-strength lit classes
+   layer on top when a key is pressed, then fade back to these on release.
+   ─────────────────────────────────────────────────────────────────────────── */
+
+.resting-available {
+  background: rgba(195, 229, 211, 0.9) !important;
+  box-shadow: inset 0 0 0 1px rgba(90, 182, 133, 0.9) !important;
+}
+.resting-available .letter-lbl,
+.resting-available .sym-main,
+.resting-available .sym-sub,
+.resting-available .util-lbl,
+.resting-available .fn-lbl,
+.resting-available .mod-sym,
+.resting-available .mod-sym-only,
+.resting-available .mod-word,
+.resting-available .util-sym-only,
+.resting-available .key-glyph-sym,
+.resting-available .lock-svg,
+.resting-available .delete-svg { color: #065f46 !important; }
+
+.resting-sus {
+  background: rgba(251, 240, 152, 0.9) !important;
+  box-shadow: inset 0 0 0 1px rgba(211, 202, 127, 0.9) !important;
+}
+.resting-sus .letter-lbl,
+.resting-sus .sym-main,
+.resting-sus .sym-sub,
+.resting-sus .util-lbl,
+.resting-sus .fn-lbl,
+.resting-sus .mod-sym,
+.resting-sus .mod-sym-only,
+.resting-sus .mod-word,
+.resting-sus .util-sym-only,
+.resting-sus .key-glyph-sym,
+.resting-sus .lock-svg,
+.resting-sus .delete-svg { color: #7a6a00 !important; }
+
+.resting-blocked {
+  background: rgba(247, 220, 200, 0.9) !important;
+  box-shadow: inset 0 0 0 1px rgba(233, 159, 103, 0.90) !important;
+}
+.resting-blocked .letter-lbl,
+.resting-blocked .sym-main,
+.resting-blocked .sym-sub,
+.resting-blocked .util-lbl,
+.resting-blocked .fn-lbl,
+.resting-blocked .mod-sym,
+.resting-blocked .mod-sym-only,
+.resting-blocked .mod-word,
+.resting-blocked .util-sym-only,
+.resting-blocked .key-glyph-sym,
+.resting-blocked .lock-svg,
+.resting-blocked .delete-svg { color: #9a3412 !important; }
+
+/* ── Fade transition back to resting state ───────────────────────────────────
+   When conflictsKbLighting removes the full-strength lit class after a keyup,
+   the resting class is reinstated and this transition carries the fade.
+   Scoped via a parent class so it does not affect normal gameplay fading.
+   ─────────────────────────────────────────────────────────────────────────── */
+
+.conflicts-panel-active .key.lit-fading {
+  transition: background 0.8s ease, box-shadow 0.8s ease !important;
+}
+
+
+/* Fade-out transition — applied just before removing lit class */
+.key.lit-fading {
+
+  transition: background 0.8s ease, box-shadow 0.8s ease !important;
+}
+.key.lit-fading .letter-lbl,
+.key.lit-fading .sym-main,
+.key.lit-fading .sym-sub,
+.key.lit-fading .util-lbl,
+.key.lit-fading .fn-lbl,
+.key.lit-fading .mod-sym,
+.key.lit-fading .mod-sym-only,
+.key.lit-fading .mod-word,
+.key.lit-fading .util-sym-only {
+  transition: color 0.8s ease !important;
+}
+
+/* ══════════════════════════════════════
+   KEYBOARD COLOUR THEMES
+   A translucent tint layered over modifier and special function keys only
+   (never letters, numerals, or punctuation). Painted with background-image
+   so it sits above the key's existing background-colour but underneath
+   nothing, since lit states and ghost mode both set the background
+   shorthand with !important and so always override it automatically.
+To add a new theme: add one --keyboard-theme-tint-name variable below,
+   one matching --keyboard-theme-swatch-name variable (the same colour at
+   full strength, used only for the active state of the picker pill below),
+   one matching line mapping the tint to a data-keyboard-theme value, and
+   one matching pill rule further down. The selector list targeting which
+   keys receive the tint never needs to change.
+══════════════════════════════════════ */
+:root {
+  --keyboard-theme-tint-dieter:    linear-gradient(169deg, #FFBD6F, #FD8451);
+  --keyboard-theme-tint-aqua:      linear-gradient(169deg, #00F0FF, #29FFA6);
+  --keyboard-theme-tint-poprocks:  linear-gradient(169deg, #FE9090, #FF61D2);
+
+  --keyboard-theme-swatch-dieter:    linear-gradient(169deg, #FFBD6F, #FD8451);
+  --keyboard-theme-swatch-aqua:      linear-gradient(169deg, #00F0FF, #29FFA6);
+  --keyboard-theme-swatch-poprocks:  linear-gradient(169deg, #FE9090, #FF61D2);
+}
+
+#keyboardPanel[data-keyboard-theme="dieter"]    { --keyboard-theme-tint: var(--keyboard-theme-tint-dieter); }
+#keyboardPanel[data-keyboard-theme="aqua"]      { --keyboard-theme-tint: var(--keyboard-theme-tint-aqua); }
+#keyboardPanel[data-keyboard-theme="poprocks"]  { --keyboard-theme-tint: var(--keyboard-theme-tint-poprocks); }
+
+#keyboardPanel:not([data-keyboard-theme="mono"]) .key[data-key^="Control"],
+#keyboardPanel:not([data-keyboard-theme="mono"]) .key[data-key^="Fn"],
+#keyboardPanel:not([data-keyboard-theme="mono"]) .key[data-key^="Alt"],
+#keyboardPanel:not([data-keyboard-theme="mono"]) .key[data-key^="Meta"],
+#keyboardPanel:not([data-keyboard-theme="mono"]) .key[data-key^="Shift"],
+#keyboardPanel:not([data-keyboard-theme="mono"]) .key[data-key="CapsLock"] {
+  background-image: var(--keyboard-theme-tint);
+}
+
+/* ── Keyboard Aesthetics theme picker pill ──────────────────────────────────
+   Labels stay visible on every segment. Only the active segment shows its
+   theme as a solid colour swatch (the --keyboard-theme-swatch-name
+   variables, full strength rather than the translucent in-key tint), using
+   `background` rather than `background-image` so it replaces the white
+   background painted by the generic .segmented-pill-active rule.
+   Mono has no swatch of its own, so its label carries a strikethrough
+   whenever it is not the active segment, giving it the same "not currently
+   selected" cue the colour segments get for free from their plain
+   background. */
+.kb-theme-row {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 10px;
+  width: 100%;
+}
+.kb-theme-row .diff-advanced-label {
+  width: auto;
+  white-space: nowrap;
+}
+#kbThemePill {
+  flex: 1;
+}
+#kbThemePill .kb-theme-btn {
+  flex: 1;
+}
+#kbThemePill .kb-theme-btn.segmented-pill-active[data-theme="mono"]     { background: white;                                  color: #374151; box-shadow: none; }
+#kbThemePill .kb-theme-btn.segmented-pill-active[data-theme="dieter"]    { background: var(--keyboard-theme-swatch-dieter);    color: white; }
+#kbThemePill .kb-theme-btn.segmented-pill-active[data-theme="aqua"]      { background: var(--keyboard-theme-swatch-aqua);      color: white; }
+#kbThemePill .kb-theme-btn.segmented-pill-active[data-theme="poprocks"] { background: var(--keyboard-theme-swatch-poprocks); color: white; }
+#kbThemePill .kb-theme-btn[data-theme="mono"]:not(.segmented-pill-active) .diff-btn-text {
+  text-decoration: line-through;
+}
+/* ── Theme-aware Start / confirm button ──────────────────────────────────────
+   When a non-mono keyboard theme is active, the main action button adopts
+   the theme gradient. Scoped via :has() on body to avoid JS involvement.
+   These per-theme rules must stay here; the tint variables are only defined
+   on #keyboardPanel and cannot be read from body-level selectors.           */
+body:has(#keyboardPanel[data-keyboard-theme="dieter"]) #mainBtn {
+  background: var(--keyboard-theme-tint-dieter);
+  color: white;
+}
+body:has(#keyboardPanel[data-keyboard-theme="aqua"]) #mainBtn {
+  background: var(--keyboard-theme-tint-aqua);
+  color: white;
+}
+body:has(#keyboardPanel[data-keyboard-theme="poprocks"]) #mainBtn {
+  background: var(--keyboard-theme-tint-poprocks);
+  color: white;
+}
+body:has(#keyboardPanel[data-keyboard-theme="dieter"]) #mainBtn:hover,
+body:has(#keyboardPanel[data-keyboard-theme="aqua"]) #mainBtn:hover,
+body:has(#keyboardPanel[data-keyboard-theme="poprocks"]) #mainBtn:hover {
+  filter: brightness(0.92);
+}
+
+/* ══════════════════════════════════════
+   BREAKPOINTS (in process - I am changing numbers to Var because numbers get out of sync)
+    1.	1600px wide AND 870px tall – scales the whole UI to 120% zoom
+	2.	2000px wide AND 1060px tall – scales to 145% zoom
+	3.	2600px wide AND 1270px tall – scales to 175% zoom
+    4.  MiniKeyboardBreakpointWidth – switches from full keyboard to mini keyboard (JS threshold in updateKeyboardMode, not a CSS media query)	5.	700px wide – CSS media query that switches from icon wraps to toolbar, reduces padding, shrinks the game panel, buttons, score disc, and title​​​​​​​​​​​​​​​​
+	5.	MiniKeyboardBreakpointWidth – JS threshold (the same value as #4) that switches from icon wraps to the phone toolbar in _syncPhoneToolbarVisibility
+	6.	474 wide – hides the keyboard forcing ‘none’ keyboard visibility option.
+	7.	MiniKeyboardBreakpointWidth minus 1 – CSS media query that tightens the gap between the mini keyboard and the credit line below it
+
+══════════════════════════════════════ */ @media (max-width: 819px) {
+  /* Keeps the credit line close to the mini keyboard instead of floating in
+     the empty space left by the keyboard's shrunken height. This boundary
+     must stay one pixel below MiniKeyboardBreakpointWidth in index.html. */
+  #keyboardWrap {
+    min-height: 182px;
+  }
+  #keyboardWrap.kb-at-face ~ #credit {
+    transform: translateY(0);
+  }
+}
+
+@media (max-width: 599px) {
+
+
+  body {
+    padding: 12px;
+    justify-content: flex-start;
+    align-items: flex-start;
+    min-height: unset;
+  }
+
+  #gameContainer { padding: 6px 16px 6px; max-width: none; }
+
+  .topRow { gap: 10px; }
+
+  .leftPanel { width: 108px; }
+
+  #mainBtn, #helpBtn { width: 108px; font-size: 12px; }
+
+  .rightPanel { width: 90px; }
+
+  .scoreDisc { width: 90px; height: 90px; }
+  .scoreDisc .timer-time,
+  .scoreDisc .timer-accuracy { font-size: 18px; }
+  .scoreDisc .timer-icon,
+  .scoreDisc .accuracy-icon  { width: 11px; height: 11px; }
+  .scoreDisc .timer-top    { padding-bottom: 3px; }
+  .scoreDisc .timer-bottom { padding-top: 3px; }
+  #questionTimerArc { width: 90px !important; height: 90px !important; }
+
+  #title { font-size: 18px; }
+
+  #questionRow { padding: 0 16px 2px; }
+  #livesRow    { padding: 2px 16px 0; }
+
+  #statsRow { padding: 6px 16px 8px; }
+  #statLeft  { width: 108px; text-align: center; }
+  #statRight { width: 90px; text-align: center; }
+  #appPill   { width: 102px; min-width: 102px; }
+}
+
+/* Below 470px the mini keyboard can no longer fit the viewport at its natural
+   pixel width, so scale it down from the top-centre without affecting DOM
+   layout or JS positioning calculations. */
+@media (max-width: 470px) {
+  #keyboardPanel {
+    transform-origin: top center !important;
+    transform: scale(calc(100vw / 500)) !important;
+  }
+  #keyboardWrap {
+    min-height: calc(320px * (100vw / 500)) !important;
+  }
+}
+
+/* ══════════════════════════════════════
+   OS TOGGLE ROW
+   The toggle group is pinned to the same
+   left edge as the buttons (24px inset).
+   The switch itself — not its labels —
+   aligns with the horizontal centre of
+   the buttons (width 140px → centre 70px).
+   So we offset: 24px + 70px - (switch_w/2)
+   Switch track: 36×14px stroke rect.
+   Knob: 10px circle, 2px stroke.
+══════════════════════════════════════ */
+#osRow {
+  display: flex;
+  align-items: flex-start;
+  justify-content: center;
+  width: 100%;
+  padding: 0 60px;
+  position: relative;
+  box-sizing: border-box;
+  height: 41px;
+}
+/* Wrap is exactly as wide as the Start button (130px).
+   Three columns: system OS (left), switch (centre), alternate OS (right).
+   justify-content: space-between pushes labels to the edges;
+   the switch sits in the physical centre of the box. */
+#osToggleWrap {
+  width: 130px;
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+#osToggleWrap .os-label {
+  font-family: 'Lato', system-ui, sans-serif;
+  font-size: 12px;
+  color: #9ca3af;
+  user-select: none;
+  display: flex;
+  align-items: center;
+  gap: 3px;
+  line-height: 1;
+}
+#osLabelLeft  { justify-content: flex-start; }
+#osLabelRight { justify-content: flex-end; }
+
+/* SVG toggle switch */
+.os-switch {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  flex-shrink: 0;
+  /* reserve space for the SVG track (36×14) */
+  width: 36px;
+  height: 14px;
+}
+.os-switch input {
+  position: absolute;
+  opacity: 0;
+  width: 0; height: 0;
+  pointer-events: none;
+}
+.os-track {
+  display: block;
+  pointer-events: none;
+  overflow: visible;
+}
+/* Knob: slide via transform; fill swap gives mac/pc visual state */
+#osKnobEl {
+  transition: transform 0.18s ease, fill 0.18s ease;
+  transform-origin: 7px 7px;
+  transform-box: fill-box;
+}
+
+#osMismatchPill {
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
+  background: #f59e0b;
+  color: white;
+  font-family: 'Lato', system-ui, sans-serif;
+  font-size: 12px;
+  font-weight: 600;
+  padding: 5px 14px;
+  border-radius: 12px;
+  white-space: nowrap;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.3s;
+  z-index: 250;
+}
+#osMismatchPill.show { opacity: 1; }
+#osMismatchPill.show.clickable { pointer-events: auto; cursor: pointer; }
+/* ══════════════════════════════════════
+   APP SELECTOR — in osRow, right-aligned
+   "now training on:" label inline-left
+   of the pill. Pill expands in-place to
+   show full list; selected item stays in
+   its natural list slot always.
+══════════════════════════════════════ */
+#appSelectorWrap {
+  margin-left: auto;
+  margin-right: -6px;
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  flex-shrink: 0;
+  position: relative;
+  overflow: visible;
+  z-index: 100;
+  position: relative; 
+}
+#appSelectorLabel {
+  font-family: 'Lato', system-ui, sans-serif;
+  font-size: 12px;
+  color: #9ca3af;
+  line-height: 1;
+  white-space: nowrap;
+  margin: 0;
+}
+
+/* The pill container. Clips overflow so expanding rows
+   never bleed outside the rounded border. */
+#appPill {
+  position: relative;
+  border-radius: 10px;
+  border: 1.5px solid #9ca3af;
+  background: white;
+  overflow: hidden;
+  cursor: pointer;
+  user-select: none;
+  width: 142px;
+  min-width: 142px;
+  height: 27px;
+  box-sizing: border-box;
+  overscroll-behavior: none;
+  transition: border-color 0.15s, background-color 0.15s;
+}
+.app-option-wrench {
+  border-top: 1px solid rgba(0,0,0,0.06);
+  opacity: 0.3;
+  height: 20px;
+  align-items: center;
+  padding-top: 0;
+  padding-left: 0;
+  overflow: hidden;
+}
+.wrench-full-row-icon {
+  width: 66%;
+  height: 66%;
+  display: block;
+  padding-left: 0px;
+}
+.wrench-full-row-icon--app {
+  width: 58%;
+  height: 58%;
+  margin-left: -18px;
+}
+.app-option-wrench:hover { opacity: 1; }
+#appPill.open {
+  /* Height driven by JS spring animator -- no CSS override needed */
+}
+.app-option-wrench-bottom-row {
+  display: flex;
+  border-top: 1px solid rgba(0,0,0,0.06);
+}
+.app-option-wrench-bottom-row .app-option-wrench {
+  flex: 1;
+  border-top: 1px solid rgba(0,0,0,0.06);
+  opacity: 1;
+}
+.app-option-skillsets {
+  flex: 1;
+  border-left: 2px solid rgba(0,0,0,0.06);
+  justify-content: flex-start;
+  padding-left: 6px;
+  gap: 5px;
+  font-size: 11px;
+  border-top: 1px solid rgba(0,0,0,0.06);
+}
+
+.app-option-wrench-picker {
+    height: 24px;
+    padding: 4;
+    display: flex;
+    align-items: left;
+    cursor: pointer;
+}
+.app-option-wrench-picker:hover { background: #f0f9ff; }
+/* Flip class: used when there is not enough room above to expand upward,
+   so the pill drops down as an overlay instead */
+#appPill.open.drop-down {
+  border-radius: 10px;
+}
+/* During game: border and background vanish — looks like plain text.
+   JS blocks interaction via gameState check. Pill stays in layout. */
+#appPill.game-active {
+  border-color: transparent;
+  background-color: transparent;
+  cursor: default;
+}
+#appPill.game-active .app-caret {
+  opacity: 0;
+}
+
+/* Each row inside the pill */
+.app-option {
+  display: flex;
+  align-items: center;
+  height: 24px;
+  line-height: 1;
+  font-family: 'Lato', system-ui, sans-serif;
+  font-size: 12px;
+  color: #9ca3af;
+  white-space: nowrap;
+  box-sizing: border-box;
+  opacity: 0;
+  transition: opacity 0.18s ease, background 0.1s;
+  cursor: pointer;
+  pointer-events: none;
+}
+/* Left icon column: fixed width, centres caret/dot */
+.app-option-icon-col {
+  flex-shrink: 0;
+  width: 22px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* Right label column: left-aligned, fills remaining width */
+.app-option-label-col {
+  flex: 1;
+  text-align: left;
+}
+#appPill.open .app-option {
+  opacity: 1;
+  pointer-events: auto;
+}
+.app-option:hover {
+  background: #f0f9ff;
+  color: #374151;
+}
+/* Selected row always visible — scrollTop brings it into the 22px window */
+.app-option.selected {
+  opacity: 1;
+  color: #6b7280;
+  font-weight: 500;
+  pointer-events: none;    /* not clickable when closed (it's already selected) */
+}
+#appPill.open .app-option.selected {
+  pointer-events: auto;
+}
+/* Caret — sits left of the app name, rotates when open */
+.app-caret-svg {
+  display: block;
+  width: 7px;
+  height: 7px;
+  transition: transform 0.2s ease, opacity 0.15s ease;
+  color: #9ca3af;
+  flex-shrink: 0;
+}
+.app-option:not(.selected) .app-caret-svg {
+  opacity: 0;
+}
+#appPill.open .app-option.selected .app-caret-svg {
+  transform: rotate(90deg);
+}
+
+/* Countdown overlay inside #title area */
+@keyframes questionPop {
+  0%   { opacity: 0; transform: scale(0.94); }
+  60%  { opacity: 1; transform: scale(1.015); }
+  100% { opacity: 1; transform: scale(1); }
+}
+#title.question-pop {
+  animation: questionPop 0.28s cubic-bezier(0.22, 0.61, 0.36, 1) forwards;
+}
+/* Trophy unlock message — pops in with gold colour at peak, settles to normal */
+@keyframes trophyMessagePop {
+  0%   { opacity: 0; transform: scale(0.88); color: #272029; }
+  45%  { opacity: 1; transform: scale(1.06); color: #c88810; }
+  70%  { transform: scale(0.99); color: #b8730a; }
+  100% { opacity: 1; transform: scale(1);    color: #272029; }
+}
+#title.trophy-pop {
+  animation: trophyMessagePop 0.9s cubic-bezier(0.22, 0.61, 0.36, 1) forwards;
+}
+@keyframes countPop {
+  0%   { transform: scale(2.2); opacity: 0; }
+  20%  { transform: scale(1.0); opacity: 1; }
+  75%  { transform: scale(1.0); opacity: 1; }
+  100% { transform: scale(0.6); opacity: 0; }
+}
+#countdownOverlay {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  pointer-events: none;
+  z-index: 10;
+}
+#countdownNum {
+  font-family: 'Lato', system-ui, sans-serif;
+  font-size: 64px;
+  font-weight: 600;
+  color: #1e3a5f;
+  opacity: 0;
+  line-height: 1;
+}
+#countdownNum.pop {
+  animation: countPop 0.9s cubic-bezier(0.22, 0.61, 0.36, 1) forwards;
+}
+
+
+/* ═══════════════════════════════════════════════════
+   BLOCK 2 — Settings panel additions, 3D keyboard
+   flip, report card, ghost mode, and late additions.
+   These rules extend and override Block 1 above.
+   Must appear after Block 1. Do not reorder.
+   ═══════════════════════════════════════════════════ */
+
+/* ── More info popover pattern ────────────────────────────────────────────────
+   Reusable: .more-info-wrap contains .sp-title + .more-info-trigger.
+   The popup uses position:fixed so overflow:hidden ancestors cannot clip it.
+   JS reads getBoundingClientRect() on open to set left/top precisely.        */
+
+.more-info-wrap {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin: 4px 0 5px 0;
+}
+
+.more-info-wrap .sp-title {
+  margin: 0;
+  cursor: pointer;
+  user-select: none;
+}
+
+.more-info-trigger {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  cursor: pointer;
+  flex-shrink: 0;
+}
+
+.more-info-icon {
+  color: #9ca3af;
+  display: block;
+  transition: color 0.15s ease;
+}
+
+.more-info-trigger:hover .more-info-icon {
+  color: #6b7280;
+}
+
+.more-info-popup {
+  position: fixed;
+  z-index: 1000;
+  background: white;
+  border: 1.5px solid #d1d5db;
+  border-radius: 10px;
+  box-shadow: 0 4px 16px rgba(0,0,0,0.12);
+  padding: 10px 12px;
+  width: 260px;
+  pointer-events: none;
+  opacity: 0;
+  transform: scale(0.96);
+  transition: opacity 0.15s ease, transform 0.15s ease;
+}
+
+.more-info-popup.more-info-popup-visible {
+  opacity: 1;
+  pointer-events: auto;
+  transform: scale(1);
+}
+
+.more-info-body {
+  font-size: 11px;
+  color: #6b7280;
+  line-height: 1.6;
+  margin: 0 0 6px 0;
+}
+
+.more-info-body:last-child {
+  margin-bottom: 0;
+}
+
+#modalKbSizeSection {
+  margin-top: 2px;
+}
+#modalKbSizeSection p {
+  font-size: 12px;
+  color: #374151;
+  line-height: 1.55;
+  margin: 0 0 5px 0;
+}
+#modalKbSizeSection p:last-of-type {
+  margin-bottom: 2px;
+}
+.modal-kbsize-row {
+  display: flex;
+  align-items: center;
+  margin-top: 4px;
+}
+.modal-kbsize-row.disabled {
+  opacity: 0.38;
+  pointer-events: none;
+}
+/* During kill punctuation confirm: block all panel interactions except
+   the Kill Punctuation radio itself, which acts as the No button. */
+#settingsPanelInner[data-kill-punctuation-confirming] {
+  pointer-events: none;
+}
+#settingsPanelInner[data-kill-punctuation-confirming] #killPunctuationRow {
+  pointer-events: auto;
+  cursor: pointer;
+}
+/* Nudge opacity down on everything except the kill punctuation row */
+#settingsPanelInner[data-kill-punctuation-confirming] .sp-col,
+#settingsPanelInner[data-kill-punctuation-confirming] .sp-page > *:not(#killPunctuationRow) {
+  opacity: 0.35;
+}
+#settingsPanelInner[data-kill-punctuation-confirming] #killPunctuationRow {
+  opacity: 1;
+}
+.kb-size-word-label {
+  font-family: 'Lato', system-ui, sans-serif;
+  font-size: 11px;
+  color: #374151;
+  line-height: 1;
+}
+/* Nudge the size toggle switch down so the knob aligns with label x-height */
+.modal-kbsize-row .os-switch {
+  position: relative;
+  top: 2px;
+}
+
+/* ── Settings panel toggle tracks: filled trough with inner shadow ───────────
+   Scoped to .sp-col so the top-bar OS toggle is untouched.
+   The track rect gets a light fill matching the pill style, plus a slightly
+   darker stroke so it reads as a recessed channel.                          */
+.sp-col .os-track rect:first-child {
+  fill: #f0f2f5;
+  stroke: #c4c9d1;
+}
+
+/* ── Pause panel additions ───────────────────────── */
+.sp-paused-heading {
+  font-size: 15px !important;
+  margin-bottom: 10px !important;
+}
+.sp-clear-label {
+  margin-bottom: 6px !important;
+}
+.segmented-pill {
+  display: flex;
+  width: 100%;
+  border: 1.5px solid #d1d5db;
+  border-radius: 16px;
+}
+.segmented-pill .segmented-pill-section:first-child { border-radius: 16px 0 0 16px; }
+.segmented-pill .segmented-pill-section:last-child  { border-radius: 0 16px 16px 0; }
+.segmented-pill .segmented-pill-section:only-child  { border-radius: 16px; }
+
+.segmented-pill-section {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 32px;
+  padding: 2px;
+  font-family: 'Lato', system-ui, sans-serif;
+  font-size: 12px;
+  font-weight: 600;
+  color: #9ca3af;
+  background: #f7f9fb;
+  box-shadow: inset 0 3px 0 rgba(0,0,0,0.04), inset 0 -3px 0 rgba(255,255,255,0.70);
+  border: none;
+  cursor: pointer;
+  outline: none;
+  -webkit-appearance: none;
+  transition: background 1.5s ease, color 1.5s ease, box-shadow 1.5s ease;
+}
+
+.segmented-pill-section.pulse {
+  animation: btnPulse 0.45s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+}
+.segmented-pill-section + .segmented-pill-section {
+  border-left: 1.5px solid #d1d5db;
+}
+.segmented-pill-quarter { flex: 1; }
+.segmented-pill-half    { flex: 2; }
+.segmented-pill-full    { flex: 1; width: 100%; }
+.segmented-pill-section svg { pointer-events: none; stroke: #9ca3af; }
+.segmented-pill-section.segmented-pill-active {
+  background: white;
+  color: #374151;
+  box-shadow: none;
+  transition: background 0s, color 0s, box-shadow 0s;
+}
+.segmented-pill-section.segmented-pill-active svg { stroke: #374151;  }
+.segmented-pill-inactive {
+  background: #f0f4f8;
+  cursor: default;
+  color: #d1d5db;
+  text-decoration: line-through;
+  pointer-events: none;
+}
+
+/* Locked difficulty buttons stay clickable so the unlock toast fires */
+#difficultyPill .diff-btn.diff-btn-inactive,
+#welcomeDifficultyPill .diff-btn.diff-btn-inactive {
+  pointer-events: auto;
+  cursor: pointer;
+}
+.segmented-pill-inactive svg { stroke: #d1d5db; }
+.sp-clear-label-inactive {
+  color: #d1d5db !important;
+}
+.sp-clear-label-inactive strong {
+  color: inherit;
+}
+/* Score confirm overlay: everything in the pause col fades except the active pill */
+#settingsPanelInner[data-score-confirm] .sp-col-right > *:not(.score-confirm-source) {
+  opacity: 0.35;
+  pointer-events: none;
+  transition: opacity 0.25s ease;
+}
+#settingsPanelInner[data-score-confirm] .sp-col-left {
+  opacity: 0.35;
+  pointer-events: none;
+  transition: opacity 0.25s ease;
+}
+#settingsPanelInner[data-score-confirm] .score-confirm-source {
+  opacity: 1;
+  pointer-events: auto;
+}
+/* Diff-change confirm overlay: dims everything in the difficulty panel except the pill */
+#settingsPanelInner[data-diff-confirm] > * {
+  opacity: 0.35;
+  pointer-events: none;
+  transition: opacity 0.25s ease;
+}
+#settingsPanelInner[data-diff-confirm] .diff-confirm-source {
+  opacity: 1;
+  pointer-events: auto;
+}
+/* Quit-confirm overlay: dims all panel content */
+#settingsPanelInner[data-quit-confirm] > * {
+  opacity: 0.35;
+  pointer-events: none;
+  transition: opacity 0.25s ease;
+}
+.diff-subtitle {
+  font-size: 12px;
+  font-style: italic;
+  color: #9ca3af;
+  text-align: center;
+  margin: 8px 0 0;
+  line-height: 1.6;
+}
+/* Welcome panel: collapse the subtitle gap so Skill-set loaded sits flush */
+#panelLandingWelcome .diff-subtitle {
+  display: none;
+}
+
+/* Temporary transition class applied to pill buttons during the trophy reveal
+   so the active state change is slow enough for the eye to follow. */
+.diff-btn.diff-btn-transitioning {
+  transition: background 0.7s ease, color 0.7s ease;
+}
+
+/* Pop animation for the newly selected difficulty label */
+@keyframes diffLabelPop {
+  0%   { transform: scale(1); }
+  40%  { transform: scale(1.18); }
+  70%  { transform: scale(0.96); }
+  100% { transform: scale(1); }
+}
+.diff-btn-text.diff-btn-label-pop,
+.segmented-pill-section.diff-btn-label-pop,
+.diff-slider-side-label.diff-btn-label-pop,
+.diff-knob-label.diff-btn-label-pop,
+.diff-advanced-footer.diff-btn-label-pop,
+.phone-icon-label.diff-btn-label-pop {
+  display: inline-block; /* required for transform on inline/block elements */
+  animation: diffLabelPop 0.35s cubic-bezier(0.22, 0.61, 0.36, 1) forwards;
+}
+
+/* Footer hint below the advanced panel — hidden until trophy is awarded.
+   Revealed with a left-to-right clip wipe. */
+@keyframes diffFooterWipe {
+  from { clip-path: inset(0 100% 0 0); }
+  to   { clip-path: inset(0 0% 0 0); }
+}
+.diff-advanced-footer {
+  font-size: 10px;
+  color: #9ca3af;
+  text-align: center;
+  margin-top: 8px;
+  line-height: 1.6;
+  display: none;
+  pointer-events: none;
+}
+.diff-advanced-footer.diff-advanced-footer-visible {
+  display: block;
+  pointer-events: auto;
+}
+
+/* Horizontal divider on difficulty panel — inset to align with pill corner radius */
+/* ── Advanced settings rounded rect panel ─────────────────────────────────── */
+.diff-advanced-panel {
+  width: 100%;
+  border-radius: 14px;
+  border: 1.5px solid #e5e7eb;
+  padding: 10px 16px 12px;
+  margin-top: 6px;
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  box-sizing: border-box;
+  background: transparent;
+  transition: background 0.5s ease, box-shadow 0.5s ease, border-color 0.5s ease;
+}
+/* Active state: slight fill + consistent top/bottom inset shadows */
+.diff-advanced-panel.diff-advanced-active {
+  background: #f7f9fb;
+  box-shadow: inset 0 3px 0 rgba(0,0,0,0.04), inset 0 -3px 0 rgba(255,255,255,0.70);
+  border-color: #c8cdd4;
+}
+
+/* Inactive panel: intercept pointer to show toast, except on the knobs */
+.diff-advanced-panel:not(.diff-advanced-active) {
+  cursor: pointer;
+}
+.diff-advanced-panel:not(.diff-advanced-active) .diff-slider-knob {
+  cursor: default;
+  pointer-events: auto;
+}
+
+/* Labels inside the panel — mid-grey by default; JS updates colour per slider value */
+.diff-advanced-label {
+  color: #9ca3af;
+  transition: color 0.5s ease;
+  font-size: 11px;
+  font-family: 'Lato', system-ui, sans-serif;
+  font-weight: 600;
+  line-height: 1;
+  white-space: nowrap;
+  flex-shrink: 0;
+  width: 90px;
+}
+
+/* Each slider row: label on left, slider fills remaining space */
+.diff-slider-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  width: 100%;
+}
+
+/* Thin separator between the two slider rows */
+.diff-advanced-separator {
+  width: 100%;
+  height: 1px;
+  background: #e5e7eb;
+  margin: 8px 0;
+  transition: background 0.5s ease;
+}
+.diff-advanced-panel.diff-advanced-active .diff-advanced-separator {
+  background: #d0d5db;
+}
+
+/* ── Fibonacci slider ──────────────────────────────────────────────────────── */
+.diff-slider-wrap {
+  position: relative;
+  flex: 1;
+  height: 32px;
+  display: flex;
+  align-items: center;
+  user-select: none;
+  touch-action: none;
+  /* Right inset so the knob at 100% stays visually inside the panel border */
+  margin-right: 18px;
+}
+
+/* Track — inactive: border colour; active: slightly darker mid-tone */
+.diff-slider-track {
+  position: absolute;
+  left: 0; right: 0;
+  top: 50%; transform: translateY(-50%);
+  height: 1.5px;
+  background: #e5e7eb;
+  border-radius: 2px;
+  transition: background 0.5s ease;
+}
+.diff-advanced-panel.diff-advanced-active .diff-slider-track {
+  background: #c4cad2;
+  box-shadow: 0 1px 2px rgba(0,0,0,0.06);
+}
+
+/* Tick marks — match track colours */
+.diff-slider-ticks {
+  position: absolute;
+  left: 0; right: 0;
+  top: 50%;
+  pointer-events: none;
+}
+.diff-slider-tick {
+  position: absolute;
+  width: 1.5px;
+  height: 7px;
+  background: #e5e7eb;
+  transform: translate(-50%, -50%);
+  border-radius: 1px;
+  transition: background 0.5s ease;
+}
+.diff-advanced-panel.diff-advanced-active .diff-slider-tick {
+  background: #c4cad2;
+}
+
+/* Knob */
+.diff-slider-knob {
+  position: absolute;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  background: white;
+  border: 1.5px solid #d1d5db;
+  border-radius: 20px;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.10), inset 0 -3px 0 rgba(255,255,255,0.80);
+  min-width: 36px;
+  height: 26px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0 10px;
+  cursor: grab;
+  z-index: 2;
+  outline: none;
+  transition: box-shadow 0.2s ease;
+}
+.diff-slider-knob:active { cursor: grabbing; }
+.diff-advanced-panel:not(.diff-advanced-active) .diff-slider-knob {
+  border-color: #e5e7eb;
+  box-shadow: none;
+}
+
+/* Label crossfade — ∞ stays mid-grey (signals no limit); integers darken when active */
+.diff-knob-label {
+  position: absolute;
+  font-family: 'Lato', system-ui, sans-serif;
+  font-size: 13px;
+  font-weight: 600;
+  color: #9ca3af;
+  line-height: 1;
+  transition: opacity 0.2s ease, color 0.5s ease;
+  pointer-events: none;
+  white-space: nowrap;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.diff-knob-label svg {
+  display: block;
+  fill: currentColor;
+}
+.diff-advanced-panel.diff-advanced-active .diff-knob-label:not(.diff-knob-infinity) {
+  color: #374151;
+}
+.diff-knob-label.diff-knob-infinity {
+  color: #374151;
+}
+.diff-knob-label-hidden { opacity: 0; }
+/* ── Pause panel: settings nudge rows ───────────────── */
+.sp-settings-nudge {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 10px;
+  text-decoration: none;
+  color: inherit;
+  cursor: pointer;
+  border-radius: 6px;
+  padding: 4px 2px;
+  transition: opacity 0.15s;
+}
+.sp-settings-nudge:hover:not(.sp-nudge-inactive) {
+  opacity: 0.7;
+}
+.sp-nudge-inactive {
+  cursor: default;
+  color: #9ca3af;
+}
+.sp-nudge-inactive .sp-nudge-text {
+  color: #9ca3af;
+}
+.sp-nudge-icon {
+  flex-shrink: 0;
+  width: 44px;
+  height: auto;
+  fill: currentColor;
+  overflow : visible;
+}
+.sp-nudge-inactive .sp-nudge-icon {
+  opacity: 1;
+  color: #9ca3af;
+}
+.sp-nudge-text {
+  font-size: 12px;
+  color: #374151;
+  line-height: 1.55;
+  margin: 0;
+  flex: 1;
+}
+/* When diff-btn is inside a segmented pill, suppress its own border/radius/max-width */
+.sp-seg-pill .diff-btn {
+  border: none;
+  border-radius: 0;
+  max-width: none;
+}
+/* ── Segmented control pill ── */
+.sp-seg-pill {
+  display: flex;
+  width: 100%;
+  border: 1.5px solid #d1d5db;
+  border-radius: 20px;
+  background: #f0f4f8;
+}
+.sp-seg-pill .sp-seg-btn:first-child,
+.sp-seg-pill .diff-btn:first-child { border-radius: 18px 0 0 18px; }
+.sp-seg-pill .sp-seg-btn:last-child,
+.sp-seg-pill .diff-btn:last-child  { border-radius: 0 18px 18px 0; }
+.sp-seg-btn {
+  flex: 1;
+  padding: 10px 12px;
+  font-family: 'Lato', system-ui, sans-serif;
+  font-size: 13px;
+  font-weight: 600;
+  color: #9ca3af;
+  background: #f7f9fb;
+  border: none;
+  cursor: pointer;
+  line-height: 1.2;
+  outline: none;
+  -webkit-appearance: none;
+  appearance: none;
+  box-shadow: inset 0 3px 0 rgba(0,0,0,0.04), inset 0 -3px 0 rgba(255,255,255,0.70);
+}
+.sp-seg-btn:focus { outline: none; }
+/* Divider */
+.sp-seg-btn + .sp-seg-btn,
+.sp-seg-pill .diff-btn + .diff-btn {
+  border-left: 1.5px solid #d1d5db;
+}
+/* Alignment */
+.sp-seg-btn.sp-seg-btn-left  { text-align: right; }
+.sp-seg-btn.sp-seg-btn-right { text-align: left; }
+.sp-seg-pill-three .sp-seg-btn { text-align: center; }
+/* Unavailable */
+.sp-seg-btn.diff-btn-inactive,
+.sp-seg-pill .diff-btn.diff-btn-inactive {
+  background: #f0f4f8;
+  color: #d1d5db;
+  text-decoration: line-through;
+  cursor: default;
+  pointer-events: none;
+}
+.sp-seg-pill .diff-btn.diff-btn-inactive:last-child {
+  border-radius: 0 18px 18px 0;
+}
+/* Selected */
+.sp-seg-btn.diff-btn-active,
+.sp-seg-pill .diff-btn.diff-btn-active {
+  background: white;
+  color: #374151;
+  box-shadow: none;
+}
+/* ── Returning screen layout ─────────────────────────── */
+.sp-returning-inner {
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  gap: 0;
+  width: 100%;
+}
+.sp-returning-privacy {
+  margin-top: 16px;
+  font-size: 12px;
+  color: #374151;
+  line-height: 1.6;
+}
+.sp-returning-tagline {
+  display: block;
+  text-align: center;
+  margin-top: 6px;
+  color: #9ca3af;
+}
+/* ── Keyboard flip animation ──────────────────────── */
+
+/* ─── 3D STAGE ──────────────────────────────────────*/
+#kbFlipStage {
+  perspective:        900px;
+  perspective-origin: 50% 50%;
+  transform-style:    preserve-3d;
+  transition:         transform 0.85s cubic-bezier(0.4, 0, 0.2, 1),
+                      padding-top 0.45s cubic-bezier(0.4, 0, 0.2, 1);
+  overflow:           visible;
+  position:           relative;
+  z-index:            2; /* above settingsPanel (z:1) */
+  pointer-events:     none;
+}
+
+/* ─── PANEL ──────────────────────────────────────────*/
+#keyboardPanel {
+  transform-style:  preserve-3d;
+  transform-origin: center center;
+  transform:        rotateX(0deg);
+  transition:
+    transform    0.85s cubic-bezier(0.4, 0, 0.2, 1),
+    background   0.5s  ease 0.2s,
+    box-shadow   0.5s  ease 0.2s;
+  will-change: transform;
+}
+#keyboardPanel.kb-edged {
+  background: #868e99;
+  box-shadow: none;
+}
+#keyboardPanel.pc-keys.kb-edged {
+  background: #7a9fa8;
+}
+
+/* ─── KEYS ───────────────────────────────────────────
+   preserve-3d so ::before front face participates
+   in the same 3D space. overflow visible so the
+   front face isn't clipped.                          */
+#keyboardPanel .key {
+  transform:       translateZ(8px);
+  transition:
+    background 0.45s ease 0.15s,
+    box-shadow 0.45s ease 0.15s,
+    color      0.35s ease 0.2s,
+    transform  0.5s  ease 0.15s;
+}
+/* Applied for one frame when returning to face so keys snap back instantly */
+#keyboardPanel.no-key-transition .key {
+  transition: none !important;
+}
+#keyboardPanel.kb-edged .key {
+  background: #e4e7ea;
+  color:      transparent;
+  box-shadow: none;
+  transform:  translateZ(8px);
+  transition:
+    background 0.45s ease 0.15s,
+    box-shadow 0.45s ease 0.15s,
+    color      0.35s ease 0.2s,
+    transform  0.5s  ease 0.15s;
+}
+
+
+/* ─── SLAB WALLS ─────────────────────────────────────
+   Full edge-to-edge — no inset offsets.
+   Left/right walls use z-index to sit atop top/bottom
+   at corners, filling the gap cleanly.
+   border-radius on the correct corners follows the
+   panel's 14px curve.                                 */
+
+/* Bottom wall — full width, hinges backward from bottom edge.
+   Hidden by default; only appears when keyboard is folded to edge position.
+   Uses opacity+visibility (not display) so the transition works correctly. */
+#kb-wall-bottom {
+  position:         absolute;
+  bottom:           0;
+  left:             0;
+  right:            0;
+  height:           7px;
+  z-index:          -1;
+  transform-origin: center bottom;
+  transform:        rotateX(90deg);
+  pointer-events:   none;
+  opacity:          0;
+  visibility:       hidden;
+  transition:       opacity 0.25s ease 0.35s, visibility 0s linear 0.6s;
+  background:
+    linear-gradient(to bottom,
+      rgba(0,0,0,0.30)       0px,
+      rgba(0,0,0,0.30)       1.5px,
+      rgba(0,0,0,0.0)        1.5px,
+      rgba(0,0,0,0.0)        5.5px,
+      rgba(255,255,255,0.70) 5.5px,
+      rgba(255,255,255,0.70) 7px),
+    linear-gradient(to right,
+      #6e7480 0%,
+      #9aa0aa 10%,
+      #bfc4cb 22%,
+      #c8cdd4 35%,
+      #c8cdd4 65%,
+      #bfc4cb 78%,
+      #9aa0aa 90%,
+      #6e7480 100%);
+  border-radius:    14px 14px 0 0;
+}
+
+#keyboardPanel.kb-edged #kb-wall-bottom {
+  opacity:    1;
+  visibility: visible;
+  transition: opacity 0.25s ease 0.35s, visibility 0s linear 0s;
+}
+
+/* Corner radii */
+#keyboardPanel.kb-partial #kb-wall-bottom,
+#keyboardPanel.pc-keys.kb-partial #kb-wall-bottom { border-radius: 3px 3px 0 0; }
+#keyboardPanel.pc-keys #kb-wall-bottom             { border-radius: 22px 22px 0 0; }
+
+
+
+/* ─── DRAG HANDLE ─────────────────────────────────────
+   Restored to a simple invisible hit-strip at the top
+   of #keyboardPanel. Pointer events wired by the open/
+   close classes on #keyboardWrap as before.            */
+/* Sentinel: zero-height anchor at the top of keyboardPanel.
+   Lives in 3D transform space so BCR.top always equals the
+   keyboard's true visual top edge regardless of rotateX angle. */
+#kbTopSentinel {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 0;
+  pointer-events: none;
+}
+
+#kbDragHandle {
+  position: absolute;
+  top: -10px;
+  left: 14px;
+  right: 14px;
+  height: 28px;
+  z-index: 100;
+  pointer-events: none;
+  cursor: grab;
+  border-radius: 8px 8px 0 0;
+  touch-action: none;
+}
+#keyboardWrap.kb-settings-active #kbDragHandle {
+  pointer-events: auto;
+}
+#keyboardWrap.kb-settings-active:not(.kb-at-face) #keyboardPanel {
+  cursor: grab;
+}
+#keyboardWrap.kb-settings-active:not(.kb-at-face) #keyboardPanel:active {
+  cursor: grabbing;
+}
+/* Below the phone-toolbar breakpoint, settings panels render in the toolbar
+   area rather than behind the keyboard, so there is nothing for gripping to
+   reveal. Keys keep their normal press behaviour and the grab cursor is
+   switched off, matching the bail-out in _onKeyboardGripPointerDown. */
+@media (max-width: 819px) {
+  #keyboardWrap.kb-settings-active #keyboardPanel .key {
+    pointer-events: auto;
+  }
+  #keyboardWrap.kb-settings-active:not(.kb-at-face) #keyboardPanel {
+    cursor: default;
+  }
+}
+
+/* ─── DRAG HANDLE AFFORDANCE ──────────────────────────
+   Lives inside #settingsPanel (sibling of
+   settingsPanelInner). Left and width are set by
+   _spAlignPanel() in JS so it always matches the
+   keyboard panel's real pixel dimensions exactly.
+
+   bottom: 0 pins it to the bottom of #settingsPanel
+   which is itself positioned to fill #keyboardWrap,
+   so the SVG sits just above the keyboard stage top.
+
+   Desktop: invisible, fades in on mouseenter of the
+   kbDragHandle zone (pointer events on the handle,
+   visual on the affordance — they overlap).
+   Touch: always visible while settings are open.      */
+#kbHandleAffordance {
+  position: absolute;
+  /* top, left and width set by JS via _repositionAffordance */
+  height: 80px;
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 0.22s ease;
+  /* No transform transition — arrow rotation is instant during drag,
+     animated snaps use _animateToPartialAngle's own 850ms transition */
+  transform-origin: center bottom;
+  z-index: 200;
+}
+#kbHandleAffordance svg {
+  width: 100%;
+  height: auto;
+  display: block;
+}
+
+#kbAffordanceArrow {
+  transition: transform 0.85s cubic-bezier(0.4, 0, 0.2, 1);
+}
+/* During drag the transition is suppressed by JS so it tracks instantly */
+#kbHandleAffordance.dragging #kbAffordanceArrow {
+  transition: none;
+}
+
+#kbHandleAffordance.aff-transitioning {
+  opacity: 0 !important;
+  pointer-events: none !important;
+}
+
+/* Show on hover via .handle-hover class toggled by JS on #kbDragHandle,
+   or on touch via .handle-revealed toggled by JS after a keyboard tap */
+#kbHandleAffordance.handle-hover,
+#kbHandleAffordance.handle-revealed {
+  opacity: 1;
+}
+
+/* Never show when keyboard is at face position */
+#keyboardWrap.kb-at-face #kbHandleAffordance {
+  opacity: 0 !important;
+  transition: none;
+}
+
+/* ─── DROP SHADOW ─────────────────────────────────────
+   Blurred translucent blob at negative Z — floats the
+   keyboard just above the surface, shadow falls on
+   whatever is below (credit line etc).               */
+#kb-shadow {
+  position:       absolute;
+  inset:          12px 24px;
+  border-radius:  20px;
+  pointer-events: none;
+  transform:      translateZ(-10px) translateY(4px);
+  background:     rgba(0,0,0,0.0);
+  filter:         blur(22px);
+  visibility:     hidden;
+  transition:
+    background 0.6s ease 0.1s,
+    transform  0.85s cubic-bezier(0.4, 0, 0.2, 1);
+  z-index:        0;
+}
+#keyboardPanel.kb-edged #kb-shadow {
+  background: rgba(0,0,0,0.45);
+  transform:  translateZ(-10px) translateY(6px);
+  visibility:  visible;
+}
+
+
+/* ─── BASE EDGE HIGHLIGHT ─────────────────────────────*/
+#kb-base-edge {
+  position:       absolute;
+  bottom:         0;
+  left:           14px;
+  right:          14px;
+  height:         0;
+  border-radius:  0 0 3px 3px;
+  pointer-events: none;
+  z-index:        5;
+  opacity:        0;
+  transition:     height 0.3s ease, opacity 0.3s ease;
+  background:     rgba(255,255,255,0.55);
+}
+#kbFlipStage.kb-show-base #kb-base-edge {
+  height:  3px;
+  opacity: 1;
+}
+
+/* ─── ROW STRIPS — suppressed ────────────────────────*/
+.kb-row::after { display: none; }
+
+/* ─── ICONS ──────────────────────────────────────────*/
+#kbIconWrap, #brIconWrap {
+  transition: opacity 0.3s ease;
+  overflow: visible;
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 44px;
+  height: 44px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  /* Always above the kbFlipStage (z-index 2) so icon clicks are never
+     blocked when the stage has pointer-events:none applied by JS. */
+  z-index: 4;
+  pointer-events: auto;
+}
+#kbIconWrap { left: 0; }
+#brIconWrap { right: 0; }
+
+/* ─── DIFF GAUGE ─────────────────────────────────────*/
+#diffIconWrap {
+  display: flex;
+  justify-content: center;
+  margin-top: 4px;
+  /* diffIconWrap sits in normal document flow below the keyboard wrap.
+     When the keyboard folds down (stage translates), the wrap's minHeight
+     increases and diffIconWrap is pushed further down naturally.
+     The translate nudge at face position tucks it up into the keyboard shadow. */
+  transform: translateY(0);
+  transition: transform 0.85s cubic-bezier(0.4, 0, 0.2, 1);
+  position: relative;
+  z-index: 1;
+}
+#diffIcon {
+  display: block; color: #9ca3af; pointer-events: auto;
+  cursor: pointer; width: 40px; overflow: visible; transition: transform 0.18s ease;
+}
+#diffIcon:hover { transform: scale(1.12); }
+#diffIcon #Needle {
+  color: #9ca3af; transform-origin: 45px 50.9px; transform: rotate(-60deg);
+   transition: transform 0.35s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+/* ─── TOOLTIP ────────────────────────────────────────*/
+/* ─── ICON TOOLTIPS — pure CSS, anchored to each icon wrap ──────*/
+#diffIconWrap { position: relative; }
+
+.icon-tip {
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
+  font-family: 'Lato', system-ui, sans-serif;
+  font-size: 10px;
+  color: #9ca3af;
+  line-height: 1.25;
+  text-align: center;
+  white-space: nowrap;
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 0.18s ease;
+  z-index: 9990;
+}
+
+/* For kb/browser wraps: wrap is sized to the icon, tip sits directly below */
+#kbIconWrap  .icon-tip { top: calc(100% + 6px); }
+#brIconWrap  .icon-tip { top: calc(100% + 6px); }
+/* diffIconWrap is normal flow — tip sits below the svg */
+#diffIconWrap .icon-tip { top: calc(100% + 4px); }
+
+/* Show on hover */
+#kbIconWrap:hover  .icon-tip,
+#brIconWrap:hover  .icon-tip,
+#diffIconWrap:hover .icon-tip { opacity: 1; }
+
+/* Keep visible and darken when that settings page is active */
+#kbIconWrap.sp-icon-active  .icon-tip,
+#brIconWrap.sp-icon-active  .icon-tip,
+#diffIconWrap.sp-icon-active .icon-tip {
+  opacity: 1;
+  color: #374151;
+  pointer-events: auto;
+  cursor: pointer;
+}
+
+/* ── Wrench picker hex radio dot animations ──────────────────────────────── */
+@keyframes AppPillHexFadeIn {
+  from { opacity: 0; transform: rotate(-180deg); }
+  to   { opacity: 1; transform: rotate(0deg); }
+}
+
+@keyframes AppPillHexFadeOut {
+  from { opacity: 1; transform: rotate(0deg); }
+  to   { opacity: 0; transform: rotate(-180deg); }
+}
+
+/* Ring-only out: same anticlockwise spin but stays fully opaque — no fade */
+@keyframes AppPillHexRingOut {
+  from { transform: rotate(0deg); }
+  to   { transform: rotate(-270deg); }
+}
+
+.app-pill-hex-dot,
+.app-pill-hex-ring {
+  transform-origin: 9.5px 9.5px;
+  transform-box: fill-box;
+}
+
+.app-pill-hex-dot.animating-in,
+.app-pill-hex-ring.animating-in {
+  animation: AppPillHexFadeIn 0.6s cubic-bezier(0.33, 1, 0.68, 1) forwards;
+}
+
+.app-pill-hex-dot.animating-out {
+  animation: AppPillHexFadeOut 0.75s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+}
+
+.app-pill-hex-ring.animating-out {
+  animation: AppPillHexRingOut 0.9s cubic-bezier(0.33, 1, 0.68, 1) 0.15s forwards;
+}
+
+#kbIconWrap.sp-icon-active  #kbIcon      { color: #374151; }
+#brIconWrap.sp-icon-active  #browserIcon { color: #374151; }
+#diffIconWrap.sp-icon-active #diffIcon   { color: #374151; }
+#diffIconWrap.sp-icon-active #diffIcon #Needle        { color: #374151; }
+/* ── Report Card panel ───────────────────────────── */
+
+/* Override the standard two-column grid to add a full-width bottom row */
+#panelEndGameReportCard.sp-page-report.sp-active {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  grid-template-rows: auto auto;
+  grid-template-areas:
+    "left right"
+    "bottom bottom";
+  position: relative;
+}
+
+/* ── History panel ───────────────────────────────── */
+
+/* Three rows: header row (toggle/lives lost + timer/app labels), then the
+   full-width stats roundrect, then the two history lists. Without an
+   explicit grid here the panel falls back to the generic .sp-page.sp-active
+   two-column grid (no rows/areas defined), and the bottom stats box
+   auto-places into row 2 of the LEFT column only, widening that column's
+   track and squeezing the right-hand list. */
+#panelEndGameHistoryRecord.sp-active {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  grid-template-rows: auto auto auto;
+  grid-template-areas:
+    "headerleft headerright"
+    "bottom bottom"
+    "left right";
+  position: relative;
+}
+#panelEndGameHistoryRecord #historyHeaderLeft  { grid-area: headerleft;  padding-right: 20px; min-width: 0; position: relative; margin-bottom: 0; }
+#panelEndGameHistoryRecord #historyHeaderRight { grid-area: headerright; padding-left:  20px; min-width: 0; margin-bottom: 0; }
+#panelEndGameHistoryRecord .sp-col-left  { grid-area: left;  position: relative; }
+#panelEndGameHistoryRecord .sp-col-right { grid-area: right; }
+
+/* Suppress the standard centred gutter — drawn manually instead, same as the Report Card.
+   Two separate dividers are needed: one for the header row, one for the list row,
+   so neither bleeds into the full-width stats box between them. */
+#panelEndGameHistoryRecord.sp-active::after {
+  display: none;
+}
+#panelEndGameHistoryRecord #historyHeaderLeft::after {
+  content: '';
+  position: absolute;
+  top: 16px;
+  right: 0;
+  width: 1px;
+  background: #e5e7eb;
+  bottom: 0;
+  pointer-events: none;
+}
+#panelEndGameHistoryRecord .sp-col-left::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  right: 0;
+  width: 1px;
+  background: #e5e7eb;
+  bottom: 0;
+  pointer-events: none;
+}
+
+#panelEndGameHistoryRecord .sp-report-bottom {
+  margin-top: 2px;
+  margin-bottom: 8px;
+}
+
+/* Keyboard Settings panel: the generic centred divider runs the full panel
+   height, which would cut through the full-width aesthetics row below the
+   two columns. Suppressed and redrawn scoped to the columns only, matching
+   the pattern already used above for the Report Card and History panels. */
+#panelKeyboard.sp-active::after {
+  display: none;
+}
+#panelKeyboard.sp-active {
+  grid-template-columns: 1fr 1fr;
+  grid-template-rows: auto auto;
+  grid-template-areas:
+    "left right"
+    "aesthetics aesthetics";
+}
+#panelKeyboard .sp-col-left  { grid-area: left; }
+#panelKeyboard .sp-col-right { grid-area: right; position: relative; }
+#panelKeyboard .sp-col-full  { grid-area: aesthetics; }
+
+/* Divider: on the right column's ::before so it sits between columns
+   but cannot escape into the full-width aesthetics row below. */
+#panelKeyboard .sp-col-right::before {
+  content: '';
+  position: absolute;
+  left: 0px;
+  top: 16px;
+  height: 180px;
+  width: 1px;
+  background: #e5e7eb;
+  pointer-events: none;
+}
+
+[data-theme="dark"] .sp-report-chips-lit .sp-report-chip-key {
+  border-color: transparent !important;
+}
+
+/* "Report Card" label — small grey, sits left of "Strengths" in same flex row */
+.sp-small-card-title {
+  font-size: 10px;
+  font-variant: small;
+  letter-spacing: 0.06em;
+  color: #9ca3af;
+  font-weight: 400;
+  margin: 0;
+  line-height: 1;
+  flex-shrink: 0;
+}
+
+/* EndGame header row: tab toggle button label + magnifying glass inline */
+.sp-endgame-header-left {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  cursor: pointer;
+  transition: color 0.15s ease, background 0.15s ease;
+  color: #9ca3af;
+  border: 1px solid #d1d5db;
+  border-radius: 20px;
+  padding: 3px 8px 3px 6px;
+  background: transparent;
+  user-select: none;
+}
+.sp-endgame-search-icon {
+  display: block;
+  width: 11px;
+  height: 11px;
+  flex-shrink: 0;
+  stroke: currentColor;
+  overflow: visible;
+}
+/* Resting state: label reads dark, pill border/icon stay light.
+   Hover below still brings the pill + icon up to the same dark grey. */
+.sp-endgame-header-left .sp-small-card-title {
+  color: #374151;
+}
+@media (hover: none) {
+  .sp-endgame-header-left:hover { color: #9ca3af; background: transparent; }
+}
+@media (hover: hover) {
+  .sp-endgame-header-left:hover { color: #374151; background: #f0f4f8; }
+  .sp-endgame-header-left:hover .sp-small-card-title { color: #374151; }
+}
+
+/* Column header row: "Report Card" + "Strengths" on left; "Needs Work" on right */
+.sp-report-col-header {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  margin-bottom: 5px;
+  gap: 6px;
+}
+.sp-report-col-header-right {
+  justify-content: flex-end;
+}
+
+/* Suppress the standard centred gutter line — we draw it manually */
+.sp-page-report.sp-active::after {
+  display: none;
+}
+
+/* The column divider: sits between left and right, terminates at the horizontal line */
+#panelEndGameReportCard.sp-page-report .sp-col-left {
+  padding-right: 20px;
+  position: relative;
+}
+#panelEndGameReportCard.sp-page-report .sp-col-left::after {
+  content: '';
+  position: absolute;
+  top: 16px;
+  right: 0;
+  width: 1px;
+  background: #e5e7eb;
+  /* height is set to stop at the bottom section — controlled via padding */
+  bottom: 0;
+  pointer-events: none;
+}
+
+#panelEndGameReportCard.sp-page-report .sp-col-right {
+  padding-left: 20px;
+}
+
+/* Bottom section: full-width advice area */
+.sp-report-bottom {
+  grid-area: bottom;
+  padding-top: 0;
+  margin-top: 8px;
+}
+
+/* Coaching advice box: rounded rect with inset shadow, mirrors the advanced settings style */
+.sp-report-advice-box {
+  background: #f7f9fb;
+  border: 1.5px solid #c8cdd4;
+  border-radius: 14px;
+  padding: 10px 16px;
+  box-shadow: inset 0 3px 0 rgba(0,0,0,0.04), inset 0 -3px 0 rgba(255,255,255,0.70);
+}
+
+/* Section titles: bold dark, natural flow within the flex header row */
+.sp-report-section-title {
+  font-size: 12px;
+  font-weight: 700;
+  color: #374151;
+  margin: 0;
+  line-height: 1;
+}
+.sp-report-section-title.sp-title-empty {
+  color: #9ca3af;
+  font-weight: 400;
+  text-decoration: line-through;
+  text-decoration-color: #d1d5db;
+}
+
+/* Shortcut list rows — mirror the browser conflict list style */
+.sp-report-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+.sp-report-list li {
+  margin-bottom: 6px;
+  display: flex;
+  align-items: center;
+  flex-wrap: nowrap;
+  gap: 0;
+  line-height: 1.6;
+  font-size: 12px;
+  color: #6b7280;
+}
+
+/* Coloured dot replacing the radio button */
+.sp-report-dot {
+  flex-shrink: 0;
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  margin-right: 7px;
+}
+.sp-report-strength .sp-report-dot {
+  background: #10b981;
+  box-shadow: none;
+}
+.sp-report-weakness .sp-report-dot {
+  background: #f97316;
+  box-shadow: none;
+}
+
+/* Question label */
+.sp-report-question-label {
+  flex: 1;
+  font-size: 11px;
+  color: #6b7280;
+  line-height: 1.5;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
+}
+.sp-report-detail {
+  font-size: 10px;
+  color: #9ca3af;
+  font-style: italic;
+}
+
+/* Shown in place of shortcut chips when a shortcut has no equivalent on the
+   currently selected training OS. */
+.sp-report-os-only-note {
+  margin-left: 6px;
+  flex-shrink: 0;
+  white-space: nowrap;
+  font-size: 10px;
+  font-style: italic;
+  color: #9ca3af;
+  align-self: center;
+}
+
+/* Shortcut chip — light style for strengths (unchecked equivalent) */
+.sp-report-strength .sp-report-chip {
+  display: inline-block;
+  font-family: inherit;
+  font-size: 10px;
+  font-weight: 600;
+  color: #1e3a5f;
+  border: 1px solid #d1d5db;
+  border-radius: 3px;
+  padding: 1px 4px 0;
+  line-height: 1.6;
+  white-space: nowrap;
+  vertical-align: middle;
+  background: transparent;
+  box-shadow: none;
+  flex-shrink: 0;
+  margin-left: 6px;
+}
+
+/* Shortcut chip — heavy style for weaknesses (checked equivalent) */
+.sp-report-weakness .sp-report-chip {
+  display: inline-block;
+  font-family: inherit;
+  font-size: 10px;
+  font-weight: 600;
+  color: #1e3a5f;
+  border: 1px solid #d1d5db;
+  border-radius: 3px;
+  padding: 1px 4px 0;
+  line-height: 1.6;
+  white-space: nowrap;
+  vertical-align: middle;
+  background: #f3f4f6;
+  box-shadow: 0 1.5px 0 #c9cdd3;
+  flex-shrink: 0;
+  margin-left: 6px;
+}
+
+/* Trainer advice prose */
+.sp-report-advice {
+  font-size: 12px;
+  color: #374151;
+  line-height: 1.6;
+  margin: 0 0 6px 0;
+}
+.sp-report-advice a {
+  color: #9ca3af;
+  font-style: italic;
+  text-decoration: none;
+  cursor: pointer;
+}
+.sp-report-advice a:hover {
+  color: #6b7280;
+}
+.sp-report-no-advice {
+  font-size: 11px;
+  font-style: italic;
+  color: #9ca3af;
+  margin: 0;
+}
+
+/* Practice item completed: dot turns green permanently until report card is rebuilt */
+.sp-report-weakness li.practice-done .sp-report-dot {
+  background: #10b981;
+  transition: background 0.3s ease;
+}
+
+/* Right column spacer: aligns upcoming questions below the header row in the left column.
+   The left column header (.sp-report-col-header) is roughly 30px tall (small-caps label
+   at ~11px + section title at ~14px + 5px margin-bottom). */
+.cheat-sheet-right-spacer {
+  height: 30px;
+  flex-shrink: 0;
+}
+
+/* Cheat sheet: left column list starts 30px lower to align with the right column list,
+   which is offset by the same height spacer. */
+#cheatSheetList {
+  padding-top: 30px;
+}
+
+/* Cheat sheet panel: full-width title row above the two columns */
+#panelCheatSheet.sp-page-cheatsheet.sp-active {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  grid-template-rows: auto auto;
+  grid-template-areas:
+    "title title"
+    "left  right";
+}
+#panelCheatSheet.sp-page-cheatsheet .sp-col-left  { grid-area: left; }
+#panelCheatSheet.sp-page-cheatsheet .sp-col-right { grid-area: right; }
+#panelCheatSheet.sp-page-cheatsheet.sp-active::after {
+  top: 16px;
+}
+.sp-cheatsheet-title-row {
+  grid-area: title;
+  text-align: center;
+  padding-bottom: 10px;
+  border-bottom: 1px solid #e5e7eb;
+  margin-bottom: 10px;
+}
+.sp-cheatsheet-main-heading {
+  font-size: 15px;
+  font-weight: 700;
+  color: #1e3a5f;
+  margin: 0 0 2px 0;
+  line-height: 1.2;
+}
+.sp-cheatsheet-byline {
+  font-size: 11px;
+  font-style: italic;
+  color: #9ca3af;
+  margin: 0;
+  line-height: 1.4;
+}
+
+/* Chip wrapper lit state — only key chips, not the + separators between them */
+.sp-report-chips-lit .sp-report-chip-key {
+  background: #10b981 !important;
+  color: white !important;
+  border-color: #059669 !important;
+  box-shadow: 0 0 6px rgba(16,185,129,0.45) !important;
+  transition: background 0.15s ease, color 0.15s ease, box-shadow 0.15s ease;
+}
+[data-theme="dark"] .sp-report-chips-lit .sp-report-chip-key {
+  border-color: transparent !important;
+}
+
+/* ── EndGame History panel ───────────────────────────────────────────────── */
+.sp-endgame-header-left {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  margin-bottom: 5px;
+  cursor: pointer;
+  user-select: none;
+  color: #9ca3af;
+  transition: color 0.15s ease, background 0.15s ease;
+  border: 1px solid #d1d5db;
+  border-radius: 20px;
+  padding: 3px 8px 3px 6px;
+  background: transparent;
+}
+.sp-endgame-search-icon {
+  width: 13px;
+  height: 13px;
+  opacity: 0.55;
+  flex-shrink: 0;
+  transition: opacity 0.15s ease;
+}
+.sp-endgame-header-left:hover .sp-endgame-search-icon {
+  opacity: 1;
+}
+
+/* Resting state: label reads dark, pill border/icon stay light.
+   Hover below still brings the pill + icon up to the same dark grey. */
+.sp-endgame-header-left .sp-small-card-title {
+  color: #374151;
+}
+
+.sp-endgame-context-label {
+  font-family: 'Lato', system-ui, sans-serif;
+  font-size: 10px;
+  color: #9ca3af;
+  text-align: right;
+  margin-bottom: 5px;
+  line-height: 1;
+}
+
+.sp-endgame-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+.sp-endgame-list li {
+  margin-bottom: 6px;
+  display: flex;
+  align-items: flex-start;
+  gap: 0;
+  line-height: 1.6;
+  font-size: 12px;
+  color: #6b7280;
+}
+
+/* Touch: suppress hover effect on the toggle */
+@media (hover: none) {
+  .sp-endgame-header-left:hover {
+    color: #9ca3af;
+  }
+  .sp-endgame-header-left:hover .sp-endgame-search-icon {
+    opacity: 0.55;
+  }
+}
+
+@media (hover: hover) {
+  .sp-endgame-header-left:hover {
+    color: #374151;
+    background: #f0f4f8;
+  }
+  .sp-endgame-header-left:hover .sp-small-card-title {
+    color: #374151;
+  }
+}
+
+
+/* ── Ghost Mode ───────────────────────────────────────────────────────────────
+   Keyboard panel becomes invisible. Only green/orange lit states show.       */
+#keyboardPanel.ghost-mode {
+  background: transparent !important;
+  box-shadow: none !important;
+}
+#keyboardPanel.ghost-mode .key {
+  background: transparent !important;
+  box-shadow: none !important;
+}
+#keyboardPanel.ghost-mode .key .letter-lbl,
+#keyboardPanel.ghost-mode .key .sym-main,
+#keyboardPanel.ghost-mode .key .sym-sub,
+#keyboardPanel.ghost-mode .key .util-lbl,
+#keyboardPanel.ghost-mode .key .fn-lbl,
+#keyboardPanel.ghost-mode .key .mod-sym,
+#keyboardPanel.ghost-mode .key .mod-sym-only,
+#keyboardPanel.ghost-mode .key .mod-word,
+#keyboardPanel.ghost-mode .key .util-sym-only,
+#keyboardPanel.ghost-mode .key .key-glyph-sym,
+#keyboardPanel.ghost-mode .key .lock-svg,
+#keyboardPanel.ghost-mode .key .win-svg,
+#keyboardPanel.ghost-mode .key .delete-svg { opacity: 0; }
+#keyboardPanel.ghost-mode #kb-wall-bottom,
+#keyboardPanel.ghost-mode #kb-shadow,
+#keyboardPanel.ghost-mode #kb-base-edge { display: none; }
+
+/* Lit states remain fully visible in ghost mode */
+#keyboardPanel.ghost-mode .key.lit-green-up,
+#keyboardPanel.ghost-mode .key.lit-green-down {
+  background: #10b981 !important;
+  box-shadow: 0 0 12px rgba(16,185,129,0.7) !important;
+}
+#keyboardPanel.ghost-mode .key.lit-orange-up,
+#keyboardPanel.ghost-mode .key.lit-orange-down {
+  background: #f97316 !important;
+  box-shadow: 0 0 12px rgba(249,115,22,0.7) !important;
+}
+#keyboardPanel.ghost-mode .key.lit-green-up  .letter-lbl,
+#keyboardPanel.ghost-mode .key.lit-green-down .letter-lbl,
+#keyboardPanel.ghost-mode .key.lit-green-up  .sym-main,
+#keyboardPanel.ghost-mode .key.lit-green-down .sym-main,
+#keyboardPanel.ghost-mode .key.lit-green-up  .mod-sym,
+#keyboardPanel.ghost-mode .key.lit-green-down .mod-sym,
+#keyboardPanel.ghost-mode .key.lit-green-up  .mod-sym-only,
+#keyboardPanel.ghost-mode .key.lit-green-down .mod-sym-only,
+#keyboardPanel.ghost-mode .key.lit-green-up  .util-lbl,
+#keyboardPanel.ghost-mode .key.lit-green-down .util-lbl,
+#keyboardPanel.ghost-mode .key.lit-green-up  .util-sym-only,
+#keyboardPanel.ghost-mode .key.lit-green-down .util-sym-only,
+#keyboardPanel.ghost-mode .key.lit-green-up  .key-glyph-sym,
+#keyboardPanel.ghost-mode .key.lit-green-down .key-glyph-sym,
+#keyboardPanel.ghost-mode .key.lit-green-up  .delete-svg,
+#keyboardPanel.ghost-mode .key.lit-green-down .delete-svg,
+#keyboardPanel.ghost-mode .key.lit-orange-up  .letter-lbl,
+#keyboardPanel.ghost-mode .key.lit-orange-down .letter-lbl,
+#keyboardPanel.ghost-mode .key.lit-orange-up  .sym-main,
+#keyboardPanel.ghost-mode .key.lit-orange-down .sym-main,
+#keyboardPanel.ghost-mode .key.lit-orange-up  .mod-sym,
+#keyboardPanel.ghost-mode .key.lit-orange-down .mod-sym,
+#keyboardPanel.ghost-mode .key.lit-orange-up  .mod-sym-only,
+#keyboardPanel.ghost-mode .key.lit-orange-down .mod-sym-only,
+#keyboardPanel.ghost-mode .key.lit-orange-up  .util-lbl,
+#keyboardPanel.ghost-mode .key.lit-orange-down .util-lbl,
+#keyboardPanel.ghost-mode .key.lit-orange-up  .util-sym-only,
+#keyboardPanel.ghost-mode .key.lit-orange-down .util-sym-only,
+#keyboardPanel.ghost-mode .key.lit-orange-up  .key-glyph-sym,
+#keyboardPanel.ghost-mode .key.lit-orange-down .key-glyph-sym,
+#keyboardPanel.ghost-mode .key.lit-orange-up  .delete-svg,
+#keyboardPanel.ghost-mode .key.lit-orange-down .delete-svg {
+  opacity: 1 !important;
+  color: white !important;
+}
+
+#keyboardPanel.conflicts-panel-active.ghost-mode {
+  background: transparent !important;
+  box-shadow: none !important;
+}
+
+#keyboardPanel.conflicts-panel-active.ghost-mode .key {
+  background: rgba(245, 245, 247, 0.5) !important;
+  box-shadow: inset 0 0 0 1px rgba(138, 144, 153, 0.3) !important;
+}
+
+#keyboardPanel.conflicts-panel-active.ghost-mode .key .letter-lbl,
+#keyboardPanel.conflicts-panel-active.ghost-mode .key .sym-main,
+#keyboardPanel.conflicts-panel-active.ghost-mode .key .sym-sub,
+#keyboardPanel.conflicts-panel-active.ghost-mode .key .util-lbl,
+#keyboardPanel.conflicts-panel-active.ghost-mode .key .fn-lbl,
+#keyboardPanel.conflicts-panel-active.ghost-mode .key .mod-sym,
+#keyboardPanel.conflicts-panel-active.ghost-mode .key .mod-sym-only,
+#keyboardPanel.conflicts-panel-active.ghost-mode .key .mod-word,
+#keyboardPanel.conflicts-panel-active.ghost-mode .key .util-sym-only,
+#keyboardPanel.conflicts-panel-active.ghost-mode .key .key-glyph-sym,
+#keyboardPanel.conflicts-panel-active.ghost-mode .key .win-svg,
+#keyboardPanel.conflicts-panel-active.ghost-mode .key .delete-svg {
+  opacity: 1 !important;
+}
+
+#keyboardPanel.conflicts-panel-active.ghost-mode .key.resting-available {
+  background: rgba(195, 229, 211, 0.5) !important;
+  box-shadow: inset 0 0 0 1px rgba(175, 220, 135, 0.9) !important;
+}
+
+#keyboardPanel.conflicts-panel-active.ghost-mode .key.resting-sus {
+  background: rgba(238, 251, 152, 0.5) !important;
+  box-shadow: inset 0 0 0 1px rgba(207, 220, 135, 0.9) !important;
+}
+
+#keyboardPanel.conflicts-panel-active.ghost-mode .key.resting-blocked {
+  background: rgba(247, 220, 200, 0.5) !important;
+  box-shadow: inset 0 0 0 1px rgba(233, 159, 103, 0.90) !important;
+}
+
+#keyboardPanel.conflicts-panel-active.ghost-mode .key.lit-green-up {
+  background: #10b981 !important;
+  box-shadow: inset 0 1px 0 rgba(180,255,220,0.55), 0 1px 0 #059669, 0 0 8px rgba(16,185,129,0.5) !important;
+}
+
+#keyboardPanel.conflicts-panel-active.ghost-mode .key.lit-green-down {
+  background: #10b981 !important;
+  box-shadow: inset 0 0 0 1px #059669, 0 0 6px rgba(16,185,129,0.4) !important;
+}
+
+#keyboardPanel.conflicts-panel-active.ghost-mode .key.lit-orange-up {
+  background: #f97316 !important;
+  box-shadow: inset 0 1px 0 rgba(255,220,160,0.60), 0 1px 0 #c2410c, 0 0 8px rgba(249,115,22,0.5) !important;
+}
+
+#keyboardPanel.conflicts-panel-active.ghost-mode .key.lit-orange-down {
+  background: #f97316 !important;
+  box-shadow: inset 0 0 0 1px #c2410c, 0 0 6px rgba(249,115,22,0.4) !important;
+}
+
+#keyboardPanel.conflicts-panel-active.ghost-mode .key.lit-yellow-up {
+  background: #fef08a !important;
+  box-shadow: 0 1px 0 rgba(180,160,0,0.25) !important;
+}
+
+/* App pill open: fade the main title and tagline out of view.
+   animation: none cancels any forwards-fill animation that would otherwise
+   retain opacity: 1 and override this rule. */
+#title.app-pill-open,
+#title.app-pill-open + #welcomeTagline {
+  opacity: 0;
+  animation: none;
+  transition: opacity 1s ease;
+}
+/* ══════════════════════════════════════
+   CUSTOMISE SKILLSET PANEL
+   Appears to the left of #appSelectorWrap
+   when the 'more' button in the wrench
+   picker is pressed.
+   Width = app pill (142px) × 5 = 710px.
+   The bracket and panel are positioned
+   absolutely relative to #appSelectorWrap
+   and grow leftward.
+══════════════════════════════════════ */
+
+#customiseSkillsetPanel {
+  display: none;
+  flex-direction: column;
+  min-width: 200px;
+  min-height: 27px;
+  max-height: 80vh;
+  overflow-y: auto;
+  background: white;
+  border: 1.5px solid #9ca3af;
+  border-radius: 10px;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.10);
+  box-sizing: border-box;
+  z-index: 500;
+  padding: 8px;
+  flex-shrink: 0;
+  transform-origin: right center;
+}
+
+#customiseSkillsetPanel.customise-skillset-panel-open {
+  display: flex;
+}
+
+#customiseSkillsetPanel.customise-skillset-panel-pop {
+  animation: pillPop 0.45s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+}
+
+#customiseSkillsetRightBracket.customise-skillset-bracket-visible {
+  display: block;
+  opacity: 1;
+}
+
+/* Hide the vertical column divider line on the blur-pause diagnostic screen */
+#panelPause.blur-pause-active.sp-active::after {
+  display: none;
+}
+/* Resolved state: roundrect recedes to let the pill below take focus */
+#blurDiagnosticBox.blur-diagnostic-resolved {
+  background: #f0f4f8;
+  border-color: transparent;
+  box-shadow: none;
+}
+#blurDiagnosticBox.blur-diagnostic-resolved .sp-body,
+#blurDiagnosticBox.blur-diagnostic-resolved .sp-report-question-label,
+#blurDiagnosticBox.blur-diagnostic-resolved #blurDiagnosticRightText {
+  color: #9ca3af;
+}
+
+/* ── Blur pause diagnostic panel ────────────────────────────────────────────
+   Overrides the two-column grid to show a single full-width column.        */
+#panelPause.blur-pause-active.sp-active {
+  display: flex;
+  flex-direction: column;
+}
+#panelPause.blur-pause-active .sp-col {
+  display: none;
+}
+#panelPause.blur-pause-active #blurPauseDiagnostic {
+  display: block !important;
+}
+/* ══════════════════════════════════════
+   TOUCH DEVICE MODALS
+   Gyro permission and keyboard recommendation.
+   Both are fixed, viewport-centred overlays.
+   Styled to match #gameContainer: blue fill,
+   white border, same radius and shadow.
+══════════════════════════════════════ */
+
+.touch-modal-backdrop {
+  display: none;
+  position: fixed;
+  inset: 0;
+  z-index: 1000;
+  background: rgba(0, 0, 0, 0.25);
+  backdrop-filter: blur(3px);
+  -webkit-backdrop-filter: blur(3px);
+}
+.touch-modal-backdrop.visible {
+  display: block;
+}
+
+.touch-modal-card {
+  position: fixed;
+  z-index: 1001;
+  background: #e0f2fe;
+  border-radius: 16px;
+  border: 1.5px solid white;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+  width: min(320px, calc(100vw - 48px));
+  padding: 28px 28px 22px;
+  box-sizing: border-box;
+  font-family: 'Lato', system-ui, sans-serif;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  display: none;
+}
+
+@keyframes TouchModalUnfurl {
+  from { opacity: 0; transform: translate(-50%, -50%) scale(0.94); }
+  to   { opacity: 1; transform: translate(-50%, -50%) scale(1);    }
+}
+.touch-modal-card.visible {
+  display: block;
+  animation: TouchModalUnfurl 0.32s cubic-bezier(0.22, 0.61, 0.36, 1) forwards;
+}
+
+.touch-modal-heading {
+  font-size: 17px;
+  font-weight: 700;
+  color: #272029;
+  margin: 0 0 10px;
+  line-height: 1.3;
+}
+
+.touch-modal-body {
+  font-size: 14px;
+  color: #272029;
+  line-height: 1.65;
+  margin: 0 0 8px;
+}
+.touch-modal-body:last-of-type {
+  margin-bottom: 20px;
+}
+
+.touch-modal-buttons {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.touch-modal-btn-primary {
+  width: 100%;
+  height: 36px;
+  border: none;
+  outline: none;
+  border-radius: 18px;
+  font-family: 'Lato', system-ui, sans-serif;
+  font-weight: 600;
+  font-size: 14px;
+  text-align: center;
+  cursor: pointer;
+  -webkit-appearance: none;
+  appearance: none;
+  background: #10b981;
+  color: white;
+}
+.touch-modal-btn-primary:active { background: #059669; }
+
+.touch-modal-btn-secondary {
+  width: 100%;
+  height: 36px;
+  border: none;
+  outline: none;
+  border-radius: 18px;
+  font-family: 'Lato', system-ui, sans-serif;
+  font-weight: 600;
+  font-size: 13px;
+  text-align: center;
+  cursor: pointer;
+  -webkit-appearance: none;
+  appearance: none;
+  background: #6b7280;
+  color: white;
+}
+.touch-modal-btn-secondary:active { background: #9ca3af; }
+
+/* ══════════════════════════════════════
+   PHONE TOOLBAR
+   Replaces the keyboard area on small
+   touch screens. Contains the three
+   settings icons in a roundrect pill,
+   with the panel area expanding below.
+══════════════════════════════════════ */
+
+#phoneToolbar {
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  width: 100%;
+  max-width: 1000px;
+  margin: 0 auto;
+  gap: 0;
+  overflow: visible;
+  max-height: 0;
+  opacity: 0;
+  pointer-events: none;
+  transition: max-height 0.25s ease, opacity 0.25s ease;
+}
+
+#phoneToolbar.toolbar-visible {
+  max-height: 2000px;
+  opacity: 1;
+  pointer-events: auto;
+}
+
+/* Keyboard overlaps the top of the toolbar pill by roughly half its own
+   corner radius, rather than sitting flush against it with a hard seam.
+ */
+body.phone-layout-active #keyboardWrap {
+  margin-top: 7px;
+}
+
+
+
+#phoneToolbarIcons {
+  display: flex;
+  align-items: stretch;
+  justify-content: center;
+  gap: 0;
+  width: 100%;
+  background: #f7f9fb;
+  border-radius: 16px;
+  border: 1.5px solid #d1d5db;
+  overflow: hidden;
+}
+
+.phone-icon-btn {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  padding: 8px 10px;
+  cursor: pointer;
+  flex: 1;
+  user-select: none;
+  -webkit-user-select: none;
+  box-shadow: inset 0 3px 0 rgba(0,0,0,0.04), inset 0 -3px 0 rgba(255,255,255,0.70);
+  background: transparent;
+  transition: background 0s, box-shadow 0s;
+  /* Default icon colour controlled here so active state can override it */
+  color: #9ca3af;
+}
+
+.phone-icon-btn + .phone-icon-btn {
+  border-left: 1.5px solid #d1d5db;
+}
+
+.phone-icon-btn.sp-icon-active {
+  background: white;
+  box-shadow: none;
+  color: #272029;
+}
+
+.phone-icon-btn.phone-icon-inactive {
+  opacity: 0.65;
+}
+
+.phone-icon-label {
+  font-family: 'Lato', system-ui, sans-serif;
+  font-size: 10px;
+  color: #9ca3af;
+  text-align: left;
+  line-height: 1.3;
+  white-space: nowrap;
+  pointer-events: none;
+}
+
+.phone-icon-btn.sp-icon-active .phone-icon-label {
+  color: #272029;
+  font-weight: 700;
+}
+.phone-gauge-stroke {
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 2px;
+  stroke-linecap: round;
+  stroke-miterlimit: 10;
+}
+
+.phone-icon-btn.sp-icon-active .phone-gauge-stroke {
+  stroke: #272029;
+}
+
+/* Phone layout: stack game UI and keyboard vertically, allow scrolling */
+body.phone-layout-active {
+  justify-content: flex-start;
+}
+
+/* Hide toolbar labels when there is not enough room for four labelled buttons */
+@media (max-width: 416px) {
+  .phone-icon-label { display: none; }
+  .phone-icon-btn   { padding: 6px 8px; gap: 0; }
+}
+
+
+#phonePanelArea {
+  overflow: hidden; /* never an internal scrollbar; taller content will be paginated instead */
+  max-height: 0;
+  min-height: 0;
+  opacity: 0;
+  transition:
+    max-height 0.35s cubic-bezier(0.4, 0, 0.2, 1),
+    min-height 0.35s cubic-bezier(0.4, 0, 0.2, 1),
+    opacity    0.25s ease;
+  padding: 0 12px;
+  box-sizing: border-box;
+  width: 100%;
+}
+
+#phonePanelArea.phone-panel-open {
+  max-height: 1200px; /* generous ceiling so the slide-open animation works at any content height */
+  min-height: 250px;  /* floor reserved for every panel, so the toolbar and credit line below stay still for ordinary content; genuinely tall content can still grow past this */
+  opacity: 1;
+  padding: 16px 12px 8px;
+}
+
+#phonePanelArea .sp-page.sp-active {
+  position: relative;
+  width: 100%;
+}
+
+/* Constrain icons in phone toolbar so they don't bloat button height.
+   Width-only sizing lets each aspect ratio breathe without distortion. */
+.phone-icon-btn svg {
+  width: 28px;
+  height: auto;
+  flex-shrink: 0;
+  overflow: visible;
+}
+
+#phonePanelArea .sp-page.sp-active:not(#panelDifficultySettings):not(#panelLandingReturning):not(#panelLandingWelcome) {
+  display: grid;
+  grid-template-columns: minmax(263px, 1fr) minmax(263px, 1fr);
+  min-width: 526px;
+  margin: 0 auto;
+}
+
+#phonePanelArea .sp-col-left  { padding-right: 12px; }
+#phonePanelArea .sp-col-right { padding-left:  12px; }
+
+/* Report card: remove the report bottom grid area hack, just stack */
+#phonePanelArea #panelEndGameReportCard.sp-page-report.sp-active {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+/* Left column divider line in report card panel */
+#phonePanelArea #panelEndGameReportCard .sp-col-left::after {
+  display: none;
+}
+
+/* History panel: same flex stacking as the Report Card above */
+#phonePanelArea #panelEndGameHistoryRecord.sp-active {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+/* Left column divider line in history panel */
+#phonePanelArea #panelEndGameHistoryRecord .sp-col-left::after {
+  display: none;
+}
+#phonePanelArea #panelEndGameHistoryRecord #historyHeaderLeft::after {
+  display: none;
+}
+
+/* Cheat Sheet panel */
+#phonePanelArea #panelCheatSheet.sp-page-cheatsheet.sp-active {
+  display: flex;
+  flex-direction: column;
+}
+
+@keyframes TitleWipeIn {
+  from { clip-path: inset(0 100% 0 0); opacity: 0.4; }
+  to   { clip-path: inset(0 0% 0 0);   opacity: 1; }
+}
+.title-wipe-in {
+  animation: TitleWipeIn 0.4s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+}
+
+/* ══════════════════════════════════════
+   TOUCH DEVICES — suppress hover effects
+   (hover: none) matches any device that
+   has no true hover pointer, e.g. phones
+   and tablets. This prevents the double-
+   tap problem where the first tap applies
+   the hover style and the second triggers
+   the action.
+══════════════════════════════════════ */
+@media (hover: none) {
+  #mainBtn:hover                              { background: #10b981; }
+  #helpBtn:hover                              { background: #6b7280; }
+  .kb-variant-option:hover                    { border-color: transparent; }
+  .app-option:hover                           { background: transparent; color: #9ca3af; }
+  .sp-settings-nudge:hover:not(.sp-nudge-inactive) { opacity: 1; }
+  #kbIcon:hover                               { transform: none; transition: color 0.2s ease; }
+  #kbIcon.pulse:hover                         { transform: none; transition: none; }
+  #browserIcon:hover                          { transform: none; transition: color 0.2s ease; }
+  #browserIcon.pulse:hover                    { transform: none; transition: none; }
+  #diffIcon:hover                             { transform: none; }
+  .key.lock-key:hover                         { background: #f5f5f7; }
+  #kbIconWrap:not(.sp-icon-active):hover  .icon-tip  { opacity: 0; }
+  #brIconWrap:not(.sp-icon-active):hover  .icon-tip  { opacity: 0; }
+  #diffIconWrap:not(.sp-icon-active):hover .icon-tip { opacity: 0; }
+}
+
+/* ── Conflict source filter pill ─────────────────────────────────────────────
+   Four segments: OS (fixed), Browser (flex), Found (fixed), Keyboard (fixed).
+   The three fixed segments are sized at 56px — wide enough for the longest
+   possible OS label (Apple SVG + "iPhone") with comfortable padding.
+   Add these rules to the end of beta.css.
+   ─────────────────────────────────────────────────────────────────────────── */
+
+.conflict-filter-pill {
+  display: flex;
+  gap: 0;
+}
+
+/* All four segments share base sizing overrides on top of segmented-pill-section */
+.conflict-filter-seg {
+  flex: 0 0 56px;
+  width: 56px;
+  min-width: 0;
+  padding: 0px;
+  height: 22px;
+  font-size: 11px;
+  box-sizing: border-box;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* Browser segment: flex-width, truncates with ellipsis */
+.conflict-filter-browser {
+  flex: 1 1 0;
+  width: auto;
+}
+.conflict-filter-browser .diff-btn-text {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  display: block;
+  text-align: center;
+}
+
+/* OS label: icon + text inline */
+.conflict-filter-os .diff-btn-text {
+  display: inline-flex;
+  align-items: center;
+  gap: 2px;
+  white-space: nowrap;
+}
+#cfBtnOs .diff-btn-text {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  white-space: nowrap;
+}
+#cfBtnOs .diff-btn-text svg {
+  display: inline;
+  vertical-align: middle;
+}
+/* Keyboard segment: SVG inherits button colour */
+.conflict-filter-keyboard svg {
+  fill: currentColor;
+}
+/* Keyboard segment: no padding, SVG fills the pill height */
+#cfBtnKeyboard {
+  padding: 0;
+  overflow: visible;
+  align-items: stretch;
+}
+#cfBtnKeyboard svg {
+  height: 40px;
+  width: auto;
+  display: block;
+  margin: auto;
+}
+
+/* Border radii — override segmented-pill's child selectors */
+.conflict-filter-pill .conflict-filter-seg:first-child { border-radius: 18px 0 0 18px; }
+.conflict-filter-pill .conflict-filter-seg:last-child  { border-radius: 0 18px 18px 0; }
+
+/* ══════════════════════════════════════
+   LARGE SCREEN ZOOM
+   Scales the entire UI proportionally
+   on large monitors.
+══════════════════════════════════════ */
+@media (min-width: 1600px) and (min-height: 870px) {
+  body {
+    zoom: 1.2;
+    justify-content: flex-start;
+    padding-top: 40px;
+  }
+}
+
+@media (min-width: 2000px) and (min-height: 1060px) {
+  body {
+    zoom: 1.45;
+    justify-content: flex-start;
+    padding-top: 40px;
+  }
+}
+
+@media (min-width: 2600px) and (min-height: 1270px) {
+  body {
+    zoom: 1.75;
+    justify-content: flex-start;
+    padding-top: 40px;
+  }
+}
+
+/* ── Wrench icon colour ─────────────────────────────────────────────────── */
+.app-option-wrench svg { color: #9ca3af; }
+.app-option-wrench:hover svg { color: #374151; }
+.app-option-wrench-bottom-row .app-option-wrench svg { color: #6b7280; }
+
+/* ── Wrench picker label states ─────────────────────────────────────────── */
+.wrench-label-active  { color: #374151; }
+.wrench-label-standby { color: #d1d5db; }
+
+/* ── Customise panel label states ───────────────────────────────────────── */
+.customise-label-available { color: #374151; }
+.customise-label-inpill    { color: #d1d5db; }
+.customise-label-beta      { color: #9ca3af; }
+
+/* ══════════════════════════════════════
+   DARK MODE
+   Global invert+hue-rotate on <body>
+   (not <html>, so position:fixed elements
+   remain unaffected by the filter stacking
+   context). Targeted overrides below
+   correct anything the filter gets wrong.
+══════════════════════════════════════ */
+html[data-theme="dark"] {
+  filter: invert(1) hue-rotate(180deg) brightness(0.92) contrast(1.08);
+  background: #e3dfe7; /* pre-filter value; inverts to approx #1c2028 dark blue-grey */
+}
+
+html[data-theme="dark"] body {
+  background: transparent;
+}
+
+/* Re-invert elements that should not be colour-shifted.
+   Currently empty — add targeted corrections here as needed.
+   Example pattern:
+   [data-theme="dark"] .scoreDisc.medal-gold .timer-time { color: #3b1a00; }
+*/
+
+/* Dark mode toggle knob — mirrors the OS toggle animation */
+.dm-toggle-row {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  margin-bottom: 18px;
+}
+.dm-toggle-label {
+  font-family: 'Lato', system-ui, sans-serif;
+  font-size: 12px;
+  color: #9ca3af;
+  user-select: none;
+  line-height: 1;
+  cursor: pointer;
+  background: none;
+  border: none;
+  padding: 0;
+  transition: color 0.18s ease;
+}
+.dm-toggle-label-active {
+  color: #374151;
+}
+.dm-mode-icon {
+  color: #9ca3af;
+  transition: color 0.18s ease;
+  flex-shrink: 0;
+}
+.dm-mode-icon-active {
+  color: #374151;
+}
+#dmKnobEl {
+  transition: transform 0.18s ease, stroke 0.18s ease;
+}
+#dmTrackRect {
+  transition: stroke 0.18s ease;
+}
+
+/* ── Global dark-mode grey correction ──────────────────────────────────────
+   filter: invert(1) hue-rotate(180deg) brightness(0.92) contrast(1.08) on <html>
+   maps light-mode greys to near-invisible post-filter values. Each override
+   supplies a pre-inversion CSS value that reads correctly after filtering.
+   Light-mode colours are NOT touched — all rules are scoped to [data-theme="dark"].
+
+   Mapping  →  pre-inversion CSS value  →  visual result after filter
+   #9ca3af  →  #585858                  →  ~155 (readable mid-grey)
+   #6b7280  →  #494949                  →  ~170 (clear secondary)
+   #374151  →  #2b2b2b                  →  ~200 (strong / primary)
+   #d1d5db  →  #808080                  →  ~115 (soft border/divider)
+──────────────────────────────────────────────────────────────────────────── */
+
+/* Toggle row */
+[data-theme="dark"] .dm-toggle-label                    { color: #585858; }
+[data-theme="dark"] .dm-toggle-label-active             { color: #2b2b2b; }
+[data-theme="dark"] .dm-mode-icon                       { color: #585858; }
+[data-theme="dark"] .dm-mode-icon-active                { color: #2b2b2b; }
+
+/* ── #9ca3af → #585858 ── dim labels, icons, subtle strokes ── */
+[data-theme="dark"] #osToggleWrap .os-label             { color: #585858; }
+[data-theme="dark"] #appSelectorLabel                   { color: #585858; }
+[data-theme="dark"] #appPill                            { border-color: #585858; }
+[data-theme="dark"] .app-option                         { color: #585858; }
+[data-theme="dark"] .app-caret-svg                      { color: #585858; }
+[data-theme="dark"] .more-info-icon                     { color: #585858; }
+[data-theme="dark"] .segmented-pill-section             { color: #585858; }
+[data-theme="dark"] .segmented-pill-section svg         { stroke: #585858; }
+[data-theme="dark"] .diff-subtitle                      { color: #585858; }
+[data-theme="dark"] .diff-subtitle                      { color: #585858; }
+[data-theme="dark"] .diff-advanced-footer               { color: #585858; }
+[data-theme="dark"] .diff-advanced-label                { color: #585858; }
+[data-theme="dark"] #kbIcon                             { color: #585858; }
+[data-theme="dark"] #browserIcon                        { color: #585858; }
+[data-theme="dark"] #diffIcon                           { color: #585858; }
+[data-theme="dark"] #diffIcon #Needle                   { color: #585858; }
+[data-theme="dark"] .diff-btn                           { color: #585858; }
+[data-theme="dark"] #stickyRadio.touch-owns-sticky      { color: #585858; }
+[data-theme="dark"] .modal-toggle-row.no-keyboard .modal-toggle-label { color: #585858; }
+[data-theme="dark"] .kb-variant-key                     { border-bottom-color: #585858; }
+[data-theme="dark"] #confirmBracket                     { fill: #585858; }
+[data-theme="dark"] .sp-report-section-title.sp-title-empty { text-decoration-color: #585858; }
+/* Credit line: deliberately dimmer than the standard #9ca3af mapping above,
+   for slightly less contrast against the dark background. */
+[data-theme="dark"] #credit { color: #646464; }
+
+/* ── #6b7280 → #494949 ── secondary / mid labels ── */
+[data-theme="dark"] #statLeft,
+[data-theme="dark"] #statRight                          { color: #494949; }
+[data-theme="dark"] .modal-inline-val                   { color: #494949; }
+[data-theme="dark"] .kb-variant-label                   { color: #494949; }
+[data-theme="dark"] .sp-hint                            { color: #494949; }
+[data-theme="dark"] #welcomeTagline                     { color: #494949; }
+[data-theme="dark"] .sp-conflict-list                   { color: #494949; }
+[data-theme="dark"] #kbIcon:hover                       { color: #494949; }
+[data-theme="dark"] #browserIcon:hover                  { color: #494949; }
+[data-theme="dark"] .conflict-desc                      { color: #494949; }
+[data-theme="dark"] .app-option.selected                { color: #494949; }
+[data-theme="dark"] .more-info-trigger:hover .more-info-icon { color: #494949; }
+[data-theme="dark"] .more-info-body                     { color: #494949; }
+[data-theme="dark"] .sp-report-list li                  { color: #494949; }
+[data-theme="dark"] .sp-report-question-label           { color: #494949; }
+[data-theme="dark"] .sp-report-advice a:hover           { color: #494949; }
+[data-theme="dark"] .sp-endgame-list li                 { color: #494949; }
+
+/* ── #374151 → #2b2b2b ── primary labels / active states ── */
+[data-theme="dark"] .modal-left-label                   { color: #2b2b2b; }
+[data-theme="dark"] .modal-right-label                  { color: #2b2b2b; }
+[data-theme="dark"] .modal-inline-label                 { color: #2b2b2b; }
+[data-theme="dark"] .kb-variant-option.selected         { border-color: #2b2b2b; }
+[data-theme="dark"] .kb-variant-key                     { color: #2b2b2b; }
+[data-theme="dark"] .modal-toggle-label                 { color: #2b2b2b; }
+[data-theme="dark"] .modal-section-title                { color: #2b2b2b; }
+[data-theme="dark"] #stickyRadio.on                     { color: #2b2b2b; }
+[data-theme="dark"] #settingsPanelInner                 { color: #2b2b2b; }
+[data-theme="dark"] .sp-title                           { color: #2b2b2b; }
+[data-theme="dark"] .sp-body                            { color: #2b2b2b; }
+[data-theme="dark"] .app-option:hover                   { color: #2b2b2b; }
+[data-theme="dark"] #modalKbSizeSection p               { color: #2b2b2b; }
+[data-theme="dark"] .kb-size-word-label                 { color: #2b2b2b; }
+[data-theme="dark"] .segmented-pill-section.segmented-pill-active       { color: #2b2b2b; }
+[data-theme="dark"] .segmented-pill-section.segmented-pill-active svg   { stroke: #2b2b2b; }
+[data-theme="dark"] .sp-nudge-text                      { color: #2b2b2b; }
+[data-theme="dark"] .sp-seg-pill .diff-btn.diff-btn-active              { color: #2b2b2b; }
+[data-theme="dark"] #brIconWrap.sp-icon-active #browserIcon             { color: #2b2b2b; }
+[data-theme="dark"] #diffIconWrap.sp-icon-active #diffIcon              { color: #2b2b2b; }
+[data-theme="dark"] .phone-icon-btn.sp-icon-active .phone-icon-label    { color: #2b2b2b; }
+[data-theme="dark"] .phone-icon-btn.sp-icon-active svg                  { color: #2b2b2b; }
+
+/* ── #d1d5db → #808080 ── borders and dividers ── */
+[data-theme="dark"] .kb-variant-option:hover            { border-color: #808080; }
+[data-theme="dark"] #stickyRadio                        { color: #808080; }
+[data-theme="dark"] .diff-btn                           { border-color: #808080; }
+[data-theme="dark"] .sp-key-chip                        { border-color: #808080; }
+[data-theme="dark"] .more-info-popup                    { border-color: #808080; }
+[data-theme="dark"] .segmented-pill                     { border-color: #808080; }
+[data-theme="dark"] .segmented-pill-section + .segmented-pill-section   { border-left-color: #808080; }
+[data-theme="dark"] .segmented-pill-inactive            { color: #808080; }
+[data-theme="dark"] .segmented-pill-inactive svg        { stroke: #808080; }
+[data-theme="dark"] .sp-clear-label-inactive            { color: #808080 !important; }
+[data-theme="dark"] .diff-slider-knob                   { border-color: #808080; }
+[data-theme="dark"] .sp-seg-pill                        { border-color: #808080; }
+[data-theme="dark"] .sp-seg-pill .diff-btn + .diff-btn  { border-left-color: #808080; }
+[data-theme="dark"] .sp-seg-pill .diff-btn.diff-btn-inactive            { color: #808080; }
+[data-theme="dark"] .sp-endgame-header-left             { border-color: #808080; }
+[data-theme="dark"] .sp-report-strength .sp-report-chip { border-color: #808080; }
+[data-theme="dark"] .sp-report-weakness .sp-report-chip { border-color: #808080; }
+[data-theme="dark"] #phoneToolbarIcons                  { border-color: #808080; }
+[data-theme="dark"] .sp-seg-pill .diff-btn              { border-color: #808080; }
+
+/* ── Dark mode: wrench icon ─────────────────────────────────────────────── */
+[data-theme="dark"] .app-option-wrench svg              { color: #585858; }
+[data-theme="dark"] .app-option-wrench:hover svg        { color: #2b2b2b; }
+[data-theme="dark"] .app-option-wrench-bottom-row .app-option-wrench svg { color: #494949; }
+
+/* ── Dark mode: wrench picker label states ──────────────────────────────── */
+/* active (in short list) → readable primary; standby → dim but visible */
+[data-theme="dark"] .wrench-label-active                { color: #2b2b2b; }
+[data-theme="dark"] .wrench-label-standby               { color: #585858; }
+
+/* ── Dark mode: customise panel label states ────────────────────────────── */
+[data-theme="dark"] .customise-label-available          { color: #2b2b2b; }
+[data-theme="dark"] .customise-label-inpill             { color: #585858; }
+[data-theme="dark"] .customise-label-beta               { color: #494949; }
+
+/* ── Skillset pill press feedback ───────────────────────────────────────────
+   Pure CSS :active state, so it can never desync from either pill's own click
+   handler that opens its dropdown. Label shrinks instantly on press, then
+   springs back with a slight overshoot on release. Shared by both Skillset
+   pills: the welcome screen one (#skillsetPill) and the wrench-picker one
+   (#appSelectorSkillsetPill). */
+#skillsetPill .skillset-pill-label,
+#appSelectorSkillsetPill .skillset-pill-label {
+  display: inline-block;
+  transition: transform 0.32s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+#skillsetPill:active .skillset-pill-label,
+#appSelectorSkillsetPill:active .skillset-pill-label {
+  transform: scale(0.88);
+  transition: transform 0.08s ease;
+}
+
+/* Wrench icon press feedback: same spring-back pattern, applied directly to
+   the SVG since the wrench row has no separate label span. */
+.wrench-full-row-icon {
+  transition: transform 0.32s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+.app-option-wrench:active .wrench-full-row-icon {
+  transform: scale(0.85);
+  transition: transform 0.08s ease;
+}
+
+/* "more"/"less" toggle press feedback: same spring-back pattern applied to
+   the whole row's contents (icon + text), since neither has its own span. */
+.app-option-skillsets {
+  transition: transform 0.32s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+.app-option-skillsets:active {
+  transform: scale(0.92);
+  transition: transform 0.08s ease;
+}
+
+/* Report Card / History toggle press feedback: same spring-back pattern. */
+.sp-endgame-header-left {
+  transition: transform 0.32s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+.sp-endgame-header-left:active {
+  transform: scale(0.92);
+  transition: transform 0.08s ease;
+}
+
+/* Keyboard key label press feedback. Applied to the label spans rather than
+   the key itself, which already carries a translateZ transform for the 3D
+   tilt and must not be disturbed. */
+.key .letter-lbl,
+.key .fn-lbl,
+.key .util-lbl,
+.key .util-sym-only,
+.key .mod-sym,
+.key .mod-sym-only,
+.key .mod-word,
+.key .key-glyph-sym,
+.key .sym-main,
+.key .sym-sub {
+  transition: transform 0.32s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+.key:active .letter-lbl,
+.key:active .fn-lbl,
+.key:active .util-lbl,
+.key:active .util-sym-only,
+.key:active .mod-sym,
+.key:active .mod-sym-only,
+.key:active .mod-word,
+.key:active .key-glyph-sym,
+.key:active .sym-main,
+.key:active .sym-sub,
+.key.lit-green-down .letter-lbl,
+.key.lit-green-down .fn-lbl,
+.key.lit-green-down .util-lbl,
+.key.lit-green-down .util-sym-only,
+.key.lit-green-down .mod-sym,
+.key.lit-green-down .mod-sym-only,
+.key.lit-green-down .mod-word,
+.key.lit-green-down .key-glyph-sym,
+.key.lit-green-down .sym-main,
+.key.lit-green-down .sym-sub,
+.key.lit-orange-down .letter-lbl,
+.key.lit-orange-down .fn-lbl,
+.key.lit-orange-down .util-lbl,
+.key.lit-orange-down .util-sym-only,
+.key.lit-orange-down .mod-sym,
+.key.lit-orange-down .mod-sym-only,
+.key.lit-orange-down .mod-word,
+.key.lit-orange-down .key-glyph-sym,
+.key.lit-orange-down .sym-main,
+.key.lit-orange-down .sym-sub {
+  transform: scale(0.82);
+  transition: transform 0.08s ease;
+}
+
+/* ── Dark mode: compact keyboard row (touch-disabled state) ─────────────── */
+/* opacity:0.38 on .modal-kbsize-row.disabled looks too dark in dark mode    */
+[data-theme="dark"] .modal-kbsize-row.disabled          { opacity: 0.55; }
+
+/* ── Dark mode: kb-variant-key background ──────────────────────────────── */
+/* key chips use bg #e5e7eb which inverts dark — lift it slightly            */
+[data-theme="dark"] .kb-variant-key                     { background: #c8cdd5; }
+
+/* ── Dark mode: progress dots and life hearts ───────────────────────────────
+   The default #b3bdc9 grey maps too dark after inversion. This pre-filter
+   value (~#939aa3) reads as the intended mid-grey after the inversion pass.
+   ─────────────────────────────────────────────────────────────────────────── */
+[data-theme="dark"] .prog-dot circle                    { stroke: #939aa3; }
+[data-theme="dark"] .prog-dot .dot-fill                 { fill: #939aa3; }
+[data-theme="dark"] .life-heart svg path                { fill: #939aa3; }
+
+/* ── Dark mode: score disc and medals ───────────────────────────────────────
+   Re-applying the same filter as the html element cancels the inversion,
+   keeping the disc and medal rim gradients identical between light and dark
+   modes. The ::before face disc inherits this filter from its parent, so no
+   separate rule is needed for it — adding one would double-invert and break
+   the face colours.
+   ─────────────────────────────────────────────────────────────────────────── */
+[data-theme="dark"] .scoreDisc,
+[data-theme="dark"] .scoreDisc.medal-gold,
+[data-theme="dark"] .scoreDisc.medal-silver,
+[data-theme="dark"] .scoreDisc.medal-bronze,
+[data-theme="dark"] .scoreDisc.medal-lead {
+  filter: invert(1) hue-rotate(180deg) brightness(1.087) contrast(0.926);
+}
+
+/* Segmented pill button inset shadows are semi-transparent and read correctly
+   in both themes without any filter override. */
+
+/* Graphical keyboard: shadow, key lighting outer glow, and front wall */
+[data-theme="dark"] #kb-shadow {
+  filter: invert(1) hue-rotate(180deg) brightness(1.087) contrast(0.926);
+}
+[data-theme="dark"] #kb-wall-bottom {
+  filter: invert(1) hue-rotate(180deg) brightness(1.087) contrast(0.926);
+}
+[data-theme="dark"] .key.lit-green-up,
+[data-theme="dark"] .key.lit-green-down,
+[data-theme="dark"] .key.lit-orange-up,
+[data-theme="dark"] .key.lit-orange-down {
+  filter: invert(1) hue-rotate(180deg) brightness(1.087) contrast(0.926);
+}
+/* ── All three colour themes: dark mode correction ───────────────────────────
+   The page-wide inversion on html[data-theme="dark"] shifts saturated gradients
+   to incorrect hues. Re-inverting these three coloured surfaces cancels that
+   effect and restores the intended appearance. opacity:0.9 makes them read
+   slightly darker in dark mode as intended.
+   Covered surfaces: tinted modifier keys, active pill segment, Start button.
+   Key labels are NOT re-inverted here — the page inversion already handles
+   them correctly once we stop double-inverting the key backgrounds.          */
+
+[data-theme="dark"] #keyboardPanel[data-keyboard-theme="dieter"] .key[data-key^="Control"],
+[data-theme="dark"] #keyboardPanel[data-keyboard-theme="dieter"] .key[data-key^="Fn"],
+[data-theme="dark"] #keyboardPanel[data-keyboard-theme="dieter"] .key[data-key^="Alt"],
+[data-theme="dark"] #keyboardPanel[data-keyboard-theme="dieter"] .key[data-key^="Meta"],
+[data-theme="dark"] #keyboardPanel[data-keyboard-theme="dieter"] .key[data-key^="Shift"],
+[data-theme="dark"] #keyboardPanel[data-keyboard-theme="dieter"] .key[data-key="CapsLock"],
+[data-theme="dark"] #keyboardPanel[data-keyboard-theme="aqua"] .key[data-key^="Control"],
+[data-theme="dark"] #keyboardPanel[data-keyboard-theme="aqua"] .key[data-key^="Fn"],
+[data-theme="dark"] #keyboardPanel[data-keyboard-theme="aqua"] .key[data-key^="Alt"],
+[data-theme="dark"] #keyboardPanel[data-keyboard-theme="aqua"] .key[data-key^="Meta"],
+[data-theme="dark"] #keyboardPanel[data-keyboard-theme="aqua"] .key[data-key^="Shift"],
+[data-theme="dark"] #keyboardPanel[data-keyboard-theme="aqua"] .key[data-key="CapsLock"],
+[data-theme="dark"] #keyboardPanel[data-keyboard-theme="poprocks"] .key[data-key^="Control"],
+[data-theme="dark"] #keyboardPanel[data-keyboard-theme="poprocks"] .key[data-key^="Fn"],
+[data-theme="dark"] #keyboardPanel[data-keyboard-theme="poprocks"] .key[data-key^="Alt"],
+[data-theme="dark"] #keyboardPanel[data-keyboard-theme="poprocks"] .key[data-key^="Meta"],
+[data-theme="dark"] #keyboardPanel[data-keyboard-theme="poprocks"] .key[data-key^="Shift"],
+[data-theme="dark"] #keyboardPanel[data-keyboard-theme="poprocks"] .key[data-key="CapsLock"] {
+  filter: invert(1) hue-rotate(180deg) brightness(1.087) contrast(0.926);
+  opacity: 0.95;
+}
+
+[data-theme="dark"] #kbThemePill .kb-theme-btn.segmented-pill-active[data-theme="dieter"],
+[data-theme="dark"] #kbThemePill .kb-theme-btn.segmented-pill-active[data-theme="aqua"],
+[data-theme="dark"] #kbThemePill .kb-theme-btn.segmented-pill-active[data-theme="poprocks"] {
+  filter: invert(1) hue-rotate(180deg) brightness(1.087) contrast(0.926);
+  opacity: 0.95;
+}
+
+[data-theme="dark"] body:has(#keyboardPanel[data-keyboard-theme="dieter"]) #mainBtn,
+[data-theme="dark"] body:has(#keyboardPanel[data-keyboard-theme="aqua"]) #mainBtn,
+[data-theme="dark"] body:has(#keyboardPanel[data-keyboard-theme="poprocks"]) #mainBtn {
+  filter: invert(1) hue-rotate(180deg) brightness(1.087) contrast(0.926);
+  opacity: 0.95;
+}
+

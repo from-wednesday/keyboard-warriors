@@ -1280,7 +1280,7 @@ function buildKey(cfg, isMini) {
         if (isGlyph) {
           el.innerHTML = `<span class="util-sym-only">${utilText}</span>`;
         } else {
-          const AltCrossTrainingSuffix = (ShowCrossTrainingAlias && currentOs === 'pc' && cfg.id === 'AltLeft') ? '(<span class="sym-main">⌘</span>)' : '';
+          const AltCrossTrainingSuffix = (ShowCrossTrainingAlias && currentOs === 'pc' && cfg.id === 'AltLeft') ? ' (<span class="sym-main">⌘</span>)' : '';
           el.innerHTML = `<span class="util-lbl">${utilText}${AltCrossTrainingSuffix}</span>`;
         }
       }

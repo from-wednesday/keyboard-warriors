@@ -64,9 +64,9 @@ body.settings-fits-viewport #keyboardWrap {
    flag the purple background above already keys off. #kwToast is excluded
    because it's where the "confirm above" guard message itself appears. */
 body:has(.leftPanel.showing-confirm) > *:not(#gameContainer):not(#kwToast) {
-  filter: blur(4px);
+  filter: blur(2px);
   pointer-events: none;
-  transition: filter 0.3s ease;
+  transition: filter 0.8s ease;
 }
 
 /* Shift to a muted teal when the lead (defeat) medal is showing */

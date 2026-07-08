@@ -4380,7 +4380,7 @@ body.phone-layout-active {
    correct anything the filter gets wrong.
 ══════════════════════════════════════ */
 html {
-  transition: filter 1.5s ease, background 12s ease;
+  transition: filter 2s ease, background 2s ease;
 }
 
 html[data-theme="dark"] {

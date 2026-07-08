@@ -8992,6 +8992,7 @@ function _allConflictTokensNormalised() {
   // follows automatically from the next _applyAllKeyColours call.
 
   function _unblockFiredChordIfDismissed(NonModifierBrowserCode) {
+  if (_isCrossTrainingModifierPositions()) return; // physical keys are aliased during cross training, so matching against real conflicts is unreliable here
   var KeyToken = _browserCodeToToken(NonModifierBrowserCode);
   var ChordToken = KeyToken ? _buildChordToken(KeyToken) : _buildChordToken(null);
   if (!ChordToken) return;
@@ -9301,6 +9302,7 @@ function getBrowserConflictSet() {
 // so it's removed from both lists without the user needing to visit Settings.
 function _checkAppWideConflictRestore(Event) {
   if (touchEnabled) return; // no physical conflicts to confirm from touch input
+  if (_isCrossTrainingModifierPositions()) return; // physical keys are aliased during cross training, so matching against real conflicts is unreliable here
   if (!dismissedConflicts.size) return;
 
   Array.from(dismissedConflicts).forEach(function(CanonicalKey) {
@@ -14955,6 +14957,19 @@ function _activateBlurPauseScreen() {
       titleEl.textContent = 'Lost you for a moment,\nso I paused your game.';
       SetKeyboardPositionForPanel('panelPause');
     }
+    return;
+  }
+
+  // Cross training: physical keys are aliased to whichever OS is being
+  // trained, so the reveal-and-block diagnostic cannot reliably tell
+  // whether a real conflict occurred. Show a plain pause message instead.
+  if (_isCrossTrainingModifierPositions()) {
+    hideConfirmHeading();
+    titleEl.classList.remove('blurred');
+    _resetTitleClasses();
+    titleEl.textContent = 'Lost you for a moment,\nso I paused your game.';
+    _blurDiagnosticFlowComplete = true;
+    SetKeyboardPositionForPanel('panelPause');
     return;
   }
 

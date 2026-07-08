@@ -251,11 +251,41 @@
     "pc_sc": "CTRL+SHIFT+H",
     "difficulty": 5
   },
+         {
+"display": "Reselect",
+    "mac_sc": "CMD+SHIFT+D",
+    "pc_sc": "CTRL+SHIFT+D",
+    "difficulty": 5
+  },
   {
 "display": "open Image Size dialog",
     "mac_sc": "CMD+OPT+I",
     "pc_sc": "CTRL+ALT+I",
     "difficulty": 3
+  },
+  {
+    "display": "Fill with Foreground colour",
+    "mac_sc": "OPT+DELETE|OPT+BACKSPACE",
+    "pc_sc": "ALT+BACKSPACE|ALT+DELETE",
+    "difficulty": 4
+  },
+    {
+    "display": "Fill with Background colour",
+    "mac_sc": "CMD+DELETE|CMD+BACKSPACE",
+    "pc_sc": "CTRL+BACKSPACE|CTRL+DELETE",
+    "difficulty": 4
+  },
+    {
+    "display": "Open Fill dialog",
+    "mac_sc": "SHIFT+F5",
+    "pc_sc": "SHIFT+F5",
+    "difficulty": 4
+  },
+    {
+    "display": "Feather Selection",
+    "mac_sc": "SHIFT+F6",
+    "pc_sc": "SHIFT+F6",
+    "difficulty": 4
   },
   {
 "display": "Group selected objects",
@@ -273,13 +303,29 @@
 "display": "Raise object one level in stack",
     "mac_sc": "CMD+BRACKETRIGHT",
     "pc_sc": "CTRL+BRACKETRIGHT",
-    "difficulty": 1
+    "difficulty": 2,
+    "group": "stack"
   },
   {
 "display": "Lower object one level in stack",
     "mac_sc": "CMD+BRACKETLEFT",
     "pc_sc": "CTRL+BRACKETLEFT",
-    "difficulty": 1
+    "difficulty": 2,
+    "group": "stack"
+  },
+         {
+"display": "Bring to Front",
+    "mac_sc": "CMD+SHIFT+BRACKETRIGHT",
+    "pc_sc": "CTRL+SHIFT+BRACKETRIGHT",
+    "difficulty": 3,
+    "group": "stack"
+  },
+  {
+"display": "Send to Back",
+    "mac_sc": "CMD+SHIFT+BRACKETLEFT",
+    "pc_sc": "CTRL+SHIFT+BRACKETLEFT",
+    "difficulty": 3,
+    "group": "stack"
   },
   {
 "display": "Deselect ALL pixels",
@@ -529,6 +575,18 @@
     "pc_sc": "CTRL+SHIFT+ALT+B",
     "difficulty": 5
   },
+         {
+"display": "Save for Web",
+    "mac_sc": "CMD+SHIFT+OPT+S",
+    "pc_sc": "CTRL+SHIFT+ALT+S",
+    "difficulty": 5
+  },
+                {
+"display": "Export As",
+    "mac_sc": "CMD+SHIFT+OPT+W",
+    "pc_sc": "CTRL+SHIFT+ALT+W",
+    "difficulty": 5
+  },
   {
 "display": "hold this & click Layer thumbnail to Select the Pixels",
     "mac_sc": "CMD",
@@ -539,7 +597,7 @@
 "display": "hold this while you Drag to Duplicate",
     "mac_sc": "OPT",
     "pc_sc": "ALT",
-    "difficulty": 3
+    "difficulty": 2
   },
   {
 "display": "hold these and drag left-right to quick zoom",
@@ -570,6 +628,12 @@
     "mac_sc": "CMD+SHIFT+R",
     "pc_sc": "CTRL+SHIFT+R",
     "difficulty": 5
+  },
+  {
+ "display": "Right Align text",
+    "mac_sc": "CMD+SHIFT+R",
+    "pc_sc": "CTRL+SHIFT+R",
+    "difficulty": 3
   },
   {
 "display": "Gamut Warning",
@@ -629,13 +693,19 @@
 "display": "toggle Grid visibility",
     "mac_sc": "CMD+QUOTE",
     "pc_sc": "CTRL+QUOTE",
-    "difficulty": 1
+    "difficulty": 2
   },
   {
 "display": "temporarily active Selection Tool while using Pen Tool",
     "mac_sc": "CMD",
     "pc_sc": "CTRL",
-    "difficulty": 1
+    "difficulty": 2
+  },
+       {
+"display": "open Preferences",
+    "mac_sc": "CMD+K",
+    "pc_sc": "CTRL+K",
+    "difficulty": 5
   },
   {
 "display": "cycle through Layer Blending modes",
@@ -647,12 +717,173 @@
 "display": "Copy Merged (copy all visible layers within the selection)",
     "mac_sc": "CMD+SHIFT+C",
     "pc_sc": "CTRL+SHIFT+C",
-    "difficulty": 1
+    "difficulty": 2
+    },
+  {
+"display": "REDO",
+    "mac_sc": "CMD+SHIFT+Z",
+    "pc_sc": "CTRL+SHIFT+Z",
+    "difficulty": 2
+   },
+  {
+"display": "toggle Quick Mask",
+    "mac_sc": "Q",
+    "pc_sc": "Q",
+    "difficulty": 2
+    },
+  {
+"display": "open Levels",
+    "mac_sc": "CMD+L",
+    "pc_sc": "CTRL+L",
+    "difficulty": 2
+    },
+  {
+    "display": "Healing Brush",
+    "mac_sc": "J",
+    "pc_sc": "J",
+    "difficulty": 4
+    },
+  {
+    "display": "open Curves",
+    "mac_sc": "CMD+M",
+    "pc_sc": "CTRL+M",
+    "difficulty": 4
+   },
+  {
+    "display": "History Brush",
+    "mac_sc": "Y",
+    "pc_sc": "Y",
+    "difficulty": 5
+    },
+  {
+    "display": "Dodge Burn & Sponge tools",
+    "mac_sc": "O",
+    "pc_sc": "O",
+    "difficulty": 4
+    },
+  {
+    "display": "cycle vector Shape tools",
+    "mac_sc": "U",
+    "pc_sc": "U",
+    "difficulty": 4
+    },
+  {
+           "display": "cycle Brush, Pencil, Colour Replacement, Mixer Brush",
+           "mac_sc": "SHIFT+B",
+           "pc_sc": "SHIFT+B",
+           "difficulty": 4,
+    "group": "cycle"
+      },
+  {
+           "display": "cycle Eraser, Background Eraser, Magic Eraser",
+           "mac_sc": "SHIFT+E",
+           "pc_sc": "SHIFT+E",
+           "difficulty": 4,
+    "group": "cycle"
+      },
+  {
+           "display": "Spot Healing, Healing Brush, Patch, Content-Aware Move, Red Eye",
+           "mac_sc": "SHIFT+J",
+           "pc_sc": "SHIFT+J",
+           "difficulty": 5,
+    "group": "cycle"
+     },
+  {
+           "display": "cycle Lasso tools",
+           "mac_sc": "SHIFT+L",
+           "pc_sc": "SHIFT+L",
+           "difficulty": 4,
+    "group": "cycle"
+     },
+  {
+           "display": "cycle Rectangular & Elliptical marquees",
+           "mac_sc": "SHIFT+M",
+           "pc_sc": "SHIFT+M",
+           "difficulty": 5,
+    "group": "cycle"
+      },
+  {
+           "display": "cycle Dodge, Burn, Sponge",
+           "mac_sc": "SHIFT+O",
+           "pc_sc": "SHIFT+O",
+           "difficulty": 5,
+    "group": "cycle"
+      },
+  {
+           "display": "cycle Pen, Curvature Pen, Freeform Pen, Add/Delete Anchor, Convert Point",
+           "mac_sc": "SHIFT+P",
+           "pc_sc": "SHIFT+P",
+           "difficulty": 4,
+    "group": "cycle"
+      },
+  {
+           "display": "cycle Clone Stamp, Pattern Stamp",
+           "mac_sc": "SHIFT+S",
+           "pc_sc": "SHIFT+S",
+           "difficulty": 5,
+    "group": "cycle"
+      },
+  {
+           "display": "cycle Type tools",
+           "mac_sc": "SHIFT+T",
+           "pc_sc": "SHIFT+T",
+           "difficulty": 4,
+    "group": "cycle"
+      },
+  {
+           "display": "cycle Object Selection, Quick Selection, Magic Wand",
+           "mac_sc": "SHIFT+W",
+           "pc_sc": "SHIFT+W",
+           "difficulty": 4,
+    "group": "cycle"
+      },
+  {
+           "display": "cycle History Brush, Art History Brush",
+           "mac_sc": "SHIFT+Y",
+           "pc_sc": "SHIFT+Y",
+           "difficulty": 5,
+    "group": "cycle"
+      },
+  {
+           "display": "cycle Gradient, Paint Bucket",
+           "mac_sc": "SHIFT+G",
+           "pc_sc": "SHIFT+G",
+           "difficulty": 5,
+    "group": "cycle"
+    },
+  {
+           "display": "cycle Eyedropper, Colour Sampler, Ruler, Note",
+           "mac_sc": "SHIFT+I",
+           "pc_sc": "SHIFT+I",
+           "difficulty": 5,
+    "group": "cycle"
+  },
+         {
+"display": "Open a document",
+    "mac_sc": "CMD+O",
+    "pc_sc": "CTRL+O",
+    "difficulty": 0,
+    "group": "mundane"
+  },
+       {
+    "display": "create a New document",
+    "mac_sc": "CMD+N",
+    "pc_sc": "CTRL+N",
+    "difficulty": 0,
+    "group": "mundane"
+  },
+       {
+       "display": "Close the document",
+    "mac_sc": "CMD+W",
+    "pc_sc": "CTRL+W",
+    "difficulty": 0,
+    "group": "mundane"
   },
     {
 "display": "Quit the application",
     "mac_sc": "CMD+Q",
     "pc_sc": "ALT+F4",
-    "difficulty": 2
+    "difficulty": 1,
+    "group": "mundane"
   }
 ]

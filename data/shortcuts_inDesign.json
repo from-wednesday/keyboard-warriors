@@ -78,7 +78,7 @@
     "difficulty": 3
   },
   {
-"display": "Add Anchor point tool",
+"display": "Add anchor point tool",
     "mac_sc": "PLUS",
     "pc_sc": "PLUS",
     "difficulty": 3
@@ -168,10 +168,10 @@
     "difficulty": 1
   },
   {
-"display": "swap Stroke & Fill colours",
-    "mac_sc": "X",
-    "pc_sc": "X",
-    "difficulty": 1
+"display": "swap Fill & Stroke colours",
+    "mac_sc": "SHIFT+X",
+    "pc_sc": "SHIFT+X",
+    "difficulty": 2
   },
   {
 "display": "hold to quickly pan with the Hand tool",
@@ -275,17 +275,57 @@
     "pc_sc": "CTRL+SHIFT+G",
     "difficulty": 3
   },
+                {
+"display": "Frame Grid tool (horizontal)",
+    "mac_sc": "Y",
+    "pc_sc": "Y",
+    "difficulty": 4
+  },
+                {
+"display": "Frame Grid tool (vertical)",
+    "mac_sc": "Q",
+    "pc_sc": "Q",
+    "difficulty": 4
+  },
   {
+"display": "Apply Colour",
+    "mac_sc": "COMMA",
+    "pc_sc": "COMMA",
+    "difficulty": 3
+  },
+                {
+"display": "Apply Gradient",
+    "mac_sc": "PERIOD",
+    "pc_sc": "PERIOD",
+    "difficulty": 3
+  },
+ {
 "display": "Raise object one level in stack",
     "mac_sc": "CMD+BRACKETRIGHT",
     "pc_sc": "CTRL+BRACKETRIGHT",
-    "difficulty": 1
+    "difficulty": 2,
+    "group": "stack"
   },
   {
 "display": "Lower object one level in stack",
     "mac_sc": "CMD+BRACKETLEFT",
     "pc_sc": "CTRL+BRACKETLEFT",
-    "difficulty": 1
+    "difficulty": 2,
+    "group": "stack"
+  },
+         {
+"display": "Bring to Front",
+    "mac_sc": "CMD+SHIFT+BRACKETRIGHT",
+    "pc_sc": "CTRL+SHIFT+BRACKETRIGHT",
+    "difficulty": 3,
+    "group": "stack"
+  },
+  {
+"display": "Send to Back",
+    "mac_sc": "CMD+SHIFT+BRACKETLEFT",
+    "pc_sc": "CTRL+SHIFT+BRACKETLEFT",
+    "difficulty": 3,
+    "group": "stack"
   },
   {
 "display": "Deselect ALL",
@@ -294,11 +334,29 @@
     "difficulty": 3
   },
   {
-"display": "Paste in Back",
-    "mac_sc": "CMD+B",
-    "pc_sc": "CTRL+B",
+"display": "undo your undo (Redo)",
+    "mac_sc": "CMD+SHIFT+Z",
+    "pc_sc": "CTRL+SHIFT+Z",
     "difficulty": 1
   },
+  {
+"display": "Rectangle Frame tool",
+    "mac_sc": "F",
+    "pc_sc": "F",
+    "difficulty": 2
+  },
+    {
+    "display": "Toggle Formatting Affects Container / Text",
+    "mac_sc": "J",
+    "pc_sc": "J",
+    "difficulty": 4
+    },
+  {
+    "display": "Gradient Feather tool",
+    "mac_sc": "SHIFT+G",
+    "pc_sc": "SHIFT+G",
+    "difficulty": 4
+    },
   {
 "display": "Increase font size",
     "mac_sc": "CMD+SHIFT+MORETHAN",
@@ -348,10 +406,10 @@
     "difficulty": 3
   },
   {
-"display": "Insert Pages",
+"display": "Add new page after last page",
     "mac_sc": "CMD+SHIFT+P",
     "pc_sc": "CTRL+SHIFT+P",
-    "difficulty": 1
+    "difficulty": 4
   },
   {
 "display": "nudge 1px Left",
@@ -410,16 +468,16 @@
     "group": "nudge"
   },
   {
-"display": "swap fill & stroke colours",
+"display": "toggle focus between fill & stroke",
     "mac_sc": "X",
     "pc_sc": "X",
-    "difficulty": 1
+    "difficulty": 2
   },
   {
 "display": "hold this while you drag to Duplicate",
     "mac_sc": "OPT",
     "pc_sc": "ALT",
-    "difficulty": 3
+    "difficulty": 2
   },
   {
 "display": "toggle Rulers",
@@ -630,9 +688,9 @@
     "difficulty": 2
   },
   {
-"display": "insert Page-Break",
-    "mac_sc": "CMD+RETURN",
-    "pc_sc": "CTRL+ENTER",
+"display": "Export",
+    "mac_sc": "CMD+E",
+    "pc_sc": "CTRL+E",
     "difficulty": 3
   },
   {
@@ -708,10 +766,10 @@
     "difficulty": 5
   },
   {
-"display": "Add Anchor Point",
-    "mac_sc": "PLUS",
-    "pc_sc": "PLUS",
-    "difficulty": 5
+"display": "Select ALL",
+    "mac_sc": "CMD+A",
+    "pc_sc": "CTRL+A",
+    "difficulty": 1
   },
   {
 "display": "Type on a Path Tool",

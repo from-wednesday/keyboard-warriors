@@ -2051,7 +2051,7 @@ function _enterCrossTrainSoftKeyPrompt() {
   gameState = 'cross-train-softkey-prompt';
   var NonNativeOsLabel = currentOs === 'pc' ? 'PC/Windows' : 'Mac';
   showConfirmHeading(
-    'Can we activate soft keys for the on-screen keyboard to better simulate the ' + NonNativeOsLabel + ' OS experience?',
+    'To optimise muscle memory, physical keys are now remapped to ' + NonNativeOsLabel + ' positions & dual-labeled. Should we also enable on-screen soft keys to complete the simulation?',
     true, true
   );
   mainBtn.textContent = 'on-screen soft-keys';

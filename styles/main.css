@@ -58,6 +58,17 @@ body.settings-fits-viewport #keyboardWrap {
   background: #eee4fd;
 }
 
+/* Blur everything outside the game panel during a binary confirm overlay
+   (Quit?, Wipe scores?, Change difficulty?, etc.) so it reads as inert and
+   attention stays on the Start/Help buttons. Reuses the same .showing-confirm
+   flag the purple background above already keys off. #kwToast is excluded
+   because it's where the "confirm above" guard message itself appears. */
+body:has(.leftPanel.showing-confirm) > *:not(#gameContainer):not(#kwToast) {
+  filter: blur(2px);
+  pointer-events: none;
+  transition: filter 0.3s ease;
+}
+
 /* Shift to a muted teal when the lead (defeat) medal is showing */
 #gameContainer:has(.scoreDisc.medal-lead) {
   background: #eaf1f6;
@@ -1381,6 +1392,19 @@ li.conflict-dismissed .conflict-desc {
   color: #555;
   font-weight: 400;
   line-height: 1;
+}
+/* Cross-training alias on the Win key: logo and caption sit on one line
+   rather than the logo alone with the caption stacked underneath. */
+.key .cross-training-alias-row {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 3px;
+  white-space: nowrap;
+}
+.key .cross-training-alias-row .mod-word {
+  position: static;
+  font-size: 8px;
 }
 .key .win-svg {
   width: 14px;
@@ -4355,6 +4379,10 @@ body.phone-layout-active {
    context). Targeted overrides below
    correct anything the filter gets wrong.
 ══════════════════════════════════════ */
+html {
+  transition: filter 2s ease, background 1.5s ease;
+}
+
 html[data-theme="dark"] {
   filter: invert(1) hue-rotate(180deg) brightness(0.92) contrast(1.08);
   background: #e3dfe7; /* pre-filter value; inverts to approx #1c2028 dark blue-grey */

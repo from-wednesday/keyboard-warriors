@@ -3,7 +3,7 @@
 "display": "Switch to the Selection tool",
     "mac_sc": "V",
     "pc_sc": "V",
-    "difficulty": 1
+    "difficulty": 2
   },
   {
 "display": "Pick up the Magnifying Glass",
@@ -21,7 +21,7 @@
 "display": "Jump to the next keyframe or marker",
     "mac_sc": "K",
     "pc_sc": "K",
-    "difficulty": 1
+    "difficulty": 2
   },
   {
 "display": "Reveal Rotation property on selected layer",
@@ -39,13 +39,13 @@
 "display": "Set work area Out point to current time",
     "mac_sc": "N",
     "pc_sc": "N",
-    "difficulty": 1
+    "difficulty": 2
   },
   {
 "display": "Jump to the previous keyframe or marker",
     "mac_sc": "J",
     "pc_sc": "J",
-    "difficulty": 1
+    "difficulty": 2
   },
   {
 "display": "Reveal all keyframed properties on selected layer",
@@ -63,13 +63,13 @@
 "display": "Move the playhead to the Out point of the selected layer",
     "mac_sc": "O",
     "pc_sc": "O",
-    "difficulty": 1
+    "difficulty": 2
   },
   {
 "display": "Set the work area In point to the current time",
     "mac_sc": "B",
     "pc_sc": "B",
-    "difficulty": 1
+    "difficulty": 2
   },
   {
 "display": "Reveal Position property on selected layer",
@@ -81,7 +81,7 @@
 "display": "Reveal Opacity property on selected layer",
     "mac_sc": "T",
     "pc_sc": "T",
-    "difficulty": 2
+    "difficulty": 3
   },
   {
 "display": "Reveal Anchor Point property on selected layer",
@@ -135,65 +135,65 @@
 "display": "Ungroup selected objects",
     "mac_sc": "CMD+SHIFT+G",
     "pc_sc": "CTRL+SHIFT+G",
-    "difficulty": 3
+    "difficulty": 2
   },
   {
-"display": "Place",
+"display": "Duplicate Layer",
     "mac_sc": "CMD+D",
     "pc_sc": "CTRL+D",
-    "difficulty": 1
+    "difficulty": 2
   },
   {
-"display": "Deselect all",
+"display": "Deselect All",
     "mac_sc": "CMD+SHIFT+A",
     "pc_sc": "CTRL+SHIFT+A",
-    "difficulty": 3
+    "difficulty": 2
   },
   {
 "display": "Split the selected layer at the playhead",
     "mac_sc": "CMD+SHIFT+D",
     "pc_sc": "CTRL+SHIFT+D",
-    "difficulty": 1
+    "difficulty": 3
   },
   {
-"display": "Move back 1 frame",
-    "mac_sc": "ARROWLEFT",
-    "pc_sc": "ARROWLEFT",
-    "difficulty": 1,
-    "group": "nudge"
+"display": "Step back 1 frame",
+    "mac_sc": "PAGEUP|ARROWLEFT",
+    "pc_sc": "PAGEUP|ARROWLEFT",
+    "difficulty": 3,
+    "group": "playhead"
   },
   {
-"display": "Move forward 1 frame",
-    "mac_sc": "ARROWRIGHT",
-    "pc_sc": "ARROWRIGHT",
-    "difficulty": 1,
-    "group": "nudge"
+"display": "Step forward 1 frame",
+    "mac_sc": "PAGEDOWN|ARROWRIGHT",
+    "pc_sc": "PAGEDOWN|ARROWRIGHT",
+    "difficulty": 3,
+    "group": "playhead"
   },
   {
-"display": "Move back 10 frames",
-    "mac_sc": "SHIFT+ARROWLEFT",
-    "pc_sc": "SHIFT+ARROWLEFT",
-    "difficulty": 1,
-    "group": "nudge"
+"display": "Step forward 10 frames",
+    "mac_sc": "SHIFT+PAGEDOWN|SHIFT+ARROWRIGHT",
+    "pc_sc": "SHIFT+PAGEDOWN|SHIFT+ARROWRIGHT",
+    "difficulty": 3,
+    "group": "playhead"
   },
   {
-"display": "Move forward 10 frames",
-    "mac_sc": "SHIFT+ARROWRIGHT",
-    "pc_sc": "SHIFT+ARROWRIGHT",
-    "difficulty": 1,
-    "group": "nudge"
+"display": "Step back 10 frames",
+    "mac_sc": "SHIFT+PAGEUP|SHIFT+ARROWLEFT",
+    "pc_sc": "SHIFT+PAGEUP|SHIFT+ARROWLEFT",
+    "difficulty": 3,
+    "group": "playhead"
   },
   {
-"display": "Move the playhead to the start of the composition",
+"display": "Step the playhead to the start of the composition",
     "mac_sc": "HOME",
     "pc_sc": "HOME",
-    "difficulty": 1
+    "difficulty": 2
   },
   {
-"display": "Move the playhead to the end of the composition",
+"display": "Step the playhead to the end of the composition",
     "mac_sc": "END",
     "pc_sc": "END",
-    "difficulty": 1
+    "difficulty": 2
   },
   {
 "display": "Trim layer In-point to the current time",
@@ -236,7 +236,13 @@
     "mac_sc": "CMD+SHIFT+C",
     "pc_sc": "CTRL+SHIFT+C",
     "difficulty": 3
-  },
+  },  
+{
+  "display": "Reveal Mask Feather property on selected layer",
+  "mac_sc": "F",
+  "pc_sc": "F",
+  "difficulty": 3
+},
   {
 "display": "Scale footage to fit the composition",
     "mac_sc": "CMD+OPT+F",
@@ -298,7 +304,7 @@
     "difficulty": 1
   },
   {
-"display": "Switch to the Type tool",
+"display": "open Character panel",
     "mac_sc": "CMD+T",
     "pc_sc": "CTRL+T",
     "difficulty": 3
@@ -308,6 +314,62 @@
     "mac_sc": "OPT",
     "pc_sc": "ALT",
     "difficulty": 3
+  },
+   {
+"display": "nudge layer 1px Left",
+    "mac_sc": "ARROWLEFT",
+    "pc_sc": "ARROWLEFT",
+    "difficulty": 1,
+    "group": "nudge"
+  },
+  {
+"display": "nudge layer 1px Right",
+    "mac_sc": "ARROWRIGHT",
+    "pc_sc": "ARROWRIGHT",
+    "difficulty": 1,
+    "group": "nudge"
+  },
+  {
+"display": "nudge layer 1px UP",
+    "mac_sc": "ARROWUP",
+    "pc_sc": "ARROWUP",
+    "difficulty": 1,
+    "group": "nudge"
+  },
+  {
+"display": "nudge layer 1px Down",
+    "mac_sc": "ARROWDOWN",
+    "pc_sc": "ARROWDOWN",
+    "difficulty": 1,
+    "group": "nudge"
+  },
+  {
+"display": "nudge layer 10px Left",
+    "mac_sc": "SHIFT+ARROWLEFT",
+    "pc_sc": "SHIFT+ARROWLEFT",
+    "difficulty": 1,
+    "group": "nudge"
+  },
+  {
+"display": "nudge layer 10px Right",
+    "mac_sc": "SHIFT+ARROWRIGHT",
+    "pc_sc": "SHIFT+ARROWRIGHT",
+    "difficulty": 1,
+    "group": "nudge"
+  },
+  {
+"display": "nudge layer 10px Up",
+    "mac_sc": "SHIFT+ARROWUP",
+    "pc_sc": "SHIFT+ARROWUP",
+    "difficulty": 1,
+    "group": "nudge"
+  },
+  {
+"display": "nudge layer 10px Down",
+    "mac_sc": "SHIFT+ARROWDOWN",
+    "pc_sc": "SHIFT+ARROWDOWN",
+    "difficulty": 1,
+    "group": "nudge"
   },
   {
 "display": "Toggle Rulers",
@@ -397,7 +459,7 @@
 "display": "Pen Tool",
     "mac_sc": "G",
     "pc_sc": "G",
-    "difficulty": 3
+    "difficulty": 4
   },
   {
 "display": "Toggle between Puppet Pin Tools",
@@ -601,37 +663,37 @@
 "display": "Toggle Render Queue Panel",
     "mac_sc": "CMD+OPT+0",
     "pc_sc": "CTRL+ALT+0",
-    "difficulty": 3
+    "difficulty": 4
   },
   {
 "display": "Cycle through Camera Tools",
     "mac_sc": "C",
     "pc_sc": "C",
-    "difficulty": 5
+    "difficulty": 3
   },
   {
 "display": "Temporarily active Selection Tool while using Pen",
     "mac_sc": "CMD",
     "pc_sc": "CTRL",
-    "difficulty": 5
+    "difficulty": 3
   },
   {
 "display": "Go to specific Time",
     "mac_sc": "SHIFT+OPT+J",
     "pc_sc": "SHIFT+ALT+J",
-    "difficulty": 5
+    "difficulty": 4
   },
   {
 "display": "Hold this while dragging time indicator to scrub through footage",
     "mac_sc": "CMD",
     "pc_sc": "CTRL",
-    "difficulty": 1
+    "difficulty": 2
   },
   {
 "display": "Toggle Safe Zone visibility",
     "mac_sc": "QUOTE",
     "pc_sc": "QUOTE",
-    "difficulty": 1
+    "difficulty": 2
   },
   {
 "display": "Delete footage without warning",
@@ -675,6 +737,48 @@
     "pc_sc": "CTRL+V",
     "difficulty": 1
   },
+  {
+  "display": "Play / Pause preview",
+  "mac_sc": "SPACE",
+  "pc_sc": "SPACE",
+  "difficulty": 2
+},
+{
+  "display": "RAM Preview",
+  "mac_sc": "NUMPAD0",
+  "pc_sc": "NUMPAD0",
+  "difficulty": 4
+},
+{
+  "display": "Redo",
+  "mac_sc": "CMD+SHIFT+Z",
+  "pc_sc": "CTRL+SHIFT+Z",
+  "difficulty": 2
+},
+{
+  "display": "New Composition",
+  "mac_sc": "CMD+N",
+  "pc_sc": "CTRL+N",
+  "difficulty": 2
+},
+{
+  "display": "Reveal Audio Levels property on selected layer",
+  "mac_sc": "L",
+  "pc_sc": "L",
+  "difficulty": 3
+},
+{
+  "display": "Zoom composition viewer to 100%",
+  "mac_sc": "FORWARDSLASH",
+  "pc_sc": "FORWARDSLASH",
+  "difficulty": 3
+},
+{
+  "display": "Zoom composition viewer to Fit",
+  "mac_sc": "SHIFT+FORWARDSLASH",
+  "pc_sc": "SHIFT+FORWARDSLASH",
+  "difficulty": 3
+},
   {
 "display": "Quit the application",
     "mac_sc": "CMD+Q",

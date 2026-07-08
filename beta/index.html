@@ -7134,6 +7134,7 @@ function _closeAllModals() {
 
 function _closeAllModalsInstant() {
   if (activeSettings === null) return;
+  var closingPage = activeSettings;
   if (NoKeyboardMode || window.innerWidth < MiniKeyboardBreakpointWidth) {
     activeSettings = null;
     _syncKeyboardSettingsActiveClass();
@@ -7143,6 +7144,7 @@ function _closeAllModalsInstant() {
     _exitQuitConfirm();
     _phoneCollapsePanel();
     _syncPhoneToolbarActiveState(null);
+    if (closingPage === 'panelConflicts') _syncKeyboardToEffectiveOs();
     return;
   }
   activeSettings = null;
@@ -7167,6 +7169,7 @@ function _closeAllModalsInstant() {
     wrap2.classList.add('settings-closing-snap');
     setTimeout(function() { wrap2.classList.remove('settings-closing-snap'); }, 250);
   }
+  if (closingPage === 'panelConflicts') _syncKeyboardToEffectiveOs();
 }
 
 // Legacy aliases — kept so remaining call sites compile

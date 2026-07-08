@@ -48,13 +48,13 @@
     "difficulty": 1
   },
   {
-"display": "switch to the Direct Selection tool",
+"display": "switch to Direct Selection tool",
     "mac_sc": "A",
     "pc_sc": "A",
     "difficulty": 1
   },
   {
-"display": "pick up the Pen tool",
+"display": "grab the Pen tool",
     "mac_sc": "P",
     "pc_sc": "P",
     "difficulty": 1
@@ -66,13 +66,13 @@
     "difficulty": 1
   },
   {
-"display": "Live Paint Bucket tool",
-    "mac_sc": "K",
-    "pc_sc": "K",
-    "difficulty": 5
+"display": "select the Lasso tool",
+    "mac_sc": "Q",
+    "pc_sc": "Q",
+    "difficulty": 3
   },
   {
-"display": "switch to the Free Transform tool",
+"display": "select Free Transform tool",
     "mac_sc": "E",
     "pc_sc": "E",
     "difficulty": 3
@@ -108,7 +108,7 @@
     "difficulty": 1
   },
   {
-"display": "switch to the Scissors tool",
+"display": "pick up the Scissors tool",
     "mac_sc": "C",
     "pc_sc": "C",
     "difficulty": 3
@@ -126,7 +126,7 @@
     "difficulty": 1
   },
   {
-"display": "pick up the Paint Bucket tool",
+"display": "select Live Paint Bucket tool",
     "mac_sc": "K",
     "pc_sc": "K",
     "difficulty": 3
@@ -150,10 +150,16 @@
     "difficulty": 1
   },
   {
-"display": "Switch to the Warp tool",
+"display": "Switch to the Width tool",
+    "mac_sc": "SHIFT+W",
+    "pc_sc": "SHIFT+W",
+    "difficulty": 4
+  },
+  {
+"display": "Switch to the Blend tool",
     "mac_sc": "W",
     "pc_sc": "W",
-    "difficulty": 1
+    "difficulty": 3
   },
   {
 "display": "pick up the Pencil tool",
@@ -279,13 +285,29 @@
 "display": "Raise object one level in stack",
     "mac_sc": "CMD+BRACKETRIGHT",
     "pc_sc": "CTRL+BRACKETRIGHT",
-    "difficulty": 1
+    "difficulty": 2,
+    "group": "stack"
   },
   {
 "display": "Lower object one level in stack",
     "mac_sc": "CMD+BRACKETLEFT",
     "pc_sc": "CTRL+BRACKETLEFT",
-    "difficulty": 1
+    "difficulty": 2,
+    "group": "stack"
+  },
+         {
+"display": "Bring to Front",
+    "mac_sc": "CMD+SHIFT+BRACKETRIGHT",
+    "pc_sc": "CTRL+SHIFT+BRACKETRIGHT",
+    "difficulty": 3,
+    "group": "stack"
+  },
+  {
+"display": "Send to Back",
+    "mac_sc": "CMD+SHIFT+BRACKETLEFT",
+    "pc_sc": "CTRL+SHIFT+BRACKETLEFT",
+    "difficulty": 3,
+    "group": "stack"
   },
   {
 "display": "Transform Again",
@@ -293,17 +315,35 @@
     "pc_sc": "CTRL+D",
     "difficulty": 1
   },
-  {
+         {
 "display": "Deselect All",
     "mac_sc": "CMD+SHIFT+A",
     "pc_sc": "CTRL+SHIFT+A",
     "difficulty": 3
   },
   {
-"display": "Unlock ALL in current layer",
-    "mac_sc": "CMD+OPT+2",
-    "pc_sc": "CTRL+ALT+2",
-    "difficulty": 5
+"display": "Select All",
+    "mac_sc": "CMD+A",
+    "pc_sc": "CTRL+A",
+    "difficulty": 2
+  },
+         {
+"display": "Redo",
+    "mac_sc": "CMD+SHIFT+Z",
+    "pc_sc": "CTRL+SHIFT+Z",
+    "difficulty": 2
+  },
+  {
+"display": "Curvature tool",
+    "mac_sc": "SHIFT+TILDE",
+    "pc_sc": "SHIFT+TILDE",
+    "difficulty": 4
+  },
+  {
+    "display": "make Compound Path",
+    "mac_sc": "CMD+8",
+    "pc_sc": "CTRL+8",
+    "difficulty": 4
   },
   {
 "display": "Unhide ALL",
@@ -357,6 +397,18 @@
 "display": "Decrease font size",
     "mac_sc": "CMD+SHIFT+LESSTHAN",
     "pc_sc": "CTRL+SHIFT+LESSTHAN",
+    "difficulty": 3
+  },
+  {
+"display": "Align text Right",
+    "mac_sc": "CMD+SHIFT+R",
+    "pc_sc": "CTRL+SHIFT+R",
+    "difficulty": 3
+  },
+  {
+"display": "Justify text (who does that?)",
+    "mac_sc": "CMD+SHIFT+J",
+    "pc_sc": "CTRL+SHIFT+J",
     "difficulty": 3
   },
   {
@@ -452,7 +504,7 @@
     "group": "nudge"
   },
   {
-"display": "swap Fill & Stroke colours",
+"display": "move focus between Fill & Stroke",
     "mac_sc": "X",
     "pc_sc": "X",
     "difficulty": 1
@@ -488,16 +540,16 @@
     "difficulty": 1
   },
   {
-"display": "toggle Grid visibility",
-    "mac_sc": "CMD+QUOTE",
-    "pc_sc": "CTRL+QUOTE",
-    "difficulty": 1
+"display": "select the Magic Wand tool",
+    "mac_sc": "Y",
+    "pc_sc": "Y",
+    "difficulty": 3
   },
   {
 "display": "temporarily active Selection Tool while using Pen Tool",
     "mac_sc": "CMD",
     "pc_sc": "CTRL",
-    "difficulty": 1
+    "difficulty": 2
   },
   {
 "display": "show/hide the Character panel",
@@ -518,7 +570,7 @@
     "difficulty": 3
   },
   {
-"display": "select the Art Board tool",
+"display": "select the ArtBoard tool",
     "mac_sc": "SHIFT+O",
     "pc_sc": "SHIFT+O",
     "difficulty": 3
@@ -615,14 +667,14 @@
   },
   {
 "display": "Create Outlines",
-    "mac_sc": "CMD+SHIFT+0",
-    "pc_sc": "CTRL+SHIFT+0",
-    "difficulty": 5
+    "mac_sc": "CMD+SHIFT+O",
+    "pc_sc": "CTRL+SHIFT+O",
+    "difficulty": 4
   },
   {
 "display": "Make Live Paint",
-    "mac_sc": "CMD+SHIFT+X",
-    "pc_sc": "CTRL+SHIFT+X",
+    "mac_sc": "CMD+OPT+X",
+    "pc_sc": "CTRL+ALT+X",
     "difficulty": 5
   },
   {
@@ -644,9 +696,27 @@
     "difficulty": 3
   },
   {
-"display": "Show ALL",
-    "mac_sc": "CMD+OPT+3",
-    "pc_sc": "CTRL+ALT+3",
+"display": "change Pen to Minus Point mode",
+    "mac_sc": "MINUS",
+    "pc_sc": "MINUS",
+    "difficulty": 3
+  },
+  {
+"display": "change Pen to Convert Anchor mode",
+    "mac_sc": "SHIFT+C",
+    "pc_sc": "SHIFT+C",
+    "difficulty": 4
+  },
+         {
+"display": "Line Segment tool",
+    "mac_sc": "BACKSLASH",
+    "pc_sc": "BACKSLASH",
+    "difficulty": 4
+  },
+  {
+"display": "change Pen to Add Point mode",
+    "mac_sc": "PLUS",
+    "pc_sc": "PLUS",
     "difficulty": 3
   },
   {
@@ -659,6 +729,18 @@
 "display": "Paste in Place on the active art board",
     "mac_sc": "CMD+SHIFT+V",
     "pc_sc": "CTRL+SHIFT+V",
+    "difficulty": 5
+  },
+  {
+"display": "open Preferences",
+    "mac_sc": "CMD+K",
+    "pc_sc": "CTRL+K",
+    "difficulty": 5
+  },
+  {
+"display": "Save for Web",
+    "mac_sc": "CMD+SHIFT+OPT+S",
+    "pc_sc": "CTRL+SHIFT+ALT+S",
     "difficulty": 5
   },
   {

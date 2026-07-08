@@ -35,6 +35,12 @@
     "pc_sc": "CTRL+Q",
     "difficulty": 1
   },
+    {
+    "display": "close/exit field",
+    "mac_sc": "ESCAPE",
+    "pc_sc": "ESCAPE",
+    "difficulty": 1
+  },
   {
     "display": "undo the last Action",
     "mac_sc": "CMD+Z",
@@ -106,7 +112,7 @@
     "difficulty": 3
   },
   {
-    "display": "open find Toolbar mini search menu",
+    "display": "open find Toolbar",
     "mac_sc": "CMD+F",
     "pc_sc": "CTRL+F",
     "difficulty": 1
@@ -120,8 +126,8 @@
   {
     "display": "find next Matching text query instance",
     "mac_sc": "CMD+G",
-    "pc_sc": "CTRL+G",
-    "difficulty": 2
+    "pc_sc": "CTRL+G|F3",
+    "difficulty": 3
   },
   {
     "display": "find previous Matching text query instance",
@@ -130,97 +136,120 @@
     "difficulty": 3
   },
   {
-    "display": "zoom In document view canvas",
-    "mac_sc": "CMD+EQUAL",
-    "pc_sc": "CTRL+EQUAL",
+    "display": "zoom IN",
+    "mac_sc": "CMD+PLUS",
+    "pc_sc": "CTRL+PLUS",
     "difficulty": 2
   },
   {
-    "display": "zoom Out document view canvas",
+    "display": "zoom OUT",
     "mac_sc": "CMD+MINUS",
     "pc_sc": "CTRL+MINUS",
     "difficulty": 2
   },
   {
-    "display": "zoom to Actual size 100 percent scale",
+    "display": "zoom to Actual Size (100%)",
     "mac_sc": "CMD+1",
     "pc_sc": "CTRL+1",
     "difficulty": 2
   },
   {
-    "display": "fit page Layout to view screen boundaries",
+    "display": "fit page to screen",
     "mac_sc": "CMD+0",
     "pc_sc": "CTRL+0",
     "difficulty": 2
   },
   {
-    "display": "fit visible Width of page layout to viewport",
+    "display": "fit Width of page to screen",
     "mac_sc": "CMD+2",
     "pc_sc": "CTRL+2",
     "difficulty": 3
   },
   {
-    "display": "fit visible Height of page layout to viewport",
+    "display": "fit Height of page to screen",
     "mac_sc": "CMD+3",
     "pc_sc": "CTRL+3",
     "difficulty": 3
   },
   {
-    "display": "toggle full Screen viewing performance presentation mode",
+    "display": "toggle Full Screen",
     "mac_sc": "CMD+L",
     "pc_sc": "CTRL+L",
     "difficulty": 2
   },
   {
-    "display": "select All elements inside active document page text",
+    "display": "select All",
     "mac_sc": "CMD+A",
     "pc_sc": "CTRL+A",
     "difficulty": 1
   },
   {
-    "display": "deselect All elements inside active document page selections",
+    "display": "deselect All",
     "mac_sc": "CMD+SHIFT+A",
     "pc_sc": "CTRL+SHIFT+A",
     "difficulty": 2
   },
   {
-    "display": "copy selected Text or structural object",
+    "display": "Copy",
     "mac_sc": "CMD+C",
     "pc_sc": "CTRL+C",
     "difficulty": 0
   },
   {
-    "display": "cut selected Form field item properties",
+    "display": "Cut",
     "mac_sc": "CMD+X",
     "pc_sc": "CTRL+X",
     "difficulty": 0
   },
   {
-    "display": "paste element from Clipboard data index",
+    "display": "Paste",
     "mac_sc": "CMD+V",
     "pc_sc": "CTRL+V",
     "difficulty": 0
   },
   {
-    "display": "activate primary Text selection tool selector",
-    "mac_sc": "V",
-    "pc_sc": "V",
+    "display": "grab the Zoom tool",
+    "mac_sc": "Z",
+    "pc_sc": "Z",
     "difficulty": 2
   },
+    {
+    "display": "cycle through Zoom tools",
+    "mac_sc": "SHIFT+Z",
+    "pc_sc": "SHIFT+Z",
+    "difficulty": 4
+  },
+      {
+    "display": "select the Cloud tool",
+    "mac_sc": "Q",
+    "pc_sc": "Q",
+    "difficulty": 4
+  },
   {
-    "display": "activate graphic Snapshot capture utility block",
+    "display": "toggle Guides",
     "mac_sc": "G",
     "pc_sc": "G",
     "difficulty": 3
   },
-  {
-    "display": "activate hand Navigation panning tool canvas controller",
-    "mac_sc": "H",
-    "pc_sc": "H",
-    "difficulty": 2
+    {
+    "display": "use Add a stamp tool",
+    "mac_sc": "K|J",
+    "pc_sc": "K|J",
+    "difficulty": 4
   },
   {
-    "display": "cycle through interactive Selection tool modes layout",
+    "display": "Pan (Hand) tool",
+    "mac_sc": "H|SPACE",
+    "pc_sc": "H|SPACE",
+    "difficulty": 2
+  },
+    "display": "Grab the Selection tool",
+    "mac_sc": "V",
+    "pc_sc": "V",
+    "difficulty": 3
+  },
+  {
+    "display": "Center fields Vertically",
     "mac_sc": "SHIFT+V",
     "pc_sc": "SHIFT+V",
     "difficulty": 3
@@ -247,24 +276,24 @@
     "display": "replace selected Pages with another document source file",
     "mac_sc": "CMD+SHIFT+R",
     "pc_sc": "CTRL+SHIFT+R",
+    "difficulty": 4
+  },
+  {
+    "display": "rotate page view clockwise",
+    "mac_sc": "CMD+SHIFT+PLUS",
+    "pc_sc": "CTRL+SHIFT+PLUS",
     "difficulty": 3
   },
   {
-    "display": "rotate active Document page views clockwise orientation",
-    "mac_sc": "CMD+SHIFT+PLUS",
-    "pc_sc": "CTRL+SHIFT+PLUS",
-    "difficulty": 2
-  },
-  {
-    "display": "rotate active Document page views counterclockwise orientation",
+    "display": "rotate page view anti-clockwise",
     "mac_sc": "CMD+SHIFT+MINUS",
     "pc_sc": "CTRL+SHIFT+MINUS",
-    "difficulty": 2
+    "difficulty": 3
   },
   {
-    "display": "open organize Pages Grid thumbnail panel overlay view",
-    "mac_sc": "CMD+OPTION+O",
-    "pc_sc": "CTRL+ALT+O",
+    "display": "Move to the next open document tab",
+    "mac_sc": "CONTROL+TAB",
+    "pc_sc": "CTRL+TAB",
     "difficulty": 4
   },
   {
@@ -273,35 +302,41 @@
     "pc_sc": "F4",
     "difficulty": 2
   },
+    {
+    "display": "go to the next thing",
+    "mac_sc": "TAB",
+    "pc_sc": "TAB",
+    "difficulty": 1
+  },
+    {
+    "display": "go to the previous thing",
+    "mac_sc": "SHIFT+TAB",
+    "pc_sc": "SHIFT+TAB",
+    "difficulty": 1
+  },
   {
-    "display": "show or Hide bookmarks Navigation shortcut hierarchy sidebar panel",
+    "display": "show or hide Bookmarks panel",
     "mac_sc": "CMD+B",
     "pc_sc": "CTRL+B",
     "difficulty": 3
   },
   {
-    "display": "show or Hide pages Thumbnail navigation layout sidebar panel",
+    "display": "show or hide Pages panel",
     "mac_sc": "CMD+T",
     "pc_sc": "CTRL+T",
     "difficulty": 3
   },
   {
-    "display": "show or Hide layers Visibility structure control sidebar panel",
+    "display": "show or hide Layers panel",
     "mac_sc": "CMD+Y",
     "pc_sc": "CTRL+Y",
     "difficulty": 4
   },
   {
-    "display": "show or Hide signatures Verification panel asset trace drawer",
+    "display": "show or Hide Signatures panel",
     "mac_sc": "CMD+S",
     "pc_sc": "CTRL+S",
     "difficulty": 4
-  },
-  {
-    "display": "show or Hide output Preview window color metric analysis utility",
-    "mac_sc": "CMD+OPTION+U",
-    "pc_sc": "CTRL+ALT+U",
-    "difficulty": 5
   },
   {
     "display": "scroll viewport canvas display view up",
@@ -378,10 +413,10 @@
     "difficulty": 3
   },
   {
-    "display": "activate highlight Markup line styling overlay highlight brush annotation tool",
+    "display": "grab the Highlighting tool",
     "mac_sc": "U",
     "pc_sc": "U",
-    "difficulty": 2
+    "difficulty": 3
   },
   {
     "display": "activate sticky Note comment notation container block entry annotation tool",
@@ -438,7 +473,7 @@
     "difficulty": 3
   },
   {
-    "display": "activate callout Box text pointer text reference pointing square label annotation tool",
+    "display": "select Add text comment tool",
     "mac_sc": "X",
     "pc_sc": "X",
     "difficulty": 3
@@ -467,11 +502,23 @@
     "pc_sc": "P",
     "difficulty": 2
   },
+    {
+    "display": "Cycle through Add a stamp, Attach file, and Sound Recorder",
+    "mac_sc": "SHIFT+J",
+    "pc_sc": "SHIFT+J",
+    "difficulty": 5
+  },
   {
-    "display": "activate cross Out strike through font character line editing line typography markup tool",
+    "display": "select markup Drawing tool",
     "mac_sc": "D",
     "pc_sc": "D",
     "difficulty": 2
+  },
+    {
+    "display": "cycle through markup Drawing tools",
+    "mac_sc": "SHIFT+D",
+    "pc_sc": "SHIFT+D",
+    "difficulty": 4
   },
   {
     "display": "activate underline Typography underline accent lines border drawing font styling notation markup tool",
@@ -533,11 +580,17 @@
     "pc_sc": "CTRL+SHIFT+J",
     "difficulty": 4
   },
+    {
+    "display": "Add a checkmark in the Comments list for the selected comment",
+    "mac_sc": "SHIFT+K",
+    "pc_sc": "SHIFT+K",
+    "difficulty": 5
+  },
   {
     "display": "tile all Open document frame windows horizontally stacked split screen views panel alignment tracking board grid layout",
     "mac_sc": "CMD+SHIFT+K",
     "pc_sc": "CTRL+SHIFT+K",
-    "difficulty": 4
+    "difficulty": 5
   },
   {
     "display": "tile all Open document frame windows vertically side by side split views alignment configuration template panel grid interface module",
@@ -606,16 +659,34 @@
     "difficulty": 4
   },
   {
+    "display": "move focus to the document pane",
+    "mac_sc": "F5",
+    "pc_sc": "F5",
+    "difficulty": 4
+  },
+  {
+    "display": "close context menu",
+    "mac_sc": "ESC",
+    "pc_sc": "F10",
+    "difficulty": 4
+  },
+  {
     "display": "toggle continuous Scrolling multi page vertical assembly block layout flow visualization alignment configuration profile option preference parameter grid tracking template",
     "mac_sc": "CMD+OPTION+7",
     "pc_sc": "CTRL+ALT+7",
     "difficulty": 4
   },
   {
+    "display": "Open Acrobat user guide",
+    "mac_sc": "CMD+QUESTION|F1",
+    "pc_sc": "F1",
+    "difficulty": 4
+  },
+    {
     "display": "toggle side By side double two page layout viewing grid matrix spreadsheet layout alignment configuration visualization template option tracking parameters profiles status",
     "mac_sc": "CMD+OPTION+8",
     "pc_sc": "CTRL+ALT+8",
-    "difficulty": 4
+    "difficulty": 5
   },
   {
     "display": "toggle continuous Side by side double two page layout viewing grid scrolling column stack layout sequence configuration tracking options profile parameters template status map",

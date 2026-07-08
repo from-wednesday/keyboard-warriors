@@ -66,7 +66,7 @@ body.settings-fits-viewport #keyboardWrap {
 body:has(.leftPanel.showing-confirm) > *:not(#gameContainer):not(#kwToast) {
   filter: blur(2px);
   pointer-events: none;
-  transition: filter 0.8s ease;
+  transition: filter 0.3s ease;
 }
 
 /* Shift to a muted teal when the lead (defeat) medal is showing */
@@ -4379,6 +4379,10 @@ body.phone-layout-active {
    context). Targeted overrides below
    correct anything the filter gets wrong.
 ══════════════════════════════════════ */
+html {
+  transition: filter 2s ease, background 1.5s ease;
+}
+
 html[data-theme="dark"] {
   filter: invert(1) hue-rotate(180deg) brightness(0.92) contrast(1.08);
   background: #e3dfe7; /* pre-filter value; inverts to approx #1c2028 dark blue-grey */

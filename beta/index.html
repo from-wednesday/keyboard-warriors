@@ -1866,6 +1866,15 @@ function _effectiveOs() {
   return activeSettings === 'panelConflicts' ? (_isMacLikeDevice() ? 'mac' : 'pc') : currentOs;
 }
 
+// Rebuilds the graphical keyboard to match whichever OS _effectiveOs() currently
+// reports. Called both when the Conflicted Shortcuts panel takes over the
+// keyboard's OS (to show the real device) and when leaving it (to restore
+// whatever OS is being cross-trained), so the two directions never drift apart.
+function _syncKeyboardToEffectiveOs() {
+  document.getElementById('keyboardPanel').classList.toggle('pc-keys', _effectiveOs() === 'pc');
+  if (currentKbMode && currentKbMode !== 'none') buildKeyboard(currentKbMode === 'mini');
+}
+
 // Runtime style tag for medal face rotation (::before can't be set via JS directly)
 const medalFaceStyleEl = document.createElement('style');
 medalFaceStyleEl.id = 'medalFaceStyle';
@@ -6642,9 +6651,10 @@ function _phoneOpenSettings(Page) {
 
   // Populate content
   if (Page === 'panelConflicts') {
-    document.getElementById('keyboardPanel').classList.toggle('pc-keys', _effectiveOs() === 'pc');
-    if (currentKbMode && currentKbMode !== 'none') buildKeyboard(currentKbMode === 'mini');
+    _syncKeyboardToEffectiveOs();
     _refreshBrowserContent();
+  } else if (PreviousPage === 'panelConflicts') {
+    _syncKeyboardToEffectiveOs();
   }
   if (Page === 'panelKeyboard')   { updateModalToggles(); updateKbSizeToggle(); _syncKeyboardDisplayPillLock(); }
   if (Page === 'panelDifficultySettings') _refreshDifficultyPanel();
@@ -6680,8 +6690,7 @@ function _phoneCloseSettings() {
   _syncKeyboardSettingsActiveClass();
   conflictsKbLighting.deactivate();
   if (ClosingPage === 'panelConflicts') {
-    document.getElementById('keyboardPanel').classList.toggle('pc-keys', _effectiveOs() === 'pc');
-    if (currentKbMode && currentKbMode !== 'none') buildKeyboard(currentKbMode === 'mini');
+    _syncKeyboardToEffectiveOs();
   }
     _syncStudyNotesInlineIcon();
 
@@ -6971,10 +6980,11 @@ function openSettings(page) {
 
   // Populate content
   if (page === 'panelConflicts') {
-    document.getElementById('keyboardPanel').classList.toggle('pc-keys', _effectiveOs() === 'pc');
-    if (currentKbMode && currentKbMode !== 'none') buildKeyboard(currentKbMode === 'mini');
+    _syncKeyboardToEffectiveOs();
     _refreshBrowserContent();
     conflictsKbLighting.activate();
+  } else if (prevPage === 'panelConflicts') {
+    _syncKeyboardToEffectiveOs();
   }
   if (page === 'panelKeyboard')   { updateModalToggles(); updateKbSizeToggle(); _syncKeyboardDisplayPillLock(); }
   if (page === 'panelDifficultySettings') _refreshDifficultyPanel();
@@ -7050,8 +7060,7 @@ function closeSettings() {
   if (closingWrap) closingWrap.style.minHeight = '';
   conflictsKbLighting.deactivate();
   if (closingPage === 'panelConflicts') {
-    document.getElementById('keyboardPanel').classList.toggle('pc-keys', _effectiveOs() === 'pc');
-    if (currentKbMode && currentKbMode !== 'none') buildKeyboard(currentKbMode === 'mini');
+    _syncKeyboardToEffectiveOs();
   }
   _syncStudyNotesInlineIcon();
   

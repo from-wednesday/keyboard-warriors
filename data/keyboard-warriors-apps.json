@@ -3,8 +3,9 @@
   { "label": "[Ai] Illustrator",  "path": "/keyboard-warriors/data/shortcuts_illustrator.json",     "column": 1, "skillset": ["Graphics"],                 "standby": ["UIUX", "Motion", "3D"] },
   { "label": "[Id] InDesign",     "path": "/keyboard-warriors/data/shortcuts_inDesign.json",        "column": 1, "skillset": ["Graphics"],                 "standby": ["Photography"] },
   { "label": "[Lr] Lightroom",    "path": "/keyboard-warriors/data/shortcuts_lightroom.json",       "column": 1, "skillset": ["Photography"],              "standby": [] },
-  { "label": "[Ae] After Effects","path": "/keyboard-warriors/data/shortcuts_afterEffects.json",   "column": 1, "skillset": ["Motion", "Video"],           "standby": ["Graphics"] },
-  { "label": "[Pr] Premiere Pro",  "path": "/keyboard-warriors/data/shortcuts_premiere.json",         "column": 1, "skillset": ["Video"],                    "standby": ["Photography", "Motion"] },
+  { "label": "[Ae] After Effects","path": "/keyboard-warriors/data/shortcuts_afterEffects.json",    "column": 1, "skillset": ["Motion", "Video"],          "standby": ["Graphics"] },
+  { "label": "[Pr] Premiere Pro", "path": "/keyboard-warriors/data/shortcuts_premiere.json",       "column":  1, "skillset": ["Video"],                    "standby": ["Photography", "Motion"] },
+  { "label": "DaVinci Resolve",   "path": "/keyboard-warriors/data/shortcuts_davinci_resolve.json", "column": 2, "skillset": ["Video"],                    "standby": ["Motion"] },
   { "label": "ToonBoom Harmony",  "path": "/keyboard-warriors/data/shortcuts_toonBoomHarmony.json", "column": 2, "skillset": ["Motion"],                   "standby": [] },
   { "label": "Blender",           "path": "/keyboard-warriors/data/shortcuts_blender.json",         "column": 2, "skillset": ["3D"],                       "standby": ["Motion"] },
   { "label": "Figma",             "path": "/keyboard-warriors/data/shortcuts_figma.json",           "column": 2, "skillset": ["Graphics", "UIUX"],         "standby": ["Dev"] },
@@ -14,7 +15,9 @@
   { "label": "MS Outlook",        "path": "/keyboard-warriors/data/shortcuts_msOutlook.json",       "column": 3, "skillset": ["Productivity"],             "standby": [] },
   { "label": "MS PowerPoint",     "path": "/keyboard-warriors/data/shortcuts_msPowerpoint.json",    "column": 3, "skillset": ["Productivity"],             "standby": [] },
   { "label": "MS Teams",          "path": "/keyboard-warriors/data/shortcuts_msTeams.json",         "column": 3, "skillset": ["Productivity"],             "standby": ["Dev"] },
-  { "label": "Notion",            "path": "/keyboard-warriors/data/shortcuts_notion.json",           "column": 4, "skillset": ["Productivity"],             "standby": ["Dev", "UIUX"] },
-  { "label": "Testing Only",      "path": "/keyboard-warriors/data/in_progress/shortcuts_TESTING.json",   "column": 4, "beta": true },
-  { "label": "Known Conflicts",   "path": "/keyboard-warriors/data/in_progress/shortcuts_CONFLICTS.json", "column": 4, "beta": true }
+  { "label": "Acrobat",           "path": "/keyboard-warriors/data/shortcuts_acrobat.json",         "column": 4, "skillset": ["Productivity"],             "standby": ["Graphics"] },
+  { "label": "Notion",            "path": "/keyboard-warriors/data/shortcuts_notion.json",          "column": 4, "skillset": ["Productivity"],             "standby": ["Dev", "UIUX"] },
+  { "label": "Apple Keynote",     "path": "/keyboard-warriors/data/shortcuts_apple_keynote.json",   "column": 4, "skillset": [],                           "standby": ["Productivity"] },
+  { "label": "Canva",             "path": "/keyboard-warriors/data/shortcuts_canva.json",           "column": 2, "skillset": [],                           "standby": ["Graphics", "Productivity"] },
+  { "label": "Beta testing",      "path": "/keyboard-warriors/data/in_progress/shortcuts_TESTING.json",   "column": 4, "beta": true }
 ]

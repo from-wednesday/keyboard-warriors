@@ -21,13 +21,13 @@
     "display": "pick up the Razor Tool",
     "mac_sc": "C",
     "pc_sc": "C",
-    "difficulty": 1
+    "difficulty": 3
   },
   {
     "display": "grab the Selection Tool",
     "mac_sc": "V",
     "pc_sc": "V",
-    "difficulty": 1
+    "difficulty": 2
   },
   {
     "display": "select the Hand Tool",
@@ -45,37 +45,37 @@
     "display": "toggle Snap",
     "mac_sc": "S",
     "pc_sc": "S",
-    "difficulty": 1
+    "difficulty": 2
   },
   {
     "display": "zoom IN",
     "mac_sc": "PLUS",
     "pc_sc": "PLUS",
-    "difficulty": 1
+    "difficulty": 2
   },
   {
     "display": "zoom OUT",
     "mac_sc": "MINUS",
     "pc_sc": "MINUS",
-    "difficulty": 1
+    "difficulty": 2
   },
   {
     "display": "zoom to Sequence",
     "mac_sc": "BACKSLASH",
     "pc_sc": "BACKSLASH",
-    "difficulty": 1
+    "difficulty": 2
   },
   {
     "display": "next Edit Point",
     "mac_sc": "ARROWDOWN",
     "pc_sc": "ARROWDOWN",
-    "difficulty": 1
+    "difficulty": 2
   },
   {
     "display": "previous Edit Point",
     "mac_sc": "ARROWUP",
     "pc_sc": "ARROWUP",
-    "difficulty": 1
+    "difficulty": 2
   },
   {
     "display": "step Forward 1 Frame",
@@ -93,13 +93,13 @@
     "display": "add Marker",
     "mac_sc": "M",
     "pc_sc": "M",
-    "difficulty": 1
+    "difficulty": 2
   },
   {
     "display": "export Media",
     "mac_sc": "CMD+M",
     "pc_sc": "CTRL+M",
-    "difficulty": 1
+    "difficulty": 2
   },
   {
     "display": "new Sequence",
@@ -111,7 +111,7 @@
     "display": "new Bin",
     "mac_sc": "CMD+B",
     "pc_sc": "CTRL+B",
-    "difficulty": 1
+    "difficulty": 2
   },
   {
     "display": "Open project",
@@ -165,31 +165,7 @@
     "display": "Find",
     "mac_sc": "CMD+F",
     "pc_sc": "CTRL+F",
-    "difficulty": 2
-  },
-  {
-    "display": "open Project Panel",
-    "mac_sc": "SHIFT+1",
-    "pc_sc": "SHIFT+1",
-    "difficulty": 3
-  },
-  {
-    "display": "open Timeline Panel",
-    "mac_sc": "SHIFT+3",
-    "pc_sc": "SHIFT+3",
-    "difficulty": 3
-  },
-  {
-    "display": "open Source Monitor",
-    "mac_sc": "SHIFT+2",
-    "pc_sc": "SHIFT+2",
-    "difficulty": 3
-  },
-  {
-    "display": "open Program Monitor",
-    "mac_sc": "SHIFT+4",
-    "pc_sc": "SHIFT+4",
-    "difficulty": 3
+    "difficulty": 1
   },
   {
     "display": "Clear In",
@@ -258,19 +234,13 @@
     "difficulty": 2
   },
   {
-    "display": "toggle Audio Scrubbing",
-    "mac_sc": "SHIFT+S",
-    "pc_sc": "SHIFT+S",
-    "difficulty": 3
-  },
-  {
     "display": "toggle Linked Selection",
     "mac_sc": "SHIFT+L",
     "pc_sc": "SHIFT+L",
     "difficulty": 3
   },
   {
-    "display": "toggle Full Screen",
+    "display": "Maximise or restore panel under pointer",
     "mac_sc": "TILDE",
     "pc_sc": "TILDE",
     "difficulty": 3
@@ -330,11 +300,161 @@
     "difficulty": 2
   },
   {
-    "display": "new Title",
+    "display": "open the Trim Edit panel",
     "mac_sc": "CMD+T",
-    "pc_sc": "CTRL+T",
+    "pc_sc": "SHIFT+T",
     "difficulty": 3
   },
+  {
+  "display": "Audio Channels",
+  "mac_sc": "SHIFT+G",
+  "pc_sc": "SHIFT+G",
+  "difficulty": 4
+},
+{
+  "display": "apply all default Transitions to current selection",
+  "mac_sc": "SHIFT+D",
+  "pc_sc": "SHIFT+D",
+  "difficulty": 4
+},
+{
+  "display": "Reverse Match Frame",
+  "mac_sc": "SHIFT+R",
+  "pc_sc": "SHIFT+R",
+  "difficulty": 4
+},
+  {
+  "display": "Add new caption track",
+  "mac_sc": "OPT+CMD+A",
+  "pc_sc": "CTRL+ALT+A",
+  "difficulty": 5
+},
+  {
+  "display": "Go to next item in sequence",
+  "mac_sc": "SHIFT+SEMICOLON",
+  "pc_sc": "SHIFT+SEMICOLON",
+  "difficulty": 4
+},
+{
+  "display": "Go to previous item in sequence",
+  "mac_sc": "OPT+SEMICOLON",
+  "pc_sc": "CTRL+SHIFT+SEMICOLON",
+  "difficulty": 4
+},
+  {
+  "display": "New text layer",
+  "mac_sc": "CMD+T",
+  "pc_sc": "CTRL+T",
+  "difficulty": 3
+},
+{
+  "display": "New rectangle layer",
+  "mac_sc": "OPT+CMD+R",
+  "pc_sc": "CTRL+ALT+R",
+  "difficulty": 4
+},
+  {
+  "display": "Save a Copy",
+  "mac_sc": "OPT+CMD+S",
+  "pc_sc": "CTRL+ALT+S",
+  "difficulty": 3
+},
+  {
+  "display": "open Project Panel",
+  "mac_sc": "SHIFT+1",
+  "pc_sc": "SHIFT+1",
+  "difficulty": 3
+},
+{
+  "display": "open Source Monitor",
+  "mac_sc": "SHIFT+2",
+  "pc_sc": "SHIFT+2",
+  "difficulty": 3
+},
+{
+  "display": "open Timeline Panel",
+  "mac_sc": "SHIFT+3",
+  "pc_sc": "SHIFT+3",
+  "difficulty": 3
+},
+{
+  "display": "open Program Monitor",
+  "mac_sc": "SHIFT+4",
+  "pc_sc": "SHIFT+4",
+  "difficulty": 3
+},
+{
+  "display": "open Effects Controls",
+  "mac_sc": "SHIFT+5",
+  "pc_sc": "SHIFT+5",
+  "difficulty": 4
+},
+{
+  "display": "open Audio Track Mixer",
+  "mac_sc": "SHIFT+6",
+  "pc_sc": "SHIFT+6",
+  "difficulty": 4
+},
+{
+  "display": "open Effects Panel",
+  "mac_sc": "SHIFT+7",
+  "pc_sc": "SHIFT+7",
+  "difficulty": 4
+},
+{
+  "display": "open Media Browser",
+  "mac_sc": "SHIFT+8",
+  "pc_sc": "SHIFT+8",
+  "difficulty": 3
+},
+{
+  "display": "open Audio Clip Mixer",
+  "mac_sc": "SHIFT+9",
+  "pc_sc": "SHIFT+9",
+  "difficulty": 4
+},
+{
+  "display": "Import from Media Browser",
+  "mac_sc": "OPT+CMD+I",
+  "pc_sc": "CTRL+ALT+I",
+  "difficulty": 4
+},
+{
+  "display": "Send to Media Encoder",
+  "mac_sc": "OPT+SHIFT+M",
+  "pc_sc": "ALT+SHIFT+M",
+  "difficulty": 4
+},
+{
+  "display": "Edit Original",
+  "mac_sc": "CMD+E",
+  "pc_sc": "CTRL+E",
+  "difficulty": 3
+},
+{
+  "display": "New ellipse layer",
+  "mac_sc": "OPT+CMD+E",
+  "pc_sc": "CTRL+ALT+E",
+  "difficulty": 4
+},
+{
+  "display": "Add caption at playhead",
+  "mac_sc": "OPT+CMD+C",
+  "pc_sc": "CTRL+ALT+C",
+  "difficulty": 5
+},
+{
+  "display": "Go to next caption segment",
+  "mac_sc": "OPT+CMD+ARROWDOWN",
+  "pc_sc": "CTRL+ALT+ARROWDOWN",
+  "difficulty": 5
+},
+{
+  "display": "Go to previous caption segment",
+  "mac_sc": "OPT+CMD+ARROWUP",
+  "pc_sc": "CTRL+ALT+ARROWUP",
+  "difficulty": 5
+},
   {
     "display": "new Project",
     "mac_sc": "CMD+OPT+N",
@@ -353,11 +473,17 @@
     "pc_sc": "CTRL+ALT+V",
     "difficulty": 4
   },
+{
+  "display": "Mark Selection",
+  "mac_sc": "FORWARDSLASH",
+  "pc_sc": "FORWARDSLASH",
+  "difficulty": 4
+},
   {
     "display": "Duplicate",
     "mac_sc": "CMD+SHIFT+SLASH",
     "pc_sc": "CTRL+SHIFT+SLASH",
-    "difficulty": 3
+    "difficulty": 4
   },
   {
     "display": "Link",
@@ -389,24 +515,24 @@
     "pc_sc": "F",
     "difficulty": 3
   },
-  {
-    "display": "Reveal in Project",
-    "mac_sc": "CMD+F",
-    "pc_sc": "CTRL+F",
-    "difficulty": 3
-  },
-  {
-    "display": "toggle Safe Margins",
-    "mac_sc": "QUOTE",
-    "pc_sc": "QUOTE",
-    "difficulty": 2
-  },
-  {
-    "display": "maximize Panel",
-    "mac_sc": "TILDE",
-    "pc_sc": "TILDE",
-    "difficulty": 2
-  },
+{
+  "display": "Play backwards (tap repeatedly to increase speed)",
+  "mac_sc": "J",
+  "pc_sc": "J",
+  "difficulty": 3
+},
+{
+  "display": "Stop playback",
+  "mac_sc": "K",
+  "pc_sc": "K",
+  "difficulty": 3
+},
+{
+  "display": "Play forwards (tap repeatedly to increase speed)",
+  "mac_sc": "L",
+  "pc_sc": "L",
+  "difficulty": 3
+},
   {
     "display": "close Panel",
     "mac_sc": "CMD+W",
@@ -414,7 +540,7 @@
     "difficulty": 3
   },
   {
-    "display": "apply Default Transition",
+    "display": "apply Default Video Transition",
     "mac_sc": "CMD+D",
     "pc_sc": "CTRL+D",
     "difficulty": 3
@@ -438,18 +564,6 @@
     "difficulty": 3
   },
   {
-    "display": "Lift",
-    "mac_sc": "SEMICOLON",
-    "pc_sc": "SEMICOLON",
-    "difficulty": 3
-  },
-  {
-    "display": "Extract",
-    "mac_sc": "QUOTE",
-    "pc_sc": "QUOTE",
-    "difficulty": 3
-  },
-  {
     "display": "Ripple Delete",
     "mac_sc": "OPT+DELETE|SHIFT+DELETE|FN+OPT+BACKSPACE",
     "pc_sc": "SHIFT+DELETE",
@@ -461,35 +575,11 @@
     "pc_sc": "G",
     "difficulty": 2
   },
-  {
-    "display": "open Effects Panel",
-    "mac_sc": "SHIFT+7",
-    "pc_sc": "SHIFT+7",
-    "difficulty": 4
-  },
-  {
-    "display": "open Audio Track Mixer",
-    "mac_sc": "SHIFT+9",
-    "pc_sc": "SHIFT+9",
-    "difficulty": 4
-  },
-  {
-    "display": "open Media Browser",
-    "mac_sc": "SHIFT+8",
-    "pc_sc": "SHIFT+8",
+      {
+    "display": "Mark Clip",
+    "mac_sc": "X",
+    "pc_sc": "X",
     "difficulty": 3
-  },
-  {
-    "display": "open Effects Controls",
-    "mac_sc": "SHIFT+5",
-    "pc_sc": "SHIFT+5",
-    "difficulty": 4
-  },
-  {
-    "display": "open Audio Clip Mixer",
-    "mac_sc": "SHIFT+6",
-    "pc_sc": "SHIFT+6",
-    "difficulty": 4
   },
   {
     "display": "Rate Stretch Tool",
@@ -510,28 +600,34 @@
     "difficulty": 3
   },
   {
-    "display": "toggle Track Output",
-    "mac_sc": "SHIFT+E",
+    "display": "Enable/Disable clip",
+    "mac_sc": "CMD+SHIFT+E",
     "pc_sc": "SHIFT+E",
     "difficulty": 4
   },
   {
-    "display": "toggle Audio Waveform",
-    "mac_sc": "SHIFT+TILDE",
-    "pc_sc": "SHIFT+TILDE",
-    "difficulty": 3
+   "display": "Clear Selected Marker",
+   "mac_sc": "OPT+M",
+   "pc_sc": "CTRL+ALT+M",
+   "difficulty": 4
   },
   {
-    "display": "Clear Marker",
-    "mac_sc": "OPT+CMD+M",
-    "pc_sc": "CTRL+ALT+M",
-    "difficulty": 3
+  "display": "Clear All Markers",
+  "mac_sc": "OPT+CMD+M",
+  "pc_sc": "CTRL+ALT+SHIFT+M",
+  "difficulty": 5
   },
   {
     "display": "Render In to Out",
-    "mac_sc": "CMD+RETURN",
-    "pc_sc": "CTRL+ENTER",
-    "difficulty": 3
+    "mac_sc": "RETURN",
+    "pc_sc": "ENTER",
+    "difficulty": 2
+  },
+    {
+    "display": "Import",
+    "mac_sc": "CMD+I",
+    "pc_sc": "CTRL+I",
+    "difficulty": 2
   },
   {
     "display": "reveal file",
@@ -546,12 +642,6 @@
     "difficulty": 4
   },
   {
-    "display": "toggle Audio Meters",
-    "mac_sc": "SHIFT+9",
-    "pc_sc": "SHIFT+9",
-    "difficulty": 4
-  },
-  {
     "display": "toggle Source/Program Monitor",
     "mac_sc": "SHIFT+0",
     "pc_sc": "SHIFT+0",
@@ -562,69 +652,6 @@
     "mac_sc": "CMD+SHIFT+K",
     "pc_sc": "CTRL+SHIFT+K",
     "difficulty": 3
-  },
-  {
-    "display": "toggle Targeting for track 1",
-    "mac_sc": "SHIFT+1",
-    "pc_sc": "SHIFT+1",
-    "difficulty": 3,
-    "group": "TARGET"
-  },
-  {
-    "display": "toggle Targeting for track 2",
-    "mac_sc": "SHIFT+2",
-    "pc_sc": "SHIFT+2",
-    "difficulty": 3,
-    "group": "TARGET"
-  },
-  {
-    "display": "toggle Targeting for track 3",
-    "mac_sc": "SHIFT+3",
-    "pc_sc": "SHIFT+3",
-    "difficulty": 3,
-    "group": "TARGET"
-  },
-  {
-    "display": "toggle Targeting for track 4",
-    "mac_sc": "SHIFT+4",
-    "pc_sc": "SHIFT+4",
-    "difficulty": 3,
-    "group": "TARGET"
-  },
-  {
-    "display": "toggle Targeting for track 5",
-    "mac_sc": "SHIFT+5",
-    "pc_sc": "SHIFT+5",
-    "difficulty": 3,
-    "group": "TARGET"
-  },
-  {
-    "display": "toggle Targeting for track 6",
-    "mac_sc": "SHIFT+6",
-    "pc_sc": "SHIFT+6",
-    "difficulty": 3,
-    "group": "TARGET"
-  },
-  {
-    "display": "toggle Targeting for track 7",
-    "mac_sc": "SHIFT+7",
-    "pc_sc": "SHIFT+7",
-    "difficulty": 3,
-    "group": "TARGET"
-  },
-  {
-    "display": "toggle Targeting for track 8",
-    "mac_sc": "SHIFT+8",
-    "pc_sc": "SHIFT+8",
-    "difficulty": 3,
-    "group": "TARGET"
-  },
-  {
-    "display": "toggle Targeting for track 9",
-    "mac_sc": "SHIFT+9",
-    "pc_sc": "SHIFT+9",
-    "difficulty": 3,
-    "group": "TARGET"
   },
   {
     "display": "add Video Track",
@@ -645,12 +672,6 @@
     "difficulty": 3
   },
   {
-    "display": "Enable/Disable Clip",
-    "mac_sc": "SHIFT+E",
-    "pc_sc": "SHIFT+E",
-    "difficulty": 3
-  },
-  {
     "display": "Extend Selected Edit to Playhead",
     "mac_sc": "E",
     "pc_sc": "E",
@@ -663,39 +684,21 @@
     "difficulty": 3
   },
   {
-    "display": "go to Previous Keyframe",
-    "mac_sc": "CMD+SHIFT+K",
-    "pc_sc": "CTRL+SHIFT+K",
+    "display": "Insert edit",
+    "mac_sc": "COMMA",
+    "pc_sc": "COMMA",
     "difficulty": 3
   },
-  {
-    "display": "toggle Track Output",
-    "mac_sc": "SHIFT+E",
-    "pc_sc": "SHIFT+E",
-    "difficulty": 3
-  },
-  {
-    "display": "Mute Track",
-    "mac_sc": "SHIFT+S",
-    "pc_sc": "SHIFT+S",
+    {
+    "display": "Overwrite edit",
+    "mac_sc": "PERIOD",
+    "pc_sc": "PERIOD",
     "difficulty": 3
   },
   {
     "display": "Solo Track",
     "mac_sc": "SHIFT+U",
     "pc_sc": "SHIFT+U",
-    "difficulty": 3
-  },
-  {
-    "display": "Normalize Audio",
-    "mac_sc": "CMD+SHIFT+G",
-    "pc_sc": "CTRL+SHIFT+G",
-    "difficulty": 3
-  },
-  {
-    "display": "toggle Comparison View",
-    "mac_sc": "C",
-    "pc_sc": "C",
     "difficulty": 3
   },
   {
@@ -715,12 +718,6 @@
     "mac_sc": "SHIFT+F9",
     "pc_sc": "SHIFT+F9",
     "difficulty": 3
-  },
-  {
-    "display": "toggle Metadata Display",
-    "mac_sc": "CMD+OPT+M",
-    "pc_sc": "CTRL+ALT+M",
-    "difficulty": 4
   },
   {
     "display": "Frame Hold",
@@ -765,13 +762,19 @@
     "difficulty": 4
   },
   {
-    "display": "open the Keyboard Shortcuts edito",
+    "display": "open the Keyboard Shortcuts editor",
     "mac_sc": "CMD+OPT+K",
     "pc_sc": "CTRL+ALT+K",
     "difficulty": 5
   },
   {
-    "display": "open Lumetri Color",
+  "display": "open Color workspace",
+  "mac_sc": "OPT+SHIFT+5",
+  "pc_sc": "ALT+SHIFT+5",
+  "difficulty": 5
+},
+  {
+    "display": "open Editing Workspace",
     "mac_sc": "OPT+SHIFT+6",
     "pc_sc": "ALT+SHIFT+6",
     "difficulty": 5

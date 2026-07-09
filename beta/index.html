@@ -13680,6 +13680,19 @@ function _refreshReportPanel() {
         AcceptButton.className = 'segmented-pill-section';
         AcceptButton.style.cssText = 'flex-shrink:0;border-radius:12px;border:1.5px solid #d1d5db;padding:5px 12px;white-space:nowrap;height:auto;';
         AcceptButton.innerHTML = '<span class="diff-btn-text">Accept the coach&#39;s advice</span>';
+        var AcceptButtonLabel = AcceptButton.querySelector('.diff-btn-text');
+        // Press-in feedback only -- no pop on release, since the screen
+        // navigates to Difficulty Settings the instant the click fires.
+        AcceptButton.addEventListener('pointerdown', function(PointerEvent) {
+          if (!PointerEvent.isPrimary) return;
+          AcceptButtonLabel.classList.add('press-in');
+        });
+        AcceptButton.addEventListener('pointerup', function() {
+          AcceptButtonLabel.classList.remove('press-in');
+        });
+        AcceptButton.addEventListener('pointercancel', function() {
+          AcceptButtonLabel.classList.remove('press-in');
+        });
         if (CoachAdviceAccepted) {
           AcceptButton.disabled = true;
           AcceptButton.classList.add('segmented-pill-inactive');
@@ -13705,7 +13718,6 @@ function _refreshReportPanel() {
     }
   }
 }
-
 
 /* ══════════════════════════════════════
    COACH ADVICE ANIMATION

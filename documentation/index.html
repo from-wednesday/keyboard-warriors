@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+ <!DOCTYPE html>
 <html lang="en">
 <head>
 <meta charset="UTF-8">
@@ -361,9 +361,9 @@
 <span class="c-key">"pc_sc"</span>:  <span class="c-val">"CTRL+SHIFT+Z"</span></div>
 
     <h3>Pipe | accepted alternatives</h3>
-    <p>The system accepts any piped alternative as a correct answer. The chip always shows only the <em>first</em> alternative, so be sure to prioritise the preferred shortcut first. Give priority to memorability and universality.</p>
+    <p>The system accepts any piped alternative as a correct answer. The chip shows only the alternatives in order, so be sure to prioritise the preferred shortcut first. Give priority to memorability and universality.</p>
     <div class="code-block"><span class="c-key">"mac_sc"</span>: <span class="c-val">"CMD+ARROWLEFT|HOME"</span>
-<span class="c-note">// Both accepted as correct. Chip shows ⌘+← only.</span></div>
+<span class="c-note">// Both accepted as correct. Chip shows ⌘+← <small>or</small> ↖home.</span></div>
 
     <h3>Key does not exist on this platform</h3>
     <p>Use the literal value <span class="null-val">NULL</span> (not an empty string) when a shortcut does not exist on a given platform. This prevents the question appearing on that OS.</p>
@@ -1034,7 +1034,7 @@
     <h3>Pipe — multiple accepted answers</h3>
     <div class="code-block">{
   <span class="c-key">"display"</span>:    <span class="c-val">"go to line start"</span>,
-  <span class="c-key">"mac_sc"</span>:     <span class="c-val">"CMD+ARROWLEFT|HOME"</span>,  <span class="c-note">// both accepted; chip shows ⌘+← only</span>
+  <span class="c-key">"mac_sc"</span>:     <span class="c-val">"CMD+ARROWLEFT|HOME"</span>,  <span class="c-note">// both accepted; chip shows ⌘+← <small>or</small> ↖home</span>
   <span class="c-key">"pc_sc"</span>:      <span class="c-val">"HOME"</span>,
   <span class="c-key">"difficulty"</span>: <span class="c-val">2</span>
 }</div>

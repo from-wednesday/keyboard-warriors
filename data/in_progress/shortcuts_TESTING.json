@@ -1,18 +1,24 @@
 [
     {
-    "display": "pipe it (Opt/Alt+|)",
-    "mac_sc": "OPT+PIPE",
-    "pc_sc": "ALT+PIPE",
+    "display": "test the ESC key on touchscreen",
+    "mac_sc": "ESC",
+    "pc_sc": "ESC",
     "difficulty": 0
   },
     {
-    "display": "open help (CMD+?)",
-    "mac_sc": "CMD+QUESTION",
-    "pc_sc": "CMD+QUESTION",
-    "difficulty": 0
+    "display": "test the ESC key on touchscreen",
+    "mac_sc": "ESC",
+    "pc_sc": "ESC",
+    "difficulty": 3
+  },
+      {
+    "display": "test the ESC key on touchscreen",
+    "mac_sc": "ESC",
+    "pc_sc": "ESC",
+    "difficulty": 5
   },
  {
-    "display": "select current region (CMD+SHIFT+*)",
+    "display": "this round is for testing purposes only (CMD+SHIFT+*)",
     "mac_sc": "CMD+SHIFT+ASTERISK",
     "pc_sc": "CTRL+SHIFT+ASTERISK",
     "difficulty": 0

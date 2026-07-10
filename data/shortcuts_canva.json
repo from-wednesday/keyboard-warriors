@@ -139,14 +139,14 @@
   },
   {
     "display": "Superscript Text",
-    "mac_sc": "CMD+PERIOD",
-    "pc_sc": "CTRL+PERIOD",
+    "mac_sc": "CMD+LESSTHAN",
+    "pc_sc": "CTRL+LESSTHAN",
     "difficulty": 4
   },
     {
     "display": "Subscript Text",
-    "mac_sc": "CMD+COMMA",
-    "pc_sc": "CTRL+COMMA",
+    "mac_sc": "CMD+MORETHAN",
+    "pc_sc": "CTRL+MORETHAN",
     "difficulty": 4
   },
   {
@@ -543,20 +543,20 @@
   },
   {
     "display": "increase Font size",
-    "mac_sc": "CMD+SHIFT+PERIOD",
-    "pc_sc": "CTRL+SHIFT+PERIOD",
+    "mac_sc": "CMD+SHIFT+MORETHAN",
+    "pc_sc": "CTRL+SHIFT+MORETHAN",
     "difficulty": 3
   },
   {
     "display": "decrease Font size",
-    "mac_sc": "CMD+SHIFT+COMMA",
-    "pc_sc": "CTRL+SHIFT+COMMA",
+    "mac_sc": "CMD+SHIFT+LESSTHAN",
+    "pc_sc": "CTRL+SHIFT+LESSTHAN",
     "difficulty": 4
   },
       {
     "display": "increase letter spacing",
-    "mac_sc": "CMD+OPT+PERIOD",
-    "pc_sc": "CTRL+ALT+PERIOD",
+    "mac_sc": "CMD+OPT+MORETHAN",
+    "pc_sc": "CTRL+ALT+MORETHAN",
     "difficulty": 4
   },
     {

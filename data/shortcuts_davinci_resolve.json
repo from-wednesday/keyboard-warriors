@@ -238,8 +238,8 @@
   },
   {
     "display": "zoom In the active layout view",
-    "mac_sc": "CMD+EQUAL",
-    "pc_sc": "CTRL+EQUAL",
+    "mac_sc": "CMD+PLUS",
+    "pc_sc": "CTRL+PLUS",
     "difficulty": 2
   },
   {
@@ -256,8 +256,8 @@
   },
   {
     "display": "increase track Visual height thickness",
-    "mac_sc": "CMD+SHIFT+EQUAL",
-    "pc_sc": "CTRL+SHIFT+EQUAL",
+    "mac_sc": "CMD+SHIFT+PLUS",
+    "pc_sc": "CTRL+SHIFT+PLUS",
     "difficulty": 3
   },
   {
@@ -383,26 +383,26 @@
   },
   {
     "display": "slip track Audio or video content leftward",
-    "mac_sc": "OPTION+COMMA",
-    "pc_sc": "ALT+COMMA",
+    "mac_sc": "OPTION+LESSTHAN",
+    "pc_sc": "ALT+LESSTHAN",
     "difficulty": 4
   },
   {
     "display": "slip track Audio or video content rightward",
-    "mac_sc": "OPTION+PERIOD",
-    "pc_sc": "ALT+PERIOD",
+    "mac_sc": "OPTION+MORETHAN",
+    "pc_sc": "ALT+MORETHAN",
     "difficulty": 4
   },
   {
     "display": "nudge clip Placement offset leftward",
-    "mac_sc": "CMD+COMMA",
-    "pc_sc": "CTRL+COMMA",
+    "mac_sc": "CMD+LESSTHAN",
+    "pc_sc": "CTRL+LESSTHAN",
     "difficulty": 3
   },
   {
     "display": "nudge clip Placement offset rightward",
-    "mac_sc": "CMD+PERIOD",
-    "pc_sc": "CTRL+PERIOD",
+    "mac_sc": "CMD+MORETHAN",
+    "pc_sc": "CTRL+MORETHAN",
     "difficulty": 3
   },
   {

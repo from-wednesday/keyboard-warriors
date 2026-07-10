@@ -1183,6 +1183,17 @@ const LOCK_SVG        = `<svg class="lock-svg" width="14" height="14" viewBox="0
 const PC_DELETE_SVG = `<svg class="delete-svg" viewBox="0 0 73 54"><use href="#IconPcDelete"/></svg>`;
 const WIN_LOGO_ALIAS_SVG = `<svg class="win-svg" width="14" height="14" viewBox="0 0 102.73 104.6" fill="currentColor"><use href="#IconWindowsLogo"/></svg>`;
 
+// True only when the active question's answer is the bare Escape key (no
+// modifiers). Lets a tap on the graphical Escape key answer the question
+// instead of being swallowed by the debug-overlay hold gesture.
+function _isBareEscapeQuestionActive() {
+  if (gameState !== 'playing' || !currentAnswer) return false;
+  var Parsed = ParseShortcutString(currentAnswer);
+  return !!Parsed && Parsed.keyToken === 'ESCAPE'
+    && !Parsed.requiresCmd && !Parsed.requiresShift && !Parsed.requiresOption
+    && !Parsed.requiresControl && !Parsed.requiresWin && !Parsed.requiresFn;
+}
+
 function buildKey(cfg, isMini) {
   const el = document.createElement('div');
   const classes = ['key'];
@@ -1205,11 +1216,15 @@ function buildKey(cfg, isMini) {
       if (cfg.id === 'Escape') {
         el.addEventListener('pointerdown',  function(ev) {
           ev.preventDefault();
+          // Bare-Escape question: answer it directly instead of arming the
+          // debug-overlay hold gesture, so the graphical key actually counts.
+          if (touchEnabled && _isBareEscapeQuestionActive()) { handleKeyTouch(ev, el); return; }
           if (touchEnabled) updateKeyboardLighting({code:'Escape',key:'Escape',preventDefault:function(){},shiftKey:false,altKey:false,metaKey:false,ctrlKey:false}, true);
           _debugEscHoldStart();
         });
         el.addEventListener('pointerup',    function(ev) {
           ev.preventDefault();
+          if (touchEnabled && _isBareEscapeQuestionActive()) return;
           if (touchEnabled) updateKeyboardLighting({code:'Escape',key:'Escape',preventDefault:function(){},shiftKey:false,altKey:false,metaKey:false,ctrlKey:false}, false);
           var dbg = document.getElementById('debugOverlay');
           if (dbg && dbg.style.display !== 'none') {
@@ -1221,6 +1236,7 @@ function buildKey(cfg, isMini) {
           }
         });
         el.addEventListener('pointerleave', function(ev) {
+          if (touchEnabled && _isBareEscapeQuestionActive()) return;
           var dbg = document.getElementById('debugOverlay');
           if (dbg && dbg.style.display !== 'none') return;
           if (!escHoldTimer) _debugEscHoldCancel();

@@ -14785,34 +14785,46 @@ var _OriginalViewportContent = (function() {
   var Tag = document.querySelector('meta[name=viewport]');
   return Tag ? Tag.getAttribute('content') : null;
 })();
-var _ViewportNudgeTimeout = null;
+var _ViewportZoomFixTimeout = null;
 
-function _nudgeViewportScaleOnReturn() {
+function _correctViewportZoomIfStuck(IsRetry) {
   // Safari can return from backgrounding with visualViewport.scale stuck
   // above 1 (confirmed via remote debugging: scale ~1.6 after returning
-  // from the App Switcher, with no pinch/zoom or text-input focus involved).
+  // from the App Switcher, with no touch pinch/zoom or text-input focus
+  // involved). On iPad with a Magic Keyboard or similar trackpad attached,
+  // this is a documented WebKit bug tied to the trackpad's pinch-to-go-home
+  // gesture -- the page is never sent a touch or pointer event for it, so
+  // there is nothing to intercept before the zoom happens, only a chance
+  // to correct it afterwards. Some reports describe the zoom applying to
+  // the whole Safari window rather than this page's own viewport, which no
+  // page-level script can reach, so treat this as a mitigation, not a cure.
+  //
+  // Checking visualViewport.scale first means this only acts when a zoom
+  // is genuinely stuck, rather than swapping the tag below on every single
+  // return to the tab.
+  //
   // Mutating the existing <meta name=viewport> tag's content attribute does
-  // NOT clear this -- Safari caches the zoom state independently of the
-  // viewport tag's attribute value once it's been applied, so setAttribute()
-  // calls are silently ignored here. The tag has to be removed from the DOM
-  // and a fresh element inserted to force Safari to actually reprocess it.
-  // iOS does not reliably fire visibilitychange when the user leaves to
-  // another app (vs. switching tabs within Safari), so this is called from
-  // both visibilitychange and pageshow -- pageshow is the dependable signal
-  // for the "left the app, came back" case. The timeout is cleared and
-  // restarted if both fire for the same return, so they don't race.
+  // NOT clear the stuck zoom -- Safari caches the zoom state independently
+  // of the viewport tag's attribute value once it has been applied, so
+  // setAttribute() calls are silently ignored here. The tag has to be
+  // removed from the DOM and a fresh element inserted to force Safari to
+  // actually reprocess it.
   if (_OriginalViewportContent === null) return;
-  clearTimeout(_ViewportNudgeTimeout);
+  if (!window.visualViewport) return;
+  if (Math.abs(window.visualViewport.scale - 1) < 0.05) return;
+
+  clearTimeout(_ViewportZoomFixTimeout);
 
   var OldTag = document.querySelector('meta[name=viewport]');
   if (OldTag) OldTag.remove();
   var NudgeTag = document.createElement('meta');
   NudgeTag.setAttribute('name', 'viewport');
-  NudgeTag.setAttribute('content', _OriginalViewportContent + ', maximum-scale=1');
+  NudgeTag.setAttribute('content', _OriginalViewportContent + ', maximum-scale=1, user-scalable=no');
   document.head.appendChild(NudgeTag);
   void document.body.offsetHeight; // force reflow so the new tag is processed immediately
+  window.scrollTo(0, 0); // the stuck zoom also anchors scroll into the top-left corner
 
-  _ViewportNudgeTimeout = setTimeout(function() {
+  _ViewportZoomFixTimeout = setTimeout(function() {
     var NudgeTagNow = document.querySelector('meta[name=viewport]');
     if (NudgeTagNow) NudgeTagNow.remove();
     var RestoredTag = document.createElement('meta');
@@ -14820,13 +14832,32 @@ function _nudgeViewportScaleOnReturn() {
     RestoredTag.setAttribute('content', _OriginalViewportContent);
     document.head.appendChild(RestoredTag);
     void document.body.offsetHeight;
+
+    // Safari's own restoration after backgrounding can settle at a slightly
+    // different moment each time -- one retry catches a first correction
+    // that landed before Safari had finished reapplying the stuck scale.
+    if (!IsRetry && window.visualViewport && Math.abs(window.visualViewport.scale - 1) > 0.05) {
+      setTimeout(function() { _correctViewportZoomIfStuck(true); }, 350);
+    }
   }, 300);
 }
 
 window.addEventListener('pageshow', function(Event) {
   if (document.hidden) return;
-  _nudgeViewportScaleOnReturn();
+  _correctViewportZoomIfStuck(false);
 });
+
+// iPad with a trackpad-equipped keyboard can trigger the stuck zoom through
+// the trackpad's pinch-to-go-home gesture, which visibilitychange and
+// pageshow do not reliably catch on their own. Watching visualViewport
+// directly reacts the moment Safari's own scale actually changes, rather
+// than guessing at a delay. Scoped to iPad only, since iPhone has no
+// trackpad and this specific trigger does not apply there.
+if (window.visualViewport && detectedMobilePlatform === 'ipados') {
+  window.visualViewport.addEventListener('resize', function() {
+    _correctViewportZoomIfStuck(false);
+  });
+}
 
 document.addEventListener('visibilitychange', function() {
   if (document.hidden) {
@@ -14838,7 +14869,7 @@ document.addEventListener('visibilitychange', function() {
       _activateBlurPauseScreen();
     }
   } else {
-    _nudgeViewportScaleOnReturn();
+    _correctViewportZoomIfStuck(false);
     if (_blurDiagnosticFoldPending) {
       _blurDiagnosticFoldPending = false;
       setTimeout(function() { SetKeyboardPositionForPanel('panelPause'); }, 600);
@@ -14846,7 +14877,6 @@ document.addEventListener('visibilitychange', function() {
     }
   }
 });
-
 
 // Replaces the current question with a different one (no penalty, no report card entry).
 // Called whenever the diagnostic answer was revealed, regardless of outcome.

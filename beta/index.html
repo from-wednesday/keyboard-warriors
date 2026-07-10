@@ -1210,7 +1210,7 @@ function buildKey(cfg, isMini) {
         });
         el.addEventListener('pointerup',    function(ev) {
           ev.preventDefault();
-          updateKeyboardLighting({code:'Escape',key:'Escape',preventDefault:function(){},shiftKey:false,altKey:false,metaKey:false,ctrlKey:false}, false);
+          if (touchEnabled) updateKeyboardLighting({code:'Escape',key:'Escape',preventDefault:function(){},shiftKey:false,altKey:false,metaKey:false,ctrlKey:false}, false);
           var dbg = document.getElementById('debugOverlay');
           if (dbg && dbg.style.display !== 'none') {
             // Overlay is open — don't close on release; a subsequent tap will close it

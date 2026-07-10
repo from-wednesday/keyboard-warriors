@@ -1181,6 +1181,7 @@ const CONTROL_SYM_SVG = `<svg class="key-glyph-sym key-glyph-control" viewBox="0
 const RETURN_SYM_SVG  = `<svg class="key-glyph-sym key-glyph-return" viewBox="0 0 58 46"><use href="#IconKeyGlyphReturn"/></svg>`;
 const LOCK_SVG        = `<svg class="lock-svg" width="14" height="14" viewBox="0 0 24 24"><use href="#IconLockPadlock"/></svg>`;
 const PC_DELETE_SVG = `<svg class="delete-svg" viewBox="0 0 73 54"><use href="#IconPcDelete"/></svg>`;
+const WIN_LOGO_ALIAS_SVG = `<svg class="win-svg" width="14" height="14" viewBox="0 0 102.73 104.6" fill="currentColor"><use href="#IconWindowsLogo"/></svg>`;
 
 function buildKey(cfg, isMini) {
   const el = document.createElement('div');
@@ -1252,14 +1253,25 @@ function buildKey(cfg, isMini) {
       // unicode characters or emoji, consistent with the Command symbol style.
       // Mini keyboards and PC mode fall through to the standard text path.
       const _isFullMac = !isMini && _effectiveOs() === 'mac';
-      const OptionCrossTrainingLabel = ShowCrossTrainingAlias ? 'option(⊞)' : 'option';
       if (_isFullMac && cfg.id === 'AltLeft') {
-        el.innerHTML = `${OPTION_SYM_SVG}<span class="mod-word">${OptionCrossTrainingLabel}</span>`;
-        el.querySelector('.key-glyph-sym').style.cssText = 'position:absolute;top:4px;right:5px;left:auto;';
+        if (ShowCrossTrainingAlias) {
+          el.innerHTML = `<span class="cross-training-alias-row">${OPTION_SYM_SVG}<span class="mod-word">(${WIN_LOGO_ALIAS_SVG})</span></span>`;
+        } else {
+          el.innerHTML = `${OPTION_SYM_SVG}<span class="mod-word">option</span>`;
+          el.querySelector('.key-glyph-sym').style.cssText = 'position:absolute;top:4px;right:5px;left:auto;';
+        }
       } else if (_isFullMac && cfg.id === 'AltRight') {
-        el.innerHTML = `${OPTION_SYM_SVG}<span class="mod-word">${OptionCrossTrainingLabel}</span>`;
+        if (ShowCrossTrainingAlias) {
+          el.innerHTML = `<span class="cross-training-alias-row">${OPTION_SYM_SVG}<span class="mod-word">(${WIN_LOGO_ALIAS_SVG})</span></span>`;
+        } else {
+          el.innerHTML = `${OPTION_SYM_SVG}<span class="mod-word">option</span>`;
+        }
       } else if (_isFullMac && (cfg.id === 'ControlLeft' || cfg.id === 'ControlRight')) {
-        el.innerHTML = `${CONTROL_SYM_SVG}<span class="mod-word">control</span>`;
+        if (ShowCrossTrainingAlias) {
+          el.innerHTML = `<span class="cross-training-alias-row">${CONTROL_SYM_SVG}<span class="mod-word">(Ctrl)</span></span>`;
+        } else {
+          el.innerHTML = `${CONTROL_SYM_SVG}<span class="mod-word">control</span>`;
+        }
       } else if (_isFullMac && cfg.id === 'Enter') {
         el.innerHTML = `${RETURN_SYM_SVG}<span class="mod-word">return</span>`;
       } else if (isMini && _effectiveOs() === 'mac' && cfg.id === 'Enter') {
@@ -1278,16 +1290,19 @@ function buildKey(cfg, isMini) {
       el.addEventListener('mousedown', function(ev){ touchEnabled ? handleKeyTouch(ev, el) : showKbToast(ev); });
       break;
     }
-    case 'mod':
+    case 'mod': {
+      const CommandCrossTraining = ShowCrossTrainingAlias && currentOs === 'mac' && (cfg.id === 'MetaLeft' || cfg.id === 'MetaRight');
       if (isMini || cfg.word === cfg.sym) {
         // Mini or symbol-only: centred single glyph
         el.innerHTML = `<span class="mod-sym-only">${cfg.sym || cfg.mini}</span>`;
+      } else if (CommandCrossTraining) {
+        el.innerHTML = `<span class="cross-training-alias-row"><span class="mod-sym">${cfg.sym}</span><span class="mod-word">(Alt)</span></span>`;
       } else {
-        const CommandCrossTrainingSuffix = (ShowCrossTrainingAlias && currentOs === 'mac' && (cfg.id === 'MetaLeft' || cfg.id === 'MetaRight')) ? '(alt)' : '';
-        el.innerHTML = `<span class="mod-sym">${cfg.sym}</span><span class="mod-word">${cfg.word}${CommandCrossTrainingSuffix}</span>`;
+        el.innerHTML = `<span class="mod-sym">${cfg.sym}</span><span class="mod-word">${cfg.word}</span>`;
       }
       el.addEventListener('mousedown', function(ev){ touchEnabled ? handleKeyTouch(ev, el) : showKbToast(ev); });
       break;
+    }
     case 'space':
       el.addEventListener('mousedown', function(ev){ touchEnabled ? handleKeyTouch(ev, el) : showKbToast(ev); });
       break;

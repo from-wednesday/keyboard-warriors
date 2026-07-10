@@ -1406,6 +1406,15 @@ li.conflict-dismissed .conflict-desc {
   position: static;
   font-size: 8px;
 }
+/* Neutralise the normal top-left glyph position and stacked-layout spacing
+   so Control/Option/Command symbols sit inline within the row instead of
+   the keyboard's usual symbol-above/word-below layout. */
+.key .cross-training-alias-row .key-glyph-sym {
+  position: static;
+}
+.key .cross-training-alias-row .mod-sym {
+  margin-bottom: 0;
+}
 .key .win-svg {
   width: 14px;
   height: 14px;

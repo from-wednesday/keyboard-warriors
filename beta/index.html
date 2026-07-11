@@ -1307,12 +1307,15 @@ function buildKey(cfg, isMini) {
       break;
     }
     case 'mod': {
+      // Cross-training alias must be checked before the symbol-equals-word
+      // shortcut below, since the 4-key Mac layout sets word and sym to the
+      // same "⌘" glyph and would otherwise skip the alias entirely.
       const CommandCrossTraining = ShowCrossTrainingAlias && currentOs === 'mac' && (cfg.id === 'MetaLeft' || cfg.id === 'MetaRight');
-      if (isMini || cfg.word === cfg.sym) {
+      if (CommandCrossTraining) {
+        el.innerHTML = `<span class="cross-training-alias-row"><span class="mod-sym">${cfg.sym}</span><span class="mod-word">(Alt)</span></span>`;
+      } else if (isMini || cfg.word === cfg.sym) {
         // Mini or symbol-only: centred single glyph
         el.innerHTML = `<span class="mod-sym-only">${cfg.sym || cfg.mini}</span>`;
-      } else if (CommandCrossTraining) {
-        el.innerHTML = `<span class="cross-training-alias-row"><span class="mod-sym">${cfg.sym}</span><span class="mod-word">(Alt)</span></span>`;
       } else {
         el.innerHTML = `<span class="mod-sym">${cfg.sym}</span><span class="mod-word">${cfg.word}</span>`;
       }

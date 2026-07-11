@@ -24,7 +24,7 @@
     "difficulty": 3
   },
     {
-    "display": "add elbowed Line",
+    "display": "add an Elbowed Line",
     "mac_sc": "L",
     "pc_sc": "L",
     "difficulty": 2
@@ -90,7 +90,7 @@
     "difficulty": 0
   },
   {
-    "display": "Paste from Clipboard",
+    "display": "Paste",
     "mac_sc": "CMD+V",
     "pc_sc": "CTRL+V",
     "difficulty": 0
@@ -150,10 +150,10 @@
     "difficulty": 4
   },
   {
-    "display": "Underline Text",
+    "display": "Underline the Text",
     "mac_sc": "CMD+U",
     "pc_sc": "CTRL+U",
-    "difficulty": 1
+    "difficulty": 2
   },
   {
     "display": "convert text to ALL CAPS",
@@ -222,13 +222,13 @@
     "difficulty": 3
   },
   {
-    "display": "bring element to Front",
+    "display": "bring element to the Front",
     "mac_sc": "CMD+OPTION+BRACKETRIGHT",
     "pc_sc": "CTRL+ALT+BRACKETRIGHT",
     "difficulty": 4
   },
   {
-    "display": "send element to Back",
+    "display": "send element to the Back",
     "mac_sc": "CMD+OPTION+BRACKETLEFT",
     "pc_sc": "CTRL+ALT+BRACKETLEFT",
     "difficulty": 4
@@ -294,19 +294,19 @@
     "difficulty": 4
   },
   {
-    "display": "toggle rulers",
+    "display": "toggle Rulers",
     "mac_sc": "SHIFT+R",
     "pc_sc": "SHIFT+R",
     "difficulty": 2
   },
   {
-    "display": "Lock guides",
+    "display": "Lock the guides",
     "mac_sc": "CMD+OPT+SEMICOLON",
     "pc_sc": "CTRL+ALT+SEMICOLON",
     "difficulty": 4
   },
     {
-    "display": "toggle guides",
+    "display": "show/hide guides",
     "mac_sc": "CMD+SEMICOLON",
     "pc_sc": "CTRL+SEMICOLON",
     "difficulty": 3
@@ -461,13 +461,13 @@
     "display": "display Blank black screen",
     "mac_sc": "B",
     "pc_sc": "B",
-    "difficulty": 5
+    "difficulty": 3
   },
   {
     "display": "display Blank white screen",
     "mac_sc": "W",
     "pc_sc": "W",
-    "difficulty": 5
+    "difficulty": 3
   },
   {
     "display": "toggle Pointer visibility",
@@ -564,12 +564,6 @@
     "mac_sc": "CMD+SHIFT+S",
     "pc_sc": "CTRL+SHIFT+S",
     "difficulty": 3
-  },
-      {
-    "display": "Underline text",
-    "mac_sc": "CMD+U",
-    "pc_sc": "CTRL+U",
-    "difficulty": 2
   },
       {
     "display": "increase line spacing",

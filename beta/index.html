@@ -1633,10 +1633,13 @@ function buildKeyboard(isMini) {
   // Track mini state as a CSS class for targeted overrides
   document.getElementById('keyboardPanel').classList.toggle('mini-keys', isMini);
 
-  // Swap in the PC bottom row when PC mode is active
+  // Swap in the PC bottom row when PC mode is active.
+  // Computed live from kbLeftCount/kbFnLeft rather than the stored
+  // per-OS slot, so the physical key count can never drift when the
+  // training OS changes.
   const activeBottomRow = _effectiveOs() === 'pc'
-    ? (PC_BOTTOM_ROWS[kbVariantPc] || PC_BOTTOM_ROWS['pc-fn-left'])
-    : (MAC_BOTTOM_ROWS[kbVariantMac] || MAC_BOTTOM_ROWS['mac-3key']);
+    ? (PC_BOTTOM_ROWS[variantKeyForOs('pc')] || PC_BOTTOM_ROWS['pc-fn-left'])
+    : (MAC_BOTTOM_ROWS[variantKeyForOs('mac')] || MAC_BOTTOM_ROWS['mac-3key']);
   const layout = FULL_LAYOUT.map((row, ri) => ri === 5 ? activeBottomRow : row);
 
   layout.forEach((row, ri) => {
@@ -6343,7 +6346,9 @@ function _syncKbCountFromVariant() {
 }
 
 function updateModalToggles() {
-  _syncKbCountFromVariant(); // ensure toggles reflect the actual keyboard shown
+  // kbLeftCount and kbFnLeft are the live physical-keyboard values and are
+  // never resynced from per-OS storage here, so the toggles below simply
+  // reflect whatever is currently true.
   // 3/4 key count knob
   var knob3 = document.getElementById('modalOsKnobEl');
   var tog3  = document.getElementById('modalOsToggle');

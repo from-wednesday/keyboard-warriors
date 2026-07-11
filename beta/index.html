@@ -1569,6 +1569,11 @@ function LoadKeyboardSettings() {
   if (Bundle.KbVariantMac && ValidMacVariants.indexOf(Bundle.KbVariantMac) !== -1) kbVariantMac = Bundle.KbVariantMac;
   if (Bundle.KbVariantPc  && ValidPcVariants.indexOf(Bundle.KbVariantPc)   !== -1) kbVariantPc  = Bundle.KbVariantPc;
   _syncKbCountFromVariant();
+  // Heal any legacy saved data where the two variants had drifted out of
+  // sync, from before key count and Fn position were treated as a single
+  // physical-keyboard property shared by both OS variants.
+  kbVariantMac = variantKeyForOs('mac');
+  kbVariantPc  = variantKeyForOs('pc');
 
   // Restore individual key overrides first so _syncExtendedKeysToBaseline skips them
   if (Array.isArray(Bundle.KbKeyOverrides)) {
@@ -2000,9 +2005,9 @@ function applyOsMode(os) {
   updateMismatchPill();
   document.getElementById('keyboardPanel').classList.toggle('pc-keys', _effectiveOs() === 'pc');
   document.body.classList.toggle('pc-mode', os === 'pc');
-  // Carry the current 3/4-key setting over to the new OS
-  if (currentOs === 'mac') kbVariantMac = activeVariantKey();
-  else                     kbVariantPc  = activeVariantKey();
+  // Key count and Fn position are physical-keyboard properties, kept in
+  // sync across both OS variants by applyVariant(), so no carry-over is
+  // needed here when the training OS changes.
   SaveKeyboardSettings();
   if (currentKbMode && currentKbMode !== 'none') {
     buildKeyboard(currentKbMode === 'mini');
@@ -6288,8 +6293,8 @@ function onStickyKeysToggle() {
 
 
 // ── Keyboard layout toggles  ─────────────────────────────────────────
-function activeVariantKey() {
-  if (currentOs === 'mac') {
+function variantKeyForOs(TargetOs) {
+  if (TargetOs === 'mac') {
     if (kbLeftCount === 3) return 'mac-3key';
     return kbFnLeft ? 'mac-4key' : 'mac-4key-ctrl-left';
   } else {
@@ -6312,8 +6317,11 @@ function flashKeys(codes) {
 }
 
 function applyVariant(flashCodes) {
-  if (currentOs === 'mac') kbVariantMac = activeVariantKey();
-  else                     kbVariantPc  = activeVariantKey();
+  // Key count and Fn position describe the physical keyboard, not the OS
+  // currently being trained, so both variant slots are kept in sync here
+  // rather than only updating the one for currentOs.
+  kbVariantMac = variantKeyForOs('mac');
+  kbVariantPc  = variantKeyForOs('pc');
   SaveKeyboardSettings();
   if (currentKbMode && currentKbMode !== 'none') {
     buildKeyboard(currentKbMode === 'mini');

@@ -10431,14 +10431,15 @@ function confirmStartOverYes(keepKeyboardSettings) {
   setTimeout(function() {
     if (panelInner) { panelInner.style.transition = 'opacity 0.3s ease'; panelInner.style.opacity = '0'; }
     setTimeout(function() {
-      _doWipeStorage({ keepKeyboardSettings: !!keepKeyboardSettings });
-    if (!keepKeyboardSettings) {
-    KeyboardMemory = false;
-    ApplyDefaultKeyboardSettings();
-    SyncKeyboardSettingsToUI();
-    if (currentKbMode && currentKbMode !== 'none') buildKeyboard(currentKbMode === 'mini');
-    }
-      bestRecord = { time: null, accuracy: null };
+  var shouldKeepKb = keepKeyboardSettings || KeyboardMemory;
+     _doWipeStorage({ keepKeyboardSettings: shouldKeepKb });
+     if (!shouldKeepKb) {
+       KeyboardMemory = false;
+       ApplyDefaultKeyboardSettings();
+       SyncKeyboardSettingsToUI();
+      if (currentKbMode && currentKbMode !== 'none') buildKeyboard(currentKbMode === 'mini');
+     }
+     bestRecord = { time: null, accuracy: null };
       hasTrophy = false;
       questionTimer = null;
       playerLives   = null;
@@ -10514,11 +10515,12 @@ function _returningStartOver() {
     setTimeout(function() {
       // Reset storage and state, then show the welcome screen
       document.body.classList.remove('returning-screen');
-      _doWipeStorage({ keepKeyboardSettings: false });
-    KeyboardMemory = false;
-    ApplyDefaultKeyboardSettings();
-    SyncKeyboardSettingsToUI();
-    if (currentKbMode && currentKbMode !== 'none') buildKeyboard(currentKbMode === 'mini');
+      _doWipeStorage({ keepKeyboardSettings: KeyboardMemory });
+      if (!KeyboardMemory) {
+       ApplyDefaultKeyboardSettings();
+       SyncKeyboardSettingsToUI();
+       if (currentKbMode && currentKbMode !== 'none') buildKeyboard(currentKbMode === 'mini');
+       }
       bestRecord = { time: null, accuracy: null };
       hasTrophy = false;
       questionTimer = null;

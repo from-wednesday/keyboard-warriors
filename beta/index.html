@@ -1315,6 +1315,15 @@ function buildKey(cfg, isMini) {
           el.innerHTML = `<span class="util-sym-only">${utilText}</span>`;
         } else if (ShowCrossTrainingAlias && currentOs === 'pc' && cfg.id === 'AltLeft') {
           el.innerHTML = _buildCrossTrainAliasRow(`<span class="util-lbl">${utilText}</span>`, '⌘');
+        } else if (ShowCrossTrainingAlias && currentOs === 'pc' && cfg.id === 'ControlLeft') {
+          // Mac's physical Control key sits in the same position as PC's left
+          // Ctrl key, so no alias is needed -- just match the icon used for
+          // the equivalent key on the Mac layout.
+          el.innerHTML = `${CONTROL_SYM_SVG}<span class="util-lbl">${utilText}</span>`;
+        } else if (ShowCrossTrainingAlias && currentOs === 'pc' && cfg.id === 'ControlRight') {
+          // Most Mac keyboards have no physical right Control key, so the
+          // right Command key stands in for it (see RightCommandActsAsCtrl).
+          el.innerHTML = _buildCrossTrainAliasRow(`${CONTROL_SYM_SVG}<span class="util-lbl">${utilText}</span>`, '⌘');
         } else {
           el.innerHTML = `<span class="util-lbl">${utilText}</span>`;
         }

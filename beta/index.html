@@ -1318,11 +1318,11 @@ function buildKey(cfg, isMini) {
         } else if (ShowCrossTrainingAlias && currentOs === 'pc' && cfg.id === 'ControlLeft') {
           // Show 'Ctrl' as the primary label, with the ^ glyph as a grey alias
           // after the divider, since Mac's physical Control key maps to PC's left Ctrl.
-          el.innerHTML = _buildCrossTrainAliasRow(`<span class="util-lbl">${utilText}</span>`, CONTROL_SYM_SVG);
+          el.innerHTML = _buildCrossTrainAliasRow(`<span class="util-lbl">${utilText}</span>`, '⌃');
         } else if (ShowCrossTrainingAlias && currentOs === 'pc' && cfg.id === 'ControlRight') {
           // Most Mac keyboards have no physical right Control key, so the
           // right Command key stands in for it (see RightCommandActsAsCtrl).
-  el.innerHTML = _buildCrossTrainAliasRow(`<span class="util-lbl">${utilText}</span>`, '⌘');
+          el.innerHTML = _buildCrossTrainAliasRow(`<span class="util-lbl">${utilText}</span>`, '⌘');
         } else {
           el.innerHTML = `<span class="util-lbl">${utilText}</span>`;
         }

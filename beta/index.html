@@ -1921,6 +1921,17 @@ function _isMacLikeDevice() {
   return detectedOs === 'mobile' && detectedMobilePlatform !== 'android';
 }
 
+// True when the device's primary pointer is not a precise one (mouse/trackpad).
+// Catches touch-only tablets regardless of OS or browser — including
+// non-Apple, non-Android devices that detectedOs cannot identify as 'mobile' —
+// so keyboard-related defaults (touch mode, the "use a keyboard" pill, etc.)
+// don't wrongly assume a keyboard is present. Falls back to assuming a
+// keyboard is present if matchMedia isn't supported at all.
+function _isPrimaryTouchDevice() {
+  if (!window.matchMedia) return false;
+  return !window.matchMedia('(pointer: fine)').matches;
+}
+
 // 'currentOs' drives all game logic and keyboard rendering
 let currentOs = _isMacLikeDevice() ? 'mac' : 'pc';
 
@@ -2265,7 +2276,7 @@ function _syncKeyboardDisplayPillLock() {
 }
 
 function updateMismatchPill() {
-  if (detectedOs === 'mobile') {
+  if (_isPrimaryTouchDevice()) {
     var _pillHasExternalKeyboard = false;
     try { _pillHasExternalKeyboard = localStorage.getItem('kw_has_keyboard') === '1'; } catch(StorageError) {}
     if (!_pillHasExternalKeyboard && !_pillDismissedThisSession) {
@@ -2420,7 +2431,7 @@ function SyncKeyboardSettingsToUI() {
 function ApplyDefaultKeyboardSettings() {
   // Sets all keyboard state variables to device-appropriate defaults.
   // Called only when KeyboardMemory is false. Does not write to localStorage.
-  var IsTouch = (detectedOs === 'mobile');
+  var IsTouch = _isPrimaryTouchDevice();
 
   keyboardDisplayMode = 'graphical';
   kbLeftCount         = 3;
@@ -2456,7 +2467,7 @@ function _initialiseLayout() {
   // Mobile + KeyboardMemory ON: the stored flag (if present) is read by
   //   updateMismatchPill() and _syncKeyboardDisplayPillLock() below.
   // Physical key press (handleKeydown) is the only path that persists the flag.
-  if (detectedOs !== 'mobile') {
+  if (!_isPrimaryTouchDevice()) {
     _setHasKeyboard(false);
   } else if (!KeyboardMemory) {
     try { localStorage.removeItem('kw_has_keyboard'); } catch(e) {}

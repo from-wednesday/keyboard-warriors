@@ -1316,14 +1316,13 @@ function buildKey(cfg, isMini) {
         } else if (ShowCrossTrainingAlias && currentOs === 'pc' && cfg.id === 'AltLeft') {
           el.innerHTML = _buildCrossTrainAliasRow(`<span class="util-lbl">${utilText}</span>`, '⌘');
         } else if (ShowCrossTrainingAlias && currentOs === 'pc' && cfg.id === 'ControlLeft') {
-          // Mac's physical Control key sits in the same position as PC's left
-          // Ctrl key, so no alias is needed -- just match the icon used for
-          // the equivalent key on the Mac layout.
-          el.innerHTML = `${CONTROL_SYM_SVG}<span class="util-lbl">${utilText}</span>`;
+          // Show 'Ctrl' as the primary label, with the ^ glyph as a grey alias
+          // after the divider, since Mac's physical Control key maps to PC's left Ctrl.
+          el.innerHTML = _buildCrossTrainAliasRow(`<span class="util-lbl">${utilText}</span>`, CONTROL_SYM_SVG);
         } else if (ShowCrossTrainingAlias && currentOs === 'pc' && cfg.id === 'ControlRight') {
           // Most Mac keyboards have no physical right Control key, so the
           // right Command key stands in for it (see RightCommandActsAsCtrl).
-          el.innerHTML = _buildCrossTrainAliasRow(`${CONTROL_SYM_SVG}<span class="util-lbl">${utilText}</span>`, '⌘');
+  el.innerHTML = _buildCrossTrainAliasRow(`<span class="util-lbl">${utilText}</span>`, '⌘');
         } else {
           el.innerHTML = `<span class="util-lbl">${utilText}</span>`;
         }

@@ -1183,6 +1183,21 @@ const LOCK_SVG        = `<svg class="lock-svg" width="14" height="14" viewBox="0
 const PC_DELETE_SVG = `<svg class="delete-svg" viewBox="0 0 73 54"><use href="#IconPcDelete"/></svg>`;
 const WIN_LOGO_ALIAS_SVG = `<svg class="win-svg" width="14" height="14" viewBox="0 0 102.73 104.6" fill="currentColor"><use href="#IconWindowsLogo"/></svg>`;
 
+// Builds the two-part label used on a modifier key during cross training:
+// the trained key's own glyph on the left, a thin vertical divider, then a
+// small muted glyph on the right showing which physical key must actually
+// be pressed. One shared builder keeps this identical everywhere it is
+// used (Option, Control, and Command on the Mac layout; the Win key and
+// the Alt key hint on the PC layout), across both the 3-key and 4-key
+// layouts.
+function _buildCrossTrainAliasRow(PrimaryGlyphHtml, AliasGlyphHtml) {
+  return `<span class="cross-training-alias-row">`
+    + `<span class="cta-primary">${PrimaryGlyphHtml}</span>`
+    + `<span class="cta-divider"></span>`
+    + `<span class="cta-alias">${AliasGlyphHtml}</span>`
+    + `</span>`;
+}
+
 // True only when the active question's answer is the bare Escape key (no
 // modifiers). Lets a tap on the graphical Escape key answer the question
 // instead of being swallowed by the debug-overlay hold gesture.
@@ -1271,20 +1286,20 @@ function buildKey(cfg, isMini) {
       const _isFullMac = !isMini && _effectiveOs() === 'mac';
       if (_isFullMac && cfg.id === 'AltLeft') {
         if (ShowCrossTrainingAlias) {
-          el.innerHTML = `<span class="cross-training-alias-row">${OPTION_SYM_SVG}<span class="mod-word">(${WIN_LOGO_ALIAS_SVG})</span></span>`;
+          el.innerHTML = _buildCrossTrainAliasRow(OPTION_SYM_SVG, WIN_LOGO_ALIAS_SVG);
         } else {
           el.innerHTML = `${OPTION_SYM_SVG}<span class="mod-word">option</span>`;
           el.querySelector('.key-glyph-sym').style.cssText = 'position:absolute;top:4px;right:5px;left:auto;';
         }
       } else if (_isFullMac && cfg.id === 'AltRight') {
         if (ShowCrossTrainingAlias) {
-          el.innerHTML = `<span class="cross-training-alias-row">${OPTION_SYM_SVG}<span class="mod-word">(${WIN_LOGO_ALIAS_SVG})</span></span>`;
+          el.innerHTML = _buildCrossTrainAliasRow(OPTION_SYM_SVG, WIN_LOGO_ALIAS_SVG);
         } else {
           el.innerHTML = `${OPTION_SYM_SVG}<span class="mod-word">option</span>`;
         }
       } else if (_isFullMac && (cfg.id === 'ControlLeft' || cfg.id === 'ControlRight')) {
         if (ShowCrossTrainingAlias) {
-          el.innerHTML = `<span class="cross-training-alias-row">${CONTROL_SYM_SVG}<span class="mod-word">(Ctrl)</span></span>`;
+          el.innerHTML = _buildCrossTrainAliasRow(CONTROL_SYM_SVG, 'Ctrl');
         } else {
           el.innerHTML = `${CONTROL_SYM_SVG}<span class="mod-word">control</span>`;
         }
@@ -1298,9 +1313,10 @@ function buildKey(cfg, isMini) {
         const isGlyph = utilText && utilText.length <= 2 && /\p{So}|\p{Sm}|[⇧↩↑↓←→⌫↵]/u.test(utilText);
         if (isGlyph) {
           el.innerHTML = `<span class="util-sym-only">${utilText}</span>`;
+        } else if (ShowCrossTrainingAlias && currentOs === 'pc' && cfg.id === 'AltLeft') {
+          el.innerHTML = _buildCrossTrainAliasRow(`<span class="util-lbl">${utilText}</span>`, '⌘');
         } else {
-          const AltCrossTrainingSuffix = (ShowCrossTrainingAlias && currentOs === 'pc' && cfg.id === 'AltLeft') ? ' (<span class="sym-main">⌘</span>)' : '';
-          el.innerHTML = `<span class="util-lbl">${utilText}${AltCrossTrainingSuffix}</span>`;
+          el.innerHTML = `<span class="util-lbl">${utilText}</span>`;
         }
       }
       el.addEventListener('mousedown', function(ev){ touchEnabled ? handleKeyTouch(ev, el) : showKbToast(ev); });
@@ -1312,7 +1328,7 @@ function buildKey(cfg, isMini) {
       // same "⌘" glyph and would otherwise skip the alias entirely.
       const CommandCrossTraining = ShowCrossTrainingAlias && currentOs === 'mac' && (cfg.id === 'MetaLeft' || cfg.id === 'MetaRight');
       if (CommandCrossTraining) {
-        el.innerHTML = `<span class="cross-training-alias-row"><span class="mod-sym">${cfg.sym}</span><span class="mod-word">(Alt)</span></span>`;
+        el.innerHTML = _buildCrossTrainAliasRow(`<span class="mod-sym">${cfg.sym}</span>`, 'Alt');
       } else if (isMini || cfg.word === cfg.sym) {
         // Mini or symbol-only: centred single glyph
         el.innerHTML = `<span class="mod-sym-only">${cfg.sym || cfg.mini}</span>`;
@@ -1336,7 +1352,7 @@ function buildKey(cfg, isMini) {
     case 'winkey': {
       const WinLogoSvg = `<svg class="win-svg" width="14" height="14" viewBox="0 0 102.73 104.6" fill="currentColor"><use href="#IconWindowsLogo"/></svg>`;
       if (ShowCrossTrainingAlias) {
-        el.innerHTML = `<span class="cross-training-alias-row">${WinLogoSvg}<span class="mod-word">(opt)</span></span>`;
+        el.innerHTML = _buildCrossTrainAliasRow(WinLogoSvg, 'opt');
       } else {
         el.innerHTML = WinLogoSvg;
       }

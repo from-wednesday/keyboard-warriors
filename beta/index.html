@@ -6508,6 +6508,8 @@ function SetKeyboardMemory(ShouldRemember) {
     Knob.style.transform = ShouldRemember ? 'translateX(22px)' : 'translateX(0)';
     Knob.setAttribute('fill', ShouldRemember ? '#374151' : 'white');
   }
+if (ShouldRemember) SaveKeyboardSettings(); // ← snapshot all current state immediately
+12
 }
 
 function onModalKeyboardMemoryToggle() {

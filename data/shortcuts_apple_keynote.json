@@ -330,6 +330,18 @@
     "pc_sc": "NULL",
     "difficulty": 3
   },
+   {
+    "display": "Zoom IN",
+    "mac_sc": "CMD+SHIFT+MORETHAN",
+    "pc_sc": "NULL",
+    "difficulty": 3
+  },
+    {
+    "display": "Zoom OUT",
+    "mac_sc": "CMD+SHIFT+LESSTHAN",
+    "pc_sc": "NULL",
+    "difficulty": 3
+  },
   {
     "display": "toggle snap to guide",
     "mac_sc": "CMD+OPTION+SEMICOLON",

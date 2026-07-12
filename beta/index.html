@@ -10320,6 +10320,21 @@ function _pauseDifficultyNudgeClick() {
    Yes wipes all local data and transitions to the Welcome screen with the
    same animated crossfade used by _returningStartOver.
 ─────────────────────────────────────────────────────────────────────────── */
+// Extended keyboard key tokens (Home, End, Page Up/Down, Insert, Delete,
+// the F13-F24 row, Clear/Num Lock, etc.) drive the compact/full keyboard
+// size toggle and its per-key overrides on the Conflicted Shortcuts >
+// Keyboard tab. They are stored in the very same dismissedConflicts /
+// userManuallyUnblockedConflicts Sets used for ordinary browser and OS
+// shortcut conflicts. _doWipeStorage uses this list to tell the two apart,
+// so it can wipe conflict history while leaving keyboard-size state alone.
+function _extendedKeyboardTokenSet() {
+  var Tokens = new Set();
+  Object.keys(ExtendedKeyCodeToToken).forEach(function(Code) {
+    Tokens.add(ExtendedKeyCodeToToken[Code]);
+  });
+  return Tokens;
+}
+
 function _doWipeStorage(opts) {
   var keepKb = opts && opts.keepKeyboardSettings;
   var kbKeys = [
@@ -10336,8 +10351,29 @@ var wipeKeys = [
   if (!keepKb) wipeKeys = wipeKeys.concat(kbKeys);
   wipeKeys.forEach(function(k) { try { localStorage.removeItem(k); } catch(e) {} });
   try { sessionStorage.removeItem('kw_welcomed'); } catch(e) {}
-  userManuallyUnblockedConflicts.clear();
-  dismissedConflicts.clear();
+
+  if (keepKb) {
+    // Strip conflict-history entries out of the live Sets but keep any
+    // extended-keyboard tokens, then re-save so the keyboard-size state
+    // (which the block above just erased from storage) is written back.
+    var ExtendedTokens = _extendedKeyboardTokenSet();
+    dismissedConflicts.forEach(function(Token) {
+      if (!ExtendedTokens.has(Token)) dismissedConflicts.delete(Token);
+    });
+    userManuallyUnblockedConflicts.forEach(function(Token) {
+      if (!ExtendedTokens.has(Token)) userManuallyUnblockedConflicts.delete(Token);
+    });
+    _saveCustomDismissedConflicts();
+    _saveUserManuallyUnblockedConflicts();
+    blurDiagnosticConflicts.clear();
+    _saveBlurDiagnosticConflicts();
+    userConfirmedWorkingConflicts.clear();
+    _saveUserConfirmedWorkingConflicts();
+  } else {
+    userManuallyUnblockedConflicts.clear();
+    dismissedConflicts.clear();
+  }
+
   if (appsLongList && appsLongList.length) {
     _applySkillset('Graphic Design');
   }

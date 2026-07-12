@@ -1393,18 +1393,35 @@ li.conflict-dismissed .conflict-desc {
   font-weight: 400;
   line-height: 1;
 }
-/* Cross-training alias on the Win key: logo and caption sit on one line
-   rather than the logo alone with the caption stacked underneath. */
+/* Cross-training alias: shows the trained key's own glyph, a thin vertical
+   divider, then a small muted glyph for whichever physical key must
+   actually be pressed given a mismatch between the training layout and the
+   real hardware. One rule set covers every modifier key using this pattern
+   (Option, Control, and Command on Mac; the Win key and the Alt hint on
+   PC), in both the 3-key and 4-key layouts. */
 .key .cross-training-alias-row {
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: 3px;
+  gap: 4px;
   white-space: nowrap;
 }
-.key .cross-training-alias-row .mod-word {
-  position: static;
+.key .cross-training-alias-row .cta-primary {
+  display: flex;
+  align-items: center;
+}
+.key .cross-training-alias-row .cta-divider {
+  width: 1px;
+  height: 16px;
+  flex-shrink: 0;
+  background: rgba(0,0,0,0.18);
+}
+.key .cross-training-alias-row .cta-alias {
+  display: flex;
+  align-items: center;
   font-size: 8px;
+  font-weight: 400;
+  color: #9ca3af;
 }
 /* Neutralise the normal top-left glyph position and stacked-layout spacing
    so Control/Option/Command symbols sit inline within the row instead of

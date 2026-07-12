@@ -10432,7 +10432,11 @@ function confirmStartOverYes(keepKeyboardSettings) {
     if (panelInner) { panelInner.style.transition = 'opacity 0.3s ease'; panelInner.style.opacity = '0'; }
     setTimeout(function() {
       _doWipeStorage({ keepKeyboardSettings: !!keepKeyboardSettings });
-
+    if (!keepKeyboardSettings) {
+    KeyboardMemory = false;
+    ApplyDefaultKeyboardSettings();
+    SyncKeyboardSettingsToUI();
+    if (currentKbMode && currentKbMode !== 'none') buildKeyboard(currentKbMode === 'mini');\n}
       bestRecord = { time: null, accuracy: null };
       hasTrophy = false;
       questionTimer = null;
@@ -10510,7 +10514,10 @@ function _returningStartOver() {
       // Reset storage and state, then show the welcome screen
       document.body.classList.remove('returning-screen');
       _doWipeStorage({ keepKeyboardSettings: false });
-
+    KeyboardMemory = false;
+    ApplyDefaultKeyboardSettings();
+    SyncKeyboardSettingsToUI();
+    if (currentKbMode && currentKbMode !== 'none') buildKeyboard(currentKbMode === 'mini');
       bestRecord = { time: null, accuracy: null };
       hasTrophy = false;
       questionTimer = null;

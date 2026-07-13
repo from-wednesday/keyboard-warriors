@@ -2828,15 +2828,13 @@ function GetActiveShortcutString(ShortcutEntry) {
     : ShortcutEntry.mac_sc;
 
   if (CandidateString !== null && CandidateString !== undefined
-      && CandidateString !== 'none' && CandidateString !== '') {
+      && CandidateString !== 'none' && CandidateString !== '' && CandidateString !== 'NULL') {
     // Old display strings contain Unicode key symbols — detect and skip them
     if (!/[⌘⇧⌥⌃⊞↩↵⌫⌦⎋⇥⇪⇞⇟←→↑↓]/.test(CandidateString)) {
       return CandidateString;
     }
   }
-
     return null;
-
 }
 
 /* ── GetAllAlternatives ─────────────────────────────────────────────────────
@@ -13397,7 +13395,7 @@ function HighlightReportListItems(ShortcutToken) {
 // mac_sc field is null/'none'/empty in the shortcuts JSON).
 function BuildShortcutChipsOrOsOnlyNote(ShortcutValue, IsWeakness) {
   var HasNoOsEquivalent = ShortcutValue === null || ShortcutValue === undefined
-    || ShortcutValue === 'none' || ShortcutValue === '';
+    || ShortcutValue === 'none' || ShortcutValue === '' || ShortcutValue === 'NULL';
   if (HasNoOsEquivalent) {
     var NoteElement = document.createElement('small');
     NoteElement.className = 'sp-report-os-only-note';

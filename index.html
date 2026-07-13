@@ -9,7 +9,7 @@
 <title>Keyboard Warriors</title>
 <script>
   const DefaultTitle = 'Keyboard Warriors';
-  const VersionLabel   = '0037';
+  const VersionLabel   = '0038';
   const TitlePrefix  = document.title !== DefaultTitle ? document.title.trim() + '_' : '';
   const DBG_DEVICE   = TitlePrefix + VersionLabel;
 </script>
@@ -1181,6 +1181,33 @@ const CONTROL_SYM_SVG = `<svg class="key-glyph-sym key-glyph-control" viewBox="0
 const RETURN_SYM_SVG  = `<svg class="key-glyph-sym key-glyph-return" viewBox="0 0 58 46"><use href="#IconKeyGlyphReturn"/></svg>`;
 const LOCK_SVG        = `<svg class="lock-svg" width="14" height="14" viewBox="0 0 24 24"><use href="#IconLockPadlock"/></svg>`;
 const PC_DELETE_SVG = `<svg class="delete-svg" viewBox="0 0 73 54"><use href="#IconPcDelete"/></svg>`;
+const WIN_LOGO_ALIAS_SVG = `<svg class="win-svg" width="14" height="14" viewBox="0 0 102.73 104.6" fill="currentColor"><use href="#IconWindowsLogo"/></svg>`;
+
+// Builds the two-part label used on a modifier key during cross training:
+// the trained key's own glyph on the left, a thin vertical divider, then a
+// small muted glyph on the right showing which physical key must actually
+// be pressed. One shared builder keeps this identical everywhere it is
+// used (Option, Control, and Command on the Mac layout; the Win key and
+// the Alt key hint on the PC layout), across both the 3-key and 4-key
+// layouts.
+function _buildCrossTrainAliasRow(PrimaryGlyphHtml, AliasGlyphHtml) {
+  return `<span class="cross-training-alias-row">`
+    + `<span class="cta-primary">${PrimaryGlyphHtml}</span>`
+    + `<span class="cta-divider"></span>`
+    + `<span class="cta-alias">${AliasGlyphHtml}</span>`
+    + `</span>`;
+}
+
+// True only when the active question's answer is the bare Escape key (no
+// modifiers). Lets a tap on the graphical Escape key answer the question
+// instead of being swallowed by the debug-overlay hold gesture.
+function _isBareEscapeQuestionActive() {
+  if (gameState !== 'playing' || !currentAnswer) return false;
+  var Parsed = ParseShortcutString(currentAnswer);
+  return !!Parsed && Parsed.keyToken === 'ESCAPE'
+    && !Parsed.requiresCmd && !Parsed.requiresShift && !Parsed.requiresOption
+    && !Parsed.requiresControl && !Parsed.requiresWin && !Parsed.requiresFn;
+}
 
 function buildKey(cfg, isMini) {
   const el = document.createElement('div');
@@ -1204,12 +1231,16 @@ function buildKey(cfg, isMini) {
       if (cfg.id === 'Escape') {
         el.addEventListener('pointerdown',  function(ev) {
           ev.preventDefault();
+          // Bare-Escape question: answer it directly instead of arming the
+          // debug-overlay hold gesture, so the graphical key actually counts.
+          if (touchEnabled && _isBareEscapeQuestionActive()) { handleKeyTouch(ev, el); return; }
           if (touchEnabled) updateKeyboardLighting({code:'Escape',key:'Escape',preventDefault:function(){},shiftKey:false,altKey:false,metaKey:false,ctrlKey:false}, true);
           _debugEscHoldStart();
         });
         el.addEventListener('pointerup',    function(ev) {
           ev.preventDefault();
-          updateKeyboardLighting({code:'Escape',key:'Escape',preventDefault:function(){},shiftKey:false,altKey:false,metaKey:false,ctrlKey:false}, false);
+          if (touchEnabled && _isBareEscapeQuestionActive()) return;
+          if (touchEnabled) updateKeyboardLighting({code:'Escape',key:'Escape',preventDefault:function(){},shiftKey:false,altKey:false,metaKey:false,ctrlKey:false}, false);
           var dbg = document.getElementById('debugOverlay');
           if (dbg && dbg.style.display !== 'none') {
             // Overlay is open — don't close on release; a subsequent tap will close it
@@ -1220,6 +1251,7 @@ function buildKey(cfg, isMini) {
           }
         });
         el.addEventListener('pointerleave', function(ev) {
+          if (touchEnabled && _isBareEscapeQuestionActive()) return;
           var dbg = document.getElementById('debugOverlay');
           if (dbg && dbg.style.display !== 'none') return;
           if (!escHoldTimer) _debugEscHoldCancel();
@@ -1252,14 +1284,25 @@ function buildKey(cfg, isMini) {
       // unicode characters or emoji, consistent with the Command symbol style.
       // Mini keyboards and PC mode fall through to the standard text path.
       const _isFullMac = !isMini && _effectiveOs() === 'mac';
-      const OptionCrossTrainingLabel = ShowCrossTrainingAlias ? 'option(⊞)' : 'option';
       if (_isFullMac && cfg.id === 'AltLeft') {
-        el.innerHTML = `${OPTION_SYM_SVG}<span class="mod-word">${OptionCrossTrainingLabel}</span>`;
-        el.querySelector('.key-glyph-sym').style.cssText = 'position:absolute;top:4px;right:5px;left:auto;';
+        if (ShowCrossTrainingAlias) {
+          el.innerHTML = _buildCrossTrainAliasRow(OPTION_SYM_SVG, WIN_LOGO_ALIAS_SVG);
+        } else {
+          el.innerHTML = `${OPTION_SYM_SVG}<span class="mod-word">option</span>`;
+          el.querySelector('.key-glyph-sym').style.cssText = 'position:absolute;top:4px;right:5px;left:auto;';
+        }
       } else if (_isFullMac && cfg.id === 'AltRight') {
-        el.innerHTML = `${OPTION_SYM_SVG}<span class="mod-word">${OptionCrossTrainingLabel}</span>`;
+        if (ShowCrossTrainingAlias) {
+          el.innerHTML = _buildCrossTrainAliasRow(OPTION_SYM_SVG, WIN_LOGO_ALIAS_SVG);
+        } else {
+          el.innerHTML = `${OPTION_SYM_SVG}<span class="mod-word">option</span>`;
+        }
       } else if (_isFullMac && (cfg.id === 'ControlLeft' || cfg.id === 'ControlRight')) {
-        el.innerHTML = `${CONTROL_SYM_SVG}<span class="mod-word">control</span>`;
+        if (ShowCrossTrainingAlias) {
+          el.innerHTML = _buildCrossTrainAliasRow(CONTROL_SYM_SVG, 'Ctrl');
+        } else {
+          el.innerHTML = `${CONTROL_SYM_SVG}<span class="mod-word">control</span>`;
+        }
       } else if (_isFullMac && cfg.id === 'Enter') {
         el.innerHTML = `${RETURN_SYM_SVG}<span class="mod-word">return</span>`;
       } else if (isMini && _effectiveOs() === 'mac' && cfg.id === 'Enter') {
@@ -1270,24 +1313,39 @@ function buildKey(cfg, isMini) {
         const isGlyph = utilText && utilText.length <= 2 && /\p{So}|\p{Sm}|[⇧↩↑↓←→⌫↵]/u.test(utilText);
         if (isGlyph) {
           el.innerHTML = `<span class="util-sym-only">${utilText}</span>`;
+        } else if (ShowCrossTrainingAlias && currentOs === 'pc' && cfg.id === 'AltLeft') {
+          el.innerHTML = _buildCrossTrainAliasRow(`<span class="util-lbl">${utilText}</span>`, '⌘');
+        } else if (ShowCrossTrainingAlias && currentOs === 'pc' && cfg.id === 'ControlLeft') {
+          // Show 'Ctrl' as the primary label, with the ^ glyph as a grey alias
+          // after the divider, since Mac's physical Control key maps to PC's left Ctrl.
+          el.innerHTML = _buildCrossTrainAliasRow(`<span class="util-lbl">${utilText}</span>`, '⌃');
+        } else if (ShowCrossTrainingAlias && currentOs === 'pc' && cfg.id === 'ControlRight') {
+          // Most Mac keyboards have no physical right Control key, so the
+          // right Command key stands in for it (see RightCommandActsAsCtrl).
+          el.innerHTML = _buildCrossTrainAliasRow(`<span class="util-lbl">${utilText}</span>`, '⌘');
         } else {
-          const AltCrossTrainingSuffix = (ShowCrossTrainingAlias && currentOs === 'pc' && cfg.id === 'AltLeft') ? ' (<span class="sym-main">⌘</span>)' : '';
-          el.innerHTML = `<span class="util-lbl">${utilText}${AltCrossTrainingSuffix}</span>`;
+          el.innerHTML = `<span class="util-lbl">${utilText}</span>`;
         }
       }
       el.addEventListener('mousedown', function(ev){ touchEnabled ? handleKeyTouch(ev, el) : showKbToast(ev); });
       break;
     }
-    case 'mod':
-      if (isMini || cfg.word === cfg.sym) {
+    case 'mod': {
+      // Cross-training alias must be checked before the symbol-equals-word
+      // shortcut below, since the 4-key Mac layout sets word and sym to the
+      // same "⌘" glyph and would otherwise skip the alias entirely.
+      const CommandCrossTraining = ShowCrossTrainingAlias && currentOs === 'mac' && (cfg.id === 'MetaLeft' || cfg.id === 'MetaRight');
+      if (CommandCrossTraining) {
+        el.innerHTML = _buildCrossTrainAliasRow(`<span class="mod-sym">${cfg.sym}</span>`, 'Alt');
+      } else if (isMini || cfg.word === cfg.sym) {
         // Mini or symbol-only: centred single glyph
         el.innerHTML = `<span class="mod-sym-only">${cfg.sym || cfg.mini}</span>`;
       } else {
-        const CommandCrossTrainingSuffix = (ShowCrossTrainingAlias && currentOs === 'mac' && (cfg.id === 'MetaLeft' || cfg.id === 'MetaRight')) ? '(alt)' : '';
-        el.innerHTML = `<span class="mod-sym">${cfg.sym}</span><span class="mod-word">${cfg.word}${CommandCrossTrainingSuffix}</span>`;
+        el.innerHTML = `<span class="mod-sym">${cfg.sym}</span><span class="mod-word">${cfg.word}</span>`;
       }
       el.addEventListener('mousedown', function(ev){ touchEnabled ? handleKeyTouch(ev, el) : showKbToast(ev); });
       break;
+    }
     case 'space':
       el.addEventListener('mousedown', function(ev){ touchEnabled ? handleKeyTouch(ev, el) : showKbToast(ev); });
       break;
@@ -1302,7 +1360,7 @@ function buildKey(cfg, isMini) {
     case 'winkey': {
       const WinLogoSvg = `<svg class="win-svg" width="14" height="14" viewBox="0 0 102.73 104.6" fill="currentColor"><use href="#IconWindowsLogo"/></svg>`;
       if (ShowCrossTrainingAlias) {
-        el.innerHTML = `<span class="cross-training-alias-row">${WinLogoSvg}<span class="mod-word">(opt)</span></span>`;
+        el.innerHTML = _buildCrossTrainAliasRow(WinLogoSvg, 'opt');
       } else {
         el.innerHTML = WinLogoSvg;
       }
@@ -1538,6 +1596,11 @@ function LoadKeyboardSettings() {
   if (Bundle.KbVariantMac && ValidMacVariants.indexOf(Bundle.KbVariantMac) !== -1) kbVariantMac = Bundle.KbVariantMac;
   if (Bundle.KbVariantPc  && ValidPcVariants.indexOf(Bundle.KbVariantPc)   !== -1) kbVariantPc  = Bundle.KbVariantPc;
   _syncKbCountFromVariant();
+  // Heal any legacy saved data where the two variants had drifted out of
+  // sync, from before key count and Fn position were treated as a single
+  // physical-keyboard property shared by both OS variants.
+  kbVariantMac = variantKeyForOs('mac');
+  kbVariantPc  = variantKeyForOs('pc');
 
   // Restore individual key overrides first so _syncExtendedKeysToBaseline skips them
   if (Array.isArray(Bundle.KbKeyOverrides)) {
@@ -1597,10 +1660,13 @@ function buildKeyboard(isMini) {
   // Track mini state as a CSS class for targeted overrides
   document.getElementById('keyboardPanel').classList.toggle('mini-keys', isMini);
 
-  // Swap in the PC bottom row when PC mode is active
+  // Swap in the PC bottom row when PC mode is active.
+  // Computed live from kbLeftCount/kbFnLeft rather than the stored
+  // per-OS slot, so the physical key count can never drift when the
+  // training OS changes.
   const activeBottomRow = _effectiveOs() === 'pc'
-    ? (PC_BOTTOM_ROWS[kbVariantPc] || PC_BOTTOM_ROWS['pc-fn-left'])
-    : (MAC_BOTTOM_ROWS[kbVariantMac] || MAC_BOTTOM_ROWS['mac-3key']);
+    ? (PC_BOTTOM_ROWS[variantKeyForOs('pc')] || PC_BOTTOM_ROWS['pc-fn-left'])
+    : (MAC_BOTTOM_ROWS[variantKeyForOs('mac')] || MAC_BOTTOM_ROWS['mac-3key']);
   const layout = FULL_LAYOUT.map((row, ri) => ri === 5 ? activeBottomRow : row);
 
   layout.forEach((row, ri) => {
@@ -1854,6 +1920,17 @@ function _isMacLikeDevice() {
   return detectedOs === 'mobile' && detectedMobilePlatform !== 'android';
 }
 
+// True when the device's primary pointer is not a precise one (mouse/trackpad).
+// Catches touch-only tablets regardless of OS or browser — including
+// non-Apple, non-Android devices that detectedOs cannot identify as 'mobile' —
+// so keyboard-related defaults (touch mode, the "use a keyboard" pill, etc.)
+// don't wrongly assume a keyboard is present. Falls back to assuming a
+// keyboard is present if matchMedia isn't supported at all.
+function _isPrimaryTouchDevice() {
+  if (!window.matchMedia) return false;
+  return !window.matchMedia('(pointer: fine)').matches;
+}
+
 // 'currentOs' drives all game logic and keyboard rendering
 let currentOs = _isMacLikeDevice() ? 'mac' : 'pc';
 
@@ -1969,9 +2046,9 @@ function applyOsMode(os) {
   updateMismatchPill();
   document.getElementById('keyboardPanel').classList.toggle('pc-keys', _effectiveOs() === 'pc');
   document.body.classList.toggle('pc-mode', os === 'pc');
-  // Carry the current 3/4-key setting over to the new OS
-  if (currentOs === 'mac') kbVariantMac = activeVariantKey();
-  else                     kbVariantPc  = activeVariantKey();
+  // Key count and Fn position are physical-keyboard properties, kept in
+  // sync across both OS variants by applyVariant(), so no carry-over is
+  // needed here when the training OS changes.
   SaveKeyboardSettings();
   if (currentKbMode && currentKbMode !== 'none') {
     buildKeyboard(currentKbMode === 'mini');
@@ -2198,7 +2275,7 @@ function _syncKeyboardDisplayPillLock() {
 }
 
 function updateMismatchPill() {
-  if (detectedOs === 'mobile') {
+  if (_isPrimaryTouchDevice()) {
     var _pillHasExternalKeyboard = false;
     try { _pillHasExternalKeyboard = localStorage.getItem('kw_has_keyboard') === '1'; } catch(StorageError) {}
     if (!_pillHasExternalKeyboard && !_pillDismissedThisSession) {
@@ -2353,7 +2430,7 @@ function SyncKeyboardSettingsToUI() {
 function ApplyDefaultKeyboardSettings() {
   // Sets all keyboard state variables to device-appropriate defaults.
   // Called only when KeyboardMemory is false. Does not write to localStorage.
-  var IsTouch = (detectedOs === 'mobile');
+  var IsTouch = _isPrimaryTouchDevice();
 
   keyboardDisplayMode = 'graphical';
   kbLeftCount         = 3;
@@ -2389,7 +2466,7 @@ function _initialiseLayout() {
   // Mobile + KeyboardMemory ON: the stored flag (if present) is read by
   //   updateMismatchPill() and _syncKeyboardDisplayPillLock() below.
   // Physical key press (handleKeydown) is the only path that persists the flag.
-  if (detectedOs !== 'mobile') {
+  if (!_isPrimaryTouchDevice()) {
     _setHasKeyboard(false);
   } else if (!KeyboardMemory) {
     try { localStorage.removeItem('kw_has_keyboard'); } catch(e) {}
@@ -2751,15 +2828,13 @@ function GetActiveShortcutString(ShortcutEntry) {
     : ShortcutEntry.mac_sc;
 
   if (CandidateString !== null && CandidateString !== undefined
-      && CandidateString !== 'none' && CandidateString !== '') {
+      && CandidateString !== 'none' && CandidateString !== '' && CandidateString !== 'NULL') {
     // Old display strings contain Unicode key symbols — detect and skip them
     if (!/[⌘⇧⌥⌃⊞↩↵⌫⌦⎋⇥⇪⇞⇟←→↑↓]/.test(CandidateString)) {
       return CandidateString;
     }
   }
-
     return null;
-
 }
 
 /* ── GetAllAlternatives ─────────────────────────────────────────────────────
@@ -3654,6 +3729,7 @@ function mainButtonClick() {
 
 const IMPROVEMENT_TIPS = [
   'Try saying the shortcut out loud as you press it.',
+  'Practice now, brag at parties later.',
   'Choose light or dark mode to keep you focused',
   'Focus on the shortcuts you keep skipping.\nRepetition will make them automatic.',
   'Accuracy before speed.',
@@ -3683,7 +3759,7 @@ const IMPROVEMENT_TIPS = [
   'Practicing with time pressure can actually promote flow states.',
   'The more you play, the more the trainer adapts to help you.',
   'Can you change OS and keep up?',
-  'If you find any inaccuracies or bugs, please contact me from the pause menu.',
+  'If you find an inaccuracy or bug, please contact me via the pause menu.',
 ];let tipIndex = 0;
 
 function helpButtonClick() {
@@ -6257,8 +6333,8 @@ function onStickyKeysToggle() {
 
 
 // ── Keyboard layout toggles  ─────────────────────────────────────────
-function activeVariantKey() {
-  if (currentOs === 'mac') {
+function variantKeyForOs(TargetOs) {
+  if (TargetOs === 'mac') {
     if (kbLeftCount === 3) return 'mac-3key';
     return kbFnLeft ? 'mac-4key' : 'mac-4key-ctrl-left';
   } else {
@@ -6281,8 +6357,11 @@ function flashKeys(codes) {
 }
 
 function applyVariant(flashCodes) {
-  if (currentOs === 'mac') kbVariantMac = activeVariantKey();
-  else                     kbVariantPc  = activeVariantKey();
+  // Key count and Fn position describe the physical keyboard, not the OS
+  // currently being trained, so both variant slots are kept in sync here
+  // rather than only updating the one for currentOs.
+  kbVariantMac = variantKeyForOs('mac');
+  kbVariantPc  = variantKeyForOs('pc');
   SaveKeyboardSettings();
   if (currentKbMode && currentKbMode !== 'none') {
     buildKeyboard(currentKbMode === 'mini');
@@ -6304,7 +6383,9 @@ function _syncKbCountFromVariant() {
 }
 
 function updateModalToggles() {
-  _syncKbCountFromVariant(); // ensure toggles reflect the actual keyboard shown
+  // kbLeftCount and kbFnLeft are the live physical-keyboard values and are
+  // never resynced from per-OS storage here, so the toggles below simply
+  // reflect whatever is currently true.
   // 3/4 key count knob
   var knob3 = document.getElementById('modalOsKnobEl');
   var tog3  = document.getElementById('modalOsToggle');
@@ -6426,6 +6507,8 @@ function SetKeyboardMemory(ShouldRemember) {
     Knob.style.transform = ShouldRemember ? 'translateX(22px)' : 'translateX(0)';
     Knob.setAttribute('fill', ShouldRemember ? '#374151' : 'white');
   }
+if (ShouldRemember) SaveKeyboardSettings(); // ← snapshot all current state immediately
+12
 }
 
 function onModalKeyboardMemoryToggle() {
@@ -8992,6 +9075,7 @@ function _allConflictTokensNormalised() {
   // follows automatically from the next _applyAllKeyColours call.
 
   function _unblockFiredChordIfDismissed(NonModifierBrowserCode) {
+  if (_isCrossTrainingModifierPositions()) return; // physical keys are aliased during cross training, so matching against real conflicts is unreliable here
   var KeyToken = _browserCodeToToken(NonModifierBrowserCode);
   var ChordToken = KeyToken ? _buildChordToken(KeyToken) : _buildChordToken(null);
   if (!ChordToken) return;
@@ -9301,6 +9385,7 @@ function getBrowserConflictSet() {
 // so it's removed from both lists without the user needing to visit Settings.
 function _checkAppWideConflictRestore(Event) {
   if (touchEnabled) return; // no physical conflicts to confirm from touch input
+  if (_isCrossTrainingModifierPositions()) return; // physical keys are aliased during cross training, so matching against real conflicts is unreliable here
   if (!dismissedConflicts.size) return;
 
   Array.from(dismissedConflicts).forEach(function(CanonicalKey) {
@@ -10234,6 +10319,21 @@ function _pauseDifficultyNudgeClick() {
    Yes wipes all local data and transitions to the Welcome screen with the
    same animated crossfade used by _returningStartOver.
 ─────────────────────────────────────────────────────────────────────────── */
+// Extended keyboard key tokens (Home, End, Page Up/Down, Insert, Delete,
+// the F13-F24 row, Clear/Num Lock, etc.) drive the compact/full keyboard
+// size toggle and its per-key overrides on the Conflicted Shortcuts >
+// Keyboard tab. They are stored in the very same dismissedConflicts /
+// userManuallyUnblockedConflicts Sets used for ordinary browser and OS
+// shortcut conflicts. _doWipeStorage uses this list to tell the two apart,
+// so it can wipe conflict history while leaving keyboard-size state alone.
+function _extendedKeyboardTokenSet() {
+  var Tokens = new Set();
+  Object.keys(ExtendedKeyCodeToToken).forEach(function(Code) {
+    Tokens.add(ExtendedKeyCodeToToken[Code]);
+  });
+  return Tokens;
+}
+
 function _doWipeStorage(opts) {
   var keepKb = opts && opts.keepKeyboardSettings;
   var kbKeys = [
@@ -10250,8 +10350,29 @@ var wipeKeys = [
   if (!keepKb) wipeKeys = wipeKeys.concat(kbKeys);
   wipeKeys.forEach(function(k) { try { localStorage.removeItem(k); } catch(e) {} });
   try { sessionStorage.removeItem('kw_welcomed'); } catch(e) {}
-  userManuallyUnblockedConflicts.clear();
-  dismissedConflicts.clear();
+
+  if (keepKb) {
+    // Strip conflict-history entries out of the live Sets but keep any
+    // extended-keyboard tokens, then re-save so the keyboard-size state
+    // (which the block above just erased from storage) is written back.
+    var ExtendedTokens = _extendedKeyboardTokenSet();
+    dismissedConflicts.forEach(function(Token) {
+      if (!ExtendedTokens.has(Token)) dismissedConflicts.delete(Token);
+    });
+    userManuallyUnblockedConflicts.forEach(function(Token) {
+      if (!ExtendedTokens.has(Token)) userManuallyUnblockedConflicts.delete(Token);
+    });
+    _saveCustomDismissedConflicts();
+    _saveUserManuallyUnblockedConflicts();
+    blurDiagnosticConflicts.clear();
+    _saveBlurDiagnosticConflicts();
+    userConfirmedWorkingConflicts.clear();
+    _saveUserConfirmedWorkingConflicts();
+  } else {
+    userManuallyUnblockedConflicts.clear();
+    dismissedConflicts.clear();
+  }
+
   if (appsLongList && appsLongList.length) {
     _applySkillset('Graphic Design');
   }
@@ -10345,9 +10466,14 @@ function confirmStartOverYes(keepKeyboardSettings) {
   setTimeout(function() {
     if (panelInner) { panelInner.style.transition = 'opacity 0.3s ease'; panelInner.style.opacity = '0'; }
     setTimeout(function() {
-      _doWipeStorage({ keepKeyboardSettings: !!keepKeyboardSettings });
-
-      bestRecord = { time: null, accuracy: null };
+     _doWipeStorage({ keepKeyboardSettings: !!keepKeyboardSettings });
+     if (!keepKeyboardSettings) {
+       KeyboardMemory = false;
+       ApplyDefaultKeyboardSettings();
+       SyncKeyboardSettingsToUI();
+      if (currentKbMode && currentKbMode !== 'none') buildKeyboard(currentKbMode === 'mini');
+     }
+     bestRecord = { time: null, accuracy: null };
       hasTrophy = false;
       questionTimer = null;
       playerLives   = null;
@@ -10424,7 +10550,10 @@ function _returningStartOver() {
       // Reset storage and state, then show the welcome screen
       document.body.classList.remove('returning-screen');
       _doWipeStorage({ keepKeyboardSettings: false });
-
+      KeyboardMemory = false;
+      ApplyDefaultKeyboardSettings();
+      SyncKeyboardSettingsToUI();
+      if (currentKbMode && currentKbMode !== 'none') buildKeyboard(currentKbMode === 'mini');
       bestRecord = { time: null, accuracy: null };
       hasTrophy = false;
       questionTimer = null;
@@ -13267,7 +13396,7 @@ function HighlightReportListItems(ShortcutToken) {
 // mac_sc field is null/'none'/empty in the shortcuts JSON).
 function BuildShortcutChipsOrOsOnlyNote(ShortcutValue, IsWeakness) {
   var HasNoOsEquivalent = ShortcutValue === null || ShortcutValue === undefined
-    || ShortcutValue === 'none' || ShortcutValue === '';
+    || ShortcutValue === 'none' || ShortcutValue === '' || ShortcutValue === 'NULL';
   if (HasNoOsEquivalent) {
     var NoteElement = document.createElement('small');
     NoteElement.className = 'sp-report-os-only-note';
@@ -13678,6 +13807,19 @@ function _refreshReportPanel() {
         AcceptButton.className = 'segmented-pill-section';
         AcceptButton.style.cssText = 'flex-shrink:0;border-radius:12px;border:1.5px solid #d1d5db;padding:5px 12px;white-space:nowrap;height:auto;';
         AcceptButton.innerHTML = '<span class="diff-btn-text">Accept the coach&#39;s advice</span>';
+        var AcceptButtonLabel = AcceptButton.querySelector('.diff-btn-text');
+        // Press-in feedback only -- no pop on release, since the screen
+        // navigates to Difficulty Settings the instant the click fires.
+        AcceptButton.addEventListener('pointerdown', function(PointerEvent) {
+          if (!PointerEvent.isPrimary) return;
+          AcceptButtonLabel.classList.add('press-in');
+        });
+        AcceptButton.addEventListener('pointerup', function() {
+          AcceptButtonLabel.classList.remove('press-in');
+        });
+        AcceptButton.addEventListener('pointercancel', function() {
+          AcceptButtonLabel.classList.remove('press-in');
+        });
         if (CoachAdviceAccepted) {
           AcceptButton.disabled = true;
           AcceptButton.classList.add('segmented-pill-inactive');
@@ -13703,7 +13845,6 @@ function _refreshReportPanel() {
     }
   }
 }
-
 
 /* ══════════════════════════════════════
    COACH ADVICE ANIMATION
@@ -14756,34 +14897,46 @@ var _OriginalViewportContent = (function() {
   var Tag = document.querySelector('meta[name=viewport]');
   return Tag ? Tag.getAttribute('content') : null;
 })();
-var _ViewportNudgeTimeout = null;
+var _ViewportZoomFixTimeout = null;
 
-function _nudgeViewportScaleOnReturn() {
+function _correctViewportZoomIfStuck(IsRetry) {
   // Safari can return from backgrounding with visualViewport.scale stuck
   // above 1 (confirmed via remote debugging: scale ~1.6 after returning
-  // from the App Switcher, with no pinch/zoom or text-input focus involved).
+  // from the App Switcher, with no touch pinch/zoom or text-input focus
+  // involved). On iPad with a Magic Keyboard or similar trackpad attached,
+  // this is a documented WebKit bug tied to the trackpad's pinch-to-go-home
+  // gesture -- the page is never sent a touch or pointer event for it, so
+  // there is nothing to intercept before the zoom happens, only a chance
+  // to correct it afterwards. Some reports describe the zoom applying to
+  // the whole Safari window rather than this page's own viewport, which no
+  // page-level script can reach, so treat this as a mitigation, not a cure.
+  //
+  // Checking visualViewport.scale first means this only acts when a zoom
+  // is genuinely stuck, rather than swapping the tag below on every single
+  // return to the tab.
+  //
   // Mutating the existing <meta name=viewport> tag's content attribute does
-  // NOT clear this -- Safari caches the zoom state independently of the
-  // viewport tag's attribute value once it's been applied, so setAttribute()
-  // calls are silently ignored here. The tag has to be removed from the DOM
-  // and a fresh element inserted to force Safari to actually reprocess it.
-  // iOS does not reliably fire visibilitychange when the user leaves to
-  // another app (vs. switching tabs within Safari), so this is called from
-  // both visibilitychange and pageshow -- pageshow is the dependable signal
-  // for the "left the app, came back" case. The timeout is cleared and
-  // restarted if both fire for the same return, so they don't race.
+  // NOT clear the stuck zoom -- Safari caches the zoom state independently
+  // of the viewport tag's attribute value once it has been applied, so
+  // setAttribute() calls are silently ignored here. The tag has to be
+  // removed from the DOM and a fresh element inserted to force Safari to
+  // actually reprocess it.
   if (_OriginalViewportContent === null) return;
-  clearTimeout(_ViewportNudgeTimeout);
+  if (!window.visualViewport) return;
+  if (Math.abs(window.visualViewport.scale - 1) < 0.05) return;
+
+  clearTimeout(_ViewportZoomFixTimeout);
 
   var OldTag = document.querySelector('meta[name=viewport]');
   if (OldTag) OldTag.remove();
   var NudgeTag = document.createElement('meta');
   NudgeTag.setAttribute('name', 'viewport');
-  NudgeTag.setAttribute('content', _OriginalViewportContent + ', maximum-scale=1');
+  NudgeTag.setAttribute('content', _OriginalViewportContent + ', maximum-scale=1, user-scalable=no');
   document.head.appendChild(NudgeTag);
   void document.body.offsetHeight; // force reflow so the new tag is processed immediately
+  window.scrollTo(0, 0); // the stuck zoom also anchors scroll into the top-left corner
 
-  _ViewportNudgeTimeout = setTimeout(function() {
+  _ViewportZoomFixTimeout = setTimeout(function() {
     var NudgeTagNow = document.querySelector('meta[name=viewport]');
     if (NudgeTagNow) NudgeTagNow.remove();
     var RestoredTag = document.createElement('meta');
@@ -14791,13 +14944,32 @@ function _nudgeViewportScaleOnReturn() {
     RestoredTag.setAttribute('content', _OriginalViewportContent);
     document.head.appendChild(RestoredTag);
     void document.body.offsetHeight;
+
+    // Safari's own restoration after backgrounding can settle at a slightly
+    // different moment each time -- one retry catches a first correction
+    // that landed before Safari had finished reapplying the stuck scale.
+    if (!IsRetry && window.visualViewport && Math.abs(window.visualViewport.scale - 1) > 0.05) {
+      setTimeout(function() { _correctViewportZoomIfStuck(true); }, 350);
+    }
   }, 300);
 }
 
 window.addEventListener('pageshow', function(Event) {
   if (document.hidden) return;
-  _nudgeViewportScaleOnReturn();
+  _correctViewportZoomIfStuck(false);
 });
+
+// iPad with a trackpad-equipped keyboard can trigger the stuck zoom through
+// the trackpad's pinch-to-go-home gesture, which visibilitychange and
+// pageshow do not reliably catch on their own. Watching visualViewport
+// directly reacts the moment Safari's own scale actually changes, rather
+// than guessing at a delay. Scoped to iPad only, since iPhone has no
+// trackpad and this specific trigger does not apply there.
+if (window.visualViewport && detectedMobilePlatform === 'ipados') {
+  window.visualViewport.addEventListener('resize', function() {
+    _correctViewportZoomIfStuck(false);
+  });
+}
 
 document.addEventListener('visibilitychange', function() {
   if (document.hidden) {
@@ -14809,7 +14981,7 @@ document.addEventListener('visibilitychange', function() {
       _activateBlurPauseScreen();
     }
   } else {
-    _nudgeViewportScaleOnReturn();
+    _correctViewportZoomIfStuck(false);
     if (_blurDiagnosticFoldPending) {
       _blurDiagnosticFoldPending = false;
       setTimeout(function() { SetKeyboardPositionForPanel('panelPause'); }, 600);
@@ -14817,7 +14989,6 @@ document.addEventListener('visibilitychange', function() {
     }
   }
 });
-
 
 // Replaces the current question with a different one (no penalty, no report card entry).
 // Called whenever the diagnostic answer was revealed, regardless of outcome.
@@ -14955,6 +15126,19 @@ function _activateBlurPauseScreen() {
       titleEl.textContent = 'Lost you for a moment,\nso I paused your game.';
       SetKeyboardPositionForPanel('panelPause');
     }
+    return;
+  }
+
+  // Cross training: physical keys are aliased to whichever OS is being
+  // trained, so the reveal-and-block diagnostic cannot reliably tell
+  // whether a real conflict occurred. Show a plain pause message instead.
+  if (_isCrossTrainingModifierPositions()) {
+    hideConfirmHeading();
+    titleEl.classList.remove('blurred');
+    _resetTitleClasses();
+    titleEl.textContent = 'Lost you for a moment,\nso I paused your game.';
+    _blurDiagnosticFlowComplete = true;
+    SetKeyboardPositionForPanel('panelPause');
     return;
   }
 

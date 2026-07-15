@@ -14526,6 +14526,11 @@ function _updateIdleShortcutPreview() {
     var Pool = UNIVERSAL_SHORTCUTS.concat(loadedAppShortcuts);
 
     for (var i = 0; i < Pool.length && !MatchedEntry; i++) {
+      // Sequential-keystroke entries (e.g. "press F followed by R") are only
+      // meaningful as a graded question with the first key shown in the
+      // prompt text. Matching the second key alone during freestyle preview
+      // would be misleading, so these are skipped here entirely.
+      if (Pool[i].sequential) continue;
       var ActiveString = GetActiveShortcutString(Pool[i]);
       if (!ActiveString) continue;
       var Alternatives = GetAllAlternatives(ActiveString);
@@ -16431,6 +16436,7 @@ var SKILLSET_DEFS = [
   { label: 'Photography',         tags: ['Photography']     },
   { label: 'Animation',           tags: ['Motion']       },
   { label: 'Video Editing',       tags: ['Video']       },
+  { label: 'Spatial Design',      tags: ['3D']           },
   { label: 'UI UX Devs',           tags: ['UIUX']       },
   { label: 'Office Productivity', tags: ['Productivity'] },
 ];

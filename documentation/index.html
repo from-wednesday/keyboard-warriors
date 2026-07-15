@@ -361,12 +361,12 @@
 <span class="c-key">"pc_sc"</span>:  <span class="c-val">"CTRL+SHIFT+Z"</span></div>
 
     <h3>Pipe | accepted alternatives</h3>
-    <p>The system accepts any piped alternative as a correct answer. The chip shows only the alternatives in order, so be sure to prioritise the preferred shortcut first. Give priority to memorability and universality.</p>
+    <p>The system accepts any piped alternative as a correct answer. The chip shows  the alternatives in order, so be sure to prioritise the preferred shortcut first. Give priority to memorability and universality.</p>
     <div class="code-block"><span class="c-key">"mac_sc"</span>: <span class="c-val">"CMD+ARROWLEFT|HOME"</span>
 <span class="c-note">// Both accepted as correct. Chip shows ⌘+← <small>or</small> ↖home.</span></div>
 
     <h3>Key does not exist on this platform</h3>
-    <p>Use the literal value <span class="null-val">NULL</span> (not an empty string) when a shortcut does not exist on a given platform. This prevents the question appearing on that OS.</p>
+    <p>Use the literal value <span class="null-val">NULL</span> (not an empty string) when a shortcut does not exist on a given platform. This prevents the question appearing on that OS. &quot;none&quot; is also interpreted this way and may make your file more human readable.</p>
     <div class="code-block"><span class="c-key">"mac_sc"</span>: <span class="c-val">"CMD+Q"</span>,
 <span class="c-key">"pc_sc"</span>:  <span class="c-null">"NULL"</span></div>
 
@@ -389,7 +389,7 @@
   <!-- ══ MODIFIERS ════════════════════════════════════════════════ -->
   <section>
     <h2>02 ) Modifier Keys</h2>
-    <p>Modifiers appear on the graphical keyboard and light up when held. Left and right physical variants are interchangeable. Holding either satisfies the requirement.</p>
+    <p>Modifiers appear on the graphical keyboard and light up when held. Left and right physical variants are interchangeable. Holding either satisfies the requirement. Note that cross training will remap modifiers to the simulated systems physical key positions, but this is managed by the system and requires no change here in the Json data.</p>
     <p class="note">Chip columns show the short form (used in multi-key shortcuts) then the long form (used when the shortcut has only one or two tokens).</p>
 
     <div class="table-wrap">
@@ -518,6 +518,7 @@
 
   <!-- ══ NAMED KEYS ═══════════════════════════════════════════════ -->
   <section>
+    <p>There are also some additional modifiers for edge case Operating Systems: GLOBE on iPadOS, SEARCH on ChromeOS.</p>
     <h2>03 ) Named Keys</h2>
     <p>These appear on the graphical keyboard and light up when pressed.</p>
     <p class="note">Chip columns show the short form then the long form, as above.</p>

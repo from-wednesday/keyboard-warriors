@@ -1731,6 +1731,27 @@ li.conflict-dismissed .conflict-desc {
 .resting-blocked .lock-svg,
 .resting-blocked .delete-svg { color: #9a3412 !important; }
 
+/* Touch-warning mode: shown when touchEnabled and a physical keyboard are
+   both active, so dismissed conflicts stay in the question pool but the
+   real keyboard could still trigger one by mistake. Same amber tone as
+   .resting-sus, kept as its own class since the two mean different things. */
+.resting-touch-conflict {
+  background: rgba(251, 240, 152, 0.9) !important;
+  box-shadow: inset 0 0 0 1px rgba(211, 202, 127, 0.9) !important;
+}
+.resting-touch-conflict .letter-lbl,
+.resting-touch-conflict .sym-main,
+.resting-touch-conflict .sym-sub,
+.resting-touch-conflict .util-lbl,
+.resting-touch-conflict .fn-lbl,
+.resting-touch-conflict .mod-sym,
+.resting-touch-conflict .mod-sym-only,
+.resting-touch-conflict .mod-word,
+.resting-touch-conflict .util-sym-only,
+.resting-touch-conflict .key-glyph-sym,
+.resting-touch-conflict .lock-svg,
+.resting-touch-conflict .delete-svg { color: #7a6a00 !important; }
+
 /* ── Fade transition back to resting state ───────────────────────────────────
    When conflictsKbLighting removes the full-strength lit class after a keyup,
    the resting class is reinstated and this transition carries the fade.
@@ -3832,6 +3853,13 @@ body:has(#keyboardPanel[data-keyboard-theme="poprocks"]) #mainBtn:hover {
 #keyboardPanel.conflicts-panel-active.ghost-mode .key.resting-blocked {
   background: rgba(247, 220, 200, 0.5) !important;
   box-shadow: inset 0 0 0 1px rgba(233, 159, 103, 0.90) !important;
+}
+
+/* Touch-warning mode has no conflicts-panel-active counterpart, since it
+   runs during gameplay rather than inside the Conflicts panel. */
+#keyboardPanel.ghost-mode .key.resting-touch-conflict {
+  background: #fef08a !important;
+  box-shadow: 0 1px 0 rgba(180, 160, 0, 0.25) !important;
 }
 
 #keyboardPanel.conflicts-panel-active.ghost-mode .key.lit-green-up {

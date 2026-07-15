@@ -9,7 +9,7 @@
 <title>Keyboard Warriors</title>
 <script>
   const DefaultTitle = 'Keyboard Warriors';
-  const VersionLabel   = '0038';
+  const VersionLabel   = '0039';
   const TitlePrefix  = document.title !== DefaultTitle ? document.title.trim() + '_' : '';
   const DBG_DEVICE   = TitlePrefix + VersionLabel;
 </script>
@@ -10824,15 +10824,11 @@ function _onAppsLoaded(AllAppsFromJson) {
     APP_JSON_FILE_PATH[App.label] = App.path;
   });
 
-  // Resolve the preferred skillset before building the app list so the correct
-  // skillset drives default short/standby list construction below.
+   // Resolve the preferred skillset before building the app list so the correct
+  // skillset drives default short/standby list construction below. This also
+  // reads and remembers any ?skillset= URL parameter, so no separate handling
+  // of that parameter is needed here.
   currentSkillset = _resolvePreferredSkillset();
-
-  const IsBetaBuild = document.title !== 'Keyboard Warriors';
-
-  const DefaultShortListLabels = IsBetaBuild
-    ? AllAppsFromJson.map(function(App) { return App.label; })
-    : AllAppsFromJson.filter(function(App) { return !App.beta; }).map(function(App) { return App.label; });
 
   var PersistedLabels = null;
   try {
@@ -10848,32 +10844,17 @@ function _onAppsLoaded(AllAppsFromJson) {
     }
   } catch (StorageError) {}
 
-  // URL param ?skillset= seeds the short list only when no stored preference exists.
-  // The param is left in the URL — it is harmless on subsequent loads because
-  // PersistedLabels will be non-null after the first visit and the block below is skipped.
-  var SkillsetParam = null;
-  try {
-    var UrlParams = new URLSearchParams(window.location.search);
-    SkillsetParam = UrlParams.get('skillset');
-  } catch (UrlError) {}
-
-  var SkillsetDefaultLabels = null;
-  if (SkillsetParam && !PersistedLabels) {
-    // Only apply if the user has no stored preference
-    var SkillsetUpper = SkillsetParam.toLowerCase();
-    var MatchingApps = AllAppsFromJson.filter(function(App) {
-      return Array.isArray(App.skillset) && App.skillset.some(function(S) {
-        return S.toLowerCase() === SkillsetUpper;
-      });
-    });
-    if (MatchingApps.length > 0) {
-      SkillsetDefaultLabels = MatchingApps.map(function(App) { return App.label; });
-    }
-  }
-
-  var DefaultShortLabels   = SkillsetDefaultLabels || DefaultShortListLabels;
+  // With no persisted list, the short list defaults to whichever skillset was
+  // resolved above. Falls back to Graphic Design if the resolved skillset
+  // somehow does not match a known definition.
+  var GraphicDesignDefinition = SKILLSET_DEFS.find(function(Definition) {
+    return Definition.label === 'Graphic Design';
+  });
+  var ResolvedSkillsetDefinition = SKILLSET_DEFS.find(function(Definition) {
+    return Definition.label === currentSkillset;
+  }) || GraphicDesignDefinition;
+  var DefaultShortLabels   = _GetDefaultAppsListForSkillset(ResolvedSkillsetDefinition);
   var DefaultStandbyLabels = _BuildStandbyDefaultsForSkillset(currentSkillset, AllAppsFromJson, DefaultShortLabels);
-
   var PersistedStandbyLabels = null;
   try {
     var RawSavedStandby = localStorage.getItem('kw_apps_standby_list');
@@ -10915,8 +10896,6 @@ function _onAppsLoaded(AllAppsFromJson) {
   }
 }
 
-
-
 // Load OS conflict data at startup (before first game so pool filtering is ready).
 loadConflictsData();
 
@@ -10935,8 +10914,6 @@ loadConflictsData();
       console.warn('[Apps] Could not load keyboard-warriors-apps.json:', err, '— using built-in fallback.');
       _onAppsLoaded([
         { label: 'Photoshop (Ps)', path: '/keyboard-warriors/data/shortcuts_photoshop.json' },
-
-
       ]);
     });
 })();
@@ -11266,7 +11243,6 @@ function startQuestionTimerArc() {
       onQuestionTimerExpired();
       return;
     }
-
     updateQuestionTimerArcVisual();
   }, tickIntervalMs);
 }

@@ -472,5 +472,244 @@
     "mac_sc": "CMD+S",
     "pc_sc": "CTRL+S",
     "difficulty": 0
+  },
+  {
+    "display": "move on X after pressing G",
+    "mac_sc": "X",
+    "pc_sc": "X",
+    "difficulty": 2,
+    "sequential": true,
+    "group": "move_axis"
+  },
+  {
+    "display": "move on Y after pressing G",
+    "mac_sc": "Y",
+    "pc_sc": "Y",
+    "difficulty": 2,
+    "sequential": true,
+    "group": "move_axis"
+  },
+  {
+    "display": "move on Z after pressing G",
+    "mac_sc": "Z",
+    "pc_sc": "Z",
+    "difficulty": 2,
+    "sequential": true,
+    "group": "move_axis"
+  },
+  {
+    "display": "rotate on X after pressing R",
+    "mac_sc": "X",
+    "pc_sc": "X",
+    "difficulty": 2,
+    "sequential": true,
+    "group": "rotate_axis"
+  },
+  {
+    "display": "rotate on Y after pressing R",
+    "mac_sc": "Y",
+    "pc_sc": "Y",
+    "difficulty": 2,
+    "sequential": true,
+    "group": "rotate_axis"
+  },
+  {
+    "display": "rotate on Z after pressing R",
+    "mac_sc": "Z",
+    "pc_sc": "Z",
+    "difficulty": 2,
+    "sequential": true,
+    "group": "rotate_axis"
+  },
+  {
+    "display": "scale on X after pressing S",
+    "mac_sc": "X",
+    "pc_sc": "X",
+    "difficulty": 2,
+    "sequential": true,
+    "group": "scale_axis"
+  },
+  {
+    "display": "scale on Y after pressing S",
+    "mac_sc": "Y",
+    "pc_sc": "Y",
+    "difficulty": 2,
+    "sequential": true,
+    "group": "scale_axis"
+  },
+  {
+    "display": "scale on Z after pressing S",
+    "mac_sc": "Z",
+    "pc_sc": "Z",
+    "difficulty": 2,
+    "sequential": true,
+    "group": "scale_axis"
+  },
+  {
+    "display": "move in YZ after pressing G",
+    "mac_sc": "SHIFT+X",
+    "pc_sc": "SHIFT+X",
+    "difficulty": 4,
+    "sequential": true,
+    "group": "move_plane"
+  },
+  {
+    "display": "move in XZ after pressing G",
+    "mac_sc": "SHIFT+Y",
+    "pc_sc": "SHIFT+Y",
+    "difficulty": 4,
+    "sequential": true,
+    "group": "move_plane"
+  },
+  {
+    "display": "move in XY after pressing G",
+    "mac_sc": "SHIFT+Z",
+    "pc_sc": "SHIFT+Z",
+    "difficulty": 4,
+    "sequential": true,
+    "group": "move_plane"
+  },
+  {
+    "display": "scale in YZ after pressing S",
+    "mac_sc": "SHIFT+X",
+    "pc_sc": "SHIFT+X",
+    "difficulty": 4,
+    "sequential": true,
+    "group": "scale_plane"
+  },
+  {
+    "display": "scale in XZ after pressing S",
+    "mac_sc": "SHIFT+Y",
+    "pc_sc": "SHIFT+Y",
+    "difficulty": 4,
+    "sequential": true,
+    "group": "scale_plane"
+  },
+  {
+    "display": "scale in XY after pressing S",
+    "mac_sc": "SHIFT+Z",
+    "pc_sc": "SHIFT+Z",
+    "difficulty": 4,
+    "sequential": true,
+    "group": "scale_plane"
+  },
+  {
+    "display": "Trackball Rotate after pressing R",
+    "mac_sc": "R",
+    "pc_sc": "R",
+    "difficulty": 4,
+    "sequential": true
+  },
+  {
+    "display": "Vertex Slide after pressing G",
+    "mac_sc": "G",
+    "pc_sc": "G",
+    "difficulty": 4,
+    "sequential": true,
+    "group": "slide_g_g"
+  },
+  {
+    "display": "Edge Slide after pressing G",
+    "mac_sc": "G",
+    "pc_sc": "G",
+    "difficulty": 4,
+    "sequential": true,
+    "group": "slide_g_g"
+  },
+  {
+    "display": "after G G Slide, keep spacing even",
+    "mac_sc": "E",
+    "pc_sc": "E",
+    "difficulty": 4,
+    "sequential": true
+  },
+  {
+    "display": "after G G Slide, use the other side",
+    "mac_sc": "F",
+    "pc_sc": "F",
+    "difficulty": 5,
+    "sequential": true
+  },
+  {
+    "display": "after G G Slide, keep within limits",
+    "mac_sc": "C|OPT",
+    "pc_sc": "C|ALT",
+    "difficulty": 5,
+    "sequential": true
+  },
+  {
+    "display": "after Loop Cut, keep spacing even",
+    "mac_sc": "E",
+    "pc_sc": "E",
+    "difficulty": 4,
+    "sequential": true
+  },
+  {
+    "display": "after Loop Cut, use the other side",
+    "mac_sc": "F",
+    "pc_sc": "F",
+    "difficulty": 5,
+    "sequential": true
+  },
+  {
+    "display": "after Loop Cut, keep within loop bounds",
+    "mac_sc": "C",
+    "pc_sc": "C",
+    "difficulty": 5,
+    "sequential": true
+  },
+  {
+    "display": "after Loop Cut, add more cuts",
+    "mac_sc": "PAGEUP",
+    "pc_sc": "PAGEUP",
+    "difficulty": 4,
+    "sequential": true,
+    "group": "loop_cut_count"
+  },
+  {
+    "display": "after Loop Cut, reduce cuts",
+    "mac_sc": "PAGEDOWN",
+    "pc_sc": "PAGEDOWN",
+    "difficulty": 4,
+    "sequential": true,
+    "group": "loop_cut_count"
+  },
+  {
+    "display": "after K for Knife, snap cut angles",
+    "mac_sc": "A",
+    "pc_sc": "A",
+    "difficulty": 5,
+    "sequential": true
+  },
+  {
+    "display": "after K for Knife, cut hidden faces too",
+    "mac_sc": "C",
+    "pc_sc": "C",
+    "difficulty": 5,
+    "sequential": true
+  },
+  {
+    "display": "after K for Knife, lock cut left-right",
+    "mac_sc": "X",
+    "pc_sc": "X",
+    "difficulty": 5,
+    "sequential": true,
+    "group": "knife_axis"
+  },
+  {
+    "display": "after K for Knife, lock cut front-back",
+    "mac_sc": "Y",
+    "pc_sc": "Y",
+    "difficulty": 5,
+    "sequential": true,
+    "group": "knife_axis"
+  },
+  {
+    "display": "after K for Knife, lock cut vertical",
+    "mac_sc": "Z",
+    "pc_sc": "Z",
+    "difficulty": 5,
+    "sequential": true,
+    "group": "knife_axis"
   }
 ]

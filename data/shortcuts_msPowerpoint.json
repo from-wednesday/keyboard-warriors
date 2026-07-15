@@ -72,18 +72,6 @@
     "difficulty": 1
   },
   {
-    "display": "open a new slide",
-    "mac_sc": "CMD+SHIFT+N",
-    "pc_sc": "CTRL+M",
-    "difficulty": 2
-  },
-  {
-    "display": "duplicate selected slide",
-    "mac_sc": "CMD+SHIFT+D",
-    "pc_sc": "CTRL+D",
-    "difficulty": 2
-  },
-  {
     "display": "delete selected slide",
     "mac_sc": "DEL|DELETE",
     "pc_sc": "DEL|DELETE",
@@ -110,13 +98,13 @@
   {
     "display": "open slide sorter view",
     "mac_sc": "OPTION+CMD+2",
-    "pc_sc": "ALT+V+E",
+    "pc_sc": "NULL",
     "difficulty": 4
   },
   {
     "display": "open normal view",
     "mac_sc": "OPTION+CMD+1",
-    "pc_sc": "ALT+V+N",
+    "pc_sc": "NULL",
     "difficulty": 4
   },
   {
@@ -134,19 +122,19 @@
   {
     "display": "toggle ruler",
     "mac_sc": "OPTION+CMD+R",
-    "pc_sc": "ALT+V+R",
+    "pc_sc": "NULL",
     "difficulty": 3
   },
   {
     "display": "toggle guides",
     "mac_sc": "OPTION+CMD+G",
-    "pc_sc": "ALT+V+G",
+    "pc_sc": "NULL",
     "difficulty": 3
   },
   {
     "display": "toggle gridlines",
     "mac_sc": "OPTION+CMD+SHIFT+G",
-    "pc_sc": "ALT+W+L",
+    "pc_sc": "NULL",
     "difficulty": 4
   },
   {
@@ -158,20 +146,8 @@
   {
     "display": "insert a new text box",
     "mac_sc": "CMD+SHIFT+T",
-    "pc_sc": "ALT+N+X",
+    "pc_sc": "NULL",
     "difficulty": 3
-  },
-  {
-    "display": "insert a new slide",
-    "mac_sc": "CMD+SHIFT+N",
-    "pc_sc": "CTRL+M",
-    "difficulty": 2
-  },
-  {
-    "display": "duplicate object",
-    "mac_sc": "CMD+D",
-    "pc_sc": "CTRL+D",
-    "difficulty": 2
   },
   {
     "display": "group objects",
@@ -207,12 +183,6 @@
     "display": "send backward",
     "mac_sc": "OPTION+CMD+B",
     "pc_sc": "ALT+SHIFT+B",
-    "difficulty": 3
-  },
-  {
-    "display": "align left",
-    "mac_sc": "OPTION+CMD+L",
-    "pc_sc": "CTRL+L",
     "difficulty": 3
   },
   {
@@ -253,8 +223,8 @@
   },
   {
     "display": "increase font size",
-    "mac_sc": "CMD+SHIFT+GREATERTHAN",
-    "pc_sc": "CTRL+SHIFT+GREATERTHAN",
+    "mac_sc": "CMD+SHIFT+MORETHAN",
+    "pc_sc": "CTRL+SHIFT+MORETHAN",
     "difficulty": 2
   },
   {
@@ -265,13 +235,13 @@
   },
   {
     "display": "increase indent",
-    "mac_sc": "CMD+OPTION+RIGHTARROW",
+    "mac_sc": "CMD+OPTION+ARROWRIGHT",
     "pc_sc": "CTRL+M",
     "difficulty": 3
   },
   {
     "display": "decrease indent",
-    "mac_sc": "CMD+OPTION+LEFTARROW",
+    "mac_sc": "CMD+OPTION+ARROWLEFT",
     "pc_sc": "SHIFT+TAB",
     "difficulty": 3
   },
@@ -292,12 +262,6 @@
     "mac_sc": "OPTION+CMD+1",
     "pc_sc": "NULL",
     "difficulty": 4
-  },
-  {
-    "display": "insert hyperlink",
-    "mac_sc": "CMD+K",
-    "pc_sc": "CTRL+K",
-    "difficulty": 2
   },
   {
     "display": "insert comment",
@@ -378,21 +342,15 @@
     "difficulty": 2
   },
   {
-    "display": "end slideshow",
-    "mac_sc": "ESC",
-    "pc_sc": "ESC",
-    "difficulty": 1
-  },
-  {
     "display": "next slide",
-    "mac_sc": "RIGHT|PAGEDOWN",
-    "pc_sc": "RIGHT|PAGEDOWN",
+    "mac_sc": "ARROWRIGHT|PAGEDOWN",
+    "pc_sc": "ARROWRIGHT|PAGEDOWN",
     "difficulty": 1
   },
   {
     "display": "previous slide",
-    "mac_sc": "LEFT|PAGEUP",
-    "pc_sc": "LEFT|PAGEUP",
+    "mac_sc": "ARROWLEFT|PAGEUP",
+    "pc_sc": "ARROWLEFT|PAGEUP",
     "difficulty": 1
   },
   {
@@ -411,7 +369,7 @@
     "display": "insert new slide",
     "mac_sc": "CMD+SHIFT+N",
     "pc_sc": "CTRL+M",
-    "difficulty": 2
+    "difficulty": 3
   },
   {
     "display": "duplicate slide",
@@ -421,50 +379,20 @@
   },
   {
     "display": "move slide up",
-    "mac_sc": "CMD+UP",
-    "pc_sc": "CTRL+UP",
+    "mac_sc": "CMD+ARROWRIGHT",
+    "pc_sc": "CTRL+ARROWUP",
     "difficulty": 2
   },
   {
     "display": "move slide down",
-    "mac_sc": "CMD+DOWN",
-    "pc_sc": "CTRL+DOWN",
+    "mac_sc": "CMD+ARROWDOWN",
+    "pc_sc": "CTRL+ARROWDOWN",
     "difficulty": 2
   },
   {
     "display": "insert hyperlink",
     "mac_sc": "CMD+K",
     "pc_sc": "CTRL+K",
-    "difficulty": 2
-  },
-  {
-    "display": "bold",
-    "mac_sc": "CMD+B",
-    "pc_sc": "CTRL+B",
-    "difficulty": 1
-  },
-  {
-    "display": "italic",
-    "mac_sc": "CMD+I",
-    "pc_sc": "CTRL+I",
-    "difficulty": 1
-  },
-  {
-    "display": "underline",
-    "mac_sc": "CMD+U",
-    "pc_sc": "CTRL+U",
-    "difficulty": 1
-  },
-  {
-    "display": "increase font size",
-    "mac_sc": "CMD+SHIFT+>",
-    "pc_sc": "CTRL+SHIFT+>",
-    "difficulty": 2
-  },
-  {
-    "display": "decrease font size",
-    "mac_sc": "CMD+SHIFT+<",
-    "pc_sc": "CTRL+SHIFT+<",
     "difficulty": 2
   },
   {
@@ -478,6 +406,12 @@
     "mac_sc": "CMD+E",
     "pc_sc": "CTRL+E",
     "difficulty": 1
+  },
+    {
+    "display": "toggle laser pointer (during presentation)",
+    "mac_sc": "CMD+L",
+    "pc_sc": "CTRL+L",
+    "difficulty": 5
   },
   {
     "display": "align right",
@@ -514,5 +448,86 @@
     "mac_sc": "CMD+SHIFT+G",
     "pc_sc": "CTRL+SHIFT+G",
     "difficulty": 2
+  },
+  {
+    "display": "after Alt+V, open Slide Sorter view",
+    "mac_sc": "NULL",
+    "pc_sc": "E",
+    "difficulty": 5,
+    "sequential": true
+  },
+  {
+    "display": "after Alt+V, open Normal view",
+    "mac_sc": "NULL",
+    "pc_sc": "N",
+    "difficulty": 5,
+    "sequential": true
+  },
+  {
+    "display": "after Alt+V, toggle Ruler",
+    "mac_sc": "NULL",
+    "pc_sc": "R",
+    "difficulty": 3,
+    "sequential": true,
+    "group": "view_aids"
+  },
+  {
+    "display": "after Alt+V, toggle Guides",
+    "mac_sc": "NULL",
+    "pc_sc": "G",
+    "difficulty": 3,
+    "sequential": true,
+    "group": "view_aids"
+  },
+  {
+    "display": "after Alt+W, toggle Gridlines",
+    "mac_sc": "NULL",
+    "pc_sc": "L",
+    "difficulty": 5,
+    "sequential": true,
+    "group": "view_aids"
+  },
+  {
+    "display": "after Alt+N, insert Text Box",
+    "mac_sc": "NULL",
+    "pc_sc": "X",
+    "difficulty": 4,
+    "sequential": true
+  },
+  {
+    "display": "zoom in",
+    "mac_sc": "CMD+PLUS",
+    "pc_sc": "CTRL+PLUS",
+    "difficulty": 2
+  },
+  {
+    "display": "zoom out",
+    "mac_sc": "CMD+MINUS",
+    "pc_sc": "CTRL+MINUS",
+    "difficulty": 2
+  },
+  {
+    "display": "zoom to fit",
+    "mac_sc": "NULL",
+    "pc_sc": "CTRL+ALT+O",
+    "difficulty": 4
+  },
+ {
+    "display": "regroup objects",
+    "mac_sc": "NULL",
+    "pc_sc": "CTRL+SHIFT+J",
+    "difficulty": 4
+  },
+  {
+    "display": "rewrite selected text with Copilot",
+    "mac_sc": "NULL",
+    "pc_sc": "SHIFT+F8",
+    "difficulty": 4
+  },
+  {
+    "display": "open Selection pane",
+    "mac_sc": "NULL",
+    "pc_sc": "ALT+F10",
+    "difficulty": 4
   }
 ]

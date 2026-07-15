@@ -754,5 +754,167 @@
     "mac_sc": "CMD+QUESTION",
     "pc_sc": "F1",
     "difficulty": 2
+  },
+  {
+    "display": "delete one word to the left",
+    "mac_sc": "NULL",
+    "pc_sc": "CTRL+BACKSPACE",
+    "difficulty": 4
+  },
+  {
+    "display": "delete one word to the right",
+    "mac_sc": "NULL",
+    "pc_sc": "CTRL+DELETE",
+    "difficulty": 4
+  },
+  {
+    "display": "remove paragraph formatting",
+    "mac_sc": "NULL",
+    "pc_sc": "CTRL+Q",
+    "difficulty": 4
+  },
+  {
+    "display": "single-space the paragraph",
+    "mac_sc": "NULL",
+    "pc_sc": "CTRL+1",
+    "difficulty": 3,
+    "group": "line_spacing"
+  },
+  {
+    "display": "double-space the paragraph",
+    "mac_sc": "NULL",
+    "pc_sc": "CTRL+2",
+    "difficulty": 3,
+    "group": "line_spacing"
+  },
+  {
+    "display": "set paragraph to 1.5 spacing",
+    "mac_sc": "NULL",
+    "pc_sc": "CTRL+5",
+    "difficulty": 4,
+    "group": "line_spacing"
+  },
+  {
+    "display": "underline words but not spaces",
+    "mac_sc": "NULL",
+    "pc_sc": "CTRL+SHIFT+W",
+    "difficulty": 5
+  },
+  {
+    "display": "double-underline text for some reason",
+    "mac_sc": "NULL",
+    "pc_sc": "CTRL+SHIFT+D",
+    "difficulty": 4
+  },
+  {
+    "display": "hide selected text",
+    "mac_sc": "NULL",
+    "pc_sc": "CTRL+SHIFT+H",
+    "difficulty": 5
+  },
+  {
+    "display": "clear manual character formatting",
+    "mac_sc": "NULL",
+    "pc_sc": "CTRL+SPACE",
+    "difficulty": 5
+  },
+  {
+    "display": "show detailed formatting info",
+    "mac_sc": "NULL",
+    "pc_sc": "SHIFT+F1",
+    "difficulty": 4
+  },
+  {
+    "display": "after F8, expand selection further",
+    "mac_sc": "NULL",
+    "pc_sc": "F8",
+    "difficulty": 4,
+    "sequential": true,
+    "group": "extend_selection"
+  },
+  {
+    "display": "after F8, shrink the selection",
+    "mac_sc": "NULL",
+    "pc_sc": "SHIFT+F8",
+    "difficulty": 5,
+    "sequential": true,
+    "group": "extend_selection"
+  },
+  {
+    "display": "after Ctrl+Alt+5, select next floating object",
+    "mac_sc": "NULL",
+    "pc_sc": "TAB",
+    "difficulty": 5,
+    "sequential": true
+  },
+  {
+    "display": "after Ctrl+Alt+5, return to normal editing",
+    "mac_sc": "NULL",
+    "pc_sc": "ESCAPE",
+    "difficulty": 4,
+    "sequential": true
+  },
+  {
+    "display": "after F2, finish moving selection here",
+    "mac_sc": "NULL",
+    "pc_sc": "ENTER",
+    "difficulty": 5,
+    "sequential": true
+  },
+  {
+    "display": "after Shift+F2, finish copying selection here",
+    "mac_sc": "NULL",
+    "pc_sc": "ENTER",
+    "difficulty": 5,
+    "sequential": true
+  },
+  {
+    "display": "after Alt+N, insert SmartArt",
+    "mac_sc": "NULL",
+    "pc_sc": "M",
+    "difficulty": 5,
+    "sequential": true
+  },
+  {
+    "display": "after Alt+N, insert WordArt",
+    "mac_sc": "NULL",
+    "pc_sc": "W",
+    "difficulty": 4,
+    "sequential": true
+  },
+  {
+    "display": "after Alt+N, start inserting an object",
+    "mac_sc": "NULL",
+    "pc_sc": "J",
+    "difficulty": 5,
+    "sequential": true
+  },
+  {
+    "display": "after Alt+N, J, insert file object",
+    "mac_sc": "NULL",
+    "pc_sc": "J",
+    "difficulty": 5,
+    "sequential": true
+  },
+  {
+    "display": "after Alt+R, show comments list",
+    "mac_sc": "NULL",
+    "pc_sc": "P",
+    "difficulty": 5,
+    "sequential": true
+  },
+  {
+    "display": "after Alt+R, U, set proofing language",
+    "mac_sc": "NULL",
+    "pc_sc": "L",
+    "difficulty": 5,
+    "sequential": true
+  },
+  {
+    "display": "after Alt+Z, toggle AutoSave",
+    "mac_sc": "NULL",
+    "pc_sc": "A",
+    "difficulty": 5,
+    "sequential": true
   }
 ]

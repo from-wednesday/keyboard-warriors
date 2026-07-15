@@ -1,0 +1,312 @@
+[
+  {
+    "display": "create a new file",
+    "mac_sc": "CMD+N",
+    "pc_sc": "CTRL+N",
+    "difficulty": 0
+  },
+  {
+    "display": "open a file",
+    "mac_sc": "CMD+O",
+    "pc_sc": "CTRL+O",
+    "difficulty": 0
+  },
+  {
+    "display": "save the file",
+    "mac_sc": "CMD+S",
+    "pc_sc": "CTRL+S",
+    "difficulty": 0
+  },
+  {
+    "display": "print the file",
+    "mac_sc": "CMD+P",
+    "pc_sc": "CTRL+P",
+    "difficulty": 1
+  },
+  {
+    "display": "cut the selection",
+    "mac_sc": "CMD+X",
+    "pc_sc": "CTRL+X",
+    "difficulty": 1
+  },
+  {
+    "display": "copy the selection",
+    "mac_sc": "CMD+C",
+    "pc_sc": "CTRL+C",
+    "difficulty": 0
+  },
+  {
+    "display": "paste",
+    "mac_sc": "CMD+V",
+    "pc_sc": "CTRL+V",
+    "difficulty": 1
+  },
+  {
+    "display": "paste in place",
+    "mac_sc": "CMD+SHIFT+V",
+    "pc_sc": "CTRL+SHIFT+V",
+    "difficulty": 4
+  },
+  {
+    "display": "select All",
+    "mac_sc": "CMD+A",
+    "pc_sc": "CTRL+A",
+    "difficulty": 1
+  },
+  {
+    "display": "redo the last action",
+    "mac_sc": "CMD+Y",
+    "pc_sc": "CTRL+Y",
+    "difficulty": 2
+  },
+  {
+    "display": "delete the selection",
+    "mac_sc": "DELETE|BACKSPACE",
+    "pc_sc": "DELETE|BACKSPACE",
+    "difficulty": 0
+  },
+  {
+    "display": "switch to the Select tool",
+    "mac_sc": "SPACE",
+    "pc_sc": "SPACE",
+    "difficulty": 2
+  },
+  {
+    "display": "switch to the Lasso Select tool",
+    "mac_sc": "SHIFT+SPACE",
+    "pc_sc": "SHIFT+SPACE",
+    "difficulty": 3
+  },
+  {
+    "display": "switch to the Paint Bucket tool",
+    "mac_sc": "B",
+    "pc_sc": "B",
+    "difficulty": 2
+  },
+  {
+    "display": "switch to the Eraser tool",
+    "mac_sc": "E",
+    "pc_sc": "E",
+    "difficulty": 1
+  },
+  {
+    "display": "switch to the Line tool",
+    "mac_sc": "L",
+    "pc_sc": "L",
+    "difficulty": 1
+  },
+  {
+    "display": "switch to the Rectangle tool",
+    "mac_sc": "R",
+    "pc_sc": "R",
+    "difficulty": 1
+  },
+  {
+    "display": "switch to the Circle tool",
+    "mac_sc": "C",
+    "pc_sc": "C",
+    "difficulty": 1
+  },
+  {
+    "display": "switch to the 2 Point Arc tool",
+    "mac_sc": "A",
+    "pc_sc": "A",
+    "difficulty": 3
+  },
+  {
+    "display": "switch to the Move tool",
+    "mac_sc": "M",
+    "pc_sc": "M",
+    "difficulty": 2
+  },
+  {
+    "display": "switch to the Push/Pull tool",
+    "mac_sc": "P",
+    "pc_sc": "P",
+    "difficulty": 1
+  },
+  {
+    "display": "switch to the Rotate tool",
+    "mac_sc": "Q",
+    "pc_sc": "Q",
+    "difficulty": 3
+  },
+  {
+    "display": "switch to the Scale tool",
+    "mac_sc": "S",
+    "pc_sc": "S",
+    "difficulty": 2
+  },
+  {
+    "display": "switch to the Offset tool",
+    "mac_sc": "F",
+    "pc_sc": "F",
+    "difficulty": 3
+  },
+  {
+    "display": "switch to the Tape Measure tool",
+    "mac_sc": "T",
+    "pc_sc": "T",
+    "difficulty": 1
+  },
+  {
+    "display": "switch to the Orbit tool",
+    "mac_sc": "O",
+    "pc_sc": "O",
+    "difficulty": 1
+  },
+  {
+    "display": "switch to the Pan tool",
+    "mac_sc": "H",
+    "pc_sc": "H",
+    "difficulty": 3
+  },
+  {
+    "display": "switch to the Zoom tool",
+    "mac_sc": "Z",
+    "pc_sc": "Z",
+    "difficulty": 1
+  },
+  {
+    "display": "zoom to Extents",
+    "mac_sc": "SHIFT+Z",
+    "pc_sc": "SHIFT+Z",
+    "difficulty": 2
+  },
+  {
+    "display": "make a Component",
+    "mac_sc": "G",
+    "pc_sc": "G",
+    "difficulty": 3
+  },
+  {
+    "display": "switch to Image Igloo",
+    "mac_sc": "I",
+    "pc_sc": "I",
+    "difficulty": 4
+  },
+  {
+    "display": "toggle Back Edges",
+    "mac_sc": "K",
+    "pc_sc": "K",
+    "difficulty": 3
+  },
+  {
+    "display": "open Search",
+    "mac_sc": "SHIFT+S",
+    "pc_sc": "SHIFT+S",
+    "difficulty": 2
+  },
+  {
+    "display": "hold to soften the Eraser",
+    "mac_sc": "OPT",
+    "pc_sc": "CTRL",
+    "difficulty": 4
+  },
+  {
+    "display": "hold while using the Eraser tool to hide edges",
+    "mac_sc": "SHIFT",
+    "pc_sc": "SHIFT",
+    "difficulty": 5
+  },
+  {
+    "display": "while using Eraser tool, hold to unsoften/unsmooth edges",
+    "mac_sc": "OPT+SHIFT",
+    "pc_sc": "CTRL+SHIFT",
+    "difficulty": 5
+  },
+  {
+    "display": "while using Move tool, hold to enable Auto-Fold",
+    "mac_sc": "CMD",
+    "pc_sc": "ALT",
+    "difficulty": 5
+  },
+  {
+    "display": "hold while using Follow Me, to use face perimeter as extrusion path",
+    "mac_sc": "CMD",
+    "pc_sc": "ALT",
+    "difficulty": 5
+  },
+  {
+    "display": "while using Orbit tool, disable gravity-weighted",
+    "mac_sc": "OPT",
+    "pc_sc": "CTRL",
+    "difficulty": 5
+  },
+  {
+    "display": "while using Rotated Rectangle tool, lock drawing plane for the first edge",
+    "mac_sc": "CMD",
+    "pc_sc": "ALT",
+    "difficulty": 5
+  },
+  {
+    "display": "while using the Rotate tool, hold to rotate a copy",
+    "mac_sc": "OPT",
+    "pc_sc": "CTRL",
+    "difficulty": 4
+  },
+  {
+    "display": "hold to Paint Bucket all matching adjacent faces",
+    "mac_sc": "OPT",
+    "pc_sc": "CTRL",
+    "difficulty": 4
+  },
+  {
+    "display": "hold to Paint Bucket all matching faces in the model",
+    "mac_sc": "SHIFT",
+    "pc_sc": "CTRL+SHIFT",
+    "difficulty": 5
+  },
+  {
+    "display": "hold to Paint Bucket all matching faces on the same object",
+    "mac_sc": "OPT+SHIFT",
+    "pc_sc": "ALT",
+    "difficulty": 5
+  },
+  {
+    "display": "while using Paint Bucket, hold to sample material",
+    "mac_sc": "CMD",
+    "pc_sc": "ALT",
+    "difficulty": 3
+  },
+   {
+    "display": "hold to centre transformation",
+    "mac_sc": "OPT",
+    "pc_sc": "CTRL",
+    "difficulty": 2
+  },
+  {
+    "display": "hold to scale uniformly",
+    "mac_sc": "SHIFT",
+    "pc_sc": "SHIFT",
+    "difficulty": 1
+  },
+  {
+    "display": "lock Line tool direction to the blue axis",
+    "mac_sc": "ARROWUP",
+    "pc_sc": "ARROWUP",
+    "difficulty": 3,
+    "group": "line_axis_lock"
+  },
+  {
+    "display": "lock Line tool direction to the red axis",
+    "mac_sc": "ARROWRIGHT",
+    "pc_sc": "ARROWRIGHT",
+    "difficulty": 3,
+    "group": "line_axis_lock"
+  },
+  {
+    "display": "lock Line tool direction to the green axis",
+    "mac_sc": "ARROWLEFT",
+    "pc_sc": "ARROWLEFT",
+    "difficulty": 3,
+    "group": "line_axis_lock"
+  },
+  {
+    "display": "lock Line tool direction to parallel or perpendicular",
+    "mac_sc": "ARROWDOWN",
+    "pc_sc": "ARROWDOWN",
+    "difficulty": 3,
+    "group": "line_axis_lock"
+  }
+]

@@ -217,8 +217,8 @@
   },
   {
     "display": "increase font size",
-    "mac_sc": "CMD+SHIFT+GREATERTHAN",
-    "pc_sc": "CTRL+SHIFT+GREATERTHAN",
+    "mac_sc": "CMD+SHIFT+MORETHAN",
+    "pc_sc": "CTRL+SHIFT+MORETHAN",
     "difficulty": 2
   },
   {
@@ -448,5 +448,120 @@
     "mac_sc": "CMD+QUESTION",
     "pc_sc": "F1",
     "difficulty": 2
+  },
+  {
+    "display": "after Alt+H, choose fill colour",
+    "mac_sc": "NULL",
+    "pc_sc": "H",
+    "difficulty": 5,
+    "sequential": true
+  },
+  {
+    "display": "after Alt+H, add cell borders",
+    "mac_sc": "NULL",
+    "pc_sc": "B",
+    "difficulty": 4,
+    "sequential": true
+  },
+  {
+    "display": "after Alt+H, A, centre contents",
+    "mac_sc": "NULL",
+    "pc_sc": "C",
+    "difficulty": 4,
+    "sequential": true
+  },
+  {
+    "display": "after Alt+H, D, delete column",
+    "mac_sc": "NULL",
+    "pc_sc": "C",
+    "difficulty": 5,
+    "sequential": true
+  },
+  {
+    "display": "after Alt+M, M, define a name",
+    "mac_sc": "NULL",
+    "pc_sc": "D",
+    "difficulty": 5,
+    "sequential": true
+  },
+  {
+    "display": "after Ctrl+Alt+V, paste everything",
+    "mac_sc": "NULL",
+    "pc_sc": "A",
+    "difficulty": 4,
+    "sequential": true,
+    "group": "paste_special_options"
+  },
+  {
+    "display": "after Ctrl+Alt+V, paste formulas only",
+    "mac_sc": "NULL",
+    "pc_sc": "F",
+    "difficulty": 5,
+    "sequential": true,
+    "group": "paste_special_options"
+  },
+  {
+    "display": "after Ctrl+Alt+V, paste values only",
+    "mac_sc": "NULL",
+    "pc_sc": "V",
+    "difficulty": 4,
+    "sequential": true,
+    "group": "paste_special_options"
+  },
+  {
+    "display": "after Ctrl+Alt+V, paste formatting only",
+    "mac_sc": "NULL",
+    "pc_sc": "T",
+    "difficulty": 5,
+    "sequential": true,
+    "group": "paste_special_options"
+  },
+  {
+    "display": "after Ctrl+Alt+V, paste comments and notes",
+    "mac_sc": "NULL",
+    "pc_sc": "C",
+    "difficulty": 5,
+    "sequential": true,
+    "group": "paste_special_options"
+  },
+  {
+    "display": "after Ctrl+Alt+V, paste validation rules",
+    "mac_sc": "NULL",
+    "pc_sc": "N",
+    "difficulty": 5,
+    "sequential": true,
+    "group": "paste_special_options"
+  },
+  {
+    "display": "after Ctrl+Alt+V, paste without borders",
+    "mac_sc": "NULL",
+    "pc_sc": "X",
+    "difficulty": 5,
+    "sequential": true,
+    "group": "paste_special_options"
+  },
+  {
+    "display": "after Ctrl+Alt+V, paste column widths",
+    "mac_sc": "NULL",
+    "pc_sc": "W",
+    "difficulty": 5,
+    "sequential": true,
+    "group": "paste_special_options"
+  },
+  {
+    "display": "after Ctrl+Alt+V, paste formulas and number formats",
+    "mac_sc": "NULL",
+    "pc_sc": "R",
+    "difficulty": 5,
+    "sequential": true,
+    "group": "paste_special_options"
+  },
+  {
+    "display": "after Ctrl+Alt+V, paste values and number formats",
+    "mac_sc": "NULL",
+    "pc_sc": "U",
+    "difficulty": 5,
+    "sequential": true,
+    "group": "paste_special_options"
   }
 ]

@@ -380,5 +380,356 @@
     "mac_sc": "CMD+ARROWDOWN",
     "pc_sc": "CTRL+END",
     "difficulty": 4
+  },
+  {
+    "display": "close the current pane or pop-up",
+    "mac_sc": "ESCAPE",
+    "pc_sc": "ESCAPE",
+    "difficulty": 1
+  },
+  {
+    "display": "go to a specific chat or channel",
+    "mac_sc": "CMD+G",
+    "pc_sc": "CTRL+G",
+    "difficulty": 2
+  },
+  {
+    "display": "report a problem",
+    "mac_sc": "NULL",
+    "pc_sc": "CTRL+ALT+SHIFT+R",
+    "difficulty": 5
+  },
+  {
+    "display": "move focus to chat or channel list",
+    "mac_sc": "NULL",
+    "pc_sc": "CTRL+L",
+    "difficulty": 3
+  },
+  {
+    "display": "move focus to message pane",
+    "mac_sc": "NULL",
+    "pc_sc": "CTRL+M",
+    "difficulty": 3
+  },
+  {
+    "display": "go to compose box",
+    "mac_sc": "OPT+SHIFT+C",
+    "pc_sc": "CTRL+R",
+    "difficulty": 3
+  },
+  {
+    "display": "open current conversation in new window",
+    "mac_sc": "NULL",
+    "pc_sc": "CTRL+O",
+    "difficulty": 4
+  },
+  {
+    "display": "pin window on top",
+    "mac_sc": "CMD+SHIFT+T",
+    "pc_sc": "CTRL+SHIFT+T",
+    "difficulty": 5
+  },
+  {
+    "display": "mark all messages as read",
+    "mac_sc": "NULL",
+    "pc_sc": "SHIFT+ESCAPE",
+    "difficulty": 3
+  },
+  {
+    "display": "jump to newest or last-read message",
+    "mac_sc": "NULL",
+    "pc_sc": "CTRL+J",
+    "difficulty": 4
+  },
+  {
+    "display": "find in current chat or channel",
+    "mac_sc": "NULL",
+    "pc_sc": "CTRL+F",
+    "difficulty": 2
+  },
+  {
+    "display": "reply to the last message",
+    "mac_sc": "NULL",
+    "pc_sc": "ALT+SHIFT+R",
+    "difficulty": 4
+  },
+  {
+    "display": "react to the last message",
+    "mac_sc": "NULL",
+    "pc_sc": "CTRL+ALT+R",
+    "difficulty": 4
+  },
+  {
+    "display": "show Unread chats",
+    "mac_sc": "NULL",
+    "pc_sc": "CTRL+ALT+U",
+    "difficulty": 4,
+    "group": "conversation_filters"
+  },
+  {
+    "display": "show all Chat conversations",
+    "mac_sc": "NULL",
+    "pc_sc": "CTRL+ALT+C",
+    "difficulty": 4,
+    "group": "conversation_filters"
+  },
+  {
+    "display": "show All channel conversations",
+    "mac_sc": "NULL",
+    "pc_sc": "CTRL+ALT+A",
+    "difficulty": 4,
+    "group": "conversation_filters"
+  },
+  {
+    "display": "show all meeting chats",
+    "mac_sc": "NULL",
+    "pc_sc": "CTRL+ALT+B",
+    "difficulty": 5,
+    "group": "conversation_filters"
+  },
+  {
+    "display": "clear conversation filters",
+    "mac_sc": "NULL",
+    "pc_sc": "CTRL+ALT+Z",
+    "difficulty": 4,
+    "group": "conversation_filters"
+  },
+  {
+    "display": "set compose text to Paragraph",
+    "mac_sc": "NULL",
+    "pc_sc": "CTRL+ALT+P",
+    "difficulty": 4,
+    "group": "compose_styles"
+  },
+  {
+    "display": "set compose text to Heading-1",
+    "mac_sc": "NULL",
+    "pc_sc": "CTRL+ALT+1",
+    "difficulty": 4,
+    "group": "compose_styles"
+  },
+  {
+    "display": "set compose text to Heading-2",
+    "mac_sc": "NULL",
+    "pc_sc": "CTRL+ALT+2",
+    "difficulty": 4,
+    "group": "compose_styles"
+  },
+  {
+    "display": "set compose text to Heading-3",
+    "mac_sc": "NULL",
+    "pc_sc": "CTRL+ALT+3",
+    "difficulty": 4,
+    "group": "compose_styles"
+  },
+  {
+    "display": "insert block quote in compose box",
+    "mac_sc": "NULL",
+    "pc_sc": "CTRL+ALT+4",
+    "difficulty": 4
+  },
+  {
+    "display": "insert inline code in compose box",
+    "mac_sc": "NULL",
+    "pc_sc": "CTRL+SHIFT+C",
+    "difficulty": 4
+  },
+  {
+    "display": "insert code block in compose box",
+    "mac_sc": "NULL",
+    "pc_sc": "CTRL+SHIFT+B",
+    "difficulty": 4
+  },
+  {
+    "display": "rewrite message with Copilot",
+    "mac_sc": "NULL",
+    "pc_sc": "ALT+A",
+    "difficulty": 4
+  },
+  {
+    "display": "open video recorder",
+    "mac_sc": "NULL",
+    "pc_sc": "ALT+SHIFT+E",
+    "difficulty": 5
+  },
+  {
+    "display": "start audio call",
+    "mac_sc": "NULL",
+    "pc_sc": "ALT+SHIFT+A",
+    "difficulty": 4,
+    "group": "start_call"
+  },
+  {
+    "display": "start video call",
+    "mac_sc": "NULL",
+    "pc_sc": "ALT+SHIFT+V",
+    "difficulty": 4,
+    "group": "start_call"
+  },
+  {
+    "display": "end the current call",
+    "mac_sc": "CMD+SHIFT+H",
+    "pc_sc": "CTRL+SHIFT+H",
+    "difficulty": 4
+  },
+  {
+    "display": "temporarily unmute",
+    "mac_sc": "NULL",
+    "pc_sc": "CTRL+SPACE",
+    "difficulty": 3
+  },
+  {
+    "display": "toggle speaker",
+    "mac_sc": "NULL",
+    "pc_sc": "CTRL+SHIFT+U",
+    "difficulty": 4
+  },
+  {
+    "display": "toggle full screen in call",
+    "mac_sc": "F11",
+    "pc_sc": "F11",
+    "difficulty": 3
+  },
+  {
+    "display": "admit people from lobby notification",
+    "mac_sc": "NULL",
+    "pc_sc": "CTRL+SHIFT+Y",
+    "difficulty": 5
+  },
+  {
+    "display": "join from meeting details",
+    "mac_sc": "NULL",
+    "pc_sc": "ALT+SHIFT+J",
+    "difficulty": 4
+  },
+  {
+    "display": "open meeting chat from notification",
+    "mac_sc": "NULL",
+    "pc_sc": "CTRL+SHIFT+R",
+    "difficulty": 4
+  },
+  {
+    "display": "zoom in shared content",
+    "mac_sc": "OPT+SHIFT+PLUS",
+    "pc_sc": "ALT+SHIFT+PLUS",
+    "difficulty": 4,
+    "group": "shared_content_zoom"
+  },
+  {
+    "display": "zoom out shared content",
+    "mac_sc": "OPT+SHIFT+MINUS",
+    "pc_sc": "ALT+SHIFT+MINUS",
+    "difficulty": 4,
+    "group": "shared_content_zoom"
+  },
+  {
+    "display": "reset shared content zoom",
+    "mac_sc": "OPT+SHIFT+0",
+    "pc_sc": "ALT+SHIFT+0",
+    "difficulty": 4,
+    "group": "shared_content_zoom"
+  },
+  {
+    "display": "pan shared content up",
+    "mac_sc": "OPT+SHIFT+ARROWUP",
+    "pc_sc": "ALT+SHIFT+ARROWUP",
+    "difficulty": 4,
+    "group": "shared_content_pan"
+  },
+  {
+    "display": "pan shared content down",
+    "mac_sc": "OPT+SHIFT+ARROWDOWN",
+    "pc_sc": "ALT+SHIFT+ARROWDOWN",
+    "difficulty": 4,
+    "group": "shared_content_pan"
+  },
+  {
+    "display": "pan shared content left",
+    "mac_sc": "OPT+SHIFT+ARROWLEFT",
+    "pc_sc": "ALT+SHIFT+ARROWLEFT",
+    "difficulty": 4,
+    "group": "shared_content_pan"
+  },
+  {
+    "display": "pan shared content right",
+    "mac_sc": "OPT+SHIFT+ARROWRIGHT",
+    "pc_sc": "ALT+SHIFT+ARROWRIGHT",
+    "difficulty": 4,
+    "group": "shared_content_pan"
+  },
+  {
+    "display": "open Day view in Calendar",
+    "mac_sc": "OPT+SHIFT+1",
+    "pc_sc": "ALT+SHIFT+1",
+    "difficulty": 4,
+    "group": "calendar_views"
+  },
+  {
+    "display": "open Work week view in Calendar",
+    "mac_sc": "OPT+SHIFT+2",
+    "pc_sc": "ALT+SHIFT+2",
+    "difficulty": 4,
+    "group": "calendar_views"
+  },
+  {
+    "display": "open Week view in Calendar",
+    "mac_sc": "OPT+SHIFT+3",
+    "pc_sc": "ALT+SHIFT+3",
+    "difficulty": 4,
+    "group": "calendar_views"
+  },
+  {
+    "display": "open Month view in Calendar",
+    "mac_sc": "OPT+SHIFT+4",
+    "pc_sc": "ALT+SHIFT+4",
+    "difficulty": 4,
+    "group": "calendar_views"
+  },
+  {
+    "display": "go to today in Calendar",
+    "mac_sc": "OPT+SHIFT+Y",
+    "pc_sc": "ALT+SHIFT+Y",
+    "difficulty": 4
+  },
+  {
+    "display": "go to previous week in Calendar",
+    "mac_sc": "OPT+ARROWUP",
+    "pc_sc": "ALT+ARROWUP",
+    "difficulty": 4,
+    "group": "calendar_time"
+  },
+  {
+    "display": "go to next week in Calendar",
+    "mac_sc": "OPT+ARROWDOWN",
+    "pc_sc": "ALT+ARROWDOWN",
+    "difficulty": 4,
+    "group": "calendar_time"
+  },
+  {
+    "display": "show unread activity",
+    "mac_sc": "NULL",
+    "pc_sc": "CTRL+ALT+U",
+    "difficulty": 4,
+    "group": "activity_filters"
+  },
+  {
+    "display": "filter activity to missed calls",
+    "mac_sc": "NULL",
+    "pc_sc": "CTRL+ALT+C",
+    "difficulty": 4,
+    "group": "activity_filters"
+  },
+  {
+    "display": "filter activity to mentions",
+    "mac_sc": "NULL",
+    "pc_sc": "CTRL+ALT+M",
+    "difficulty": 4,
+    "group": "activity_filters"
+  },
+  {
+    "display": "download diagnostic logs",
+    "mac_sc": "NULL",
+    "pc_sc": "CTRL+ALT+SHIFT+1",
+    "difficulty": 5
   }
 ]

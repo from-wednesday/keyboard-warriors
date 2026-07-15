@@ -1,0 +1,321 @@
+[
+   {
+    "display": "take a screen shot",
+    "mac_sc": "SHIFT+F11",
+    "pc_sc": "SHIFT+F11",
+    "difficulty": 5
+  },
+    {
+    "display": "hold this while clicking to select multiple items",
+    "mac_sc": "CMD",
+    "pc_sc": "CTRL",
+    "difficulty": 2
+  },
+  {
+    "display": "move the camera downwards in FlyMode",
+    "mac_sc": "Q",
+    "pc_sc": "Q",
+    "difficulty": 3
+  },
+    {
+    "display": "Redo",
+    "mac_sc": "CMD+Y",
+    "pc_sc": "CTRL+Y",
+    "difficulty": 2
+  },
+  {
+    "display": "move the camera upwards in FlyMode",
+    "mac_sc": "E",
+    "pc_sc": "E",
+    "difficulty": 3
+  },
+  {
+    "display": "move the camera forward",
+    "mac_sc": "ARROWUP|W",
+    "pc_sc": "ARROWUP|W",
+    "difficulty": 2,
+    "group": "camera_move"
+  },
+  {
+    "display": "move the camera backward",
+    "mac_sc": "ARROWDOWN|S",
+    "pc_sc": "ARROWDOWN|S",
+    "difficulty": 2,
+    "group": "camera_move"
+  },
+  {
+    "display": "move the camera to the left",
+    "mac_sc": "ARROWLEFT|A",
+    "pc_sc": "ARROWLEFT|A",
+    "difficulty": 2,
+    "group": "camera_move"
+  },
+  {
+    "display": "move the camera to the right",
+    "mac_sc": "ARROWRIGHT|D",
+    "pc_sc": "ARROWRIGHT|D",
+    "difficulty": 2,
+    "group": "camera_move"
+  },
+    {
+    "display": "move the camera forward FAST",
+    "mac_sc": "SHIFT+ARROWUP|SHIFT+W",
+    "pc_sc": "SHIFT+ARROWUP|SHIFT+W",
+    "difficulty": 3,
+    "group": "camera_move"
+  },
+  {
+    "display": "move the camera backward FAST",
+    "mac_sc": "SHIFT+ARROWDOWN|SHIFT+S",
+    "pc_sc": "SHIFT+ARROWDOWN|SHIFT+S",
+    "difficulty": 3,
+    "group": "camera_move"
+  },
+  {
+    "display": "move the camera to the left FAST",
+    "mac_sc": "SHIFT+ARROWLEFT|SHIFT+A",
+    "pc_sc": "SHIFT+ARROWLEFT|SHIFT+A",
+    "difficulty": 3,
+    "group": "camera_move"
+  },
+  {
+    "display": "move the camera to the right FAST",
+    "mac_sc": "SHIFT+ARROWRIGHT|SHIFT+D",
+    "pc_sc": "SHIFT+ARROWRIGHT|SHIFT+D",
+    "difficulty": 3,
+    "group": "camera_move"
+  },
+      {
+    "display": "move the camera forward FASTER",
+    "mac_sc": "CMD+ARROWUP|CMD+W",
+    "pc_sc": "CTRL+ARROWUP|CTRL+W",
+    "difficulty": 3,
+    "group": "camera_move"
+  },
+  {
+    "display": "move the camera backward FASTER",
+    "mac_sc": "CMD+ARROWDOWN|CMD+S",
+    "pc_sc": "CTRL+ARROWDOWN|CTRL+S",
+    "difficulty": 3,
+    "group": "camera_move"
+  },
+  {
+    "display": "move the camera to the left FASTER",
+    "mac_sc": "CMD+ARROWLEFT|CMD+A",
+    "pc_sc": "CTRL+ARROWLEFT|CTRL+A",
+    "difficulty": 3,
+    "group": "camera_move"
+  },
+  {
+    "display": "move the camera to the right FASTER",
+    "mac_sc": "CMD+ARROWRIGHT|CMD+D",
+    "pc_sc": "CTRL+ARROWRIGHT|CTRL+D",
+    "difficulty": 3,
+    "group": "camera_move"
+  },
+        {
+    "display": "move camera forward VERY FAST!",
+    "mac_sc": "SHIFT+CMD+ARROWUP|SHIFT+CMD+W",
+    "pc_sc": "SHIFT+CTRL+ARROWUP|SHIFT+CTRL+W",
+    "difficulty": 4,
+    "group": "camera_move"
+  },
+  {
+    "display": "move camera backward VERY FAST!",
+    "mac_sc": "SHIFT+CMD+ARROWDOWN|SHIFT+CMD+S",
+    "pc_sc": "SHIFT+CTRL+ARROWDOWN|SHIFT+CTRL+S",
+    "difficulty": 4,
+    "group": "camera_move"
+  },
+  {
+    "display": "move the camera left VERY FAST!",
+    "mac_sc": "SHIFT+CMD+ARROWLEFT|SHIFT+CMD+A",
+    "pc_sc": "SHIFT+CTRL+ARROWLEFT|SHIFT+CTRL+A",
+    "difficulty": 4,
+    "group": "camera_move"
+  },
+  {
+    "display": "move the camera right VERY FAST!",
+    "mac_sc": "SHIFT+CMD+ARROWRIGHT|SHIFT+CMD+D",
+    "pc_sc": "SHIFT+CTRL+ARROWRIGHT|SHIFT+CTRL+D",
+    "difficulty": 4,
+    "group": "camera_move"
+  },
+  {
+    "display": "toggle between FlyMode and WalkMode",
+    "mac_sc": "SPACE",
+    "pc_sc": "SPACE",
+    "difficulty": 2
+  },
+  {
+    "display": "switch to Top View",
+    "mac_sc": "NUMPAD5",
+    "pc_sc": "NUMPAD5",
+    "difficulty": 3,
+    "group": "Orthographic"
+  },
+  {
+    "display": "switch to Front View",
+    "mac_sc": "NUMPAD2",
+    "pc_sc": "NUMPAD2",
+    "difficulty": 3,
+    "group": "Orthographic"
+  },
+  {
+    "display": "switch to Back View",
+    "mac_sc": "NUMPAD8",
+    "pc_sc": "NUMPAD8",
+    "difficulty": 3,
+    "group": "Orthographic"
+  },
+  {
+    "display": "switch to Left View",
+    "mac_sc": "NUMPAD4",
+    "pc_sc": "NUMPAD4",
+    "difficulty": 3,
+    "group": "Orthographic"
+  },
+  {
+    "display": "switch to Right View",
+    "mac_sc": "NUMPAD6",
+    "pc_sc": "NUMPAD6",
+    "difficulty": 3,
+    "group": "Orthographic"
+  },
+  {
+    "display": "return to the selected Named View",
+    "mac_sc": "NUMPAD0",
+    "pc_sc": "NUMPAD0",
+    "difficulty": 3
+  },
+  {
+    "display": "go to the Previous View",
+    "mac_sc": "PAGEUP",
+    "pc_sc": "PAGEUP",
+    "difficulty": 2
+  },
+  {
+    "display": "go to the Next View",
+    "mac_sc": "PAGEDOWN",
+    "pc_sc": "PAGEDOWN",
+    "difficulty": 2
+  },
+  {
+    "display": "adjust the time of day backwards",
+    "mac_sc": "U",
+    "pc_sc": "U",
+    "difficulty": 3
+  },
+  {
+    "display": "change solar angle backwards",
+    "mac_sc": "SHIFT+U",
+    "pc_sc": "SHIFT+U",
+    "difficulty": 4
+  },
+  {
+    "display": "change solar rotation backwards",
+    "mac_sc": "CMD+U",
+    "pc_sc": "CTRL+U",
+    "difficulty": 4
+  },
+   {
+    "display": "adjust the time of day forwards",
+    "mac_sc": "I",
+    "pc_sc": "I",
+    "difficulty": 3
+  },
+  {
+    "display": "change solar angle forwards",
+    "mac_sc": "SHIFT+I",
+    "pc_sc": "SHIFT+I",
+    "difficulty": 4
+  },
+  {
+    "display": "change solar rotation forwards",
+    "mac_sc": "CMD+I",
+    "pc_sc": "CTRL+I",
+    "difficulty": 4
+  },
+  {
+    "display": "reset sun position modification",
+    "mac_sc": "HOME",
+    "pc_sc": "HOME",
+    "difficulty": 3
+  },
+  {
+    "display": "enter Video Editor",
+    "mac_sc": "V",
+    "pc_sc": "V",
+    "difficulty": 2
+  },
+  {
+    "display": "add a video Keyframe",
+    "mac_sc": "K",
+    "pc_sc": "K",
+    "difficulty": 2
+  },
+  {
+    "display": "begin Preview from the current Keyframe",
+    "mac_sc": "P",
+    "pc_sc": "P",
+    "difficulty": 3
+  },
+  {
+    "display": "exit Video Editor",
+    "mac_sc": "ESCAPE",
+    "pc_sc": "ESCAPE",
+    "difficulty": 1,
+    "group": "exit"
+  },
+   {
+    "display": "exit Keyframe Editor",
+    "mac_sc": "ESCAPE",
+    "pc_sc": "ESCAPE",
+    "difficulty": 1,
+    "group": "exit"
+  },
+   {
+    "display": "exit Preview",
+    "mac_sc": "ESCAPE",
+    "pc_sc": "ESCAPE",
+    "difficulty": 1,
+    "group": "exit"
+  },
+  {
+    "display": "toggle MiniMap",
+    "mac_sc": "M",
+    "pc_sc": "M",
+    "difficulty": 2
+  },
+  {
+    "display": "recenter position in VR",
+    "mac_sc": "R",
+    "pc_sc": "R",
+    "difficulty": 3
+  },
+  {
+    "display": "toggle Help instructions",
+    "mac_sc": "H",
+    "pc_sc": "H",
+    "difficulty": 4
+  },
+  {
+    "display": "toggle BIM information window",
+    "mac_sc": "B",
+    "pc_sc": "B",
+    "difficulty": 2
+  },
+  {
+    "display": "toggle Enscape Collaboration Tool",
+    "mac_sc": "C",
+    "pc_sc": "C",
+    "difficulty": 3
+  },
+  {
+    "display": "close an Enscape window",
+    "mac_sc": "ESCAPE",
+    "pc_sc": "ESCAPE",
+    "difficulty": 1,
+    "group": "exit"
+  }
+]

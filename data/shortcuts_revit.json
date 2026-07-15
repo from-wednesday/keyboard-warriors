@@ -1,0 +1,1080 @@
+[
+ {
+    "display": "Switch to PC in the top left. Press RETURN.",
+    "mac_sc": "RETURN",
+    "pc_sc": "NULL",
+    "difficulty": 0
+  },
+  {
+    "display": "Revit is a PC only App. Press ENTER.",
+    "mac_sc": "RETURN",
+    "pc_sc": "ENTER",
+    "difficulty": 0
+  }, 
+  {
+    "display": "Switch to PC in the top left. Press RETURN.",
+    "mac_sc": "RETURN",
+    "pc_sc": "NULL",
+    "difficulty": 3
+  },
+  {
+    "display": "Revit is a PC only App. Press ENTER.",
+    "mac_sc": "RETURN",
+    "pc_sc": "NULL",
+    "difficulty": 3
+  }, 
+  {
+    "display": "Switch to PC in the top left. Press RETURN.",
+    "mac_sc": "RETURN",
+    "pc_sc": "NULL",
+    "difficulty": 5
+  },
+  {
+    "display": "Revit is a PC only App. Press RETURN.",
+    "mac_sc": "RETURN",
+    "pc_sc": "NULL",
+    "difficulty": 5
+  },
+  {
+    "display": "to create an aligned Dimension, press 'D' followed by:",
+    "mac_sc": "NULL",
+    "pc_sc": "I",
+    "difficulty": 3,
+    "sequential": true
+  },
+  {
+    "display": "to create a Detail Line, press 'D' followed by:",
+    "mac_sc": "NULL",
+    "pc_sc": "L",
+    "difficulty": 2,
+    "sequential": true
+  },
+  {
+    "display": "to place a Spot Elevation, press 'E' followed by:",
+    "mac_sc": "NULL",
+    "pc_sc": "L",
+    "difficulty": 3,
+    "sequential": true
+  },
+  {
+    "display": "to open Find/Replace, press 'F' followed by:",
+    "mac_sc": "NULL",
+    "pc_sc": "R",
+    "difficulty": 1,
+    "sequential": true
+  },
+  {
+    "display": "to create a Group, press 'G' followed by:",
+    "mac_sc": "NULL",
+    "pc_sc": "P",
+    "difficulty": 2,
+    "sequential": true
+  },
+  {
+    "display": "to tag a Room, press 'R' followed by:",
+    "mac_sc": "NULL",
+    "pc_sc": "T",
+    "difficulty": 3,
+    "sequential": true
+  },
+  {
+    "display": "to Tag by Category, press 'T' followed by:",
+    "mac_sc": "NULL",
+    "pc_sc": "G",
+    "difficulty": 2,
+    "sequential": true
+  },
+  {
+    "display": "to add Text, press 'T' followed by:",
+    "mac_sc": "NULL",
+    "pc_sc": "X",
+    "difficulty": 3,
+    "sequential": true
+  },
+  {
+    "display": "to adjust the Analytical Model, press 'A' followed by:",
+    "mac_sc": "NULL",
+    "pc_sc": "A",
+    "difficulty": 2,
+    "sequential": true
+  },
+  {
+    "display": "to check Duct Systems, press 'D' followed by:",
+    "mac_sc": "NULL",
+    "pc_sc": "C",
+    "difficulty": 4,
+    "sequential": true
+  },
+  {
+    "display": "to check Circuits, press 'E' followed by:",
+    "mac_sc": "NULL",
+    "pc_sc": "C",
+    "difficulty": 4,
+    "sequential": true
+  },
+  {
+    "display": "to apply Loads, press 'L' followed by:",
+    "mac_sc": "NULL",
+    "pc_sc": "D",
+    "difficulty": 4,
+    "sequential": true
+  },
+  {
+    "display": "to run Heating and Cooling Loads, press 'L' followed by:",
+    "mac_sc": "NULL",
+    "pc_sc": "O",
+    "difficulty": 4,
+    "sequential": true
+  },
+  {
+    "display": "to check Pipe Systems, press 'P' followed by:",
+    "mac_sc": "NULL",
+    "pc_sc": "C",
+    "difficulty": 4,
+    "sequential": true
+  },
+  {
+    "display": "to generate Panel Schedules, press 'P' followed by:",
+    "mac_sc": "NULL",
+    "pc_sc": "S",
+    "difficulty": 4,
+    "sequential": true
+  },
+  {
+    "display": "to reset the Analytical Model, press 'R' followed by:",
+    "mac_sc": "NULL",
+    "pc_sc": "A",
+    "difficulty": 4,
+    "sequential": true
+  },
+  {
+    "display": "to add a Column, press 'C' followed by:",
+    "mac_sc": "NULL",
+    "pc_sc": "L",
+    "difficulty": 2,
+    "sequential": true
+  },
+  {
+    "display": "to place a Component, press 'C' followed by:",
+    "mac_sc": "NULL",
+    "pc_sc": "M",
+    "difficulty": 1,
+    "sequential": true
+  },
+  {
+    "display": "to add a Door, press 'D' followed by:",
+    "mac_sc": "NULL",
+    "pc_sc": "R",
+    "difficulty": 2,
+    "sequential": true
+  },
+  {
+    "display": "to place a Grid, press 'G' followed by:",
+    "mac_sc": "NULL",
+    "pc_sc": "R",
+    "difficulty": 1,
+    "sequential": true
+  },
+  {
+    "display": "to place a Level, press 'L' followed by:",
+    "mac_sc": "NULL",
+    "pc_sc": "L",
+    "difficulty": 1,
+    "sequential": true
+  },
+  {
+    "display": "to create a Room, press 'R' followed by:",
+    "mac_sc": "NULL",
+    "pc_sc": "M",
+    "difficulty": 2,
+    "sequential": true
+  },
+  {
+    "display": "to create a Reference Plane, press 'R' followed by:",
+    "mac_sc": "NULL",
+    "pc_sc": "P",
+    "difficulty": 2,
+    "sequential": true
+  },
+  {
+    "display": "to create a structural Floor, press 'S' followed by:",
+    "mac_sc": "NULL",
+    "pc_sc": "B",
+    "difficulty": 2,
+    "sequential": true
+  },
+  {
+    "display": "to create a Wall, press 'W' followed by:",
+    "mac_sc": "NULL",
+    "pc_sc": "A",
+    "difficulty": 1,
+    "sequential": true
+  },
+  {
+    "display": "to place a Window, press 'W' followed by:",
+    "mac_sc": "NULL",
+    "pc_sc": "N",
+    "difficulty": 2,
+    "sequential": true
+  },
+  {
+    "display": "to show Editing Requests, press 'E' followed by:",
+    "mac_sc": "NULL",
+    "pc_sc": "R",
+    "difficulty": 4,
+    "sequential": true
+  },
+  {
+    "display": "to Reload Latest, press 'R' followed by:",
+    "mac_sc": "NULL",
+    "pc_sc": "L|W",
+    "difficulty": 3,
+    "sequential": true
+  },
+  {
+    "display": "to Move to Project, press 'M' followed by:",
+    "mac_sc": "NULL",
+    "pc_sc": "P",
+    "difficulty": 4,
+    "sequential": true
+  },
+  {
+    "display": "to define a new Centre of Rotation, press 'R' followed by:",
+    "mac_sc": "NULL",
+    "pc_sc": "3",
+    "difficulty": 4,
+    "sequential": true
+  },
+  {
+    "display": "to restore all Excluded elements, press 'R' followed by:",
+    "mac_sc": "NULL",
+    "pc_sc": "A",
+    "difficulty": 4,
+    "sequential": true
+  },
+  {
+    "display": "to restore an Excluded Member, press 'R' followed by:",
+    "mac_sc": "NULL",
+    "pc_sc": "B",
+    "difficulty": 4,
+    "sequential": true
+  },
+  {
+    "display": "to Repeat Last Command, press 'R' followed by:",
+    "mac_sc": "NULL",
+    "pc_sc": "C",
+    "difficulty": 2,
+    "sequential": true
+  },
+  {
+    "display": "to Select All Instances in the project, press 'S' followed by:",
+    "mac_sc": "NULL",
+    "pc_sc": "A",
+    "difficulty": 2,
+    "sequential": true
+  },
+  {
+    "display": "to Divide Surface, press '/' followed by:",
+    "mac_sc": "NULL",
+    "pc_sc": "SLASH",
+    "difficulty": 5,
+    "sequential": true
+  },
+  {
+    "display": "to attach a Detail Group, press 'A' followed by:",
+    "mac_sc": "NULL",
+    "pc_sc": "D",
+    "difficulty": 4,
+    "sequential": true
+  },
+  {
+    "display": "to add elements to a Group, press 'A' followed by:",
+    "mac_sc": "NULL",
+    "pc_sc": "P",
+    "difficulty": 4,
+    "sequential": true
+  },
+  {
+    "display": "to create a Beam System, press 'B' followed by:",
+    "mac_sc": "NULL",
+    "pc_sc": "S",
+    "difficulty": 3,
+    "sequential": true
+  },
+  {
+    "display": "to Cancel an action, press 'C' followed by:",
+    "mac_sc": "NULL",
+    "pc_sc": "G",
+    "difficulty": 3,
+    "sequential": true
+  },
+  {
+    "display": "to edit a Group, press 'E' followed by:",
+    "mac_sc": "NULL",
+    "pc_sc": "G",
+    "difficulty": 3,
+    "sequential": true
+  },
+  {
+    "display": "to edit a Part, press 'E' followed by:",
+    "mac_sc": "NULL",
+    "pc_sc": "P",
+    "difficulty": 4,
+    "sequential": true
+  },
+  {
+    "display": "to Unhide Element, press 'E' followed by:",
+    "mac_sc": "NULL",
+    "pc_sc": "U",
+    "difficulty": 3,
+    "sequential": true
+  },
+  {
+    "display": "to edit Witness Lines, press 'E' followed by:",
+    "mac_sc": "NULL",
+    "pc_sc": "W",
+    "difficulty": 4,
+    "sequential": true
+  },
+  {
+    "display": "to Finish editing, press 'F' followed by:",
+    "mac_sc": "NULL",
+    "pc_sc": "G",
+    "difficulty": 3,
+    "sequential": true
+  },
+  {
+    "display": "to show the Help Tooltip, press 'H' followed by:",
+    "mac_sc": "NULL",
+    "pc_sc": "T",
+    "difficulty": 4,
+    "sequential": true
+  },
+  {
+    "display": "to set Justification Points, press 'J' followed by:",
+    "mac_sc": "NULL",
+    "pc_sc": "P",
+    "difficulty": 5,
+    "sequential": true
+  },
+  {
+    "display": "to offset in the Y direction, press 'J' followed by:",
+    "mac_sc": "NULL",
+    "pc_sc": "Y",
+    "difficulty": 5,
+    "sequential": true
+  },
+  {
+    "display": "to offset in the Z direction, press 'J' followed by:",
+    "mac_sc": "NULL",
+    "pc_sc": "Z",
+    "difficulty": 5,
+    "sequential": true
+  },
+  {
+    "display": "to create a Model Line, press 'L' followed by:",
+    "mac_sc": "NULL",
+    "pc_sc": "I",
+    "difficulty": 1,
+    "sequential": true
+  },
+  {
+    "display": "to toggle the Properties palette, press 'P' followed by:",
+    "mac_sc": "NULL",
+    "pc_sc": "P",
+    "difficulty": 1,
+    "sequential": true
+  },
+  {
+    "display": "toggle the Properties palette",
+    "mac_sc": "NULL",
+    "pc_sc": "CTRL+1",
+    "difficulty": 1
+  },
+  {
+    "display": "to toggle the Properties palette, press 'V' followed by:",
+    "mac_sc": "NULL",
+    "pc_sc": "P",
+    "difficulty": 2,
+    "sequential": true
+  },
+  {
+    "display": "to remove elements from a Group, press 'R' followed by:",
+    "mac_sc": "NULL",
+    "pc_sc": "G",
+    "difficulty": 4,
+    "sequential": true
+  },
+  {
+    "display": "to toggle Reveal Hidden Elements mode, press 'R' followed by:",
+    "mac_sc": "NULL",
+    "pc_sc": "H",
+    "difficulty": 2,
+    "sequential": true
+  },
+  {
+    "display": "to Ungroup elements, press 'U' followed by:",
+    "mac_sc": "NULL",
+    "pc_sc": "G",
+    "difficulty": 3,
+    "sequential": true
+  },
+  {
+    "display": "to Unhide Category, press 'V' followed by:",
+    "mac_sc": "NULL",
+    "pc_sc": "U",
+    "difficulty": 3,
+    "sequential": true
+  },
+  {
+    "display": "to enter Modify selection mode, press 'M' followed by:",
+    "mac_sc": "NULL",
+    "pc_sc": "D",
+    "difficulty": 1,
+    "sequential": true
+  },
+  {
+    "display": "to open Electrical Settings, press 'E' followed by:",
+    "mac_sc": "NULL",
+    "pc_sc": "S",
+    "difficulty": 4,
+    "sequential": true
+  },
+  {
+    "display": "to open Mechanical Settings, press 'M' followed by:",
+    "mac_sc": "NULL",
+    "pc_sc": "S",
+    "difficulty": 4,
+    "sequential": true
+  },
+  {
+    "display": "to open Sun Settings, press 'S' followed by:",
+    "mac_sc": "NULL",
+    "pc_sc": "U",
+    "difficulty": 4,
+    "sequential": true
+  },
+  {
+    "display": "to open Project Units, press 'U' followed by:",
+    "mac_sc": "NULL",
+    "pc_sc": "N",
+    "difficulty": 3,
+    "sequential": true
+  },
+  {
+    "display": "to Align elements, press 'A' followed by:",
+    "mac_sc": "NULL",
+    "pc_sc": "L",
+    "difficulty": 1,
+    "sequential": true
+  },
+  {
+    "display": "to create an Array, press 'A' followed by:",
+    "mac_sc": "NULL",
+    "pc_sc": "R",
+    "difficulty": 2,
+    "sequential": true
+  },
+  {
+    "display": "to Copy selected elements, press 'C' followed by:",
+    "mac_sc": "NULL",
+    "pc_sc": "O|C",
+    "difficulty": 1,
+    "sequential": true
+  },
+  {
+    "display": "to apply Coping, press 'C' followed by:",
+    "mac_sc": "NULL",
+    "pc_sc": "P",
+    "difficulty": 4,
+    "sequential": true
+  },
+  {
+    "display": "to Create Similar, press 'C' followed by:",
+    "mac_sc": "NULL",
+    "pc_sc": "S",
+    "difficulty": 2,
+    "sequential": true
+  },
+  {
+    "display": "to Delete selected elements, press 'D' followed by:",
+    "mac_sc": "NULL",
+    "pc_sc": "E",
+    "difficulty": 1,
+    "sequential": true
+  },
+  {
+    "display": "to Mirror by drawing an Axis, press 'D' followed by:",
+    "mac_sc": "NULL",
+    "pc_sc": "M",
+    "difficulty": 2,
+    "sequential": true
+  },
+  {
+    "display": "to hide Elements in View, press 'E' followed by:",
+    "mac_sc": "NULL",
+    "pc_sc": "H",
+    "difficulty": 2,
+    "sequential": true
+  },
+  {
+    "display": "to override Graphics by Element, press 'E' then 'O' followed by:",
+    "mac_sc": "NULL",
+    "pc_sc": "D",
+    "difficulty": 4,
+    "sequential": true
+  },
+  {
+    "display": "to use Linework, press 'L' followed by:",
+    "mac_sc": "NULL",
+    "pc_sc": "W",
+    "difficulty": 3,
+    "sequential": true
+  },
+  {
+    "display": "to match Type Properties, press 'M' followed by:",
+    "mac_sc": "NULL",
+    "pc_sc": "A",
+    "difficulty": 1,
+    "sequential": true
+  },
+  {
+    "display": "to Mirror by picking an Axis, press 'M' followed by:",
+    "mac_sc": "NULL",
+    "pc_sc": "M",
+    "difficulty": 2,
+    "sequential": true
+  },
+  {
+    "display": "to Move selected elements, press 'M' followed by:",
+    "mac_sc": "NULL",
+    "pc_sc": "V",
+    "difficulty": 1,
+    "sequential": true
+  },
+  {
+    "display": "to Offset elements, press 'O' followed by:",
+    "mac_sc": "NULL",
+    "pc_sc": "F",
+    "difficulty": 2,
+    "sequential": true
+  },
+  {
+    "display": "to Pin selected elements, press 'P' followed by:",
+    "mac_sc": "NULL",
+    "pc_sc": "N",
+    "difficulty": 2,
+    "sequential": true
+  },
+  {
+    "display": "to open the Paint tool, press 'P' followed by:",
+    "mac_sc": "NULL",
+    "pc_sc": "T",
+    "difficulty": 3,
+    "sequential": true
+  },
+  {
+    "display": "to remove Coping, press 'R' followed by:",
+    "mac_sc": "NULL",
+    "pc_sc": "C",
+    "difficulty": 4,
+    "sequential": true
+  },
+  {
+    "display": "to Scale selected elements, press 'R' followed by:",
+    "mac_sc": "NULL",
+    "pc_sc": "E",
+    "difficulty": 3,
+    "sequential": true
+  },
+  {
+    "display": "to Rotate selected elements, press 'R' followed by:",
+    "mac_sc": "NULL",
+    "pc_sc": "O",
+    "difficulty": 1,
+    "sequential": true
+  },
+  {
+    "display": "to Split Face, press 'S' followed by:",
+    "mac_sc": "NULL",
+    "pc_sc": "F",
+    "difficulty": 3,
+    "sequential": true
+  },
+  {
+    "display": "to Split Element, press 'S' followed by:",
+    "mac_sc": "NULL",
+    "pc_sc": "L",
+    "difficulty": 2,
+    "sequential": true
+  },
+  {
+    "display": "to Trim or Extend to Corner, press 'T' followed by:",
+    "mac_sc": "NULL",
+    "pc_sc": "R",
+    "difficulty": 1,
+    "sequential": true
+  },
+  {
+    "display": "to enter 2D navigation mode, press '3' followed by:",
+    "mac_sc": "NULL",
+    "pc_sc": "2",
+    "difficulty": 5,
+    "sequential": true
+  },
+  {
+    "display": "to enter Fly mode, press '3' followed by:",
+    "mac_sc": "NULL",
+    "pc_sc": "F",
+    "difficulty": 5,
+    "sequential": true
+  },
+  {
+    "display": "to enter Object mode, press '3' followed by:",
+    "mac_sc": "NULL",
+    "pc_sc": "O",
+    "difficulty": 5,
+    "sequential": true
+  },
+  {
+    "display": "to enter Walk mode, press '3' followed by:",
+    "mac_sc": "NULL",
+    "pc_sc": "W",
+    "difficulty": 5,
+    "sequential": true
+  },
+  {
+    "display": "to Zoom All to Fit, press 'Z' followed by:",
+    "mac_sc": "NULL",
+    "pc_sc": "A",
+    "difficulty": 1,
+    "sequential": true
+  },
+  {
+    "display": "to Zoom to Fit, press 'Z' followed by:",
+    "mac_sc": "NULL",
+    "pc_sc": "E|F|X",
+    "difficulty": 1,
+    "sequential": true
+  },
+  {
+    "display": "to Zoom Out 2x, press 'Z' followed by:",
+    "mac_sc": "NULL",
+    "pc_sc": "O|V",
+    "difficulty": 2,
+    "sequential": true
+  },
+  {
+    "display": "to return to the Previous Pan or Zoom, press 'Z' followed by:",
+    "mac_sc": "NULL",
+    "pc_sc": "P|C",
+    "difficulty": 2,
+    "sequential": true
+  },
+  {
+    "display": "to Zoom in Region, press 'Z' followed by:",
+    "mac_sc": "NULL",
+    "pc_sc": "R|Z",
+    "difficulty": 1,
+    "sequential": true
+  },
+  {
+    "display": "to snap to Point Clouds, press 'P' followed by:",
+    "mac_sc": "NULL",
+    "pc_sc": "C",
+    "difficulty": 4,
+    "sequential": true
+  },
+  {
+    "display": "to snap to Centres, press 'S' followed by:",
+    "mac_sc": "NULL",
+    "pc_sc": "C",
+    "difficulty": 2,
+    "sequential": true
+  },
+  {
+    "display": "to snap to Endpoints, press 'S' followed by:",
+    "mac_sc": "NULL",
+    "pc_sc": "E",
+    "difficulty": 1,
+    "sequential": true
+  },
+  {
+    "display": "to snap to Intersections, press 'S' followed by:",
+    "mac_sc": "NULL",
+    "pc_sc": "I",
+    "difficulty": 2,
+    "sequential": true
+  },
+  {
+    "display": "to snap to Midpoints, press 'S' followed by:",
+    "mac_sc": "NULL",
+    "pc_sc": "M",
+    "difficulty": 2,
+    "sequential": true
+  },
+  {
+    "display": "to snap to Nearest, press 'S' followed by:",
+    "mac_sc": "NULL",
+    "pc_sc": "N",
+    "difficulty": 2,
+    "sequential": true
+  },
+  {
+    "display": "to turn Snaps off, press 'S' followed by:",
+    "mac_sc": "NULL",
+    "pc_sc": "O",
+    "difficulty": 2,
+    "sequential": true
+  },
+  {
+    "display": "to snap Perpendicular, press 'S' followed by:",
+    "mac_sc": "NULL",
+    "pc_sc": "P",
+    "difficulty": 2,
+    "sequential": true
+  },
+  {
+    "display": "to snap to Quadrants, press 'S' followed by:",
+    "mac_sc": "NULL",
+    "pc_sc": "Q",
+    "difficulty": 3,
+    "sequential": true
+  },
+  {
+    "display": "to snap to Remote Objects, press 'S' followed by:",
+    "mac_sc": "NULL",
+    "pc_sc": "R",
+    "difficulty": 4,
+    "sequential": true
+  },
+  {
+    "display": "to turn Snap Override off, press 'S' followed by:",
+    "mac_sc": "NULL",
+    "pc_sc": "S",
+    "difficulty": 2,
+    "sequential": true
+  },
+  {
+    "display": "to snap to Tangents, press 'S' followed by:",
+    "mac_sc": "NULL",
+    "pc_sc": "T",
+    "difficulty": 3,
+    "sequential": true
+  },
+  {
+    "display": "to snap to the Work Plane Grid, press 'S' followed by:",
+    "mac_sc": "NULL",
+    "pc_sc": "W",
+    "difficulty": 3,
+    "sequential": true
+  },
+  {
+    "display": "to snap to Points, press 'S' followed by:",
+    "mac_sc": "NULL",
+    "pc_sc": "X",
+    "difficulty": 3,
+    "sequential": true
+  },
+  {
+    "display": "to add a structural Beam, press 'B' followed by:",
+    "mac_sc": "NULL",
+    "pc_sc": "M",
+    "difficulty": 2,
+    "sequential": true
+  },
+  {
+    "display": "to add a structural Brace, press 'B' followed by:",
+    "mac_sc": "NULL",
+    "pc_sc": "R",
+    "difficulty": 3,
+    "sequential": true
+  },
+  {
+    "display": "to create a Wall Foundation, press 'F' followed by:",
+    "mac_sc": "NULL",
+    "pc_sc": "T",
+    "difficulty": 3,
+    "sequential": true
+  },
+  {
+    "display": "to edit Reinforcement Numbers, press 'R' followed by:",
+    "mac_sc": "NULL",
+    "pc_sc": "N",
+    "difficulty": 4,
+    "sequential": true
+  },
+  {
+    "display": "to place an Air Terminal, press 'A' followed by:",
+    "mac_sc": "NULL",
+    "pc_sc": "T",
+    "difficulty": 3,
+    "sequential": true
+  },
+  {
+    "display": "to draw Conduit, press 'C' followed by:",
+    "mac_sc": "NULL",
+    "pc_sc": "N",
+    "difficulty": 3,
+    "sequential": true
+  },
+  {
+    "display": "to draw a Cable Tray, press 'C' followed by:",
+    "mac_sc": "NULL",
+    "pc_sc": "T",
+    "difficulty": 3,
+    "sequential": true
+  },
+  {
+    "display": "to convert to Flex Duct, press 'C' followed by:",
+    "mac_sc": "NULL",
+    "pc_sc": "V",
+    "difficulty": 4,
+    "sequential": true
+  },
+  {
+    "display": "to add a Duct Accessory, press 'D' followed by:",
+    "mac_sc": "NULL",
+    "pc_sc": "A",
+    "difficulty": 3,
+    "sequential": true
+  },
+  {
+    "display": "to place a Duct Fitting, press 'D' followed by:",
+    "mac_sc": "NULL",
+    "pc_sc": "F",
+    "difficulty": 3,
+    "sequential": true
+  },
+  {
+    "display": "to draw Duct, press 'D' followed by:",
+    "mac_sc": "NULL",
+    "pc_sc": "T",
+    "difficulty": 3,
+    "sequential": true
+  },
+  {
+    "display": "to place Electrical Equipment, press 'E' followed by:",
+    "mac_sc": "NULL",
+    "pc_sc": "E",
+    "difficulty": 3,
+    "sequential": true
+  },
+  {
+    "display": "to draw Arc Wire, press 'E' followed by:",
+    "mac_sc": "NULL",
+    "pc_sc": "W",
+    "difficulty": 4,
+    "sequential": true
+  },
+  {
+    "display": "to draw Flex Duct, press 'F' followed by:",
+    "mac_sc": "NULL",
+    "pc_sc": "D",
+    "difficulty": 3,
+    "sequential": true
+  },
+  {
+    "display": "to draw Flex Pipe, press 'F' followed by:",
+    "mac_sc": "NULL",
+    "pc_sc": "P",
+    "difficulty": 3,
+    "sequential": true
+  },
+  {
+    "display": "to add a Lighting Fixture, press 'L' followed by:",
+    "mac_sc": "NULL",
+    "pc_sc": "F",
+    "difficulty": 3,
+    "sequential": true
+  },
+  {
+    "display": "to place Mechanical Equipment, press 'M' followed by:",
+    "mac_sc": "NULL",
+    "pc_sc": "E",
+    "difficulty": 3,
+    "sequential": true
+  },
+  {
+    "display": "to place a Conduit Fitting, press 'N' followed by:",
+    "mac_sc": "NULL",
+    "pc_sc": "F",
+    "difficulty": 4,
+    "sequential": true
+  },
+  {
+    "display": "to add a Pipe Accessory, press 'P' followed by:",
+    "mac_sc": "NULL",
+    "pc_sc": "A",
+    "difficulty": 3,
+    "sequential": true
+  },
+  {
+    "display": "to draw a Pipe Fitting, press 'P' followed by:",
+    "mac_sc": "NULL",
+    "pc_sc": "F",
+    "difficulty": 3,
+    "sequential": true
+  },
+  {
+    "display": "to draw Pipe, press 'P' followed by:",
+    "mac_sc": "NULL",
+    "pc_sc": "I",
+    "difficulty": 3,
+    "sequential": true
+  },
+  {
+    "display": "to place a Plumbing Fixture, press 'P' followed by:",
+    "mac_sc": "NULL",
+    "pc_sc": "X",
+    "difficulty": 3,
+    "sequential": true
+  },
+  {
+    "display": "to place a Sprinkler, press 'S' followed by:",
+    "mac_sc": "NULL",
+    "pc_sc": "K",
+    "difficulty": 3,
+    "sequential": true
+  },
+  {
+    "display": "to place a Cable Tray Fitting, press 'T' followed by:",
+    "mac_sc": "NULL",
+    "pc_sc": "F",
+    "difficulty": 4,
+    "sequential": true
+  },
+  {
+    "display": "to open Keyboard Shortcuts, press 'K' followed by:",
+    "mac_sc": "NULL",
+    "pc_sc": "S",
+    "difficulty": 2,
+    "sequential": true
+  },
+  {
+    "display": "to Render in Cloud, press 'R' followed by:",
+    "mac_sc": "NULL",
+    "pc_sc": "D",
+    "difficulty": 4,
+    "sequential": true
+  },
+  {
+    "display": "to open the Render Gallery, press 'R' followed by:",
+    "mac_sc": "NULL",
+    "pc_sc": "G",
+    "difficulty": 4,
+    "sequential": true
+  },
+  {
+    "display": "to Render the view, press 'R' followed by:",
+    "mac_sc": "NULL",
+    "pc_sc": "R",
+    "difficulty": 3,
+    "sequential": true
+  },
+  {
+    "display": "to toggle Thin Lines, press 'T' followed by:",
+    "mac_sc": "NULL",
+    "pc_sc": "L",
+    "difficulty": 1,
+    "sequential": true
+  },
+  {
+    "display": "to open Visibility/Graphics, press 'V' followed by:",
+    "mac_sc": "NULL",
+    "pc_sc": "G|V",
+    "difficulty": 1,
+    "sequential": true
+  },
+  {
+    "display": "to Cascade Windows, press 'W' followed by:",
+    "mac_sc": "NULL",
+    "pc_sc": "C",
+    "difficulty": 3,
+    "sequential": true
+  },
+  {
+    "display": "to Tile Windows, press 'W' followed by:",
+    "mac_sc": "NULL",
+    "pc_sc": "T",
+    "difficulty": 2,
+    "sequential": true
+  },
+  {
+    "display": "to toggle Reveal Constraints mode, press 'C' followed by:",
+    "mac_sc": "NULL",
+    "pc_sc": "X",
+    "difficulty": 3,
+    "sequential": true
+  },
+  {
+    "display": "to open Graphic Display Options, press 'G' followed by:",
+    "mac_sc": "NULL",
+    "pc_sc": "D",
+    "difficulty": 3,
+    "sequential": true
+  },
+  {
+    "display": "to Hide Category, press 'H' followed by:",
+    "mac_sc": "NULL",
+    "pc_sc": "C",
+    "difficulty": 2,
+    "sequential": true
+  },
+  {
+    "display": "to Hide Element, press 'H' followed by:",
+    "mac_sc": "NULL",
+    "pc_sc": "H",
+    "difficulty": 2,
+    "sequential": true
+  },
+  {
+    "display": "to Isolate Element, press 'H' followed by:",
+    "mac_sc": "NULL",
+    "pc_sc": "I",
+    "difficulty": 2,
+    "sequential": true
+  },
+  {
+    "display": "to use Hidden Line visual style, press 'H' followed by:",
+    "mac_sc": "NULL",
+    "pc_sc": "L",
+    "difficulty": 2,
+    "sequential": true
+  },
+  {
+    "display": "to reset Temporary Hide/Isolate, press 'H' followed by:",
+    "mac_sc": "NULL",
+    "pc_sc": "R",
+    "difficulty": 2,
+    "sequential": true
+  },
+  {
+    "display": "to Isolate Category, press 'I' followed by:",
+    "mac_sc": "NULL",
+    "pc_sc": "C",
+    "difficulty": 2,
+    "sequential": true
+  },
+  {
+    "display": "to open Ray Trace, press 'R' followed by:",
+    "mac_sc": "NULL",
+    "pc_sc": "Y",
+    "difficulty": 4,
+    "sequential": true
+  },
+  {
+    "display": "to use Shaded with Edges, press 'S' followed by:",
+    "mac_sc": "NULL",
+    "pc_sc": "D",
+    "difficulty": 2,
+    "sequential": true
+  },
+  {
+    "display": "to use Wireframe visual style, press 'W' followed by:",
+    "mac_sc": "NULL",
+    "pc_sc": "F",
+    "difficulty": 1,
+    "sequential": true
+  }
+]

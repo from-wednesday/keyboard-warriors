@@ -549,5 +549,138 @@
     "mac_sc": "OPTION+SHIFT+ARROWRIGHT",
     "pc_sc": "CTRL+SHIFT+ARROWRIGHT",
     "difficulty": 4
+  },
+  {
+    "display": "open the block menu",
+    "mac_sc": "SLASH",
+    "pc_sc": "SLASH",
+    "difficulty": 1
+  },
+  {
+    "display": "change selected blocks",
+    "mac_sc": "CMD+SLASH",
+    "pc_sc": "CTRL+SLASH",
+    "difficulty": 3
+  },
+  {
+    "display": "nest the current block",
+    "mac_sc": "TAB",
+    "pc_sc": "TAB",
+    "difficulty": 2
+  },
+  {
+    "display": "un-nest the current block",
+    "mac_sc": "SHIFT+TAB",
+    "pc_sc": "SHIFT+TAB",
+    "difficulty": 3
+  },
+  {
+    "display": "open selected image full-screen",
+    "mac_sc": "SPACE",
+    "pc_sc": "SPACE",
+    "difficulty": 3
+  },
+  {
+    "display": "fill table cells right",
+    "mac_sc": "CMD+R",
+    "pc_sc": "CTRL+R",
+    "difficulty": 5,
+    "group": "table_fill"
+  },
+  {
+    "display": "fill table cells down",
+    "mac_sc": "CMD+D",
+    "pc_sc": "CTRL+D",
+    "difficulty": 5,
+    "group": "table_fill"
+  },
+  {
+    "display": "start a bullet before Space",
+    "mac_sc": "MINUS|ASTERISK|PLUS",
+    "pc_sc": "MINUS|ASTERISK|PLUS",
+    "difficulty": 2,
+    "sequential": true
+  },
+  {
+    "display": "after [, finish task box",
+    "mac_sc": "BRACKETRIGHT",
+    "pc_sc": "BRACKETRIGHT",
+    "difficulty": 3,
+    "sequential": true,
+    "group": "bracket_commands"
+  },
+  {
+    "display": "after [, link a page by name",
+    "mac_sc": "BRACKETLEFT",
+    "pc_sc": "BRACKETLEFT",
+    "difficulty": 4,
+    "sequential": true,
+    "group": "bracket_commands"
+  },
+  {
+    "display": "after 1, make numbered item",
+    "mac_sc": "PERIOD",
+    "pc_sc": "PERIOD",
+    "difficulty": 2,
+    "sequential": true
+  },
+  {
+    "display": "make a large heading before Space",
+    "mac_sc": "HASH",
+    "pc_sc": "HASH",
+    "difficulty": 2,
+    "sequential": true,
+    "group": "markdown_heading"
+  },
+  {
+    "display": "after #, make a medium heading",
+    "mac_sc": "HASH",
+    "pc_sc": "HASH",
+    "difficulty": 3,
+    "sequential": true,
+    "group": "markdown_heading"
+  },
+  {
+    "display": "after ##, make a small heading",
+    "mac_sc": "HASH",
+    "pc_sc": "HASH",
+    "difficulty": 3,
+    "sequential": true,
+    "group": "markdown_heading"
+  },
+  {
+    "display": "start a fold-out line before Space",
+    "mac_sc": "MORETHAN",
+    "pc_sc": "MORETHAN",
+    "difficulty": 3,
+    "sequential": true
+  },
+  {
+    "display": "start an indented quote before Space",
+    "mac_sc": "DOUBLEQUOTE",
+    "pc_sc": "DOUBLEQUOTE",
+    "difficulty": 3,
+    "sequential": true
+  },
+  {
+    "display": "after --, finish horizontal divider",
+    "mac_sc": "MINUS",
+    "pc_sc": "MINUS",
+    "difficulty": 1,
+    "sequential": true
+  },
+  {
+    "display": "press this, then type the name of the emoji you want",
+    "mac_sc": "COLON",
+    "pc_sc": "COLON",
+    "difficulty": 3,
+    "sequential": true
+  },
+  {
+    "display": "press this, then type the name of the page to link (or create)",
+    "mac_sc": "PLUS",
+    "pc_sc": "PLUS",
+    "difficulty": 4,
+    "sequential": true
   }
 ]

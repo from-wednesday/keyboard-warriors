@@ -73,8 +73,8 @@
   },
   {
     "display": "Deselect All elements",
-    "mac_sc": "ESC",
-    "pc_sc": "ESC",
+    "mac_sc": "ESCAPE",
+    "pc_sc": "ESCAPE",
     "difficulty": 2
   },
   {
@@ -115,7 +115,7 @@
   },
   {
     "display": "Lock or Unlock the element",
-    "mac_sc": "SHIFT+OPTION+L",
+    "mac_sc": "SHIFT+OPT+L",
     "pc_sc": "SHIFT+ALT+L",
     "difficulty": 4
   },
@@ -163,13 +163,13 @@
   },
   {
     "display": "Copy Text style",
-    "mac_sc": "CMD+OPTION+C",
+    "mac_sc": "CMD+OPT+C",
     "pc_sc": "CTRL+ALT+C",
     "difficulty": 4
   },
   {
     "display": "Paste Text style",
-    "mac_sc": "CMD+OPTION+V",
+    "mac_sc": "CMD+OPT+V",
     "pc_sc": "CTRL+ALT+V",
     "difficulty": 4
   },
@@ -223,13 +223,13 @@
   },
   {
     "display": "bring element to the Front",
-    "mac_sc": "CMD+OPTION+BRACKETRIGHT",
+    "mac_sc": "CMD+OPT+BRACKETRIGHT",
     "pc_sc": "CTRL+ALT+BRACKETRIGHT",
     "difficulty": 4
   },
   {
     "display": "send element to the Back",
-    "mac_sc": "CMD+OPTION+BRACKETLEFT",
+    "mac_sc": "CMD+OPT+BRACKETLEFT",
     "pc_sc": "CTRL+ALT+BRACKETLEFT",
     "difficulty": 4
   },
@@ -277,19 +277,19 @@
   },
   {
     "display": "toggle Presenter mode",
-    "mac_sc": "CMD+OPTION+P",
+    "mac_sc": "CMD+OPT+P",
     "pc_sc": "CTRL+ALT+P",
     "difficulty": 4
   },
   {
     "display": "Go to page",
-    "mac_sc": "CMD+OPTION+G",
+    "mac_sc": "CMD+OPT+G",
     "pc_sc": "CTRL+ALT+G",
     "difficulty": 4
   },
   {
     "display": "toggle Grid view",
-    "mac_sc": "CMD+OPTION+3",
+    "mac_sc": "CMD+OPT+3",
     "pc_sc": "CTRL+ALT+3",
     "difficulty": 4
   },
@@ -313,7 +313,7 @@
   },
   {
     "display": "toggle Full screen mode",
-    "mac_sc": "CMD+OPTION+F",
+    "mac_sc": "CMD+OPT+F",
     "pc_sc": "CTRL+ALT+F",
     "difficulty": 4
   },
@@ -349,19 +349,19 @@
   },
   {
     "display": "delete the current Page",
-    "mac_sc": "CMD+OPTION+DELETE",
+    "mac_sc": "CMD+OPT+DELETE",
     "pc_sc": "CTRL+ALT+DELETE",
     "difficulty": 4
   },
   {
     "display": "move to Next page",
-    "mac_sc": "OPTION+ARROWDOWN",
+    "mac_sc": "OPT+ARROWDOWN",
     "pc_sc": "ALT+ARROWDOWN",
     "difficulty": 3
   },
   {
     "display": "move to Previous page",
-    "mac_sc": "OPTION+ARROWUP",
+    "mac_sc": "OPT+ARROWUP",
     "pc_sc": "ALT+ARROWUP",
     "difficulty": 3
   },
@@ -447,14 +447,14 @@
   },
   {
     "display": "go to First slide",
-    "mac_sc": "UP",
-    "pc_sc": "UP",
+    "mac_sc": "ARROWUP",
+    "pc_sc": "ARROWUP",
     "difficulty": 3
   },
   {
     "display": "exit Presentation mode",
-    "mac_sc": "ESC",
-    "pc_sc": "ESC",
+    "mac_sc": "ESCAPE",
+    "pc_sc": "ESCAPE",
     "difficulty": 2
   },
   {
@@ -477,13 +477,13 @@
   },
   {
     "display": "align elements to Top",
-    "mac_sc": "OPTION+SHIFT+T",
+    "mac_sc": "OPT+SHIFT+T",
     "pc_sc": "ALT+SHIFT+T",
     "difficulty": 4
   },
   {
     "display": "align elements to Bottom",
-    "mac_sc": "OPTION+SHIFT+B",
+    "mac_sc": "OPT+SHIFT+B",
     "pc_sc": "ALT+SHIFT+B",
     "difficulty": 4
   },
@@ -507,25 +507,25 @@
   },
   {
     "display": "align elements to Left edge",
-    "mac_sc": "OPTION+SHIFT+L",
+    "mac_sc": "OPT+SHIFT+L",
     "pc_sc": "ALT+SHIFT+L",
     "difficulty": 4
   },
   {
     "display": "align elements to Right edge",
-    "mac_sc": "OPTION+SHIFT+R",
+    "mac_sc": "OPT+SHIFT+R",
     "pc_sc": "ALT+SHIFT+R",
     "difficulty": 4
   },
   {
     "display": "align elements to Center horizontally",
-    "mac_sc": "OPTION+SHIFT+C",
+    "mac_sc": "OPT+SHIFT+C",
     "pc_sc": "ALT+SHIFT+C",
     "difficulty": 4
   },
   {
     "display": "align elements to Middle vertically",
-    "mac_sc": "OPTION+SHIFT+M",
+    "mac_sc": "OPT+SHIFT+M",
     "pc_sc": "ALT+SHIFT+M",
     "difficulty": 4
   },
@@ -567,14 +567,14 @@
   },
       {
     "display": "increase line spacing",
-    "mac_sc": "CMD+OPT+UP",
-    "pc_sc": "CTRL+ALT+UP",
+    "mac_sc": "CMD+OPT+ARROWUP",
+    "pc_sc": "CTRL+ALT+ARROWUP",
     "difficulty": 4
   },
     {
     "display": "decrease line spacing",
-    "mac_sc": "CMD+OPT+DOWN",
-    "pc_sc": "CTRL+ALT+DOWN",
+    "mac_sc": "CMD+OPT+ARROWDOWN",
+    "pc_sc": "CTRL+ALT+ARROWDOWN",
     "difficulty": 3
   },
   {
@@ -669,7 +669,7 @@
   },
   {
     "display": "hold to scale from Center",
-    "mac_sc": "OPTION",
+    "mac_sc": "OPT",
     "pc_sc": "ALT",
     "difficulty": 2
   },
@@ -693,13 +693,13 @@
   },
   {
     "display": "toggle Comment panel",
-    "mac_sc": "CMD+OPTION+M",
+    "mac_sc": "CMD+OPT+M",
     "pc_sc": "CTRL+ALT+M",
     "difficulty": 5
   },
   {
     "display": "add a new Comment",
-    "mac_sc": "OPTION+CMD+M",
+    "mac_sc": "OPT+CMD+M",
     "pc_sc": "ALT+CTRL+M",
     "difficulty": 4
   },
@@ -710,7 +710,7 @@
     "difficulty": 4
   },
   {
-    "display": "hold this to click on an elicpsed object",
+    "display": "hold this to click on an eclipsed object",
     "mac_sc": "CMD",
     "pc_sc": "CTRL",
     "difficulty": 3
@@ -765,13 +765,13 @@
   },
   {
     "display": "show Grid baseline alignment",
-    "mac_sc": "OPTION+SHIFT+G",
+    "mac_sc": "OPT+SHIFT+G",
     "pc_sc": "ALT+SHIFT+G",
     "difficulty": 4
   },
     {
     "display": "show Layers",
-    "mac_sc": "OPTION+1",
+    "mac_sc": "OPT+1",
     "pc_sc": "ALT+1",
     "difficulty": 4
   },
@@ -779,6 +779,18 @@
     "display": "toggle margins Visibility",
     "mac_sc": "SHIFT+M",
     "pc_sc": "SHIFT+M",
+    "difficulty": 3
+  },
+  {
+    "display": "search designs",
+    "mac_sc": "CMD+SLASH",
+    "pc_sc": "CTRL+SLASH",
+    "difficulty": 2
+  },
+  {
+    "display": "open Brand panel",
+    "mac_sc": "SHIFT+B",
+    "pc_sc": "SHIFT+B",
     "difficulty": 3
   }
 ]

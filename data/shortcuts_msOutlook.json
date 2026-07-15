@@ -682,5 +682,161 @@
     "mac_sc": "CMD+QUESTION",
     "pc_sc": "F1|ALT+Q",
     "difficulty": 2
+  },
+  {
+    "display": "open selected message",
+    "mac_sc": "CMD+O",
+    "pc_sc": "CTRL+O",
+    "difficulty": 2
+  },
+  {
+    "display": "permanently delete selected message",
+    "mac_sc": "SHIFT+DELETE",
+    "pc_sc": "SHIFT+DELETE",
+    "difficulty": 3
+  },
+  {
+    "display": "reply with a meeting request",
+    "mac_sc": "NULL",
+    "pc_sc": "CTRL+ALT+R",
+    "difficulty": 4
+  },
+  {
+    "display": "forward message as attachment",
+    "mac_sc": "NULL",
+    "pc_sc": "CTRL+ALT+F",
+    "difficulty": 4
+  },
+  {
+    "display": "show selected item properties",
+    "mac_sc": "NULL",
+    "pc_sc": "ALT+RETURN",
+    "difficulty": 4
+  },
+  {
+    "display": "show blocked external content",
+    "mac_sc": "NULL",
+    "pc_sc": "CTRL+SHIFT+I",
+    "difficulty": 4
+  },
+  {
+    "display": "show MailTip for composed message",
+    "mac_sc": "NULL",
+    "pc_sc": "CTRL+ALT+P",
+    "difficulty": 5
+  },
+  {
+    "display": "find next match in item",
+    "mac_sc": "CMD+G",
+    "pc_sc": "SHIFT+F4",
+    "difficulty": 4
+  },
+  {
+    "display": "find previous match in item",
+    "mac_sc": "CMD+SHIFT+G",
+    "pc_sc": "NULL",
+    "difficulty": 4
+  },
+  {
+    "display": "attach file to open message",
+    "mac_sc": "CMD+E",
+    "pc_sc": "NULL",
+    "difficulty": 3
+  },
+  {
+    "display": "mark folder messages as read",
+    "mac_sc": "CMD+OPT+T",
+    "pc_sc": "NULL",
+    "difficulty": 4
+  },
+  {
+    "display": "create a new Task",
+    "mac_sc": "NULL",
+    "pc_sc": "CTRL+SHIFT+K",
+    "difficulty": 3
+  },
+  {
+    "display": "create a new Contact",
+    "mac_sc": "NULL",
+    "pc_sc": "CTRL+SHIFT+C",
+    "difficulty": 3
+  },
+  {
+    "display": "create a Contact Group",
+    "mac_sc": "NULL",
+    "pc_sc": "CTRL+SHIFT+L",
+    "difficulty": 4
+  },
+  {
+    "display": "create a Search Folder",
+    "mac_sc": "NULL",
+    "pc_sc": "CTRL+SHIFT+P",
+    "difficulty": 4
+  },
+  {
+    "display": "search current folder",
+    "mac_sc": "NULL",
+    "pc_sc": "CTRL+ALT+K",
+    "difficulty": 4
+  },
+  {
+    "display": "search subfolders too",
+    "mac_sc": "NULL",
+    "pc_sc": "CTRL+ALT+Z",
+    "difficulty": 4
+  },
+  {
+    "display": "go to previous Calendar period",
+    "mac_sc": "CMD+OPT+ARROWLEFT",
+    "pc_sc": "CTRL+ALT+ARROWLEFT",
+    "difficulty": 4
+  },
+  {
+    "display": "go to next Calendar period",
+    "mac_sc": "CMD+OPT+ARROWRIGHT",
+    "pc_sc": "CTRL+ALT+ARROWRIGHT",
+    "difficulty": 4
+  },
+  {
+    "display": "flag item for tomorrow",
+    "mac_sc": "CONTROL+2",
+    "pc_sc": "NULL",
+    "difficulty": 4,
+    "group": "flag_due_date"
+  },
+  {
+    "display": "flag item for this week",
+    "mac_sc": "CONTROL+3",
+    "pc_sc": "NULL",
+    "difficulty": 4,
+    "group": "flag_due_date"
+  },
+  {
+    "display": "flag item for next week",
+    "mac_sc": "CONTROL+4",
+    "pc_sc": "NULL",
+    "difficulty": 4,
+    "group": "flag_due_date"
+  },
+  {
+    "display": "flag item with no due date",
+    "mac_sc": "CONTROL+5",
+    "pc_sc": "NULL",
+    "difficulty": 4,
+    "group": "flag_due_date"
+  },
+  {
+    "display": "flag item with custom due date",
+    "mac_sc": "CONTROL+6",
+    "pc_sc": "CTRL+SHIFT+G",
+    "difficulty": 5,
+    "group": "flag_due_date"
+  },
+  {
+    "display": "flag item and add reminder",
+    "mac_sc": "CONTROL+EQUAL",
+    "pc_sc": "NULL",
+    "difficulty": 5,
+    "group": "flag_due_date"
   }
 ]

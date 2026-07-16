@@ -9,7 +9,7 @@
 <title>Keyboard Warriors</title>
 <script>
   const DefaultTitle = 'Keyboard Warriors';
-  const VersionLabel   = '0039';
+  const VersionLabel   = '0040';
   const TitlePrefix  = document.title !== DefaultTitle ? document.title.trim() + '_' : '';
   const DBG_DEVICE   = TitlePrefix + VersionLabel;
 </script>
@@ -1722,6 +1722,7 @@ function buildKeyboard(isMini) {
       rowEl.appendChild(el);
     });
   });
+  _syncTouchConflictWarnings();
 }
 
 /* ══════════════════════════════════════
@@ -2229,6 +2230,7 @@ function _setHasKeyboard(persist) {
   _cancelPillAutoHideTimer();
   _pillDismissedThisSession = true;
   osMismatchEl.classList.remove('show', 'clickable');
+  _syncTouchConflictWarnings();
   if (!persist) { _rebuildKeyboardIfHasKeyboardJustConfirmed(WasConfirmedBeforeThisCall); return; }
   var already = false;
   try { already = localStorage.getItem('kw_has_keyboard') === '1'; } catch(e) {}
@@ -3166,8 +3168,8 @@ function clearAllLit() {
   // Cancel all linger timers first so no deferred class changes fire after we clear
   Object.keys(lingerTimers).forEach(k => { clearTimeout(lingerTimers[k]); delete lingerTimers[k]; });
   Object.entries(keyEls).forEach(([code, el]) => {
-    el.classList.remove('lit-green-up','lit-green-down','lit-orange-up','lit-orange-down','lit-fading');
-    // CapsLock indicator is managed independently -- do not clear it here
+      el.classList.remove('lit-green-up','lit-green-down','lit-orange-up','lit-orange-down','lit-fading','resting-touch-conflict');
+      // CapsLock indicator is managed independently -- do not clear it here
     if (code !== 'CapsLock') {
       void el.offsetWidth; // force reflow to abort any in-progress CSS transitions on this key
     }
@@ -3180,9 +3182,9 @@ function clearAllLit() {
   ExtendedKeyChipElement.innerHTML = '';
   greenHeld.clear();
   stickyLit.clear();
+  conflictsKbLighting.refreshTouchWarnings();
 }
-
-function setKeyLit(code, state) {
+  function setKeyLit(code, state) {
   const el = keyEls[code];
   if (!el) return;
   if (lingerTimers[code]) { clearTimeout(lingerTimers[code]); delete lingerTimers[code]; }
@@ -3198,10 +3200,11 @@ function fadeKeyOut(code) {
     delete lingerTimers[code];
     el.classList.add('lit-fading');
     // Next frame: remove the lit colour so the slow transition takes over
-    requestAnimationFrame(() => requestAnimationFrame(() => {
-      el.classList.remove('lit-green-up','lit-green-down','lit-orange-up','lit-orange-down');
-      setTimeout(() => el.classList.remove('lit-fading'), 900);
-    }));
+      requestAnimationFrame(() => requestAnimationFrame(() => {
+        el.classList.remove('lit-green-up','lit-green-down','lit-orange-up','lit-orange-down');
+        conflictsKbLighting.refreshTouchWarnings();
+        setTimeout(() => el.classList.remove('lit-fading'), 900);
+      }));
   }, LINGER_MS);
 }
 
@@ -4101,6 +4104,7 @@ function _stopReadyPromptTimer() {
 
 function enterPause(instantBlur) {
   gameState = 'paused';
+  _syncTouchConflictWarnings();
   if (pauseStartTime === null) pauseStartTime = performance.now();
   clearInterval(timerInterval);
   clearTimeout(penaltyTimeout);
@@ -4192,6 +4196,7 @@ function confirmQuitNo() {
 
 function unpause() {
   gameState = 'playing';
+  _syncTouchConflictWarnings();
   if (pauseStartTime !== null) { accumulatedPauseMs += performance.now() - pauseStartTime; pauseStartTime = null; }
   transitioning = false;  // clear any skip/timeout animation interrupted by pausing
   // If diagnostic answer was revealed
@@ -4707,6 +4712,7 @@ function hideConfirmHeading() {
 
 function _resetToIdleSilently() {
   gameState = 'idle';
+  _syncTouchConflictWarnings();
   _wasPlaying = false;
   idleHeldTokens.clear();
   _resetIdlePreviewState();
@@ -4753,6 +4759,7 @@ function _resetToIdleSilently() {
 
 function resetToIdle() {
   gameState = 'idle';
+  _syncTouchConflictWarnings();
   _wasPlaying = false;
   idleHeldTokens.clear();
   _resetIdlePreviewState();
@@ -5973,8 +5980,8 @@ function setTouchEnabled(on) {
   // regardless of stickyKeysOn, so the dot communicates that even on keyboard-less devices.
   var StickyRadioElement = document.getElementById('stickyRadio');
   if (StickyRadioElement) StickyRadioElement.classList.toggle('touch-owns-sticky', on && !stickyKeysOn);
+  _syncTouchConflictWarnings();
 }
-
 
 function setSoundEnabled(on) {
   soundEnabled = on;
@@ -6100,6 +6107,7 @@ function setKeyboardDisplayMode(mode) {
   var previous = keyboardDisplayMode;
   keyboardDisplayMode = mode;
   SaveKeyboardSettings();
+  _syncTouchConflictWarnings();
 
   // Update pill button active states
   var NoneBtn      = document.getElementById('kbDisplayNoneBtn');
@@ -9186,15 +9194,15 @@ function _allConflictTokensNormalised() {
         });
       }, FLASH_DURATION_MS);
     });
-  }
-
-  // ── Event handlers ───────────────────────────────────────────────────────
-
-// Removes a key from the held set and restores its resting/fade visual.
+    }
+    refreshTouchWarnings();
+    // ── Event handlers ───────────────────────────────────────────────────────
+  // Removes a key from the held set and restores its resting/fade visual.
   // Shared by genuine keyup events and by sticky toggle-off keydowns, so
   // both paths release a key the same way.
   function _releaseKey(BrowserCode) {
     _heldKeys.delete(BrowserCode);
+    refreshTouchWarnings();
 
     // The chord tracking above runs always, app-wide. Everything below is
     // purely visual feedback on the on-screen keyboard, so it only matters
@@ -9232,6 +9240,7 @@ function _allConflictTokensNormalised() {
     }
 
     _heldKeys.add(Event.code);
+    refreshTouchWarnings();
 
      if (_isModifierCode(Event.code)) {
       if (_active) {
@@ -9317,6 +9326,128 @@ _applyKeyPressedColour(Event.code);
   function resetOnBlur() {
     _heldKeys = new Set();
     if (_active) _applyAllKeyColours();
+    if (_touchWarningsActive) _applyTouchWarningColours();
+  }
+
+  // ── Touch-warning mode (game + freestyle) ───────────────────────────────
+  // Active whenever touchEnabled and a physical keyboard are both true (see
+  // _syncTouchConflictWarnings in the main script). In that combination,
+  // buildPool() stops excluding dismissed conflicts from the question pool,
+  // since a click on the graphical keyboard never reaches the browser or OS.
+  // But the player could still press the real keyboard by mistake, so known
+  // conflicts are tinted yellow at rest as a warning. Deliberately narrower
+  // than the Conflicts panel's own lighting: no sus or found-tab shading,
+  // just a plain check against dismissedConflicts, and it must never
+  // override the main game's green or orange correctness lighting on a key.
+  var _touchWarningsActive = false;
+  var CLS_TOUCH_WARNING = 'resting-touch-conflict';
+
+  function _keyIsGameplayLit(KeyElement) {
+    return KeyElement.classList.contains('lit-green-up')  || KeyElement.classList.contains('lit-green-down') ||
+           KeyElement.classList.contains('lit-orange-up') || KeyElement.classList.contains('lit-orange-down');
+  }
+
+  // Returns true if pressing BrowserCode right now, given whatever is
+  // currently held, would complete a chord that is in dismissedConflicts.
+  // Covers both directions: holding a modifier and checking the letter that
+  // would complete it, and holding a letter and checking which modifier would.
+  function _wouldCompleteADismissedChord(BrowserCode) {
+    if (BrowserCode === 'CapsLock') return false;
+    if (!dismissedConflicts.size) return false;
+
+    var ModifierToken = _modifierTokenForCode(BrowserCode);
+
+    if (ModifierToken !== null) {
+      var PartnerAlreadyHeld = false;
+      _heldKeys.forEach(function(HeldCode) {
+        if (HeldCode !== BrowserCode && _modifierTokenForCode(HeldCode) === ModifierToken) PartnerAlreadyHeld = true;
+      });
+      if (PartnerAlreadyHeld) return false;
+    }
+
+    var HeldModifierTokens = new Set();
+    _heldKeys.forEach(function(HeldCode) {
+      var Token = _modifierTokenForCode(HeldCode);
+      if (Token) HeldModifierTokens.add(Token);
+    });
+
+    var ModifierChecksFor = function(Parsed) {
+      return [
+        [Parsed.requiresCmd,     'CMD'],     [Parsed.requiresShift,  'SHIFT'],
+        [Parsed.requiresOption,  'OPTION'],  [Parsed.requiresControl,'CONTROL'],
+        [Parsed.requiresWin,     'WIN'],     [Parsed.requiresFn,     'FN'],
+        [Parsed.requiresGlobe,   'GLOBE'],   [Parsed.requiresSearch, 'SEARCH'],
+      ];
+    };
+
+    if (ModifierToken !== null) {
+      var CompletesConflict = false;
+      dismissedConflicts.forEach(function(ConflictToken) {
+        if (CompletesConflict) return;
+        var Parsed = ParseShortcutString(ConflictToken);
+        if (!Parsed || !Parsed.keyToken) return;
+        var ConflictKeyIsHeld = false;
+        _heldKeys.forEach(function(HeldCode) {
+          if (_browserCodeToToken(HeldCode) === Parsed.keyToken) ConflictKeyIsHeld = true;
+        });
+        if (!ConflictKeyIsHeld) return;
+        var MissingCount     = 0;
+        var MissingIsThisOne = false;
+        ModifierChecksFor(Parsed).forEach(function(Check) {
+          if (Check[0] && !HeldModifierTokens.has(Check[1])) {
+            MissingCount++;
+            if (Check[1] === ModifierToken) MissingIsThisOne = true;
+          }
+        });
+        if (MissingCount === 1 && MissingIsThisOne) CompletesConflict = true;
+      });
+      return CompletesConflict;
+    }
+
+    var CandidateKeyToken = _browserCodeToToken(BrowserCode);
+    if (!CandidateKeyToken) return false;
+
+    var IsBlocked = false;
+    dismissedConflicts.forEach(function(ConflictToken) {
+      if (IsBlocked) return;
+      var Parsed = ParseShortcutString(ConflictToken);
+      if (!Parsed || Parsed.keyToken !== CandidateKeyToken) return;
+      var AllRequirementsHeld = ModifierChecksFor(Parsed).every(function(Check) {
+        return !Check[0] || HeldModifierTokens.has(Check[1]);
+      });
+      if (AllRequirementsHeld) IsBlocked = true;
+    });
+    return IsBlocked;
+  }
+
+  function _applyTouchWarningColours() {
+    Object.keys(keyEls).forEach(function(BrowserCode) {
+      var KeyElement = keyEls[BrowserCode];
+      if (!KeyElement || _keyIsGameplayLit(KeyElement)) return;
+      KeyElement.classList.toggle(CLS_TOUCH_WARNING, _wouldCompleteADismissedChord(BrowserCode));
+    });
+  }
+
+  function _clearTouchWarningColours() {
+    Object.keys(keyEls).forEach(function(BrowserCode) {
+      if (keyEls[BrowserCode]) keyEls[BrowserCode].classList.remove(CLS_TOUCH_WARNING);
+    });
+  }
+
+  function activateTouchWarnings() {
+    if (_touchWarningsActive) return;
+    _touchWarningsActive = true;
+    _applyTouchWarningColours();
+  }
+
+  function deactivateTouchWarnings() {
+    if (!_touchWarningsActive) return;
+    _touchWarningsActive = false;
+    _clearTouchWarningColours();
+  }
+
+  function refreshTouchWarnings() {
+    if (_touchWarningsActive) _applyTouchWarningColours();
   }
 
   // Chord tracking and dismissed/sus restoration need to work everywhere in
@@ -9328,8 +9459,27 @@ _applyKeyPressedColour(Event.code);
   document.addEventListener('keydown', _onKeydown, true);
   document.addEventListener('keyup',   _onKeyup,   true);
 
-  return { activate: activate, deactivate: deactivate, refresh: refresh, markSusBlocked: markSusBlocked, resetOnBlur: resetOnBlur };
+  return {
+    activate: activate, deactivate: deactivate, refresh: refresh, markSusBlocked: markSusBlocked, resetOnBlur: resetOnBlur,
+    activateTouchWarnings: activateTouchWarnings, deactivateTouchWarnings: deactivateTouchWarnings, refreshTouchWarnings: refreshTouchWarnings,
+  };
 }());
+
+// Sole controller for touch-warning mode: recomputes whether it should be
+// on, and flips it via conflictsKbLighting accordingly. Cross-training is
+// excluded (see project notes on the Conflicted Shortcuts panel), as is the
+// Conflicts panel itself, which already has its own, more thorough amber
+// lighting for the same keyboard.
+function _syncTouchConflictWarnings() {
+  var ShouldWarn = touchEnabled
+    && _hasKeyboardConfirmed()
+    && !_isCrossTrainingModifierPositions()
+    && keyboardDisplayMode !== 'none'
+    && activeSettings !== 'panelConflicts'
+    && (gameState === 'idle' || gameState === 'playing');
+  if (ShouldWarn) conflictsKbLighting.activateTouchWarnings();
+  else            conflictsKbLighting.deactivateTouchWarnings();
+}
 
 // Per-key overrides for extended keyboard keys, set via the keyboard conflicts tab.
 // Tracks which extended key browser-codes have been individually toggled by the user.
@@ -11564,6 +11714,7 @@ function defeatMessage(answersStillLeft) {
 
 function enterDefeat() {
   gameState = 'finished';
+  _syncTouchConflictWarnings();
   setAppSelectorGameActive(false);
   clearInterval(timerInterval);
   clearTimeout(penaltyTimeout);
@@ -11642,6 +11793,7 @@ scoreDisc.className = 'scoreDisc medal-lead';
 
 function startGame() {
   gameState = 'playing';
+  _syncTouchConflictWarnings();
   _rotationHintActive = false;
   setAppSelectorGameActive(true);
   clearTimeout(endScreenInactivityTimer);
@@ -11959,6 +12111,7 @@ const completedRun = runData.slice();
 runData.length = 0;
 lastCompletedReport = finalizeRunData(completedRun, questionPool, 0); EndGamePagesMaxContentHeightPhone = 0;
   gameState = 'finished';
+  _syncTouchConflictWarnings();
   setAppSelectorGameActive(false);
   clearInterval(timerInterval);
   clearTimeout(penaltyTimeout);
@@ -15057,13 +15210,13 @@ function _activateBlurPauseScreen() {
 
     var _btConflictInfo   = getBrowserConflicts();
     var _btToken          = CanonicaliseShortcutToken((currentAnswer || '').split('|')[0]);
-    var _btIsConflicted   = _hasKeyboardConfirmed() && (
+    var _btIsConflicted   = _hasKeyboardConfirmed() && !_isCrossTrainingModifierPositions() && (
       dismissedConflicts.has(_btToken) ||
       (_btConflictInfo.susKeys && _btConflictInfo.susKeys.has(_btToken))
     );
 
     if (_btIsConflicted) {
-      titleEl.textContent = 'We lost you for a moment.';
+      titleEl.textContent = 'We think you might have left by mistake.';
       _blurDiagnosticShortcutToken = currentAnswer;
       _blurDiagnosticFlowComplete  = true;
 
@@ -15103,8 +15256,11 @@ function _activateBlurPauseScreen() {
 
       var _btBottomRow = document.getElementById('blurDiagnosticBottomRow');
       if (_btBottomRow) { _btBottomRow.style.display = 'none'; _btBottomRow.innerHTML = ''; }
-    } else {
-      titleEl.textContent = 'Lost you for a moment,\nso I paused your game.';
+} else {
+      var _btShouldWarnGenerally = _hasKeyboardConfirmed() && !_isCrossTrainingModifierPositions();
+      titleEl.textContent = _btShouldWarnGenerally
+        ? 'Because you\u2019re training with both your real keyboard and the virtual keyboard active, we\u2019re colouring conflicted keys to let you know. You should avoid using your real keyboard for those.'
+        : 'Lost you for a moment,\nso I paused your game.';
       SetKeyboardPositionForPanel('panelPause');
     }
     return;

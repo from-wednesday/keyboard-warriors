@@ -22,6 +22,7 @@
   { "label": "Acrobat",           "path": "/keyboard-warriors/data/shortcuts_acrobat.json",         "column": 1, "skillset": ["Productivity"],             "standby": ["Graphics"] },
   { "label": "Notion",            "path": "/keyboard-warriors/data/shortcuts_notion.json",          "column": 3, "skillset": ["Productivity"],             "standby": ["Dev", "UIUX"] },
   { "label": "Apple Keynote",     "path": "/keyboard-warriors/data/shortcuts_apple_keynote.json",   "column": 3, "skillset": [],                           "standby": ["Productivity"] },
+  { "label": "Apple Keynote",     "path": "/keyboard-warriors/data/shortcuts_apple_garageBand.json","column": 3, "skillset": [],                           "standby": ["Audio"] },
   { "label": "Canva",             "path": "/keyboard-warriors/data/shortcuts_canva.json",           "column": 2, "skillset": ["Photography"],              "standby": ["Graphics", "Productivity"] },
   { "label": "[Au] Audition",     "path": "/keyboard-warriors/data/shortcuts_audition.json",        "column": 1, "skillset": ["Audio"],                    "standby": [] },
   { "label": "Ableton Live 12",   "path": "/keyboard-warriors/data/shortcuts_live12.json",          "column": 4, "skillset": ["Audio"],                    "standby": [] },

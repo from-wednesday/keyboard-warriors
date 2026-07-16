@@ -10982,7 +10982,7 @@ function _onAppsLoaded(AllAppsFromJson) {
 
   var PersistedLabels = null;
   try {
-    var RawSaved = localStorage.getItem('kw_apps_short_list');
+    var RawSaved = _skillsetCameFromUrlParam ? null : localStorage.getItem('kw_apps_short_list');
     if (RawSaved) {
       var ParsedSaved = JSON.parse(RawSaved);
       if (Array.isArray(ParsedSaved) && ParsedSaved.length > 0) {
@@ -11007,7 +11007,7 @@ function _onAppsLoaded(AllAppsFromJson) {
   var DefaultStandbyLabels = _BuildStandbyDefaultsForSkillset(currentSkillset, AllAppsFromJson, DefaultShortLabels);
   var PersistedStandbyLabels = null;
   try {
-    var RawSavedStandby = localStorage.getItem('kw_apps_standby_list');
+    var RawSavedStandby = _skillsetCameFromUrlParam ? null : localStorage.getItem('kw_apps_standby_list');
     if (RawSavedStandby) {
       var ParsedStandby = JSON.parse(RawSavedStandby);
       if (Array.isArray(ParsedStandby) && ParsedStandby.length > 0) {
@@ -11031,6 +11031,7 @@ function _onAppsLoaded(AllAppsFromJson) {
   }
 
   _appListInitialised = true;
+  if (_skillsetCameFromUrlParam) _saveAppsShortList();
   buildAppPill();
   positionIcons();
   _initSkillsetPillAfterAppsLoad();
@@ -16858,7 +16859,14 @@ function _closeSkillsetPill() {
 }
 var _skillsetPillInitialised = false;
 
+// True for the remainder of this page load when the active skillset came
+// from an explicit ?skillset= URL parameter, rather than storage or the
+// hardwired default. Read by _onAppsLoaded so a deliberate skillset switch
+// is never silently overridden by a previously saved personal app list.
+var _skillsetCameFromUrlParam = false;
+
 function _resolvePreferredSkillset() {
+  _skillsetCameFromUrlParam = false;
   var HardwiredDefault = 'Graphic Design';
   var StoredPreference = null;
   try { StoredPreference = localStorage.getItem('kw_preferred_skillset'); } catch (StorageError) {}
@@ -16878,6 +16886,7 @@ function _resolvePreferredSkillset() {
 
   // Param present: always update the stored preference
   if (UrlParamMatch) {
+    _skillsetCameFromUrlParam = true;
     try { localStorage.setItem('kw_preferred_skillset', UrlParamMatch); } catch (StorageError) {}
     return UrlParamMatch;
   }

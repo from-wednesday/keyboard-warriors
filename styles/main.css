@@ -4376,32 +4376,54 @@ body.phone-layout-active {
 .conflict-filter-pill .conflict-filter-seg:last-child  { border-radius: 0 18px 18px 0; }
 
 /* ══════════════════════════════════════
-   LARGE SCREEN ZOOM
-   Scales the entire UI proportionally
-   on large monitors.
+LARGE SCREEN ZOOM
+Scales the entire UI proportionally
+on large monitors.
+
+Each breakpoint's min-height is set so
+that the effective CSS viewport height
+after zoom is at least 800px, giving the
+content enough room in all UI states
+(including settings panels open with the
+keyboard tilted). Formula: min-height =
+800 × zoom_factor.
+
+Panoramic screens (e.g. 2560×1080 or
+3840×1080) naturally fall back to the
+lower zoom tier because their height
+does not reach the higher tier's
+min-height, preventing bottom clipping.
 ══════════════════════════════════════ */
-@media (min-width: 1600px) and (min-height: 870px) {
-  body {
-    zoom: 1.2;
-    justify-content: flex-start;
-    padding-top: 40px;
-  }
+@media (min-width: 1600px) and (min-height: 960px) {
+body {
+zoom: 1.2;
+justify-content: flex-start;
+padding-top: 40px;
+}
 }
 
-@media (min-width: 2000px) and (min-height: 1060px) {
-  body {
-    zoom: 1.45;
-    justify-content: flex-start;
-    padding-top: 40px;
-  }
+@media (min-width: 2000px) and (min-height: 1160px) {
+body {
+zoom: 1.45;
+justify-content: flex-start;
+padding-top: 40px;
+}
 }
 
-@media (min-width: 2600px) and (min-height: 1270px) {
-  body {
-    zoom: 1.75;
-    justify-content: flex-start;
-    padding-top: 40px;
-  }
+@media (min-width: 2600px) and (min-height: 1400px) {
+body {
+zoom: 1.75;
+justify-content: flex-start;
+padding-top: 40px;
+}
+}
+
+@media (min-width: 3500px) and (min-height: 1600px) {
+body {
+zoom: 2.0;
+justify-content: flex-start;
+padding-top: 40px;
+}
 }
 
 /* ── Wrench icon colour ─────────────────────────────────────────────────── */

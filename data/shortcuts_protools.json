@@ -1,0 +1,2478 @@
+[
+  {
+    "display": "create new Session",
+    "mac_sc": "CMD+N",
+    "pc_sc": "CTRL+N",
+    "difficulty": 1
+  },
+  {
+    "display": "open Session",
+    "mac_sc": "CMD+O",
+    "pc_sc": "CTRL+O",
+    "difficulty": 1
+  },
+  {
+    "display": "open recent Session",
+    "mac_sc": "CMD+SHIFT+O",
+    "pc_sc": "CTRL+SHIFT+O",
+    "difficulty": 3
+  },
+  {
+    "display": "close Session",
+    "mac_sc": "CMD+SHIFT+W",
+    "pc_sc": "CTRL+SHIFT+W",
+    "difficulty": 3
+  },
+  {
+    "display": "save Session",
+    "mac_sc": "CMD+S",
+    "pc_sc": "CTRL+S",
+    "difficulty": 0
+  },
+  {
+    "display": "save Session as",
+    "mac_sc": "CMD+CONTROL+S",
+    "pc_sc": "CTRL+WIN+S",
+    "difficulty": 4
+  },
+  {
+    "display": "open Revision History",
+    "mac_sc": "CMD+CONTROL+O",
+    "pc_sc": "CTRL+WIN+O",
+    "difficulty": 5
+  },
+  {
+    "display": "bounce to Disk",
+    "mac_sc": "CMD+OPT+B",
+    "pc_sc": "CTRL+ALT+B",
+    "difficulty": 3
+  },
+  {
+    "display": "import Session Data",
+    "mac_sc": "SHIFT+OPT+I",
+    "pc_sc": "SHIFT+ALT+I",
+    "difficulty": 4
+  },
+  {
+    "display": "import Audio",
+    "mac_sc": "CMD+SHIFT+I",
+    "pc_sc": "CTRL+SHIFT+I",
+    "difficulty": 3
+  },
+  {
+    "display": "import MIDI",
+    "mac_sc": "CMD+OPT+I",
+    "pc_sc": "CTRL+ALT+I",
+    "difficulty": 4
+  },
+  {
+    "display": "print Score",
+    "mac_sc": "CMD+P",
+    "pc_sc": "CTRL+P",
+    "difficulty": 2
+  },
+  {
+    "display": "redo",
+    "mac_sc": "CMD+SHIFT+Z",
+    "pc_sc": "CTRL+SHIFT+Z",
+    "difficulty": 1
+  },
+  {
+    "display": "restore last selection",
+    "mac_sc": "CMD+OPT+Z",
+    "pc_sc": "CTRL+ALT+Z",
+    "difficulty": 4
+  },
+  {
+    "display": "cut selection",
+    "mac_sc": "CMD+X",
+    "pc_sc": "CTRL+X",
+    "difficulty": 0
+  },
+  {
+    "display": "copy selection",
+    "mac_sc": "CMD+C",
+    "pc_sc": "CTRL+C",
+    "difficulty": 0
+  },
+  {
+    "display": "paste selection",
+    "mac_sc": "CMD+V",
+    "pc_sc": "CTRL+V",
+    "difficulty": 0
+  },
+  {
+    "display": "clear selection",
+    "mac_sc": "CMD+B",
+    "pc_sc": "CTRL+B",
+    "difficulty": 1
+  },
+  {
+    "display": "select all",
+    "mac_sc": "CMD+A",
+    "pc_sc": "CTRL+A",
+    "difficulty": 0
+  },
+  {
+    "display": "paste special merge",
+    "mac_sc": "OPT+M",
+    "pc_sc": "ALT+M",
+    "difficulty": 4
+  },
+  {
+    "display": "repeat selection",
+    "mac_sc": "OPT+R",
+    "pc_sc": "ALT+R",
+    "difficulty": 4
+  },
+  {
+    "display": "shift selection",
+    "mac_sc": "OPT+H",
+    "pc_sc": "ALT+H",
+    "difficulty": 4
+  },
+  {
+    "display": "insert Silence",
+    "mac_sc": "CMD+SHIFT+E",
+    "pc_sc": "CTRL+SHIFT+E",
+    "difficulty": 3
+  },
+  {
+    "display": "trim Clip to selection",
+    "mac_sc": "CMD+T",
+    "pc_sc": "CTRL+T",
+    "difficulty": 3
+  },
+  {
+    "display": "trim Clip start to insertion",
+    "mac_sc": "OPT+SHIFT+7",
+    "pc_sc": "ALT+SHIFT+7",
+    "difficulty": 4
+  },
+  {
+    "display": "trim Clip end to insertion",
+    "mac_sc": "OPT+SHIFT+8",
+    "pc_sc": "ALT+SHIFT+8",
+    "difficulty": 4
+  },
+  {
+    "display": "trim Clip to file start",
+    "mac_sc": "CMD+CONTROL+R",
+    "pc_sc": "CTRL+WIN+R",
+    "difficulty": 5
+  },
+  {
+    "display": "trim Clip to file end",
+    "mac_sc": "CMD+CONTROL+Y",
+    "pc_sc": "CTRL+WIN+Y",
+    "difficulty": 5
+  },
+  {
+    "display": "trim Clip to file boundaries",
+    "mac_sc": "CMD+CONTROL+T",
+    "pc_sc": "CTRL+WIN+T",
+    "difficulty": 5
+  },
+  {
+    "display": "Separate Clip (with Keyboard Focus enabled)",
+    "mac_sc": "B",
+    "pc_sc": "B",
+    "difficulty": 6
+  },
+  {
+    "display": "Separate Clip",
+    "mac_sc": "CMD+E",
+    "pc_sc": "CTRL+E",
+    "difficulty": 6
+  },
+  {
+    "display": "Separate Clip",
+    "mac_sc": "B|CMD+E",
+    "pc_sc": "B|CTRL+E",
+    "difficulty": 2
+  },
+  {
+    "display": "fade from Clip start (with Keyboard Focus enabled)",
+    "mac_sc": "D",
+    "pc_sc": "D",
+    "difficulty": 6
+  },
+  {
+    "display": "fade to Start",
+    "mac_sc": "CONTROL+D",
+    "pc_sc": "WIN+D",
+    "difficulty": 6
+  },
+  {
+    "display": "fade to Start",
+    "mac_sc": "D|CONTROL+D",
+    "pc_sc": "D|WIN+D",
+    "difficulty": 4
+  },
+  {
+    "display": "create crossfade without dialog (with Keyboard Focus enabled)",
+    "mac_sc": "F",
+    "pc_sc": "F",
+    "difficulty": 6
+  },
+  {
+    "display": "apply crossfade without Fade dialog",
+    "mac_sc": "CMD+CONTROL+F",
+    "pc_sc": "CTRL+WIN+F",
+    "difficulty": 6
+  },
+  {
+    "display": "apply crossfade without Fade dialog",
+    "mac_sc": "F|CMD+CONTROL+F",
+    "pc_sc": "F|CTRL+WIN+F",
+    "difficulty": 4
+  },
+  {
+    "display": "fade out to Clip end (with Keyboard Focus enabled)",
+    "mac_sc": "G",
+    "pc_sc": "G",
+    "difficulty": 6
+  },
+  {
+    "display": "fade to End",
+    "mac_sc": "CONTROL+G",
+    "pc_sc": "WIN+G",
+    "difficulty": 6
+  },
+  {
+    "display": "fade to End",
+    "mac_sc": "G|CONTROL+G",
+    "pc_sc": "G|WIN+G",
+    "difficulty": 4
+  },
+  {
+    "display": "toggle Zoom (with Keyboard Focus enabled)",
+    "mac_sc": "E",
+    "pc_sc": "E",
+    "difficulty": 6
+  },
+  {
+    "display": "toggle Zoom",
+    "mac_sc": "CONTROL+E",
+    "pc_sc": "WIN+E",
+    "difficulty": 6
+  },
+  {
+    "display": "toggle Zoom",
+    "mac_sc": "E|CONTROL+E",
+    "pc_sc": "E|WIN+E",
+    "difficulty": 4
+  },
+  {
+    "display": "enable Edit Window Keyboard Focus",
+    "mac_sc": "CMD+OPT+1",
+    "pc_sc": "CTRL+ALT+1",
+    "difficulty": 4
+  },
+  {
+    "display": "enable Clip List Keyboard Focus",
+    "mac_sc": "CMD+OPT+2",
+    "pc_sc": "CTRL+ALT+2",
+    "difficulty": 5
+  },
+  {
+    "display": "enable Groups List Keyboard Focus",
+    "mac_sc": "CMD+OPT+3",
+    "pc_sc": "CTRL+ALT+3",
+    "difficulty": 5
+  },
+  {
+    "display": "recall Zoom Memory 1",
+    "mac_sc": "1",
+    "pc_sc": "1",
+    "difficulty": 5
+  },
+  {
+    "display": "recall Zoom Memory 2",
+    "mac_sc": "2",
+    "pc_sc": "2",
+    "difficulty": 5
+  },
+  {
+    "display": "recall Zoom Memory 3",
+    "mac_sc": "3",
+    "pc_sc": "3",
+    "difficulty": 5
+  },
+  {
+    "display": "recall Zoom Memory 4",
+    "mac_sc": "4",
+    "pc_sc": "4",
+    "difficulty": 5
+  },
+  {
+    "display": "recall Zoom Memory 5",
+    "mac_sc": "5",
+    "pc_sc": "5",
+    "difficulty": 5
+  },
+  {
+    "display": "play to Edit start",
+    "mac_sc": "6",
+    "pc_sc": "6",
+    "difficulty": 5
+  },
+  {
+    "display": "play from Edit start",
+    "mac_sc": "7",
+    "pc_sc": "7",
+    "difficulty": 5
+  },
+  {
+    "display": "play to Edit end",
+    "mac_sc": "8",
+    "pc_sc": "8",
+    "difficulty": 5
+  },
+  {
+    "display": "play from Edit end",
+    "mac_sc": "9",
+    "pc_sc": "9",
+    "difficulty": 5
+  },
+  {
+    "display": "copy Edit selection to Timeline selection",
+    "mac_sc": "0",
+    "pc_sc": "0",
+    "difficulty": 5
+  },
+  {
+    "display": "toggle Playlist View for selected tracks",
+    "mac_sc": "MINUS",
+    "pc_sc": "MINUS",
+    "difficulty": 5
+  },
+  {
+    "display": "show Timeline selection start",
+    "mac_sc": "Q",
+    "pc_sc": "Q",
+    "difficulty": 5
+  },
+  {
+    "display": "show Timeline selection end",
+    "mac_sc": "W",
+    "pc_sc": "W",
+    "difficulty": 5
+  },
+  {
+    "display": "zoom out horizontally",
+    "mac_sc": "R",
+    "pc_sc": "R",
+    "difficulty": 4
+  },
+  {
+    "display": "zoom in horizontally",
+    "mac_sc": "T",
+    "pc_sc": "T",
+    "difficulty": 4
+  },
+  {
+    "display": "move Clip start to current timecode",
+    "mac_sc": "Y",
+    "pc_sc": "Y",
+    "difficulty": 5
+  },
+  {
+    "display": "move Clip sync point to current timecode",
+    "mac_sc": "U",
+    "pc_sc": "U",
+    "difficulty": 5
+  },
+  {
+    "display": "snap Clip end to current timecode",
+    "mac_sc": "I",
+    "pc_sc": "I",
+    "difficulty": 5
+  },
+  {
+    "display": "copy Timeline selection to Edit selection",
+    "mac_sc": "O",
+    "pc_sc": "O",
+    "difficulty": 5
+  },
+  {
+    "display": "move Edit insertion to previous track",
+    "mac_sc": "P",
+    "pc_sc": "P",
+    "difficulty": 5
+  },
+  {
+    "display": "play Edit selection",
+    "mac_sc": "BRACKETLEFT",
+    "pc_sc": "BRACKETLEFT",
+    "difficulty": 5
+  },
+  {
+    "display": "play Timeline selection",
+    "mac_sc": "BRACKETRIGHT",
+    "pc_sc": "BRACKETRIGHT",
+    "difficulty": 5
+  },
+  {
+    "display": "nudge Play earlier by grid",
+    "mac_sc": "COMMA",
+    "pc_sc": "COMMA",
+    "difficulty": 5
+  },
+  {
+    "display": "nudge Play later by grid",
+    "mac_sc": "PERIOD",
+    "pc_sc": "PERIOD",
+    "difficulty": 5
+  },
+  {
+    "display": "nudge Play later by next larger grid",
+    "mac_sc": "SLASH",
+    "pc_sc": "SLASH",
+    "difficulty": 5
+  },
+  {
+    "display": "nudge Play earlier by next larger grid",
+    "mac_sc": "M",
+    "pc_sc": "M",
+    "difficulty": 5
+  },
+  {
+    "display": "trim Clip start to cursor",
+    "mac_sc": "A",
+    "pc_sc": "A",
+    "difficulty": 5
+  },
+  {
+    "display": "trim Clip end to cursor",
+    "mac_sc": "S",
+    "pc_sc": "S",
+    "difficulty": 5
+  },
+  {
+    "display": "snap Clip start to play position",
+    "mac_sc": "H",
+    "pc_sc": "H",
+    "difficulty": 5
+  },
+  {
+    "display": "snap Clip sync point to play position",
+    "mac_sc": "J",
+    "pc_sc": "J",
+    "difficulty": 5
+  },
+  {
+    "display": "snap Clip end to play position",
+    "mac_sc": "K",
+    "pc_sc": "K",
+    "difficulty": 5
+  },
+  {
+    "display": "move Edit insertion to previous edit",
+    "mac_sc": "L",
+    "pc_sc": "L",
+    "difficulty": 5
+  },
+  {
+    "display": "move Edit insertion to next track",
+    "mac_sc": "SEMICOLON",
+    "pc_sc": "SEMICOLON",
+    "difficulty": 5
+  },
+  {
+    "display": "move Edit insertion to next edit",
+    "mac_sc": "QUOTE",
+    "pc_sc": "QUOTE",
+    "difficulty": 5
+  },
+  {
+    "display": "toggle Insertion Follows Playback",
+    "mac_sc": "N",
+    "pc_sc": "N",
+    "difficulty": 5
+  },
+  {
+    "display": "open Pro Tools Search",
+    "mac_sc": "CONTROL+SHIFT+S",
+    "pc_sc": "WIN+SHIFT+S",
+    "difficulty": 4
+  },
+  {
+    "display": "run selected Pro Tools Search result",
+    "mac_sc": "RETURN",
+    "pc_sc": "ENTER",
+    "difficulty": 5
+  },
+  {
+    "display": "move up Pro Tools Search results",
+    "mac_sc": "ARROWUP",
+    "pc_sc": "ARROWUP",
+    "difficulty": 5
+  },
+  {
+    "display": "move down Pro Tools Search results",
+    "mac_sc": "ARROWDOWN",
+    "pc_sc": "ARROWDOWN",
+    "difficulty": 5
+  },
+  {
+    "display": "open Keyboard Shortcuts window",
+    "mac_sc": "CONTROL+SHIFT+K",
+    "pc_sc": "WIN+SHIFT+K",
+    "difficulty": 4
+  },
+  {
+    "display": "edit selected shortcut assignment",
+    "mac_sc": "SPACE",
+    "pc_sc": "SPACE",
+    "difficulty": 5
+  },
+  {
+    "display": "start or stop Playback",
+    "mac_sc": "SPACE",
+    "pc_sc": "SPACE",
+    "difficulty": 1
+  },
+  {
+    "display": "pause Playback",
+    "mac_sc": "CONTROL+SPACE",
+    "pc_sc": "WIN+SPACE",
+    "difficulty": 4
+  },
+  {
+    "display": "play Edit selection",
+    "mac_sc": "OPT+BRACKETLEFT",
+    "pc_sc": "ALT+BRACKETLEFT",
+    "difficulty": 4
+  },
+  {
+    "display": "toggle Loop Playback",
+    "mac_sc": "CMD+SHIFT+L",
+    "pc_sc": "CTRL+SHIFT+L",
+    "difficulty": 3
+  },
+  {
+    "display": "start Recording",
+    "mac_sc": "CMD+SPACE|F12|NUMPAD3",
+    "pc_sc": "CTRL+SPACE|F12|NUMPAD3",
+    "difficulty": 2
+  },
+  {
+    "display": "stop Recording",
+    "mac_sc": "SPACE",
+    "pc_sc": "SPACE",
+    "difficulty": 1
+  },
+  {
+    "display": "stop Recording and discard take",
+    "mac_sc": "CMD+PERIOD",
+    "pc_sc": "CTRL+PERIOD",
+    "difficulty": 4
+  },
+  {
+    "display": "toggle Online Record",
+    "mac_sc": "CMD+OPT+SPACE",
+    "pc_sc": "CTRL+ALT+SPACE",
+    "difficulty": 4
+  },
+  {
+    "display": "toggle Loop Record",
+    "mac_sc": "OPT+L",
+    "pc_sc": "ALT+L",
+    "difficulty": 3
+  },
+  {
+    "display": "toggle QuickPunch",
+    "mac_sc": "CMD+SHIFT+P",
+    "pc_sc": "CTRL+SHIFT+P",
+    "difficulty": 4
+  },
+  {
+    "display": "enter or exit Recording during QuickPunch",
+    "mac_sc": "CMD+SPACE|F12",
+    "pc_sc": "CTRL+SPACE|F12",
+    "difficulty": 4
+  },
+  {
+    "display": "toggle pre-roll and post-roll time",
+    "mac_sc": "CMD+K",
+    "pc_sc": "CTRL+K",
+    "difficulty": 3
+  },
+  {
+    "display": "play or stop from numeric keypad",
+    "mac_sc": "NUMPAD0",
+    "pc_sc": "NUMPAD0",
+    "difficulty": 3
+  },
+  {
+    "display": "rewind from numeric keypad",
+    "mac_sc": "NUMPAD1",
+    "pc_sc": "NUMPAD1",
+    "difficulty": 3
+  },
+  {
+    "display": "fast forward from numeric keypad",
+    "mac_sc": "NUMPAD2",
+    "pc_sc": "NUMPAD2",
+    "difficulty": 3
+  },
+  {
+    "display": "record-enable from numeric keypad",
+    "mac_sc": "NUMPAD3",
+    "pc_sc": "NUMPAD3",
+    "difficulty": 3
+  },
+  {
+    "display": "toggle Loop Playback from numeric keypad",
+    "mac_sc": "NUMPAD4",
+    "pc_sc": "NUMPAD4",
+    "difficulty": 4
+  },
+  {
+    "display": "toggle Loop Record from numeric keypad",
+    "mac_sc": "NUMPAD5",
+    "pc_sc": "NUMPAD5",
+    "difficulty": 4
+  },
+  {
+    "display": "toggle QuickPunch from numeric keypad",
+    "mac_sc": "NUMPAD6",
+    "pc_sc": "NUMPAD6",
+    "difficulty": 4
+  },
+  {
+    "display": "toggle Click from numeric keypad",
+    "mac_sc": "NUMPAD7",
+    "pc_sc": "NUMPAD7",
+    "difficulty": 4
+  },
+  {
+    "display": "toggle Countoff from numeric keypad",
+    "mac_sc": "NUMPAD8",
+    "pc_sc": "NUMPAD8",
+    "difficulty": 4
+  },
+  {
+    "display": "toggle MIDI Merge or Replace from numeric keypad",
+    "mac_sc": "NUMPAD9",
+    "pc_sc": "NUMPAD9",
+    "difficulty": 5
+  },
+  {
+    "display": "Shuttle Mode: 1x forward playback",
+    "mac_sc": "NUMPAD6",
+    "pc_sc": "NUMPAD6",
+    "difficulty": 5,
+    "group": "shuttle_speeds"
+  },
+  {
+    "display": "Shuttle Mode: 1x rewind playback",
+    "mac_sc": "NUMPAD4",
+    "pc_sc": "NUMPAD4",
+    "difficulty": 5,
+    "group": "shuttle_speeds"
+  },
+  {
+    "display": "Shuttle Mode: 4x forward playback",
+    "mac_sc": "NUMPAD9",
+    "pc_sc": "NUMPAD9",
+    "difficulty": 5,
+    "group": "shuttle_speeds"
+  },
+  {
+    "display": "Shuttle Mode: 4x rewind playback",
+    "mac_sc": "NUMPAD7",
+    "pc_sc": "NUMPAD7",
+    "difficulty": 5,
+    "group": "shuttle_speeds"
+  },
+  {
+    "display": "Shuttle Mode: quarter-speed forward playback",
+    "mac_sc": "NUMPAD3",
+    "pc_sc": "NUMPAD3",
+    "difficulty": 5,
+    "group": "shuttle_speeds"
+  },
+  {
+    "display": "Shuttle Mode: quarter-speed rewind playback",
+    "mac_sc": "NUMPAD1",
+    "pc_sc": "NUMPAD1",
+    "difficulty": 5,
+    "group": "shuttle_speeds"
+  },
+  {
+    "display": "Shuttle Mode: loop playback of Edit selection",
+    "mac_sc": "NUMPAD0",
+    "pc_sc": "NUMPAD0",
+    "difficulty": 5,
+    "group": "shuttle_speeds"
+  },
+  {
+    "display": "Shuttle Mode: half-speed forward playback",
+    "mac_sc": "NUMPAD5+NUMPAD6",
+    "pc_sc": "NUMPAD5+NUMPAD6",
+    "difficulty": 5,
+    "group": "shuttle_speeds"
+  },
+  {
+    "display": "Shuttle Mode: half-speed rewind playback",
+    "mac_sc": "NUMPAD5+NUMPAD4",
+    "pc_sc": "NUMPAD5+NUMPAD4",
+    "difficulty": 5,
+    "group": "shuttle_speeds"
+  },
+  {
+    "display": "Shuttle Mode: 2x forward playback",
+    "mac_sc": "NUMPAD8+NUMPAD9",
+    "pc_sc": "NUMPAD8+NUMPAD9",
+    "difficulty": 5,
+    "group": "shuttle_speeds"
+  },
+  {
+    "display": "Shuttle Mode: 2x backward playback",
+    "mac_sc": "NUMPAD8+NUMPAD7",
+    "pc_sc": "NUMPAD8+NUMPAD7",
+    "difficulty": 5,
+    "group": "shuttle_speeds"
+  },
+  {
+    "display": "Shuttle Mode: sixteenth-speed forward playback",
+    "mac_sc": "NUMPAD2+NUMPAD3",
+    "pc_sc": "NUMPAD2+NUMPAD3",
+    "difficulty": 5,
+    "group": "shuttle_speeds"
+  },
+  {
+    "display": "Shuttle Mode: sixteenth-speed backward playback",
+    "mac_sc": "NUMPAD2+NUMPAD1",
+    "pc_sc": "NUMPAD2+NUMPAD1",
+    "difficulty": 5,
+    "group": "shuttle_speeds"
+  },
+  {
+    "display": "switch to Shuffle mode",
+    "mac_sc": "F1|OPT+1",
+    "pc_sc": "F1|ALT+1",
+    "difficulty": 2
+  },
+  {
+    "display": "switch to Slip mode",
+    "mac_sc": "F2|OPT+2",
+    "pc_sc": "F2|ALT+2",
+    "difficulty": 2
+  },
+  {
+    "display": "switch to Spot mode",
+    "mac_sc": "F3|OPT+3",
+    "pc_sc": "F3|ALT+3",
+    "difficulty": 3
+  },
+  {
+    "display": "switch to Grid mode",
+    "mac_sc": "F4|OPT+4",
+    "pc_sc": "F4|ALT+4",
+    "difficulty": 2
+  },
+  {
+    "display": "enable Snap to Grid while in another Edit mode",
+    "mac_sc": "SHIFT+F4",
+    "pc_sc": "SHIFT+F4",
+    "difficulty": 3
+  },
+  {
+    "display": "switch to Zoomer tool",
+    "mac_sc": "F5|CMD+1",
+    "pc_sc": "F5|CTRL+1",
+    "difficulty": 2
+  },
+  {
+    "display": "switch to Trimmer tool",
+    "mac_sc": "F6|CMD+2",
+    "pc_sc": "F6|CTRL+2",
+    "difficulty": 2
+  },
+  {
+    "display": "switch to Selector tool",
+    "mac_sc": "F7|CMD+3",
+    "pc_sc": "F7|CTRL+3",
+    "difficulty": 2
+  },
+  {
+    "display": "switch to Grabber tool",
+    "mac_sc": "F8|CMD+4",
+    "pc_sc": "F8|CTRL+4",
+    "difficulty": 2
+  },
+  {
+    "display": "switch to Scrubber tool",
+    "mac_sc": "F9|CMD+5",
+    "pc_sc": "F9|CTRL+5",
+    "difficulty": 3
+  },
+  {
+    "display": "switch to Pencil tool",
+    "mac_sc": "F10|CMD+6",
+    "pc_sc": "F10|CTRL+6",
+    "difficulty": 3
+  },
+  {
+    "display": "switch to Smart Tool",
+    "mac_sc": "F6+F7|F7+F8|CMD+7",
+    "pc_sc": "F6+F7|F7+F8|CTRL+7",
+    "difficulty": 3
+  },
+  {
+    "display": "cycle through Edit modes",
+    "mac_sc": "GRAVE",
+    "pc_sc": "GRAVE",
+    "difficulty": 3
+  },
+  {
+    "display": "cycle through Edit tools",
+    "mac_sc": "ESCAPE",
+    "pc_sc": "ESCAPE",
+    "difficulty": 3
+  },
+  {
+    "display": "lock or unlock Shuffle mode",
+    "mac_sc": "CMD",
+    "pc_sc": "CTRL",
+    "difficulty": 5
+  },
+  {
+    "display": "toggle Tab to Transients",
+    "mac_sc": "CMD+OPT+TAB",
+    "pc_sc": "CTRL+ALT+TAB",
+    "difficulty": 4
+  },
+  {
+    "display": "with Tab to Transients on, locate next transient",
+    "mac_sc": "TAB",
+    "pc_sc": "TAB",
+    "difficulty": 3
+  },
+  {
+    "display": "with Tab to Transients on, locate previous transient",
+    "mac_sc": "OPT+TAB",
+    "pc_sc": "CTRL+TAB",
+    "difficulty": 4
+  },
+  {
+    "display": "with Tab to Transients off, locate next Clip boundary",
+    "mac_sc": "TAB",
+    "pc_sc": "TAB",
+    "difficulty": 3
+  },
+  {
+    "display": "with Tab to Transients off, locate previous Clip boundary",
+    "mac_sc": "OPT+TAB",
+    "pc_sc": "CTRL+TAB",
+    "difficulty": 4
+  },
+  {
+    "display": "go to and select next Clip",
+    "mac_sc": "CONTROL+TAB",
+    "pc_sc": "WIN+TAB",
+    "difficulty": 5
+  },
+  {
+    "display": "go to and select previous Clip",
+    "mac_sc": "CONTROL+OPT+TAB",
+    "pc_sc": "WIN+CTRL+TAB",
+    "difficulty": 5
+  },
+  {
+    "display": "go to Song start",
+    "mac_sc": "CONTROL+RETURN",
+    "pc_sc": "WIN+ENTER",
+    "difficulty": 4
+  },
+  {
+    "display": "extend selection to Song start",
+    "mac_sc": "SHIFT+CONTROL+RETURN",
+    "pc_sc": "SHIFT+WIN+ENTER",
+    "difficulty": 5
+  },
+  {
+    "display": "extend selection to next Clip boundary",
+    "mac_sc": "SHIFT+TAB",
+    "pc_sc": "SHIFT+TAB",
+    "difficulty": 4
+  },
+  {
+    "display": "extend selection to previous Clip boundary",
+    "mac_sc": "OPT+SHIFT+TAB",
+    "pc_sc": "CTRL+SHIFT+TAB",
+    "difficulty": 5
+  },
+  {
+    "display": "return to start of session",
+    "mac_sc": "RETURN",
+    "pc_sc": "ENTER",
+    "difficulty": 2
+  },
+  {
+    "display": "go to end of session",
+    "mac_sc": "OPT+RETURN",
+    "pc_sc": "CTRL+ENTER",
+    "difficulty": 3
+  },
+  {
+    "display": "extend selection to start of session",
+    "mac_sc": "SHIFT+RETURN",
+    "pc_sc": "SHIFT+ENTER",
+    "difficulty": 4
+  },
+  {
+    "display": "extend selection to end of session",
+    "mac_sc": "OPT+SHIFT+RETURN",
+    "pc_sc": "CTRL+SHIFT+ENTER",
+    "difficulty": 5
+  },
+  {
+    "display": "link Timeline and Edit selection",
+    "mac_sc": "SHIFT+SLASH",
+    "pc_sc": "SHIFT+SLASH",
+    "difficulty": 4
+  },
+  {
+    "display": "move selection forward by its length",
+    "mac_sc": "CMD+CONTROL+OPT+QUOTE",
+    "pc_sc": "CTRL+ALT+WIN+QUOTE",
+    "difficulty": 5
+  },
+  {
+    "display": "move selection backward by its length",
+    "mac_sc": "CMD+CONTROL+OPT+L",
+    "pc_sc": "CTRL+ALT+WIN+L",
+    "difficulty": 5
+  },
+  {
+    "display": "double the Edit selection length",
+    "mac_sc": "CMD+CONTROL+OPT+SHIFT+QUOTE",
+    "pc_sc": "CTRL+ALT+WIN+SHIFT+QUOTE",
+    "difficulty": 5
+  },
+  {
+    "display": "halve the Edit selection length",
+    "mac_sc": "CMD+CONTROL+OPT+SHIFT+L",
+    "pc_sc": "CTRL+ALT+WIN+SHIFT+L",
+    "difficulty": 5
+  },
+  {
+    "display": "move selection up through tracks",
+    "mac_sc": "CONTROL+P",
+    "pc_sc": "WIN+P",
+    "difficulty": 4
+  },
+  {
+    "display": "move selection down through tracks",
+    "mac_sc": "CONTROL+SEMICOLON",
+    "pc_sc": "WIN+SEMICOLON",
+    "difficulty": 4
+  },
+  {
+    "display": "extend selection up through tracks",
+    "mac_sc": "CONTROL+SHIFT+P",
+    "pc_sc": "WIN+SHIFT+P",
+    "difficulty": 5
+  },
+  {
+    "display": "extend selection down through tracks",
+    "mac_sc": "CONTROL+SHIFT+SEMICOLON",
+    "pc_sc": "WIN+SHIFT+SEMICOLON",
+    "difficulty": 5
+  },
+  {
+    "display": "retract selection up from tracks",
+    "mac_sc": "CONTROL+OPT+P",
+    "pc_sc": "WIN+ALT+P",
+    "difficulty": 5
+  },
+  {
+    "display": "retract selection down from tracks",
+    "mac_sc": "CONTROL+OPT+SEMICOLON",
+    "pc_sc": "CTRL+ALT+SEMICOLON",
+    "difficulty": 5
+  },
+  {
+    "display": "record-enable tracks containing Edit cursor",
+    "mac_sc": "SHIFT+R",
+    "pc_sc": "SHIFT+R",
+    "difficulty": 4
+  },
+  {
+    "display": "input-monitor tracks containing Edit cursor",
+    "mac_sc": "SHIFT+I",
+    "pc_sc": "SHIFT+I",
+    "difficulty": 4
+  },
+  {
+    "display": "solo tracks containing Edit cursor",
+    "mac_sc": "SHIFT+S",
+    "pc_sc": "SHIFT+S",
+    "difficulty": 4
+  },
+  {
+    "display": "mute tracks containing Edit cursor",
+    "mac_sc": "SHIFT+M",
+    "pc_sc": "SHIFT+M",
+    "difficulty": 4
+  },
+  {
+    "display": "move insertion to start of Edit selection",
+    "mac_sc": "ARROWDOWN",
+    "pc_sc": "ARROWDOWN",
+    "difficulty": 4
+  },
+  {
+    "display": "move insertion to end of Edit selection",
+    "mac_sc": "ARROWUP",
+    "pc_sc": "ARROWUP",
+    "difficulty": 4
+  },
+  {
+    "display": "change lane height for lanes containing Edit cursor",
+    "mac_sc": "CONTROL+ARROWUP|CONTROL+ARROWDOWN",
+    "pc_sc": "WIN+ARROWUP|WIN+ARROWDOWN",
+    "difficulty": 5
+  },
+  {
+    "display": "increase Grid value",
+    "mac_sc": "SHIFT+EQUAL",
+    "pc_sc": "SHIFT+EQUAL",
+    "difficulty": 3
+  },
+  {
+    "display": "decrease Grid value",
+    "mac_sc": "SHIFT+MINUS",
+    "pc_sc": "SHIFT+MINUS",
+    "difficulty": 3
+  },
+  {
+    "display": "increase Nudge value",
+    "mac_sc": "SHIFT+OPT+EQUAL",
+    "pc_sc": "SHIFT+ALT+EQUAL",
+    "difficulty": 4
+  },
+  {
+    "display": "decrease Nudge value",
+    "mac_sc": "SHIFT+OPT+MINUS",
+    "pc_sc": "SHIFT+ALT+MINUS",
+    "difficulty": 4
+  },
+  {
+    "display": "increase Nudge value from numeric keypad",
+    "mac_sc": "CMD+OPT+NUMPADADD",
+    "pc_sc": "CTRL+ALT+NUMPADADD",
+    "difficulty": 5
+  },
+  {
+    "display": "decrease Nudge value from numeric keypad",
+    "mac_sc": "CMD+OPT+NUMPADSUBTRACT",
+    "pc_sc": "CTRL+ALT+NUMPADSUBTRACT",
+    "difficulty": 5
+  },
+  {
+    "display": "increase Grid value from numeric keypad",
+    "mac_sc": "CONTROL+OPT+NUMPADADD",
+    "pc_sc": "WIN+ALT+NUMPADADD",
+    "difficulty": 5
+  },
+  {
+    "display": "decrease Grid value from numeric keypad",
+    "mac_sc": "CONTROL+OPT+NUMPADSUBTRACT",
+    "pc_sc": "WIN+ALT+NUMPADSUBTRACT",
+    "difficulty": 5
+  },
+  {
+    "display": "nudge selection earlier by Nudge value",
+    "mac_sc": "NUMPADSUBTRACT|COMMA",
+    "pc_sc": "NUMPADSUBTRACT|COMMA",
+    "difficulty": 4
+  },
+  {
+    "display": "nudge selection later by Nudge value",
+    "mac_sc": "NUMPADADD|PERIOD",
+    "pc_sc": "NUMPADADD|PERIOD",
+    "difficulty": 4
+  },
+  {
+    "display": "nudge Clip start or end earlier",
+    "mac_sc": "SHIFT+NUMPADSUBTRACT",
+    "pc_sc": "SHIFT+NUMPADSUBTRACT",
+    "difficulty": 5
+  },
+  {
+    "display": "nudge Clip start or end later",
+    "mac_sc": "SHIFT+NUMPADADD",
+    "pc_sc": "SHIFT+NUMPADADD",
+    "difficulty": 5
+  },
+  {
+    "display": "nudge data within Clip earlier",
+    "mac_sc": "CONTROL+NUMPADSUBTRACT",
+    "pc_sc": "WIN+NUMPADSUBTRACT",
+    "difficulty": 5
+  },
+  {
+    "display": "nudge data within Clip later",
+    "mac_sc": "CONTROL+NUMPADADD",
+    "pc_sc": "WIN+NUMPADADD",
+    "difficulty": 5
+  },
+  {
+    "display": "nudge left selection boundary earlier",
+    "mac_sc": "OPT+SHIFT+NUMPADSUBTRACT",
+    "pc_sc": "ALT+SHIFT+NUMPADSUBTRACT",
+    "difficulty": 5
+  },
+  {
+    "display": "nudge left selection boundary later",
+    "mac_sc": "OPT+SHIFT+NUMPADADD",
+    "pc_sc": "ALT+SHIFT+NUMPADADD",
+    "difficulty": 5
+  },
+  {
+    "display": "nudge right selection boundary earlier",
+    "mac_sc": "CMD+SHIFT+NUMPADSUBTRACT",
+    "pc_sc": "CTRL+SHIFT+NUMPADSUBTRACT",
+    "difficulty": 5
+  },
+  {
+    "display": "nudge right selection boundary later",
+    "mac_sc": "CMD+SHIFT+NUMPADADD",
+    "pc_sc": "CTRL+SHIFT+NUMPADADD",
+    "difficulty": 5
+  },
+  {
+    "display": "trim left edge of Clip earlier",
+    "mac_sc": "OPT+NUMPADSUBTRACT",
+    "pc_sc": "ALT+NUMPADSUBTRACT",
+    "difficulty": 4
+  },
+  {
+    "display": "trim left edge of Clip later",
+    "mac_sc": "OPT+NUMPADADD",
+    "pc_sc": "ALT+NUMPADADD",
+    "difficulty": 4
+  },
+  {
+    "display": "trim right edge of Clip earlier",
+    "mac_sc": "CMD+NUMPADSUBTRACT",
+    "pc_sc": "CTRL+NUMPADSUBTRACT",
+    "difficulty": 4
+  },
+  {
+    "display": "trim right edge of Clip later",
+    "mac_sc": "CMD+NUMPADADD",
+    "pc_sc": "CTRL+NUMPADADD",
+    "difficulty": 4
+  },
+  {
+    "display": "reverse Trimmer direction while trimming Clip",
+    "mac_sc": "OPT",
+    "pc_sc": "ALT",
+    "difficulty": 4
+  },
+  {
+    "display": "trim up to adjacent Clips without crossing them",
+    "mac_sc": "CONTROL",
+    "pc_sc": "WIN",
+    "difficulty": 4
+  },
+  {
+    "display": "tandem trim with Trimmer tool",
+    "mac_sc": "CMD+CONTROL",
+    "pc_sc": "CTRL+WIN",
+    "difficulty": 5
+  },
+  {
+    "display": "delete selection in playlist",
+    "mac_sc": "BACKSPACE|DELETE",
+    "pc_sc": "BACKSPACE|DELETE",
+    "difficulty": 1
+  },
+  {
+    "display": "clear all track data within selection",
+    "mac_sc": "CMD+DELETE",
+    "pc_sc": "CTRL+BACKSPACE|CTRL+DELETE",
+    "difficulty": 4
+  },
+  {
+    "display": "cycle through matches for selected Clip",
+    "mac_sc": "CMD+OPT+ARROWUP|CMD+OPT+ARROWDOWN",
+    "pc_sc": "CTRL+ALT+ARROWUP|CTRL+ALT+ARROWDOWN",
+    "difficulty": 5
+  },
+  {
+    "display": "constrain Clip movement vertically",
+    "mac_sc": "CONTROL",
+    "pc_sc": "WIN",
+    "difficulty": 4
+  },
+  {
+    "display": "snap Clip start to playhead or selection start",
+    "mac_sc": "CONTROL",
+    "pc_sc": "WIN",
+    "difficulty": 4
+  },
+  {
+    "display": "snap Clip sync point to playhead or selection start",
+    "mac_sc": "CONTROL+SHIFT",
+    "pc_sc": "WIN+SHIFT",
+    "difficulty": 4
+  },
+  {
+    "display": "snap Clip end to playhead or selection end",
+    "mac_sc": "CMD+CONTROL",
+    "pc_sc": "CTRL+WIN",
+    "difficulty": 4
+  },
+  {
+    "display": "constrain TCE or Elastic trimming to adjacent Clips",
+    "mac_sc": "CONTROL",
+    "pc_sc": "WIN",
+    "difficulty": 4
+  },
+  {
+    "display": "show or hide Clip Gain Line",
+    "mac_sc": "CONTROL+SHIFT+MINUS",
+    "pc_sc": "WIN+SHIFT+MINUS",
+    "difficulty": 4
+  },
+  {
+    "display": "show or hide Clip Gain Info",
+    "mac_sc": "CONTROL+SHIFT+EQUAL",
+    "pc_sc": "WIN+SHIFT+EQUAL",
+    "difficulty": 4
+  },
+  {
+    "display": "add Clip Gain breakpoint at Edit location",
+    "mac_sc": "CONTROL+SHIFT+E",
+    "pc_sc": "WIN+SHIFT+E",
+    "difficulty": 4
+  },
+  {
+    "display": "nudge selected Clip Gain up",
+    "mac_sc": "CONTROL+SHIFT+ARROWUP",
+    "pc_sc": "WIN+SHIFT+ARROWUP",
+    "difficulty": 4
+  },
+  {
+    "display": "nudge selected Clip Gain down",
+    "mac_sc": "CONTROL+SHIFT+ARROWDOWN",
+    "pc_sc": "WIN+SHIFT+ARROWDOWN",
+    "difficulty": 4
+  },
+  {
+    "display": "nudge selected Clip Gain back",
+    "mac_sc": "CONTROL+SHIFT+MINUS|CONTROL+SHIFT+M|CONTROL+SHIFT+COMMA",
+    "pc_sc": "WIN+SHIFT+MINUS|WIN+SHIFT+M|WIN+SHIFT+COMMA",
+    "difficulty": 4
+  },
+  {
+    "display": "nudge selected Clip Gain forward",
+    "mac_sc": "CONTROL+SHIFT+PLUS|CONTROL+SHIFT+PERIOD|CONTROL+SHIFT+SLASH",
+    "pc_sc": "WIN+SHIFT+PLUS|WIN+SHIFT+PERIOD|WIN+SHIFT+SLASH",
+    "difficulty": 4
+  },
+  {
+    "display": "clear Clip Gain",
+    "mac_sc": "CONTROL+SHIFT+B",
+    "pc_sc": "WIN+SHIFT+B",
+    "difficulty": 4
+  },
+  {
+    "display": "cut Clip Gain",
+    "mac_sc": "CONTROL+SHIFT+X",
+    "pc_sc": "WIN+SHIFT+X",
+    "difficulty": 4
+  },
+  {
+    "display": "copy Clip Gain",
+    "mac_sc": "CONTROL+SHIFT+C",
+    "pc_sc": "WIN+SHIFT+C",
+    "difficulty": 4
+  },
+  {
+    "display": "paste Clip Gain",
+    "mac_sc": "CMD+V",
+    "pc_sc": "CTRL+V",
+    "difficulty": 4
+  },
+  {
+    "display": "show or hide Clip Effects display",
+    "mac_sc": "OPT+6",
+    "pc_sc": "ALT+6",
+    "difficulty": 4
+  },
+  {
+    "display": "cut Clip Effects",
+    "mac_sc": "CMD+OPT+CONTROL+X",
+    "pc_sc": "CTRL+ALT+WIN+X",
+    "difficulty": 5
+  },
+  {
+    "display": "copy Clip Effects",
+    "mac_sc": "CMD+OPT+CONTROL+C",
+    "pc_sc": "CTRL+ALT+WIN+C",
+    "difficulty": 5
+  },
+  {
+    "display": "clear Clip Effects",
+    "mac_sc": "CMD+OPT+CONTROL+B",
+    "pc_sc": "CTRL+ALT+WIN+B",
+    "difficulty": 5
+  },
+  {
+    "display": "bypass all Clip Effects",
+    "mac_sc": "OPT",
+    "pc_sc": "ALT",
+    "difficulty": 5
+  },
+  {
+    "display": "save current Clip Effects settings",
+    "mac_sc": "CMD+OPT+CONTROL+S",
+    "pc_sc": "CTRL+ALT+WIN+S",
+    "difficulty": 5
+  },
+  {
+    "display": "recall Clip Effects preset 1",
+    "mac_sc": "CMD+1",
+    "pc_sc": "CTRL+1",
+    "difficulty": 5,
+    "group": "clip_effect_presets"
+  },
+  {
+    "display": "recall Clip Effects preset 2",
+    "mac_sc": "CMD+2",
+    "pc_sc": "CTRL+2",
+    "difficulty": 5,
+    "group": "clip_effect_presets"
+  },
+  {
+    "display": "recall Clip Effects preset 3",
+    "mac_sc": "CMD+3",
+    "pc_sc": "CTRL+3",
+    "difficulty": 5,
+    "group": "clip_effect_presets"
+  },
+  {
+    "display": "recall Clip Effects preset 4",
+    "mac_sc": "CMD+4",
+    "pc_sc": "CTRL+4",
+    "difficulty": 5,
+    "group": "clip_effect_presets"
+  },
+  {
+    "display": "recall Clip Effects preset 5",
+    "mac_sc": "CMD+5",
+    "pc_sc": "CTRL+5",
+    "difficulty": 5,
+    "group": "clip_effect_presets"
+  },
+  {
+    "display": "solo Playlist lane containing Edit cursor",
+    "mac_sc": "SHIFT+S",
+    "pc_sc": "SHIFT+S",
+    "difficulty": 4
+  },
+  {
+    "display": "move Edit cursor up through Playlist lanes",
+    "mac_sc": "CONTROL+P",
+    "pc_sc": "WIN+P",
+    "difficulty": 4
+  },
+  {
+    "display": "move Edit cursor down through Playlist lanes",
+    "mac_sc": "CONTROL+SEMICOLON",
+    "pc_sc": "WIN+SEMICOLON",
+    "difficulty": 4
+  },
+  {
+    "display": "show previous playlist in main playlist",
+    "mac_sc": "SHIFT+ARROWUP",
+    "pc_sc": "SHIFT+ARROWUP",
+    "difficulty": 4
+  },
+  {
+    "display": "show next playlist in main playlist",
+    "mac_sc": "SHIFT+ARROWDOWN",
+    "pc_sc": "SHIFT+ARROWDOWN",
+    "difficulty": 4
+  },
+  {
+    "display": "copy selection to main playlist",
+    "mac_sc": "OPT+CONTROL+V",
+    "pc_sc": "ALT+WIN+V",
+    "difficulty": 4
+  },
+  {
+    "display": "move selection to main playlist",
+    "mac_sc": "OPT+SHIFT+M",
+    "pc_sc": "ALT+SHIFT+M",
+    "difficulty": 4
+  },
+  {
+    "display": "copy selection to new playlist",
+    "mac_sc": "OPT+SHIFT+ARROWDOWN",
+    "pc_sc": "ALT+SHIFT+ARROWDOWN",
+    "difficulty": 4
+  },
+  {
+    "display": "move selection to new playlist",
+    "mac_sc": "OPT+SHIFT+N",
+    "pc_sc": "ALT+SHIFT+N",
+    "difficulty": 4
+  },
+  {
+    "display": "create new playlist for first selected track",
+    "mac_sc": "CONTROL+BACKSLASH",
+    "pc_sc": "WIN+BACKSLASH",
+    "difficulty": 4
+  },
+  {
+    "display": "create new playlist for each track",
+    "mac_sc": "CONTROL+OPT+BACKSLASH",
+    "pc_sc": "WIN+ALT+BACKSLASH",
+    "difficulty": 4
+  },
+  {
+    "display": "create new playlist for each selected track",
+    "mac_sc": "CONTROL+OPT+SHIFT+BACKSLASH",
+    "pc_sc": "WIN+ALT+SHIFT+BACKSLASH",
+    "difficulty": 5
+  },
+  {
+    "display": "duplicate main playlist for first selected track",
+    "mac_sc": "CMD+CONTROL+BACKSLASH",
+    "pc_sc": "CTRL+WIN+BACKSLASH",
+    "difficulty": 4
+  },
+  {
+    "display": "duplicate main playlist for each track",
+    "mac_sc": "CMD+OPT+CONTROL+BACKSLASH",
+    "pc_sc": "CTRL+ALT+WIN+BACKSLASH",
+    "difficulty": 5
+  },
+  {
+    "display": "duplicate main playlist for each selected track",
+    "mac_sc": "CMD+OPT+CONTROL+SHIFT+BACKSLASH",
+    "pc_sc": "CTRL+ALT+WIN+SHIFT+BACKSLASH",
+    "difficulty": 5
+  },
+  {
+    "display": "zoom to show entire session horizontally",
+    "mac_sc": "CMD+CONTROL+BRACKETLEFT",
+    "pc_sc": "CTRL+WIN+BRACKETLEFT",
+    "difficulty": 4
+  },
+  {
+    "display": "zoom horizontally on selection",
+    "mac_sc": "CMD+CONTROL+BRACKETRIGHT",
+    "pc_sc": "CTRL+WIN+BRACKETRIGHT",
+    "difficulty": 4
+  },
+  {
+    "display": "reset audio waveform height zoom",
+    "mac_sc": "CMD+OPT+CONTROL+BRACKETLEFT",
+    "pc_sc": "CTRL+ALT+WIN+BRACKETLEFT",
+    "difficulty": 5
+  },
+  {
+    "display": "zoom audio tracks vertically smaller",
+    "mac_sc": "CMD+OPT+BRACKETLEFT",
+    "pc_sc": "CTRL+ALT+BRACKETLEFT",
+    "difficulty": 4
+  },
+  {
+    "display": "zoom audio tracks vertically larger",
+    "mac_sc": "CMD+OPT+BRACKETRIGHT",
+    "pc_sc": "CTRL+ALT+BRACKETRIGHT",
+    "difficulty": 4
+  },
+  {
+    "display": "zoom MIDI vertically smaller",
+    "mac_sc": "CMD+SHIFT+BRACKETLEFT",
+    "pc_sc": "CTRL+SHIFT+BRACKETLEFT",
+    "difficulty": 4
+  },
+  {
+    "display": "zoom MIDI vertically larger",
+    "mac_sc": "CMD+SHIFT+BRACKETRIGHT",
+    "pc_sc": "CTRL+SHIFT+BRACKETRIGHT",
+    "difficulty": 4
+  },
+  {
+    "display": "zoom MIDI vertically to show all notes",
+    "mac_sc": "CMD+CONTROL+SHIFT+BRACKETLEFT",
+    "pc_sc": "CTRL+WIN+SHIFT+BRACKETLEFT",
+    "difficulty": 5
+  },
+  {
+    "display": "zoom to show all clips and reset amplitude zoom",
+    "mac_sc": "OPT+A",
+    "pc_sc": "ALT+A",
+    "difficulty": 3
+  },
+  {
+    "display": "zoom to show all clips without resetting amplitude zoom",
+    "mac_sc": "OPT+CONTROL+A",
+    "pc_sc": "ALT+WIN+A",
+    "difficulty": 4
+  },
+  {
+    "display": "zoom and scroll Timeline excluding MIDI events",
+    "mac_sc": "OPT+F",
+    "pc_sc": "ALT+F",
+    "difficulty": 3
+  },
+  {
+    "display": "zoom horizontally to selection including MIDI events",
+    "mac_sc": "OPT+CONTROL+F",
+    "pc_sc": "ALT+WIN+F",
+    "difficulty": 4
+  },
+  {
+    "display": "cancel Zoom Toggle without changing zoom level",
+    "mac_sc": "OPT+SHIFT+E",
+    "pc_sc": "ALT+SHIFT+E",
+    "difficulty": 4
+  },
+  {
+    "display": "recall Zoom preset 1",
+    "mac_sc": "CMD+1",
+    "pc_sc": "CTRL+1",
+    "difficulty": 5,
+    "group": "zoom_presets"
+  },
+  {
+    "display": "recall Zoom preset 2",
+    "mac_sc": "CMD+2",
+    "pc_sc": "CTRL+2",
+    "difficulty": 5,
+    "group": "zoom_presets"
+  },
+  {
+    "display": "recall Zoom preset 3",
+    "mac_sc": "CMD+3",
+    "pc_sc": "CTRL+3",
+    "difficulty": 5,
+    "group": "zoom_presets"
+  },
+  {
+    "display": "recall Zoom preset 4",
+    "mac_sc": "CMD+4",
+    "pc_sc": "CTRL+4",
+    "difficulty": 5,
+    "group": "zoom_presets"
+  },
+  {
+    "display": "recall Zoom preset 5",
+    "mac_sc": "CMD+5",
+    "pc_sc": "CTRL+5",
+    "difficulty": 5,
+    "group": "zoom_presets"
+  },
+  {
+    "display": "create Memory Location",
+    "mac_sc": "NUMPADENTER",
+    "pc_sc": "NUMPADENTER",
+    "difficulty": 3
+  },
+  {
+    "display": "after entering a Memory Location number, recall it",
+    "mac_sc": "NUMPADDECIMAL",
+    "pc_sc": "NUMPADDECIMAL",
+    "difficulty": 4
+  },
+  {
+    "display": "toggle Timeline Insertion follows Playback preference",
+    "mac_sc": "CONTROL+N",
+    "pc_sc": "WIN+N",
+    "difficulty": 5
+  },
+  {
+    "display": "after entering a Window Configuration number, store it",
+    "mac_sc": "NUMPADADD",
+    "pc_sc": "NUMPADADD",
+    "difficulty": 4
+  },
+  {
+    "display": "after entering a Window Configuration number, recall it",
+    "mac_sc": "NUMPADMULTIPLY",
+    "pc_sc": "NUMPADMULTIPLY",
+    "difficulty": 4
+  },
+  {
+    "display": "toggle Track View on all tracks",
+    "mac_sc": "OPT+MINUS",
+    "pc_sc": "ALT+MINUS",
+    "difficulty": 5
+  },
+  {
+    "display": "change selected tracks to previous Track View",
+    "mac_sc": "CONTROL+CMD+ARROWLEFT",
+    "pc_sc": "CTRL+WIN+ARROWLEFT",
+    "difficulty": 5
+  },
+  {
+    "display": "change selected tracks to next Track View",
+    "mac_sc": "CONTROL+CMD+ARROWRIGHT",
+    "pc_sc": "CTRL+WIN+ARROWRIGHT",
+    "difficulty": 5
+  },
+  {
+    "display": "change all tracks to previous Track View",
+    "mac_sc": "CONTROL+OPT+CMD+ARROWLEFT",
+    "pc_sc": "CTRL+ALT+WIN+ARROWLEFT",
+    "difficulty": 5
+  },
+  {
+    "display": "change all tracks to next Track View",
+    "mac_sc": "CONTROL+OPT+CMD+ARROWRIGHT",
+    "pc_sc": "CTRL+ALT+WIN+ARROWRIGHT",
+    "difficulty": 5
+  },
+  {
+    "display": "copy Automation to Send",
+    "mac_sc": "CMD+OPT+H",
+    "pc_sc": "CTRL+ALT+H",
+    "difficulty": 5
+  },
+  {
+    "display": "thin Automation",
+    "mac_sc": "CMD+OPT+T",
+    "pc_sc": "CTRL+ALT+T",
+    "difficulty": 5
+  },
+  {
+    "display": "write Automation to current parameter",
+    "mac_sc": "CMD+SLASH",
+    "pc_sc": "CTRL+SLASH",
+    "difficulty": 5
+  },
+  {
+    "display": "write Automation to all enabled parameters",
+    "mac_sc": "CMD+OPT+SLASH",
+    "pc_sc": "CTRL+ALT+SLASH",
+    "difficulty": 5
+  },
+  {
+    "display": "trim Automation to current parameter",
+    "mac_sc": "CMD+SHIFT+SLASH",
+    "pc_sc": "CTRL+SHIFT+SLASH",
+    "difficulty": 5
+  },
+  {
+    "display": "trim Automation to all enabled parameters",
+    "mac_sc": "CMD+OPT+SHIFT+SLASH",
+    "pc_sc": "CTRL+ALT+SHIFT+SLASH",
+    "difficulty": 5
+  },
+  {
+    "display": "glide Automation to current parameter",
+    "mac_sc": "OPT+SLASH",
+    "pc_sc": "ALT+SLASH",
+    "difficulty": 5
+  },
+  {
+    "display": "glide Automation to all enabled parameters",
+    "mac_sc": "OPT+SHIFT+SLASH",
+    "pc_sc": "ALT+SHIFT+SLASH",
+    "difficulty": 5
+  },
+  {
+    "display": "special paste Automation data between controls",
+    "mac_sc": "CMD+CONTROL+V",
+    "pc_sc": "WIN+CTRL+V",
+    "difficulty": 5
+  },
+  {
+    "display": "delete Automation selection",
+    "mac_sc": "BACKSPACE",
+    "pc_sc": "BACKSPACE",
+    "difficulty": 4
+  },
+  {
+    "display": "cut Automation selection",
+    "mac_sc": "CMD+X",
+    "pc_sc": "CTRL+X",
+    "difficulty": 4
+  },
+  {
+    "display": "copy Automation selection",
+    "mac_sc": "CMD+C",
+    "pc_sc": "CTRL+C",
+    "difficulty": 4
+  },
+  {
+    "display": "duplicate Automation selection",
+    "mac_sc": "CMD+D",
+    "pc_sc": "CTRL+D",
+    "difficulty": 4
+  },
+  {
+    "display": "clear Automation selection",
+    "mac_sc": "CMD+B",
+    "pc_sc": "CTRL+B",
+    "difficulty": 4
+  },
+  {
+    "display": "insert silence in Automation",
+    "mac_sc": "CMD+SHIFT+E",
+    "pc_sc": "CTRL+SHIFT+E",
+    "difficulty": 5
+  },
+  {
+    "display": "create Fade",
+    "mac_sc": "CMD+F",
+    "pc_sc": "CTRL+F",
+    "difficulty": 2
+  },
+  {
+    "display": "change fade shape previous",
+    "mac_sc": "OPT+CONTROL+ARROWLEFT",
+    "pc_sc": "ALT+WIN+ARROWLEFT",
+    "difficulty": 5
+  },
+  {
+    "display": "change fade shape next",
+    "mac_sc": "OPT+CONTROL+ARROWRIGHT",
+    "pc_sc": "ALT+WIN+ARROWRIGHT",
+    "difficulty": 5
+  },
+  {
+    "display": "audition Fade dialog",
+    "mac_sc": "SPACE",
+    "pc_sc": "SPACE",
+    "difficulty": 2
+  },
+  {
+    "display": "recall Fade preset 1",
+    "mac_sc": "CONTROL+1",
+    "pc_sc": "WIN+1",
+    "difficulty": 5,
+    "group": "fade_presets"
+  },
+  {
+    "display": "recall Fade preset 2",
+    "mac_sc": "CONTROL+2",
+    "pc_sc": "WIN+2",
+    "difficulty": 5,
+    "group": "fade_presets"
+  },
+  {
+    "display": "recall Fade preset 3",
+    "mac_sc": "CONTROL+3",
+    "pc_sc": "WIN+3",
+    "difficulty": 5,
+    "group": "fade_presets"
+  },
+  {
+    "display": "recall Fade preset 4",
+    "mac_sc": "CONTROL+4",
+    "pc_sc": "WIN+4",
+    "difficulty": 5,
+    "group": "fade_presets"
+  },
+  {
+    "display": "recall Fade preset 5",
+    "mac_sc": "CONTROL+5",
+    "pc_sc": "WIN+5",
+    "difficulty": 5,
+    "group": "fade_presets"
+  },
+  {
+    "display": "find Clip",
+    "mac_sc": "CMD+SHIFT+F",
+    "pc_sc": "CTRL+SHIFT+F",
+    "difficulty": 4
+  },
+  {
+    "display": "clear Clip find",
+    "mac_sc": "CMD+SHIFT+D",
+    "pc_sc": "CTRL+SHIFT+D",
+    "difficulty": 4
+  },
+  {
+    "display": "show or hide Audio Clips",
+    "mac_sc": "CMD+SHIFT+NUMPAD1",
+    "pc_sc": "CTRL+SHIFT+NUMPAD1",
+    "difficulty": 4
+  },
+  {
+    "display": "show or hide MIDI Clips",
+    "mac_sc": "CMD+SHIFT+NUMPAD2",
+    "pc_sc": "CTRL+SHIFT+NUMPAD2",
+    "difficulty": 4
+  },
+  {
+    "display": "show or hide Clip Groups",
+    "mac_sc": "CMD+SHIFT+NUMPAD3",
+    "pc_sc": "CTRL+SHIFT+NUMPAD3",
+    "difficulty": 4
+  },
+  {
+    "display": "show or hide auto-created Clips",
+    "mac_sc": "CMD+OPT+K",
+    "pc_sc": "CTRL+ALT+K",
+    "difficulty": 4
+  },
+  {
+    "display": "select all Clips in Clip List",
+    "mac_sc": "CMD+SHIFT+A",
+    "pc_sc": "CTRL+SHIFT+A",
+    "difficulty": 4
+  },
+  {
+    "display": "select unused Clips",
+    "mac_sc": "CMD+SHIFT+U",
+    "pc_sc": "CTRL+SHIFT+U",
+    "difficulty": 4
+  },
+  {
+    "display": "clear selected Clips",
+    "mac_sc": "CMD+SHIFT+B",
+    "pc_sc": "CTRL+SHIFT+B",
+    "difficulty": 4
+  },
+  {
+    "display": "rename selected Clips",
+    "mac_sc": "CMD+SHIFT+R",
+    "pc_sc": "CTRL+SHIFT+R",
+    "difficulty": 4
+  },
+  {
+    "display": "batch rename selected Clips",
+    "mac_sc": "CONTROL+SHIFT+R",
+    "pc_sc": "WIN+SHIFT+R",
+    "difficulty": 4
+  },
+  {
+    "display": "time stamp selected Clips",
+    "mac_sc": "CMD+SHIFT+M",
+    "pc_sc": "CTRL+SHIFT+M",
+    "difficulty": 4
+  },
+  {
+    "display": "export Clip definition",
+    "mac_sc": "CMD+SHIFT+Y",
+    "pc_sc": "CTRL+SHIFT+Y",
+    "difficulty": 4
+  },
+  {
+    "display": "export Clips as files",
+    "mac_sc": "CMD+SHIFT+K",
+    "pc_sc": "CTRL+SHIFT+K",
+    "difficulty": 4
+  },
+  {
+    "display": "batch rename selected tracks",
+    "mac_sc": "OPT+SHIFT+R",
+    "pc_sc": "ALT+SHIFT+R",
+    "difficulty": 4
+  },
+  {
+    "display": "suspend all Groups",
+    "mac_sc": "CMD+SHIFT+G",
+    "pc_sc": "CTRL+SHIFT+G",
+    "difficulty": 4
+  },
+  {
+    "display": "select or deselect a Clip in Clip List",
+    "mac_sc": "CMD",
+    "pc_sc": "CTRL",
+    "difficulty": 4
+  },
+  {
+    "display": "bypass deletion dialogs for audio files",
+    "mac_sc": "OPT",
+    "pc_sc": "ALT",
+    "difficulty": 4
+  },
+  {
+    "display": "audition Clip in Clip List",
+    "mac_sc": "OPT",
+    "pc_sc": "ALT",
+    "difficulty": 4
+  },
+  {
+    "display": "constrain Clip placement to start at cursor or selection",
+    "mac_sc": "CONTROL",
+    "pc_sc": "WIN",
+    "difficulty": 4
+  },
+  {
+    "display": "constrain Clip placement to end at cursor or selection",
+    "mac_sc": "CMD+CONTROL",
+    "pc_sc": "WIN+CTRL",
+    "difficulty": 5
+  },
+  {
+    "display": "toggle Real-Time or Rendered Elastic Audio processing",
+    "mac_sc": "CMD+CONTROL",
+    "pc_sc": "CTRL+WIN",
+    "difficulty": 5
+  },
+  {
+    "display": "add Warp marker on top of event",
+    "mac_sc": "CONTROL",
+    "pc_sc": "WIN",
+    "difficulty": 4
+  },
+  {
+    "display": "relocate Warp marker without applying warping",
+    "mac_sc": "CONTROL",
+    "pc_sc": "WIN",
+    "difficulty": 4
+  },
+  {
+    "display": "delete Warp marker",
+    "mac_sc": "OPT",
+    "pc_sc": "ALT",
+    "difficulty": 4
+  },
+  {
+    "display": "delete all Warp markers in selection",
+    "mac_sc": "DELETE|BACKSPACE",
+    "pc_sc": "DELETE|BACKSPACE",
+    "difficulty": 5
+  },
+  {
+    "display": "telescope-warp audio before first Warp marker",
+    "mac_sc": "OPT",
+    "pc_sc": "ALT",
+    "difficulty": 5
+  },
+  {
+    "display": "add Event marker",
+    "mac_sc": "CONTROL",
+    "pc_sc": "WIN",
+    "difficulty": 4
+  },
+  {
+    "display": "delete Event marker",
+    "mac_sc": "OPT",
+    "pc_sc": "ALT",
+    "difficulty": 4
+  },
+  {
+    "display": "bypass all inserts on selected tracks",
+    "mac_sc": "SHIFT+A",
+    "pc_sc": "SHIFT+A",
+    "difficulty": 4,
+    "group": "insert_bypass"
+  },
+  {
+    "display": "bypass inserts A to E on selected tracks",
+    "mac_sc": "SHIFT+2",
+    "pc_sc": "SHIFT+2",
+    "difficulty": 5,
+    "group": "insert_bypass"
+  },
+  {
+    "display": "bypass inserts F to J on selected tracks",
+    "mac_sc": "SHIFT+3",
+    "pc_sc": "SHIFT+3",
+    "difficulty": 5,
+    "group": "insert_bypass"
+  },
+  {
+    "display": "bypass all EQ plug-ins on selected tracks",
+    "mac_sc": "SHIFT+E",
+    "pc_sc": "SHIFT+E",
+    "difficulty": 4,
+    "group": "plugin_bypass"
+  },
+  {
+    "display": "bypass all Dynamics plug-ins on selected tracks",
+    "mac_sc": "SHIFT+C",
+    "pc_sc": "SHIFT+C",
+    "difficulty": 4,
+    "group": "plugin_bypass"
+  },
+  {
+    "display": "bypass all Reverb plug-ins on selected tracks",
+    "mac_sc": "SHIFT+V",
+    "pc_sc": "SHIFT+V",
+    "difficulty": 4,
+    "group": "plugin_bypass"
+  },
+  {
+    "display": "bypass all Delay plug-ins on selected tracks",
+    "mac_sc": "SHIFT+D",
+    "pc_sc": "SHIFT+D",
+    "difficulty": 4,
+    "group": "plugin_bypass"
+  },
+  {
+    "display": "bypass all Modulation plug-ins on selected tracks",
+    "mac_sc": "SHIFT+W",
+    "pc_sc": "SHIFT+W",
+    "difficulty": 4,
+    "group": "plugin_bypass"
+  },
+  {
+    "display": "mute Sends A to E on selected tracks",
+    "mac_sc": "SHIFT+4",
+    "pc_sc": "SHIFT+4",
+    "difficulty": 5,
+    "group": "send_mute"
+  },
+  {
+    "display": "mute Sends F to J on selected tracks",
+    "mac_sc": "SHIFT+5",
+    "pc_sc": "SHIFT+5",
+    "difficulty": 5,
+    "group": "send_mute"
+  },
+  {
+    "display": "mute all sends on selected tracks",
+    "mac_sc": "SHIFT+Q",
+    "pc_sc": "SHIFT+Q",
+    "difficulty": 4,
+    "group": "send_mute"
+  },
+  {
+    "display": "bypass insert and all inserts below it",
+    "mac_sc": "CONTROL",
+    "pc_sc": "WIN",
+    "difficulty": 5
+  },
+  {
+    "display": "bypass insert and all inserts below it on all tracks",
+    "mac_sc": "CONTROL+OPT",
+    "pc_sc": "WIN+ALT",
+    "difficulty": 5
+  },
+  {
+    "display": "mute send and all sends below it",
+    "mac_sc": "CONTROL",
+    "pc_sc": "WIN",
+    "difficulty": 5
+  },
+  {
+    "display": "mute send and all sends below it on all tracks",
+    "mac_sc": "CONTROL+OPT",
+    "pc_sc": "WIN+ALT",
+    "difficulty": 5
+  },
+  {
+    "display": "open Time Operations",
+    "mac_sc": "OPT+NUMPAD1",
+    "pc_sc": "ALT+NUMPAD1",
+    "difficulty": 4
+  },
+  {
+    "display": "open Tempo Operations",
+    "mac_sc": "OPT+NUMPAD2",
+    "pc_sc": "ALT+NUMPAD2",
+    "difficulty": 4
+  },
+  {
+    "display": "open Event Operations",
+    "mac_sc": "OPT+NUMPAD3",
+    "pc_sc": "ALT+NUMPAD3",
+    "difficulty": 4
+  },
+  {
+    "display": "quantize events",
+    "mac_sc": "OPT+0",
+    "pc_sc": "ALT+0",
+    "difficulty": 4
+  },
+  {
+    "display": "change event duration",
+    "mac_sc": "OPT+P",
+    "pc_sc": "ALT+P",
+    "difficulty": 4
+  },
+  {
+    "display": "transpose events",
+    "mac_sc": "OPT+T",
+    "pc_sc": "ALT+T",
+    "difficulty": 4
+  },
+  {
+    "display": "select or split notes",
+    "mac_sc": "OPT+Y",
+    "pc_sc": "ALT+Y",
+    "difficulty": 5
+  },
+  {
+    "display": "open Real-Time Properties",
+    "mac_sc": "OPT+NUMPAD4",
+    "pc_sc": "ALT+NUMPAD4",
+    "difficulty": 4
+  },
+  {
+    "display": "open Beat Detective",
+    "mac_sc": "CMD+NUMPAD8",
+    "pc_sc": "CTRL+NUMPAD8",
+    "difficulty": 4
+  },
+  {
+    "display": "identify beat",
+    "mac_sc": "CMD+I",
+    "pc_sc": "CTRL+I",
+    "difficulty": 3
+  },
+  {
+    "display": "send all MIDI notes off",
+    "mac_sc": "CMD+SHIFT+PERIOD",
+    "pc_sc": "CTRL+SHIFT+PERIOD",
+    "difficulty": 5
+  },
+  {
+    "display": "toggle Transport Online",
+    "mac_sc": "CMD+J",
+    "pc_sc": "CTRL+J",
+    "difficulty": 3
+  },
+  {
+    "display": "toggle Video Track Online",
+    "mac_sc": "CMD+SHIFT+J",
+    "pc_sc": "CTRL+SHIFT+J",
+    "difficulty": 4
+  },
+  {
+    "display": "cycle Video Track Online",
+    "mac_sc": "SHIFT+J",
+    "pc_sc": "SHIFT+J",
+    "difficulty": 4
+  },
+  {
+    "display": "toggle Auto-Spot Clips",
+    "mac_sc": "CMD+P",
+    "pc_sc": "CTRL+P",
+    "difficulty": 4
+  },
+  {
+    "display": "toggle Edit Tool Mode Keyboard Lock",
+    "mac_sc": "CONTROL+SHIFT+T",
+    "pc_sc": "WIN+SHIFT+T",
+    "difficulty": 5
+  },
+  {
+    "display": "open Session Setup",
+    "mac_sc": "CMD+NUMPAD2",
+    "pc_sc": "CTRL+NUMPAD2",
+    "difficulty": 3
+  },
+  {
+    "display": "toggle Mix and Edit windows",
+    "mac_sc": "CMD+EQUAL",
+    "pc_sc": "CTRL+EQUAL",
+    "difficulty": 2
+  },
+  {
+    "display": "hide all floating windows",
+    "mac_sc": "CMD+OPT+CONTROL+W",
+    "pc_sc": "CTRL+ALT+WIN+W",
+    "difficulty": 5
+  },
+  {
+    "display": "show Window Configuration List",
+    "mac_sc": "CMD+OPT+J",
+    "pc_sc": "CTRL+ALT+J",
+    "difficulty": 4
+  },
+  {
+    "display": "show Task Manager",
+    "mac_sc": "OPT+QUOTE",
+    "pc_sc": "ALT+QUOTE",
+    "difficulty": 4
+  },
+  {
+    "display": "open Workspace",
+    "mac_sc": "OPT+I",
+    "pc_sc": "ALT+I",
+    "difficulty": 3
+  },
+  {
+    "display": "open Soundbase Workspace",
+    "mac_sc": "OPT+CONTROL+I",
+    "pc_sc": "ALT+WIN+I",
+    "difficulty": 5
+  },
+  {
+    "display": "show Workspace volumes",
+    "mac_sc": "OPT+SEMICOLON",
+    "pc_sc": "ALT+SEMICOLON",
+    "difficulty": 4
+  },
+  {
+    "display": "show Project",
+    "mac_sc": "OPT+O",
+    "pc_sc": "ALT+O",
+    "difficulty": 4
+  },
+  {
+    "display": "bring to front",
+    "mac_sc": "OPT+J",
+    "pc_sc": "ALT+J",
+    "difficulty": 4
+  },
+  {
+    "display": "send to back",
+    "mac_sc": "OPT+SHIFT+J",
+    "pc_sc": "ALT+SHIFT+J",
+    "difficulty": 4
+  },
+  {
+    "display": "show Transport",
+    "mac_sc": "CMD+NUMPAD1",
+    "pc_sc": "CTRL+NUMPAD1",
+    "difficulty": 3,
+    "group": "window_views"
+  },
+  {
+    "display": "show Big Counter",
+    "mac_sc": "CMD+NUMPAD3",
+    "pc_sc": "CTRL+NUMPAD3",
+    "difficulty": 3,
+    "group": "window_views"
+  },
+  {
+    "display": "show Automation Enable",
+    "mac_sc": "CMD+NUMPAD4",
+    "pc_sc": "CTRL+NUMPAD4",
+    "difficulty": 3,
+    "group": "window_views"
+  },
+  {
+    "display": "show Memory Locations",
+    "mac_sc": "CMD+NUMPAD5",
+    "pc_sc": "CTRL+NUMPAD5",
+    "difficulty": 3,
+    "group": "window_views"
+  },
+  {
+    "display": "show Machine Track Arming",
+    "mac_sc": "CMD+NUMPAD6",
+    "pc_sc": "CTRL+NUMPAD6",
+    "difficulty": 4,
+    "group": "window_views"
+  },
+  {
+    "display": "show Video Universe",
+    "mac_sc": "CMD+NUMPAD7",
+    "pc_sc": "CTRL+NUMPAD7",
+    "difficulty": 4,
+    "group": "window_views"
+  },
+  {
+    "display": "show Video",
+    "mac_sc": "CMD+NUMPAD9",
+    "pc_sc": "CTRL+NUMPAD9",
+    "difficulty": 4,
+    "group": "window_views"
+  },
+  {
+    "display": "open MIDI Editor",
+    "mac_sc": "CONTROL+EQUAL",
+    "pc_sc": "WIN+EQUAL",
+    "difficulty": 4
+  },
+  {
+    "display": "open Docked MIDI Editor",
+    "mac_sc": "SHIFT+OPT+CONTROL+EQUAL",
+    "pc_sc": "SHIFT+ALT+WIN+EQUAL",
+    "difficulty": 5
+  },
+  {
+    "display": "open MIDI Event List",
+    "mac_sc": "OPT+EQUAL",
+    "pc_sc": "ALT+EQUAL",
+    "difficulty": 4
+  },
+  {
+    "display": "open Score Editor",
+    "mac_sc": "OPT+CONTROL+EQUAL",
+    "pc_sc": "ALT+WIN+EQUAL",
+    "difficulty": 5
+  },
+  {
+    "display": "show or hide Artist Chat",
+    "mac_sc": "CMD+SHIFT+EQUAL",
+    "pc_sc": "CTRL+SHIFT+EQUAL",
+    "difficulty": 4
+  },
+  {
+    "display": "create new Track",
+    "mac_sc": "CMD+SHIFT+N",
+    "pc_sc": "CTRL+SHIFT+N",
+    "difficulty": 2
+  },
+  {
+    "display": "group selected Tracks",
+    "mac_sc": "CMD+G",
+    "pc_sc": "CTRL+G",
+    "difficulty": 2
+  },
+  {
+    "display": "duplicate Tracks",
+    "mac_sc": "OPT+SHIFT+D",
+    "pc_sc": "ALT+SHIFT+D",
+    "difficulty": 4
+  },
+  {
+    "display": "commit Track",
+    "mac_sc": "OPT+SHIFT+C",
+    "pc_sc": "ALT+SHIFT+C",
+    "difficulty": 4
+  },
+  {
+    "display": "bounce Track",
+    "mac_sc": "CMD+OPT+SHIFT+B",
+    "pc_sc": "CTRL+ALT+SHIFT+B",
+    "difficulty": 5
+  },
+  {
+    "display": "toggle Auto Input Monitoring",
+    "mac_sc": "OPT+K",
+    "pc_sc": "ALT+K",
+    "difficulty": 4
+  },
+  {
+    "display": "scroll to Track number",
+    "mac_sc": "CMD+OPT+F",
+    "pc_sc": "CTRL+ALT+F",
+    "difficulty": 4
+  },
+  {
+    "display": "clear all Clip indicators",
+    "mac_sc": "OPT+C",
+    "pc_sc": "ALT+C",
+    "difficulty": 4
+  },
+  {
+    "display": "lock or unlock Clips",
+    "mac_sc": "CMD+L",
+    "pc_sc": "CTRL+L",
+    "difficulty": 2
+  },
+  {
+    "display": "time lock selected Clip",
+    "mac_sc": "OPT+CONTROL+L",
+    "pc_sc": "ALT+WIN+L",
+    "difficulty": 5
+  },
+  {
+    "display": "bring Clip to front",
+    "mac_sc": "OPT+SHIFT+F",
+    "pc_sc": "ALT+SHIFT+F",
+    "difficulty": 4
+  },
+  {
+    "display": "send Clip to back",
+    "mac_sc": "OPT+SHIFT+B",
+    "pc_sc": "ALT+SHIFT+B",
+    "difficulty": 4
+  },
+  {
+    "display": "group Clips",
+    "mac_sc": "CMD+OPT+G",
+    "pc_sc": "CTRL+ALT+G",
+    "difficulty": 4
+  },
+  {
+    "display": "ungroup Clips",
+    "mac_sc": "CMD+OPT+U",
+    "pc_sc": "CTRL+ALT+U",
+    "difficulty": 4
+  },
+  {
+    "display": "regroup Clips",
+    "mac_sc": "CMD+OPT+R",
+    "pc_sc": "CTRL+ALT+R",
+    "difficulty": 4
+  },
+  {
+    "display": "loop Clip",
+    "mac_sc": "CMD+OPT+L",
+    "pc_sc": "CTRL+ALT+L",
+    "difficulty": 4
+  },
+  {
+    "display": "capture Clip",
+    "mac_sc": "CMD+R",
+    "pc_sc": "CTRL+R",
+    "difficulty": 3
+  },
+  {
+    "display": "rename Clip",
+    "mac_sc": "CMD+OPT+SHIFT+R",
+    "pc_sc": "CTRL+ALT+SHIFT+R",
+    "difficulty": 5
+  },
+  {
+    "display": "identify sync point",
+    "mac_sc": "CMD+COMMA",
+    "pc_sc": "CTRL+COMMA",
+    "difficulty": 4
+  },
+  {
+    "display": "quantize Clip to nearest grid",
+    "mac_sc": "CMD+0",
+    "pc_sc": "CTRL+0",
+    "difficulty": 4
+  },
+  {
+    "display": "open Elastic Properties",
+    "mac_sc": "OPT+NUMPAD5",
+    "pc_sc": "ALT+NUMPAD5",
+    "difficulty": 5
+  },
+  {
+    "display": "consolidate Clip",
+    "mac_sc": "OPT+SHIFT+3",
+    "pc_sc": "ALT+SHIFT+3",
+    "difficulty": 3
+  },
+  {
+    "display": "mute or unmute Clips",
+    "mac_sc": "CMD+M",
+    "pc_sc": "CTRL+M",
+    "difficulty": 3
+  },
+  {
+    "display": "TCE Edit to Timeline selection",
+    "mac_sc": "OPT+SHIFT+U",
+    "pc_sc": "ALT+SHIFT+U",
+    "difficulty": 5
+  },
+  {
+    "display": "add Bounce Source row",
+    "mac_sc": "CMD+SHIFT+PLUS|CMD+SHIFT+ARROWDOWN",
+    "pc_sc": "CTRL+SHIFT+PLUS|CTRL+SHIFT+ARROWDOWN",
+    "difficulty": 5
+  },
+  {
+    "display": "remove Bounce Source row",
+    "mac_sc": "CMD+SHIFT+MINUS|CMD+SHIFT+ARROWUP",
+    "pc_sc": "CTRL+SHIFT+MINUS|CTRL+SHIFT+ARROWUP",
+    "difficulty": 5
+  },
+  {
+    "display": "audition start or stop in Fades dialog",
+    "mac_sc": "SPACE",
+    "pc_sc": "SPACE",
+    "difficulty": 3
+  },
+  {
+    "display": "cycle Fade shape options",
+    "mac_sc": "ARROWUP|ARROWDOWN",
+    "pc_sc": "ARROWUP|ARROWDOWN",
+    "difficulty": 5
+  },
+  {
+    "display": "cycle Fade preset curves",
+    "mac_sc": "ARROWLEFT|ARROWRIGHT",
+    "pc_sc": "ARROWLEFT|ARROWRIGHT",
+    "difficulty": 5
+  }
+]

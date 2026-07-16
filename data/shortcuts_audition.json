@@ -1,0 +1,518 @@
+[
+  {
+    "display": "toggle between Waveform & Multitrack editor",
+    "mac_sc": "1",
+    "pc_sc": "1",
+    "difficulty": 2
+  },
+  {
+    "display": "start/stop playback",
+    "mac_sc": "SPACE",
+    "pc_sc": "SPACE",
+    "difficulty": 1
+  },
+  {
+    "display": "move current-time indicator to beginning",
+    "mac_sc": "HOME",
+    "pc_sc": "HOME",
+    "difficulty": 2
+  },
+  {
+    "display": "move current-time indicator to end",
+    "mac_sc": "END",
+    "pc_sc": "END",
+    "difficulty": 2
+  },
+  {
+    "display": "move current-time indicator to Previous marker, clip, or selection edge",
+    "mac_sc": "CMD+ARROWLEFT",
+    "pc_sc": "CTRL+ARROWLEFT",
+    "difficulty": 3
+  },
+  {
+    "display": "move current-time indicator to Next marker, clip, or selection edge",
+    "mac_sc": "CMD+ARROWRIGHT",
+    "pc_sc": "CTRL+ARROWRIGHT",
+    "difficulty": 3
+  },
+  {
+    "display": "toggle Return CTI To Start Position On Stop",
+    "mac_sc": "SHIFT+X",
+    "pc_sc": "SHIFT+X",
+    "difficulty": 3
+  },
+  {
+    "display": "zoom in horizontally",
+    "mac_sc": "EQUAL",
+    "pc_sc": "EQUAL",
+    "difficulty": 2
+  },
+  {
+    "display": "zoom out horizontally",
+    "mac_sc": "MINUS",
+    "pc_sc": "MINUS",
+    "difficulty": 2
+  },
+  {
+    "display": "zoom in vertically",
+    "mac_sc": "OPT+EQUAL",
+    "pc_sc": "ALT+EQUAL",
+    "difficulty": 3
+  },
+  {
+    "display": "zoom out vertically",
+    "mac_sc": "OPT+MINUS",
+    "pc_sc": "ALT+MINUS",
+    "difficulty": 3
+  },
+  {
+    "display": "add Marker",
+    "mac_sc": "M|ASTERISK",
+    "pc_sc": "M|ASTERISK",
+    "difficulty": 2
+  },
+  {
+    "display": "move to Previous marker",
+    "mac_sc": "CMD+OPT+ARROWLEFT",
+    "pc_sc": "CTRL+ALT+ARROWLEFT",
+    "difficulty": 3
+  },
+  {
+    "display": "move to Next marker",
+    "mac_sc": "CMD+OPT+ARROWRIGHT",
+    "pc_sc": "CTRL+ALT+ARROWRIGHT",
+    "difficulty": 3
+  },
+  {
+    "display": "repeat previous command and apply it",
+    "mac_sc": "SHIFT+R",
+    "pc_sc": "SHIFT+R",
+    "difficulty": 4
+  },
+  {
+    "display": "repeat previous command without applying it",
+    "mac_sc": "CMD+R",
+    "pc_sc": "CTRL+R",
+    "difficulty": 4
+  },
+  {
+    "display": "open Convert Sample Type",
+    "mac_sc": "SHIFT+T",
+    "pc_sc": "SHIFT+T",
+    "difficulty": 4
+  },
+  {
+    "display": "capture Noise Reduction profile",
+    "mac_sc": "SHIFT+P",
+    "pc_sc": "SHIFT+P",
+    "difficulty": 4
+  },
+  {
+    "display": "activate left channel of stereo file for editing",
+    "mac_sc": "ARROWUP",
+    "pc_sc": "ARROWUP",
+    "difficulty": 3
+  },
+  {
+    "display": "activate right channel of stereo file for editing",
+    "mac_sc": "ARROWDOWN",
+    "pc_sc": "ARROWDOWN",
+    "difficulty": 3
+  },
+  {
+    "display": "make spectral display more logarithmic",
+    "mac_sc": "OPT+CMD+ARROWUP",
+    "pc_sc": "CTRL+ALT+ARROWUP",
+    "difficulty": 5
+  },
+  {
+    "display": "make spectral display more linear",
+    "mac_sc": "OPT+CMD+ARROWDOWN",
+    "pc_sc": "CTRL+ALT+ARROWDOWN",
+    "difficulty": 5
+  },
+  {
+    "display": "make spectral display fully logarithmic",
+    "mac_sc": "OPT+CMD+PAGEUP",
+    "pc_sc": "CTRL+ALT+PAGEUP",
+    "difficulty": 5
+  },
+  {
+    "display": "make spectral display fully linear",
+    "mac_sc": "OPT+CMD+PAGEDOWN",
+    "pc_sc": "CTRL+ALT+PAGEDOWN",
+    "difficulty": 5
+  },
+  {
+    "display": "increase spectral resolution",
+    "mac_sc": "SHIFT+CMD+ARROWUP",
+    "pc_sc": "SHIFT+CTRL+ARROWUP",
+    "difficulty": 5
+  },
+  {
+    "display": "decrease spectral resolution",
+    "mac_sc": "SHIFT+CMD+ARROWDOWN",
+    "pc_sc": "SHIFT+CTRL+ARROWDOWN",
+    "difficulty": 5
+  },
+  {
+    "display": "nudge selected clip left",
+    "mac_sc": "OPT+COMMA",
+    "pc_sc": "ALT+COMMA",
+    "difficulty": 3
+  },
+  {
+    "display": "nudge selected clip right",
+    "mac_sc": "OPT+PERIOD",
+    "pc_sc": "ALT+PERIOD",
+    "difficulty": 3
+  },
+  {
+    "display": "nudge selected clip up",
+    "mac_sc": "OPT+ARROWUP",
+    "pc_sc": "ALT+ARROWUP",
+    "difficulty": 4
+  },
+  {
+    "display": "nudge selected clip down",
+    "mac_sc": "OPT+ARROWDOWN",
+    "pc_sc": "ALT+ARROWDOWN",
+    "difficulty": 4
+  },
+  {
+    "display": "zoom reset",
+    "mac_sc": "BACKSLASH",
+    "pc_sc": "BACKSLASH",
+    "difficulty": 3
+  },
+  {
+    "display": "adjust knobs in large increments",
+    "mac_sc": "SHIFT",
+    "pc_sc": "SHIFT",
+    "difficulty": 3
+  },
+  {
+    "display": "adjust knobs in small increments",
+    "mac_sc": "CMD",
+    "pc_sc": "CTRL",
+    "difficulty": 3
+  },
+  {
+    "display": "reposition envelope segment without creating keyframe",
+    "mac_sc": "CMD",
+    "pc_sc": "CTRL",
+    "difficulty": 4
+  },
+  {
+    "display": "open Clip Gain",
+    "mac_sc": "CMD+G",
+    "pc_sc": "CTRL+G",
+    "difficulty": 2
+  },
+  {
+    "display": "split clip",
+    "mac_sc": "CMD+K",
+    "pc_sc": "CTRL+K",
+    "difficulty": 2
+  },
+  {
+    "display": "delete selected marker",
+    "mac_sc": "CMD+0",
+    "pc_sc": "CTRL+0",
+    "difficulty": 3
+  },
+  {
+    "display": "delete all markers",
+    "mac_sc": "OPT+CTRL+0",
+    "pc_sc": "ALT+CTRL+0",
+    "difficulty": 4
+  },
+  {
+    "display": "rename selected marker",
+    "mac_sc": "SLASH",
+    "pc_sc": "SLASH",
+    "difficulty": 3
+  },
+  {
+    "display": "select All",
+    "mac_sc": "CMD+A",
+    "pc_sc": "CTRL+A",
+    "difficulty": 0
+  },
+  {
+    "display": "deselect All",
+    "mac_sc": "CMD+SHIFT+A",
+    "pc_sc": "CTRL+SHIFT+A",
+    "difficulty": 2
+  },
+  {
+    "display": "time selection in all tracks",
+    "mac_sc": "CMD+SHIFT+BACKSPACE",
+    "pc_sc": "CTRL+SHIFT+BACKSPACE",
+    "difficulty": 4
+  },
+  {
+    "display": "time selection in selected clips",
+    "mac_sc": "OPT+BACKSPACE",
+    "pc_sc": "ALT+BACKSPACE",
+    "difficulty": 4
+  },
+  {
+    "display": "copy",
+    "mac_sc": "CMD+C",
+    "pc_sc": "CTRL+C",
+    "difficulty": 0
+  },
+  {
+    "display": "cut",
+    "mac_sc": "CMD+X",
+    "pc_sc": "CTRL+X",
+    "difficulty": 0
+  },
+  {
+    "display": "paste",
+    "mac_sc": "CMD+V",
+    "pc_sc": "CTRL+V",
+    "difficulty": 0
+  },
+  {
+    "display": "delete",
+    "mac_sc": "DELETE",
+    "pc_sc": "DELETE",
+    "difficulty": 1
+  },
+  {
+    "display": "edit original",
+    "mac_sc": "CMD+E",
+    "pc_sc": "CTRL+E",
+    "difficulty": 3
+  },
+  {
+    "display": "open General Preferences",
+    "mac_sc": "CMD+SHIFT+K",
+    "pc_sc": "CTRL+SHIFT+K",
+    "difficulty": 3
+  },
+  {
+    "display": "open Keyboard Shortcuts",
+    "mac_sc": "OPT+K",
+    "pc_sc": "ALT+K",
+    "difficulty": 3
+  },
+  {
+    "display": "crop selection",
+    "mac_sc": "CMD+T",
+    "pc_sc": "CTRL+T",
+    "difficulty": 3
+  },
+  {
+    "display": "mix paste",
+    "mac_sc": "CMD+SHIFT+V",
+    "pc_sc": "CTRL+SHIFT+V",
+    "difficulty": 3
+  },
+  {
+    "display": "redo",
+    "mac_sc": "CMD+SHIFT+Z",
+    "pc_sc": "CTRL+SHIFT+Z",
+    "difficulty": 1
+  },
+  {
+    "display": "add most recent effect to rack",
+    "mac_sc": "CMD+SHIFT+E",
+    "pc_sc": "CTRL+SHIFT+E",
+    "difficulty": 4
+  },
+  {
+    "display": "copy to new",
+    "mac_sc": "OPT+SHIFT+C",
+    "pc_sc": "ALT+SHIFT+C",
+    "difficulty": 4
+  },
+  {
+    "display": "paste to new",
+    "mac_sc": "OPT+SHIFT+C",
+    "pc_sc": "ALT+SHIFT+C",
+    "difficulty": 4
+  },
+  {
+    "display": "select Spot Healing Brush tool",
+    "mac_sc": "B",
+    "pc_sc": "B",
+    "difficulty": 2
+  },
+  {
+    "display": "select Lasso Selection tool",
+    "mac_sc": "D",
+    "pc_sc": "D",
+    "difficulty": 2
+  },
+  {
+    "display": "select Marquee Selection tool",
+    "mac_sc": "E",
+    "pc_sc": "E",
+    "difficulty": 2
+  },
+  {
+    "display": "clear time selection",
+    "mac_sc": "ESCAPE",
+    "pc_sc": "ESCAPE",
+    "difficulty": 2
+  },
+  {
+    "display": "select Paintbrush Selection tool",
+    "mac_sc": "P",
+    "pc_sc": "P",
+    "difficulty": 2
+  },
+  {
+    "display": "select Razor tool",
+    "mac_sc": "R",
+    "pc_sc": "R",
+    "difficulty": 2
+  },
+  {
+    "display": "toggle snapping",
+    "mac_sc": "S",
+    "pc_sc": "S",
+    "difficulty": 2
+  },
+  {
+    "display": "select Move tool",
+    "mac_sc": "V",
+    "pc_sc": "V",
+    "difficulty": 2
+  },
+  {
+    "display": "select Slip tool",
+    "mac_sc": "Y",
+    "pc_sc": "Y",
+    "difficulty": 3
+  },
+  {
+    "display": "select Frequency Selection tool",
+    "mac_sc": "F",
+    "pc_sc": "F",
+    "difficulty": 3
+  },
+  {
+    "display": "select Lasso tool",
+    "mac_sc": "G",
+    "pc_sc": "G",
+    "difficulty": 3
+  },
+  {
+    "display": "expand editor panel to fill application window",
+    "mac_sc": "GRAVE",
+    "pc_sc": "GRAVE",
+    "difficulty": 3
+  },
+  {
+    "display": "adjust left zero crossing left",
+    "mac_sc": "SHIFT+H",
+    "pc_sc": "SHIFT+H",
+    "difficulty": 4
+  },
+  {
+    "display": "adjust selection zero crossings inward",
+    "mac_sc": "SHIFT+I",
+    "pc_sc": "SHIFT+I",
+    "difficulty": 4
+  },
+  {
+    "display": "adjust left zero crossing right",
+    "mac_sc": "SHIFT+J",
+    "pc_sc": "SHIFT+J",
+    "difficulty": 4
+  },
+  {
+    "display": "adjust right zero crossing left",
+    "mac_sc": "SHIFT+K",
+    "pc_sc": "SHIFT+K",
+    "difficulty": 4
+  },
+  {
+    "display": "adjust right zero crossing right",
+    "mac_sc": "SHIFT+L",
+    "pc_sc": "SHIFT+L",
+    "difficulty": 4
+  },
+  {
+    "display": "adjust selection zero crossings outward",
+    "mac_sc": "SHIFT+O",
+    "pc_sc": "SHIFT+O",
+    "difficulty": 4
+  },
+  {
+    "display": "ripple delete selected clip",
+    "mac_sc": "SHIFT+BACKSPACE",
+    "pc_sc": "SHIFT+BACKSPACE",
+    "difficulty": 3
+  },
+  {
+    "display": "select same input for all audio tracks",
+    "mac_sc": "CMD+SHIFT",
+    "pc_sc": "CTRL+SHIFT",
+    "difficulty": 4
+  },
+  {
+    "display": "select same output for all audio tracks",
+    "mac_sc": "CMD+SHIFT",
+    "pc_sc": "CTRL+SHIFT",
+    "difficulty": 4
+  },
+  {
+    "display": "toggle Mute on all tracks while clicking Mute",
+    "mac_sc": "CMD+SHIFT",
+    "pc_sc": "CTRL+SHIFT",
+    "difficulty": 4
+  },
+  {
+    "display": "toggle Solo on all tracks while clicking Solo",
+    "mac_sc": "CMD+SHIFT",
+    "pc_sc": "CTRL+SHIFT",
+    "difficulty": 4
+  },
+  {
+    "display": "toggle Arm For Record on all tracks while clicking Arm For Record",
+    "mac_sc": "CMD+SHIFT",
+    "pc_sc": "CTRL+SHIFT",
+    "difficulty": 4
+  },
+  {
+    "display": "toggle Monitor Input on all tracks while clicking Monitor Input",
+    "mac_sc": "CMD+SHIFT",
+    "pc_sc": "CTRL+SHIFT",
+    "difficulty": 4
+  },
+  {
+    "display": "maintain keyframe time position while dragging",
+    "mac_sc": "SHIFT",
+    "pc_sc": "SHIFT",
+    "difficulty": 4
+  },
+  {
+    "display": "maintain keyframe parameter value while dragging",
+    "mac_sc": "SHIFT",
+    "pc_sc": "SHIFT",
+    "difficulty": 4
+  },
+  {
+    "display": "play from start",
+    "mac_sc": "SHIFT+SPACE",
+    "pc_sc": "SHIFT+SPACE",
+    "difficulty": 2
+  },
+  {
+    "display": "record in record mode",
+    "mac_sc": "SHIFT+SPACE",
+    "pc_sc": "SHIFT+SPACE",
+    "difficulty": 3
+  },
+  {
+    "display": "cycle Razor tools",
+    "mac_sc": "R",
+    "pc_sc": "R",
+    "difficulty": 3
+  }
+]

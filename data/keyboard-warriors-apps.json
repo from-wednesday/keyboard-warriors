@@ -1,6 +1,6 @@
 [
   { "label": "[Lr] Lightroom",    "path": "/keyboard-warriors/data/shortcuts_lightroom.json",       "column": 1, "skillset": ["Photography"],              "standby": ["3D"] },
-  { "label": "[Ps] Photoshop",    "path": "/keyboard-warriors/data/shortcuts_photoshop.json",       "column": 1, "skillset": ["Graphics", "Photography", "UIUX"], "standby": ["Motion", "Video", "3D", "Productivity"] },
+  { "label": "[Ps] Photoshop",    "path": "/keyboard-warriors/data/shortcuts_photoshop.json",       "column": 1, "skillset": ["Graphics", "Photography"],  "standby": ["Motion", "Video", "3D", "UIUX"] },
   { "label": "[Ai] Illustrator",  "path": "/keyboard-warriors/data/shortcuts_illustrator.json",     "column": 1, "skillset": ["Graphics"],                 "standby": ["UIUX", "Motion", "3D"] },
   { "label": "[Id] InDesign",     "path": "/keyboard-warriors/data/shortcuts_inDesign.json",        "column": 1, "skillset": ["Graphics"],                 "standby": ["Photography"] },
   { "label": "[Pr] Premiere Pro", "path": "/keyboard-warriors/data/shortcuts_premiere.json",        "column": 1, "skillset": ["Video"],                    "standby": ["Photography", "Motion"] },
@@ -9,7 +9,7 @@
   { "label": "Avid Pro Tools",    "path": "/keyboard-warriors/data/shortcuts_proTools.json",        "column": 2, "skillset": ["Audio"],                    "standby": ["Motion", "Video"] },  
   { "label": "[Ae] After Effects","path": "/keyboard-warriors/data/shortcuts_afterEffects.json",    "column": 1, "skillset": ["Motion", "Video"],          "standby": ["Graphics"] },
   { "label": "Revit",             "path": "/keyboard-warriors/data/shortcuts_revit.json",           "column": 4, "skillset": ["3D"],                       "standby": [] },
-  { "label": "SketchUp",           "path": "/keyboard-warriors/data/shortcuts_sketchup.json",       "column": 4, "skillset": ["3D"],                       "standby": [] },
+  { "label": "SketchUp",          "path": "/keyboard-warriors/data/shortcuts_sketchup.json",        "column": 4, "skillset": ["3D"],                       "standby": [] },
   { "label": "Blender",           "path": "/keyboard-warriors/data/shortcuts_blender.json",         "column": 4, "skillset": ["3D"],                       "standby": ["Motion"] },
   { "label": "Enscape",           "path": "/keyboard-warriors/data/shortcuts_enscape.json",         "column": 4, "skillset": ["3D"],                       "standby": [] },
   { "label": "Figma",             "path": "/keyboard-warriors/data/shortcuts_figma.json",           "column": 2, "skillset": ["Graphics", "UIUX"],         "standby": ["Dev"] },

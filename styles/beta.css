@@ -3855,13 +3855,6 @@ body:has(#keyboardPanel[data-keyboard-theme="poprocks"]) #mainBtn:hover {
   box-shadow: inset 0 0 0 1px rgba(233, 159, 103, 0.90) !important;
 }
 
-/* Touch-warning mode has no conflicts-panel-active counterpart, since it
-   runs during gameplay rather than inside the Conflicts panel. */
-#keyboardPanel.ghost-mode .key.resting-touch-conflict {
-  background: #fef08a !important;
-  box-shadow: 0 1px 0 rgba(180, 160, 0, 0.25) !important;
-}
-
 #keyboardPanel.conflicts-panel-active.ghost-mode .key.lit-green-up {
   background: #10b981 !important;
   box-shadow: inset 0 1px 0 rgba(180,255,220,0.55), 0 1px 0 #059669, 0 0 8px rgba(16,185,129,0.5) !important;

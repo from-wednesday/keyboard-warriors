@@ -5,10 +5,40 @@
     "pc_sc": "CTRL+X",
     "difficulty": 1
   },
+     {
+"display": "redo",
+    "mac_sc": "CMD+SHIFT+Z",
+    "pc_sc": "CTRL+Y|CTRL+SHIFT+Z",
+    "difficulty": 2
+  },
   {
 "display": "copy",
     "mac_sc": "CMD+C",
     "pc_sc": "CTRL+C",
+    "difficulty": 1
+  },
+   {
+   "display": "select All",
+    "mac_sc": "CMD+A",
+    "pc_sc": "CTRL+A",
+    "difficulty": 2
+  },
+      {
+   "display": "deselect All",
+    "mac_sc": "CMD+D",
+    "pc_sc": "CTRL+D",
+    "difficulty": 3
+  },
+     {
+"display": "save Metadata",
+    "mac_sc": "CMD+S",
+    "pc_sc": "CTRL+S",
+    "difficulty": 3
+  },
+     {
+"display": "find",
+    "mac_sc": "CMD+F,
+    "pc_sc": "CTRL+F",
     "difficulty": 1
   },
   {
@@ -16,6 +46,12 @@
     "mac_sc": "CMD+V",
     "pc_sc": "CTRL+V",
     "difficulty": 1
+  },
+     {
+"display": "open Preferences",
+    "mac_sc": "CMD+COMMA",
+    "pc_sc": "CTRL+COMMA",
+    "difficulty": 4
   },
   {
     "display": "go to Develop module",
@@ -222,6 +258,12 @@
     "display": "auto White Balance",
     "mac_sc": "CMD+SHIFT+U",
     "pc_sc": "CTRL+SHIFT+U",
+    "difficulty": 4
+  },
+     {
+    "display": "show/hide panels",
+    "mac_sc": "SHIFT+TAB|TAB",
+    "pc_sc": "SHIFT+TAB|TAB",
     "difficulty": 4
   },
   {

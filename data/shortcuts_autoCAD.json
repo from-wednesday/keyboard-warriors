@@ -1,0 +1,1248 @@
+[
+  {
+    "display": "save the current drawing",
+    "mac_sc": "CMD+S",
+    "pc_sc": "CTRL+S",
+    "difficulty": 0
+  },
+  {
+    "display": "copy using a modifier key",
+    "mac_sc": "CMD+C",
+    "pc_sc": "CTRL+C",
+    "difficulty": 0
+  },
+  {
+    "display": "paste objects from the Clipboard",
+    "mac_sc": "CMD+V",
+    "pc_sc": "CTRL+V",
+    "difficulty": 1
+  },
+  {
+    "display": "cut selected objects to the Clipboard",
+    "mac_sc": "CMD+X",
+    "pc_sc": "CTRL+X",
+    "difficulty": 1
+  },
+  {
+    "display": "redo the last undone action",
+    "mac_sc": "CMD+Y",
+    "pc_sc": "CTRL+Y",
+    "difficulty": 2
+  },
+  {
+    "display": "start a new drawing",
+    "mac_sc": "CMD+N|N",
+    "pc_sc": "CTRL+N|N",
+    "difficulty": 1
+  },
+  {
+    "display": "open an existing drawing file",
+    "mac_sc": "CMD+O",
+    "pc_sc": "CTRL+O",
+    "difficulty": 1
+  },
+  {
+    "display": "select all non-frozen objects in the drawing",
+    "mac_sc": "CMD+A",
+    "pc_sc": "CTRL+A",
+    "difficulty": 2
+  },
+  {
+    "display": "save the drawing under a new name",
+    "mac_sc": "CMD+SHIFT+S",
+    "pc_sc": "CTRL+SHIFT+S",
+    "difficulty": 2
+  },
+  {
+    "display": "open the Plot/Print dialog",
+    "mac_sc": "CMD+P",
+    "pc_sc": "CTRL+P",
+    "difficulty": 2
+  },
+  {
+    "display": "exit AutoCAD",
+    "mac_sc": "CMD+Q",
+    "pc_sc": "CTRL+Q",
+    "difficulty": 2
+  },
+    {
+    "display": "cancel the current command or clear a selection",
+    "mac_sc": "ESCAPE",
+    "pc_sc": "ESCAPE|CTRL+BRACKETLEFT",
+    "difficulty": 6
+  },
+  {
+    "display": "cancel the current command",
+    "mac_sc": "ESCAPE",
+    "pc_sc": "ESCAPE|CTRL+BRACKETLEFT",
+    "difficulty": 3
+  },
+    {
+    "display": "clear a selection",
+    "mac_sc": "ESCAPE",
+    "pc_sc": "ESCAPE",
+    "difficulty": 2
+  },
+  {
+    "display": "erase selected object(s)",
+    "mac_sc": "BACKSPACE",
+    "pc_sc": "DELETE",
+    "difficulty": 1
+  },
+  {
+    "display": "repeat the last used command",
+    "mac_sc": "RETURN|SPACE",
+    "pc_sc": "ENTER|SPACE",
+    "difficulty": 2
+  },
+  {
+    "display": "copy selected objects with a user-defined base point",
+    "mac_sc": "CMD+SHIFT+C",
+    "pc_sc": "CTRL+SHIFT+C",
+    "difficulty": 3
+  },
+  {
+    "display": "paste Clipboard content as a Block",
+    "mac_sc": "CMD+SHIFT+V",
+    "pc_sc": "CTRL+SHIFT+V",
+    "difficulty": 3
+  },
+  {
+    "display": "toggle the Properties Palette",
+    "mac_sc": "CMD+1",
+    "pc_sc": "CTRL+1",
+    "difficulty": 3
+  },
+  {
+    "display": "toggle DesignCenter",
+    "mac_sc": "NULL",
+    "pc_sc": "CTRL+2",
+    "difficulty": 3
+  },
+  {
+    "display": "toggle the Tool Palettes panel",
+    "mac_sc": "CMD+3",
+    "pc_sc": "CTRL+3",
+    "difficulty": 2
+  },
+  {
+    "display": "toggle the Sheet Set Manager",
+    "mac_sc": "CMD+4",
+    "pc_sc": "CTRL+4",
+    "difficulty": 3
+  },
+  {
+    "display": "toggle the DBConnect Manager",
+    "mac_sc": "NULL",
+    "pc_sc": "CTRL+6",
+    "difficulty": 5
+  },
+  {
+    "display": "toggle the Markup Set Manager",
+    "mac_sc": "NULL",
+    "pc_sc": "CTRL+7",
+    "difficulty": 5
+  },
+  {
+    "display": "toggle the QuickCalc palette",
+    "mac_sc": "NULL",
+    "pc_sc": "CTRL+8",
+    "difficulty": 4
+  },
+  {
+    "display": "toggle the Command Line window",
+    "mac_sc": "NULL",
+    "pc_sc": "CTRL+9",
+    "difficulty": 2
+  },
+  {
+    "display": "toggle Clean Screen to maximise the drawing canvas",
+    "mac_sc": "CMD+0",
+    "pc_sc": "CTRL+0",
+    "difficulty": 3
+  },
+  {
+    "display": "toggle running Object Snaps",
+    "mac_sc": "NULL",
+    "pc_sc": "CTRL+F",
+    "difficulty": 3
+  },
+  {
+    "display": "toggle Pick Style for group and hatch selection",
+    "mac_sc": "NULL",
+    "pc_sc": "CTRL+H",
+    "difficulty": 4
+  },
+  {
+    "display": "toggle the coordinate display readout",
+    "mac_sc": "NULL",
+    "pc_sc": "CTRL+I",
+    "difficulty": 4
+  },
+  {
+    "display": "repeat the last command",
+    "mac_sc": "NULL",
+    "pc_sc": "CTRL+J",
+    "difficulty": 4
+  },
+  {
+    "display": "insert a hyperlink into the drawing",
+    "mac_sc": "NULL",
+    "pc_sc": "CTRL+K",
+    "difficulty": 5
+  },
+  {
+    "display": "toggle Selection Cycling",
+    "mac_sc": "NULL",
+    "pc_sc": "CTRL+W",
+    "difficulty": 4
+  },
+  {
+    "display": "toggle group selection on or off",
+    "mac_sc": "NULL",
+    "pc_sc": "CTRL+SHIFT+A",
+    "difficulty": 4
+  },
+  {
+    "display": "toggle Hide Palettes",
+    "mac_sc": "NULL",
+    "pc_sc": "CTRL+SHIFT+H",
+    "difficulty": 4
+  },
+  {
+    "display": "toggle Infer Constraints",
+    "mac_sc": "NULL",
+    "pc_sc": "CTRL+SHIFT+I",
+    "difficulty": 4
+  },
+  {
+    "display": "toggle Quick Properties mode",
+    "mac_sc": "NULL",
+    "pc_sc": "CTRL+SHIFT+P",
+    "difficulty": 4
+  },
+  {
+    "display": "switch to the next open drawing tab",
+    "mac_sc": "CONTROL+TAB",
+    "pc_sc": "CTRL+TAB",
+    "difficulty": 3
+  },
+  {
+    "display": "switch to the previous open drawing tab",
+    "mac_sc": "CONTROL+SHIFT+TAB",
+    "pc_sc": "CTRL+SHIFT+TAB",
+    "difficulty": 3
+  },
+  {
+    "display": "advance to the next layout sheet tab",
+    "mac_sc": "CMD+PAGEDOWN",
+    "pc_sc": "CTRL+PAGEDOWN",
+    "difficulty": 3
+  },
+  {
+    "display": "go back to the previous layout sheet tab",
+    "mac_sc": "CMD+PAGEUP",
+    "pc_sc": "CTRL+PAGEUP",
+    "difficulty": 3
+  },
+  {
+    "display": "open the Visual Basic Editor",
+    "mac_sc": "OPT+F11",
+    "pc_sc": "ALT+F11",
+    "difficulty": 5
+  },
+  {
+    "display": "open the Run Macro dialog",
+    "mac_sc": "OPT+F8",
+    "pc_sc": "ALT+F8",
+    "difficulty": 5
+  },
+  {
+    "display": "open AutoCAD Help",
+    "mac_sc": "CMD+QUESTION",
+    "pc_sc": "F1",
+    "difficulty": 3
+  },
+  {
+    "display": "toggle the Command History window",
+    "mac_sc": "CMD+9",
+    "pc_sc": "F2",
+    "difficulty": 3
+  },
+  {
+    "display": "toggle Object Snap (OSNAP)",
+    "mac_sc": "FN+F3|F3",
+    "pc_sc": "F3",
+    "difficulty": 3
+  },
+  {
+    "display": "toggle 3D Object Snap",
+    "mac_sc": "FN+F4|F4",
+    "pc_sc": "F4|CTRL+SHIFT+Y",
+    "difficulty": 4
+  },
+  {
+    "display": "cycle to the next isometric drawing plane",
+    "mac_sc": "FN+F5|F5",
+    "pc_sc": "F5|CTRL+E",
+    "difficulty": 4
+  },
+  {
+    "display": "toggle Dynamic UCS",
+    "mac_sc": "FN+F6|F6",
+    "pc_sc": "F6|CTRL+D",
+    "difficulty": 3
+  },
+  {
+    "display": "toggle the Grid display",
+    "mac_sc": "FN+F7|F7",
+    "pc_sc": "F7|CTRL+G",
+    "difficulty": 2
+  },
+  {
+    "display": "toggle Ortho Mode",
+    "mac_sc": "FN+F8|F8",
+    "pc_sc": "F8|CTRL+L",
+    "difficulty": 3
+  },
+  {
+    "display": "toggle Grid Snap",
+    "mac_sc": "FN+F9|F9",
+    "pc_sc": "F9|CTRL+B",
+    "difficulty": 3
+  },
+  {
+    "display": "toggle Polar Tracking",
+    "mac_sc": "FN+F10|F10",
+    "pc_sc": "F10",
+    "difficulty": 3
+  },
+  {
+    "display": "toggle Object Snap Tracking",
+    "mac_sc": "FN+F11|F11",
+    "pc_sc": "F11",
+    "difficulty": 3
+  },
+  {
+    "display": "toggle Dynamic Input",
+    "mac_sc": "FN+F12|F12",
+    "pc_sc": "F12",
+    "difficulty": 2
+  },
+  {
+    "display": "nudge selected objects up by one snap increment",
+    "mac_sc": "NULL",
+    "pc_sc": "CTRL+ARROWUP",
+    "difficulty": 3
+  },
+  {
+    "display": "nudge selected objects down by one snap increment",
+    "mac_sc": "NULL",
+    "pc_sc": "CTRL+ARROWDOWN",
+    "difficulty": 3
+  },
+  {
+    "display": "nudge selected objects left by one snap increment",
+    "mac_sc": "NULL",
+    "pc_sc": "CTRL+ARROWLEFT",
+    "difficulty": 3
+  },
+  {
+    "display": "nudge selected objects right by one snap increment",
+    "mac_sc": "NULL",
+    "pc_sc": "CTRL+ARROWRIGHT",
+    "difficulty": 3
+  },
+  {
+    "display": "start the Arc command",
+    "mac_sc": "A",
+    "pc_sc": "A",
+    "difficulty": 2
+  },
+  {
+    "display": "open the Block Definition dialog",
+    "mac_sc": "B",
+    "pc_sc": "B",
+    "difficulty": 2
+  },
+  {
+    "display": "start the Circle command",
+    "mac_sc": "C",
+    "pc_sc": "C",
+    "difficulty": 2
+  },
+  {
+    "display": "open the Dimension Style Manager",
+    "mac_sc": "D",
+    "pc_sc": "D",
+    "difficulty": 2
+  },
+  {
+    "display": "start the Erase command",
+    "mac_sc": "E",
+    "pc_sc": "E",
+    "difficulty": 2
+  },
+  {
+    "display": "start the Fillet command to round or close a corner",
+    "mac_sc": "F",
+    "pc_sc": "F",
+    "difficulty": 2
+  },
+  {
+    "display": "open the Group command",
+    "mac_sc": "G",
+    "pc_sc": "G",
+    "difficulty": 2
+  },
+  {
+    "display": "start the Hatch command to fill an enclosed area",
+    "mac_sc": "H",
+    "pc_sc": "H",
+    "difficulty": 2
+  },
+  {
+    "display": "start the Insert command to place a saved Block",
+    "mac_sc": "I",
+    "pc_sc": "I",
+    "difficulty": 2
+  },
+  {
+    "display": "start the Join command to merge open segments into a single object",
+    "mac_sc": "J",
+    "pc_sc": "J",
+    "difficulty": 2
+  },
+  {
+    "display": "start the Line command",
+    "mac_sc": "L",
+    "pc_sc": "L",
+    "difficulty": 2
+  },
+  {
+    "display": "start the Move command",
+    "mac_sc": "M",
+    "pc_sc": "M",
+    "difficulty": 2
+  },
+  {
+    "display": "start the Offset command to create a parallel copy at a set distance",
+    "mac_sc": "O",
+    "pc_sc": "O",
+    "difficulty": 2
+  },
+  {
+    "display": "start the Pan command to reposition the viewport",
+    "mac_sc": "P",
+    "pc_sc": "P",
+    "difficulty": 1
+  },
+  {
+    "display": "quick-save the current drawing without a dialog",
+    "mac_sc": "Q",
+    "pc_sc": "Q",
+    "difficulty": 2
+  },
+  {
+    "display": "refresh the current viewport with the Redraw command",
+    "mac_sc": "R",
+    "pc_sc": "R",
+    "difficulty": 3
+  },
+  {
+    "display": "start the Stretch command",
+    "mac_sc": "S",
+    "pc_sc": "S",
+    "difficulty": 2
+  },
+  {
+    "display": "start the Multiline Text command",
+    "mac_sc": "T",
+    "pc_sc": "T",
+    "difficulty": 3
+  },
+  {
+    "display": "open the View Manager to save or restore named views",
+    "mac_sc": "V",
+    "pc_sc": "V",
+    "difficulty": 3
+  },
+  {
+    "display": "start the Write Block command to export geometry to a new file",
+    "mac_sc": "W",
+    "pc_sc": "W",
+    "difficulty": 4
+  },
+  {
+    "display": "start the Explode command to break a Block into its parts",
+    "mac_sc": "X",
+    "pc_sc": "X",
+    "difficulty": 3
+  },
+  {
+    "display": "start the Zoom command",
+    "mac_sc": "Z",
+    "pc_sc": "Z",
+    "difficulty": 2
+  },
+  {
+    "display": "execute a typed Command Line alias",
+    "mac_sc": "RETURN|SPACE",
+    "pc_sc": "ENTER|SPACE",
+    "difficulty": 2
+  },
+  {
+    "display": "type the first letter of the Polyline alias",
+    "mac_sc": "P",
+    "pc_sc": "P",
+    "difficulty": 2
+  },
+  {
+    "display": "after P, type the letter that completes the Polyline alias",
+    "mac_sc": "L",
+    "pc_sc": "L",
+    "difficulty": 3,
+    "sequential": true
+  },
+  {
+    "display": "type the first letter of the Ellipse alias",
+    "mac_sc": "E",
+    "pc_sc": "E",
+    "difficulty": 2
+  },
+  {
+    "display": "after E, type the letter that completes the Ellipse alias",
+    "mac_sc": "L",
+    "pc_sc": "L",
+    "difficulty": 3,
+    "sequential": true
+  },
+  {
+    "display": "type the first letter of the Rectangle alias",
+    "mac_sc": "R",
+    "pc_sc": "R",
+    "difficulty": 2
+  },
+  {
+    "display": "after R, type the second letter of the Rectangle alias",
+    "mac_sc": "E",
+    "pc_sc": "E",
+    "difficulty": 3,
+    "sequential": true
+  },
+  {
+    "display": "after RE, type the letter that completes the Rectangle alias (distinguishing it from Regen)",
+    "mac_sc": "C",
+    "pc_sc": "C",
+    "difficulty": 4,
+    "sequential": true
+  },
+  {
+    "display": "type the first letter of the Spline alias",
+    "mac_sc": "S",
+    "pc_sc": "S",
+    "difficulty": 3
+  },
+  {
+    "display": "after S, type the second letter of the Spline alias",
+    "mac_sc": "P",
+    "pc_sc": "P",
+    "difficulty": 4,
+    "sequential": true
+  },
+  {
+    "display": "after SP, type the letter that completes the Spline alias",
+    "mac_sc": "L",
+    "pc_sc": "L",
+    "difficulty": 4,
+    "sequential": true
+  },
+  {
+    "display": "type the first letter of the Polygon alias",
+    "mac_sc": "P",
+    "pc_sc": "P",
+    "difficulty": 3
+  },
+  {
+    "display": "after P, type the second letter of the Polygon alias",
+    "mac_sc": "O",
+    "pc_sc": "O",
+    "difficulty": 4,
+    "sequential": true
+  },
+  {
+    "display": "after PO, type the letter that completes the Polygon alias",
+    "mac_sc": "L",
+    "pc_sc": "L",
+    "difficulty": 4,
+    "sequential": true
+  },
+  {
+    "display": "type the first letter of the Construction Line (XLINE) alias",
+    "mac_sc": "X",
+    "pc_sc": "X",
+    "difficulty": 4
+  },
+  {
+    "display": "after X, type the letter that completes the Construction Line alias",
+    "mac_sc": "L",
+    "pc_sc": "L",
+    "difficulty": 5,
+    "sequential": true
+  },
+  {
+    "display": "type the first letter of the Donut alias",
+    "mac_sc": "D",
+    "pc_sc": "D",
+    "difficulty": 3
+  },
+  {
+    "display": "after D, type the letter that completes the Donut alias",
+    "mac_sc": "O",
+    "pc_sc": "O",
+    "difficulty": 4,
+    "sequential": true
+  },
+  {
+    "display": "type the first letter of the Boundary alias",
+    "mac_sc": "B",
+    "pc_sc": "B",
+    "difficulty": 3
+  },
+  {
+    "display": "after B, type the letter that completes the Boundary alias",
+    "mac_sc": "O",
+    "pc_sc": "O",
+    "difficulty": 4,
+    "sequential": true
+  },
+  {
+    "display": "type the first letter of the Region alias",
+    "mac_sc": "R",
+    "pc_sc": "R",
+    "difficulty": 4
+  },
+  {
+    "display": "after R, type the second letter of the Region alias",
+    "mac_sc": "E",
+    "pc_sc": "E",
+    "difficulty": 4,
+    "sequential": true
+  },
+  {
+    "display": "after RE, type the letter that completes the Region alias",
+    "mac_sc": "G",
+    "pc_sc": "G",
+    "difficulty": 5,
+    "sequential": true
+  },
+  {
+    "display": "type the first letter of the Copy alias",
+    "mac_sc": "C",
+    "pc_sc": "C",
+    "difficulty": 2
+  },
+  {
+    "display": "after C, type the letter that completes the Copy alias",
+    "mac_sc": "O",
+    "pc_sc": "O",
+    "difficulty": 2,
+    "sequential": true
+  },
+  {
+    "display": "type the first letter of the Rotate alias",
+    "mac_sc": "R",
+    "pc_sc": "R",
+    "difficulty": 2
+  },
+  {
+    "display": "after R, type the letter that completes the Rotate alias",
+    "mac_sc": "O",
+    "pc_sc": "O",
+    "difficulty": 3,
+    "sequential": true
+  },
+  {
+    "display": "type the first letter of the Scale alias",
+    "mac_sc": "S",
+    "pc_sc": "S",
+    "difficulty": 2
+  },
+  {
+    "display": "after S, type the letter that completes the Scale alias",
+    "mac_sc": "C",
+    "pc_sc": "C",
+    "difficulty": 3,
+    "sequential": true
+  },
+  {
+    "display": "type the first letter of the Trim alias",
+    "mac_sc": "T",
+    "pc_sc": "T",
+    "difficulty": 2
+  },
+  {
+    "display": "after T, type the letter that completes the Trim alias",
+    "mac_sc": "R",
+    "pc_sc": "R",
+    "difficulty": 3,
+    "sequential": true
+  },
+  {
+    "display": "type the first letter of the Extend alias",
+    "mac_sc": "E",
+    "pc_sc": "E",
+    "difficulty": 2
+  },
+  {
+    "display": "after E, type the letter that completes the Extend alias",
+    "mac_sc": "X",
+    "pc_sc": "X",
+    "difficulty": 3,
+    "sequential": true
+  },
+  {
+    "display": "type the first letter of the Mirror alias",
+    "mac_sc": "M",
+    "pc_sc": "M",
+    "difficulty": 2
+  },
+  {
+    "display": "after M, type the letter that completes the Mirror alias",
+    "mac_sc": "I",
+    "pc_sc": "I",
+    "difficulty": 3,
+    "sequential": true
+  },
+  {
+    "display": "type the first letter of the Array alias",
+    "mac_sc": "A",
+    "pc_sc": "A",
+    "difficulty": 2
+  },
+  {
+    "display": "after A, type the letter that completes the Array alias",
+    "mac_sc": "R",
+    "pc_sc": "R",
+    "difficulty": 3,
+    "sequential": true
+  },
+  {
+    "display": "type the first letter of the Align alias",
+    "mac_sc": "A",
+    "pc_sc": "A",
+    "difficulty": 3
+  },
+  {
+    "display": "after A, type the letter that completes the Align alias",
+    "mac_sc": "L",
+    "pc_sc": "L",
+    "difficulty": 4,
+    "sequential": true
+  },
+  {
+    "display": "type the first letter of the Break alias",
+    "mac_sc": "B",
+    "pc_sc": "B",
+    "difficulty": 3
+  },
+  {
+    "display": "after B, type the letter that completes the Break alias",
+    "mac_sc": "R",
+    "pc_sc": "R",
+    "difficulty": 4,
+    "sequential": true
+  },
+  {
+    "display": "type the first letter of the Polyline Edit (PEDIT) alias",
+    "mac_sc": "P",
+    "pc_sc": "P",
+    "difficulty": 3
+  },
+  {
+    "display": "after P, type the letter that completes the Polyline Edit alias",
+    "mac_sc": "E",
+    "pc_sc": "E",
+    "difficulty": 4,
+    "sequential": true
+  },
+  {
+    "display": "type the first letter of the Chamfer alias",
+    "mac_sc": "C",
+    "pc_sc": "C",
+    "difficulty": 3
+  },
+  {
+    "display": "after C, type the second letter of the Chamfer alias",
+    "mac_sc": "H",
+    "pc_sc": "H",
+    "difficulty": 4,
+    "sequential": true
+  },
+  {
+    "display": "after CH, type the letter that completes the Chamfer alias",
+    "mac_sc": "A",
+    "pc_sc": "A",
+    "difficulty": 5,
+    "sequential": true
+  },
+  {
+    "display": "type the first letter of the Lengthen alias",
+    "mac_sc": "L",
+    "pc_sc": "L",
+    "difficulty": 3
+  },
+  {
+    "display": "after L, type the second letter of the Lengthen alias",
+    "mac_sc": "E",
+    "pc_sc": "E",
+    "difficulty": 3,
+    "sequential": true
+  },
+  {
+    "display": "after LE, type the letter that completes the Lengthen alias",
+    "mac_sc": "N",
+    "pc_sc": "N",
+    "difficulty": 4,
+    "sequential": true
+  },
+  {
+    "display": "type the first letter of the single-line Text (DTEXT) alias",
+    "mac_sc": "D",
+    "pc_sc": "D",
+    "difficulty": 4
+  },
+  {
+    "display": "after D, type the letter that completes the single-line Text alias",
+    "mac_sc": "T",
+    "pc_sc": "T",
+    "difficulty": 4,
+    "sequential": true
+  },
+  {
+    "display": "type the first letter of the Leader annotation alias",
+    "mac_sc": "L",
+    "pc_sc": "L",
+    "difficulty": 3
+  },
+  {
+    "display": "after L, type the letter that completes the Leader alias",
+    "mac_sc": "E",
+    "pc_sc": "E",
+    "difficulty": 4,
+    "sequential": true
+  },
+  {
+    "display": "type the first letter of the Match Properties alias",
+    "mac_sc": "M",
+    "pc_sc": "M",
+    "difficulty": 2
+  },
+  {
+    "display": "after M, type the letter that completes the Match Properties alias",
+    "mac_sc": "A",
+    "pc_sc": "A",
+    "difficulty": 3,
+    "sequential": true
+  },
+  {
+    "display": "type the first letter of the Layer Manager alias",
+    "mac_sc": "L",
+    "pc_sc": "L",
+    "difficulty": 2
+  },
+  {
+    "display": "after L, type the letter that completes the Layer Manager alias",
+    "mac_sc": "A",
+    "pc_sc": "A",
+    "difficulty": 3,
+    "sequential": true
+  },
+  {
+    "display": "type the first letter of the Properties palette alias",
+    "mac_sc": "P",
+    "pc_sc": "P",
+    "difficulty": 2
+  },
+  {
+    "display": "after P, type the letter that completes the Properties alias",
+    "mac_sc": "R",
+    "pc_sc": "R",
+    "difficulty": 3,
+    "sequential": true
+  },
+  {
+    "display": "type the first letter of the Linetype alias",
+    "mac_sc": "L",
+    "pc_sc": "L",
+    "difficulty": 2
+  },
+  {
+    "display": "after L, type the letter that completes the Linetype alias",
+    "mac_sc": "T",
+    "pc_sc": "T",
+    "difficulty": 4,
+    "sequential": true
+  },
+  {
+    "display": "type the first letter of the Lineweight alias",
+    "mac_sc": "L",
+    "pc_sc": "L",
+    "difficulty": 3
+  },
+  {
+    "display": "after L, type the letter that completes the Lineweight alias",
+    "mac_sc": "W",
+    "pc_sc": "W",
+    "difficulty": 4,
+    "sequential": true
+  },
+  {
+    "display": "type the first letter of the Purge alias",
+    "mac_sc": "P",
+    "pc_sc": "P",
+    "difficulty": 3
+  },
+  {
+    "display": "after P, type the letter that completes the Purge alias",
+    "mac_sc": "U",
+    "pc_sc": "U",
+    "difficulty": 4,
+    "sequential": true
+  },
+  {
+    "display": "type the first letter of the Object Snap Settings alias",
+    "mac_sc": "O",
+    "pc_sc": "O",
+    "difficulty": 3
+  },
+  {
+    "display": "after O, type the letter that completes the Object Snap Settings alias",
+    "mac_sc": "S",
+    "pc_sc": "S",
+    "difficulty": 4,
+    "sequential": true
+  },
+  {
+    "display": "type the first letter of the Options dialog alias",
+    "mac_sc": "O",
+    "pc_sc": "O",
+    "difficulty": 3
+  },
+  {
+    "display": "after O, type the letter that completes the Options alias",
+    "mac_sc": "P",
+    "pc_sc": "P",
+    "difficulty": 3,
+    "sequential": true
+  },
+  {
+    "display": "type the first letter of the Text Style alias",
+    "mac_sc": "S",
+    "pc_sc": "S",
+    "difficulty": 4
+  },
+  {
+    "display": "after S, type the letter that completes the Text Style alias",
+    "mac_sc": "T",
+    "pc_sc": "T",
+    "difficulty": 4,
+    "sequential": true
+  },
+  {
+    "display": "type the first letter of the Drafting Settings alias",
+    "mac_sc": "D",
+    "pc_sc": "D",
+    "difficulty": 3
+  },
+  {
+    "display": "after D, type the letter that completes the Drafting Settings alias",
+    "mac_sc": "S",
+    "pc_sc": "S",
+    "difficulty": 4,
+    "sequential": true
+  },
+  {
+    "display": "type the first letter of the Units alias",
+    "mac_sc": "U",
+    "pc_sc": "U",
+    "difficulty": 3
+  },
+  {
+    "display": "after U, type the letter that completes the Units alias",
+    "mac_sc": "N",
+    "pc_sc": "N",
+    "difficulty": 3,
+    "sequential": true
+  },
+  {
+    "display": "type the first letter of the List alias to report object properties",
+    "mac_sc": "L",
+    "pc_sc": "L",
+    "difficulty": 3
+  },
+  {
+    "display": "after L, type the letter that completes the List alias",
+    "mac_sc": "I",
+    "pc_sc": "I",
+    "difficulty": 3,
+    "sequential": true
+  },
+  {
+    "display": "type the first letter of the Gradient Fill alias",
+    "mac_sc": "G",
+    "pc_sc": "G",
+    "difficulty": 4
+  },
+  {
+    "display": "after G, type the letter that completes the Gradient Fill alias",
+    "mac_sc": "D",
+    "pc_sc": "D",
+    "difficulty": 5,
+    "sequential": true
+  },
+  {
+    "display": "type the first letter of the Hatch Edit alias",
+    "mac_sc": "H",
+    "pc_sc": "H",
+    "difficulty": 3
+  },
+  {
+    "display": "after H, type the letter that completes the Hatch Edit alias",
+    "mac_sc": "E",
+    "pc_sc": "E",
+    "difficulty": 5,
+    "sequential": true
+  },
+  {
+    "display": "type the first letter of the External References (XREF) alias",
+    "mac_sc": "X",
+    "pc_sc": "X",
+    "difficulty": 3
+  },
+  {
+    "display": "after X, type the letter that completes the External References alias",
+    "mac_sc": "R",
+    "pc_sc": "R",
+    "difficulty": 4,
+    "sequential": true
+  },
+  {
+    "display": "type the first letter of the Point object alias",
+    "mac_sc": "P",
+    "pc_sc": "P",
+    "difficulty": 3
+  },
+  {
+    "display": "after P, type the letter that completes the Point alias",
+    "mac_sc": "O",
+    "pc_sc": "O",
+    "difficulty": 3,
+    "sequential": true
+  },
+  {
+    "display": "type the first letter of the Measure alias",
+    "mac_sc": "M",
+    "pc_sc": "M",
+    "difficulty": 4
+  },
+  {
+    "display": "after M, type the letter that completes the Measure alias",
+    "mac_sc": "E",
+    "pc_sc": "E",
+    "difficulty": 4,
+    "sequential": true
+  },
+  {
+    "display": "type the first letter of the Area calculation alias",
+    "mac_sc": "A",
+    "pc_sc": "A",
+    "difficulty": 3
+  },
+  {
+    "display": "after A, press the same letter again to complete the Area alias",
+    "mac_sc": "A",
+    "pc_sc": "A",
+    "difficulty": 5,
+    "sequential": true
+  },
+  {
+    "display": "type the first letter of the Distance measurement alias",
+    "mac_sc": "D",
+    "pc_sc": "D",
+    "difficulty": 3
+  },
+  {
+    "display": "after D, type the letter that completes the Distance alias",
+    "mac_sc": "I",
+    "pc_sc": "I",
+    "difficulty": 3,
+    "sequential": true
+  },
+  {
+    "display": "type the first letter of the Regen alias",
+    "mac_sc": "R",
+    "pc_sc": "R",
+    "difficulty": 3
+  },
+  {
+    "display": "after R, type the letter that completes the Regen alias",
+    "mac_sc": "E",
+    "pc_sc": "E",
+    "difficulty": 3,
+    "sequential": true
+  },
+  {
+    "display": "type the first letter of the Spell Check alias",
+    "mac_sc": "S",
+    "pc_sc": "S",
+    "difficulty": 4
+  },
+  {
+    "display": "after S, type the letter that completes the Spell Check alias",
+    "mac_sc": "P",
+    "pc_sc": "P",
+    "difficulty": 4,
+    "sequential": true
+  },
+  {
+    "display": "type the prefix key that all dimension command aliases begin with",
+    "mac_sc": "D",
+    "pc_sc": "D",
+    "difficulty": 2,
+    "sequential": true
+  },
+  {
+    "display": "after D, type the letter that begins the Linear Dimension alias",
+    "mac_sc": "L",
+    "pc_sc": "L",
+    "difficulty": 3,
+    "sequential": true
+  },
+  {
+    "display": "after DL, type the letter that completes the Linear Dimension alias",
+    "mac_sc": "I",
+    "pc_sc": "I",
+    "difficulty": 4,
+    "sequential": true
+  },
+  {
+    "display": "after D, type the letter shared by both the Aligned and Angular Dimension aliases",
+    "mac_sc": "A",
+    "pc_sc": "A",
+    "difficulty": 3,
+    "sequential": true
+  },
+  {
+    "display": "after DA, type the letter that completes the Aligned Dimension alias",
+    "mac_sc": "L",
+    "pc_sc": "L",
+    "difficulty": 4,
+    "sequential": true
+  },
+  {
+    "display": "after DA, type the letter that completes the Angular Dimension alias",
+    "mac_sc": "N",
+    "pc_sc": "N",
+    "difficulty": 5,
+    "sequential": true
+  },
+  {
+    "display": "after D, type the letter that begins the Radius Dimension alias",
+    "mac_sc": "R",
+    "pc_sc": "R",
+    "difficulty": 3,
+    "sequential": true
+  },
+  {
+    "display": "after DR, type the letter that completes the Radius Dimension alias",
+    "mac_sc": "A",
+    "pc_sc": "A",
+    "difficulty": 5,
+    "sequential": true
+  },
+  {
+    "display": "after D, type the repeated letter shared by the Diameter and Disassociate dimension aliases",
+    "mac_sc": "D",
+    "pc_sc": "D",
+    "difficulty": 5,
+    "sequential": true
+  },
+  {
+    "display": "after DD, type the letter that completes the Diameter Dimension alias",
+    "mac_sc": "I",
+    "pc_sc": "I",
+    "difficulty": 5,
+    "sequential": true
+  },
+  {
+    "display": "after DD, type the letter that completes the Disassociate Dimension alias",
+    "mac_sc": "A",
+    "pc_sc": "A",
+    "difficulty": 5,
+    "sequential": true
+  },
+  {
+    "display": "after D, type the letter that begins the Continue Dimension alias",
+    "mac_sc": "C",
+    "pc_sc": "C",
+    "difficulty": 4,
+    "sequential": true
+  },
+  {
+    "display": "after DC, type the letter that completes the Continue Dimension alias",
+    "mac_sc": "O",
+    "pc_sc": "O",
+    "difficulty": 5,
+    "sequential": true
+  },
+  {
+    "display": "after D, type the letter that begins the Baseline Dimension alias",
+    "mac_sc": "B",
+    "pc_sc": "B",
+    "difficulty": 4,
+    "sequential": true
+  },
+  {
+    "display": "after DB, type the letter that completes the Baseline Dimension alias",
+    "mac_sc": "A",
+    "pc_sc": "A",
+    "difficulty": 5,
+    "sequential": true
+  },
+  {
+    "display": "after starting Zoom, type this letter to fit the drawing limits",
+    "mac_sc": "A",
+    "pc_sc": "A",
+    "difficulty": 3,
+    "sequential": true
+  },
+  {
+    "display": "after starting Zoom, type this letter to fit all visible geometry",
+    "mac_sc": "E",
+    "pc_sc": "E",
+    "difficulty": 4,
+    "sequential": true
+  },
+  {
+    "display": "after starting Zoom, type this letter to drag a zoom rectangle",
+    "mac_sc": "W",
+    "pc_sc": "W",
+    "difficulty": 4,
+    "sequential": true
+  },
+  {
+    "display": "after starting Zoom, type this letter to restore the previous viewport",
+    "mac_sc": "P",
+    "pc_sc": "P",
+    "difficulty": 3,
+    "sequential": true
+  },
+  {
+    "display": "after starting Zoom, type this letter to zoom to a selected object",
+    "mac_sc": "O",
+    "pc_sc": "O",
+    "difficulty": 3,
+    "sequential": true
+  }
+]

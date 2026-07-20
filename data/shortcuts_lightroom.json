@@ -1,4 +1,22 @@
 [
+   {
+"display": "cut",
+    "mac_sc": "CMD+X",
+    "pc_sc": "CTRL+X",
+    "difficulty": 1
+  },
+  {
+"display": "copy",
+    "mac_sc": "CMD+C",
+    "pc_sc": "CTRL+C",
+    "difficulty": 1
+  },
+  {
+"display": "paste",
+    "mac_sc": "CMD+V",
+    "pc_sc": "CTRL+V",
+    "difficulty": 1
+  },
   {
     "display": "go to Develop module",
     "mac_sc": "D",

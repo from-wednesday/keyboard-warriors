@@ -1131,7 +1131,7 @@ start:  GYRO PERMISSION MODAL
   </div>
 </div>
 
-<p id="credit" class="page-initially-hidden"><small><strong><em>Built for learners.</strong></em> This digital toy was created by Wednesday Dessauer &amp; is free to adapt under <strong>Polyform Non-Commercial</strong> 1.0.0</small></p>
+<p id="credit" class="page-initially-hidden"><small><strong><em>Built for learners.</strong></em> This digital toy was created by Wednesday Dessauer &amp; <span id="creditClause">is free to adapt under <a href="https://github.com/yourusername/keyboard-warriors/blob/main/LICENSE" class="credit-link">Polyform Non-Commercial 1.0.0</a></span>.</small></p>
 
 <div id="diffIconWrap" class="page-initially-hidden">
  <svg id="diffIcon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 96.6 64" cursor="pointer">
@@ -10967,7 +10967,11 @@ function _BuildStandbyDefaultsForSkillset(SkillsetLabel, AllApps, CurrentShortLa
     .map(function(App) { return App.label; });
 }
 
-function _onAppsLoaded(AllAppsFromJson) {
+function _onAppsLoaded(EditionManifest) {
+  var AllAppsFromJson = EditionManifest.apps || EditionManifest; // tolerate a bare array too
+  if (EditionManifest.skillsets && EditionManifest.skillsets.length > 0) {
+    SKILLSET_DEFS = EditionManifest.skillsets;
+  }
   appsLongList = AllAppsFromJson;
 
   AllAppsFromJson.forEach(function(App) {
@@ -11050,22 +11054,65 @@ function _onAppsLoaded(AllAppsFromJson) {
 // Load OS conflict data at startup (before first game so pool filtering is ready).
 loadConflictsData();
 
-// Fetch the apps manifest on startup. Falls back to a minimal built-in list if the
+// ── EDITION RESOLUTION ────────────────────────────────────────────────────
+// 'to' is the only tenant-facing vocabulary: URL param, and the filename
+// suffix of the manifest it loads (to-public.json, to-swinburne.json, ...).
+// Internally we call the resolved value the "edition" throughout the JS —
+// this word never appears in the URL or on screen.
+function _resolveEditionId() {
+  var Requested = null;
+  try { Requested = new URLSearchParams(window.location.search).get('to'); } catch (UrlError) {}
+  return Requested || 'public';
+}
+var EditionId = _resolveEditionId();
+
+function _applyEditionCredit(EditionManifest) {
+  var ClauseEl = document.getElementById('creditClause');
+  if (!ClauseEl) return;
+  var ClauseText = (EditionManifest && EditionManifest.creditClause)
+    || 'is free to adapt under Polyform Non-Commercial 1.0.0';
+  var ClauseUrl = (EditionManifest && EditionManifest.creditLinkUrl)
+    || 'https://github.com/yourusername/keyboard-warriors/blob/main/LICENSE';
+  ClauseEl.innerHTML = '';
+  var LinkEl = document.createElement('a');
+  LinkEl.href = ClauseUrl;
+  LinkEl.className = 'credit-link';
+  LinkEl.target = '_blank';
+  LinkEl.rel = 'noopener';
+  // Split "is free to adapt under Polyform Non-Commercial 1.0.0" so only the
+  // license/terms phrase itself is the link, matching the original styling.
+  var SplitIndex = ClauseText.indexOf(' under ');
+  if (SplitIndex !== -1) {
+    ClauseEl.appendChild(document.createTextNode(ClauseText.slice(0, SplitIndex + 7)));
+    LinkEl.textContent = ClauseText.slice(SplitIndex + 7);
+    ClauseEl.appendChild(LinkEl);
+  } else {
+    LinkEl.textContent = ClauseText;
+    ClauseEl.appendChild(LinkEl);
+  }
+}
+
+// Fetch the edition manifest on startup. Falls back to a minimal built-in list if the
 // file cannot be reached (e.g. running the HTML file locally without a server).
 (function() {
-  fetch('/keyboard-warriors/data/keyboard-warriors-apps.json')
+  fetch('/keyboard-warriors/data/to-' + EditionId + '.json')
     .then(function(r) {
       if (!r.ok) throw new Error('HTTP ' + r.status);
       return r.json();
     })
     .then(function(data) {
+      _applyEditionCredit(data);
       _onAppsLoaded(data);
     })
     .catch(function(err) {
-      console.warn('[Apps] Could not load keyboard-warriors-apps.json:', err, '— using built-in fallback.');
-      _onAppsLoaded([
-        { label: 'Photoshop (Ps)', path: '/keyboard-warriors/data/shortcuts_photoshop.json' },
-      ]);
+      console.warn('[Edition] Could not load to-' + EditionId + '.json:', err, '— using built-in fallback.');
+      _applyEditionCredit(null);
+      _onAppsLoaded({
+        apps: [
+          { label: 'Photoshop (Ps)', path: '/keyboard-warriors/data/shortcuts_photoshop.json' },
+        ],
+        skillsets: null,
+      });
     });
 })();
 // Codes that only exist on the extended keyboard (not on the graphical layout)

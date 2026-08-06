@@ -1,0 +1,94 @@
+{
+  "title": "from-wednesday",
+  "colors": {
+    "light": "#EDE0B4",
+    "dark": "#6f7277"
+  },
+  "tabs": [
+    {
+      "objectId": 1,
+      "label": "LICENSE",
+      "url": "pages/license-swinburne.html",
+      "colors": {
+        "light": "#d9c99d",
+        "dark": "#74777c"
+      }
+    },
+    {
+      "objectId": 2,
+      "label": "BOOTCAMP",
+      "url": "pages/advice_general.html",
+      "colors": {
+        "light": "#e4d5a8",
+        "dark": "#74777c"
+      }
+    },
+    {
+      "objectId": 3,
+      "label": "KEYBOARD WARRIORS",
+      "url": "pages/advice_game.html",
+      "colors": {
+        "light": "#ede0b4",
+        "dark": "#659287"
+      }
+    },
+    {
+      "objectId": 4,
+      "label": "Json SCHEMA",
+      "url": "pages/schema_defined.html",
+      "colors": {
+        "light": "#f6eec9",
+        "dark": "#88BDA4"
+      }
+    },
+    {
+      "objectId": 5,
+      "label": "DEFINING KEYS",
+      "url": "pages/define_the_keys.html",
+      "colors": {
+        "light": "#EEF8CD",
+        "dark": "#B1D3B9"
+      }
+    },
+    {
+      "objectId": 6,
+      "label": "SUPPORT",
+      "url": "pages/support.html",
+      "colors": {
+        "light": "#BBF1D2",
+        "dark": "#E6F2DD"
+      }
+    }
+  ],
+  "layout": {
+    "peekStepPx": 28,
+    "staggerStepMs": 45,
+    "flapWidthPx": 252,
+    "flapStepPx": 220,
+    "flapHeightPx": 40,
+    "flapAngleDeg": 14,
+    "cornerRadiusPx": 16
+  },
+  "responsive": {
+    "useDynamicViewport": true,
+    "useVisualViewport": true,
+    "minPeekStepPx": 18,
+    "tabStackMaxViewportShare": 0.34,
+    "compactAtViewportHeightPx": 720,
+    "narrowMode": {
+      "enabled": true,
+      "titleRow": true,
+      "fullWidthTabs": true,
+      "alternateFlaps": true,
+      "firstFlapSide": "right"
+    }
+  },
+  "animation": {
+    "easing": "cubic-bezier(.22,1,.36,1)",
+    "cascadeStepMs": 35,
+    "transitionMs": 560,
+    "pressMs": 90,
+    "pressOffsetPx": 4,
+    "parallaxPx": 18
+  }
+}

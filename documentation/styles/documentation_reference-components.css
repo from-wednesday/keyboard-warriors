@@ -1,0 +1,153 @@
+/* ══════════════════════════════════════════════════════════════
+   Keyboard Warriors — Reference Components
+   Extends design-system.css. Only link this on schema/token
+   reference pages (e.g. define_the_keys.html) — narrative,
+   instructional and legal pages don't use these classes.
+   ══════════════════════════════════════════════════════════════ */
+
+/* ── Code block ──────────────────────────────────────────────── */
+.code-block {
+  background: #1a2030;
+  color: #d8e0f0;
+  border-radius: 8px;
+  padding: 18px 22px;
+  font-family: var(--mono);
+  font-size: 0.82rem;
+  line-height: 1.9;
+  overflow-x: auto;
+}
+.code-block .c-key   { color: #80b8f8; }
+.code-block .c-val   { color: #90d890; }
+.code-block .c-note  { color: #999999; }
+.code-block .c-null  { color: #a08080; }
+
+/* ── Token pill ──────────────────────────────────────────────── */
+.tok {
+  display: inline-block;
+  font-family: var(--mono);
+  font-size: 11.5px;
+  font-weight: 600;
+  background: var(--accent);
+  color: #fff;
+  border-radius: 3px;
+  padding: 1px 6px;
+  white-space: nowrap;
+}
+.tok.mac  { background: var(--mac); }
+.tok.pc   { background: #8b6000; }
+
+/* ── Synonym pill ────────────────────────────────────────────── */
+.syn {
+  display: inline-block;
+  font-family: var(--mono);
+  font-size: 11px;
+  background: var(--syn-bg);
+  color: var(--syn-ink);
+  border: 1px solid var(--syn-border);
+  border-radius: 3px;
+  padding: 1px 6px;
+  white-space: nowrap;
+}
+
+/* ── OS badge ────────────────────────────────────────────────── */
+.badge {
+  display: inline-block;
+  font-size: 10px;
+  font-weight: 600;
+  font-family: var(--mono);
+  letter-spacing: 0.05em;
+  border-radius: 3px;
+  padding: 1px 6px;
+  vertical-align: middle;
+  white-space: nowrap;
+}
+.badge.mac  { background: var(--mac-bg);  color: var(--mac); }
+.badge.pc   { background: var(--pc-bg);   color: var(--pc); }
+.badge.both { background: var(--both-bg); color: var(--accent); }
+.badge.ext  { background: var(--ext-bg);  color: var(--ext-ink); border: 1px solid var(--ext-border); }
+
+/* ── Extended chip pill ──────────────────────────────────────── */
+.chip-ext {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-family: var(--mono);
+  font-size: 11.5px;
+  font-weight: 600;
+  color: var(--ext-ink);
+  background: var(--ext-bg);
+  border: 1px solid var(--ext-border);
+  border-radius: 10px;
+  padding: 2px 10px 1px;
+  white-space: nowrap;
+  vertical-align: middle;
+}
+
+/* ── Chip pair (short + long form) ──────────────────────────── */
+.chip-pair {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+
+/* ── Null value ──────────────────────────────────────────────── */
+.null-val {
+  font-family: var(--mono);
+  font-size: 11.5px;
+  font-weight: 600;
+  color: #888;
+  background: #eeeeee;
+  border-radius: 3px;
+  padding: 1px 6px;
+}
+
+
+/* Folder-skin additions — extends the :root currentColor override
+   already declared in design-system.css. Load that file first. */
+.tok,
+.syn,
+.badge,
+.chip-ext,
+.null-val,
+.code-block,
+.code-block .c-key,
+.code-block .c-val,
+.code-block .c-note,
+.code-block .c-null {
+  color: inherit;
+}
+
+.code-block .c-note {
+  opacity: .68;
+}
+
+.code-block {
+  background: rgba(26,32,48,.12);
+  border: 1px solid rgba(0,0,0,.12);
+}
+
+.tok,
+.tok.mac,
+.tok.pc {
+  background: rgba(30,58,95,.16);
+  border: 1px solid rgba(30,58,95,.16);
+}
+
+.syn {
+  background: rgba(74,48,128,.08);
+  border-color: rgba(74,48,128,.14);
+}
+
+.badge.mac { background: rgba(26,92,56,.10); }
+.badge.pc { background: rgba(139,96,0,.10); }
+.badge.both { background: rgba(30,58,95,.08); }
+.badge.ext { background: rgba(122,40,88,.08); border-color: rgba(122,40,88,.14); }
+
+.chip-ext {
+  background: rgba(122,40,88,.08);
+  border-color: rgba(122,40,88,.14);
+}
+
+.null-val {
+  background: rgba(255,255,255,.08);
+}

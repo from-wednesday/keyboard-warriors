@@ -1,1 +1,566 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:ital,wght@0,400;0,500;0,600;1,400&family=IBM+Plex+Sans:ital,wght@0,400;0,500;0,600&display=swap" rel="stylesheet">
+<style>
 
+  :root{
+    --mint:        #BBF1D2;
+    --card-back:   #6FA98B;
+    --card-edge:   #4F8069;
+    --card-shadow: rgba(37,74,58,.35);
+    --border-line: #F4EFDE;
+    --card-front:  #F6F1E1;
+    --ink:         #1F3327;
+    --ink-soft:    #43594C;
+    --brass:       #9C7A2E;
+    --brass-dark:  #7C6023;
+    --serif: 'Iowan Old Style', 'Palatino Linotype', Palatino, Georgia, serif;
+    --mono:  'IBM Plex Mono', monospace;
+    --sans:  'IBM Plex Sans', sans-serif;
+
+    /* Brand colours — 'go to' buttons on the reverse of each card */
+    --color-mastodon:         #6364FF;
+    --color-github-dark:      #24292F;
+    --color-github-blue:      #0969DA;
+    --color-apple-music-flat: #FA243C;
+    --gradient-apple-music:   linear-gradient(135deg, #FA233B 0%, #FB5C74 100%);
+    --color-youtube:          #FF0000;
+    --color-linkedin:         #0A66C2;
+    --color-pinterest:        #E60023;
+  }
+  *{box-sizing:border-box;}
+  body {
+    font-family: var(--serif);
+    margin: 0;
+    padding: 40px 32px 90px;
+    color: var(--ink);
+    line-height: 1.6;
+  }
+  h1 {
+    font-size: 1.6rem;
+    margin: 0 0 .6rem;
+    position: relative;
+    z-index: 60; /* stays above the card stack if the arc's apex rides up under it */
+  }
+  p.intro { color: var(--ink-soft); }
+
+  .spread {
+    position: relative;
+    max-width: 760px;
+    margin: -72px auto 0; /* pulled up from 64px so the arc's apex can overlap the H1 row */
+    height: 660px;
+  }
+
+  .card {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 172px;
+    height: 252px;
+    transform: translate(calc(-50% + var(--x)), calc(-50% + var(--y))) rotate(var(--r));
+    transition: transform .45s cubic-bezier(.22,1,.36,1);
+    z-index: var(--z, 1);
+
+    filter: drop-shadow(0 10px 16px var(--card-shadow));
+  }
+  .card.is-active {
+    transform: translate(-50%, -50%) rotate(0deg) scale(1.18);
+    z-index: 50;
+  }
+
+  .card-flip {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    perspective: 1400px;
+  }
+
+  .card-inner {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    transform-style: preserve-3d;
+    -webkit-transform-style: preserve-3d;
+    transition: transform .55s cubic-bezier(.22,1,.36,1);
+    /* No filter here — see the comment on .card above. This element
+       must stay a "pure" 3D transform, untouched by anything that
+       would force the browser to flatten it. */
+  }
+  .card.is-active .card-inner { transform: rotateY(180deg); }
+
+  .card-face {
+    position: absolute;
+    inset: 0;
+    backface-visibility: hidden;
+    -webkit-backface-visibility: hidden;
+    border-radius: 11px;
+    overflow: hidden;
+  }
+
+  .card-back {
+    display: block;
+    width: 100%; height: 100%;
+    padding: 0;
+    border: 0;
+    cursor: pointer;
+    background: var(--card-back);
+    color: var(--border-line);
+    font: inherit;
+    text-align: left;
+  }
+  .card-back:focus-visible { outline: 2px solid var(--border-line); outline-offset: 3px; }
+
+  .card-frame-svg {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+  }
+
+  .card-numeral {
+    position: absolute;
+    top: 20px; left: 0; right: 0;
+    text-align: center;
+    font-family: var(--mono);
+    font-size: 11px;
+    letter-spacing: .08em;
+    opacity: .8;
+  }
+  .card-icon {
+    position: absolute;
+    top: 50%; left: 50%;
+    transform: translate(-50%, -58%);
+    width: 64px; height: 64px;
+  }
+  .card-icon svg { width: 100%; height: 100%; display: block; }
+  .card-name {
+    position: absolute;
+    bottom: 22px; left: 0; right: 0;
+    text-align: center;
+    font-family: var(--mono);
+    font-size: 10px;
+    font-weight: 500;
+    letter-spacing: .1em;
+    text-transform: uppercase;
+    opacity: .85;
+  }
+  .card-front {
+    transform: rotateY(180deg);
+    background: var(--card-front);
+    padding: 20px 18px 18px;
+    display: flex;
+    flex-direction: column;
+    cursor: pointer;
+  }
+  .card-front p {
+    font-family: var(--sans);
+    font-size: 12px;
+    line-height: 1.55;
+    color: var(--ink);
+    margin: 0;
+    flex: 1;
+  }
+  .card-go {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-decoration: none;
+    color: var(--card-front);
+    background: var(--brass);
+    border: 1px solid var(--brass-dark);
+    border-radius: 5px;
+    /* Minimal top/bottom padding so the symbol reads as large as
+       possible within the button — the button's own height is what
+       shrink-wraps around the icon, not the other way around. */
+    padding: 4px 10px;
+  }
+  .card-go:hover { background: var(--brass-dark); }
+
+  /* Icon-only mark, reused from the matching .card-icon SVG on the
+     card's reverse, just scaled down. currentColor inside the path
+     picks up this button's text colour automatically. */
+  .card-go svg {
+    width: 26px;
+    height: 26px;
+    display: block;
+  }
+
+  .card-go.mastodon {
+    background: var(--color-mastodon);
+    border-color: color-mix(in srgb, var(--color-mastodon) 65%, black);
+  }
+  .card-go.mastodon:hover {
+    background: color-mix(in srgb, var(--color-mastodon) 85%, black);
+  }
+
+  .card-go.github {
+    background: var(--color-github-dark);
+    border-color: #14181d;
+  }
+  .card-go.github:hover {
+    background: var(--color-github-blue);
+    border-color: color-mix(in srgb, var(--color-github-blue) 80%, black);
+  }
+
+  .card-go.apple-music {
+    background: var(--gradient-apple-music);
+    border-color: color-mix(in srgb, var(--color-apple-music-flat) 65%, black);
+  }
+  .card-go.apple-music:hover {
+    background: var(--color-apple-music-flat);
+  }
+
+  .card-go.youtube {
+    background: var(--color-youtube);
+    border-color: color-mix(in srgb, var(--color-youtube) 65%, black);
+  }
+  .card-go.youtube:hover {
+    background: color-mix(in srgb, var(--color-youtube) 85%, black);
+  }
+
+  .card-go.linkedin {
+    background: var(--color-linkedin);
+    border-color: color-mix(in srgb, var(--color-linkedin) 65%, black);
+  }
+  .card-go.linkedin:hover {
+    background: color-mix(in srgb, var(--color-linkedin) 85%, black);
+  }
+
+  .card-go.pinterest {
+    background: var(--color-pinterest);
+    border-color: color-mix(in srgb, var(--color-pinterest) 65%, black);
+  }
+  .card-go.pinterest:hover {
+    background: color-mix(in srgb, var(--color-pinterest) 85%, black);
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .card, .card-inner { transition: none; }
+  }
+
+  /* ── Narrow screens: fall back to a simple hand of cards ──────
+     Absolute arc placement stops making sense once the spread is
+     narrower than a couple of cards, so it becomes a wrapped row
+     with light alternating tilt instead of the two-arc layout. */
+  @media (max-width: 640px) {
+    .spread { height: auto; max-width: 420px; margin-top: 8px; } /* was 40px */
+    .card {
+      position: static;
+      display: inline-block;
+      margin: 10px 8px;
+      transform: rotate(var(--r-mobile, 0deg));
+    }
+    .card.is-active { transform: scale(1.06) rotate(0deg); }
+    .spread { display: flex; flex-wrap: wrap; justify-content: center; }
+  }
+</style>
+</head>
+<body>
+  <h1 style="color: #6FA98B;">to-wednesday</h1>
+  <svg width="0" height="0" style="position:absolute" aria-hidden="true">
+    <defs>
+      <path id="cardFrameLine"
+            d="M 16,36 Q 36,36 36,16 L 136,16 Q 136,36 156,36 L 156,216 Q 136,216 136,236 L 36,236 Q 36,216 16,216 Z"
+            fill="none" stroke="currentColor" stroke-width="2"/>
+      <g id="cardFrameDiamonds" fill="none" stroke="currentColor" stroke-width="1.8">
+        <rect x="12.7" y="12.7" width="6.6" height="6.6" transform="rotate(45 16 16)"/>
+        <rect x="152.7" y="12.7" width="6.6" height="6.6" transform="rotate(45 156 16)"/>
+        <rect x="152.7" y="232.7" width="6.6" height="6.6" transform="rotate(45 156 236)"/>
+        <rect x="12.7" y="232.7" width="6.6" height="6.6" transform="rotate(45 16 236)"/>
+      </g>
+    </defs>
+  </svg>
+
+  <div class="spread">
+    <!-- I — Mastodon (top arc) -->
+    <div class="card" style="--x:-198px; --y:-100px; --r:-7.5deg; --r-mobile:-3deg; --z:1;">
+      <div class="card-flip">
+        <div class="card-inner">
+          <div class="card-face">
+            <div class="card-back" role="button" tabindex="0" aria-label="Reveal note about Mastodon">
+              <svg class="card-frame-svg" viewBox="0 0 172 252"><use href="#cardFrameLine"/><use href="#cardFrameDiamonds"/></svg>
+              <span class="card-numeral">I</span>
+              <span class="card-icon">
+                <svg viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
+                  <path fill="currentColor" fill-opacity="0.66" d="M90.2,30.54c-1.23-9.05-9.2-16.19-18.66-17.57-1.6-.24-7.63-1.08-21.63-1.08h-.11c-14.01,0-17.01.85-18.59,1.08-9.19,1.34-17.58,7.75-19.62,16.91-.98,4.51-1.08,9.51-.91,14.09.26,6.58.31,13.14.92,19.7.42,4.35,1.14,8.67,2.18,12.91,1.93,7.85,9.77,14.38,17.45,17.04,8.22,2.78,17.05,3.24,25.53,1.33.93-.22,1.86-.46,2.76-.75,2.05-.65,4.47-1.37,6.24-2.65.02-.02.04-.04.05-.06,0-.02.02-.05.02-.09v-6.35s0-.05-.02-.08c0-.02-.03-.04-.05-.06s-.04-.03-.08-.03h-.09c-5.42,1.28-10.98,1.92-16.56,1.91-9.6,0-12.18-4.5-12.93-6.38-.59-1.62-.97-3.32-1.12-5.03,0-.03,0-.05.01-.09.01-.02.03-.05.05-.06.02-.02.05-.03.08-.03h.09c5.33,1.27,10.8,1.91,16.29,1.91,1.32,0,2.63,0,3.95-.03,5.52-.15,11.34-.43,16.77-1.48.14-.02.27-.05.39-.09,8.56-1.63,16.72-6.74,17.55-19.66.03-.51.11-5.33.11-5.86,0-1.79.58-12.73-.09-19.46h.01ZM77.02,62.8h-9.01v-21.82c0-4.59-1.93-6.93-5.87-6.93-4.33,0-6.49,2.78-6.49,8.25v11.94h-8.95v-11.94c0-5.47-2.17-8.25-6.5-8.25-3.91,0-5.86,2.34-5.87,6.93v21.82h-8.99v-22.48c0-4.59,1.19-8.24,3.55-10.95,2.45-2.7,5.66-4.08,9.64-4.08,4.61,0,8.1,1.75,10.42,5.26l2.25,3.73,2.25-3.73c2.32-3.5,5.81-5.26,10.41-5.26,3.97,0,7.19,1.38,9.64,4.08,2.38,2.7,3.55,6.35,3.55,10.95v22.48h-.02Z"/>
+                </svg>
+              </span>
+              <span class="card-name">Mastodon</span>
+            </div>
+          </div>
+          <div class="card-face card-front">
+            <p>I left FB and Twitter long ago. This is what social media <em>can</em> be.</p>
+            <p>I'm only really active for the month of Inktober, but I will always respond to messages.</p>
+            <a class="card-go mastodon" href="https://mastodon.art/@wednesday" target="_blank" rel="noopener" aria-label="Follow on Mastodon">
+              <svg viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" focusable="false">
+                <path fill="currentColor" d="M90.2,30.54c-1.23-9.05-9.2-16.19-18.66-17.57-1.6-.24-7.63-1.08-21.63-1.08h-.11c-14.01,0-17.01.85-18.59,1.08-9.19,1.34-17.58,7.75-19.62,16.91-.98,4.51-1.08,9.51-.91,14.09.26,6.58.31,13.14.92,19.7.42,4.35,1.14,8.67,2.18,12.91,1.93,7.85,9.77,14.38,17.45,17.04,8.22,2.78,17.05,3.24,25.53,1.33.93-.22,1.86-.46,2.76-.75,2.05-.65,4.47-1.37,6.24-2.65.02-.02.04-.04.05-.06,0-.02.02-.05.02-.09v-6.35s0-.05-.02-.08c0-.02-.03-.04-.05-.06s-.04-.03-.08-.03h-.09c-5.42,1.28-10.98,1.92-16.56,1.91-9.6,0-12.18-4.5-12.93-6.38-.59-1.62-.97-3.32-1.12-5.03,0-.03,0-.05.01-.09.01-.02.03-.05.05-.06.02-.02.05-.03.08-.03h.09c5.33,1.27,10.8,1.91,16.29,1.91,1.32,0,2.63,0,3.95-.03,5.52-.15,11.34-.43,16.77-1.48.14-.02.27-.05.39-.09,8.56-1.63,16.72-6.74,17.55-19.66.03-.51.11-5.33.11-5.86,0-1.79.58-12.73-.09-19.46h.01ZM77.02,62.8h-9.01v-21.82c0-4.59-1.93-6.93-5.87-6.93-4.33,0-6.49,2.78-6.49,8.25v11.94h-8.95v-11.94c0-5.47-2.17-8.25-6.5-8.25-3.91,0-5.86,2.34-5.87,6.93v21.82h-8.99v-22.48c0-4.59,1.19-8.24,3.55-10.95,2.45-2.7,5.66-4.08,9.64-4.08,4.61,0,8.1,1.75,10.42,5.26l2.25,3.73,2.25-3.73c2.32-3.5,5.81-5.26,10.41-5.26,3.97,0,7.19,1.38,9.64,4.08,2.38,2.7,3.55,6.35,3.55,10.95v22.48h-.02Z"/>
+              </svg>
+            </a>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- II — GitHub (top arc) -->
+    <div class="card" style="--x:-66px; --y:-136px; --r:-2.5deg; --r-mobile:2deg; --z:2;">
+      <div class="card-flip">
+        <div class="card-inner">
+          <div class="card-face">
+            <div class="card-back" role="button" tabindex="0" aria-label="Reveal note about GitHub">
+              <svg class="card-frame-svg" viewBox="0 0 172 252"><use href="#cardFrameLine"/><use href="#cardFrameDiamonds"/></svg>
+              <span class="card-numeral">II</span>
+              <span class="card-icon">
+                <svg viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
+                  <g fill="currentColor" fill-opacity="0.66">
+                    <path d="M5.16,59.45v-5.58c.46-7.06,2.55-13.4,7.28-18.96-2.2-6.9-2.01-14.27,1.25-20.89,8.38-.2,13.97,3.81,20.47,8.76,10.34-2.37,21.44-2.61,31.72-.16,6.32-4.8,11.95-8.79,20.3-8.61,3.21,6.46,3.5,13.84,1.27,20.77,5.98,7.11,7.8,15.61,7.26,24.79-.47,8.08-2.07,15.58-8.29,21.13-3.58,3.19-7.69,5.32-12.34,6.59-6.64,1.8-13.37,2.46-20.28,2.57-5.82.09-11.39-.1-17.15-.63-5.64-.52-10.83-1.93-16.02-4.1-6.5-2.73-11.52-7.81-13.64-14.61-1.13-3.65-1.63-7.33-1.83-11.06h0ZM82.37,62.07c-1.16-6.58-6.18-11.97-13.16-11.83-3.34.07-6.49.52-9.81.98-6.36.89-12.53.89-18.9,0-3.32-.47-6.47-.92-9.81-.98-6.99-.13-11.99,5.24-13.17,11.83-1.45,8.16,1.65,16.4,9.61,19.7,4.28,1.77,8.75,2.66,13.44,2.83,6.3.23,12.46.23,18.75,0,4.69-.17,9.16-1.05,13.44-2.83,7.96-3.3,11.05-11.51,9.61-19.69h0Z"/>
+                    <path d="M36.25,74.58c-2,1.95-4.99,1.96-6.98.12-4.83-4.48-4.49-14.49.43-18.29,2.14-1.66,5.04-1.21,6.81.71,3.03,3.3,3.65,8.31,2.51,12.61-.49,1.84-1.36,3.47-2.77,4.85h0Z"/>
+                    <path d="M70.84,74.49c-1.95,1.97-4.93,2.11-6.98.29-4.5-3.99-4.78-12.97-.49-17.66,2.06-2.26,5.46-2.33,7.57-.08,1.27,1.35,2.14,2.94,2.61,4.75,1.1,4.29.5,9.46-2.7,12.7Z"/>
+                  </g>
+                </svg>
+              </span>
+              <span class="card-name">GitHub</span>
+            </div>
+          </div>
+          <div class="card-face card-front">
+            <p>The full source for Keyboard Warriors (and any other personal coding projects I do) lives here. Every wart, every commit, every dumb mistake till I got it right. Feel free to poke around or open an issue.</p>
+            <a class="card-go github" href="https://github.com/from-wednesday/" target="_blank" rel="noopener" aria-label="View my repository on GitHub">
+              <svg viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" focusable="false">
+                <g fill="currentColor">
+                  <path d="M5.16,59.45v-5.58c.46-7.06,2.55-13.4,7.28-18.96-2.2-6.9-2.01-14.27,1.25-20.89,8.38-.2,13.97,3.81,20.47,8.76,10.34-2.37,21.44-2.61,31.72-.16,6.32-4.8,11.95-8.79,20.3-8.61,3.21,6.46,3.5,13.84,1.27,20.77,5.98,7.11,7.8,15.61,7.26,24.79-.47,8.08-2.07,15.58-8.29,21.13-3.58,3.19-7.69,5.32-12.34,6.59-6.64,1.8-13.37,2.46-20.28,2.57-5.82.09-11.39-.1-17.15-.63-5.64-.52-10.83-1.93-16.02-4.1-6.5-2.73-11.52-7.81-13.64-14.61-1.13-3.65-1.63-7.33-1.83-11.06h0ZM82.37,62.07c-1.16-6.58-6.18-11.97-13.16-11.83-3.34.07-6.49.52-9.81.98-6.36.89-12.53.89-18.9,0-3.32-.47-6.47-.92-9.81-.98-6.99-.13-11.99,5.24-13.17,11.83-1.45,8.16,1.65,16.4,9.61,19.7,4.28,1.77,8.75,2.66,13.44,2.83,6.3.23,12.46.23,18.75,0,4.69-.17,9.16-1.05,13.44-2.83,7.96-3.3,11.05-11.51,9.61-19.69h0Z"/>
+                  <path d="M36.25,74.58c-2,1.95-4.99,1.96-6.98.12-4.83-4.48-4.49-14.49.43-18.29,2.14-1.66,5.04-1.21,6.81.71,3.03,3.3,3.65,8.31,2.51,12.61-.49,1.84-1.36,3.47-2.77,4.85h0Z"/>
+                  <path d="M70.84,74.49c-1.95,1.97-4.93,2.11-6.98.29-4.5-3.99-4.78-12.97-.49-17.66,2.06-2.26,5.46-2.33,7.57-.08,1.27,1.35,2.14,2.94,2.61,4.75,1.1,4.29.5,9.46-2.7,12.7Z"/>
+                </g>
+              </svg>
+            </a>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- III — Apple Music (top arc) -->
+    <div class="card" style="--x:66px; --y:-136px; --r:2.5deg; --r-mobile:-2deg; --z:3;">
+      <div class="card-flip">
+        <div class="card-inner">
+          <div class="card-face">
+            <div class="card-back" role="button" tabindex="0" aria-label="Reveal note about Apple Music">
+              <svg class="card-frame-svg" viewBox="0 0 172 252"><use href="#cardFrameLine"/><use href="#cardFrameDiamonds"/></svg>
+              <span class="card-numeral">III</span>
+              <span class="card-icon" style="width:70px; height:70px;">
+                <svg viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
+                  <path fill="currentColor" fill-opacity="0.66" d="M77.58,42.93v31.43c0,.14,0,.3,0,.46,0,2.24-.5,4.37-1.39,6.27l.04-.09c-1.5,3.09-4.24,5.39-7.56,6.26l-.08.02c-1.74.52-3.75.86-5.83.95h-.05c-.16.01-.34.01-.53.01-5.68,0-10.3-4.61-10.3-10.3,0-4.08,2.37-7.6,5.81-9.27l.06-.03c1.61-.77,3.49-1.39,5.45-1.76l.15-.02c2.08-.45,4.17-.84,6.24-1.32,1.45-.25,2.58-1.39,2.81-2.82v-.02c.07-.31.11-.67.11-1.04v-29.98c0-.36-.05-.71-.15-1.04v.03c-.14-.74-.78-1.29-1.55-1.29-.03,0-.07,0-.1,0h0c-.98.07-1.87.2-2.75.38l.13-.02c-4.18.83-8.36,1.66-12.55,2.51l-20.36,4.12c-.09,0-.18.05-.26.07-1.22.17-2.16,1.21-2.16,2.46,0,.08,0,.17.01.25h0s0,43.63,0,43.63c0,.15,0,.34,0,.52,0,2.24-.43,4.39-1.23,6.34l.04-.12c-1.45,3.38-4.36,5.9-7.9,6.8l-.08.02c-1.75.53-3.78.87-5.87.95h-.04c-.17.01-.37.02-.57.02-5.02,0-9.19-3.66-9.99-8.45v-.06c-.12-.56-.17-1.2-.17-1.86,0-4.32,2.67-8.02,6.45-9.54l.07-.02c1.73-.7,3.78-1.29,5.9-1.68l.2-.03c1.58-.33,3.16-.64,4.73-.97,1.88-.28,3.3-1.88,3.3-3.81v-.12h0s0-49.73,0-49.73c0-.71.08-1.4.24-2.06v.06c.35-1.45,1.51-2.56,2.97-2.84h.02c1.4-.37,2.83-.62,4.26-.91,4.03-.83,8.07-1.65,12.1-2.44l12.49-2.53c3.69-.74,7.37-1.49,11.06-2.2,1-.23,2.24-.43,3.5-.57h.15c.1-.02.22-.03.34-.03,1.49,0,2.69,1.19,2.71,2.67.04.37.07.79.07,1.22v31.54l.04.02h0Z"/>
+                </svg>
+              </span>
+              <span class="card-name">Apple Music</span>
+            </div>
+          </div>
+          <div class="card-face card-front">
+            <p>Credit to Klek de Poitrine who has no knowledge of the many long nights in <strong>BBEdit</strong> he saw me through bringing this app to life in early 2026.</p>
+            <a class="card-go apple-music" href="https://music.apple.com/profile/imdoinfine" target="_blank" rel="noopener" aria-label="My playlists on Apple Music">
+              <svg viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" focusable="false">
+                <path fill="currentColor" d="M77.58,42.93v31.43c0,.14,0,.3,0,.46,0,2.24-.5,4.37-1.39,6.27l.04-.09c-1.5,3.09-4.24,5.39-7.56,6.26l-.08.02c-1.74.52-3.75.86-5.83.95h-.05c-.16.01-.34.01-.53.01-5.68,0-10.3-4.61-10.3-10.3,0-4.08,2.37-7.6,5.81-9.27l.06-.03c1.61-.77,3.49-1.39,5.45-1.76l.15-.02c2.08-.45,4.17-.84,6.24-1.32,1.45-.25,2.58-1.39,2.81-2.82v-.02c.07-.31.11-.67.11-1.04v-29.98c0-.36-.05-.71-.15-1.04v.03c-.14-.74-.78-1.29-1.55-1.29-.03,0-.07,0-.1,0h0c-.98.07-1.87.2-2.75.38l.13-.02c-4.18.83-8.36,1.66-12.55,2.51l-20.36,4.12c-.09,0-.18.05-.26.07-1.22.17-2.16,1.21-2.16,2.46,0,.08,0,.17.01.25h0s0,43.63,0,43.63c0,.15,0,.34,0,.52,0,2.24-.43,4.39-1.23,6.34l.04-.12c-1.45,3.38-4.36,5.9-7.9,6.8l-.08.02c-1.75.53-3.78.87-5.87.95h-.04c-.17.01-.37.02-.57.02-5.02,0-9.19-3.66-9.99-8.45v-.06c-.12-.56-.17-1.2-.17-1.86,0-4.32,2.67-8.02,6.45-9.54l.07-.02c1.73-.7,3.78-1.29,5.9-1.68l.2-.03c1.58-.33,3.16-.64,4.73-.97,1.88-.28,3.3-1.88,3.3-3.81v-.12h0s0-49.73,0-49.73c0-.71.08-1.4.24-2.06v.06c.35-1.45,1.51-2.56,2.97-2.84h.02c1.4-.37,2.83-.62,4.26-.91,4.03-.83,8.07-1.65,12.1-2.44l12.49-2.53c3.69-.74,7.37-1.49,11.06-2.2,1-.23,2.24-.43,3.5-.57h.15c.1-.02.22-.03.34-.03,1.49,0,2.69,1.19,2.71,2.67.04.37.07.79.07,1.22v31.54l.04.02h0Z"/>
+              </svg>
+            </a>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- IV — YouTube (top arc) -->
+    <div class="card" style="--x:198px; --y:-100px; --r:7.5deg; --r-mobile:3deg; --z:4;">
+      <div class="card-flip">
+        <div class="card-inner">
+          <div class="card-face">
+            <div class="card-back" role="button" tabindex="0" aria-label="Reveal note about YouTube">
+              <svg class="card-frame-svg" viewBox="0 0 172 252"><use href="#cardFrameLine"/><use href="#cardFrameDiamonds"/></svg>
+              <span class="card-numeral">IV</span>
+              <span class="card-icon">
+                <svg viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
+                  <path fill="currentColor" fill-opacity="0.66" d="M77.98,19.95c-18.39-2.55-37.31-2.55-55.7,0-7.59,1.05-13.5,6.83-14.69,14.37-.95,6.05-1.44,12.24-1.44,18.36s.48,12.37,1.46,18.46c1.17,7.37,7.2,13.23,14.67,14.27,9.19,1.28,18.57,1.92,27.85,1.92s18.65-.64,27.85-1.92c7.58-1.05,13.47-6.78,14.67-14.27.98-6.09,1.46-12.3,1.46-18.46s-.48-12.37-1.46-18.46c-1.17-7.37-7.2-13.23-14.67-14.27h0ZM67.23,54.77l-25.18,14.53c-.37.22-.79.33-1.21.33s-.83-.11-1.21-.33c-.75-.42-1.21-1.22-1.21-2.09v-29.07c0-.87.46-1.67,1.21-2.09.75-.43,1.67-.43,2.42,0l25.18,14.53c.75.42,1.21,1.23,1.21,2.09s-.46,1.67-1.21,2.09h0Z"/>
+                </svg>
+              </span>
+              <span class="card-name">YouTube</span>
+            </div>
+          </div>
+          <div class="card-face card-front">
+            <p>For any educators, here is a link to a talk I gave on the pedagogy behind this project.</p>
+            <a class="card-go youtube" href="https://youtu.be/bJ6yZ-3H-kA?si=7vc0xfjpg1KIz0dl" target="_blank" rel="noopener" aria-label="Watch on YouTube">
+              <svg viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" focusable="false">
+                <path fill="currentColor" d="M77.98,19.95c-18.39-2.55-37.31-2.55-55.7,0-7.59,1.05-13.5,6.83-14.69,14.37-.95,6.05-1.44,12.24-1.44,18.36s.48,12.37,1.46,18.46c1.17,7.37,7.2,13.23,14.67,14.27,9.19,1.28,18.57,1.92,27.85,1.92s18.65-.64,27.85-1.92c7.58-1.05,13.47-6.78,14.67-14.27.98-6.09,1.46-12.3,1.46-18.46s-.48-12.37-1.46-18.46c-1.17-7.37-7.2-13.23-14.67-14.27h0ZM67.23,54.77l-25.18,14.53c-.37.22-.79.33-1.21.33s-.83-.11-1.21-.33c-.75-.42-1.21-1.22-1.21-2.09v-29.07c0-.87.46-1.67,1.21-2.09.75-.43,1.67-.43,2.42,0l25.18,14.53c.75.42,1.21,1.23,1.21,2.09s-.46,1.67-1.21,2.09h0Z"/>
+              </svg>
+            </a>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- V — LinkedIn (bottom arc) -->
+    <div class="card" style="--x:-150px; --y:124px; --r:-6deg; --r-mobile:-3deg; --z:5;">
+      <div class="card-flip">
+        <div class="card-inner">
+          <div class="card-face">
+            <div class="card-back" role="button" tabindex="0" aria-label="Reveal note about LinkedIn">
+              <svg class="card-frame-svg" viewBox="0 0 172 252"><use href="#cardFrameLine"/><use href="#cardFrameDiamonds"/></svg>
+              <span class="card-numeral">V</span>
+              <span class="card-icon" style="width:54px; height:54px;">
+                <svg viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
+                  <g fill="currentColor" fill-opacity="0.66">
+                    <path d="M8.03,93.77h11.65c1.61,0,2.91-1.3,2.91-2.91v-50.93c0-1.61-1.3-2.91-2.91-2.91h-11.65c-1.61,0-2.91,1.3-2.91,2.91v50.93c0,1.61,1.3,2.91,2.91,2.91Z"/>
+                    <path d="M8.03,28.06h11.65c1.61,0,2.91-1.3,2.91-2.91v-10.35c0-1.61-1.3-2.91-2.91-2.91h-11.65c-1.61,0-2.91,1.3-2.91,2.91v10.35c0,1.61,1.3,2.91,2.91,2.91Z"/>
+                    <path d="M90.36,42.92c-1.64-2.16-4.05-3.93-7.24-5.32-3.19-1.39-6.72-2.08-10.57-2.08-7.83,0-14.46,2.99-19.89,8.96-1.08,1.19-1.87.93-1.87-.68v-3.88c0-1.61-1.3-2.91-2.91-2.91h-10.41c-1.61,0-2.91,1.3-2.91,2.91v50.93c0,1.61,1.3,2.91,2.91,2.91h11.65c1.61,0,2.91-1.3,2.91-2.91v-17.71c0-7.38.45-12.44,1.34-15.17.89-2.74,2.54-4.93,4.94-6.59,2.4-1.66,5.12-2.49,8.15-2.49,2.36,0,4.38.58,6.06,1.74,1.68,1.16,2.89,2.79,3.64,4.88.75,2.09,1.12,6.7,1.12,13.83v21.5c0,1.61,1.3,2.91,2.91,2.91h11.65c1.61,0,2.91-1.3,2.91-2.91v-28.84c0-5.1-.32-9.02-.96-11.75s-1.78-5.18-3.42-7.34h0Z"/>
+                  </g>
+                </svg>
+              </span>
+              <span class="card-name">LinkedIn</span>
+            </div>
+          </div>
+          <div class="card-face card-front">
+            <p>I'm not really active here, but I will respond to any sincere messages.</p>
+            <a class="card-go linkedin" href="https://www.linkedin.com/in/wednesday-dessauer-70a7b918/" target="_blank" rel="noopener" aria-label="Connect on LinkedIn">
+              <svg viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" focusable="false">
+                <g fill="currentColor">
+                  <path d="M8.03,93.77h11.65c1.61,0,2.91-1.3,2.91-2.91v-50.93c0-1.61-1.3-2.91-2.91-2.91h-11.65c-1.61,0-2.91,1.3-2.91,2.91v50.93c0,1.61,1.3,2.91,2.91,2.91Z"/>
+                  <path d="M8.03,28.06h11.65c1.61,0,2.91-1.3,2.91-2.91v-10.35c0-1.61-1.3-2.91-2.91-2.91h-11.65c-1.61,0-2.91,1.3-2.91,2.91v10.35c0,1.61,1.3,2.91,2.91,2.91Z"/>
+                  <path d="M90.36,42.92c-1.64-2.16-4.05-3.93-7.24-5.32-3.19-1.39-6.72-2.08-10.57-2.08-7.83,0-14.46,2.99-19.89,8.96-1.08,1.19-1.87.93-1.87-.68v-3.88c0-1.61-1.3-2.91-2.91-2.91h-10.41c-1.61,0-2.91,1.3-2.91,2.91v50.93c0,1.61,1.3,2.91,2.91,2.91h11.65c1.61,0,2.91-1.3,2.91-2.91v-17.71c0-7.38.45-12.44,1.34-15.17.89-2.74,2.54-4.93,4.94-6.59,2.4-1.66,5.12-2.49,8.15-2.49,2.36,0,4.38.58,6.06,1.74,1.68,1.16,2.89,2.79,3.64,4.88.75,2.09,1.12,6.7,1.12,13.83v21.5c0,1.61,1.3,2.91,2.91,2.91h11.65c1.61,0,2.91-1.3,2.91-2.91v-28.84c0-5.1-.32-9.02-.96-11.75s-1.78-5.18-3.42-7.34h0Z"/>
+                </g>
+              </svg>
+            </a>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- VI — Email (bottom arc) -->
+    <div class="card" style="--x:0px; --y:110px; --r:0deg; --r-mobile:4deg; --z:6;">
+      <div class="card-flip">
+        <div class="card-inner">
+          <div class="card-face">
+            <div class="card-back" role="button" tabindex="0" aria-label="Reveal note about email">
+              <svg class="card-frame-svg" viewBox="0 0 172 252"><use href="#cardFrameLine"/><use href="#cardFrameDiamonds"/></svg>
+              <span class="card-numeral">VI</span>
+              <span class="card-icon" style="width:76px; height:76px;">
+                <svg viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
+                  <g fill="currentColor" fill-opacity="0.66">
+                    <path d="M50.93,35.73c-1.31,0-2.36.32-3.15.95s-1.37,1.46-1.72,2.45-.52,2.05-.52,3.14c0,1.7.34,2.94,1.02,3.71.68.77,1.59,1.16,2.74,1.16,1.49,0,2.56-.56,3.22-1.68.65-1.12,1.03-2.57,1.14-4.36l.24-4.99c-.34-.1-.79-.2-1.32-.28s-1.07-.12-1.64-.12h0Z"/>
+                    <path d="M75.29,20.75H25.5v26.97l15.34,11.57c1.68,1.17,3.31,2.11,5.14,3,4.16,1.8,6.99,1.2,10.93-1l4.08-2.76,14.33-10.93-.02-26.84h-.02ZM65.28,43.31c-.28,1.17-.71,2.23-1.3,3.18s-1.31,1.7-2.16,2.28c-.85.57-1.86.86-3.03.86s-2.19-.35-2.9-1.06-1.14-1.51-1.3-2.41h-.2c-.48.99-1.19,1.81-2.12,2.48-.93.67-2.1.99-3.51.99-2.02,0-3.59-.68-4.69-2.04-1.11-1.36-1.66-3.15-1.66-5.39,0-1.76.34-3.31,1.03-4.65s1.67-2.4,2.94-3.18c1.27-.77,2.76-1.16,4.49-1.16,1.17,0,2.32.1,3.46.3,1.13.2,2.01.42,2.66.66l-.4,8.11c-.02.48-.04.82-.04,1.02v.42c0,1.39.25,2.3.74,2.75s1.07.68,1.74.68c.83,0,1.52-.34,2.09-1.02.57-.68,1.01-1.58,1.32-2.72.3-1.13.46-2.37.46-3.73,0-2.48-.5-4.57-1.5-6.29-.99-1.72-2.37-3.02-4.12-3.93-1.74-.91-3.72-1.36-5.93-1.36-3.03,0-5.6.63-7.69,1.88-2.09,1.25-3.67,2.98-4.75,5.17s-1.62,4.71-1.62,7.52c0,3.94,1.03,6.96,3.11,9.07s5.07,3.15,8.98,3.15c1.62,0,3.18-.18,4.65-.54,1.48-.36,2.79-.75,3.93-1.18v2.72c-1.15.48-2.43.87-3.85,1.18-1.43.3-3,.46-4.73.46-3.14,0-5.83-.59-8.07-1.76s-3.95-2.86-5.13-5.05c-1.19-2.2-1.78-4.84-1.78-7.93,0-2.48.39-4.77,1.16-6.89s1.89-3.95,3.35-5.51c1.47-1.56,3.24-2.77,5.33-3.63,2.09-.87,4.45-1.3,7.09-1.3s5.23.57,7.39,1.72,3.85,2.78,5.09,4.91c1.24,2.13,1.85,4.67,1.85,7.63,0,1.23-.14,2.42-.42,3.59h.02Z"/>
+                    <path d="M85.44,38.55l-7.66-5.01v-5.73l9.78,6.12c2.81,1.76,5.11,4.86,5.12,8.37l.06,36.15c-.43,5.01-4.14,8.92-9.16,9.42H17.22c-4.96-.49-8.61-4.28-9.16-9.25l.06-36.63c0-3.18,2.03-5.79,4.35-7.61l10.48-6.56.07,5.68-7.63,5c-1.72,1.12-2.6,3.1-2.18,5.07l25.04,19.68c2.17,1.7,4.58,2.84,7.1,3.83,3.79,1.5,7.85,1.21,11.5-.5,2.02-.95,3.91-1.92,5.7-3.32l25.02-19.7c.4-1.91-.41-3.88-2.13-5.02v.02Z"/>
+                    <path d="M62.38,18.15h-23.99c4.3-2.93,10.08-5.25,15.07-4.01,3.14.78,6.1,2,8.93,4.01h0Z"/>
+                  </g>
+                </svg>
+              </span>
+              <span class="card-name">Email</span>
+            </div>
+          </div>
+          <div class="card-face card-front">
+            <p>You can always write to me at <strong>ddessauer@swin.edu.au</strong> </p>
+            <a class="card-go" href="mailto:ddessauer@swin.edu.au" aria-label="Send an email">
+              <svg viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" focusable="false">
+                <g fill="currentColor">
+                  <path d="M50.93,35.73c-1.31,0-2.36.32-3.15.95s-1.37,1.46-1.72,2.45-.52,2.05-.52,3.14c0,1.7.34,2.94,1.02,3.71.68.77,1.59,1.16,2.74,1.16,1.49,0,2.56-.56,3.22-1.68.65-1.12,1.03-2.57,1.14-4.36l.24-4.99c-.34-.1-.79-.2-1.32-.28s-1.07-.12-1.64-.12h0Z"/>
+                  <path d="M75.29,20.75H25.5v26.97l15.34,11.57c1.68,1.17,3.31,2.11,5.14,3,4.16,1.8,6.99,1.2,10.93-1l4.08-2.76,14.33-10.93-.02-26.84h-.02ZM65.28,43.31c-.28,1.17-.71,2.23-1.3,3.18s-1.31,1.7-2.16,2.28c-.85.57-1.86.86-3.03.86s-2.19-.35-2.9-1.06-1.14-1.51-1.3-2.41h-.2c-.48.99-1.19,1.81-2.12,2.48-.93.67-2.1.99-3.51.99-2.02,0-3.59-.68-4.69-2.04-1.11-1.36-1.66-3.15-1.66-5.39,0-1.76.34-3.31,1.03-4.65s1.67-2.4,2.94-3.18c1.27-.77,2.76-1.16,4.49-1.16,1.17,0,2.32.1,3.46.3,1.13.2,2.01.42,2.66.66l-.4,8.11c-.02.48-.04.82-.04,1.02v.42c0,1.39.25,2.3.74,2.75s1.07.68,1.74.68c.83,0,1.52-.34,2.09-1.02.57-.68,1.01-1.58,1.32-2.72.3-1.13.46-2.37.46-3.73,0-2.48-.5-4.57-1.5-6.29-.99-1.72-2.37-3.02-4.12-3.93-1.74-.91-3.72-1.36-5.93-1.36-3.03,0-5.6.63-7.69,1.88-2.09,1.25-3.67,2.98-4.75,5.17s-1.62,4.71-1.62,7.52c0,3.94,1.03,6.96,3.11,9.07s5.07,3.15,8.98,3.15c1.62,0,3.18-.18,4.65-.54,1.48-.36,2.79-.75,3.93-1.18v2.72c-1.15.48-2.43.87-3.85,1.18-1.43.3-3,.46-4.73.46-3.14,0-5.83-.59-8.07-1.76s-3.95-2.86-5.13-5.05c-1.19-2.2-1.78-4.84-1.78-7.93,0-2.48.39-4.77,1.16-6.89s1.89-3.95,3.35-5.51c1.47-1.56,3.24-2.77,5.33-3.63,2.09-.87,4.45-1.3,7.09-1.3s5.23.57,7.39,1.72,3.85,2.78,5.09,4.91c1.24,2.13,1.85,4.67,1.85,7.63,0,1.23-.14,2.42-.42,3.59h.02Z"/>
+                  <path d="M85.44,38.55l-7.66-5.01v-5.73l9.78,6.12c2.81,1.76,5.11,4.86,5.12,8.37l.06,36.15c-.43,5.01-4.14,8.92-9.16,9.42H17.22c-4.96-.49-8.61-4.28-9.16-9.25l.06-36.63c0-3.18,2.03-5.79,4.35-7.61l10.48-6.56.07,5.68-7.63,5c-1.72,1.12-2.6,3.1-2.18,5.07l25.04,19.68c2.17,1.7,4.58,2.84,7.1,3.83,3.79,1.5,7.85,1.21,11.5-.5,2.02-.95,3.91-1.92,5.7-3.32l25.02-19.7c.4-1.91-.41-3.88-2.13-5.02v.02Z"/>
+                  <path d="M62.38,18.15h-23.99c4.3-2.93,10.08-5.25,15.07-4.01,3.14.78,6.1,2,8.93,4.01h0Z"/>
+                </g>
+              </svg>
+            </a>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- VII — Pinterest (bottom arc) -->
+    <div class="card" style="--x:150px; --y:124px; --r:6deg; --r-mobile:-4deg; --z:7;">
+      <div class="card-flip">
+        <div class="card-inner">
+          <div class="card-face">
+            <div class="card-back" role="button" tabindex="0" aria-label="Reveal note about Pinterest">
+              <svg class="card-frame-svg" viewBox="0 0 172 252"><use href="#cardFrameLine"/><use href="#cardFrameDiamonds"/></svg>
+              <span class="card-numeral">VII</span>
+              <span class="card-icon">
+                <svg viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
+                  <path fill="currentColor" fill-opacity="0.66" d="M33.42,93.5c-.56-5.07-.17-9.92.95-14.61l4.46-19.23c-.72-2.34-1.28-5.02-1.28-7.69,0-6.24,3.01-10.7,7.75-10.7,3.29,0,5.69,2.29,5.69,6.69,0,1.39-.28,2.95-.84,4.74l-1.95,6.41c-.39,1.23-.56,2.4-.56,3.4,0,4.46,3.4,6.97,7.75,6.97,7.75,0,13.27-8.03,13.27-18.45,0-11.6-7.58-19.01-18.79-19.01-12.49,0-20.4,8.14-20.4,19.46,0,4.57,1.39,8.81,4.13,11.71-.89,1.51-1.84,1.78-3.29,1.78-4.46,0-8.7-6.3-8.7-14.89,0-14.83,11.87-26.65,28.55-26.65,17.51,0,28.49,12.21,28.49,27.26s-10.7,26.54-22.25,26.54c-4.57,0-8.59-1.95-11.37-5.46l-2.29,9.26c-1.23,4.79-3.07,9.31-6.02,13.66,4.18,1.28,8.31,2.01,13.27,2.01,24.64,0,44.6-19.96,44.6-44.6S74.62,7.48,49.98,7.48,5.38,27.43,5.38,52.08c0,18.68,11.49,34.79,28.04,41.42"/>
+                </svg>
+              </span>
+              <span class="card-name">Pinterest</span>
+            </div>
+          </div>
+          <div class="card-face card-front">
+            <p>Apparently, I am a visual thinker.</p>
+            <a class="card-go pinterest" href="https://pin.it/51sgl35zl" target="_blank" rel="noopener" aria-label="Browse my boards on Pinterest">
+              <svg viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" focusable="false">
+                <path fill="currentColor" d="M33.42,93.5c-.56-5.07-.17-9.92.95-14.61l4.46-19.23c-.72-2.34-1.28-5.02-1.28-7.69,0-6.24,3.01-10.7,7.75-10.7,3.29,0,5.69,2.29,5.69,6.69,0,1.39-.28,2.95-.84,4.74l-1.95,6.41c-.39,1.23-.56,2.4-.56,3.4,0,4.46,3.4,6.97,7.75,6.97,7.75,0,13.27-8.03,13.27-18.45,0-11.6-7.58-19.01-18.79-19.01-12.49,0-20.4,8.14-20.4,19.46,0,4.57,1.39,8.81,4.13,11.71-.89,1.51-1.84,1.78-3.29,1.78-4.46,0-8.7-6.3-8.7-14.89,0-14.83,11.87-26.65,28.55-26.65,17.51,0,28.49,12.21,28.49,27.26s-10.7,26.54-22.25,26.54c-4.57,0-8.59-1.95-11.37-5.46l-2.29,9.26c-1.23,4.79-3.07,9.31-6.02,13.66,4.18,1.28,8.31,2.01,13.27,2.01,24.64,0,44.6-19.96,44.6-44.6S74.62,7.48,49.98,7.48,5.38,27.43,5.38,52.08c0,18.68,11.49,34.79,28.04,41.42"/>
+              </svg>
+            </a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <p class="intro" style="text-align: center;">Questions, issues, comments or ideas? You are welcome to contact me through any of these forums.</p>
+<script>
+(function () {
+  var cards = Array.prototype.slice.call(document.querySelectorAll('.card'));
+
+  // Highest --z already in use in the markup (the seven cards ship
+  // with --z:1 through --z:7). New "put down" placements start above that.
+  var topZ = 7;
+
+  function bumpToTop(card) {
+    topZ += 1;
+    card.style.setProperty('--z', topZ);
+  }
+
+  function closeAll() {
+    // Whichever card is currently open is the one being "put down" —
+    // it's the only one whose resting position should change. Cards
+    // that were already resting keep their existing order.
+    var activeCard = cards.filter(function (c) {
+      return c.classList.contains('is-active');
+    })[0];
+
+    cards.forEach(function (c) {
+      c.classList.remove('is-active');
+    });
+
+    if (activeCard) bumpToTop(activeCard);
+  }
+
+  function toggleCard(card) {
+    var wasActive = card.classList.contains('is-active');
+    closeAll();
+    if (!wasActive) card.classList.add('is-active');
+  }
+
+  cards.forEach(function (card) {
+    var back = card.querySelector('.card-back');
+    back.addEventListener('click', function (e) {
+      e.stopPropagation();
+      toggleCard(card);
+    });
+    back.addEventListener('keydown', function (e) {
+      if (e.key === 'Enter' || e.key === ' ' || e.key === 'Spacebar') {
+        e.preventDefault();
+        e.stopPropagation();
+        toggleCard(card);
+      }
+    });
+    card.querySelector('.card-front').addEventListener('click', function (e) {
+      e.stopPropagation();
+      toggleCard(card);
+    });
+  });
+
+  document.addEventListener('click', function (e) {
+    if (!e.target.closest('.card')) closeAll();
+  });
+  document.addEventListener('keydown', function (e) {
+    if (e.key === 'Escape') closeAll();
+  });
+})();
+</script>
+</body>
+</html>

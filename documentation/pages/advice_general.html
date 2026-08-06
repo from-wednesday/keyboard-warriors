@@ -1,0 +1,811 @@
+<!DOCTYPE html>
+<html lang="en-GB">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Why Bother Learning the Shortcuts? · Keyboard Warriors</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:ital,wght@0,400;0,600;1,400&family=IBM+Plex+Sans:ital,wght@0,400;0,500;0,600;1,400&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../styles/documentation_design-system.css">
+<style>
+  /* ══════════════════════════════════════════════════════════════
+     Page-specific components for advice_general.html.
+     Everything shared with the rest of the site (tokens, chrome,
+     callouts, tables, chips, bp-row, lists) lives in
+     ../styles/documentation_design-system.css — this block only covers components
+     unique to this page's narrative/interactive treatment.
+     ══════════════════════════════════════════════════════════════ */
+
+/* ── Wide comparison table: horizontal scroll + centred cells ── */
+.table-wrap table { min-width: 620px; table-layout: fixed; }
+.table-wrap col.col-action { width: 20%; }
+.table-wrap col.col-app    { width: 13.33%; }
+th, td { text-align: center; }
+th:first-child, td:first-child { text-align: right; }
+td:first-child { font-weight: 600; color: var(--ink); }
+
+  /* ── List marker overrides ─────────────────────────────────────
+     The shared design-system gives .plain-list a dash bullet and
+     increments its ol counter on the li's ::before. That pseudo
+     sits inside a nested flex row (li itself is display:flex), and
+     that combination is a known trigger for browsers dropping the
+     first increment — showing as the list starting at 0 instead of
+     1. Moving counter-increment onto the real <li>, with the
+     ::before left only to display the value, sidesteps that,
+     alongside swapping the bullet glyph for a tick. ── */
+  .page ul.plain-list li::before {
+    content: "\2714";
+  }
+  .page ol.plain-list li {
+    counter-increment: item;
+  }
+  .page ol.plain-list li::before {
+    counter-increment: none;
+    content: counter(item) ".";
+  }
+
+  /* ── Hero image ──────────────────────────────────────────────── */
+  .hero-media img {
+    display: block;
+    width: 100%;
+    border-radius: 10px;
+    border: 1px solid var(--rule);
+  }
+
+/* ── Avatar + callout row ────────────────────────────────────── */
+  .callout-avatar-row {
+    position: relative;
+  }
+  .callout-avatar-row .avatar {
+    position: absolute;
+    top: 0;
+    left: 50%;
+    z-index: 1;
+    width: 52px;
+    height: 52px;
+    border-radius: 50%;
+    overflow: hidden;
+    border: 1px solid var(--rule-strong);
+    transform: translate(-50%, -50%);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08), 0 1px 3px rgba(0, 0, 0, 0.05);
+  }
+  .callout-avatar-row .avatar img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+  }
+  .callout-avatar-row .callout {
+    width: 100%;
+    padding-top: 36px;
+  }
+
+  /* ── Section-break divider with avatar ──────────────────────── */
+  .section-break {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    margin: 4px 0 2px;
+  }
+  .section-break .avatar {
+    flex: 0 0 44px;
+    width: 44px;
+    height: 44px;
+    border-radius: 50%;
+    overflow: hidden;
+    border: 1px solid var(--rule-strong);
+    box-shadow: 0 3px 8px rgba(0, 0, 0, 0.08), 0 1px 2px rgba(0, 0, 0, 0.04);
+  }
+  .section-break .avatar img { width: 100%; height: 100%; object-fit: cover; display: block; }
+  .section-break .line { flex: 1; height: 0; border-bottom: 1.5px solid var(--rule-strong); }  /* ── OS tab switcher (pure CSS, no script) ──────────────────── */
+  .os-switch-wrap { display: flex; flex-direction: column; align-items: center; }
+  .os-switch-row {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+  }
+  .os-switch-label {
+    font-family: var(--sans);
+    font-weight: 600;
+    font-size: 0.78rem;
+    color: inherit;
+    opacity: .5;
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    line-height: 1;
+    cursor: pointer;
+    user-select: none;
+    transition: opacity .15s ease;
+  }
+  .os-switch-label svg { display: block; }
+  .os-switch-label.is-active { opacity: 1; }
+
+  /* SVG toggle switch */
+  .os-switch {
+    position: relative;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    flex-shrink: 0;
+    width: 36px;
+    height: 14px;
+  }
+  .os-switch input {
+    position: absolute;
+    opacity: 0;
+    width: 0; height: 0;
+    pointer-events: none;
+  }
+  .os-track { display: block; pointer-events: none; overflow: visible; color: inherit; }
+  #osKnobEl {
+    transition: transform 0.18s ease, fill 0.18s ease;
+    transform-origin: 7px 7px;
+    transform-box: fill-box;
+  }
+
+  .os-panel { display: none; width: 100%; }
+  .os-panel.is-active { display: block; }
+
+  /* ── Pattern list (icon-font replacement) ───────────────────── */
+  .pattern-list { display: flex; flex-direction: column; gap: 16px; }
+  .pattern-row { display: flex; align-items: flex-start; gap: 14px; }
+  .pattern-marker {
+    flex: 0 0 28px;
+    width: 28px;
+    height: 28px;
+    border-radius: 50%;
+    background: var(--both-bg);
+    color: var(--accent);
+    font-family: var(--mono);
+    font-size: 11px;
+    font-weight: 600;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  .pattern-row .pattern-body { flex: 1; }
+
+  /* ── Inline note trigger ──────────────────────────────────────────
+     A small "?" roundel sits inline at the tail end of its paragraph,
+     borrowing the chip token's colours so it reads as part of the
+     same component family rather than as body text. Its former label
+     ("another example", etc.) now lives as a small heading inside the
+     card it opens, instead of cluttering the sentence itself.
+     Clicking opens a floating card next to it — see the script near
+     the end of the page — and any click elsewhere dismisses it. */
+  .note-trigger {
+    font-family: var(--mono);
+    font-size: 10px;
+    font-weight: 600;
+    line-height: 1;
+    color: var(--ink-soft);
+    background: var(--chip-bg);
+    border: 1px solid var(--chip-border);
+    border-radius: 50%;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 16px;
+    height: 16px;
+    padding: 0;
+    margin: 0 0 0 3px;
+    cursor: pointer;
+    vertical-align: middle;
+    transform: translateY(-1px);
+    opacity: .75;
+    transition: opacity .15s ease, background .15s ease;
+  }
+  .note-trigger:hover,
+  .note-trigger:focus-visible {
+    opacity: 1;
+  }
+
+  .note-card {
+    display: none;
+    position: fixed;
+    z-index: 500;
+    width: max-content;
+    max-width: 260px;
+    background: var(--surface);
+    border: 1px solid var(--rule);
+    border-radius: 8px;
+    padding: 12px 14px;
+    box-shadow: 0 10px 28px rgba(0,0,0,.16);
+  }
+  .note-card.is-open { display: block; }
+  .note-card p.note-card-title {
+    font-family: var(--mono);
+    font-size: 0.68rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    color: var(--ink-soft);
+    margin: 0 0 6px;
+  }
+  .note-card p {
+    font-size: 0.82rem;
+    line-height: 1.55;
+    color: var(--ink-mid);
+    margin: 0;
+  }
+
+  /* ── Big reveal (question / answer) ─────────────────────────── */
+  details.reveal summary {
+    cursor: pointer;
+    display: inline-block;
+    font-family: var(--mono);
+    font-size: 0.76rem;
+    font-weight: 600;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+    padding: 9px 18px;
+    border-radius: 20px;
+    background: var(--info-bg);
+    border: 1px solid var(--info-border);
+    color: var(--info-ink);
+    list-style: none;
+  }
+  details.reveal summary::-webkit-details-marker { display: none; }
+  details.reveal[open] summary { margin-bottom: 14px; }
+
+  /* Safari forces <details> to render as display:block regardless of
+     what's set here — display:grid/flex on the details element itself
+     is defined to be ignored (spec restriction Chrome/Firefox don't
+     actually enforce). So centring happens via text-align instead of
+     a grid, which keeps working in every browser. The dashed-line
+     pseudo-elements don't need grid either — they're positioned off
+     summary's own position:relative box, not the parent. */
+details.reveal {
+    text-align: center;
+    position: relative;
+    isolation: isolate; /* stacking context lives HERE, not on summary —
+                            if summary itself were the stacking-context
+                            root, its own pill background would paint
+                            before (i.e. under-then-over) its negative
+                            z-index child, putting the line back on top */
+  }
+  details.reveal summary {
+    position: relative;
+  }
+  details.reveal .reveal-body { display: flex; flex-direction: column; gap: 10px; text-align: left; }
+
+  /* Two segments, each anchored to the button's own edge (right:100%
+     / left:100%, relative to summary's position:relative box) rather
+     than a guessed percentage of 100vw. That means the gap always
+     matches the pill's real rendered width — at any viewport size,
+     with any button label — instead of assuming a fixed proportion. */
+  details.reveal summary::before,
+  details.reveal summary::after {
+    content: "";
+    position: absolute;
+    top: 50%;
+    z-index: -1;
+    width: 100vw;
+    border-bottom: 2px dashed var(--info-border);
+    pointer-events: none;
+  }
+  details.reveal summary::before {
+    right: 100%;
+    transform: translateY(-50%);
+  }
+  details.reveal summary::after {
+    left: 100%;
+    transform: translateY(-50%);
+  }
+
+  /* Folder-skin additions — extends the :root currentColor override
+     already declared in design-system.css. Load that file first. */
+  .os-switch-label,
+  .pattern-marker,
+  .note-trigger,
+  .note-card p,
+  details.reveal summary {
+    color: inherit;
+  }
+
+  .note-card {
+    /* Solid, not translucent — a floating card can sit over arbitrary
+       content, so it can't rely on "blend with whatever's behind me"
+       the way the inline chips do. These two values ARE that blend,
+       precomputed: rgba(255,255,255,.12) over this tab's own light/
+       dark background colours (#e4d5a8 / #74777c, from the manifest),
+       flattened to a fixed hex so it reads the same everywhere.
+       Swapped via prefers-color-scheme below. */
+    background: #e7dab2;
+    border-color: rgba(0,0,0,.16);
+    border-color: color-mix(in srgb, currentColor 18%, transparent);
+    color: var(--ink);
+  }
+  @media (prefers-color-scheme: dark) {
+    .note-card {
+      background: #85878c;
+    }
+  }
+
+  .hero-media img,
+  .callout-avatar-row .avatar,
+  .section-break .avatar {
+    border-color: rgba(0,0,0,.14);
+  }
+
+  .pattern-marker { background: rgba(255,255,255,.14); }
+
+  details.reveal summary {
+    background: rgba(30,58,95,.08);
+    border-color: rgba(30,58,95,.16);
+  }
+  details.reveal summary::before,
+  details.reveal summary::after {
+    border-color: rgba(30,58,95,.16);
+  }
+
+  .bp-os-icon {
+    display: inline-block;
+    vertical-align: -1px;
+    margin-right: 4px;
+  }
+</style>
+</head>
+<body>
+<div class="page">
+
+  <!-- ══ HEADER ══════════════════════════════════════════════════ -->
+  <header class="page-header">
+    <p class="eyebrow">Keyboard Warriors · Foundations</p>
+    <h1 class="h1-alt">Keyboard Shortcuts Bootcamp</h1>
+<p>This tab has a brief introduction to learning keyboard shortcuts for beginners. All information on this page is generic, not specific to the Keyboard Warriors game <em>(that's the next tab!)</em>.</p>
+ <p>Originally written for a graphic design student audience, the principles discussed here remain true across a wide range of apps and skill sets.</p>
+  </header>
+
+  <!-- ══ WHY BOTHER ══════════════════════════════════════════════ -->
+  <section>
+    <div class="hero-media">
+      <img src="../images/keyboard-and-stylus.png" alt="A minimalist keyboard and graphics tablet with modifier keys highlighted. A left hand hovers, ready to press any key.">
+    </div>
+       <h2>why bother learning the shortcuts?</h2>
+    <p>Most guides tell you something like "they save seconds with every action, and over a year the time adds up to eight days. Now you'll get a holiday." That maths does add up, but personally, that's not particularly compelling, especially if it's going to take more time to memorise them in the first place. And it will. I don't think it's much about the time at all.</p>
+
+    <h3>the gap between thinking and doing is where your best ideas get lost</h3>
+    <p>Every time you look away from your work to find a tool, your flow breaks. Every time you stop to hunt through a menu, you lose seconds of focus. Over a workday, those lost seconds don't just add up to wasted time, they hold you back from staying in the idea.</p>
+    <p>True digital fluency happens when the tool becomes an <em>extension</em> of your intent, rather than a <em>barrier</em> to it.</p>
+    <p>By moving commands from your brain to your hands, you free up your mind to focus entirely on what you're creating.</p>
+    <p>Professional creation is an ambidextrous act. One hand provides the precision of the pointer, the other executes the commands. When they work together, the interface disappears.</p>
+    <p>This module was built to help you shorten the distance between an idea and its execution, by building the muscle memory that lets you move at the speed of thought.</p>
+  </section>
+
+
+  <!-- ══ HIGHEST VALUE FIRST ═════════════════════════════════════ -->
+  <section>
+    <h2>highest value first</h2>
+
+    <div class="callout-avatar-row">
+      <div class="avatar"><img src="../images/me-animated.gif" alt="Wednesday avatar"></div>
+      <div class="callout warn">
+        <p><strong>Important note for Windows users.</strong> <em>I see you.</em></p>
+        <p>In the following pages you will see me using the <span class="chip">⌘</span> symbol a lot. Also known as the "Command" key (cmd for short), it's the most commonly used modifier key on the Mac keyboard. Obviously, you don't have that key, but you're probably accustomed to seeing shortcuts listed like "<strong>⌘/Ctrl + Z</strong>." That's because, for the vast majority of cases, the <strong>⌘ key</strong> and the <strong>Ctrl key</strong> are interchangeable.</p>
+        <p>If they're ever not, I'll call it out, but so long as they remain in sync, I'm just showing the ⌘ version here. Not because I don't like you, just because having one simple symbol gives us focus and clarity.</p>
+        <p>The important thing is the <em>changing</em> part of the information. So get in the habit of thinking "⌘/Ctrl" whenever you see either ⌘ or Ctrl. That's good advice for all of us. Dogs and cats living together.</p>
+      </div>
+    </div>
+
+    <p>In a busy studio, time is your most precious resource. Keyboard shortcuts promise to help you work faster and without breaking your flow, but they can feel intimidating at first. The jargon can sound like a foreign language, and the multi-finger key combinations can feel a bit like practising guitar chords.</p>
+    <p>You can maximise your impact early on by focusing on the most frequent and standardised shortcuts first. You probably already know some, such as copy <span class="chip">⌘</span><span class="chip">C</span>, paste <span class="chip">⌘</span><span class="chip">V</span>, and undo <span class="chip">⌘</span><span class="chip">Z</span>. These work across almost every app you touch, so they save you from constantly digging through menus.</p>
+    <p>As shortcuts become second nature, they do more than just shave time off every process. You will also start to focus more on what you're doing, instead of how you're doing it.</p>
+
+    <div class="os-switch-wrap">
+      <div class="os-switch-row">
+        <span class="os-switch-label is-active" id="osLabelLeft" data-os="mac"></span>
+        <label class="os-switch" id="osToggleLabel" title="Switch OS mode">
+          <input type="checkbox" id="osToggle">
+          <svg class="os-track" width="36" height="14" viewBox="0 0 36 14" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <rect id="osTrackRect" x="1" y="1" width="34" height="12" rx="6"
+                  stroke="currentColor" stroke-width="1.5" fill="none"/>
+            <circle id="osKnobEl" cx="7" cy="7" r="4"
+                    stroke="currentColor" stroke-width="1.5" fill="white"/>
+          </svg>
+        </label>
+        <span class="os-switch-label" id="osLabelRight" data-os="pc"></span>
+      </div>
+
+      <div class="os-panel is-active" id="panel-mac">
+        <div class="table-wrap" style="margin-top:14px;">
+          <table>
+            <colgroup>
+              <col class="col-action">
+              <col class="col-app"><col class="col-app"><col class="col-app">
+              <col class="col-app"><col class="col-app"><col class="col-app">
+            </colgroup>
+            <thead>
+              <tr>
+                <th>Action</th>
+                <th><img src="../images/finder.png" alt="" width="14" height="14" />&nbsp;Finder</th>
+                <th>InDesign</th>
+                <th>Illustrator</th>
+                <th>Photoshop</th>
+                <th>After Effects</th>
+                <th>Figma</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr><td>New document</td><td>⌘N</td><td>⌘N</td><td>⌘N</td><td>⌘N</td><td>⌘N</td><td>⌘N</td></tr>
+              <tr><td>Open file</td><td>⌘O</td><td>⌘O</td><td>⌘O</td><td>⌘O</td><td>⌘O</td><td>⌘O</td></tr>
+              <tr><td>Select all</td><td>⌘A</td><td>⌘A</td><td>⌘A</td><td>⌘A</td><td>⌘A</td><td>⌘A</td></tr>
+              <tr><td>Duplicate</td><td>⌘D</td><td>-</td><td>⌘D</td><td>⌘D</td><td>⌘D</td><td>⌘D</td></tr>
+              <tr><td>Undo</td><td>⌘Z</td><td>⌘Z</td><td>⌘Z</td><td>⌘Z</td><td>⌘Z</td><td>⌘Z</td></tr>
+              <tr><td>Save</td><td>-</td><td>⌘S</td><td>⌘S</td><td>⌘S</td><td>⌘S</td><td>⌘S</td></tr>
+              <tr><td>Group</td><td>-</td><td>⌘G</td><td>⌘G</td><td>⌘G</td><td>⌘G</td><td>⌘G</td></tr>
+              <tr><td>Toggle guides</td><td>-</td><td>⌘;</td><td>⌘;</td><td>⌘;</td><td>⌘;</td><td>⌘;</td></tr>
+              <tr><td>⬋ Selection tool</td><td>-</td><td>V</td><td>V</td><td>V</td><td>V</td><td>V</td></tr>
+              <tr><td>Hand tool</td><td>-</td><td>Space</td><td>Space</td><td>Space</td><td>Space</td><td>Space</td></tr>
+              <tr><td>Bring forward</td><td>-</td><td>⌘]</td><td>⌘]</td><td>⌘]</td><td>-</td><td>⌘]</td></tr>
+              <tr><td>Send backward</td><td>-</td><td>⌘[</td><td>⌘[</td><td>⌘[</td><td>-</td><td>⌘[</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <div class="os-panel" id="panel-pc">
+        <div class="table-wrap" style="margin-top:14px;">
+          <table>
+            <colgroup>
+              <col class="col-action">
+              <col class="col-app"><col class="col-app"><col class="col-app">
+              <col class="col-app"><col class="col-app"><col class="col-app">
+            </colgroup>
+            <thead>
+              <tr>
+                <th>Action</th>
+                <th>File Explorer</th>
+                <th>InDesign</th>
+                <th>Illustrator</th>
+                <th>Photoshop</th>
+                <th>After Effects</th>
+                <th>Figma</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr><td>New document</td><td>Ctrl N</td><td>Ctrl N</td><td>Ctrl N</td><td>Ctrl N</td><td>Ctrl N</td><td>Ctrl N</td></tr>
+              <tr><td>Open file</td><td>Ctrl O</td><td>Ctrl O</td><td>Ctrl O</td><td>Ctrl O</td><td>Ctrl O</td><td>Ctrl O</td></tr>
+              <tr><td>Select all</td><td>Ctrl A</td><td>Ctrl A</td><td>Ctrl A</td><td>Ctrl A</td><td>Ctrl A</td><td>Ctrl A</td></tr>
+              <tr><td>Duplicate</td><td>Ctrl D</td><td>-</td><td>Ctrl D</td><td>Ctrl D</td><td>Ctrl D</td><td>Ctrl D</td></tr>
+              <tr><td>Undo</td><td>Ctrl Z</td><td>Ctrl Z</td><td>Ctrl Z</td><td>Ctrl Z</td><td>Ctrl Z</td><td>Ctrl Z</td></tr>
+              <tr><td>Save</td><td>-</td><td>Ctrl S</td><td>Ctrl S</td><td>Ctrl S</td><td>Ctrl S</td><td>Ctrl S</td></tr>
+              <tr><td>Group</td><td>-</td><td>Ctrl G</td><td>Ctrl G</td><td>Ctrl G</td><td>Ctrl G</td><td>Ctrl G</td></tr>
+              <tr><td>Toggle guides</td><td>-</td><td>Ctrl ;</td><td>Ctrl ;</td><td>Ctrl ;</td><td>Ctrl ;</td><td>Ctrl ;</td></tr>
+              <tr><td>⬋ Selection tool</td><td>-</td><td>V</td><td>V</td><td>V</td><td>V</td><td>V</td></tr>
+              <tr><td>Hand tool</td><td>-</td><td>Space</td><td>Space</td><td>Space</td><td>Space</td><td>Space</td></tr>
+              <tr><td>Bring forward</td><td>-</td><td>Ctrl ]</td><td>Ctrl ]</td><td>Ctrl ]</td><td>-</td><td>Ctrl ]</td></tr>
+              <tr><td>Send backward</td><td>-</td><td>Ctrl [</td><td>Ctrl [</td><td>Ctrl [</td><td>-</td><td>Ctrl [</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </section>
+
+
+  <!-- ══ SEEING THROUGH THE CONVENTIONS ═════════════════════════ -->
+  <section>
+    <h2>seeing through the conventions</h2>
+    <p>Learning the most conventional shortcuts first is smart, but here is where it can quietly trip you up. Even within families of apps like Microsoft or Adobe, the same keys can mean different things, depending on the app's core workflow. Let's walk through an example.</p>
+
+    <div class="section-break">
+      <div class="line"></div>
+    </div>
+
+    <h3>selecting and deselecting your content</h3>
+    <p>"Select All" is one of those very widely used conventions. <span class="chip">⌘</span><span class="chip">A</span> for "All" works in Photoshop, as it does in Microsoft Word, and elsewhere, but what about deselecting?</p>
+    <p>In <strong>Photoshop</strong>, "Deselect" is <span class="chip">⌘</span><span class="chip">D</span>. Seems obvious, right? It's clean, direct, and the <strong>D</strong> key sits just two across from <strong>A</strong> on the keyboard. Like our cut-copy-paste shortcuts, you can hold one finger on the modifier while another dances between the related options. What could be faster or more intuitive?</p>
+    <p>Now jump into <strong>Illustrator</strong>. "Select All" stays as <span class="chip">⌘</span><span class="chip">A</span>, but "Deselect All" moves to <span class="chip">⌘</span> + <span class="chip">Shift</span> + <span class="chip">A</span>. Did you see that one coming? Here, Adobe uses <strong>Shift</strong> as a modifier key. It flips the logic: <strong>A</strong> means "Select All," so <strong>Shift + A</strong> inverts the meaning to "Deselect All."</p>
+    <p>This is not a one-off. You will see this modifier pattern repeat across many actions in many apps.</p>
+    <p>You might like one of these better than the other, but whichever makes more sense to you, let's acknowledge that what we have here are two sensible conventions.</p>
+
+    <div class="bp-row">
+      <div class="bp-col">
+        <h4><small>ADOBE</small> Photoshop</h4>
+        <p>Pairs <span class="chip">A</span> and <span class="chip">D</span> directly.</p>
+      </div>
+      <div class="bp-col">
+        <h4><small>ADOBE</small> Illustrator</h4>
+        <p>Uses a modifier key, <span class="chip">Shift</span>, to invert the <span class="chip">A</span> key's action.</p>
+      </div>
+    </div>
+
+    <p>Both work well on their own terms, but now let's switch to a third app.</p>
+
+    <h3 style="text-align:center;">which convention do you think InDesign uses?</h3>
+  </section>
+
+  <details class="reveal">
+    <summary>Think about it, then click to reveal the answer</summary>
+    <div class="reveal-body">
+        <p style="text-align:center;"><strong>InDesign</strong> follows Illustrator's approach. "Deselect All" is <span class="chip">⌘</span> + <span class="chip">Shift</span> + <span class="chip">A</span>.</p>
+
+        <h4>but the interesting part is always "why?"</h4>
+        <p>By now you should be a little annoyed that everything doesn't just work the same, and that's not a bad instinct. But let's dig a little deeper into why they'd be different.</p>
+        <p><strong>Photoshop</strong> lives inside pixel selections, where turning them off is a constant, high-frequency need, so the highly efficient and intuitive <span class="chip">⌘</span><span class="chip">D</span> for "Deselect" gets pride of place.</p>
+        <p><strong>Illustrator</strong> and <strong>InDesign</strong> work with objects on a canvas, where you can click any empty space and accomplish the equivalent action, even faster than the Photoshop user did. In this context, burying the rarely used "Deselect All" command a little deeper by using the modifier key frees a prime shortcut, <span class="chip">⌘</span><span class="chip">D</span>, for what proves to be a higher-frequency action in those apps (in this example it happens to be "Transform Again").</p>
+        <p>Once you see these competing conventions as different design mental models, not random quirks, your brain stops fighting them. As you learn the official shortcuts, you're also becoming fluent in these broader conventions.</p>
+        <p>Learning conventions is more powerful than just learning individual shortcuts, because you get better at predicting more shortcuts correctly, instead of relying entirely on memorisation. Plus, that memorisation itself becomes easier once you see how each one fits a familiar logical pattern.</p>
+
+        <h4>here are some more of those patterns to learn and watch for</h4>
+        <div class="pattern-list">
+          <div class="pattern-row">
+            <div class="pattern-marker">1</div>
+            <div class="pattern-body">
+              <p>Sometimes the obvious letter for a shortcut is already taken, so the app will use a pun to make it memorable. The <strong>eyedropper</strong> tool is an example of this. Don't press <span class="chip">E</span>, it's the <span class="chip">I</span> key. <button type="button" class="note-trigger" aria-label="another example">?</button></p>
+              <div class="note-card">
+                <p class="note-card-title">another example</p>
+                <p>Many Adobe apps have an ellipse tool selected with the <span class="chip">L</span> key. That's "L" for "EL-lipse."</p>
+              </div>
+            </div>
+          </div>
+          <div class="pattern-row">
+            <div class="pattern-marker">2</div>
+            <div class="pattern-body">
+              <p>Or maybe the associated icon or cursor is more synonymous with the tool than the official name is. The <span class="chip">V</span> key is used across many apps for the pointer, or selection, tool because it looks like an arrow. <button type="button" class="note-trigger" aria-label="another example">?</button></p>
+              <div class="note-card">
+                <p class="note-card-title">another example</p>
+                <p>Adobe uses the <span class="chip">X</span> key to swap the properties between the two swatches in the toolbar. Think of it as two arrows, up and down.</p>
+              </div>
+            </div>
+          </div>
+          <div class="pattern-row">
+            <div class="pattern-marker">3</div>
+            <div class="pattern-body">
+              <p>When keys clump into a small set on the standard keyboard layout, they can be useful both for conceptually grouping related tasks, and for efficiency in actual use. We saw that with copy and paste, but the <span class="chip">[</span> and <span class="chip">]</span> keys are another example. These "bookends" commonly get used for functions that move a setting down or up, smaller or bigger, and so on. <button type="button" class="note-trigger" aria-label="other examples">?</button></p>
+              <div class="note-card">
+                <p class="note-card-title">other examples</p>
+                <p>The <span class="chip">&lt;</span> and <span class="chip">&gt;</span> pair. The arrow keys. The number pad on extended keyboards. Any clump of four keys, or even nine, can become a "direction pad."</p>
+              </div>
+            </div>
+          </div>
+          <div class="pattern-row">
+            <div class="pattern-marker">4</div>
+            <div class="pattern-body">
+              <p>Similarly, right above that key pair is the <span class="chip">-</span> and <span class="chip">=</span> pair. Apps use this to mean minus and plus, even though, technically, the plus sign would be reached via <span class="chip">Shift</span> + <span class="chip">=</span>. The reason for this is efficiency, which is what shortcuts are all about after all. Being able to quickly zoom out and in by pressing <span class="chip">⌘</span><span class="chip">-</span> / <span class="chip">⌘</span><span class="chip">=</span> is easy to learn and very fast in practice. We don't want people having to add the shift key into one of those just because "the keyboard layout said so."<br>Most people never even stop to think they are actually zooming in with <span class="chip">⌘</span><span class="chip">=</span>, not <span class="chip">⌘</span><span class="chip">+</span>, at all. <button type="button" class="note-trigger" aria-label="a further note">?</button></p>
+              <div class="note-card">
+                <p class="note-card-title">a further note</p>
+                <p>If you have a full-size, or "extended," keyboard, you have a second set of dedicated single function <span class="chip">-</span> and <span class="chip">+</span> keys on the number pad. These also work with <span class="chip">⌘</span> to zoom out and in. In practice, few users actually do this, since it requires two hands.</p>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <p>By getting acquainted with these few conventions, what seemed arbitrary or meaningless actually starts making sense. Soon, as you switch contexts, both your fingers and mind will adapt faster. To get there, we just need to practise, which is exactly what Keyboard Warriors was built for.</p>
+
+    <!-- ══ WHEN TO CUSTOMISE ═══════════════════════════════════════ -->
+    <section>
+    <h2>when to customise</h2>
+    <h3>power, pitfalls, and studio norms</h3>
+    <p>Custom keyboard shortcuts are one of those topics that can divide a studio. Some designers swear by them and can't imagine working without their personalised "pro tweaks" to stay in flow. Others avoid them entirely, having been burned by a machine that behaved "wrong" at the worst possible moment. Both perspectives are valid, coming from real experience.</p>
+    <p>This final section is about helping you make intentional decisions. Custom shortcuts can absolutely make you faster, but they also introduce new problems, for yourself or your collaborators, if you don't handle them with care.</p>
+
+    <h3>why customise at all?</h3>
+    <p>Most designers eventually notice a handful of actions that interrupt their rhythm. These are usually small things: a command buried deep in a menu, a specific tool you reach for constantly, a repetitive action that forces your primary hand away from your mouse or stylus.</p>
+    <h4>custom shortcuts are most useful when:</h4>
+    <ul class="plain-list">
+      <li>You repeat the same action many times a day</li>
+      <li>The default shortcut is uncomfortable or slow</li>
+      <li>You want consistency across multiple apps</li>
+      <li>You are trying to reduce strain or unnecessary movement</li>
+    </ul>
+    <p>Used well, custom shortcuts remove friction and help you stay focused on the work rather than the interface.</p>
+
+    <h3>where customisation fits into your learning journey</h3>
+    <h4>this simple sequence works best:</h4>
+    <ol class="plain-list">
+      <li><strong>Always learn the defaults first.</strong> Defaults are the shared language of your tools. They are what you should expect to find on every shared studio machine and in every tutorial.</li>
+      <li><strong>Notice your friction points.</strong> Pay attention to the actions that break your flow. These are the best candidates for customisation.</li>
+      <li><strong>Customise sparingly.</strong> A small number of intentional changes is far more effective than a complete overhaul.</li>
+      <li><strong>Keep track of what you change.</strong> A short list is enough. It saves a lot of confusion later. <span class="note">(If you have more sticky notes than the bottom edge of your monitor can hold, make better life choices.)</span></li>
+    </ol>
+
+    <h3>how Adobe CC handles custom shortcuts</h3>
+    <p>Adobe apps make a great case study here, because they all have excellent support for user customisations. But each one has its own flavour. Let's take a look at what's possible, and what to watch out for.</p>
+
+    <h4>first, open the shortcut editor</h4>
+    <p>Yes, it's in the menu (Edit / Keyboard Shortcuts), but why not open the shortcut editor with its own shortcut:</p>
+    <div class="bp-row">
+      <div class="bp-col">
+        <h4><svg class="bp-os-icon" width="10" height="12" viewBox="0 0 686.7 761.2" fill="currentColor" xmlns="http://www.w3.org/2000/svg"><path d="M563.7,589c-27.7,41.3-57,81.7-101.7,82.3-44.7,1-59-26.3-109.7-26.3s-66.7,25.7-109,27.3c-43.7,1.7-76.7-44-104.7-84.3-57-82.3-100.7-234-42-336,29-50.7,81-82.7,137.3-83.7,42.7-.7,83.3,29,109.7,29s75.3-35.7,127-30.3c21.7,1,82.3,8.7,121.3,66-3,2-72.3,42.7-71.7,127,1,100.7,88.3,134.3,89.3,134.7-1,2.3-14,48-46,94.3h0ZM373.3,55.7c24.3-27.7,64.7-48.7,98-50,4.3,39-11.3,78.3-34.7,106.3-23,28.3-61,50.3-98.3,47.3-5-38.3,13.7-78.3,35-103.7h0Z"/></svg>Mac</h4>
+        <p><span class="chip">⌘ Cmd</span> <span class="chip">⌥ Opt</span> <span class="chip">⇧ Shift</span> <span class="chip">K</span></p>
+      </div>
+      <div class="bp-col">
+        <h4><svg class="bp-os-icon" width="11" height="11" viewBox="0 0 102.73 104.6" fill="currentColor" xmlns="http://www.w3.org/2000/svg"><path d="M16,50.4h26.6v-27.7l-26.6,6.3v21.4Z"/><path d="M86,12.6l-37,8.6v29.2h37V12.6Z"/><path d="M16,76.2l26.6,6.3v-25.6H16v19.3Z"/><path d="M49,84l37,8.6v-35.7h-37v27.1Z"/></svg>Windows</h4>
+        <p><span class="chip">Ctrl</span> <span class="chip">Alt</span> <span class="chip">Shift</span> <span class="chip">K</span></p>
+      </div>
+    </div>
+
+    <h4>when you open the editor, expect to see:</h4>
+    <ul class="plain-list">
+      <li>A list of menus and tool categories</li>
+      <li>A search field to find commands quickly</li>
+      <li>A warning if you assign a shortcut that conflicts with an existing one</li>
+      <li>An option to save your custom set as a named file</li>
+    </ul>
+
+    <div class="callout-avatar-row">
+      <div class="avatar"><img src="../images/me-animated.gif" alt="Wednesday avatar"></div>
+      <div class="callout info">
+        <p><strong>Note:</strong> exploring the Adobe shortcut editor as a discovery tool.</p>
+        <p>The shortcut editor isn't only for customising your setup. It's also one of the clearest ways to learn how Adobe thinks. Every menu, tool and command is grouped in a way that reveals the structure of the app. You can search, browse and notice patterns that aren't obvious from the interface alone.</p>
+        <p>You don't need to memorise anything here. Treat it as a quiet place to explore. It can show you shortcuts you didn't know existed, and help you understand why certain tools share similar keys. Think of it as a map of the app that rewards curiosity.</p>
+      </div>
+    </div>
+
+    <h4>Adobe Photoshop (Ps)</h4>
+    <p>Photoshop offers a full shortcut editor with clear categories. Conflict warnings appear immediately. You can export and import shortcut sets. It's ideal for adding shortcuts to your high-frequency tasks.</p>
+    <h4>Adobe Illustrator (Ai)</h4>
+    <p>Illustrator behaves similarly, but some tools share shortcut slots. You may need to free up a key by reassigning something else.</p>
+    <h4>Adobe InDesign (In)</h4>
+    <p>InDesign is very flexible and often used to support specific production workflows. It allows multiple shortcut sets for different roles, and is excellent for long document work where speed matters.</p>
+    <h4>Adobe After Effects (Ae)</h4>
+    <p>After Effects is highly customisable but more complex. Many commands are hidden deep in menus. It's well suited to timeline navigation, layer operations and animation tools.</p>
+
+    <h3>the opportunities</h3>
+    <p>These are the situations where custom shortcuts consistently help in real studio practice.</p>
+    <ul class="plain-list">
+      <li><strong>High-frequency actions</strong></li>
+      <li><strong>Workflow-specific tools</strong></li>
+      <li><strong>Cross-app consistency</strong></li>
+      <li><strong>Reducing strain</strong></li>
+    </ul>
+
+    <h3>the pitfalls</h3>
+    <p>These are the problems that appear most often in shared studios and teaching environments.</p>
+    <ol class="plain-list">
+      <li><strong>Muscle memory breaks when you switch machines</strong></li>
+      <li><strong>You confuse collaborators</strong></li>
+      <li><strong>You forget what you changed</strong></li>
+      <li><strong>You create conflicts without realising</strong></li>
+      <li><strong>You become dependent on a setup you cannot reproduce everywhere</strong></li>
+    </ol>
+
+    <h3>best practices</h3>
+    <h4>these habits keep the benefits while avoiding the chaos:</h4>
+    <ul class="plain-list">
+      <li><strong>Start with, at most, three to five custom shortcuts</strong></li>
+      <li><strong>Keep a simple list of your changes</strong></li>
+      <li><strong>Export your shortcut sets</strong></li>
+      <li><strong>Avoid overriding universal conventions</strong></li>
+      <li><strong>Use custom shortcuts to extend, not replace</strong></li>
+    </ul>
+
+    <p>Custom shortcuts work best when they remove friction without creating new problems.</p>
+    <p>A small number of thoughtful changes can support your workflow, and help you stay focused on the creative decisions that matter.</p>
+    </section>
+    </div>
+  </details>
+
+</div><!-- /.page -->
+
+<script>
+/* ══════════════════════════════════════
+   OS SWITCH — geometry, icons and dot-fill
+   behaviour carried over from the game
+   project's toggle component. No OS
+   detection here: Mac starts active,
+   clicking either label or the switch
+   itself flips which table panel shows.
+   ══════════════════════════════════════ */
+(function () {
+  var MAC_ICON_SVG = '<svg width="10" height="12" viewBox="0 0 686.7 761.2" fill="currentColor" xmlns="http://www.w3.org/2000/svg"><path d="M563.7,589c-27.7,41.3-57,81.7-101.7,82.3-44.7,1-59-26.3-109.7-26.3s-66.7,25.7-109,27.3c-43.7,1.7-76.7-44-104.7-84.3-57-82.3-100.7-234-42-336,29-50.7,81-82.7,137.3-83.7,42.7-.7,83.3,29,109.7,29s75.3-35.7,127-30.3c21.7,1,82.3,8.7,121.3,66-3,2-72.3,42.7-71.7,127,1,100.7,88.3,134.3,89.3,134.7-1,2.3-14,48-46,94.3h0ZM373.3,55.7c24.3-27.7,64.7-48.7,98-50,4.3,39-11.3,78.3-34.7,106.3-23,28.3-61,50.3-98.3,47.3-5-38.3,13.7-78.3,35-103.7h0Z"/></svg>';
+  var PC_ICON_SVG  = '<svg width="11" height="11" viewBox="0 0 102.73 104.6" fill="currentColor" xmlns="http://www.w3.org/2000/svg"><path d="M16,50.4h26.6v-27.7l-26.6,6.3v21.4Z"/><path d="M86,12.6l-37,8.6v29.2h37V12.6Z"/><path d="M16,76.2l26.6,6.3v-25.6H16v19.3Z"/><path d="M49,84l37,8.6v-35.7h-37v27.1Z"/></svg>';
+
+  var osToggleEl = document.getElementById('osToggle');
+  var osKnobEl   = document.getElementById('osKnobEl');
+  var leftLabel  = document.getElementById('osLabelLeft');
+  var rightLabel = document.getElementById('osLabelRight');
+  var panelMac   = document.getElementById('panel-mac');
+  var panelPc    = document.getElementById('panel-pc');
+
+  leftLabel.innerHTML  = MAC_ICON_SVG + ' Mac';
+  rightLabel.innerHTML = 'PC ' + PC_ICON_SVG;
+
+  function applyOsMode(os) {
+    var checked = (os === 'pc');
+    osToggleEl.checked = checked;
+    // Knob slides right and its fill moves from white to the current
+    // ink colour — the same "dot fill hangs between white and stroke
+    // colour" behaviour as the source component.
+    osKnobEl.style.transform = checked ? 'translateX(22px)' : 'translateX(0)';
+    osKnobEl.setAttribute('fill', checked ? 'currentColor' : 'white');
+    leftLabel.classList.toggle('is-active', os === 'mac');
+    rightLabel.classList.toggle('is-active', os === 'pc');
+    panelMac.classList.toggle('is-active', os === 'mac');
+    panelPc.classList.toggle('is-active', os === 'pc');
+  }
+
+  leftLabel.addEventListener('click', function () { applyOsMode('mac'); });
+  rightLabel.addEventListener('click', function () { applyOsMode('pc'); });
+  osToggleEl.addEventListener('change', function () {
+    applyOsMode(osToggleEl.checked ? 'pc' : 'mac');
+  });
+
+  applyOsMode('mac');
+})();
+</script>
+
+<script>
+/* ══════════════════════════════════════
+   INLINE NOTE TRIGGERS
+   Each .note-trigger sits inline at the end
+   of its paragraph. Its floating card is the
+   next element after the paragraph in the
+   DOM. Only one card is ever open at a time;
+   a click anywhere outside the open card
+   (including scrolling, which would leave it
+   mis-positioned) closes it.
+   ══════════════════════════════════════ */
+(function () {
+  var triggers = Array.prototype.slice.call(document.querySelectorAll('.note-trigger'));
+  var openCard = null;
+  var openTrigger = null;
+
+  function closeCard() {
+    if (openCard) openCard.classList.remove('is-open');
+    openCard = null;
+    openTrigger = null;
+  }
+
+  function positionCard(trigger, card) {
+    var margin = 10;
+    var rect = trigger.getBoundingClientRect();
+    var vw = window.innerWidth;
+    var vh = window.innerHeight;
+
+    // Reveal off-screen first so we can measure its real size, then
+    // place it — preferring the trigger's right side, flipping to
+    // the left if it wouldn't fit, and clamping vertically so it
+    // never runs off the top or bottom of the visible area.
+    card.style.left = '-9999px';
+    card.style.top = '-9999px';
+    card.classList.add('is-open');
+    var cardW = card.offsetWidth;
+    var cardH = card.offsetHeight;
+
+    var left = rect.right + margin;
+    if (left + cardW > vw - 8) {
+      left = rect.left - cardW - margin;
+    }
+    left = Math.max(8, Math.min(left, vw - cardW - 8));
+
+    var top = rect.top;
+    top = Math.max(8, Math.min(top, vh - cardH - 8));
+
+    card.style.left = left + 'px';
+    card.style.top = top + 'px';
+  }
+
+  triggers.forEach(function (trigger) {
+    var host = trigger.closest('p');
+    var card = host ? host.nextElementSibling : null;
+    if (!card || !card.classList.contains('note-card')) return;
+
+    trigger.addEventListener('click', function (e) {
+      e.stopPropagation();
+      var wasOpen = card === openCard;
+      closeCard();
+      if (!wasOpen) {
+        positionCard(trigger, card);
+        openCard = card;
+        openTrigger = trigger;
+      }
+    });
+  });
+
+  document.addEventListener('click', function (e) {
+    if (openCard && !openCard.contains(e.target) && e.target !== openTrigger) {
+      closeCard();
+    }
+  });
+  window.addEventListener('scroll', closeCard, true);
+  window.addEventListener('resize', closeCard);
+})();
+</script>
+</body>
+</html>

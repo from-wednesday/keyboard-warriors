@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="en-GB">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>The Missing Manual · Keyboard Warriors</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:ital,wght@0,400;0,600;1,400&family=IBM+Plex+Sans:ital,wght@0,400;0,500;0,600;1,400&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../styles/documentation_design-system.css">
+<style>
+  /* ══════════════════════════════════════════════════════════════
+     Page-specific components for advice_game.html.
+     Everything shared with the rest of the site (tokens, chrome,
+     callouts, tables, chips, bp-row, lists) lives in
+     ../styles/documentation_design-system.css — this block only
+     covers the tick-mark list override carried over from
+     advice_general.html.
+     ══════════════════════════════════════════════════════════════ */
+
+  /* ── List marker override ──────────────────────────────────────
+     Same fix as advice_general.html: counter-increment moved onto
+     the real <li> (not the ::before) to avoid the dropped-first-
+     increment bug, and the bullet glyph swapped for a tick. ── */
+  .page ul.plain-list li::before {
+    content: "\2714";
+  }
+  .page ol.plain-list li {
+    counter-increment: item;
+  }
+  .page ol.plain-list li::before {
+    counter-increment: none;
+    content: counter(item) ".";
+  }
+    /* ── Hero image ──────────────────────────────────────────────── */
+  .hero-media img {
+    display: block;
+    width: 100%;
+    border-radius: 10px;
+    border: 1px solid var(--rule);
+  }
+
+  /* Folder-skin addition — matches the stronger hero image border
+     already used on advice_general.html under the tab's currentColor skin. */
+  .hero-media img {
+    border-color: rgba(0,0,0,.14);
+  }
+
+</style>
+</head>
+<body>
+<div class="page">
+
+  <!-- ══ HEADER ══════════════════════════════════════════════════ -->
+  <header class="page-header">
+    <p class="eyebrow">Keyboard Warriors · Playing the Game</p>
+    <h1 class="h1-alt">"No one reads the manual"</h1>
+    <p>That's what they say and yet here you are! Good for you.</p></br>
+    <p>This isn't a complete list of features. I'm not going to explain everything. The interface is intentionally playful to promote exploration. It's not up front with all it can do. <em>Instead</em>, the app starts simple and only exposes new features as you hit milestones to reward curiosity and practice. I hope to surprise and delight those that stick with their training over time.</p></br>
+    <p>For those wanting a head start on that journey, here is how to get the <em>most</em> out of a few core concepts:</p>
+  </header>
+
+  <!-- ══ PHYSICAL AND VIRTUAL KEYBOARDS ═════════════════════════ -->
+  <section>
+    <h2>Physical and Virtual Keyboards</h2>
+
+    <p>On <strong>touch devices without a connected keyboard</strong>, the onscreen keyboard is <strong>active</strong> by default.</p>
+    <p>For <strong>all other users</strong> <em>(that is to say, most)</em> the graphical keyboard is <strong>not</strong> active by default.</p>
+    <p>Why? Partly to encourage you to <strong>use your physical keyboard</strong>. That is the <em>best</em> way to build your muscle memory with the shortcuts.</p>
+    <p>But that's not the <em>only</em> reason. Some shortcuts are used by your browser, operating system, or extensions, intercepting them before the game can detect they were pressed.</p>
+    <p>Keyboard Warriors has several systems to actively manage these issues:</p>
+
+    <ul class="plain-list">
+      <li>It avoids asking you to press keys that we can't read on your system.</li>
+      <li>If any do slip through, the system can detect, mitigate and report them.</li>
+    </ul>
+
+    <p>The onscreen keyboard sidesteps these issues entirely. Because the game knows exactly which <em>virtual</em> keys are being pressed, there is no need to skip conflicted shortcuts.</p>
+    <p>For this reason, shortcut conflict management is paused whenever the onscreen keyboard is active (except for missing extended keyboard keys).</p>
+    <p>This brings us to an interesting scenario. <em>What if</em> you <strong>do</strong> have a keyboard <strong>and also</strong> turn on the virtual keys?</p>
+
+    <div class="callout warn">
+      <p>Now you are free to be asked conflicted questions and there are no guard rails to stop you pressing those keys on your actual keyboard.</p>
+      <p>So in this situation you will see <strong>the keys that we expect to cause a problem light yellow.</strong></p>
+    </div>
+
+    <p>Once this is understood, many players find that using <strong>both</strong> keyboard and touch offers the widest range of training opportunities. It surfaces the <strong>full vocabulary</strong> of questions. For most you can build your skill with the real keyboard. When a conflicted shortcut does come up, you will know to use the on screen keyboard to complete that chord.</p>
+
+    <h4>Additional notes:</h4>
+    <ul class="plain-list">
+      <li>If the system detects a blocked key or chord during play, it will silently unblock it for you.</li>
+      <li>If in the course of play another shortcut interrupts the game, you'll be prompted to confirm the conflict and optionally report it.</li>
+    </ul>
+  </section>
+
+  <!-- ══ KEYBOARD DISPLAY MODES ══════════════════════════════════ -->
+  <section>
+    <h2>Keyboard Display Modes</h2>
+
+    <p>Other controls in the <strong>keyboard settings panel</strong> give you control over whether and how the keyboard is shown on screen. The <strong>Graphical Keyboard display is on by default.</strong></p>
+    <p>On small phone screens it will be out of view, however the screen will auto scroll down and up with the cadence of question and answer.</p>
+        <div class="hero-media">
+      <img src="../images/keyboard-settings.png" alt="A view of the keyboard settings panel set to visible but Touch Enabled off.">
+    </div>
+    <p>The <strong>default experience on most screens</strong> is to have the <strong>keyboard visible but inactive.</strong> The intention, <em>as mentioned earlier</em>, is that you <strong>practice with your actual keyboard.</strong></p>
+    <p>But having the graphical keyboard on screen helps you <strong>learn shortcuts and convert them to memory:</strong></p>
+
+    <ul class="plain-list">
+      <li>The success/fail key lighting assists you in learning unfamiliar shortcuts.</li>
+      <li>The visual patterns of chord shapes imprint on your memory.</li>
+    </ul>
+
+    <p>Turning keyboard visibility off makes the game harder, suiting advanced learners looking for a greater challenge. It forces you to rely upon your internal mental model of where keys actually are.</p>
+    <p>But there is also an interim setting. <strong>Ghost Mode</strong> turns the keyboard invisible providing the challenge of relying on <strong>recall</strong>, <em>not recognition</em>, but in Ghost Mode the lighting still functions. So you still receive the <strong>two benefits</strong> listed for the default visible keyboard! I think this setting might be <em>the ideal one</em> for confident players.</p>
+  </section>
+
+  <!-- ══ DEBRIEF ═════════════════════════════════════════════════ -->
+  <section>
+    <h2>Debrief with 'Report Card' + 'History View'</h2>
+
+    <p>After completing a round you will land on the <strong>Report Card</strong>. You get some shortcuts from the previous round highlighted showing what the coach believes you have learnt, and which there is room to improve.</p>
+
+    <div class="callout info">
+      <p>There will usually be some advice customised to how you are tracking.</p><p>If the coach recommends settings changes there will be a button to instantly apply the recommendation.</p>
+    </div>
+
+    <p>You can also toggle between this screen and a <strong>History View</strong> that provides more detailed statistics on the entire round of questions.</p>
+    <p>In both the report card and the history view (as well as the in-game cheat sheet <em>if you have found it</em>) players with a connected keyboard can <strong>rehearse</strong> the listed shortcuts and they will light accordingly.</p>
+  </section>
+
+  <!-- ══ FREESTYLE DISCOVERY ═════════════════════════════════════ -->
+  <section>
+    <h2>Freestyle Discovery</h2>
+
+    <p>When between rounds, if all settings screens are closed <em>(that includes the end of round recap)</em> the keyboard will be facing you idle. Keys pressed at this time are matched against the <strong>entire</strong> library of keys and chords in the data file for the currently selected app.</p>
+    <p>Anything pressed that will do something in the currently selected app will be reported in the heading area. This provides a unique way to explore an application's shortcut vocabulary through direct experimentation.</p>
+
+    <h4>Notes on freestyle discovery:</h4>
+    <ul class="plain-list">
+      <li>Sometimes the same key or keys can do more than one thing based on context. The freestyle system only reports the first hit it finds, so I am prioritising <strong>core functions</strong>.</li>
+      <li>Some functions are too complicated or nuanced to make good game questions, so I initially left them out of the app data files. I am now adding these back in for <strong>completeness</strong> of this freestyle discovery feature.</li>
+    </ul>
+  </section>
+  
+  
+  <!-- ══ CROSS-PLATFORM TRAINING ═════════════════════════════════ -->
+  <section>
+    <h2>Cross-Training</h2>
+
+    <p>A true master is platform agnostic. You can toggle between Mac and PC shortcuts in the top left of the screen.</p><p>When training for the non-native environment, the app dynamically remaps the physical keys so that you will be learning their correct key positions for the functions on the <em>other</em> operating system.</p>
+    <p>To support this, the graphical keyboard will feature double labelling in this mode to clarify the cross-platform mapping.</p>
+  </section>
+
+  <!-- ══ FINAL THOUGHTS ══════════════════════════════════════════ -->
+  <section>
+    <h2>Final Thoughts</h2>
+
+    <p><em>Keyboard Warriors</em> is designed to grow with you. The more you play, the more features, settings and training approaches become available.</p>
+    <p>You can treat it as a simple quiz game, a shortcut coach, a discovery tool, or all three at once. Experiment with the settings, try different display modes, and don't be afraid to follow your curiosity.</p>
+    <p><strong>After all</strong>, that's how you ended up reading this far.</p>
+  </section>
+
+</div><!-- /.page -->
+</body>
+</html>

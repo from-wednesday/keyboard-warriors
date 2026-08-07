@@ -512,7 +512,7 @@ start:  GYRO PERMISSION MODAL
             </g>
           </svg>
         </span>
-        <a class="sp-settings-nudge" href="https://from-wednesday.github.io/keyboard-warriors/documentation/" target="_blank" rel="noopener">
+        <a class="sp-settings-nudge" href="#" onclick="event.preventDefault(); _openDocumentation();">
           <span class="sp-nudge-text">Learn more.</span>
           <svg class="sp-nudge-icon" viewBox="0 0 110 82" xmlns="http://www.w3.org/2000/svg"><use href="#IconDocumentation"/></svg>
         </a>
@@ -11074,19 +11074,21 @@ function _resolveEditionId() {
 }
 var EditionId = _resolveEditionId();
 
+function _openDocumentation(tab) {
+  var url = 'https://from-wednesday.github.io/keyboard-warriors/documentation/?to=' + EditionId;
+  if (tab !== undefined) url += '&tab=' + tab;
+  window.open(url, '_blank', 'noopener');
+}
 function _applyEditionCredit(EditionManifest) {
   var ClauseEl = document.getElementById('creditClause');
   if (!ClauseEl) return;
   var ClauseText = (EditionManifest && EditionManifest.creditClause)
     || 'is free to adapt under Polyform Non-Commercial 1.0.0';
-  var ClauseUrl = (EditionManifest && EditionManifest.creditLinkUrl)
-    || 'https://github.com/yourusername/keyboard-warriors/blob/main/LICENSE';
   ClauseEl.innerHTML = '';
   var LinkEl = document.createElement('a');
-  LinkEl.href = ClauseUrl;
+  LinkEl.href = '#';
   LinkEl.className = 'credit-link';
-  LinkEl.target = '_blank';
-  LinkEl.rel = 'noopener';
+  LinkEl.addEventListener('click', function(e) { e.preventDefault(); _openDocumentation(0); });
   // Split "is free to adapt under Polyform Non-Commercial 1.0.0" so only the
   // license/terms phrase itself is the link, matching the original styling.
   var SplitIndex = ClauseText.indexOf(' under ');

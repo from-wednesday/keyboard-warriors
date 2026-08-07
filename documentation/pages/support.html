@@ -46,7 +46,20 @@
     position: relative;
     z-index: 60; /* stays above the card stack if the arc's apex rides up under it */
   }
-  p.intro { color: var(--ink-soft); }
+  p.intro {
+    color: var(--ink-soft);
+    /* .spread reserves the full 660px card-arc box, but the lowest
+       cards (LinkedIn/Pinterest, --y:124px, plus their rotation)
+       only reach to roughly 590px of that, leaving ~70px of empty
+       space below them before this paragraph even starts, on top of
+       the browser's own default paragraph margin. Pulling it up
+       closes most of that gap so it reads as part of the same
+       grouping as the cards, and a modest bottom margin returns a
+       slice of what was reclaimed so the page doesn't end abruptly
+       right after it. */
+    margin-top: -70px;
+    margin-bottom: 24px;
+  }
 
   .spread {
     position: relative;
@@ -257,6 +270,13 @@
     }
     .card.is-active { transform: scale(1.06) rotate(0deg); }
     .spread { display: flex; flex-wrap: wrap; justify-content: center; }
+
+    /* On mobile .spread hugs its wrapped content (height:auto), so
+       none of the desktop's ~70px of trailing dead space exists here.
+       Carrying the desktop pull-up over would drive the paragraph up
+       into the last row of cards, so it's reset back to a small,
+       ordinary gap instead. */
+    p.intro { margin-top: 8px; margin-bottom: 20px; }
   }
 </style>
 </head>

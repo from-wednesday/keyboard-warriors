@@ -17,8 +17,8 @@
     <h1>Shortcut JSON Schema</h1>
     <p>
       To help developers wanting to build content for Keyboard Warriors, this page includes a <strong>field-by-field specification</strong> for shortcut entries in the app's JSON data files,
-      scope and classification rules, chip rendering order, and an explanation of the JavaScript functions that read and process this data. 
-      See the companion Shortcut Token Reference <strong><small>&lt;/&gt;</small>'Defining Keys'</strong> for the full list of accepted key tokens.
+      scope and classification rules, chip rendering order, and an explanation of the JavaScript functions that read and process this data.</p>
+    <p>See the companion Shortcut Token Reference <strong><small>&lt;/&gt;</small>'Defining Keys'</strong> for the full list of accepted key tokens.
     </p>
   </header>
 
@@ -49,8 +49,11 @@
       This is the question prompt shown to the player. Must be plain text with no markup. Write
       it action-focused, concise, and verb-first. Do not include or hint at the answer
       keys in the display text. Aim for a phrase a player can read comfortably in a
-      few seconds.</p><p>Note that for remodelled sequential entries, phrase the context as
-      "after entering…" or "to complete… press…". <em>More on sequential entries later.</em>
+      few seconds.</p>
+    <p>When writing these, consider both the context of the in-game question <em>and</em> the free-style exploration mode. It you are unable to arrive at one "display" that works for both, it is possible to delop the shortcut as two JSON objects. One for each context at the exclussion of the other. See the 'difficulty" and "sequential" sections below for more information.
+    </p>
+    <p>Note that for remodelled sequential entries, phrase for context, such as
+      "after entering…" or "to complete, press…". <em>More on sequential shortcuts later.</em>
     </p>
     <div class="code-block"><span class="c-key"><strong>"display"</span>: <span class="c-val">"save the document"</strong></span></br>
 <span class="c-key">"display"</span>: <span class="c-val">"after entering a configuration number, store it"</span></div>
@@ -67,8 +70,8 @@
       See the <a href="define_the_keys.html">Shortcut Token Reference</a> for all
       accepted tokens and their synonyms.
     </p>
-    <div class="code-block"><span class="c-key">"mac_sc"</span>: <span class="c-val">"CMD+S"</span>             <span class="c-note">// single chord</span>
-<span class="c-key">"mac_sc"</span>: <span class="c-val">"CMD+ARROWLEFT|HOME"</span>  <span class="c-note">// two accepted answers; chip shows first</span>
+    <div class="code-block"><span class="c-key">"mac_sc"</span>: <span class="c-val">"CMD+S"</span>             <span class="c-note">// single chord</span></br>
+<span class="c-key">"mac_sc"</span>: <span class="c-val">"CMD+ARROWLEFT|HOME"</span>  <span class="c-note">// two accepted answers; chip shows first</span></br>
 <span class="c-key">"mac_sc"</span>: <span class="c-null">"NULL"</span>              <span class="c-note">// does not exist on Mac</span></div>
 
     <h3>"pc_sc"</h3>
@@ -77,7 +80,7 @@
       same rules as <code>mac_sc</code>. Prefer platform-native modifier tokens in PC
       fields: <span class="tok">CTRL</span>, <span class="tok">ALT</span>,
       <span class="tok pc">WIN</span>, <span class="tok">SHIFT</span>. At least one of
-      the two platform fields must contain real tokens — an entry where both are
+      the two platform fields must contain real tokens. An entry where both are
       <span class="null-val">NULL</span> is invalid.
     </p>
     <div class="code-block"><span class="c-key">"pc_sc"</span>: <span class="c-val">"CTRL+S"</span>
@@ -110,7 +113,7 @@
       been remodelled from a multi-step sequential workflow into a playable
       completion-key prompt. The game excludes sequential entries from freestyle mode
       and any other mode where out-of-context sequential prompts would be misleading.
-      This flag is entirely separate from difficulty — do not use difficulty 6 as a
+      This flag is entirely separate from difficulty. Do not use difficulty 6 as a
       substitute for it. See <a href="#sequential">Section 05 — Sequential Entries</a>.
     </p>
     <div class="code-block"><span class="c-key">"sequential"</span>: <span class="c-val">true</span></div>
@@ -159,7 +162,7 @@
             <td><code>sequential</code></td>
             <td>Boolean</td>
             <td>No</td>
-            <td>Always <code>true</code> when present. Excludes the entry from freestyle and context-sensitive modes. Must be set explicitly — difficulty 6 does not imply sequential. See Section 05.</td>
+            <td>Always <code>true</code> when present. Excludes the entry from freestyle and context-sensitive modes. Must be set explicitly. Difficulty 6 does not imply sequential. See Section 05.</td>
           </tr>
         </tbody>
       </table>
@@ -172,9 +175,10 @@
     <p>
       Difficulty controls which pool an entry enters relative to the player's selected
       difficulty setting. Distribution does not need to be equal across levels —
-      professional software can legitimately skew harder — but aim for at least a dozen
-      entries at each level from 0 through 5.
+      professional software can legitimately skew harder. I would aim for at least a dozen
+      entries at each level from 0 through to 5.
     </p>
+    <p>Difficulty 6 is purely a functional allocation to be used when needed. It's absence from a file is not only permitted, but probably the ideal.</p>
     <div class="table-wrap">
       <table>
         <thead>
@@ -194,7 +198,7 @@
           <tr>
             <td><strong>2</strong></td>
             <td>Logical</td>
-            <td>Regular workflow shortcuts that follow a clear and obvious pattern — for example, tools whose shortcut uses the tool's initial letter (L for Line, B for Brush). Redo also belongs here.</td>
+            <td>Regular workflow shortcuts that follow a clear and obvious pattern, for example, tools whose shortcut uses the tool's initial letter (L for Line, B for Brush). Redo also belongs here.</td>
           </tr>
           <tr>
             <td><strong>3</strong></td>
@@ -226,7 +230,7 @@
     <h2>04 ) Scope Rules</h2>
     <p>
       Not every shortcut in vendor documentation belongs in a Keyboard Warriors file.
-      The goal is a clean, verified training dataset — not a literal transcription of a
+      The goal is a clean, verified training dataset, not a literal transcription of a
       vendor manual. Apply the table below during extraction to decide what to include,
       remodel, or leave out. Classify each candidate in a working ledger before
       compiling the final JSON.
@@ -301,7 +305,7 @@
     <h3>What not to do</h3>
     <div class="code-block">{
   <span class="c-key">"display"</span>:    <span class="c-val">"store Window Configuration"</span>,
-  <span class="c-key">"mac_sc"</span>:     <span class="c-val">"NUMPADDECIMAL+[1-99]+NUMPADADD"</span>,  <span class="c-note">// invalid — never do this</span>
+  <span class="c-key">"mac_sc"</span>:     <span class="c-val">"NUMPADDECIMAL+[1-99]+NUMPADADD"</span>,  <span class="c-note">// invalid, never do this</span>
   <span class="c-key">"pc_sc"</span>:      <span class="c-val">"NUMPADDECIMAL+[1-99]+NUMPADADD"</span>,
   <span class="c-key">"difficulty"</span>: <span class="c-val">6</span>
 }</div>
@@ -327,7 +331,7 @@
 }</div>
     <p class="note">
       The <code>sequential</code> flag is independent of difficulty. Do not rely on
-      difficulty 6 to exclude these entries from freestyle — the flag must be set
+      difficulty 6 to exclude these entries from freestyle. This flag must be set
       explicitly on every remodelled sequential entry.
     </p>
   </section>
@@ -404,7 +408,7 @@
       Pipes (<code>|</code>) handle genuinely different ways to perform the <em>same</em>
       action. Groups handle <em>different but closely related</em> actions that risk
       feeling repetitive together. When a set of actions maps to a predictable pattern of
-      keys — such as a row of digits or the four arrow directions — a group is usually
+      keys (such as a row of digits or the four arrow directions) a group is usually
       the right choice to keep any one round from feeling monotonous.
     </p>
     <div class="code-block"><span class="c-note">// Split "change volume" into two questions and group them, rather than piping &lt;|&gt;</span>
@@ -420,7 +424,7 @@
       <span class="null-val">NULL</span> for the absent platform field. In addition, place
       a six-object guidance block at the very start of the file so that players on the
       absent platform receive a clear prompt to switch OS. The block covers all three
-      major difficulty tiers — 0, 3, and 5 — so the message is seen regardless of what
+      major difficulty tiers (0, 3, and 5) so the message is seen regardless of what
       difficulty the player has selected.
     </p>
     <div class="callout info">

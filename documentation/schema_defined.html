@@ -1,0 +1,583 @@
+<!DOCTYPE html>
+<html lang="en-GB">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Shortcut JSON Schema — Keyboard Warriors</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:ital,wght@0,400;0,600;1,400&family=IBM+Plex+Sans:ital,wght@0,400;0,500;0,600;1,400&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../styles/documentation_design-system.css">
+<link rel="stylesheet" href="../styles/documentation_reference-components.css">
+</head>
+<body>
+<div class="page">
+  <!-- ══ HEADER ══════════════════════════════════════════════════ -->
+  <header class="page-header">
+    <p class="eyebrow">Keyboard Warriors · Developer Reference</p>
+    <h1>Shortcut JSON Schema</h1>
+    <p>
+      Field-by-field specification for shortcut entries in the app's JSON data files,
+      scope and classification rules, chip rendering order, and the JavaScript functions
+      that read and process this data. See the companion
+      <a href="define_the_keys.html">Shortcut Token Reference</a> for the full list
+      of accepted key tokens.
+    </p>
+  </header>
+
+  <!-- ══ ENTRY STRUCTURE ══════════════════════════════════════════ -->
+  <section>
+    <h2>01 ) Entry Structure</h2>
+    <p>
+      The complete data file for any software package is a flat JSON array. Each item in
+      that array is a single shortcut entry — one question-and-answer block for the game.
+      In technical documentation the precise term is <em>JSON object</em>; in project
+      discussion, <em>shortcut entry</em> or simply <em>entry</em>.
+    </p>
+    <p>
+      An entry can contain up to six fields. The first four are required on every normal
+      entry. The final two are optional and should only be added when they genuinely
+      improve gameplay. Each field belongs on its own line:
+    </p>
+    <div class="code-block">{
+  <span class="c-key">"display"</span>:    <span class="c-val">"verb-first description of the action"</span>,
+  <span class="c-key">"mac_sc"</span>:     <span class="c-val">"TOKEN+TOKEN"</span>,
+  <span class="c-key">"pc_sc"</span>:      <span class="c-val">"TOKEN+TOKEN"</span>,
+  <span class="c-key">"difficulty"</span>: <span class="c-val">3</span>,
+  <span class="c-key">"group"</span>:      <span class="c-val">"optional_group_name"</span>,
+  <span class="c-key">"sequential"</span>: <span class="c-val">true</span>
+}</div>
+
+    <h3>"display"</h3>
+    <p>
+      The question prompt shown to the player. Must be plain text with no markup. Write
+      it action-focused, concise, and verb-first. Do not include or hint at the answer
+      keys in the display text. Aim for a phrase a player can read comfortably in a
+      few seconds. For remodelled sequential entries, phrase the context as
+      "after entering…" or "to complete… press…".
+    </p>
+    <div class="code-block"><span class="c-key">"display"</span>: <span class="c-val">"save the document"</span>
+<span class="c-key">"display"</span>: <span class="c-val">"after entering a configuration number, store it"</span></div>
+
+    <h3>"mac_sc"</h3>
+    <p>
+      The token string used for Mac input matching and chip rendering. Tokens are combined
+      with <code>+</code>. Use <code>|</code> to offer piped alternatives where a single
+      action genuinely has more than one accepted key. Use the literal value
+      <span class="null-val">NULL</span> (or the synonym <span class="null-val">NONE</span>)
+      when the shortcut does not exist on Mac. Prefer platform-native modifier tokens in
+      Mac fields: <span class="tok">CMD</span>, <span class="tok">OPT</span>,
+      <span class="tok mac">CONTROL</span>, <span class="tok">SHIFT</span>.
+      See the <a href="define_the_keys.html">Shortcut Token Reference</a> for all
+      accepted tokens and their synonyms.
+    </p>
+    <div class="code-block"><span class="c-key">"mac_sc"</span>: <span class="c-val">"CMD+S"</span>             <span class="c-note">// single chord</span>
+<span class="c-key">"mac_sc"</span>: <span class="c-val">"CMD+ARROWLEFT|HOME"</span>  <span class="c-note">// two accepted answers; chip shows first</span>
+<span class="c-key">"mac_sc"</span>: <span class="c-null">"NULL"</span>              <span class="c-note">// does not exist on Mac</span></div>
+
+    <h3>"pc_sc"</h3>
+    <p>
+      The token string used for PC input matching and chip rendering. Follows exactly the
+      same rules as <code>mac_sc</code>. Prefer platform-native modifier tokens in PC
+      fields: <span class="tok">CTRL</span>, <span class="tok">ALT</span>,
+      <span class="tok pc">WIN</span>, <span class="tok">SHIFT</span>. At least one of
+      the two platform fields must contain real tokens — an entry where both are
+      <span class="null-val">NULL</span> is invalid.
+    </p>
+    <div class="code-block"><span class="c-key">"pc_sc"</span>: <span class="c-val">"CTRL+S"</span>
+<span class="c-key">"pc_sc"</span>: <span class="c-null">"NULL"</span>    <span class="c-note">// does not exist on PC</span></div>
+
+    <h3>"difficulty"</h3>
+    <p>
+      An integer from 0 to 6 controlling which question pool the entry enters, based on
+      the player's selected difficulty setting. Difficulty 6 is reference-only and is
+      never surfaced in normal gameplay rounds. See
+      <a href="#difficulty">Section 03 — Difficulty Scale</a> for the full breakdown.
+    </p>
+    <div class="code-block"><span class="c-key">"difficulty"</span>: <span class="c-val">0</span>   <span class="c-note">// ubiquitous — Save, Copy, Paste</span>
+<span class="c-key">"difficulty"</span>: <span class="c-val">3</span>   <span class="c-note">// intermediate — core app knowledge</span>
+<span class="c-key">"difficulty"</span>: <span class="c-val">6</span>   <span class="c-note">// reference-only, never quizzed</span></div>
+
+    <h3>"group" <span class="note">(optional)</span></h3>
+    <p>
+      A string label that limits how many entries from the same group can appear in any
+      single ten-question round. Omit this field entirely unless the entries are
+      near-identical variants that would feel repetitive or interchangeable if presented
+      together in the same round. Do not group entries simply because they share a topic.
+      See <a href="#groups">Section 07 — Groups</a>.
+    </p>
+    <div class="code-block"><span class="c-key">"group"</span>: <span class="c-val">"opacity"</span></div>
+
+    <h3>"sequential" <span class="note">(optional)</span></h3>
+    <p>
+      A boolean, always set to <code>true</code> when present. Marks an entry that has
+      been remodelled from a multi-step sequential workflow into a playable
+      completion-key prompt. The game excludes sequential entries from freestyle mode
+      and any other mode where out-of-context sequential prompts would be misleading.
+      This flag is entirely separate from difficulty — do not use difficulty 6 as a
+      substitute for it. See <a href="#sequential">Section 05 — Sequential Entries</a>.
+    </p>
+    <div class="code-block"><span class="c-key">"sequential"</span>: <span class="c-val">true</span></div>
+  </section>
+
+  <!-- ══ FIELD REFERENCE ══════════════════════════════════════════ -->
+  <section>
+    <h2>02 ) Field Reference</h2>
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr><th>Field</th><th>Type</th><th>Required</th><th>Rules</th></tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><code>display</code></td>
+            <td>String</td>
+            <td>Yes</td>
+            <td>Plain text question prompt. Verb-first, concise, no markup, no answer keys in the text.</td>
+          </tr>
+          <tr>
+            <td><code>mac_sc</code></td>
+            <td>String</td>
+            <td>Yes</td>
+            <td>Token string for Mac matching and chip rendering. Use <span class="null-val">NULL</span> or <span class="null-val">NONE</span> when the shortcut does not exist on Mac. At least one of <code>mac_sc</code> or <code>pc_sc</code> must contain real tokens.</td>
+          </tr>
+          <tr>
+            <td><code>pc_sc</code></td>
+            <td>String</td>
+            <td>Yes</td>
+            <td>Token string for PC matching and chip rendering. Same <span class="null-val">NULL</span> / <span class="null-val">NONE</span> rule as <code>mac_sc</code>.</td>
+          </tr>
+          <tr>
+            <td><code>difficulty</code></td>
+            <td>Integer</td>
+            <td>Yes</td>
+            <td>Integer 0–6. Controls the question pool. Difficulty 6 is reference-only and never quizzed in normal gameplay. See Section 03.</td>
+          </tr>
+          <tr>
+            <td><code>group</code></td>
+            <td>String</td>
+            <td>No</td>
+            <td>Caps that named group at two entries per ten-question round. Only add when near-identical variants would feel repetitive if drawn together. See Section 07.</td>
+          </tr>
+          <tr>
+            <td><code>sequential</code></td>
+            <td>Boolean</td>
+            <td>No</td>
+            <td>Always <code>true</code> when present. Excludes the entry from freestyle and context-sensitive modes. Must be set explicitly — difficulty 6 does not imply sequential. See Section 05.</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <!-- ══ DIFFICULTY SCALE ══════════════════════════════════════════ -->
+  <section id="difficulty">
+    <h2>03 ) Difficulty Scale</h2>
+    <p>
+      Difficulty controls which pool an entry enters relative to the player's selected
+      difficulty setting. Distribution does not need to be equal across levels —
+      professional software can legitimately skew harder — but aim for at least a dozen
+      entries at each level from 0 through 5.
+    </p>
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr><th>Level</th><th>Label</th><th>Description</th></tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><strong>0</strong></td>
+            <td>Universal</td>
+            <td>Ubiquitous shortcuts present in virtually every app: Save, Copy, Paste, Cut. These should appear in every package where they work. Keep common universal shortcuts at low difficulty.</td>
+          </tr>
+          <tr>
+            <td><strong>1</strong></td>
+            <td>Common</td>
+            <td>Very common cross-app fundamentals that are slightly more varied or apply to fewer apps. Examples: Select All, New Document, Print.</td>
+          </tr>
+          <tr>
+            <td><strong>2</strong></td>
+            <td>Logical</td>
+            <td>Regular workflow shortcuts that follow a clear and obvious pattern — for example, tools whose shortcut uses the tool's initial letter (L for Line, B for Brush). Redo also belongs here.</td>
+          </tr>
+          <tr>
+            <td><strong>3</strong></td>
+            <td>Intermediate</td>
+            <td>The core shortcuts most serious users of the selected app need to learn. App-specific panel toggles and key workflow commands live here.</td>
+          </tr>
+          <tr>
+            <td><strong>4</strong></td>
+            <td>Power user</td>
+            <td>Advanced editing actions, modifier-click and modifier-drag behaviours, and professional workflow commands. More complex and less commonly known.</td>
+          </tr>
+          <tr>
+            <td><strong>5</strong></td>
+            <td>Specialist</td>
+            <td>Highly specialist or obscure actions and very difficult-to-remember multi-key combinations. Rarely needed but worth knowing for serious practitioners.</td>
+          </tr>
+          <tr>
+            <td><strong>6</strong></td>
+            <td>Reference only</td>
+            <td>Never surfaced in normal difficulty tiers or gameplay rounds. Used for actions that cannot be explained clearly within a prompt readable in a few seconds, or for freestyle-only definitions that would conflict with a regular game entry. Placing a difficulty-6 entry immediately before a regular entry causes it to intercept that key combination in freestyle mode, delivering an alternative description without interfering with gameplay.</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <!-- ══ SCOPE RULES ═══════════════════════════════════════════════ -->
+  <section>
+    <h2>04 ) Scope Rules</h2>
+    <p>
+      Not every shortcut in vendor documentation belongs in a Keyboard Warriors file.
+      The goal is a clean, verified training dataset — not a literal transcription of a
+      vendor manual. Apply the table below during extraction to decide what to include,
+      remodel, or leave out. Classify each candidate in a working ledger before
+      compiling the final JSON.
+    </p>
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr><th>Category</th><th>Default decision</th><th>Notes</th></tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>Single keypresses</td>
+            <td>Keep</td>
+            <td>Examples: B, TAB, SPACE, F9.</td>
+          </tr>
+          <tr>
+            <td>Simultaneous chords</td>
+            <td>Keep</td>
+            <td>Examples: CMD+S, CTRL+SHIFT+R.</td>
+          </tr>
+          <tr>
+            <td>Universal shortcuts (except Undo)</td>
+            <td>Keep</td>
+            <td>Assign difficulty 0–1. These should appear in every package where they work.</td>
+          </tr>
+          <tr>
+            <td>Undo</td>
+            <td>Remove</td>
+            <td>Project convention: do not include unless explicitly requested. Undo is already built into the app as the default fallback question.</td>
+          </tr>
+          <tr>
+            <td>Pure mouse interactions</td>
+            <td>Remove</td>
+            <td>Examples: double-click, triple-click, right-click-only actions. There is no key to detect.</td>
+          </tr>
+          <tr>
+            <td>Modifier-clicks and modifier-drags</td>
+            <td>Keep when useful</td>
+            <td>Keep when the modifier is the meaningful workflow knowledge being learned. The shortcut value should be only the modifier chord, not the mouse action itself. See Section 06.</td>
+          </tr>
+          <tr>
+            <td>Sequential keystrokes</td>
+            <td>Remove, remodel, or mark sequential</td>
+            <td>Never encode arbitrary sequences literally. Remodel into a completion-key prompt where the sequence can be made fair. See Section 05.</td>
+          </tr>
+          <tr>
+            <td>Menu navigation without a shortcut</td>
+            <td>Remove</td>
+            <td>Only include direct keypresses, chords, or approved modifier workflows.</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+    <p>Use the following ledger statuses when classifying candidates during extraction:</p>
+    <p><strong>KEEP &nbsp;&nbsp; MERGE &nbsp;&nbsp; REMODEL &nbsp;&nbsp; REMOVE &nbsp;&nbsp; REFERENCE-ONLY &nbsp;&nbsp; SEQUENTIAL-COMPLETION</strong></p>
+  </section>
+
+  <!-- ══ SEQUENTIAL ENTRIES ════════════════════════════════════════ -->
+  <section id="sequential">
+    <h2>05 ) Sequential Entries</h2>
+    <p>
+      Multi-step sequential workflows are normally out of scope because encoding an
+      arbitrary sequence as a single question produces an unfair and unplayable entry.
+      However, some workflows can be remodelled into fair questions by placing the known
+      first steps into the prompt as context and asking only for the completion key.
+    </p>
+    <div class="callout warn">
+      <strong>Never encode variable sequences literally.</strong> A shortcut value such
+      as <code>NUMPADDECIMAL+[1-99]+NUMPADADD</code> cannot be matched by the game
+      engine and does not represent a fair question. Remodel or remove it.
+    </div>
+    <h3>What not to do</h3>
+    <div class="code-block">{
+  <span class="c-key">"display"</span>:    <span class="c-val">"store Window Configuration"</span>,
+  <span class="c-key">"mac_sc"</span>:     <span class="c-val">"NUMPADDECIMAL+[1-99]+NUMPADADD"</span>,  <span class="c-note">// invalid — never do this</span>
+  <span class="c-key">"pc_sc"</span>:      <span class="c-val">"NUMPADDECIMAL+[1-99]+NUMPADADD"</span>,
+  <span class="c-key">"difficulty"</span>: <span class="c-val">6</span>
+}</div>
+    <h3>Preferred completion-key form</h3>
+    <p>
+      Place the first part of the sequence in the display as context, then ask for the
+      final key only. Phrase the prompt as "after entering…" or "to complete… press…".
+      Always include <code>"sequential": true</code> on every remodelled entry.
+    </p>
+    <div class="code-block">{
+  <span class="c-key">"display"</span>:    <span class="c-val">"after entering a Window Configuration number, store it"</span>,
+  <span class="c-key">"mac_sc"</span>:     <span class="c-val">"NUMPADADD"</span>,
+  <span class="c-key">"pc_sc"</span>:      <span class="c-val">"NUMPADADD"</span>,
+  <span class="c-key">"difficulty"</span>: <span class="c-val">4</span>,
+  <span class="c-key">"sequential"</span>: <span class="c-val">true</span>
+}
+{
+  <span class="c-key">"display"</span>:    <span class="c-val">"after entering a Memory Location number, recall it"</span>,
+  <span class="c-key">"mac_sc"</span>:     <span class="c-val">"NUMPADDECIMAL"</span>,
+  <span class="c-key">"pc_sc"</span>:      <span class="c-val">"NUMPADDECIMAL"</span>,
+  <span class="c-key">"difficulty"</span>: <span class="c-val">4</span>,
+  <span class="c-key">"sequential"</span>: <span class="c-val">true</span>
+}</div>
+    <p class="note">
+      The <code>sequential</code> flag is independent of difficulty. Do not rely on
+      difficulty 6 to exclude these entries from freestyle — the flag must be set
+      explicitly on every remodelled sequential entry.
+    </p>
+  </section>
+
+  <!-- ══ MODIFIER-ENHANCED MOUSE ACTIONS ══════════════════════════ -->
+  <section>
+    <h2>06 ) Modifier-Enhanced Mouse Actions</h2>
+    <p>
+      A blanket "no mouse actions" rule is too strict for professional creative software,
+      where modifier-clicks and modifier-drags often represent genuine and important
+      workflow knowledge. Keep these entries when the modifier itself is the answer being
+      learned, not the mouse action.
+    </p>
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr><th>Action type</th><th>Decision</th><th>Example wording</th></tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>Modifier-click workflow</td>
+            <td>Keep if useful</td>
+            <td>toggle Mute on all tracks while clicking Mute</td>
+          </tr>
+          <tr>
+            <td>Modifier-drag workflow</td>
+            <td>Keep if useful</td>
+            <td>stretch a warped clip while dragging the clip title bar</td>
+          </tr>
+          <tr>
+            <td>Fine-adjust modifier</td>
+            <td>Keep if useful</td>
+            <td>use finer resolution while dragging a value</td>
+          </tr>
+          <tr>
+            <td>Pure double-click</td>
+            <td>Remove</td>
+            <td>double-click the track name</td>
+          </tr>
+          <tr>
+            <td>Right-click menu only</td>
+            <td>Remove</td>
+            <td>right-click to open context menu</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+    <p>
+      Wording must make the mouse context explicit. Use "while clicking" or "while
+      dragging" so the player understands what the mouse is doing during the shortcut.
+      The shortcut value should be only the modifier or modifier chord being held —
+      not the mouse action itself. Only keep an entry if an experienced user would
+      genuinely benefit from memorising that modifier behaviour.
+    </p>
+  </section>
+
+  <!-- ══ GROUPS ════════════════════════════════════════════════════ -->
+  <section id="groups">
+    <h2>07 ) Groups</h2>
+    <p>
+      The <code>group</code> field prevents a run of near-identical questions from
+      appearing together in a single ten-question round. The pool builder caps any
+      named group at two entries per round.
+    </p>
+    <div class="callout info">
+      <strong>Use groups sparingly.</strong> Only apply a group label when entries are
+      near-identical and genuinely likely to feel interchangeable if drawn together in
+      one round. Do not group entries simply because they share a topic. If a group is
+      removed or rejected for a particular package, do not re-add it without a specific
+      gameplay reason.
+    </div>
+    <h3>Pipes vs groups</h3>
+    <p>
+      Pipes (<code>|</code>) handle genuinely different ways to perform the <em>same</em>
+      action. Groups handle <em>different but closely related</em> actions that risk
+      feeling repetitive together. When a set of actions maps to a predictable pattern of
+      keys — such as a row of digits or the four arrow directions — a group is usually
+      the right choice to keep any one round from feeling monotonous.
+    </p>
+    <div class="code-block"><span class="c-note">// Split "change volume" into two questions and group them, rather than piping &lt;|&gt;</span>
+{ <span class="c-key">"display"</span>: <span class="c-val">"lower volume"</span>, <span class="c-key">"mac_sc"</span>: <span class="c-val">"LESSTHAN"</span>, <span class="c-key">"pc_sc"</span>: <span class="c-val">"LESSTHAN"</span>, <span class="c-key">"difficulty"</span>: <span class="c-val">2</span>, <span class="c-key">"group"</span>: <span class="c-val">"volume"</span> }
+{ <span class="c-key">"display"</span>: <span class="c-val">"raise volume"</span>,  <span class="c-key">"mac_sc"</span>: <span class="c-val">"MORETHAN"</span>, <span class="c-key">"pc_sc"</span>: <span class="c-val">"MORETHAN"</span>, <span class="c-key">"difficulty"</span>: <span class="c-val">2</span>, <span class="c-key">"group"</span>: <span class="c-val">"volume"</span> }</div>
+  </section>
+
+  <!-- ══ PLATFORM-ONLY GUIDANCE BLOCKS ════════════════════════════ -->
+  <section>
+    <h2>08 ) Platform-Only Guidance Blocks</h2>
+    <p>
+      When an app genuinely exists on only one platform, all real shortcut entries use
+      <span class="null-val">NULL</span> for the absent platform field. In addition, place
+      a six-object guidance block at the very start of the file so that players on the
+      absent platform receive a clear prompt to switch OS. The block covers all three
+      major difficulty tiers — 0, 3, and 5 — so the message is seen regardless of what
+      difficulty the player has selected.
+    </p>
+    <div class="callout info">
+      <strong>Do not delete these as duplicates.</strong> The intentional repetition
+      across tiers ensures the message is always visible. Keep the full block before all
+      real app shortcut entries in the file.
+    </div>
+    <h3>Mac-only app starter block</h3>
+    <div class="code-block">[
+  { <span class="c-key">"display"</span>: <span class="c-val">"Switch to Mac in the top left. Press ENTER."</span>, <span class="c-key">"mac_sc"</span>: <span class="c-null">"NULL"</span>, <span class="c-key">"pc_sc"</span>: <span class="c-val">"ENTER"</span>, <span class="c-key">"difficulty"</span>: <span class="c-val">0</span> },
+  { <span class="c-key">"display"</span>: <span class="c-val">"[App Name] is a Mac only app. Press ENTER."</span>,      <span class="c-key">"mac_sc"</span>: <span class="c-null">"NULL"</span>, <span class="c-key">"pc_sc"</span>: <span class="c-val">"ENTER"</span>, <span class="c-key">"difficulty"</span>: <span class="c-val">0</span> },
+  { <span class="c-key">"display"</span>: <span class="c-val">"Switch to Mac in the top left. Press ENTER."</span>, <span class="c-key">"mac_sc"</span>: <span class="c-null">"NULL"</span>, <span class="c-key">"pc_sc"</span>: <span class="c-val">"ENTER"</span>, <span class="c-key">"difficulty"</span>: <span class="c-val">3</span> },
+  { <span class="c-key">"display"</span>: <span class="c-val">"[App Name] is a Mac only app. Press ENTER."</span>,      <span class="c-key">"mac_sc"</span>: <span class="c-null">"NULL"</span>, <span class="c-key">"pc_sc"</span>: <span class="c-val">"ENTER"</span>, <span class="c-key">"difficulty"</span>: <span class="c-val">3</span> },
+  { <span class="c-key">"display"</span>: <span class="c-val">"Switch to Mac in the top left. Press ENTER."</span>, <span class="c-key">"mac_sc"</span>: <span class="c-null">"NULL"</span>, <span class="c-key">"pc_sc"</span>: <span class="c-val">"ENTER"</span>, <span class="c-key">"difficulty"</span>: <span class="c-val">5</span> },
+  { <span class="c-key">"display"</span>: <span class="c-val">"[App Name] is a Mac only app. Press ENTER."</span>,      <span class="c-key">"mac_sc"</span>: <span class="c-null">"NULL"</span>, <span class="c-key">"pc_sc"</span>: <span class="c-val">"ENTER"</span>, <span class="c-key">"difficulty"</span>: <span class="c-val">5</span> }
+]</div>
+    <h3>PC-only app starter block</h3>
+    <div class="code-block">[
+  { <span class="c-key">"display"</span>: <span class="c-val">"Switch to PC in the top left. Press RETURN."</span>, <span class="c-key">"mac_sc"</span>: <span class="c-val">"RETURN"</span>, <span class="c-key">"pc_sc"</span>: <span class="c-null">"NULL"</span>, <span class="c-key">"difficulty"</span>: <span class="c-val">0</span> },
+  { <span class="c-key">"display"</span>: <span class="c-val">"[App Name] is a PC only app. Press RETURN."</span>,      <span class="c-key">"mac_sc"</span>: <span class="c-val">"RETURN"</span>, <span class="c-key">"pc_sc"</span>: <span class="c-null">"NULL"</span>, <span class="c-key">"difficulty"</span>: <span class="c-val">0</span> },
+  { <span class="c-key">"display"</span>: <span class="c-val">"Switch to PC in the top left. Press RETURN."</span>, <span class="c-key">"mac_sc"</span>: <span class="c-val">"RETURN"</span>, <span class="c-key">"pc_sc"</span>: <span class="c-null">"NULL"</span>, <span class="c-key">"difficulty"</span>: <span class="c-val">3</span> },
+  { <span class="c-key">"display"</span>: <span class="c-val">"[App Name] is a PC only app. Press RETURN."</span>,      <span class="c-key">"mac_sc"</span>: <span class="c-val">"RETURN"</span>, <span class="c-key">"pc_sc"</span>: <span class="c-null">"NULL"</span>, <span class="c-key">"difficulty"</span>: <span class="c-val">3</span> },
+  { <span class="c-key">"display"</span>: <span class="c-val">"Switch to PC in the top left. Press RETURN."</span>, <span class="c-key">"mac_sc"</span>: <span class="c-val">"RETURN"</span>, <span class="c-key">"pc_sc"</span>: <span class="c-null">"NULL"</span>, <span class="c-key">"difficulty"</span>: <span class="c-val">5</span> },
+  { <span class="c-key">"display"</span>: <span class="c-val">"[App Name] is a PC only app. Press RETURN."</span>,      <span class="c-key">"mac_sc"</span>: <span class="c-val">"RETURN"</span>, <span class="c-key">"pc_sc"</span>: <span class="c-null">"NULL"</span>, <span class="c-key">"difficulty"</span>: <span class="c-val">5</span> }
+]</div>
+  </section>
+
+  <!-- ══ REFERENCE-ONLY TRIPLE-ENTRY PATTERN ══════════════════════ -->
+  <section>
+    <h2>09 ) Reference-Only Triple-Entry Pattern</h2>
+    <p>
+      When a single command has both a single-key version (typically requiring Keyboard
+      Focus to be enabled) and a longer chord version, the playable entry should accept
+      both answers via pipe syntax. The individual source-specific variants can be
+      retained as difficulty-6 reference-only entries so they appear with their own
+      wording in freestyle or exploration mode without appearing in normal gameplay rounds.
+    </p>
+    <div class="code-block">[
+  {
+    <span class="c-key">"display"</span>:    <span class="c-val">"Separate Clip (with Keyboard Focus enabled)"</span>,
+    <span class="c-key">"mac_sc"</span>:     <span class="c-val">"B"</span>,
+    <span class="c-key">"pc_sc"</span>:      <span class="c-val">"B"</span>,
+    <span class="c-key">"difficulty"</span>: <span class="c-val">6</span>
+  },
+  {
+    <span class="c-key">"display"</span>:    <span class="c-val">"Separate Clip"</span>,
+    <span class="c-key">"mac_sc"</span>:     <span class="c-val">"CMD+E"</span>,
+    <span class="c-key">"pc_sc"</span>:      <span class="c-val">"CTRL+E"</span>,
+    <span class="c-key">"difficulty"</span>: <span class="c-val">6</span>
+  },
+  {
+    <span class="c-key">"display"</span>:    <span class="c-val">"Separate Clip"</span>,
+    <span class="c-key">"mac_sc"</span>:     <span class="c-val">"B|CMD+E"</span>,
+    <span class="c-key">"pc_sc"</span>:      <span class="c-val">"B|CTRL+E"</span>,
+    <span class="c-key">"difficulty"</span>: <span class="c-val">2</span>
+  }
+]</div>
+    <p class="note">
+      Use this pattern sparingly and only where the distinction is meaningful and
+      source-supported. The merged playable entry should reflect the player's
+      perspective: one action, multiple accepted answers. The reference-only entries
+      preserve source detail without overloading normal gameplay.
+    </p>
+  </section>
+
+  <!-- ══ CANONICAL CHIP ORDER ══════════════════════════════════════ -->
+  <section>
+    <h2>10 ) Canonical Chip Order</h2>
+    <p>
+      Regardless of the order tokens appear in the JSON string, chips always render in a
+      fixed canonical order. The token string itself does not need to follow this order —
+      the parser reorders it automatically before display.
+    </p>
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr><th>Platform</th><th>Rendering order</th></tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>Mac</td>
+            <td>
+              <span class="chip">⌘</span>
+              <span class="chip">⌃</span>
+              <span class="chip">⌥</span>
+              <span class="chip">⇧</span>
+              <span class="chip">key</span>
+              <span class="note">&nbsp; CMD → CONTROL → OPTION → SHIFT → key</span>
+            </td>
+          </tr>
+          <tr>
+            <td>PC</td>
+            <td>
+              <span class="chip">Win</span>
+              <span class="chip">Ctrl</span>
+              <span class="chip">Alt</span>
+              <span class="chip">⇧</span>
+              <span class="chip">key</span>
+              <span class="note">&nbsp; WIN → CTRL → ALT → SHIFT → key</span>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <!-- ══ SYSTEM COMPONENT GLOSSARY ════════════════════════════════ -->
+  <section>
+    <h2>11 ) System Component Glossary</h2>
+    <p>
+      Use these names when discussing the system in code, comments, or documentation.
+      Each corresponds to a distinct JavaScript function.
+    </p>
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr><th>Function</th><th>Role</th><th>Description</th></tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><code>NormaliseToken( token )</code></td>
+            <td>Token normaliser</td>
+            <td>Converts any accepted synonym to its canonical form, for example <code>OPTION</code> to <code>OPT</code> in Mac fields, or <code>OPT</code> to <code>ALT</code> in PC fields. Called first by everything else so the rest of the system only ever sees canonical tokens.</td>
+          </tr>
+          <tr>
+            <td><code>ParseShortcutString( shortcutString )</code></td>
+            <td>String parser</td>
+            <td>Splits a token string on <code>+</code>, runs each token through <code>NormaliseToken</code>, and returns a structured object describing which modifier flags are required and what the key token is. Also splits on <code>|</code> first to separate piped alternatives, parsing each alternative separately.</td>
+          </tr>
+          <tr>
+            <td><code>GetActiveShortcutString( shortcutEntry )</code></td>
+            <td>OS selector</td>
+            <td>Takes a shortcut JSON entry object and returns the correct token string for the current OS: <code>entry.mac_sc</code> on Mac, <code>entry.pc_sc</code> on PC. Returns <code>null</code> when the field is the string <span class="null-val">NULL</span> or <span class="null-val">NONE</span>, meaning the shortcut does not exist on this platform.</td>
+          </tr>
+          <tr>
+            <td><code>ShortcutMatchesEvent( shortcutString, keyboardEvent )</code></td>
+            <td>Match checker</td>
+            <td>Takes a token string and a browser keyboard event. Returns true if the event satisfies the shortcut. Calls <code>ParseShortcutString</code> internally, then checks modifier flags and physical key code against the parsed result.</td>
+          </tr>
+          <tr>
+            <td><code>ShortcutToKeyCodes( shortcutString )</code></td>
+            <td>Keyboard lighting</td>
+            <td>Takes a token string and returns the array of browser key code strings that need to be lit on the graphical keyboard display. Used only by the lighting system, not by match checking.</td>
+          </tr>
+          <tr>
+            <td><code>RenderShortcutChips( shortcutString, isLongForm )</code></td>
+            <td>Chip renderer</td>
+            <td>Takes a token string and a boolean. When <code>isLongForm</code> is true (shortcuts with one or two tokens), renders wide chips with word labels. When false (three or more tokens), renders compact chips with symbols only. Canonicalises token order before rendering. Returns a DOM element.</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+</div><!-- /.page -->
+</body>
+</html>

@@ -301,33 +301,39 @@
       as <code>NUMPADDECIMAL+[1-99]+NUMPADADD</code> cannot be matched by the game
       engine and does not represent a fair question. Remodel or remove it.
     </div>
-    <h3>What not to do</h3>
-    <div class="code-block">{
-  <span class="c-key">"display"</span>:    <span class="c-val">"store Window Configuration"</span>,
-  <span class="c-key">"mac_sc"</span>:     <span class="c-val">"NUMPADDECIMAL+[1-99]+NUMPADADD"</span>,  <span class="c-note">// invalid, never do this</span>
-  <span class="c-key">"pc_sc"</span>:      <span class="c-val">"NUMPADDECIMAL+[1-99]+NUMPADADD"</span>,
-  <span class="c-key">"difficulty"</span>: <span class="c-val">6</span>
+    <div class="compare-row">
+      <div class="compare-col dont">
+        <h4>What not to do</h4>
+        <div class="code-block">{<br>
+  <span class="c-key">"display"</span>:    <span class="c-val">"store Window Configuration"</span>,<br>
+  <span class="c-key">"mac_sc"</span>:     <span class="c-val">"NUMPADDECIMAL+[1-99]+NUMPADADD"</span>,  <span class="c-note">// invalid, never do this</span><br>
+  <span class="c-key">"pc_sc"</span>:      <span class="c-val">"NUMPADDECIMAL+[1-99]+NUMPADADD"</span>,<br>
+  <span class="c-key">"difficulty"</span>: <span class="c-val">6</span><br>
 }</div>
-    <h3>Preferred completion-key form</h3>
-    <p>
-      Place the first part of the sequence in the display as context, then ask for the
-      final key only. Phrase the prompt as "after entering…" or "to complete… press…".
-      Always include <code>"sequential": true</code> on every remodelled entry.
-    </p>
-    <div class="code-block">{
-  <span class="c-key">"display"</span>:    <span class="c-val">"after entering a Window Configuration number, store it"</span>,
-  <span class="c-key">"mac_sc"</span>:     <span class="c-val">"NUMPADADD"</span>,
-  <span class="c-key">"pc_sc"</span>:      <span class="c-val">"NUMPADADD"</span>,
-  <span class="c-key">"difficulty"</span>: <span class="c-val">4</span>,
-  <span class="c-key">"sequential"</span>: <span class="c-val">true</span>
-}
-{
-  <span class="c-key">"display"</span>:    <span class="c-val">"after entering a Memory Location number, recall it"</span>,
-  <span class="c-key">"mac_sc"</span>:     <span class="c-val">"NUMPADDECIMAL"</span>,
-  <span class="c-key">"pc_sc"</span>:      <span class="c-val">"NUMPADDECIMAL"</span>,
-  <span class="c-key">"difficulty"</span>: <span class="c-val">4</span>,
-  <span class="c-key">"sequential"</span>: <span class="c-val">true</span>
+      </div>
+      <div class="compare-col do">
+        <h4>Preferred completion-key form</h4>
+        <p>
+          Place the first part of the sequence in the display as context, then ask for the
+          final key only. Phrase the prompt as "after entering…" or "to complete… press…".
+          Always include <code>"sequential": true</code> on every remodelled entry.
+        </p>
+        <div class="code-block">{<br>
+  <span class="c-key">"display"</span>:    <span class="c-val">"after entering a Window Configuration number, store it"</span>,<br>
+  <span class="c-key">"mac_sc"</span>:     <span class="c-val">"NUMPADADD"</span>,<br>
+  <span class="c-key">"pc_sc"</span>:      <span class="c-val">"NUMPADADD"</span>,<br>
+  <span class="c-key">"difficulty"</span>: <span class="c-val">4</span>,<br>
+  <span class="c-key">"sequential"</span>: <span class="c-val">true</span><br>
+}<br>
+{<br>
+  <span class="c-key">"display"</span>:    <span class="c-val">"after entering a Memory Location number, recall it"</span>,<br>
+  <span class="c-key">"mac_sc"</span>:     <span class="c-val">"NUMPADDECIMAL"</span>,<br>
+  <span class="c-key">"pc_sc"</span>:      <span class="c-val">"NUMPADDECIMAL"</span>,<br>
+  <span class="c-key">"difficulty"</span>: <span class="c-val">4</span>,<br>
+  <span class="c-key">"sequential"</span>: <span class="c-val">true</span><br>
 }</div>
+      </div>
+    </div>
     <p class="note">
       The <code>sequential</code> flag is independent of difficulty. Do not rely on
       difficulty 6 to exclude these entries from freestyle. This flag must be set
@@ -409,33 +415,38 @@
       the right choice to keep any one round from feeling monotonous.
     </p>
     <p>e.g. Split "nudge" into four questions and group them, rather than piping as a single <small>JSON</small> object:</p>
-    <div class="code-block">
-      <span class="c-note"><strong>wrong approach:</strong></span></br>
-{ <span class="c-key">"display"</span>: <span class="c-val">"nudge"</span>,</br>
-<span class="c-key">"mac_sc"</span>: <span class="c-val">"ARROWRIGHT|ARROWDOWN|ARROWLEFT|ARROWUP"</span>,</br>
-<span class="c-key">"pc_sc"</span>: <span class="c-val">"ARROWRIGHT|ARROWDOWN|ARROWLEFT|ARROWUP"</span>,</br>
-<span class="c-key">"difficulty"</span>: <span class="c-val">2</span>  }</br>
-      <strong>right approach:</strong></br>
-{ <span class="c-key">"display"</span>: <span class="c-val">"nudge Right"</span>,</br>
-<span class="c-key">"mac_sc"</span>: <span class="c-val">"ARROWRIGHT"</span>,</br>
-<span class="c-key">"pc_sc"</span>: <span class="c-val">"ARROWRIGHT"</span>,</br>
-<span class="c-key">"difficulty"</span>: <span class="c-val">2</span>,</br>
-<span class="c-key">"group"</span>: <span class="c-val">"nudge"</span> }</br>
-{ <span class="c-key">"display"</span>: <span class="c-val">"nudge Down"</span>,</br>
-<span class="c-key">"mac_sc"</span>: <span class="c-val">"ARROWDOWN"</span>,</br>
-<span class="c-key">"pc_sc"</span>: <span class="c-val">"ARROWDOWN"</span>,</br>
-<span class="c-key">"difficulty"</span>: <span class="c-val">2</span>,</br>
-<span class="c-key">"group"</span>: <span class="c-val">"nudge"</span> }</br>
-{ <span class="c-key">"display"</span>: <span class="c-val">"nudge Left"</span>,</br>
-<span class="c-key">"mac_sc"</span>: <span class="c-val">"ARROWLEFT"</span>,</br>
-<span class="c-key">"pc_sc"</span>: <span class="c-val">"ARROWLEFT"</span>,</br>
-<span class="c-key">"difficulty"</span>: <span class="c-val">2</span>,</br>
-<span class="c-key">"group"</span>: <span class="c-val">"nudge"</span> }</br>
-{ <span class="c-key">"display"</span>: <span class="c-val">"nudge Up"</span>,</br>
-<span class="c-key">"mac_sc"</span>: <span class="c-val">"ARROWUP"</span>,</br>
-<span class="c-key">"pc_sc"</span>: <span class="c-val">"ARROWUP"</span>,</br>
-<span class="c-key">"difficulty"</span>: <span class="c-val">2</span>,</br>
+    <div class="compare-row">
+      <div class="compare-col dont">
+        <h4>Wrong approach</h4>
+        <div class="code-block">{ <span class="c-key">"display"</span>: <span class="c-val">"nudge"</span>,<br>
+<span class="c-key">"mac_sc"</span>: <span class="c-val">"ARROWRIGHT|ARROWDOWN|ARROWLEFT|ARROWUP"</span>,<br>
+<span class="c-key">"pc_sc"</span>: <span class="c-val">"ARROWRIGHT|ARROWDOWN|ARROWLEFT|ARROWUP"</span>,<br>
+<span class="c-key">"difficulty"</span>: <span class="c-val">2</span>  }</div>
+      </div>
+      <div class="compare-col do">
+        <h4>Right approach</h4>
+        <div class="code-block">{ <span class="c-key">"display"</span>: <span class="c-val">"nudge Right"</span>,<br>
+<span class="c-key">"mac_sc"</span>: <span class="c-val">"ARROWRIGHT"</span>,<br>
+<span class="c-key">"pc_sc"</span>: <span class="c-val">"ARROWRIGHT"</span>,<br>
+<span class="c-key">"difficulty"</span>: <span class="c-val">2</span>,<br>
+<span class="c-key">"group"</span>: <span class="c-val">"nudge"</span> }<br>
+{ <span class="c-key">"display"</span>: <span class="c-val">"nudge Down"</span>,<br>
+<span class="c-key">"mac_sc"</span>: <span class="c-val">"ARROWDOWN"</span>,<br>
+<span class="c-key">"pc_sc"</span>: <span class="c-val">"ARROWDOWN"</span>,<br>
+<span class="c-key">"difficulty"</span>: <span class="c-val">2</span>,<br>
+<span class="c-key">"group"</span>: <span class="c-val">"nudge"</span> }<br>
+{ <span class="c-key">"display"</span>: <span class="c-val">"nudge Left"</span>,<br>
+<span class="c-key">"mac_sc"</span>: <span class="c-val">"ARROWLEFT"</span>,<br>
+<span class="c-key">"pc_sc"</span>: <span class="c-val">"ARROWLEFT"</span>,<br>
+<span class="c-key">"difficulty"</span>: <span class="c-val">2</span>,<br>
+<span class="c-key">"group"</span>: <span class="c-val">"nudge"</span> }<br>
+{ <span class="c-key">"display"</span>: <span class="c-val">"nudge Up"</span>,<br>
+<span class="c-key">"mac_sc"</span>: <span class="c-val">"ARROWUP"</span>,<br>
+<span class="c-key">"pc_sc"</span>: <span class="c-val">"ARROWUP"</span>,<br>
+<span class="c-key">"difficulty"</span>: <span class="c-val">2</span>,<br>
 <span class="c-key">"group"</span>: <span class="c-val">"nudge"</span> }</div>
+      </div>
+    </div>
   </section>
 
   <!-- ══ PLATFORM-ONLY GUIDANCE BLOCKS ════════════════════════════ -->

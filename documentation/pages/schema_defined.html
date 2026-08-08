@@ -16,9 +16,9 @@
     <p class="eyebrow">Keyboard Warriors · Developer Reference</p>
     <h1>Shortcut JSON Schema</h1>
     <p>
-      This page includes a <strong>field-by-field specification</strong> for shortcut entries in the app's JSON data files,
+      To help developers wanting to build content for Keyboard Warriors, this page includes a <strong>field-by-field specification</strong> for shortcut entries in the app's JSON data files,
       scope and classification rules, chip rendering order, and an explanation of the JavaScript functions that read and process this data. 
-      See the companion Shortcut Token Reference for the full list of accepted key tokens.
+      See the companion Shortcut Token Reference <strong><small>&lt;/&gt;</small>'Defining Keys'</strong> for the full list of accepted key tokens.
     </p>
   </header>
 
@@ -35,11 +35,11 @@
       entry. The final two are optional and should only be added when they genuinely
       improve gameplay. Each field belongs on its own line:
     </p>
-    <div class="code-block">{</br>
+    <div class="code-block">{</br><strong>
   <span class="c-key">"display"</span>:    <span class="c-val">"verb-first description of the action"</span>,</br>
   <span class="c-key">"mac_sc"</span>:     <span class="c-val">"TOKEN+TOKEN"</span>,</br>
   <span class="c-key">"pc_sc"</span>:      <span class="c-val">"TOKEN+TOKEN"</span>,</br>
-  <span class="c-key">"difficulty"</span>: <span class="c-val">3</span>,</br>
+  <span class="c-key">"difficulty"</span>: <span class="c-val">3</span>,</strong></br>
   <span class="c-key">"group"</span>:      <span class="c-val">"optional_group_name"</span>,</br>
   <span class="c-key">"sequential"</span>: <span class="c-val">true</span></br>
 }</div>
@@ -52,7 +52,7 @@
       few seconds.</p><p>Note that for remodelled sequential entries, phrase the context as
       "after entering…" or "to complete… press…". <em>More on sequential entries later.</em>
     </p>
-    <div class="code-block"><span class="c-key">"display"</span>: <span class="c-val">"save the document"</span>
+    <div class="code-block"><span class="c-key"><strong>"display"</span>: <span class="c-val">"save the document"</strong></span></br>
 <span class="c-key">"display"</span>: <span class="c-val">"after entering a configuration number, store it"</span></div>
 
     <h3>"mac_sc"</h3>

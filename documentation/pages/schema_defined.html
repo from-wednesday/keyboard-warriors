@@ -320,12 +320,12 @@
   <span class="c-key">"difficulty"</span>: <span class="c-val">4</span>,<br>
   <span class="c-key">"sequential"</span>: <span class="c-val">true</span><br>
 }</div>
-      </div>
-              <p>
+        <p>
           By placing the first part of the sequence in the display as context, we can then ask for the
           final key only. Phrase the prompt as "after entering…" or "to complete… press…".
           Always include <code>"sequential": true</code> on every remodelled sequential entry.
         </p>
+      </div>
     </div>
     <p class="note">
       The <code>sequential</code> flag is independent of difficulty. Do not rely on
@@ -440,6 +440,37 @@
 <span class="c-key">"group"</span>: <span class="c-val">"nudge"</span><br>}</div>
       </div>
     </div>
+    <p>But when there are genuinely two ways that a requested action can be accomplished in the app, the pipe can make the question fair.</p>
+       <div class="compare-row">
+      <div class="compare-col dont">
+        <h4>Wrong approach</h4>
+        <div class="code-block">{<br><span class="c-key">"display"</span>: <span class="c-val">"pan with the hand tool"</span>,<br>
+<span class="c-key">"mac_sc"</span>: <span class="c-val">"H"</span>,<br>
+<span class="c-key">"pc_sc"</span>: <span class="c-val">"H"</span>,<br>
+<span class="c-key">"difficulty"</span>: <span class="c-val">2</span><br>}
+{<br><span class="c-key">"display"</span>: <span class="c-val">"pan with the hand tool"</span>,<br>
+<span class="c-key">"mac_sc"</span>: <span class="c-val">"SPACE"</span>,<br>
+<span class="c-key">"pc_sc"</span>: <span class="c-val">"SPACE"</span>,<br>
+<span class="c-key">"difficulty"</span>: <span class="c-val">2</span><br>}</div>
+            <p>Split "nudge" into four questions and group them, rather than piping as a single <small>JSON</small> object.</p>
+      </div>
+      <div class="compare-col do">
+        <h4>Right approach</h4>
+        <div class="code-block">{<br><span class="c-key">"display"</span>: <span class="c-val">"select the hand tool"</span>,<br>
+<span class="c-key">"mac_sc"</span>: <span class="c-val">"H"</span>,<br>
+<span class="c-key">"pc_sc"</span>: <span class="c-val">"H"</span>,<br>
+<span class="c-key">"difficulty"</span>: <span class="c-val">6</span><br>}
+{<br><span class="c-key">"display"</span>: <span class="c-val">"hold this to quickly pan with the hand tool"</span>,<br>
+<span class="c-key">"mac_sc"</span>: <span class="c-val">"SPACE"</span>,<br>
+<span class="c-key">"pc_sc"</span>: <span class="c-val">"SPACE"</span>,<br>
+<span class="c-key">"difficulty"</span>: <span class="c-val">6</span><br>}
+{<br><span class="c-key">"display"</span>: <span class="c-val">"pan with the hand tool"</span>,<br>
+<span class="c-key">"mac_sc"</span>: <span class="c-val">"H|SPACE"</span>,<br>
+<span class="c-key">"pc_sc"</span>: <span class="c-val">"H|SPACE"</span>,<br>
+<span class="c-key">"difficulty"</span>: <span class="c-val">2</span><br>}</div>
+      </div>
+    </div>
+        <p>Here Difficulty 6 has been used to add specificity to the freestyle definitions, while the in-game question is more general for fast flexible game play.</p>
   </section>
 
   <!-- ══ PLATFORM-ONLY GUIDANCE BLOCKS ════════════════════════════ -->

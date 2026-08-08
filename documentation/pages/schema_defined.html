@@ -89,7 +89,7 @@
       An integer from 0 to 6 controlling which question pools the entry enters, based on
       the player's selected difficulty setting. Difficulty 6 is reference-only and is
       never surfaced in normal gameplay round. It is provided as a way to include vocabulary for free-style mode only.</p>
-    <p>See <a href="#difficulty">Section 03 — Difficulty Scale</a> for the full breakdown.
+    <p>See Section 03 — Difficulty Scale for the full breakdown.
     </p>
     <div class="code-block"><span class="c-key">"difficulty"</span>: <span class="c-val">1</span>   <span class="c-note">// easy — Common cross-app shortcuts</span></br>
 <span class="c-key">"difficulty"</span>: <span class="c-val">3</span>   <span class="c-note">// normal — core app knowledge</span></br>
@@ -102,7 +102,7 @@
       single ten-question round. You should omit this field entirely <em>unless</em> the entries are
       near-identical variants with obvious answers in context with one another. Shortcuts that would feel <strong>repetitive or interchangeable</strong> if presented
       together in the same round. Do <strong>not</strong> group entries simply because they share a topic.
-      See <a href="#groups">Section 07 — Groups</a>.
+      See Section 07 — Groups.
     </p>
     <div class="code-block"><span class="c-key">"group"</span>: <span class="c-val">"nudge"</span></div>
 
@@ -113,7 +113,7 @@
       initiation or completion single keykey prompt. The game excludes entries marked as "sequential" from freestyle mode
       where out-of-context sequential prompts would be misleading. As such, this can be used on any <small>JSON</small> object you wish to exclude from Freestyle Mode.</p>
      <p>This flag is entirely separate from difficulty. Do not use difficulty 6 as a
-      substitute for it. It is functionally the <em>opposite</em> effect to difficulty 6. See <a href="#sequential">Section 05 — Sequential Entries</a>.
+      substitute for it. It is functionally the <em>opposite</em> effect to difficulty 6. See Section 05 — Sequential Entries.
     </p>
     <div class="code-block"><span class="c-key">"sequential"</span>: <span class="c-val">true</span></div>
   </section>

@@ -16,9 +16,9 @@
     <p class="eyebrow">Keyboard Warriors · Developer Reference</p>
     <h1>Shortcut JSON Schema</h1>
     <p>
-      To help developers wanting to build content for Keyboard Warriors, this page includes a <strong>field-by-field specification</strong> for shortcut entries in the app's JSON data files,
+      To help developers wanting to build content for <strong>Keyboard Warriors</strong>, this page provides a <strong>field-by-field specification</strong> for shortcut entries in the app's JSON data files,
       scope and classification rules, chip rendering order, and an explanation of the JavaScript functions that read and process this data.</p>
-    <p>See the companion Shortcut Token Reference <strong><small>&lt;/&gt;</small>'Defining Keys'</strong> for the full list of accepted key tokens.
+    <p>See the companion shortcuts token reference <strong><small>&lt;/&gt;</small>'Defining Keys'</strong> for the full list of accepted key tokens.
     </p>
   </header>
 
@@ -28,12 +28,12 @@
     <p>
       The complete data file for any software package is a flat JSON array. Each item in
       that array is a single shortcut entry: One question-and-answer block for the game.
-      These will be referd to as <em>JSON objects</em>, <em>shortcut entries</em> or simply <em>entry</em>.
+      These will be referred to as <em>JSON objects</em>, <em>shortcut entries</em> or simply <em>entry</em>.
     </p>
     <p>
-      An entry can contain up to six fields. The first four are required on every normal
-      entry. The final two are optional and should only be added when they genuinely
-      improve gameplay. Each field belongs on its own line:
+      An entry can contain <em>>up to</em six fields. The <strong>first four are required</strong> on every normal
+      entry. The final two are optional and should <em>only</em> be added when they genuinely
+      improve gameplay. Keep each field on its own line for clarity:
     </p>
     <div class="code-block">{</br><strong>
   <span class="c-key">"display"</span>:    <span class="c-val">"verb-first description of the action"</span>,</br>
@@ -46,13 +46,12 @@
 
     <h3>"display"</h3>
     <p>
-      This is the question prompt shown to the player. Must be plain text with no markup. Write
-      it action-focused, concise, and verb-first. Do not include or hint at the answer
-      keys in the display text. Aim for a phrase a player can read comfortably in a
-      few seconds.</p>
-    <p>When writing these, consider both the context of the in-game question <em>and</em> the free-style exploration mode. It you are unable to arrive at one "display" that works for both, it is possible to delop the shortcut as two JSON objects. One for each context at the exclussion of the other. See the 'difficulty" and "sequential" sections below for more information.
+      This is <strong>>the question</strong prompt shown to the player. It must be plain text with no markup.</p>
+    <p>>Write it action-focused, concise, and verb-first. I like to vary the language to make the gameplay feel more conversational and less repetative. For example, "pick up the Eraser" ; "grab the Pen Tool" ; "select the Laso Tool" etc.</p>
+    <p>Avoid including (or hinting at) the answer in the display text. Aim for a phrase a player can read comfortably in a few seconds.</p>
+    <p>When writing these, consider both the context of the in-game question <em>and</em> the free-style exploration mode: In game the text is asking you to do something. Between games it is reporting back what function those keys perform. If you are unable to arrive at one "display" that works for both of these use cases, it is possible to delop the shortcut as two JSON objects. One for each context at the exclussion of the other. See the 'difficulty" and "sequential" sections below for more information.
     </p>
-    <p>Note that for remodelled sequential entries, phrase for context, such as
+    <p>Note that for sequential entries, it is essential to phrase for the context, such as
       "after entering…" or "to complete, press…". <em>More on sequential shortcuts later.</em>
     </p>
     <div class="code-block"><span class="c-key"><strong>"display"</span>: <span class="c-val">"save the document"</strong></span></br>
@@ -61,14 +60,14 @@
     <h3>"mac_sc"</h3>
     <p>
       The token string used for Mac input matching and chip rendering. Tokens are combined
-      with <code>+</code>. Use <code>|</code> to offer piped alternatives where a single
-      action genuinely has more than one accepted key. Use the literal value
-      <span class="null-val">NULL</span> (or the synonym <span class="null-val">NONE</span>)
+      with <code>+</code>. Use the pipe <code>|</code> to offer alternative accepted answers where a single
+      action genuinely has more than one accepted key.</p>
+    <p>Use the literal value <span class="null-val">NULL</span> (or the synonym <span class="null-val">NONE</span>)
       when the shortcut does not exist on Mac. Prefer platform-native modifier tokens in
       Mac fields: <span class="tok">CMD</span>, <span class="tok">OPT</span>,
       <span class="tok mac">CONTROL</span>, <span class="tok">SHIFT</span>.
-      See the <a href="define_the_keys.html">Shortcut Token Reference</a> for all
-      accepted tokens and their synonyms.
+      See the shortcuts token reference <strong><small>&lt;/&gt;</small>'Defining Keys'</strong> for all
+      accepted tokens and their accepted synonyms.
     </p>
     <div class="code-block"><span class="c-key">"mac_sc"</span>: <span class="c-val">"CMD+S"</span>             <span class="c-note">// single chord</span></br>
 <span class="c-key">"mac_sc"</span>: <span class="c-val">"CMD+ARROWLEFT|HOME"</span>  <span class="c-note">// two accepted answers; chip shows first</span></br>
@@ -79,23 +78,23 @@
       The token string used for PC input matching and chip rendering. Follows exactly the
       same rules as <code>mac_sc</code>. Prefer platform-native modifier tokens in PC
       fields: <span class="tok">CTRL</span>, <span class="tok">ALT</span>,
-      <span class="tok pc">WIN</span>, <span class="tok">SHIFT</span>. At least one of
-      the two platform fields must contain real tokens. An entry where both are
+      <span class="tok pc">WIN</span>, <span class="tok">SHIFT</span>.</p>
+    <p>At least one of the two platform fields must contain real tokens. An entry where both are
       <span class="null-val">NULL</span> is invalid.
     </p>
-    <div class="code-block"><span class="c-key">"pc_sc"</span>: <span class="c-val">"CTRL+S"</span>
+    <div class="code-block"><span class="c-key">"pc_sc"</span>: <span class="c-val">"CTRL+S"</span></br>
 <span class="c-key">"pc_sc"</span>: <span class="c-null">"NULL"</span>    <span class="c-note">// does not exist on PC</span></div>
 
     <h3>"difficulty"</h3>
     <p>
-      An integer from 0 to 6 controlling which question pool the entry enters, based on
+      An integer from 0 to 6 controlling which question pools the entry enters, based on
       the player's selected difficulty setting. Difficulty 6 is reference-only and is
-      never surfaced in normal gameplay rounds. See
-      <a href="#difficulty">Section 03 — Difficulty Scale</a> for the full breakdown.
+      never surfaced in normal gameplay rounds (providing a way to include vocabulary for free-style mode only).</p>
+    <p>See <a href="#difficulty">Section 03 — Difficulty Scale</a> for the full breakdown.
     </p>
-    <div class="code-block"><span class="c-key">"difficulty"</span>: <span class="c-val">0</span>   <span class="c-note">// ubiquitous — Save, Copy, Paste</span>
-<span class="c-key">"difficulty"</span>: <span class="c-val">3</span>   <span class="c-note">// intermediate — core app knowledge</span>
-<span class="c-key">"difficulty"</span>: <span class="c-val">6</span>   <span class="c-note">// reference-only, never quizzed</span></div>
+    <div class="code-block"><span class="c-key">"difficulty"</span>: <span class="c-val">0</span>   <span class="c-note">// ubiquitous — Save, Copy, Paste</span></br>
+<span class="c-key">"difficulty"</span>: <span class="c-val">3</span>   <span class="c-note">// intermediate — core app knowledge</span></br>
+<span class="c-key">"difficulty"</span>: <span class="c-val">5</span>   <span class="c-note">// reference-only, never quizzed</span></div>
 
     <h3>"group" <span class="note">(optional)</span></h3>
     <p>

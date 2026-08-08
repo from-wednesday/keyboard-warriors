@@ -398,9 +398,7 @@
     <div class="callout info">
       <strong>Use groups sparingly.</strong> Only apply a group label when entries are
       near-identical and genuinely likely to feel interchangeable if drawn together in
-      one round. Do not group entries simply because they share a topic. If a group is
-      removed or rejected for a particular package, do not re-add it without a specific
-      gameplay reason.
+      one round. <strong>Do not group entries simply because they share a topic.</strong>
     </div>
     <h3>Pipes vs groups</h3>
     <p>
@@ -410,9 +408,12 @@
       keys (such as a row of digits or the four arrow directions) a group is usually
       the right choice to keep any one round from feeling monotonous.
     </p>
-    <div class="code-block"><span class="c-note">// Split "change volume" into two questions and group them, rather than piping &lt;|&gt;</span>
-{ <span class="c-key">"display"</span>: <span class="c-val">"lower volume"</span>, <span class="c-key">"mac_sc"</span>: <span class="c-val">"LESSTHAN"</span>, <span class="c-key">"pc_sc"</span>: <span class="c-val">"LESSTHAN"</span>, <span class="c-key">"difficulty"</span>: <span class="c-val">2</span>, <span class="c-key">"group"</span>: <span class="c-val">"volume"</span> }
-{ <span class="c-key">"display"</span>: <span class="c-val">"raise volume"</span>,  <span class="c-key">"mac_sc"</span>: <span class="c-val">"MORETHAN"</span>, <span class="c-key">"pc_sc"</span>: <span class="c-val">"MORETHAN"</span>, <span class="c-key">"difficulty"</span>: <span class="c-val">2</span>, <span class="c-key">"group"</span>: <span class="c-val">"volume"</span> }</div>
+    <div class="code-block"><span class="c-note">// Split "nudge" into four questions and group them, rather than piping &lt;|&gt;</span></br>wrong approach:</br>
+{ <span class="c-key">"display"</span>: <span class="c-val">"nudge"</span>,</br><span class="c-key">"mac_sc"</span>: <span class="c-val">"ARROWRIGHT|ARROWDOWN|ARROWLEFT|ARROWUP"</span>,</br><span class="c-key">"pc_sc"</span>: <span class="c-val">"ARROWRIGHT|ARROWDOWN|ARROWLEFT|ARROWUP"</span>,</br><span class="c-key">"difficulty"</span>: <span class="c-val">2</span></br>right approach:</br>
+{ <span class="c-key">"display"</span>: <span class="c-val">"nudge Right"</span>,</br><span class="c-key">"mac_sc"</span>: <span class="c-val">"ARROWRIGHT"</span>,</br><span class="c-key">"pc_sc"</span>: <span class="c-val">"ARROWRIGHT"</span>,</br><span class="c-key">"difficulty"</span>: <span class="c-val">2</span>, <span class="c-key">"group"</span>: <span class="c-val">"nudge"</span> }
+    { <span class="c-key">"display"</span>: <span class="c-val">"nudge Down"</span>,</br><span class="c-key">"mac_sc"</span>: <span class="c-val">"ARROWDOWN"</span>,</br><span class="c-key">"pc_sc"</span>: <span class="c-val">"ARROWDOWN"</span>,</br><span class="c-key">"difficulty"</span>: <span class="c-val">2</span>, <span class="c-key">"group"</span>: <span class="c-val">"nudge"</span> }
+    { <span class="c-key">"display"</span>: <span class="c-val">"nudge Left"</span>,</br><span class="c-key">"mac_sc"</span>: <span class="c-val">"ARROWLEFT"</span>,</br><span class="c-key">"pc_sc"</span>: <span class="c-val">"ARROWLEFT"</span>,</br><span class="c-key">"difficulty"</span>: <span class="c-val">2</span>, <span class="c-key">"group"</span>: <span class="c-val">"nudge"</span> }
+    { <span class="c-key">"display"</span>: <span class="c-val">"nudge Up"</span>,</br><span class="c-key">"mac_sc"</span>: <span class="c-val">"ARROWUP"</span>,</br><span class="c-key">"pc_sc"</span>: <span class="c-val">"ARROWUP"</span>,</br><span class="c-key">"difficulty"</span>: <span class="c-val">2</span>, <span class="c-key">"group"</span>: <span class="c-val">"nudge"</span> }</div>
   </section>
 
   <!-- ══ PLATFORM-ONLY GUIDANCE BLOCKS ════════════════════════════ -->

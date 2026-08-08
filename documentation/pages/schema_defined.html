@@ -505,24 +505,24 @@
   <section>
     <h2>09 ) Reference-Only Triple-Entry Pattern</h2>
     <p>
-      When a single command has both a single-key version (typically requiring Keyboard
-      Focus to be enabled) and a longer chord version, the playable entry should accept
+      When a single command has both a single-key version (sometimes requiring a Keyboard
+      Focus mode to be enabled) and a longer chord version, the playable entry should accept
       both answers via pipe syntax. The individual source-specific variants can be
       retained as difficulty-6 reference-only entries so they appear with their own
       wording in freestyle exploration mode without appearing in normal gameplay rounds.
     </p>
           <div class="compare-row">
       <div class="compare-col dont">
-        <h4>Wrong approach</h4>
+        <h4>adequate approach</h4>
          <div class="code-block">{<br><span class="c-key">"display"</span>: <span class="c-val">"pan with the hand tool"</span>,<br>
 <span class="c-key">"mac_sc"</span>: <span class="c-val">"H|SPACE"</span>,<br>
 <span class="c-key">"pc_sc"</span>: <span class="c-val">"H|SPACE"</span>,<br>
 <span class="c-key">"difficulty"</span>: <span class="c-val">2</span><br>}</div>
 
-            <p>We arroved at this <small>JSON</small> object in the pipe example above, but we can still improve upon this. </p>
+            <p>We arrived at this <small>JSON</small> object in the <strong>pipe</strong> example above, but we can still <em>improve</em> upon this. </p>
       </div>
       <div class="compare-col do">
-        <h4>Right approach</h4>
+        <h4>preferred approach</h4>
         <div class="code-block">{<br><span class="c-key">"display"</span>: <span class="c-val">"select the hand tool"</span>,<br>
 <span class="c-key">"mac_sc"</span>: <span class="c-val">"H"</span>,<br>
 <span class="c-key">"pc_sc"</span>: <span class="c-val">"H"</span>,<br>
@@ -535,14 +535,14 @@
 <span class="c-key">"mac_sc"</span>: <span class="c-val">"H|SPACE"</span>,<br>
 <span class="c-key">"pc_sc"</span>: <span class="c-val">"H|SPACE"</span>,<br>
 <span class="c-key">"difficulty"</span>: <span class="c-val">2</span><br>}</div>
-        <p>Here Difficulty 6 has been used to add specificity to the freestyle definitions, while the in-game question is more general for fast flexible game play. Note that the order is important. Freestyle will report the first answer it finds, so we do not need to falsely label the pipe option as sequential (<em>it isn't</em>) it just needs to come after the difficulty 6 options.</p>
+        <p>Here Difficulty-6 has been used to add <em>specificity</em> to the freestyle definitions, while the in-game question is more general for fast flexible game play. Note that the order is important. Freestyle will report the first answer it finds, so we do not need to falsely label the pipe option as sequential (<em>it isn't</em>) it just needs to come after the difficulty 6 options.</p>
       </div>
     </div>
     <p class="note">
-      Use this pattern sparingly and only where the distinction is meaningful and
-      source-supported. The merged playable entry should reflect the player's
-      perspective: one action, multiple accepted answers. The reference-only entries
-      preserve source detail without overloading normal gameplay.
+      Use this pattern sparingly where the distinction is <strong>meaningful</strong> and
+      source-supported.</br>Merged playable entries should always reflect the player's
+      perspective: one action, multiple accepted answers.</b>Reference-only entries
+      preserve source detail without overloading normal gameplay. They can be more verbose if it adds precision, now that reading time is not a consideration. 
     </p>
   </section>
 

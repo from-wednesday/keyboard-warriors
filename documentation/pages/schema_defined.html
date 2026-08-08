@@ -16,11 +16,9 @@
     <p class="eyebrow">Keyboard Warriors · Developer Reference</p>
     <h1>Shortcut JSON Schema</h1>
     <p>
-      Field-by-field specification for shortcut entries in the app's JSON data files,
-      scope and classification rules, chip rendering order, and the JavaScript functions
-      that read and process this data. See the companion
-      <a href="define_the_keys.html">Shortcut Token Reference</a> for the full list
-      of accepted key tokens.
+      This page includes a <strong>field-by-field specification</strong> for shortcut entries in the app's JSON data files,
+      scope and classification rules, chip rendering order, and an explanation of the JavaScript functions that read and process this data. 
+      See the companion Shortcut Token Reference for the full list of accepted key tokens.
     </p>
   </header>
 
@@ -29,31 +27,30 @@
     <h2>01 ) Entry Structure</h2>
     <p>
       The complete data file for any software package is a flat JSON array. Each item in
-      that array is a single shortcut entry — one question-and-answer block for the game.
-      In technical documentation the precise term is <em>JSON object</em>; in project
-      discussion, <em>shortcut entry</em> or simply <em>entry</em>.
+      that array is a single shortcut entry: One question-and-answer block for the game.
+      These will be referd to as <em>JSON objects</em>, <em>shortcut entries</em> or simply <em>entry</em>.
     </p>
     <p>
       An entry can contain up to six fields. The first four are required on every normal
       entry. The final two are optional and should only be added when they genuinely
       improve gameplay. Each field belongs on its own line:
     </p>
-    <div class="code-block">{
-  <span class="c-key">"display"</span>:    <span class="c-val">"verb-first description of the action"</span>,
-  <span class="c-key">"mac_sc"</span>:     <span class="c-val">"TOKEN+TOKEN"</span>,
-  <span class="c-key">"pc_sc"</span>:      <span class="c-val">"TOKEN+TOKEN"</span>,
-  <span class="c-key">"difficulty"</span>: <span class="c-val">3</span>,
-  <span class="c-key">"group"</span>:      <span class="c-val">"optional_group_name"</span>,
-  <span class="c-key">"sequential"</span>: <span class="c-val">true</span>
+    <div class="code-block">{</br>
+  <span class="c-key">"display"</span>:    <span class="c-val">"verb-first description of the action"</span>,</br>
+  <span class="c-key">"mac_sc"</span>:     <span class="c-val">"TOKEN+TOKEN"</span>,</br>
+  <span class="c-key">"pc_sc"</span>:      <span class="c-val">"TOKEN+TOKEN"</span>,</br>
+  <span class="c-key">"difficulty"</span>: <span class="c-val">3</span>,</br>
+  <span class="c-key">"group"</span>:      <span class="c-val">"optional_group_name"</span>,</br>
+  <span class="c-key">"sequential"</span>: <span class="c-val">true</span></br>
 }</div>
 
     <h3>"display"</h3>
     <p>
-      The question prompt shown to the player. Must be plain text with no markup. Write
+      This is the question prompt shown to the player. Must be plain text with no markup. Write
       it action-focused, concise, and verb-first. Do not include or hint at the answer
       keys in the display text. Aim for a phrase a player can read comfortably in a
-      few seconds. For remodelled sequential entries, phrase the context as
-      "after entering…" or "to complete… press…".
+      few seconds.</p><p>Note that for remodelled sequential entries, phrase the context as
+      "after entering…" or "to complete… press…". <em>More on sequential entries later.</em>
     </p>
     <div class="code-block"><span class="c-key">"display"</span>: <span class="c-val">"save the document"</span>
 <span class="c-key">"display"</span>: <span class="c-val">"after entering a configuration number, store it"</span></div>

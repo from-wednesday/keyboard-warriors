@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Shortcut JSON Schema — Keyboard Warriors</title>
+<title>Shortcut <small>JSON</small> Schema — Keyboard Warriors</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:ital,wght@0,400;0,600;1,400&family=IBM+Plex+Sans:ital,wght@0,400;0,500;0,600;1,400&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="../styles/documentation_design-system.css">
@@ -14,9 +14,9 @@
   <!-- ══ HEADER ══════════════════════════════════════════════════ -->
   <header class="page-header">
     <p class="eyebrow">Keyboard Warriors · Developer Reference</p>
-    <h1>Shortcut JSON Schema</h1>
+    <h1>Shortcut <small>JSON</small> Schema</h1>
     <p>
-      To help developers wanting to build content for <strong>Keyboard Warriors</strong>, this page provides a <strong>field-by-field specification</strong> for shortcut entries in the app's JSON data files,
+      To help developers wanting to build content for <strong>Keyboard Warriors</strong>, this page provides a <strong>field-by-field specification</strong> for shortcut entries in the app's <small>JSON</small> data files,
       scope and classification rules, chip rendering order, and an explanation of the JavaScript functions that read and process this data.</p>
     <p>See the companion shortcuts token reference <strong><small>&lt;/&gt;</small>'Defining Keys'</strong> for the full list of accepted key tokens.
     </p>
@@ -26,12 +26,12 @@
   <section>
     <h2>01 ) Entry Structure</h2>
     <p>
-      The complete data file for any software package is a flat JSON array. Each item in
+      The complete data file for any software package is a flat <small>JSON</small> array. Each item in
       that array is a single shortcut entry: One question-and-answer block for the game.
-      These will be referred to as <em>JSON objects</em>, <em>shortcut entries</em> or simply <em>entry</em>.
+      These will be referred to as <em><small>JSON</small> objects</em>, <em>shortcut entries</em> or simply <em>entry</em>.
     </p>
     <p>
-      An entry can contain <em>>up to</em six fields. The <strong>first four are required</strong> on every normal
+      An entry can contain <em>up to</em> six fields. The <strong>first four are required</strong> on every normal
       entry. The final two are optional and should <em>only</em> be added when they genuinely
       improve gameplay. Keep each field on its own line for clarity:
     </p>
@@ -45,13 +45,13 @@
 }</div>
 
     <h3>"display"</h3>
-    <p>This is <strong>the question</strong> prompt shown to the player. It must be plain text with no markup. Because of that, I like to use capital letters sparingly where I want place emphasis.</p>
+    <p>This is <strong>the question</strong> prompt shown to the player. It must be plain text with no markup. Because of that, I like to use capital letters sparingly where I want to place emphasis.</p>
     <p>Write it action-focused, concise, and verb-first. I like to vary the language to make the gameplay feel more conversational and less repetative. For example, "pick up the Eraser" ; "grab the Pen Tool" ; "select the Laso Tool" etc.</p>
     <p>Avoid including (or hinting at) the answer in the display text. Aim for a phrase a player can read comfortably in a few seconds.</p>
-    <p>When writing these, consider both the context of the in-game question <em>and</em> the free-style exploration mode: In game the text is asking you to do something. Between games it is reporting back what function those keys perform. If you are unable to arrive at one "display" that works for both of these use cases, it is possible to delop the shortcut as two JSON objects. One for each context at the exclussion of the other. See the 'difficulty" and "sequential" sections below for more information.
+    <p>When writing these, consider both the context of the in-game question <em>and</em> the free-style exploration mode: In game the text is asking you to do something. Between games it is reporting back what function those keys perform. If you are unable to arrive at one "display" that works for both of these use cases, it is possible to define the shortcut as <em>two</em> <small>JSON</small> objects. One for each context at the exclussion of the other. See the "difficulty" and "sequential" sections below for more information.
     </p>
-    <p>Note that for sequential entries, it is essential to phrase for the context, such as
-      "after entering…" or "to complete, press…". <em>More on sequential shortcuts later.</em>
+    <p>Note that for "sequential" entries, it is essential to phrase the "display" string for the context, such as
+      "after pressing… press this to…". <em>More on sequential shortcuts later.</em>
     </p>
     <div class="code-block"><span class="c-key"><strong>"display"</span>: <span class="c-val">"save the document"</strong></span></br>
 <span class="c-key">"display"</span>: <span class="c-val">"after entering a configuration number, store it"</span></div>
@@ -62,10 +62,10 @@
       with <code>+</code>. Use the pipe <code>|</code> to offer alternative accepted answers where a single
       action genuinely has more than one accepted key.</p>
     <p>Use the literal value <span class="null-val">NULL</span> (or the synonym <span class="null-val">NONE</span>)
-      when the shortcut does not exist on Mac. Prefer platform-native modifier tokens in
-      Mac fields: <span class="tok">CMD</span>, <span class="tok">OPT</span>,
-      <span class="tok mac">CONTROL</span>, <span class="tok">SHIFT</span>.
-      See the shortcuts token reference <strong><small>&lt;/&gt;</small>'Defining Keys'</strong> for all
+      when the shortcut does not exist on Mac.</p>
+    <p>Prefer platform-native modifier tokens in Mac fields: <span class="tok">CMD</span>, <span class="tok">OPT</span>,
+      <span class="tok mac">CONTROL</span>, <span class="tok">SHIFT</span>. Although the system will translate between equivallent OS keys, writing OS specific data in the other platform's conventions is more error prone because the <small>JSON</small> is less human-readable for proofing.</p>
+    <p>See the shortcuts token reference <strong><small>&lt;/&gt;</small>'Defining Keys'</strong> for all
       accepted tokens and their accepted synonyms.
     </p>
     <div class="code-block"><span class="c-key">"mac_sc"</span>: <span class="c-val">"CMD+S"</span>             <span class="c-note">// single chord</span></br>
@@ -75,7 +75,7 @@
     <h3>"pc_sc"</h3>
     <p>
       The token string used for PC input matching and chip rendering. Follows exactly the
-      same rules as <code>mac_sc</code>. Prefer platform-native modifier tokens in PC
+      same rules as <code>mac_sc</code>. Again, prefer platform-native modifier tokens here in PC
       fields: <span class="tok">CTRL</span>, <span class="tok">ALT</span>,
       <span class="tok pc">WIN</span>, <span class="tok">SHIFT</span>.</p>
     <p>At least one of the two platform fields must contain real tokens. An entry where both are
@@ -88,7 +88,7 @@
     <p>
       An integer from 0 to 6 controlling which question pools the entry enters, based on
       the player's selected difficulty setting. Difficulty 6 is reference-only and is
-      never surfaced in normal gameplay rounds (providing a way to include vocabulary for free-style mode only).</p>
+      never surfaced in normal gameplay round. It is provided as a way to include vocabulary for free-style mode only.</p>
     <p>See <a href="#difficulty">Section 03 — Difficulty Scale</a> for the full breakdown.
     </p>
     <div class="code-block"><span class="c-key">"difficulty"</span>: <span class="c-val">0</span>   <span class="c-note">// ubiquitous — Save, Copy, Paste</span></br>
@@ -96,23 +96,24 @@
 <span class="c-key">"difficulty"</span>: <span class="c-val">5</span>   <span class="c-note">// reference-only, never quizzed</span></div>
 
     <h3>"group" <span class="note">(optional)</span></h3>
-    <p>
-      A string label that limits how many entries from the same group can appear in any
-      single ten-question round. Omit this field entirely unless the entries are
-      near-identical variants that would feel repetitive or interchangeable if presented
-      together in the same round. Do not group entries simply because they share a topic.
+    <p>This is <em>not</em> what you'd expect. There is no utility in <strong>Keyboard Warriors</strong> to simply categorising shortcuts in the ways we might if we were making notes or producing a long list.</p>
+     <p>Here "group" has a very specific purpose and should be used very sparingly.</p>
+     <p>It is a string label that strategically limits how many entries from the same group can appear in any
+      single ten-question round. You should omit this field entirely <em>unless</em> the entries are
+      near-identical variants with obvious answers in context with one another. Shortcuts that would feel <strong>repetitive or interchangeable</strong> if presented
+      together in the same round. Do <strong>not</strong>strong> group entries simply because they share a topic.
       See <a href="#groups">Section 07 — Groups</a>.
     </p>
-    <div class="code-block"><span class="c-key">"group"</span>: <span class="c-val">"opacity"</span></div>
+    <div class="code-block"><span class="c-key">"group"</span>: <span class="c-val">"nudge"</span></div>
 
     <h3>"sequential" <span class="note">(optional)</span></h3>
-    <p>
-      A boolean, always set to <code>true</code> when present. Marks an entry that has
+    <p>I made <strong>Keyboard Warriors</strong> to learn and practice shortcut single keys and simultaneous chords. Only afterwards did I learn how many applications use sequential key combinations to perform actions. The distinction I drawing here is that a sequential shortcut is not held simultaneously. Rather than retool the whole gameplay for this, I have a pragmatic work around:</p>
+      <p>"sequential" is a boolean, always set to <code>true</code> when present. It marks an entry that has
       been remodelled from a multi-step sequential workflow into a playable
-      completion-key prompt. The game excludes sequential entries from freestyle mode
-      and any other mode where out-of-context sequential prompts would be misleading.
-      This flag is entirely separate from difficulty. Do not use difficulty 6 as a
-      substitute for it. See <a href="#sequential">Section 05 — Sequential Entries</a>.
+      initiation or completion single keykey prompt. The game excludes entries marked as "sequential" from freestyle mode
+      where out-of-context sequential prompts would be misleading. As such, this can be used on any <small>JSON</small> object you wish to exclude from Freestyle Mode.</p>
+     <p>This flag is entirely separate from difficulty. Do not use difficulty 6 as a
+      substitute for it. It is functionally the <em>opposite</em> effect to difficulty 6. See <a href="#sequential">Section 05 — Sequential Entries</a>.
     </p>
     <div class="code-block"><span class="c-key">"sequential"</span>: <span class="c-val">true</span></div>
   </section>
@@ -231,7 +232,7 @@
       The goal is a clean, verified training dataset, not a literal transcription of a
       vendor manual. Apply the table below during extraction to decide what to include,
       remodel, or leave out. Classify each candidate in a working ledger before
-      compiling the final JSON.
+      compiling the final <small>JSON</small>.
     </p>
     <div class="table-wrap">
       <table>
@@ -492,7 +493,7 @@
   <section>
     <h2>10 ) Canonical Chip Order</h2>
     <p>
-      Regardless of the order tokens appear in the JSON string, chips always render in a
+      Regardless of the order tokens appear in the <small>JSON</small> string, chips always render in a
       fixed canonical order. The token string itself does not need to follow this order —
       the parser reorders it automatically before display.
     </p>
@@ -555,7 +556,7 @@
           <tr>
             <td><code>GetActiveShortcutString( shortcutEntry )</code></td>
             <td>OS selector</td>
-            <td>Takes a shortcut JSON entry object and returns the correct token string for the current OS: <code>entry.mac_sc</code> on Mac, <code>entry.pc_sc</code> on PC. Returns <code>null</code> when the field is the string <span class="null-val">NULL</span> or <span class="null-val">NONE</span>, meaning the shortcut does not exist on this platform.</td>
+            <td>Takes a shortcut <small>JSON</small> entry object and returns the correct token string for the current OS: <code>entry.mac_sc</code> on Mac, <code>entry.pc_sc</code> on PC. Returns <code>null</code> when the field is the string <span class="null-val">NULL</span> or <span class="null-val">NONE</span>, meaning the shortcut does not exist on this platform.</td>
           </tr>
           <tr>
             <td><code>ShortcutMatchesEvent( shortcutString, keyboardEvent )</code></td>

@@ -452,10 +452,15 @@
 <span class="c-key">"mac_sc"</span>: <span class="c-val">"SPACE"</span>,<br>
 <span class="c-key">"pc_sc"</span>: <span class="c-val">"SPACE"</span>,<br>
 <span class="c-key">"difficulty"</span>: <span class="c-val">2</span><br>}</div>
-            <p>Split "nudge" into four questions and group them, rather than piping as a single <small>JSON</small> object.</p>
+            <p><em>"pan with the hand tool"</em> works as a quick to follow question, but presented this way the player can be marked 'wrong' with an acceptible response.</p>
       </div>
       <div class="compare-col do">
         <h4>Right approach</h4>
+        <div class="code-block">{<br><span class="c-key">"display"</span>: <span class="c-val">"pan with the hand tool"</span>,<br>
+<span class="c-key">"mac_sc"</span>: <span class="c-val">"H|SPACE"</span>,<br>
+<span class="c-key">"pc_sc"</span>: <span class="c-val">"H|SPACE"</span>,<br>
+<span class="c-key">"difficulty"</span>: <span class="c-val">2</span><br>}</div>
+        <p>Or even better, you could break out the options for freestyle mode:</p>
         <div class="code-block">{<br><span class="c-key">"display"</span>: <span class="c-val">"select the hand tool"</span>,<br>
 <span class="c-key">"mac_sc"</span>: <span class="c-val">"H"</span>,<br>
 <span class="c-key">"pc_sc"</span>: <span class="c-val">"H"</span>,<br>
@@ -468,9 +473,14 @@
 <span class="c-key">"mac_sc"</span>: <span class="c-val">"H|SPACE"</span>,<br>
 <span class="c-key">"pc_sc"</span>: <span class="c-val">"H|SPACE"</span>,<br>
 <span class="c-key">"difficulty"</span>: <span class="c-val">2</span><br>}</div>
+        <p>Here Difficulty 6 has been used to add specificity to the freestyle definitions, while the in-game question is more general for fast flexible game play. Note that the order is important. Freestyle will report the first answer it finds, so we do not need to falsely label the pipe option as sequential (<em>it isn't</em>) it just needs to come after the difficulty 6 options.</p>
       </div>
     </div>
-        <p>Here Difficulty 6 has been used to add specificity to the freestyle definitions, while the in-game question is more general for fast flexible game play.</p>
+
+
+    
+        
+    
   </section>
 
   <!-- ══ PLATFORM-ONLY GUIDANCE BLOCKS ════════════════════════════ -->

@@ -91,23 +91,23 @@
       never surfaced in normal gameplay round. It is provided as a way to include vocabulary for free-style mode only.</p>
     <p>See <a href="#difficulty">Section 03 — Difficulty Scale</a> for the full breakdown.
     </p>
-    <div class="code-block"><span class="c-key">"difficulty"</span>: <span class="c-val">0</span>   <span class="c-note">// ubiquitous — Save, Copy, Paste</span></br>
-<span class="c-key">"difficulty"</span>: <span class="c-val">3</span>   <span class="c-note">// intermediate — core app knowledge</span></br>
-<span class="c-key">"difficulty"</span>: <span class="c-val">5</span>   <span class="c-note">// reference-only, never quizzed</span></div>
+    <div class="code-block"><span class="c-key">"difficulty"</span>: <span class="c-val">1</span>   <span class="c-note">// easy — Save, Copy, Paste</span></br>
+<span class="c-key">"difficulty"</span>: <span class="c-val">3</span>   <span class="c-note">// normal — core app knowledge</span></br>
+<span class="c-key">"difficulty"</span>: <span class="c-val">5</span>   <span class="c-note">// hard core — highly niche or particularly complex</span></div>
 
     <h3>"group" <span class="note">(optional)</span></h3>
     <p>This is <em>not</em> what you'd expect. There is no utility in <strong>Keyboard Warriors</strong> to simply categorising shortcuts in the ways we might if we were making notes or producing a long list.</p>
      <p>Here "group" has a very specific purpose and should be used very sparingly.</p>
-     <p>It is a string label that strategically limits how many entries from the same group can appear in any
+     <p>It is a string label that strategically limits how many closely related entries can appear in any
       single ten-question round. You should omit this field entirely <em>unless</em> the entries are
       near-identical variants with obvious answers in context with one another. Shortcuts that would feel <strong>repetitive or interchangeable</strong> if presented
-      together in the same round. Do <strong>not</strong>strong> group entries simply because they share a topic.
+      together in the same round. Do <strong>not</strong> group entries simply because they share a topic.
       See <a href="#groups">Section 07 — Groups</a>.
     </p>
     <div class="code-block"><span class="c-key">"group"</span>: <span class="c-val">"nudge"</span></div>
 
     <h3>"sequential" <span class="note">(optional)</span></h3>
-    <p>I made <strong>Keyboard Warriors</strong> to learn and practice shortcut single keys and simultaneous chords. Only afterwards did I learn how many applications use sequential key combinations to perform actions. The distinction I drawing here is that a sequential shortcut is not held simultaneously. Rather than retool the whole gameplay for this, I have a pragmatic work around:</p>
+    <p>I made <strong>Keyboard Warriors</strong> to learn and practice shortcut single keys and simultaneous chords. Only afterwards did I learn how many applications use <em>sequential key combinations</em> to perform actions. The distinction I am drawing here is that a sequential shortcut is not held simultaneously. Rather than retool the whole gameplay for this minority case, I have a pragmatic work around:</p>
       <p>"sequential" is a boolean, always set to <code>true</code> when present. It marks an entry that has
       been remodelled from a multi-step sequential workflow into a playable
       initiation or completion single keykey prompt. The game excludes entries marked as "sequential" from freestyle mode

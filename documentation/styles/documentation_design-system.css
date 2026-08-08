@@ -37,6 +37,12 @@
   --info-bg:      #eef4ff;
   --info-border:  #b8d0f0;
   --info-ink:     #1e3a5f;
+  --bad-bg:       #fbecec;
+  --bad-border:   #e8b4b0;
+  --bad-ink:      #8a2f27;
+  --good-bg:      #eaf6ee;
+  --good-border:  #a9d9b8;
+  --good-ink:     #1f6b3f;
   --mono:         'IBM Plex Mono', monospace;
   --sans:         'IBM Plex Sans', sans-serif;
 }
@@ -375,6 +381,8 @@ ol.plain-list li::before {
   --syn-ink: currentColor;
   --warn-ink: currentColor;
   --info-ink: currentColor;
+  --bad-ink: currentColor;
+  --good-ink: currentColor;
 }
 
 html,

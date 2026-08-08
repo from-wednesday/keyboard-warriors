@@ -83,14 +83,66 @@
   vertical-align: middle;
 }
 
-/* ── Chip pair (short + long form) ──────────────────────────── */
+/* ── Chip pair (short + long form) ──────────────────────────────── */
 .chip-pair {
   display: flex;
   flex-direction: column;
   gap: 5px;
 }
 
-/* ── Null value ──────────────────────────────────────────────── */
+/* ── Do / Don't comparison pair ─────────────────────────────────
+   Two cards side by side: the rejected approach on the left, the
+   preferred approach on the right. Each card curves outward on its
+   outer edge and stays tight on the edge facing its partner, so the
+   pair reads as one shape split into a wrong half and a right half. */
+.compare-row {
+  display: flex;
+  gap: 4px;
+}
+.compare-col {
+  flex: 1;
+  padding: 14px 18px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  border: 1px solid;
+}
+.compare-col h4 {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-family: var(--mono);
+  font-size: 0.78rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.07em;
+  margin: 0;
+}
+.compare-col p {
+  font-size: 0.86rem;
+}
+.compare-col.dont {
+  background: var(--bad-bg);
+  border-color: var(--bad-border);
+  color: var(--bad-ink);
+  border-radius: 18px 6px 6px 18px;
+}
+.compare-col.do {
+  background: var(--good-bg);
+  border-color: var(--good-border);
+  color: var(--good-ink);
+  border-radius: 6px 18px 18px 6px;
+}
+.compare-col.dont h4::before { content: "\2716"; }
+.compare-col.do h4::before   { content: "\2714"; }
+
+@media (max-width: 640px) {
+  .compare-row { flex-direction: column; }
+  .compare-col.dont { border-radius: 18px 18px 6px 6px; }
+  .compare-col.do   { border-radius: 6px 6px 18px 18px; }
+}
+
+/* ── Null value ──────────────────────────────────────────────────── */
 .null-val {
   font-family: var(--mono);
   font-size: 11.5px;

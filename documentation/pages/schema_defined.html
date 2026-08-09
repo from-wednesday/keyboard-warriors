@@ -168,65 +168,9 @@
     </div>
   </section>
 
-  <!-- ══ DIFFICULTY SCALE ══════════════════════════════════════════ -->
-  <section id="difficulty">
-    <h2>03 ) Difficulty Scale</h2>
-    <p>
-      Difficulty controls which pool an entry enters relative to the player's selected
-      difficulty setting. Distribution does not need to be equal across levels. Some
-      professional software packages can legitimately skew harder than others. I would however aim for <em>at least</em> a dozen
-      entries at each level from 0 through to 5 so that difficulty changes feel meaningfull.
-    </p>
-    <p>Difficulty 6 is not indicative of a harder item. It is purely a functional allocation to be used when needed. It's absence from a file is not only permitted, but probably the ideal.</p>
-    <div class="table-wrap">
-      <table>
-        <thead>
-          <tr><th>Level</th><th>Label</th><th>Description</th></tr>
-        </thead>
-        <tbody>
-          <tr>
-            <td><strong>0</strong></td>
-            <td>Ubiquitous</td>
-            <td>Universal shortcuts present in virtually every app, like "Save" and "New". These should appear in every package where they work. Keep common universal shortcuts at low difficulty.</td>
-          </tr>
-          <tr>
-            <td><strong>1</strong></td>
-            <td>Common</td>
-            <td>Very common cross-app fundamentals that are slightly more varied, less intuitive or apply to fewer apps. Examples: Select All, Print.</td>
-          </tr>
-          <tr>
-            <td><strong>2</strong></td>
-            <td>Logical</td>
-            <td>Regular workflow shortcuts that follow a clear and obvious pattern, for example, tools whose shortcut uses the tool's initial letter (L for Line, B for Brush).</td>
-          </tr>
-          <tr>
-            <td><strong>3</strong></td>
-            <td>Intermediate</td>
-            <td>The core shortcuts most serious users of the selected app need to learn. Commonly used app-specific panel toggles and key workflow commands live here.</td>
-          </tr>
-          <tr>
-            <td><strong>4</strong></td>
-            <td>Power user</td>
-            <td>Advanced editing actions, modifier-click and modifier-drag behaviours, and professional workflow commands. More complex and less commonly known.</td>
-          </tr>
-          <tr>
-            <td><strong>5</strong></td>
-            <td>Hardcore</td>
-            <td>Highly specialist or obscure actions and very difficult-to-remember multi-key combinations. Rarely needed but worth knowing for serious practitioners, or players wanting a challenge.</td>
-          </tr>
-          <tr>
-            <td><strong>6</strong></td>
-            <td>Reference only</td>
-            <td>Never surfaced in normal difficulty tiers or gameplay rounds. Used for actions that cannot be explained clearly within a prompt readable in a few seconds, or for freestyle-only definitions that would conflict with a regular game entry. Placing a difficulty-6 entry immediately before a regular entry causes it to intercept that key combination in freestyle mode, delivering an alternative description without interfering with gameplay!</td>
-          </tr>
-        </tbody>
-      </table>
-    </div>
-  </section>
-
   <!-- ══ SCOPE RULES ═══════════════════════════════════════════════ -->
   <section>
-    <h2>04 ) Scope Rules</h2>
+    <h2>03 ) Scope Rules</h2>
     <p>
       Not every shortcut in vendor documentation belongs in a Keyboard Warriors file.
       The goal is a clean, verified training dataset, not a literal transcription of a
@@ -287,6 +231,62 @@
     <p><strong>KEEP &nbsp;&nbsp; MERGE &nbsp;&nbsp; REMODEL &nbsp;&nbsp; REMOVE &nbsp;&nbsp; REFERENCE-ONLY &nbsp;&nbsp; SEQUENTIAL-COMPLETION</strong></p>
   </section>
 
+ <!-- ══ DIFFICULTY SCALE ══════════════════════════════════════════ -->
+  <section id="difficulty">
+    <h2>04 ) Difficulty Scale</h2>
+    <p>
+      Difficulty controls which pool an entry enters relative to the player's selected
+      difficulty setting. Distribution does not need to be equal across levels. Some
+      professional software packages can legitimately skew harder than others. I would however aim for <em>at least</em> a dozen
+      entries at each level from 0 through to 5 so that difficulty changes feel meaningfull.
+    </p>
+    <p>Difficulty 6 is not indicative of a harder item. It is purely a functional allocation to be used when needed. It's absence from a file is not only permitted, but probably the ideal.</p>
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr><th>Level</th><th>Label</th><th>Description</th></tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><strong>0</strong></td>
+            <td>Ubiquitous</td>
+            <td>Universal shortcuts present in virtually every app, like "Save" and "New". These should appear in every package where they work. Keep common universal shortcuts at low difficulty.</td>
+          </tr>
+          <tr>
+            <td><strong>1</strong></td>
+            <td>Common</td>
+            <td>Very common cross-app fundamentals that are slightly more varied, less intuitive or apply to fewer apps. Examples: Select All, Print.</td>
+          </tr>
+          <tr>
+            <td><strong>2</strong></td>
+            <td>Logical</td>
+            <td>Regular workflow shortcuts that follow a clear and obvious pattern, for example, tools whose shortcut uses the tool's initial letter (L for Line, B for Brush).</td>
+          </tr>
+          <tr>
+            <td><strong>3</strong></td>
+            <td>Intermediate</td>
+            <td>The core shortcuts most serious users of the selected app need to learn. Commonly used app-specific panel toggles and key workflow commands live here.</td>
+          </tr>
+          <tr>
+            <td><strong>4</strong></td>
+            <td>Power user</td>
+            <td>Advanced editing actions, modifier-click and modifier-drag behaviours, and professional workflow commands. More complex and less commonly known.</td>
+          </tr>
+          <tr>
+            <td><strong>5</strong></td>
+            <td>Hardcore</td>
+            <td>Highly specialist or obscure actions and very difficult-to-remember multi-key combinations. Rarely needed but worth knowing for serious practitioners, or players wanting a challenge.</td>
+          </tr>
+          <tr>
+            <td><strong>6</strong></td>
+            <td>Reference only</td>
+            <td>Never surfaced in normal difficulty tiers or gameplay rounds. Used for actions that cannot be explained clearly within a prompt readable in a few seconds, or for freestyle-only definitions that would conflict with a regular game entry. Placing a difficulty-6 entry immediately before a regular entry causes it to intercept that key combination in freestyle mode, delivering an alternative description without interfering with gameplay!</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+  
   <!-- ══ SEQUENTIAL ENTRIES ════════════════════════════════════════ -->
   <section id="sequential">
     <h2>05 ) Sequential Entries</h2>
@@ -636,7 +636,7 @@
   </section>
   <!-- ══ CANONICAL CHIP ORDER ══════════════════════════════════════ -->
   <section>
-    <h2>11 ) App Manifest</h2>
+    <h2>12 ) App Manifest</h2>
     <p>If you aren't simply editing existing <strong>shortcuts_app.json</strong> files, but adding new files, they will also need to be added to the <strong>to-public.json</strong> file.</p>
     <p>Here is a sample of the schema for an app line:</p>
     <div class="code-block"><strong>{</br>  

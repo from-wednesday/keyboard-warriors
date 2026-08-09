@@ -639,31 +639,37 @@
             <td><code>label</code></td>
             <td>String</td>
             <td>Yes</td>
-            <td>The display name shown in the app selector UI. Prefix the name with the app's standard abbreviation in square brackets, for example <code>[Ae]</code>, <code>[Ps]</code>, <code>[Figma]</code>. The bracket prefix drives sort order and the abbreviation chip displayed alongside the full name.</td>
+            <td>The display name shown in the app selector list <small>UI</small>. Be mindful of string length. If it does overflow the container it will be truncated in use.</td>
           </tr>
           <tr>
             <td><code>path</code></td>
             <td>String</td>
             <td>Yes</td>
-            <td>Root-relative path to the app's <strong>shortcuts_app.json</strong> file. Must begin with <code>/keyboard-warriors/data/</code> and end with <code>.json</code>. The filename should follow the convention <code>shortcuts_camelCaseAppName.json</code>.</td>
+            <td>Root-relative path to the app's <strong>shortcuts_[app].json</strong> file. Must begin with <code>/keyboard-warriors/data/</code> and end with <code>.json</code>. The filename should follow the convention <code>shortcuts_camelCaseAppName.json</code>.</td>
           </tr>
           <tr>
             <td><code>column</code></td>
             <td>Integer</td>
             <td>Yes</td>
-            <td>Controls which column the app entry appears in on the app selection grid. Currently accepts <code>1</code> or <code>2</code>. Apps in the same column are listed in the order they appear in the manifest file.</td>
+            <td>Controls which column in the <strong>customise skillset panel</strong> the app entry appears in. Currently accepts <code>1</code> to <code>4</code>. Apps in the same column are listed in the order they appear in this <small>JSON</small> manifest file.</td>
           </tr>
           <tr>
             <td><code>skillset</code></td>
             <td>Array of strings</td>
-            <td>Yes</td>
-            <td>The primary skill categories this app belongs to. Used to populate the filter tags in the app selector. An app must have at least one skillset entry. Use existing category names where possible to keep the filter list consistent.</td>
+            <td>No</td>
+            <td>This defines which skillsets' app selector list this app appears in. The first app in the <small>JSON</small> to nominate a certain skillset will be the <strong>initial default</strong> for <em>that</em> skillset (so sequence apps strategically in the file).</td>
           </tr>
           <tr>
             <td><code>standby</code></td>
             <td>Array of strings</td>
             <td>No</td>
-            <td>Additional categories where this app is surfaced as a secondary result when the player filters by that category, but is not a primary member of it. Useful for apps that overlap multiple disciplines without fully belonging to them. Omit the field entirely when not needed rather than passing an empty array.</td>
+            <td>Apps on Standby are in that skillset's app list but are defaulted to hidden. They appear as options as soon as the player clicks the edit wrench. Useful for apps that overlap multiple disciplines without fully belonging to them. Ideally do not omit the field entirely when not needed. The empty array communicates this status and allows for easy future revision. In fact both <strong>skillset</strong> and <strong>standby</strong> can be empty for an app meaning it is <em>only</em> available to custom skillsets.</td>
+          </tr>
+                  <tr>
+            <td><code>Beta</code></td>
+            <td>Boolean</td>
+            <td>No</td>
+            <td>If <code>TRUE</code> the app will only be surfaced to users running the experimental Beta. Useful for testing and development. Omit entirely when not needed rather than bulking file out with redundant Beta = <code>FALSE</code> code on all the <em>actual</em> app entries.</td>
           </tr>
         </tbody>
       </table>

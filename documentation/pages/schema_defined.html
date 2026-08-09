@@ -22,10 +22,9 @@
     <p>See the companion shortcuts token reference <a href="../?tab=5" data-open-tab="5"><strong>'<small>&lt;/&gt;</small>Defining Keys'</strong></a> for the full list of accepted key tokens.
     </p>
   </header>
-
   <!-- ══ ENTRY STRUCTURE ══════════════════════════════════════════ -->
   <section>
-    <h2>01 ) Entry Structure</h2>
+    <h2 id="entry-structure">01 ) Entry Structure</h2>
     <p>
       The complete data file for any software package is a flat <small>JSON</small> array. Each item in
       that array is a single shortcut entry: One question-and-answer block for the game.
@@ -44,19 +43,17 @@
   <span class="c-key">"group"</span>:      <span class="c-val">"optional_group_name"</span>,</br>
   <span class="c-key">"sequential"</span>: <span class="c-val">true</span></br>
 <strong>}</strong></div>
-
     <h3>"display"</h3>
     <p>This is <strong>the question</strong> prompt shown to the player. It must be plain text with no markup. Because of that, I like to use capital letters sparingly where I want to place emphasis.</p>
     <p>Write it action-focused, concise, and verb-first. I like to vary the language to make the gameplay feel more conversational and less repetative. For example, "pick up the Eraser" ; "grab the Pen Tool" ; "select the Laso Tool" etc.</p>
     <p>Avoid including (or hinting at) the answer in the display text. Aim for a phrase a player can read comfortably in a few seconds.</p>
-    <p>When writing these, consider both the context of the in-game question <em>and</em> the free-style exploration mode: In game the text is asking you to do something. Between games it is reporting back what function those keys perform. If you are unable to arrive at one "display" that works for both of these use cases, it is possible to define the shortcut as <em>two</em> <small>JSON</small> objects. One for each context at the exclussion of the other. See the "difficulty" and "sequential" sections below for more information.
+    <p>When writing these, consider both the context of the in-game question <em>and</em> the free-style exploration mode: In game the text is asking you to do something. Between games it is reporting back what function those keys perform. If you are unable to arrive at one "display" that works for both of these use cases, it is possible to define the shortcut as <em>two</em> <small>JSON</small> objects. One for each context at the exclussion of the other. See the <a href="#difficulty">"difficulty"</a> and <a href="#sequential">"sequential"</a> sections below for more information.
     </p>
     <p>Note that for "sequential" entries, it is essential to phrase the "display" string for the context, such as
-      "after pressing… press this to…". <em>More on sequential shortcuts later.</em>
+      "after pressing… press this to…". <em>More on <a href="#sequential">sequential shortcuts</a> later.</em>
     </p>
     <div class="code-block"><span class="c-key"><strong>"display"</span>: <span class="c-val">"save the document"</strong></span> <span class="c-note">// a simultaneous chord</span></br>
 <span class="c-key">"display"</span>: <span class="c-val">"after entering a configuration number, store it"</span> <span class="c-note">// sequential keys</span></div>
-
     <h3>"mac_sc"</h3>
     <p>
       The token string used for Mac input matching and chip rendering. Tokens are combined
@@ -72,7 +69,6 @@
     <div class="code-block"><span class="c-key">"mac_sc"</span>: <span class="c-val">"CMD+S"</span>             <span class="c-note">// single chord</span></br>
 <span class="c-key">"mac_sc"</span>: <span class="c-val">"CMD+ARROWLEFT|HOME"</span>  <span class="c-note">// two accepted answers; chip shows first</span></br>
 <span class="c-key">"mac_sc"</span>: <span class="c-null">"NULL"</span>              <span class="c-note">// does not exist on Mac</span></div>
-
     <h3>"pc_sc"</h3>
     <p>
       The token string used for PC input matching and chip rendering. Follows exactly the
@@ -84,18 +80,16 @@
     </p>
     <div class="code-block"><span class="c-key">"pc_sc"</span>: <span class="c-val">"CTRL+S"</span></br>
 <span class="c-key">"pc_sc"</span>: <span class="c-null">"NULL"</span>    <span class="c-note">// does not exist on PC</span></div>
-
     <h3>"difficulty"</h3>
     <p>
       An integer from 0 to 6 controlling which question pools the entry enters, based on
       the player's selected difficulty setting. Difficulty 6 is reference-only and is
       never surfaced in normal gameplay round. It is provided as a way to include vocabulary for free-style mode only.</p>
-    <p>See Section 03 — Difficulty Scale for the full breakdown.
+    <p>See <a href="#difficulty">Section 04 — Difficulty Scale</a> for the full breakdown.
     </p>
     <div class="code-block"><span class="c-key">"difficulty"</span>: <span class="c-val">1</span>   <span class="c-note">// easy — Common cross-app shortcuts</span></br>
 <span class="c-key">"difficulty"</span>: <span class="c-val">3</span>   <span class="c-note">// normal — core app knowledge</span></br>
 <span class="c-key">"difficulty"</span>: <span class="c-val">5</span>   <span class="c-note">// hard core — highly niche or particularly complex</span></div>
-
     <h3>"group" <span class="note">(optional)</span></h3>
     <p>This is <em>not</em> what you'd expect. There is no utility in <strong>Keyboard Warriors</strong> to simply categorising shortcuts in the ways we might if we were making notes or producing a long list.</p>
      <p>Here "group" has a very specific purpose and should be used very sparingly.</p>
@@ -103,10 +97,9 @@
       single ten-question round. You should omit this field entirely <em>unless</em> the entries are
       near-identical variants with obvious answers in context with one another. Shortcuts that would feel <strong>repetitive or interchangeable</strong> if presented
       together in the same round. Do <strong>not</strong> group entries simply because they share a topic.
-      See Section 07 — Groups.
+      See <a href="#groups">Section 05 — Groups</a>.
     </p>
     <div class="code-block"><span class="c-key">"group"</span>: <span class="c-val">"nudge"</span></div>
-
     <h3>"sequential" <span class="note">(optional)</span></h3>
     <p>I made <strong>Keyboard Warriors</strong> to learn and practice shortcut single keys and simultaneous chords. Only afterwards did I learn how many applications use <em>sequential key combinations</em> to perform actions. The distinction I am drawing here is that a sequential shortcut is not held simultaneously. Rather than retool the whole gameplay for this minority case, I have a pragmatic work around:</p>
       <p>"sequential" is a boolean, always set to <code>true</code> when present. It marks an entry that has
@@ -114,14 +107,13 @@
       initiation or completion single keykey prompt. The game excludes entries marked as "sequential" from freestyle mode
       where out-of-context sequential prompts would be misleading. As such, this can be used on any <small>JSON</small> object you wish to exclude from Freestyle Mode.</p>
      <p>This flag is entirely separate from difficulty. Do not use difficulty 6 as a
-      substitute for it. It is functionally the <em>opposite</em> effect to difficulty 6. See Section 05 — Sequential Entries.
+      substitute for it. It is functionally the <em>opposite</em> effect to difficulty 6. See <a href="#sequential">Section 06 — Sequential Entries</a>.
     </p>
     <div class="code-block"><span class="c-key">"sequential"</span>: <span class="c-val">true</span></div>
   </section>
-
   <!-- ══ FIELD REFERENCE ══════════════════════════════════════════ -->
   <section>
-    <h2>02 ) Field Reference</h2>
+    <h2 id="field-reference">02 ) Field Reference</h2>
     <div class="table-wrap">
       <table>
         <thead>
@@ -150,28 +142,27 @@
             <td><code>difficulty</code></td>
             <td>Integer</td>
             <td>Yes</td>
-            <td>Integer 0–6. Controls the question pool. Difficulty 6 is reference-only and never quizzed in normal gameplay. See Section 03.</td>
+            <td>Integer 0–6. Controls the question pool. Difficulty 6 is reference-only and never quizzed in normal gameplay. See <a href="#difficulty">Section 04</a>.</td>
           </tr>
           <tr>
             <td><code>group</code></td>
             <td>String</td>
             <td>No</td>
-            <td>Limits the number of the same named group objects per question pool. Only add this when near-identical variants would feel repetitive or redundant if drawn together. See Section 07.</td>
+            <td>Limits the number of the same named group objects per question pool. Only add this when near-identical variants would feel repetitive or redundant if drawn together. See <a href="#groups">Section 05</a>.</td>
           </tr>
           <tr>
             <td><code>sequential</code></td>
             <td>Boolean</td>
             <td>No</td>
-            <td>Must be set explicitly. You only need to add this when it is <code>true</code>. It will then exclude the entry from freestyle mode where it will not make sense in that context. Difficulty 6 is incompatible with sequential shortcuts. See Section 05.</td>
+            <td>Must be set explicitly. You only need to add this when it is <code>true</code>. It will then exclude the entry from freestyle mode where it will not make sense in that context. Difficulty 6 is incompatible with sequential shortcuts. See <a href="#sequential">Section 06</a>.</td>
           </tr>
         </tbody>
       </table>
     </div>
   </section>
-
   <!-- ══ SCOPE RULES ═══════════════════════════════════════════════ -->
   <section>
-    <h2>03 ) Scope Rules</h2>
+    <h2 id="scope-rules">03 ) Scope Rules</h2>
     <p>
       Not every shortcut in vendor documentation belongs in a Keyboard Warriors file.
       The goal is a clean, verified training dataset, not a literal transcription of a
@@ -213,12 +204,12 @@
           <tr>
             <td>Modifier-clicks and modifier-drags</td>
             <td>Keep when useful</td>
-            <td>Keep when the modifier is the meaningful workflow knowledge being learned. The shortcut value should be only the modifier chord, not the mouse action itself. See Section 06.</td>
+            <td>Keep when the modifier is the meaningful workflow knowledge being learned. The shortcut value should be only the modifier chord, not the mouse action itself. See <a href="#modifier-actions">Section 07</a>.</td>
           </tr>
           <tr>
             <td>Sequential keystrokes</td>
             <td>Remove, remodel, or mark sequential</td>
-            <td>Never encode arbitrary sequences literally. Remodel into a completion-key prompt where the sequence can be made fair. See Section 05.</td>
+            <td>Never encode arbitrary sequences literally. Remodel into a completion-key prompt where the sequence can be made fair. See <a href="#sequential">Section 06</a>.</td>
           </tr>
           <tr>
             <td>Menu navigation without a shortcut</td>
@@ -231,10 +222,9 @@
     <p>Use the following ledger statuses when classifying candidates during extraction:</p>
     <p><strong>KEEP &nbsp;&nbsp; MERGE &nbsp;&nbsp; REMODEL &nbsp;&nbsp; REMOVE &nbsp;&nbsp; REFERENCE-ONLY &nbsp;&nbsp; SEQUENTIAL-COMPLETION</strong></p>
   </section>
-
- <!-- ══ DIFFICULTY SCALE ══════════════════════════════════════════ -->
-  <section id="difficulty">
-    <h2>04 ) Difficulty Scale</h2>
+  <!-- ══ DIFFICULTY SCALE ══════════════════════════════════════════ -->
+  <section>
+    <h2 id="difficulty">04 ) Difficulty Scale</h2>
     <p>
       Difficulty controls which pool an entry enters relative to the player's selected
       difficulty setting. Distribution does not need to be equal across levels. Some
@@ -287,109 +277,9 @@
       </table>
     </div>
   </section>
-  
-  <!-- ══ SEQUENTIAL ENTRIES ════════════════════════════════════════ -->
-  <section id="sequential">
-    <h2>05 ) Sequential Entries</h2>
-      <div class="callout warn">
-      <strong>Never encode variable sequences literally.</strong> A shortcut value such
-      as <code>NUMPADDECIMAL+[1-99]+NUMPADADD</code> cannot be matched by the game
-      engine and does not represent a fair question. Remodel or remove it.
-    </div>
-    <p>
-      Multi-step sequential workflows are normally out of scope because encoding an
-      arbitrary sequence as a single question produces an unfair and unplayable entry.
-      However, some workflows can be remodelled into fair questions by placing part of the
-      sequence into the prompt as context and then asking for the missing key.
-    </p>
-    <div class="compare-row">
-      <div class="compare-col dont">
-        <h4>What not to do</h4>
-        <div class="code-block">{<br>
-  <span class="c-key">"display"</span>:    <span class="c-val">"store Window Configuration"</span>,<br>
-  <span class="c-key">"mac_sc"</span>:     <span class="c-val">"NUMPADDECIMAL+[1-99]+NUMPADADD"</span>,<br>
-  <span class="c-key">"pc_sc"</span>:      <span class="c-val">"NUMPADDECIMAL+[1-99]+NUMPADADD"</span>,<br>
-  <span class="c-key">"difficulty"</span>: <span class="c-val">6</span><br>
-}</div><p>Invalid, never do this.</p><p>Even If we make it into 9 seperate entries for all NUMPAD1 through to NUMPAD9, 10-99 are already sequential by definition and then NUMPADADD is too.</p>
-      </div>
-      <div class="compare-col do">
-        <h4>Preferred completion-key form</h4>
-        <div class="code-block">{<br>
-  <span class="c-key">"display"</span>:    <span class="c-val">"after entering a Window Configuration number, store it"</span>,<br>
-  <span class="c-key">"mac_sc"</span>:     <span class="c-val">"NUMPADADD"</span>,<br>
-  <span class="c-key">"pc_sc"</span>:      <span class="c-val">"NUMPADADD"</span>,<br>
-  <span class="c-key">"difficulty"</span>: <span class="c-val">4</span>,<br>
-  <span class="c-key">"sequential"</span>: <span class="c-val">true</span><br>
-}</div>
-        <p>
-          By placing the first part of the sequence in the display as context, we can then ask for the
-          final key only. Phrase the prompt as "after entering…" or "to complete… press…".
-          Always include <code>"sequential": true</code> on every remodelled sequential entry.
-        </p>
-      </div>
-    </div>
-    <p class="note">
-      The <code>sequential</code> flag is independent of difficulty. Do not rely on
-      difficulty 6 to exclude these entries from freestyle. This flag must be set
-      explicitly on every remodelled sequential entry.
-    </p>
-  </section>
-
-  <!-- ══ MODIFIER-ENHANCED MOUSE ACTIONS ══════════════════════════ -->
-  <section>
-    <h2>06 ) Modifier-Enhanced Mouse Actions</h2>
-    <p>
-      A blanket "no mouse actions" rule is too strict for professional creative software,
-      where modifier-clicks and modifier-drags often represent genuine and important
-      workflow knowledge. Keep these entries when the modifier itself is the answer being
-      learned, not the mouse action.
-    </p>
-    <div class="table-wrap">
-      <table>
-        <thead>
-          <tr><th>Action type</th><th>Decision</th><th>Example wording</th></tr>
-        </thead>
-        <tbody>
-          <tr>
-            <td>Modifier-click workflow</td>
-            <td>Keep if useful</td>
-            <td>toggle Mute on all tracks while clicking Mute</td>
-          </tr>
-          <tr>
-            <td>Modifier-drag workflow</td>
-            <td>Keep if useful</td>
-            <td>stretch a warped clip while dragging the clip title bar</td>
-          </tr>
-          <tr>
-            <td>Fine-adjust modifier</td>
-            <td>Keep if useful</td>
-            <td>use finer resolution while dragging a value</td>
-          </tr>
-          <tr>
-            <td>Pure double-click</td>
-            <td>Remove</td>
-            <td>double-click the track name</td>
-          </tr>
-          <tr>
-            <td>Right-click menu only</td>
-            <td>Remove</td>
-            <td>right-click to open context menu</td>
-          </tr>
-        </tbody>
-      </table>
-    </div>
-    <p>
-      Wording must make the mouse context explicit. Use "while clicking" or "while
-      dragging" so the player understands what the mouse is doing during the shortcut.
-      The shortcut value should be only the modifier or modifier chord being held —
-      not the mouse action itself. Only keep an entry if an experienced user would
-      genuinely benefit from memorising that modifier behaviour.
-    </p>
-  </section>
-
   <!-- ══ GROUPS ════════════════════════════════════════════════════ -->
-  <section id="groups">
-    <h2>07 ) Groups</h2>
+  <section>
+    <h2 id="groups">05 ) Groups</h2>
     <p>
       The <code>group</code> field prevents a run of near-identical questions from
       appearing together in a single ten-question round. The pool builder caps any
@@ -461,14 +351,153 @@
 <span class="c-key">"mac_sc"</span>: <span class="c-val">"H|SPACE"</span>,<br>
 <span class="c-key">"pc_sc"</span>: <span class="c-val">"H|SPACE"</span>,<br>
 <span class="c-key">"difficulty"</span>: <span class="c-val">2</span><br>}</div>
-        <p>Let's return to this example in section 09) the triple entry pattern. </p>
+        <p>Let's return to this example in <a href="#triple-entry">Section 08, the Reference-Only Triple-Entry Pattern</a>. </p>
       </div>
-    </div>  
+    </div>
   </section>
-
+  <!-- ══ SEQUENTIAL ENTRIES ════════════════════════════════════════ -->
+  <section>
+    <h2 id="sequential">06 ) Sequential Entries</h2>
+      <div class="callout warn">
+      <strong>Never encode variable sequences literally.</strong> A shortcut value such
+      as <code>NUMPADDECIMAL+[1-99]+NUMPADADD</code> cannot be matched by the game
+      engine and does not represent a fair question. Remodel or remove it.
+    </div>
+    <p>
+      Multi-step sequential workflows are normally out of scope because encoding an
+      arbitrary sequence as a single question produces an unfair and unplayable entry.
+      However, some workflows can be remodelled into fair questions by placing part of the
+      sequence into the prompt as context and then asking for the missing key.
+    </p>
+    <div class="compare-row">
+      <div class="compare-col dont">
+        <h4>What not to do</h4>
+        <div class="code-block">{<br>
+  <span class="c-key">"display"</span>:    <span class="c-val">"store Window Configuration"</span>,<br>
+  <span class="c-key">"mac_sc"</span>:     <span class="c-val">"NUMPADDECIMAL+[1-99]+NUMPADADD"</span>,<br>
+  <span class="c-key">"pc_sc"</span>:      <span class="c-val">"NUMPADDECIMAL+[1-99]+NUMPADADD"</span>,<br>
+  <span class="c-key">"difficulty"</span>: <span class="c-val">6</span><br>
+}</div><p>Invalid, never do this.</p><p>Even If we make it into 9 seperate entries for all NUMPAD1 through to NUMPAD9, 10-99 are already sequential by definition and then NUMPADADD is too.</p>
+      </div>
+      <div class="compare-col do">
+        <h4>Preferred completion-key form</h4>
+        <div class="code-block">{<br>
+  <span class="c-key">"display"</span>:    <span class="c-val">"after entering a Window Configuration number, store it"</span>,<br>
+  <span class="c-key">"mac_sc"</span>:     <span class="c-val">"NUMPADADD"</span>,<br>
+  <span class="c-key">"pc_sc"</span>:      <span class="c-val">"NUMPADADD"</span>,<br>
+  <span class="c-key">"difficulty"</span>: <span class="c-val">4</span>,<br>
+  <span class="c-key">"sequential"</span>: <span class="c-val">true</span><br>
+}</div>
+        <p>
+          By placing the first part of the sequence in the display as context, we can then ask for the
+          final key only. Phrase the prompt as "after entering…" or "to complete… press…".
+          Always include <code>"sequential": true</code> on every remodelled sequential entry.
+        </p>
+      </div>
+    </div>
+    <p class="note">
+      The <code>sequential</code> flag is independent of difficulty. Do not rely on
+      difficulty 6 to exclude these entries from freestyle. This flag must be set
+      explicitly on every remodelled sequential entry.
+    </p>
+  </section>
+  <!-- ══ MODIFIER-ENHANCED MOUSE ACTIONS ══════════════════════════ -->
+  <section>
+    <h2 id="modifier-actions">07 ) Modifier-Enhanced Mouse Actions</h2>
+    <p>
+      A blanket "no mouse actions" rule is too strict for professional creative software,
+      where modifier-clicks and modifier-drags often represent genuine and important
+      workflow knowledge. Keep these entries when the modifier itself is the answer being
+      learned, not the mouse action.
+    </p>
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr><th>Action type</th><th>Decision</th><th>Example wording</th></tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>Modifier-click workflow</td>
+            <td>Keep if useful</td>
+            <td>toggle Mute on all tracks while clicking Mute</td>
+          </tr>
+          <tr>
+            <td>Modifier-drag workflow</td>
+            <td>Keep if useful</td>
+            <td>stretch a warped clip while dragging the clip title bar</td>
+          </tr>
+          <tr>
+            <td>Fine-adjust modifier</td>
+            <td>Keep if useful</td>
+            <td>use finer resolution while dragging a value</td>
+          </tr>
+          <tr>
+            <td>Pure double-click</td>
+            <td>Remove</td>
+            <td>double-click the track name</td>
+          </tr>
+          <tr>
+            <td>Right-click menu only</td>
+            <td>Remove</td>
+            <td>right-click to open context menu</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+    <p>
+      Wording must make the mouse context explicit. Use "while clicking" or "while
+      dragging" so the player understands what the mouse is doing during the shortcut.
+      The shortcut value should be only the modifier or modifier chord being held —
+      not the mouse action itself. Only keep an entry if an experienced user would
+      genuinely benefit from memorising that modifier behaviour.
+    </p>
+  </section>
+  <!-- ══ REFERENCE-ONLY TRIPLE-ENTRY PATTERN ══════════════════════ -->
+  <section>
+    <h2 id="triple-entry">08 ) Reference-Only Triple-Entry Pattern</h2>
+    <p>
+      When a single command has both a single-key version (sometimes requiring a Keyboard
+      Focus mode to be enabled) and a longer chord version, the playable entry should accept
+      both answers via pipe syntax. The individual source-specific variants can be
+      retained as difficulty-6 reference-only entries so they appear with their own
+      wording in freestyle exploration mode without appearing in normal gameplay rounds.
+    </p>
+          <div class="compare-row">
+      <div class="compare-col dont">
+        <h4>adequate approach</h4>
+         <div class="code-block">{<br><span class="c-key">"display"</span>: <span class="c-val">"pan with the hand tool"</span>,<br>
+<span class="c-key">"mac_sc"</span>: <span class="c-val">"H|SPACE"</span>,<br>
+<span class="c-key">"pc_sc"</span>: <span class="c-val">"H|SPACE"</span>,<br>
+<span class="c-key">"difficulty"</span>: <span class="c-val">2</span><br>}</div>
+            <p>We arrived at this <small>JSON</small> object in the <strong>pipe</strong> example above, but we can still <em>improve</em> upon this. </p>
+      </div>
+      <div class="compare-col do">
+        <h4>preferred approach</h4>
+        <div class="code-block">{<br><span class="c-key">"display"</span>: <span class="c-val">"select the hand tool"</span>,<br>
+<span class="c-key">"mac_sc"</span>: <span class="c-val">"H"</span>,<br>
+<span class="c-key">"pc_sc"</span>: <span class="c-val">"H"</span>,<br>
+<span class="c-key">"difficulty"</span>: <span class="c-val">6</span><br>}
+{<br><span class="c-key">"display"</span>: <span class="c-val">"hold this to quickly pan with the hand tool"</span>,<br>
+<span class="c-key">"mac_sc"</span>: <span class="c-val">"SPACE"</span>,<br>
+<span class="c-key">"pc_sc"</span>: <span class="c-val">"SPACE"</span>,<br>
+<span class="c-key">"difficulty"</span>: <span class="c-val">6</span><br>}
+{<br><span class="c-key">"display"</span>: <span class="c-val">"pan with the hand tool"</span>,<br>
+<span class="c-key">"mac_sc"</span>: <span class="c-val">"H|SPACE"</span>,<br>
+<span class="c-key">"pc_sc"</span>: <span class="c-val">"H|SPACE"</span>,<br>
+<span class="c-key">"difficulty"</span>: <span class="c-val">2</span><br>}</div>
+        <p>Here Difficulty-6 has been used to add <em>specificity</em> to the freestyle definitions, while the in-game question is more general for fast flexible game play. Note that the order is important. Freestyle will report the first answer it finds, so we do not need to falsely label the pipe option as sequential (<em>it isn't</em>) it just needs to come after the difficulty 6 options.</p>
+      </div>
+    </div>
+    <p class="note">
+      Use this pattern sparingly where the distinction is <strong>meaningful</strong> and
+      source-supported.</br>Merged playable entries should always reflect the player's
+      perspective: one action, multiple accepted answers.</b>Reference-only entries
+      preserve source detail without overloading normal gameplay. They can be more verbose if it adds precision, now that reading time is not a consideration.   
+    </p>
+  </section>
   <!-- ══ PLATFORM-ONLY GUIDANCE BLOCKS ════════════════════════════ -->
   <section>
-    <h2>08 ) Platform-Only Guidance Blocks</h2>
+    <h2 id="platform-only">09 ) Platform-Only Guidance Blocks</h2>
     <p>
       When an app genuinely exists on only one platform, all real shortcut entries use
       <span class="null-val">NULL</span> for the absent platform field. In addition, place
@@ -501,55 +530,9 @@
   {</br><span class="c-key">"display"</span>: <span class="c-val">"[App Name] is a PC only app. Press RETURN."</span>,      <span class="c-key">"mac_sc"</span>: <span class="c-val">"RETURN"</span>, <span class="c-key">"pc_sc"</span>: <span class="c-null">"NULL"</span>, <span class="c-key">"difficulty"</span>: <span class="c-val">5</span> }
 </div>
   </section>
-
-  <!-- ══ REFERENCE-ONLY TRIPLE-ENTRY PATTERN ══════════════════════ -->
-  <section>
-    <h2>09 ) Reference-Only Triple-Entry Pattern</h2>
-    <p>
-      When a single command has both a single-key version (sometimes requiring a Keyboard
-      Focus mode to be enabled) and a longer chord version, the playable entry should accept
-      both answers via pipe syntax. The individual source-specific variants can be
-      retained as difficulty-6 reference-only entries so they appear with their own
-      wording in freestyle exploration mode without appearing in normal gameplay rounds.
-    </p>
-          <div class="compare-row">
-      <div class="compare-col dont">
-        <h4>adequate approach</h4>
-         <div class="code-block">{<br><span class="c-key">"display"</span>: <span class="c-val">"pan with the hand tool"</span>,<br>
-<span class="c-key">"mac_sc"</span>: <span class="c-val">"H|SPACE"</span>,<br>
-<span class="c-key">"pc_sc"</span>: <span class="c-val">"H|SPACE"</span>,<br>
-<span class="c-key">"difficulty"</span>: <span class="c-val">2</span><br>}</div>
-
-            <p>We arrived at this <small>JSON</small> object in the <strong>pipe</strong> example above, but we can still <em>improve</em> upon this. </p>
-      </div>
-      <div class="compare-col do">
-        <h4>preferred approach</h4>
-        <div class="code-block">{<br><span class="c-key">"display"</span>: <span class="c-val">"select the hand tool"</span>,<br>
-<span class="c-key">"mac_sc"</span>: <span class="c-val">"H"</span>,<br>
-<span class="c-key">"pc_sc"</span>: <span class="c-val">"H"</span>,<br>
-<span class="c-key">"difficulty"</span>: <span class="c-val">6</span><br>}
-{<br><span class="c-key">"display"</span>: <span class="c-val">"hold this to quickly pan with the hand tool"</span>,<br>
-<span class="c-key">"mac_sc"</span>: <span class="c-val">"SPACE"</span>,<br>
-<span class="c-key">"pc_sc"</span>: <span class="c-val">"SPACE"</span>,<br>
-<span class="c-key">"difficulty"</span>: <span class="c-val">6</span><br>}
-{<br><span class="c-key">"display"</span>: <span class="c-val">"pan with the hand tool"</span>,<br>
-<span class="c-key">"mac_sc"</span>: <span class="c-val">"H|SPACE"</span>,<br>
-<span class="c-key">"pc_sc"</span>: <span class="c-val">"H|SPACE"</span>,<br>
-<span class="c-key">"difficulty"</span>: <span class="c-val">2</span><br>}</div>
-        <p>Here Difficulty-6 has been used to add <em>specificity</em> to the freestyle definitions, while the in-game question is more general for fast flexible game play. Note that the order is important. Freestyle will report the first answer it finds, so we do not need to falsely label the pipe option as sequential (<em>it isn't</em>) it just needs to come after the difficulty 6 options.</p>
-      </div>
-    </div>
-    <p class="note">
-      Use this pattern sparingly where the distinction is <strong>meaningful</strong> and
-      source-supported.</br>Merged playable entries should always reflect the player's
-      perspective: one action, multiple accepted answers.</b>Reference-only entries
-      preserve source detail without overloading normal gameplay. They can be more verbose if it adds precision, now that reading time is not a consideration. 
-    </p>
-  </section>
-
   <!-- ══ CANONICAL CHIP ORDER ══════════════════════════════════════ -->
   <section>
-    <h2>10 ) Canonical Chip Order</h2>
+    <h2 id="chip-order">10 ) Canonical Chip Order</h2>
     <p>
       Regardless of the order tokens appear in the <small>JSON</small> string, chips always render in a
       fixed canonical order. The token string itself does not need to follow this order —
@@ -587,10 +570,9 @@
       </table>
     </div>
   </section>
-
   <!-- ══ SYSTEM COMPONENT GLOSSARY ════════════════════════════════ -->
   <section>
-    <h2>11 ) System Component Glossary</h2>
+    <h2 id="glossary">11 ) System Component Glossary</h2>
     <p>
       Use these names when discussing the system in code, comments, or documentation.
       Each corresponds to a distinct JavaScript function.
@@ -635,12 +617,12 @@
       </table>
     </div>
   </section>
-  <!-- ══ CANONICAL CHIP ORDER ══════════════════════════════════════ -->
+  <!-- ══ APP MANIFEST ══════════════════════════════════════════════ -->
   <section>
-    <h2>12 ) App Manifest</h2>
+    <h2 id="manifest">12 ) App Manifest</h2>
     <p>If you aren't simply editing existing <strong>shortcuts_app.json</strong> files, but adding new files, they will also need to be added to the <strong>to-public.json</strong> file.</p>
     <p>Here is a sample of the schema for an app line:</p>
-    <div class="code-block"><strong>{</br>  
+    <div class="code-block"><strong>{</br>    
   <span class="c-key">"label"</span>:    <span class="c-val">"[Ae] After Effects"</span>,</br>
   <span class="c-key">"path"</span>:     <span class="c-val">"/keyboard-warriors/data/shortcuts_afterEffects.json"</span>,</br>
   <span class="c-key">"column"</span>:      <span class="c-val">1</span>,</br>

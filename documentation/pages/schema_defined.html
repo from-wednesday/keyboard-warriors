@@ -620,8 +620,8 @@
   <!-- ══ APP MANIFEST ══════════════════════════════════════════════ -->
   <section>
     <h2 id="manifest">12 ) App Manifest</h2>
-    <p>If you aren't simply editing existing <strong>shortcuts_app.json</strong> files, but adding new files, they will also need to be added to the <strong>to-public.json</strong> file.</p>
-    <p>Here is a sample of the schema for an app line:</p>
+    <p>If you aren't simply editing existing <strong>shortcuts_app.json</strong> files, but adding new files, they will also need to be added to your <strong>to-<code><small>[TENANT]</small></code>.json</strong> file.</p>
+    <p>Here is a sample of the schema for an app line within that file:</p>
     <div class="code-block"><strong>{</br>    
   <span class="c-key">"label"</span>:    <span class="c-val">"[Ae] After Effects"</span>,</br>
   <span class="c-key">"path"</span>:     <span class="c-val">"/keyboard-warriors/data/shortcuts_afterEffects.json"</span>,</br>
@@ -645,7 +645,7 @@
             <td><code>path</code></td>
             <td>String</td>
             <td>Yes</td>
-            <td>Root-relative path to the app's <strong>shortcuts_[app].json</strong> file. Must begin with <code>/keyboard-warriors/data/</code> and end with <code>.json</code>. The filename should follow the convention <code>shortcuts_camelCaseAppName.json</code>.</td>
+            <td>Root-relative path to the app's <strong>shortcuts_<code><small>[APP]</small></code>.json</strong> file. Must begin with <code>/keyboard-warriors/data/</code> and end with <code>.json</code>. The filename should follow the convention <code>shortcuts_camelCaseAppName.json</code>.</td>
           </tr>
           <tr>
             <td><code>column</code></td>

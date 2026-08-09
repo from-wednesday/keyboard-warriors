@@ -629,6 +629,45 @@
   <span class="c-key">"skillset"</span>:      <span class="c-val">["Motion", "Video"],</br>
   <span class="c-key">"standby"</span>: <span class="c-val">["Graphics"]</br>},</span></br>
 </strong></div>
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr><th>Field</th><th>Type</th><th>Required</th><th>Rules</th></tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><code>label</code></td>
+            <td>String</td>
+            <td>Yes</td>
+            <td>The display name shown in the app selector UI. Prefix the name with the app's standard abbreviation in square brackets, for example <code>[Ae]</code>, <code>[Ps]</code>, <code>[Figma]</code>. The bracket prefix drives sort order and the abbreviation chip displayed alongside the full name.</td>
+          </tr>
+          <tr>
+            <td><code>path</code></td>
+            <td>String</td>
+            <td>Yes</td>
+            <td>Root-relative path to the app's <strong>shortcuts_app.json</strong> file. Must begin with <code>/keyboard-warriors/data/</code> and end with <code>.json</code>. The filename should follow the convention <code>shortcuts_camelCaseAppName.json</code>.</td>
+          </tr>
+          <tr>
+            <td><code>column</code></td>
+            <td>Integer</td>
+            <td>Yes</td>
+            <td>Controls which column the app entry appears in on the app selection grid. Currently accepts <code>1</code> or <code>2</code>. Apps in the same column are listed in the order they appear in the manifest file.</td>
+          </tr>
+          <tr>
+            <td><code>skillset</code></td>
+            <td>Array of strings</td>
+            <td>Yes</td>
+            <td>The primary skill categories this app belongs to. Used to populate the filter tags in the app selector. An app must have at least one skillset entry. Use existing category names where possible to keep the filter list consistent.</td>
+          </tr>
+          <tr>
+            <td><code>standby</code></td>
+            <td>Array of strings</td>
+            <td>No</td>
+            <td>Additional categories where this app is surfaced as a secondary result when the player filters by that category, but is not a primary member of it. Useful for apps that overlap multiple disciplines without fully belonging to them. Omit the field entirely when not needed rather than passing an empty array.</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
 </div><!-- /.page -->
 </body>
 </html>

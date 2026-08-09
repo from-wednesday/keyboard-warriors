@@ -90,7 +90,11 @@
     width: 100%;
     height: 100%;
     perspective: 1400px;
+    --tilt-rotate-x: -3deg;
+    --tilt-rotate-y: 5deg;
+    transition: transform 260ms cubic-bezier(.25,.8,.25,1);
   }
+
 
   .card-inner {
     position: relative;
@@ -253,8 +257,23 @@
   }
 
   @media (prefers-reduced-motion: reduce) {
-    .card, .card-inner { transition: none; }
+    .card, .card-inner, .card-flip { transition: none; }
   }
+
+  /* Hover tilt hint: gated to devices with genuine hover and a precise
+     pointer, so a tap on touch screens never triggers or gets stuck in
+     this state. Applied to .card-flip rather than .card so it stays
+     independent of the stack position transform and the open/flip
+     transform. perspective() is chained directly into this element's
+     own transform, so the 3D effect is entirely local to the card and
+     can never visually overlap a neighbour: paint order is still
+     governed purely by each card's z-index. */
+  @media (hover: hover) and (pointer: fine) {
+    .card:not(.is-active):hover .card-flip {
+      transform: perspective(900px) rotateX(var(--tilt-rotate-x)) rotateY(var(--tilt-rotate-y));
+    }
+  }
+
 
   /* ── Narrow screens: fall back to a simple hand of cards ──────
      Absolute arc placement stops making sense once the spread is

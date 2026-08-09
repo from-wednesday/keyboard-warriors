@@ -157,16 +157,58 @@
     const obj=manifest && manifest[section] && manifest[section][group] ? manifest[section][group] : null;
     return obj && obj[key] !== undefined ? obj[key] : fallback;
   }
-  function animNumber(key,fallback){ return cfgNumber('animation',key,fallback); }
-  function responsiveNumber(key,fallback){ return cfgNumber('responsive',key,fallback); }
-  function responsiveBool(key,fallback){ return cfgBool('responsive',key,fallback); }
-  function narrowSetting(key,fallback){ return nestedCfg('responsive','narrowMode',key,fallback); }
-  function animationEasing(){ return (manifest.animation && manifest.animation.easing) || 'cubic-bezier(.22,1,.36,1)'; }
-  function applyManifestRuntimeSettings(){
-    document.documentElement.style.setProperty('--ease', animationEasing());
-    document.documentElement.style.setProperty('--dur', animNumber('transitionMs',560)+'ms');
-    document.documentElement.style.setProperty('--press-dur', animNumber('pressMs',90)+'ms');
-  }
+  function animNumber(key,fallback){ return cfgNumber('animation',key,fallback); }
+  function responsiveNumber(key,fallback){ return cfgNumber('responsive',key,fallback); }
+  function responsiveBool(key,fallback){ return cfgBool('responsive',key,fallback); }
+  function narrowSetting(key,fallback){ return nestedCfg('responsive','narrowMode',key,fallback); }
+  function animationEasing(){ return (manifest.animation && manifest.animation.easing) || 'cubic-bezier(.22,1,.36,1)'; }
+  function applyManifestRuntimeSettings(){
+    document.documentElement.style.setProperty('--ease', animationEasing());
+    document.documentElement.style.setProperty('--dur', animNumber('transitionMs',560)+'ms');
+    document.documentElement.style.setProperty('--press-dur', animNumber('pressMs',90)+'ms');
+  }
+
+  function makeCubicBezierEasing(x1,y1,x2,y2){
+    // Mirrors how CSS evaluates a cubic-bezier() timing function: solves
+    // for the curve parameter t at a given time fraction x using Newton-
+    // Raphson, then reads off the eased y value at that t. This lets a
+    // JS-driven animation (the anchor scroll) move on exactly the same
+    // curve as the CSS-driven tab transitions, defined once in the
+    // manifest's animation.easing value.
+    function bezierComponent(t,a1,a2){
+      const c=3*a1, b=3*(a2-a1)-c, a=1-c-b;
+      return ((a*t+b)*t+c)*t;
+    }
+    function bezierComponentDerivative(t,a1,a2){
+      const c=3*a1, b=3*(a2-a1)-c, a=1-c-b;
+      return (3*a*t+2*b)*t+c;
+    }
+    function solveTForX(x){
+      let t=x;
+      for(let i=0;i<8;i++){
+        const currentX=bezierComponent(t,x1,x2)-x;
+        const currentSlope=bezierComponentDerivative(t,x1,x2);
+        if(Math.abs(currentSlope)<1e-6) break;
+        t-=currentX/currentSlope;
+      }
+      return Math.min(1,Math.max(0,t));
+    }
+    return function(x){
+      if(x<=0) return 0;
+      if(x>=1) return 1;
+      return bezierComponent(solveTForX(x),y1,y2);
+    };
+  }
+  function anchorEasingFunction(){
+    const key=animationEasing();
+    if(cachedAnchorEasing && cachedAnchorEasingKey===key) return cachedAnchorEasing;
+    const match=/cubic-bezier\(\s*([\d.]+)\s*,\s*(-?[\d.]+)\s*,\s*([\d.]+)\s*,\s*(-?[\d.]+)\s*\)/.exec(key);
+    cachedAnchorEasing=match
+      ? makeCubicBezierEasing(parseFloat(match[1]),parseFloat(match[2]),parseFloat(match[3]),parseFloat(match[4]))
+      : (t)=>t; // fallback if the manifest's easing string cannot be parsed: linear, so scrolling still works
+    cachedAnchorEasingKey=key;
+    return cachedAnchorEasing;
+  }
 
   function roundedPolygonPath(points, radius){
     const d=[]; const n=points.length;
@@ -210,15 +252,18 @@
     // Use a fixed mid grey instead.
     return theme==='dark' ? '#9099a0' : darken(hex,0.80);
   }
-  let manifest=null;
-  let activeIndex=0;
-  let prevIndex=0;
-  let pressedIndex=null;
-  let transitioningFrom=null;
-  let transitionTimer=null;
-  let isLoadingPhase=true;
-  let framesLoadedCount=0;
-  let loadingSafetyTimer=null;
+  let manifest=null;
+  let activeIndex=0;
+  let prevIndex=0;
+  let pressedIndex=null;
+  let transitioningFrom=null;
+  let transitionTimer=null;
+  let isLoadingPhase=true;
+  let framesLoadedCount=0;
+  let loadingSafetyTimer=null;
+  let anchorScrollRafId=null;
+  let cachedAnchorEasing=null;
+  let cachedAnchorEasingKey=null;
   const theme = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark':'light';
   document.body.dataset.theme=theme;
   const shell=document.getElementById('shell');
@@ -589,22 +634,79 @@
     tabLayer.offsetHeight;
     tabEls.forEach(item=>{ item.el.style.transition=''; });
   }
-  function setActive(i){
-    if(i===activeIndex) return;
-    if(transitionTimer) clearTimeout(transitionTimer);
-    const previousLayout=lastLayout.map(t=>({...t}));
-    prevIndex=activeIndex;
-    transitioningFrom=activeIndex;
-    activeIndex=i;
-    primeParallaxStart(previousLayout);
-    requestAnimationFrame(()=>{
-      const totalMs=paint({mode:'switch'});
-      transitionTimer=setTimeout(()=>{
-        transitioningFrom=null;
-        paint();
-      },totalMs+80);
-    });
-  }
+  function setActive(i){
+    if(i===activeIndex) return;
+    if(transitionTimer) clearTimeout(transitionTimer);
+    const previousLayout=lastLayout.map(t=>({...t}));
+    prevIndex=activeIndex;
+    transitioningFrom=activeIndex;
+    activeIndex=i;
+    primeParallaxStart(previousLayout);
+    requestAnimationFrame(()=>{
+      const totalMs=paint({mode:'switch'});
+      transitionTimer=setTimeout(()=>{
+        transitioningFrom=null;
+        paint();
+      },totalMs+80);
+    });
+  }
+
+  // Matches a tab by its objectId, its label (case-insensitive), or a
+  // plain numeric index, in that order. Shared by the startup ?tab= URL
+  // lookup and by subpages asking to switch tabs, so both use identical
+  // matching rules.
+  function findTabIndex(tabs,identifier,fallbackIndex){
+    if(identifier===null || identifier===undefined) return fallbackIndex;
+    const list=tabs || [];
+    const byId=list.findIndex(t=>String(t.objectId)===String(identifier));
+    if(byId!==-1) return byId;
+    const byLabel=list.findIndex(t=>(t.label||'').toLowerCase()===String(identifier).toLowerCase());
+    if(byLabel!==-1) return byLabel;
+    const asIndex=parseInt(identifier,10);
+    if(Number.isFinite(asIndex) && asIndex>=0 && asIndex<list.length) return asIndex;
+    return fallbackIndex;
+  }
+
+  // Called from a subpage (via window.parent.DocumentationTabController)
+  // when a link should open a different tab in the stack.
+  function switchToTab(identifier){
+    if(!manifest) return;
+    const index=findTabIndex(manifest.tabs,identifier,-1);
+    if(index===-1) return;
+    setActive(index);
+  }
+
+  // Called from a subpage when an in-page anchor is clicked. targetY is
+  // the anchor target's offset within the currently active tab's own
+  // scrollable frameHost. Animates frameHost.scrollTop to that offset
+  // using the manifest's own easing curve, rather than letting the
+  // browser's native anchor-jump behaviour fight the tab stack's
+  // custom scroll ownership.
+  function scrollActiveFrameTo(targetY){
+    const item=tabEls[activeIndex];
+    if(!item) return;
+    const frameHost=item.frameHost;
+    const startY=frameHost.scrollTop;
+    const maxScrollY=Math.max(0,frameHost.scrollHeight-frameHost.clientHeight);
+    const clampedTargetY=Math.min(Math.max(0,targetY),maxScrollY);
+    const distance=clampedTargetY-startY;
+    if(Math.abs(distance)<1){ frameHost.scrollTop=clampedTargetY; return; }
+    const durationMs=animNumber('anchorScrollMs',480);
+    const easing=anchorEasingFunction();
+    const startTime=performance.now();
+    if(anchorScrollRafId) cancelAnimationFrame(anchorScrollRafId);
+    function step(now){
+      const elapsed=now-startTime;
+      const progress=Math.min(1,elapsed/durationMs);
+      frameHost.scrollTop=startY+distance*easing(progress);
+      if(progress<1){
+        anchorScrollRafId=requestAnimationFrame(step);
+      }else{
+        anchorScrollRafId=null;
+      }
+    }
+    anchorScrollRafId=requestAnimationFrame(step);
+  }
 
   // ── Skeleton reveal ──────────────────────────────────────────────
   // Preload every tab's iframe while the skeleton row is showing.
@@ -734,19 +836,11 @@
   // on. Accepts either a tab's objectId or its label (case-insensitive).
   // Falls back to 1 (BOOTCAMP) if the param is absent, unmatched,
   // or the manifest doesn't have that many tabs.
-  function resolveInitialTabIndex(m){
-    var Requested=null;
-    try{ Requested=new URLSearchParams(window.location.search).get('tab'); }catch(e){}
-    if(!Requested) return 1;
-    var tabs=(m && m.tabs) || [];
-    var byId=tabs.findIndex(function(t){ return String(t.objectId)===String(Requested); });
-    if(byId!==-1) return byId;
-    var byLabel=tabs.findIndex(function(t){ return (t.label||'').toLowerCase()===String(Requested).toLowerCase(); });
-    if(byLabel!==-1) return byLabel;
-    var asIndex=parseInt(Requested,10);
-    if(Number.isFinite(asIndex) && asIndex>=0 && asIndex<tabs.length) return asIndex;
-    return 1;
-  }
+  function resolveInitialTabIndex(m){
+    var Requested=null;
+    try{ Requested=new URLSearchParams(window.location.search).get('tab'); }catch(e){}
+    return findTabIndex((m && m.tabs) || [], Requested, 1);
+  }
   function loadManifest(FileName, IsFallbackAttempt){
     fetch(FileName).then(r=>{
       if(!r.ok) throw new Error('HTTP '+r.status);
@@ -784,11 +878,18 @@
       if(isLoadingPhase) paintLoading(); else paint();
     });
   }
-  window.addEventListener('resize',queuePaint);
-  if(window.visualViewport){
-    window.visualViewport.addEventListener('resize',queuePaint);
-    window.visualViewport.addEventListener('scroll',queuePaint);
-  }
+  window.addEventListener('resize',queuePaint);
+  if(window.visualViewport){
+    window.visualViewport.addEventListener('resize',queuePaint);
+    window.visualViewport.addEventListener('scroll',queuePaint);
+  }
+
+  // Public surface for subpages to call via window.parent, see
+  // documentation/scripts/tab-anchor-links.js.
+  window.DocumentationTabController = {
+    scrollActiveFrameTo: scrollActiveFrameTo,
+    switchToTab: switchToTab
+  };
 })();
 </script>
 </body>

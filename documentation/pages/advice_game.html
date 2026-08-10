@@ -229,7 +229,18 @@
   var openCard = null;
 
   function getTenant() {
-    return new URLSearchParams(window.location.search).get('to') || '';
+    var win = window;
+    while (win) {
+      try {
+        var to = new URLSearchParams(win.location.search).get('to');
+        if (to) return to;
+        if (win === win.parent) break;
+        win = win.parent;
+      } catch (e) {
+        break; /* cross-origin boundary — stop climbing */
+      }
+    }
+    return '';
   }
 
   function buildReturnUrl() {

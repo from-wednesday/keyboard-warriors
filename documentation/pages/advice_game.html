@@ -44,6 +44,52 @@
   .hero-media img {
     border-color: rgba(0,0,0,.14);
   }
+  /* ── Screenshot click card ────────────────────────────────────── */
+  #settings-screenshot {
+    cursor: pointer;
+  }
+  .note-card {
+    display: none;
+    position: fixed;
+    z-index: 500;
+    width: max-content;
+    max-width: 280px;
+    background: var(--surface);
+    border: 1px solid var(--rule);
+    border-radius: 8px;
+    padding: 12px 14px;
+    box-shadow: 0 10px 28px rgba(0,0,0,.16);
+  }
+  .note-card.is-open { display: block; }
+  .note-card p.note-card-title {
+    font-family: var(--mono);
+    font-size: 0.68rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    color: var(--ink-soft);
+    margin: 0 0 6px;
+  }
+  .note-card p {
+    font-size: 0.82rem;
+    line-height: 1.55;
+    color: var(--ink-mid);
+    margin: 0;
+  }
+  /* Solid precomputed background — floating card can sit over arbitrary
+     content, so it can't rely on translucency. These are
+     rgba(255,255,255,.12) blended over the tab's light/dark bg colours
+     from the manifest, flattened to a fixed hex.
+     Update if this tab's manifest colours differ from advice_general. */
+  .note-card {
+    background: #e7dab2;
+    border-color: rgba(0,0,0,.16);
+    border-color: color-mix(in srgb, currentColor 18%, transparent);
+    color: var(--ink);
+  }
+  @media (prefers-color-scheme: dark) {
+    .note-card { background: #85878c; }
+  }
 
 </style>
 </head>
@@ -99,7 +145,11 @@
     <p>Other controls in the <strong>keyboard settings panel</strong> give you control over whether and how the keyboard is shown on screen. The <strong>Graphical Keyboard display is on by default.</strong></p>
     <p>On small phone screens it will be out of view, however the screen will auto scroll down and up with the cadence of question and answer.</p>
         <div class="hero-media">
-      <img src="/keyboard-warriors/images/keyboard-settings.png" alt="A view of the keyboard settings panel set to visible but Touch Enabled off.">
+      <img id="settings-screenshot" src="/keyboard-warriors/images/keyboard-settings.png" alt="A view of the keyboard settings panel set to visible but Touch Enabled off.">
+    </div>
+    <div class="note-card" id="screenshot-card">
+      <p class="note-card-title">sorry</p>
+      <p>This is <em>just</em> a static screenshot.</p><p>To try the actual controls, <a class="return-link" href="#">return to the game</a>.</p>
     </div>
     <p>The <strong>default experience on most screens</strong> is to have the <strong>keyboard visible but inactive.</strong> The intention, <em>as mentioned earlier</em>, is that you <strong>practice with your actual keyboard.</strong></p>
     <p>But having the graphical keyboard on screen helps you <strong>learn shortcuts and convert them to memory:</strong></p>
@@ -160,5 +210,87 @@
   </section>
 
 </div><!-- /.page -->
+<script>
+/* ══════════════════════════════════════
+   SCREENSHOT CLICK CARD
+   Clicking the keyboard-settings image
+   opens a floating card explaining it is
+   a static screenshot, with a link back
+   to the live game using the current
+   tenant (?to=) from the page URL.
+   Any click outside — or a second click
+   on the image — dismisses the card.
+   ══════════════════════════════════════ */
+(function () {
+  var img  = document.getElementById('settings-screenshot');
+  var card = document.getElementById('screenshot-card');
+  if (!img || !card) return;
+
+  var openCard = null;
+
+  function getTenant() {
+    return new URLSearchParams(window.location.search).get('to') || '';
+  }
+
+  function buildReturnUrl() {
+    var tenant = getTenant();
+    var base = 'https://from-wednesday.github.io/keyboard-warriors/';
+    return tenant ? base + '?to=' + encodeURIComponent(tenant) : base;
+  }
+
+  function closeCard() {
+    if (openCard) openCard.classList.remove('is-open');
+    openCard = null;
+  }
+
+  function positionCard(trigger, card) {
+    var margin = 12;
+    var rect = trigger.getBoundingClientRect();
+    var vw = window.innerWidth;
+    var vh = window.innerHeight;
+
+    /* Reveal off-screen first so we can measure its real size. */
+    card.style.left = '-9999px';
+    card.style.top  = '-9999px';
+    card.classList.add('is-open');
+
+    /* Refresh the return link each time in case the URL has changed. */
+    var link = card.querySelector('.return-link');
+    if (link) link.href = buildReturnUrl();
+
+    var cardW = card.offsetWidth;
+    var cardH = card.offsetHeight;
+
+    /* Centre horizontally over the image, vertically in its upper third. */
+    var left = rect.left + (rect.width  - cardW) / 2;
+    var top  = rect.top  + (rect.height / 3) - (cardH / 2);
+
+    left = Math.max(8, Math.min(left, vw - cardW - 8));
+    top  = Math.max(8, Math.min(top,  vh - cardH - 8));
+
+    card.style.left = left + 'px';
+    card.style.top  = top  + 'px';
+  }
+
+  img.addEventListener('click', function (e) {
+    e.stopPropagation();
+    var wasOpen = (openCard === card);
+    closeCard();
+    if (!wasOpen) {
+      positionCard(img, card);
+      openCard = card;
+    }
+  });
+
+  document.addEventListener('click', function (e) {
+    if (openCard && !openCard.contains(e.target) && e.target !== img) {
+      closeCard();
+    }
+  });
+
+  window.addEventListener('scroll', closeCard, true);
+  window.addEventListener('resize', closeCard);
+})();
+</script>
 </body>
 </html>

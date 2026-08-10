@@ -1,45 +1,95 @@
 {
-  "creditClause": "is free to adapt under Polyform Non-Commercial 1.0.0",
-  "creditLinkUrl": "/keyboard-warriors/documentation/index.html?to=public",
-  "skillsets": [
-    { "label": "Graphic Design",      "tags": ["Graphics"] },
-    { "label": "Photography",         "tags": ["Photography"] },
-    { "label": "Animation",           "tags": ["Motion"] },
-    { "label": "Video Editing",       "tags": ["Video"] },
-    { "label": "Audio Engineering",   "tags": ["Audio"] },
-    { "label": "Spatial Design",      "tags": ["3D"] },
-    { "label": "UI UX Devs",          "tags": ["UIUX"] },
-    { "label": "Office Productivity", "tags": ["Productivity"] }
+  "title": "from-wednesday",
+  "colors": {
+    "light": "#EDE0B4",
+    "dark": "#6f7277"
+  },
+  "tabs": [
+    {
+      "objectId": 1,
+      "label": "LICENSE",
+      "url": "pages/license-public.html",
+      "colors": {
+        "light": "#d9c99d",
+        "dark": "#74777c"
+      }
+    },
+    {
+      "objectId": 2,
+      "label": "BOOTCAMP",
+      "url": "pages/advice_general.html",
+      "colors": {
+        "light": "#e4d5a8",
+        "dark": "#74777c"
+      }
+    },
+    {
+      "objectId": 3,
+      "label": "KEYBOARD WARRIORS",
+      "url": "pages/advice_game.html",
+      "colors": {
+        "light": "#ede0b4",
+        "dark": "#659287"
+      }
+    },
+    {
+      "objectId": 4,
+      "label": "</> Json SCHEMA",
+      "url": "pages/schema_defined.html",
+      "colors": {
+        "light": "#f6eec9",
+        "dark": "#88BDA4"
+      }
+    },
+    {
+      "objectId": 5,
+      "label": "</> DEFINING KEYS",
+      "url": "pages/define_the_keys.html",
+      "colors": {
+        "light": "#EEF8CD",
+        "dark": "#B1D3B9"
+      }
+    },
+    {
+      "objectId": 6,
+      "label": "SUPPORT",
+      "url": "pages/support.html",
+      "colors": {
+        "light": "#BBF1D2",
+        "dark": "#E6F2DD"
+      }
+    }
   ],
-  "apps": [
-  { "label": "[Lr] Lightroom",    "path": "/keyboard-warriors/data/shortcuts_lightroom.json",       "column": 1, "skillset": ["Photography"],              "standby": ["3D"] },
-  { "label": "[Ps] Photoshop",    "path": "/keyboard-warriors/data/shortcuts_photoshop.json",       "column": 1, "skillset": ["Graphics", "Photography"],  "standby": ["Motion", "Video", "3D", "UIUX"] },
-  { "label": "[Ai] Illustrator",  "path": "/keyboard-warriors/data/shortcuts_illustrator.json",     "column": 1, "skillset": ["Graphics"],                 "standby": ["UIUX", "Motion", "3D"] },
-  { "label": "[Id] InDesign",     "path": "/keyboard-warriors/data/shortcuts_inDesign.json",        "column": 1, "skillset": ["Graphics"],                 "standby": ["Photography"] },
-  { "label": "[Pr] Premiere Pro", "path": "/keyboard-warriors/data/shortcuts_premiere.json",        "column": 1, "skillset": ["Video"],                    "standby": ["Photography", "Motion"] },
-  { "label": "DaVinci Resolve",   "path": "/keyboard-warriors/data/shortcuts_davinci_resolve.json", "column": 2, "skillset": ["Video"],                    "standby": ["Motion"] },
-  { "label": "ToonBoom Harmony",  "path": "/keyboard-warriors/data/shortcuts_toonBoomHarmony.json", "column": 2, "skillset": ["Motion"],                   "standby": [] },
-  { "label": "Avid Pro Tools",    "path": "/keyboard-warriors/data/shortcuts_proTools.json",        "column": 2, "skillset": ["Audio"],                    "standby": ["Motion", "Video"] },  
-  { "label": "[Ae] After Effects","path": "/keyboard-warriors/data/shortcuts_afterEffects.json",    "column": 1, "skillset": ["Motion", "Video"],          "standby": ["Graphics"] },
-  { "label": "Revit",             "path": "/keyboard-warriors/data/shortcuts_revit.json",           "column": 4, "skillset": ["3D"],                       "standby": [] },
-  { "label": "Auto CAD",          "path": "/keyboard-warriors/data/shortcuts_autoCAD.json",         "column": 4, "skillset": ["3D"],                       "standby": [] },
-  { "label": "SketchUp",          "path": "/keyboard-warriors/data/shortcuts_sketchup.json",        "column": 4, "skillset": ["3D"],                       "standby": [] },
-  { "label": "Blender",           "path": "/keyboard-warriors/data/shortcuts_blender.json",         "column": 4, "skillset": ["3D"],                       "standby": ["Motion"] },
-  { "label": "Enscape",           "path": "/keyboard-warriors/data/shortcuts_enscape.json",         "column": 4, "skillset": ["3D"],                       "standby": [] },
-  { "label": "Figma",             "path": "/keyboard-warriors/data/shortcuts_figma.json",           "column": 2, "skillset": ["Graphics", "UIUX"],         "standby": ["Dev"] },
-  { "label": "Sketch",            "path": "/keyboard-warriors/data/shortcuts_sketch.json",          "column": 2, "skillset": ["UIUX"],                     "standby": ["Graphics", "Dev"] },
-  { "label": "MS Word",           "path": "/keyboard-warriors/data/shortcuts_msWord.json",          "column": 3, "skillset": ["Productivity"],             "standby": [] },
-  { "label": "MS Excel",          "path": "/keyboard-warriors/data/shortcuts_msExcel.json",         "column": 3, "skillset": ["Productivity"],             "standby": [] },
-  { "label": "MS Outlook",        "path": "/keyboard-warriors/data/shortcuts_msOutlook.json",       "column": 3, "skillset": ["Productivity"],             "standby": [] },
-  { "label": "MS PowerPoint",     "path": "/keyboard-warriors/data/shortcuts_msPowerpoint.json",    "column": 3, "skillset": ["Productivity"],             "standby": [] },
-  { "label": "MS Teams",          "path": "/keyboard-warriors/data/shortcuts_msTeams.json",         "column": 3, "skillset": ["Productivity"],             "standby": ["Dev"] },
-  { "label": "Acrobat",           "path": "/keyboard-warriors/data/shortcuts_acrobat.json",         "column": 1, "skillset": [],                           "standby": ["Graphics", "Productivity"] },
-  { "label": "Notion",            "path": "/keyboard-warriors/data/shortcuts_notion.json",          "column": 3, "skillset": ["Productivity"],             "standby": ["Dev", "UIUX"] },
-  { "label": "Apple Keynote",     "path": "/keyboard-warriors/data/shortcuts_apple_keynote.json",   "column": 3, "skillset": [],                           "standby": ["Productivity"] },
-  { "label": "Apple GarageBand",  "path": "/keyboard-warriors/data/shortcuts_apple_garageBand.json","column": 3, "skillset": [],                           "standby": ["Audio"] },
-  { "label": "Canva",             "path": "/keyboard-warriors/data/shortcuts_canva.json",           "column": 2, "skillset": ["Photography"],              "standby": ["Graphics", "Productivity"] },
-  { "label": "[Au] Audition",     "path": "/keyboard-warriors/data/shortcuts_audition.json",        "column": 1, "skillset": ["Audio"],                    "standby": [] },
-  { "label": "Ableton Live 12",   "path": "/keyboard-warriors/data/shortcuts_live12.json",          "column": 4, "skillset": ["Audio"],                    "standby": [] },
-  { "label": "Beta testing", "path": "/keyboard-warriors/data/in_progress/shortcuts_TESTING.json",  "column": 4, "beta": true }
-]
+  "layout": {
+    "peekStepPx": 28,
+    "staggerStepMs": 45,
+    "flapWidthPx": 252,
+    "flapStepPx": 220,
+    "flapHeightPx": 40,
+    "flapAngleDeg": 14,
+    "cornerRadiusPx": 16
+  },
+  "responsive": {
+    "useDynamicViewport": true,
+    "useVisualViewport": true,
+    "minPeekStepPx": 18,
+    "tabStackMaxViewportShare": 0.34,
+    "compactAtViewportHeightPx": 720,
+    "narrowMode": {
+      "enabled": true,
+      "titleRow": true,
+      "fullWidthTabs": true,
+      "alternateFlaps": true,
+      "firstFlapSide": "right"
+    }
+},
+"animation": {
+"easing": "cubic-bezier(.22,1,.36,1)",
+"cascadeStepMs": 35,
+"transitionMs": 560,
+"anchorScrollMs": 480,
+"pressMs": 90,
+"pressOffsetPx": 4,
+"parallaxPx": 18
+}
 }

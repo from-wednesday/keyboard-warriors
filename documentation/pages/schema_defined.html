@@ -125,8 +125,7 @@
       <div class="compare-row">
       <div class="compare-col dont">
         <h4>Wrong approach</h4>
-<div class="code-block">{<br>
-			<span class="c-key">"group"</span>: <span class="c-val">"editing"</span><br>
+<div class="code-block"><span class="c-key">"group"</span>: <span class="c-val">"editing"</span><br>
 			<span class="c-key">"group"</span>: <span class="c-val">"selection"</span><br>
 			<span class="c-key">"group"</span>: <span class="c-val">"navigation"</span><br>
 			<span class="c-key">"group"</span>: <span class="c-val">"panels"</span><br>
@@ -134,8 +133,7 @@
       </div>
       <div class="compare-col do">
         <h4>Right approach</h4>
-        <div class="code-block">{<br>
-			<span class="c-key">"group"</span>: <span class="c-val">"nudge"</span> // arrow key directions<br>
+        <div class="code-block"><span class="c-key">"group"</span>: <span class="c-val">"nudge"</span> // arrow key directions<br>
 			<span class="c-key">"group"</span>: <span class="c-val">"opacity"</span> // numeric levels<br>
 </div>
       </div>
@@ -438,10 +436,10 @@
         </p>
       </div>
     </div>
-    <p class="note">
-      The <code>sequential</code> flag is independent of difficulty. Do not rely on
-      difficulty 6 to exclude these entries from freestyle. This flag must be set
-      explicitly on every remodelled sequential entry.
+    <p>
+      The <code>sequential</code> flag is independent of difficulty. Do not set a <code>sequential</code> entry to
+      Difficulty-6 because it will not appear anywhere then. This flag should be set
+      explicitly on every sequential entry where it's appearance in <strong>Freestyle Mode</strong> would break the context in the absence of the rest of the key sequence. Consider the way the "display" is worded. Would it be confusing or a helpful definition of <em>this key's action</em> when pressed in Freestyle Mode?
     </p>
   </section>
   <!-- ══ MODIFIER-ENHANCED MOUSE ACTIONS ══════════════════════════ -->
@@ -529,13 +527,13 @@
 <span class="c-key">"pc_sc"</span>: <span class="c-val">"H|SPACE"</span>,<br>
 <span class="c-key">"difficulty"</span>: <span class="c-val">2</span><br>}</div>
         <p>Here <strong>Difficulty-6</strong> has been used to add <em>specificity</em> to the <strong>freestyle definitions</strong>, while the in-game question is more general for <em>fast flexible game play</em>. Note that the <strong>order</strong> is important here. <strong>Freestyle</strong> will report the <em>first</em> answer it finds, so we do not need to falsely label the pipe option as "sequential" (<em>it isn't</em>), it just needs to come <em>after</em> any <strong>Difficulty-6</strong> options that double entered piped options.</p>
-        <p>Use this pattern <em>only</em> when the distinction is <strong>meaningful</strong> to a user learning the software. <em>Do not</em> create reference-only variants merely because two shortcuts happen to exist for the same function.</p>
+
       </div>
     </div>
-    <p class="note">
-      Use this pattern sparingly where the distinction is <strong>meaningful</strong> and
-      source-supported.</br>Merged playable entries should always reflect the player's
-      perspective: one action, multiple accepted answers.</b>Reference-only entries
+	          <p>Use this pattern sparingly, <em>only</em> when the distinction is <strong>meaningful</strong> to a user learning the software, and
+      source-supported. <em>Do not</em> create reference-only variants <strong>merely because two shortcuts happen to exist</strong> for the same function.</p>
+    <p>
+     Merged playable entries should always reflect the player's perspective: one action, multiple accepted answers.</br>Reference-only entries
       preserve source detail without overloading normal gameplay. They can be more verbose if it adds precision, now that reading time is not a consideration.   
     </p>
   </section>
@@ -701,7 +699,7 @@
             <td><code>skillset</code></td>
             <td>Array of strings</td>
             <td>No</td>
-            <td>This defines which skillsets' app selector list this app appears in. The first app in the <small>JSON</small> to nominate a certain skillset will be the <strong>initial default</strong> for <em>that</em> skillset (so sequence apps strategically in the file).</td>
+            <td>This defines which skillsets' app selector list this app appears in. The 'Skillset' labels are used as organised groups of related apps for the users convenience, keeping the app selector concise and focused. The first app in the <small>JSON</small> to nominate a certain skillset will be the <strong>initial default</strong> for <em>that</em> skillset (so sequence apps strategically in the file).</td>
           </tr>
           <tr>
             <td><code>standby</code></td>
@@ -717,7 +715,6 @@
           </tr>
         </tbody>
       </table>
-    </div>
-</div><!-- /.page -->
+    </div><!-- /.page -->
 </body>
 </html>

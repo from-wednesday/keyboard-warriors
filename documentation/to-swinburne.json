@@ -83,13 +83,13 @@
       "firstFlapSide": "right"
     }
   },
-  "animation": {
-    "easing": "cubic-bezier(.22,1,.36,1)",
-    "cascadeStepMs": 35,
-    "transitionMs": 560,
-    "anchorScrollMs": 480,
-    "pressMs": 90,
-    "pressOffsetPx": 4,
-    "parallaxPx": 18
-  }
+  "animation": {
+    "easing": "cubic-bezier(.22,1,.36,1)",
+    "cascadeStepMs": 35,
+    "transitionMs": 560,
+    "anchorScrollMs": 480,
+    "pressMs": 90,
+    "pressOffsetPx": 4,
+    "parallaxPx": 18
+  }
 }

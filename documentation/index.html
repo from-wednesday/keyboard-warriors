@@ -857,6 +857,10 @@
       if(!IsFallbackAttempt && EditionId!=='public'){
         // Unknown or missing edition — fall back to the public manifest
         // rather than failing outright.
+        console.warn(
+          '[KW] Could not load manifest for edition "' + EditionId +
+          '" — falling back to public. Reason:', err.message
+        );
         loadManifest('to-public.json', true);
         return;
       }

@@ -22,6 +22,14 @@
     <p>See the companion shortcuts token reference <a href="../?tab=5" data-open-tab="5"><strong>'<small>&lt;/&gt;</small>Defining Keys'</strong></a> for the full list of accepted key tokens.
     </p>
   </header>
+	 <!-- ══ PREAMBLE ══════════════════════════════════════════ -->
+<section>
+    <h2 id="context">00 ) Context</h2> 
+     <h3>Keyboard Warriors has two modes</h3>
+      <p><strong>Gameplay Mode</strong> presents timed quiz questions and prioritises short prompts and fair marking.</p>
+      <p><strong>Freestyle Mode</strong> allows for exploration between game rounds. It reports what pressed keys do and prioritises precise definitions and source-specific terminology. </p>
+      <p>Some features described in this schema exist <em>specifically</em> to balance these two different goals. (see: <a href="#difficulty">Difficulty-6</a>, <a href="#seqquential">Sequential</a>, <a href="#triple-entry">the Triple-Entry Pattern</a>)</p>
+</section>
   <!-- ══ ENTRY STRUCTURE ══════════════════════════════════════════ -->
   <section>
     <h2 id="entry-structure">01 ) Entry Structure</h2>
@@ -47,7 +55,19 @@
     <p>This is <strong>the question</strong> prompt shown to the player. It must be plain text with no markup. Because of that, I like to use capital letters sparingly where I want to place emphasis.</p>
     <p>Write it action-focused, concise, and verb-first. I like to vary the language to make the gameplay feel more conversational and less repetative. For example, "pick up the Eraser" ; "grab the Pen Tool" ; "select the Laso Tool" etc.</p>
     <p>Avoid including (or hinting at) the answer in the display text. Aim for a phrase a player can read comfortably in a few seconds.</p>
-    <p>When writing these, consider both the context of the in-game question <em>and</em> the free-style exploration mode: In game the text is asking you to do something. Between games it is reporting back what function those keys perform. If you are unable to arrive at one "display" that works for both of these use cases, it is possible to define the shortcut as <em>two</em> <small>JSON</small> objects. One for each context at the exclussion of the other. See the <a href="#difficulty">"difficulty"</a> and <a href="#sequential">"sequential"</a> sections below for more information.
+      <div class="compare-row">
+      <div class="compare-col dont">
+        <h4>Wrong approach</h4>
+<div class="code-block">{<br>
+			<span class="c-key">"display"</span>: <span class="c-val">"press the P shortcut to select the Pen Tool"</span><br>
+			<span class="c-key">"display"</span>: <span class="c-val">"which arrow moves left?"</span><br>
+		</div>
+      </div>
+      <div class="compare-col do">
+        <h4>Right approach</h4>
+<div class="code-block">{<br>
+			<span class="c-key">"display"</span>: <span class="c-val">"select the Pen Tool"</span><br><p>Just because the answer here is 'P', you don't need to avoid using the correct term for the tool.</p>
+</div>    <p>When writing these, consider both the context of the in-game question <em>and</em> the free-style exploration mode: In game the text is asking you to do something. Between games it is reporting back what function those keys perform. If you are unable to arrive at one "display" that works for both of these use cases, it is possible to define the shortcut as <em>two</em> <small>JSON</small> objects. One for each context at the exclussion of the other. See the <a href="#difficulty">"difficulty"</a> and <a href="#sequential">"sequential"</a> sections below for more information.
     </p>
     <p>Note that for "sequential" entries, it is essential to phrase the "display" string for the context, such as
       "after pressing… press this to…". <em>More on <a href="#sequential">sequential shortcuts</a> later.</em>
@@ -59,11 +79,12 @@
       The token string used for Mac input matching and chip rendering. Tokens are combined
       with <code>+</code>. Use the pipe <code>|</code> to offer alternative accepted answers where a single
       action genuinely has more than one accepted key.</p>
-    <p>Use the literal value <span class="null-val">NULL</span> (or the synonym <span class="null-val">NONE</span>)
+<p>Use the literal value <span class="null-val">NULL</span> (or the synonym <span class="null-val">NONE</span>)
       when the shortcut does not exist on Mac.</p>
     <p>Prefer platform-native modifier tokens in Mac fields: <span class="tok">CMD</span>, <span class="tok">OPT</span>,
       <span class="tok mac">CONTROL</span>, <span class="tok">SHIFT</span>. Although the system will translate between equivallent OS keys, writing OS specific data in the other platform's conventions is more error prone because the <small>JSON</small> is less human-readable for proofing.</p>
-    <p>See the shortcuts token reference <strong><small>&lt;/&gt;</small>'Defining Keys'</strong> for all
+    <p>Accepted synonyms exist for error prevention. Use the preferred platform-native tokens shown in this reference for consistency.</p>
+    <p>See the shortcuts token reference <a href="../?tab=5" data-open-tab="5"><strong>'<small>&lt;/&gt;</small>Defining Keys'</strong></a> for all
       accepted tokens and their accepted synonyms.
     </p>
     <div class="code-block"><span class="c-key">"mac_sc"</span>: <span class="c-val">"CMD+S"</span>             <span class="c-note">// single chord</span></br>
@@ -83,8 +104,7 @@
     <h3>"difficulty"</h3>
     <p>
       An integer from 0 to 6 controlling which question pools the entry enters, based on
-      the player's selected difficulty setting. Difficulty 6 is reference-only and is
-      never surfaced in normal gameplay round. It is provided as a way to include vocabulary for free-style mode only.</p>
+      the player's selected difficulty setting. The matching for difficulties 0 to 5 is not a simple 1:1 match. Question pools are built with fuzzy logic taking many salient factors into account.</p><p>Note that <strong>'Difficulty-6'</strong> entries <em>never</em> appear in gameplay question pools at all. They are provided as a way to include vocabulary for <strong>free-style mode</strong> reference <em>only</em>.</p>
     <p>See <a href="#difficulty">Section 04 — Difficulty Scale</a> for the full breakdown.
     </p>
     <div class="code-block"><span class="c-key">"difficulty"</span>: <span class="c-val">1</span>   <span class="c-note">// easy — Common cross-app shortcuts</span></br>
@@ -99,7 +119,25 @@
       together in the same round. Do <strong>not</strong> group entries simply because they share a topic.
       See <a href="#groups">Section 05 — Groups</a>.
     </p>
-    <div class="code-block"><span class="c-key">"group"</span>: <span class="c-val">"nudge"</span></div>
+   
+      <div class="compare-row">
+      <div class="compare-col dont">
+        <h4>Wrong approach</h4>
+<div class="code-block">{<br>
+			<span class="c-key">"group"</span>: <span class="c-val">"editing"</span><br>
+			<span class="c-key">"group"</span>: <span class="c-val">"selection"</span><br>
+			<span class="c-key">"group"</span>: <span class="c-val">"navigation"</span><br>
+			<span class="c-key">"group"</span>: <span class="c-val">"panels"</span><br>
+</div>
+      </div>
+      <div class="compare-col do">
+        <h4>Right approach</h4>
+        <div class="code-block">{<br>
+			<span class="c-key">"group"</span>: <span class="c-val">"nudge"</span> // arrow key directions<br>
+			<span class="c-key">"group"</span>: <span class="c-val">"opacity"</span> // numeric levels<br>
+</div>
+      </div><p>If removing the <strong>group</strong> field would not negatively affect gameplay, the group should <em>probably not exist</em>.</p>
+    </div>
     <h3>"sequential" <span class="note">(optional)</span></h3>
     <p>I made <strong>Keyboard Warriors</strong> to learn and practice shortcut single keys and simultaneous chords. Only afterwards did I learn how many applications use <em>sequential key combinations</em> to perform actions. The distinction I am drawing here is that a sequential shortcut is not held simultaneously. Rather than retool the whole gameplay for this minority case, I have a pragmatic work around:</p>
       <p>"sequential" is a boolean, always set to <code>true</code> when present. It marks an entry that has
@@ -485,7 +523,8 @@
 <span class="c-key">"mac_sc"</span>: <span class="c-val">"H|SPACE"</span>,<br>
 <span class="c-key">"pc_sc"</span>: <span class="c-val">"H|SPACE"</span>,<br>
 <span class="c-key">"difficulty"</span>: <span class="c-val">2</span><br>}</div>
-        <p>Here Difficulty-6 has been used to add <em>specificity</em> to the freestyle definitions, while the in-game question is more general for fast flexible game play. Note that the order is important. Freestyle will report the first answer it finds, so we do not need to falsely label the pipe option as sequential (<em>it isn't</em>) it just needs to come after the difficulty 6 options.</p>
+        <p>Here <strong>Difficulty-6</strong> has been used to add <em>specificity</em> to the <strong>freestyle definitions</strong>, while the in-game question is more general for <em>fast flexible game play</em>. Note that the <strong>order</strong> is important here. <strong>Freestyle</strong> will report the <em>first</em> answer it finds, so we do not need to falsely label the pipe option as "sequential" (<em>it isn't</em>), it just needs to come <em>after</em> any <strong>Difficulty-6</strong> options that double entered piped options.</p>
+        <p>Use this pattern <em>only</em> when the distinction is <strong>meaningful</strong> to a user learning the software. <em>Do not</em> create reference-only variants merely because two shortcuts happen to exist for the same function.</p>
       </div>
     </div>
     <p class="note">

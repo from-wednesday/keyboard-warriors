@@ -26,9 +26,7 @@
 <section>
     <h2 id="context">00 ) Context</h2> 
      <h3>Keyboard Warriors has two modes</h3>
-      <p><strong>Gameplay Mode</strong> presents timed quiz questions and prioritises short prompts and fair marking.</p>
-      <p><strong>Freestyle Mode</strong> allows for exploration between game rounds. It reports what pressed keys do and prioritises precise definitions and source-specific terminology. </p>
-      <p>Some features described in this schema exist <em>specifically</em> to balance these two different goals. (see: <a href="#difficulty">Difficulty-6</a>, <a href="#seqquential">Sequential</a>, <a href="#triple-entry">the Triple-Entry Pattern</a>)</p>
+      <p><strong>Gameplay Mode</strong> presents timed quiz questions and prioritises short prompts and fair marking. <strong>Freestyle Mode</strong> allows for exploration between game rounds. It reports what pressed keys do and prioritises precise definitions and source-specific terminology. Some features described in this schema exist <em>specifically</em> to balance these two different goals. (see: <a href="#difficulty">Difficulty-6</a>, <a href="#sequential">Sequential</a>, <a href="#triple-entry">the Triple-Entry Pattern</a>)</p>
 </section>
   <!-- ══ ENTRY STRUCTURE ══════════════════════════════════════════ -->
   <section>
@@ -58,21 +56,24 @@
       <div class="compare-row">
       <div class="compare-col dont">
         <h4>Wrong approach</h4>
-<div class="code-block">{<br>
+<div class="code-block"><br>
 			<span class="c-key">"display"</span>: <span class="c-val">"press the P shortcut to select the Pen Tool"</span><br>
 			<span class="c-key">"display"</span>: <span class="c-val">"which arrow moves left?"</span><br>
 		</div>
       </div>
       <div class="compare-col do">
         <h4>Right approach</h4>
-<div class="code-block">{<br>
+<div class="code-block"><br>
 			<span class="c-key">"display"</span>: <span class="c-val">"select the Pen Tool"</span><br><p>Just because the answer here is 'P', you don't need to avoid using the correct term for the tool.</p>
-</div>    <p>When writing these, consider both the context of the in-game question <em>and</em> the free-style exploration mode: In game the text is asking you to do something. Between games it is reporting back what function those keys perform. If you are unable to arrive at one "display" that works for both of these use cases, it is possible to define the shortcut as <em>two</em> <small>JSON</small> objects. One for each context at the exclussion of the other. See the <a href="#difficulty">"difficulty"</a> and <a href="#sequential">"sequential"</a> sections below for more information.
+ </div> 
+</div>
+</div>
+		  <p>When writing these, consider both the context of the in-game question <em>and</em> the free-style exploration mode: In game the text is asking you to do something. Between games it is reporting back what function those keys perform. If you are unable to arrive at one "display" that works for both of these use cases, it is possible to define the shortcut as <em>two</em> <small>JSON</small> objects. One for each context at the exclussion of the other. See the <a href="#difficulty">"difficulty"</a> and <a href="#sequential">"sequential"</a> sections below for more information.
     </p>
     <p>Note that for "sequential" entries, it is essential to phrase the "display" string for the context, such as
       "after pressing… press this to…". <em>More on <a href="#sequential">sequential shortcuts</a> later.</em>
     </p>
-    <div class="code-block"><span class="c-key"><strong>"display"</span>: <span class="c-val">"save the document"</strong></span> <span class="c-note">// a simultaneous chord</span></br>
+    <div class="code-block"><span class="c-key"><strong>"display"</strong></span>: <span class="c-val"><strong>"save the document"</strong></span> <span class="c-note">// a simultaneous chord</span></br>
 <span class="c-key">"display"</span>: <span class="c-val">"after entering a configuration number, store it"</span> <span class="c-note">// sequential keys</span></div>
     <h3>"mac_sc"</h3>
     <p>

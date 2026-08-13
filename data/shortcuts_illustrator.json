@@ -1,5 +1,125 @@
 [
-       {
+  {
+    "display": "Create a new document",
+    "mac_sc": "CMD+N",
+    "pc_sc": "CTRL+N",
+    "difficulty": 0
+  },
+  {
+    "display": "Open a document",
+    "mac_sc": "CMD+O",
+    "pc_sc": "CTRL+O",
+    "difficulty": 0
+  },
+  {
+    "display": "Select All",
+    "mac_sc": "CMD+A",
+    "pc_sc": "CTRL+A",
+    "difficulty": 1
+  },
+  {
+    "display": "Redo",
+    "mac_sc": "CMD+SHIFT+Z",
+    "pc_sc": "CTRL+SHIFT+Z",
+    "difficulty": 1
+  },
+  {
+    "display": "switch to the Magic Wand tool",
+    "mac_sc": "Y",
+    "pc_sc": "Y",
+    "difficulty": 4
+  },
+  {
+    "display": "switch to the Lasso tool",
+    "mac_sc": "Q",
+    "pc_sc": "Q",
+    "difficulty": 3
+  },
+  {
+    "display": "switch to the Line Segment tool",
+    "mac_sc": "BACKSLASH",
+    "pc_sc": "BACKSLASH",
+    "difficulty": 3
+  },
+  {
+    "display": "switch to the Width tool",
+    "mac_sc": "SHIFT+W",
+    "pc_sc": "SHIFT+W",
+    "difficulty": 3
+  },
+  {
+    "display": "switch to the Touch Type tool",
+    "mac_sc": "SHIFT+T",
+    "pc_sc": "SHIFT+T",
+    "difficulty": 4
+  },
+  {
+    "display": "Create a document from a template",
+    "mac_sc": "CMD+SHIFT+N",
+    "pc_sc": "CTRL+SHIFT+N",
+    "difficulty": 4
+  },
+  {
+    "display": "Create a document without opening the New Document dialog",
+    "mac_sc": "CMD+OPT+N",
+    "pc_sc": "CTRL+ALT+N",
+    "difficulty": 5
+  },
+  {
+    "display": "Place a file in the document",
+    "mac_sc": "CMD+SHIFT+P",
+    "pc_sc": "CTRL+SHIFT+P",
+    "difficulty": 4
+  },
+  {
+    "display": "Browse in Adobe Bridge",
+    "mac_sc": "CMD+OPT+O",
+    "pc_sc": "CTRL+ALT+O",
+    "difficulty": 5
+  },
+  {
+    "display": "Close the document window",
+    "mac_sc": "CMD+W",
+    "pc_sc": "CTRL+W",
+    "difficulty": 4
+  },
+  {
+    "display": "Save a copy of the document",
+    "mac_sc": "CMD+OPT+S",
+    "pc_sc": "CTRL+ALT+S",
+    "difficulty": 4
+  },
+  {
+    "display": "Open Preferences",
+    "mac_sc": "CMD+K",
+    "pc_sc": "CTRL+K",
+    "difficulty": 5
+  },
+  {
+    "display": "Open Color Settings",
+    "mac_sc": "CMD+SHIFT+K",
+    "pc_sc": "CTRL+SHIFT+K",
+    "difficulty": 5
+  },
+  {
+    "display": "Bring object to Front",
+    "mac_sc": "CMD+SHIFT+BRACKETRIGHT",
+    "pc_sc": "CTRL+SHIFT+BRACKETRIGHT",
+    "difficulty": 3
+  },
+  {
+    "display": "Send object to Back",
+    "mac_sc": "CMD+SHIFT+BRACKETLEFT",
+    "pc_sc": "CTRL+SHIFT+BRACKETLEFT",
+    "difficulty": 3
+  },
+  {
+    "display": "Make Compound Path",
+    "mac_sc": "CMD+8",
+    "pc_sc": "CTRL+8",
+    "difficulty": 4
+  },
+  {
 "display": "Cut the selection",
     "mac_sc": "CMD+X",
     "pc_sc": "CTRL+X",

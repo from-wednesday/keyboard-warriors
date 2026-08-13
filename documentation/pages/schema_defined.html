@@ -51,7 +51,7 @@
 <strong>}</strong></div>
     <h3>"display"</h3>
     <p>This is <strong>the question</strong> prompt shown to the player. It must be plain text with no markup. Because of that, I like to use capital letters sparingly where I want to place emphasis.</p>
-    <p>Write it action-focused, concise, and verb-first. I like to vary the language to make the gameplay feel more conversational and less repetative. For example, "pick up the Eraser" ; "grab the Pen Tool" ; "select the Laso Tool" etc.</p>
+    <p>Write it action-focused, concise, and verb-first. I like to vary the language to make the gameplay feel more conversational and less repetitive. For example, "pick up the Eraser" ; "grab the Pen Tool" ; "select the Laso Tool" etc.</p>
     <p>Avoid including (or hinting at) the answer in the display text. Aim for a phrase a player can read comfortably in a few seconds.</p>
       <div class="compare-row">
       <div class="compare-col dont">
@@ -69,7 +69,7 @@
 </div>
 </div>
     <p>When writing these, consider <strong>both</strong> the context of the <strong>in-game</strong> question <em>and</em> the <strong>free-style exploration</strong> mode: In game the text is asking you to <em>do something</em>. Between games it is reporting back <em>what function</em> those keys perform. </p>
-		  <p>If you are unable to arrive at one <strong>"display"</strong> that works for <em>both</em> of these use cases, it is possible to define the shortcut as <em>two </em> <small>JSON</small> objects. One for each context at the exclussion of the other. See the <a href="#difficulty">"Difficulty-6"</a> , <a href="#sequential">"Sequential"</a> and <a href="#triple-entry">"the Triple-Entry Pattern"</a> sections below for the complete explanation of these methods.
+		  <p>If you are unable to arrive at one <strong>"display"</strong> that works for <em>both</em> of these use cases, it is possible to define the shortcut as <em>two </em> <small>JSON</small> objects. One for each context at the exclusion of the other. See the <a href="#difficulty">"Difficulty-6"</a> , <a href="#sequential">"Sequential"</a> and <a href="#triple-entry">"the Triple-Entry Pattern"</a> sections below for the complete explanation of these methods.
           </p>
     <p>Note that for <strong>"Sequential" </strong>entries, it is <em>essential</em> to phrase the <strong>"display"</strong> string for the context. Use phrases such as
       "<em>after pressing… &quot;</em> or &quot;<em>press this first when…"</em>. More on <a href="#sequential"><strong>Sequential shortcuts</strong></a>later.
@@ -84,7 +84,7 @@
 <p>Use the literal value <span class="null-val">NULL</span> (or the synonym <span class="null-val">NONE</span>)
       when the shortcut does not exist on Mac.</p>
     <p>Prefer platform-native modifier tokens in Mac fields: <span class="tok">CMD</span>, <span class="tok">OPT</span>,
-      <span class="tok mac">CONTROL</span>, <span class="tok">SHIFT</span>. Although the system will translate between equivallent OS keys, writing OS specific data in the other platform's conventions is more error prone because the <small>JSON</small> is less human-readable for proofing.</p>
+      <span class="tok mac">CONTROL</span>, <span class="tok">SHIFT</span>. Although the system will translate between equivalent OS keys, writing OS specific data in the other platform's conventions is more error prone because the <small>JSON</small> is less human-readable for proofing.</p>
     <p>Accepted synonyms exist for error prevention. Use the preferred platform-native tokens shown in this reference for consistency.</p>
     <p>See the shortcuts token reference <a href="../?tab=5" data-open-tab="5"><strong>'<small>&lt;/&gt;</small>Defining Keys'</strong></a> for all
       accepted tokens and their accepted synonyms.
@@ -146,7 +146,8 @@
       <p><strong>"Sequential"</strong> is a boolean, always set to <code>true</code> when present. It marks an entry that has
       been remodelled from a multi-step sequential workflow into a playable
       initiation or completion single key prompt. The game excludes entries marked as <strong>sequential</strong> from <strong>Freestyle Mode</strong>
-      where out-of-context sequential prompts would be misleading. As such, the flag can technically be used to exclude any entry from Freestyle Mode, however its  purpose is manage sequential shortcuts specifically. We will discuss <em>another</em> method to control the <strong>Freestyle Mode</strong> vicabulary in the <a href="#triple-entry">Triple-Entry section</a>. I would recommend that as a more elegant system than falsley reporting a non-sequential shortcut as <code>"Sequential": true</code>.</p>
+      where out-of-context sequential prompts would be misleading. As such, the flag can technically be used to exclude any entry from Freestyle Mode, however its  purpose is manage sequential shortcuts specifically. We will discuss <em>another</em> method to control the <strong>Freestyle Mode</strong> vocabulary
+  in the <a href="#triple-entry">Triple-Entry section</a>. I would recommend that as a more elegant system than falsly reporting a non-sequential shortcut as <code>"Sequential": true</code>.</p>
      <p>The <strong>sequential</strong> flag is entirely separate from difficulty. Do not use difficulty-6 as a
       substitute for it. It is functionally the <em>opposite</em> effect to difficulty-6. See <a href="#sequential">Section 06 — Sequential Entries</a>.
     </p>
@@ -271,7 +272,7 @@
       Difficulty controls which pool an entry enters relative to the player's selected
       difficulty setting. Distribution does not need to be equal across levels. Some
       professional software packages can legitimately skew harder than others. I would however aim for <em>at least</em> a dozen
-      entries at each level from 0 through to 5 so that difficulty changes feel meaningfull.
+      entries at each level from 0 through to 5 so that difficulty changes feel meaningful.
     </p>
     <p>Difficulty-6 is <em>not</em> indicative of a <em>harder</em> question. It is purely a functional allocation to be used when needed. It's absence from a file is not only permitted, but <em>probably</em> the ideal.</p>
     <div class="table-wrap">

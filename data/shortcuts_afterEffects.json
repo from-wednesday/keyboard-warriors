@@ -784,5 +784,88 @@
     "mac_sc": "CMD+Q",
      "pc_sc": "ALT+F4",
     "difficulty": 3
+  },
+{
+    "display": "Reveal Mask Path property on selected layer",
+    "mac_sc": "M",
+    "pc_sc": "M",
+    "difficulty": 2
+  },
+  {
+    "display": "Reveal all modified properties by double pressing:",
+    "mac_sc": "U",
+    "pc_sc": "U",
+    "difficulty": 4,
+    "sequential": true
+  },
+  {
+    "display": "Reveal all expressions by double pressing:",
+    "mac_sc": "E",
+    "pc_sc": "E",
+    "difficulty": 5,
+    "sequential": true
+  },
+  {
+    "display": "Reveal all source text properties by double pressing:",
+    "mac_sc": "S",
+    "pc_sc": "S",
+    "difficulty": 5,
+    "sequential": true
+  },
+  {
+    "display": "Reveal Material Options property group by double pressing:",
+    "mac_sc": "A",
+    "pc_sc": "A",
+    "difficulty": 5,
+    "sequential": true
+  },
+  {
+    "display": "Open project",
+    "mac_sc": "CMD+O",
+    "pc_sc": "CTRL+O",
+    "difficulty": 0
+  },
+  {
+    "display": "Save project",
+    "mac_sc": "CMD+S",
+    "pc_sc": "CTRL+S",
+    "difficulty": 0
+  },
+  {
+    "display": "Save As",
+    "mac_sc": "CMD+SHIFT+S",
+    "pc_sc": "CTRL+SHIFT+S",
+    "difficulty": 2
+  },
+  {
+    "display": "Increment and Save project",
+    "mac_sc": "CMD+SHIFT+OPT+S",
+    "pc_sc": "CTRL+SHIFT+ALT+S",
+    "difficulty": 4
+  },
+  {
+    "display": "New project",
+    "mac_sc": "CMD+OPT+N",
+    "pc_sc": "CTRL+ALT+N",
+    "difficulty": 3
+  },
+  {
+    "display": "New folder in Project panel",
+    "mac_sc": "CMD+SHIFT+OPT+N",
+    "pc_sc": "CTRL+SHIFT+ALT+N",
+    "difficulty": 4
+  },
+  {
+    "display": "Open most recent project",
+    "mac_sc": "CMD+SHIFT+OPT+P",
+    "pc_sc": "CTRL+SHIFT+ALT+P",
+    "difficulty": 5
+  },
+  {
+    "display": "Open Roto Brush tool",
+    "mac_sc": "OPT+W",
+    "pc_sc": "ALT+W",
+    "difficulty": 5
   }
 ]
+

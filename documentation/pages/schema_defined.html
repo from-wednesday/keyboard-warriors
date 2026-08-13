@@ -146,7 +146,7 @@
       <p><strong>"Sequential"</strong> is a boolean, always set to <code>true</code> when present. It marks an entry that has
       been remodelled from a multi-step sequential workflow into a playable
       initiation or completion single key prompt. The game excludes entries marked as <strong>sequential</strong> from <strong>Freestyle Mode</strong>
-      where out-of-context sequential prompts would be misleading. As such, this can potentially be used on any <small>JSON</small> object you wish to exclude from <strong>Freestyle Mode</strong>, but we will also discuss <em>another</em> method to accomplish this in the <a href="#triple-entry">Triple-Entry section</a> that is more elegant than falsley reporting a non-sequential shortcut as <code>"Sequential": true</code>.</p>
+      where out-of-context sequential prompts would be misleading. As such, the flag can technically be used to exclude any entry from Freestyle Mode, however its  purpose is manage sequential shortcuts specifically. We will discuss <em>another</em> method to control the <strong>Freestyle Mode</strong> vicabulary in the <a href="#triple-entry">Triple-Entry section</a>. I would recommend that as a more elegant system than falsley reporting a non-sequential shortcut as <code>"Sequential": true</code>.</p>
      <p>The <strong>sequential</strong> flag is entirely separate from difficulty. Do not use difficulty-6 as a
       substitute for it. It is functionally the <em>opposite</em> effect to difficulty-6. See <a href="#sequential">Section 06 — Sequential Entries</a>.
     </p>
@@ -261,7 +261,8 @@
     </div>
     <p>I suggest using the following ledger statuses when classifying candidates during extraction:</p>
     <p style="text-align: center"><strong>KEEP &nbsp;&nbsp; MERGE &nbsp;&nbsp; REMODEL &nbsp;&nbsp; REMOVE &nbsp;&nbsp; REFERENCE-ONLY &nbsp;&nbsp; SEQUENTIAL-COMPLETION</strong></p>
-	  
+	  <p>When multiple approaches are possible, prefer the simplest valid representation:Single Entry → Pipe → Triple-Entry Pattern.Only use Groups or Sequential when they solve a specific gameplay problem.
+</p>
   </section>
   <!-- ══ DIFFICULTY SCALE ══════════════════════════════════════════ -->
   <section>
@@ -312,7 +313,7 @@
           <tr>
             <td><strong>6</strong></td>
             <td>Reference only</td>
-            <td>Never surfaced in the normal difficulty tiers ofr gameplay rounds. Used for actions that cannot be explained clearly within a prompt readable in a few seconds, or for freestyle-only definitions that would conflict with a regular game entry. Placing a difficulty-6 entry immediately before a regular entry causes it to intercept that key combination in freestyle mode, delivering this alternative description <em>without</em> interfering with gameplay!</td>
+            <td>Never surfaced in gameplay question pools. Used for actions that cannot be explained clearly within a prompt readable in a few seconds, allowing the shortcut to still be reported correctly in Freestyle Mode. You can also use this to create a freestyle-specific definition that replaces a regular game entry. Placing a difficulty-6 entry immediately before a regular entry causes it to intercept that key combination in freestyle mode, delivering this alternative description <em>without</em> interfering with gameplay!</td>
           </tr>
         </tbody>
       </table>

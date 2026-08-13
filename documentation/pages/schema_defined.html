@@ -146,7 +146,7 @@
       <p><strong>"Sequential"</strong> is a boolean, always set to <code>true</code> when present. It marks an entry that has
       been remodelled from a multi-step sequential workflow into a playable
       initiation or completion single key prompt. The game excludes entries marked as <strong>sequential</strong> from <strong>Freestyle Mode</strong>
-      where out-of-context sequential prompts would be misleading. As such, the flag can technically be used to exclude any entry from Freestyle Mode, however its  purpose is manage sequential shortcuts specifically. We will discuss <em>another</em> method to control the <strong>Freestyle Mode</strong> vocabulary
+      where out-of-context sequential prompts would be misleading. Although the flag technically excludes entries from <strong>Freestyle Mode</strong>, its intended purpose is the handling of remodelled sequential shortcuts. There are other methods that are usually a better solution for non-sequential entries. We will discuss controling <strong>Freestyle Mode</strong> vocabulary
   in the <a href="#triple-entry">Triple-Entry section</a>. I would recommend that as a more elegant system than falsly reporting a non-sequential shortcut as <code>"Sequential": true</code>.</p>
      <p>The <strong>sequential</strong> flag is entirely separate from difficulty. Do not use difficulty-6 as a
       substitute for it. It is functionally the <em>opposite</em> effect to difficulty-6. See <a href="#sequential">Section 06 — Sequential Entries</a>.

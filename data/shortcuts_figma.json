@@ -1,5 +1,132 @@
 [
-       {
+  {
+    "display": "switch to the Slice tool",
+    "mac_sc": "S",
+    "pc_sc": "S",
+    "difficulty": 2
+  },
+  {
+    "display": "switch to the Scale tool",
+    "mac_sc": "K",
+    "pc_sc": "K",
+    "difficulty": 3
+  },
+  {
+    "display": "switch to the Rectangle tool",
+    "mac_sc": "R",
+    "pc_sc": "R",
+    "difficulty": 2
+  },
+  {
+    "display": "switch to the Arrow tool",
+    "mac_sc": "SHIFT+L",
+    "pc_sc": "SHIFT+L",
+    "difficulty": 3
+  },
+  {
+    "display": "switch to the Pencil tool",
+    "mac_sc": "SHIFT+P",
+    "pc_sc": "SHIFT+P",
+    "difficulty": 3
+  },
+  {
+    "display": "Place image",
+    "mac_sc": "CMD+SHIFT+K",
+    "pc_sc": "CTRL+SHIFT+K",
+    "difficulty": 3
+  },
+  {
+    "display": "Show or hide selection",
+    "mac_sc": "CMD+SHIFT+H",
+    "pc_sc": "CTRL+SHIFT+H",
+    "difficulty": 3
+  },
+  {
+    "display": "toggle Left Sidebar",
+    "mac_sc": "CMD+SHIFT+BACKSLASH",
+    "pc_sc": "CTRL+SHIFT+BACKSLASH",
+    "difficulty": 4
+  },
+  {
+    "display": "toggle Layout Grid",
+    "mac_sc": "SHIFT+G",
+    "pc_sc": "SHIFT+G",
+    "difficulty": 3
+  },
+  {
+    "display": "toggle Outline View",
+    "mac_sc": "CMD+Y",
+    "pc_sc": "CTRL+Y",
+    "difficulty": 5
+  },
+  {
+    "display": "toggle Dev Mode",
+    "mac_sc": "SHIFT+D",
+    "pc_sc": "SHIFT+D",
+    "difficulty": 5
+  },
+  {
+    "display": "Rename selected layer",
+    "mac_sc": "CMD+R",
+    "pc_sc": "CTRL+R",
+    "difficulty": 3
+  },
+  {
+    "display": "Use as Mask",
+    "mac_sc": "CMD+OPT+M",
+    "pc_sc": "CTRL+ALT+M",
+    "difficulty": 4
+  },
+  {
+    "display": "Export",
+    "mac_sc": "CMD+SHIFT+E",
+    "pc_sc": "CTRL+SHIFT+E",
+    "difficulty": 4
+  },
+  {
+    "display": "Bold text",
+    "mac_sc": "CMD+B",
+    "pc_sc": "CTRL+B",
+    "difficulty": 2
+  },
+  {
+    "display": "Italic text",
+    "mac_sc": "CMD+I",
+    "pc_sc": "CTRL+I",
+    "difficulty": 2
+  },
+  {
+    "display": "Underline text",
+    "mac_sc": "CMD+U",
+    "pc_sc": "CTRL+U",
+    "difficulty": 3
+  },
+  {
+    "display": "Show Libraries panel",
+    "mac_sc": "OPT+3",
+    "pc_sc": "ALT+3",
+    "difficulty": 4
+  },
+  {
+    "display": "Show Design panel",
+    "mac_sc": "OPT+8",
+    "pc_sc": "ALT+8",
+    "difficulty": 4
+  },
+  {
+    "display": "Show Prototype panel",
+    "mac_sc": "OPT+9",
+    "pc_sc": "ALT+9",
+    "difficulty": 4
+  },
+  {
+    "display": "set Opacity to 100%",
+    "mac_sc": "0",
+    "pc_sc": "0",
+    "difficulty": 2,
+    "group": "opacity"
+  },
+  {
 "display": "Cut the selection",
     "mac_sc": "CMD+X",
     "pc_sc": "CTRL+X",

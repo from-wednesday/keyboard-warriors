@@ -56,7 +56,7 @@
   {
 "display": "open the Print dialog",
     "mac_sc": "CMD+P",
-    "pc_sc": "CTRL+P",
+    "pc_sc": "CTRL+P|CTRL+F2",
     "difficulty": 1
   },
   {
@@ -325,12 +325,6 @@
     "mac_sc": "CMD+MINUS",
     "pc_sc": "CTRL+MINUS",
     "difficulty": 2
-  },
-  {
-"display": "open Print Preview",
-    "mac_sc": "CMD+OPT+I",
-    "pc_sc": "CTRL+F2",
-    "difficulty": 4
   },
    {
 "display": "toggle Track Changes",

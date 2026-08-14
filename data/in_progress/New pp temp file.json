@@ -9,112 +9,112 @@
   {
     "display": "after pressing ALT, open the File tab:",
     "mac_sc": "NULL",
-    "pc_sc": "F",
+    "pc_sc": "ALT+F",
     "difficulty": 4,
     "sequential": true
   },
   {
     "display": "after pressing ALT, open the Home tab:",
     "mac_sc": "NULL",
-    "pc_sc": "H",
+    "pc_sc": "ALT+H",
     "difficulty": 4,
     "sequential": true
   },
   {
     "display": "after pressing ALT, open the Insert tab:",
     "mac_sc": "NULL",
-    "pc_sc": "N",
+    "pc_sc": "ALT+N",
     "difficulty": 4,
     "sequential": true
   },
   {
     "display": "after pressing ALT, open the Design tab:",
     "mac_sc": "NULL",
-    "pc_sc": "G",
+    "pc_sc": "ALT+G",
     "difficulty": 4,
     "sequential": true
   },
   {
     "display": "after pressing ALT, open the Transitions tab:",
     "mac_sc": "NULL",
-    "pc_sc": "K",
+    "pc_sc": "ALT+K",
     "difficulty": 4,
     "sequential": true
   },
   {
     "display": "after pressing ALT, open the Animations tab:",
     "mac_sc": "NULL",
-    "pc_sc": "A",
+    "pc_sc": "ALT+A",
     "difficulty": 4,
     "sequential": true
   },
   {
     "display": "after pressing ALT, open the Slide Show tab:",
     "mac_sc": "NULL",
-    "pc_sc": "S",
+    "pc_sc": "ALT+S",
     "difficulty": 4,
     "sequential": true
   },
   {
     "display": "after pressing ALT, open the Review tab:",
     "mac_sc": "NULL",
-    "pc_sc": "R",
+    "pc_sc": "ALT+R",
     "difficulty": 4,
     "sequential": true
   },
   {
     "display": "after pressing ALT, open the View tab:",
     "mac_sc": "NULL",
-    "pc_sc": "W",
+    "pc_sc": "ALT+W",
     "difficulty": 4,
     "sequential": true
   },
   {
     "display": "after pressing ALT, open Search:",
     "mac_sc": "NULL",
-    "pc_sc": "Q",
+    "pc_sc": "ALT+Q",
     "difficulty": 4,
     "sequential": true
   },
   {
     "display": "after pressing ALT then N, insert a text box:",
     "mac_sc": "NULL",
-    "pc_sc": "X",
+    "pc_sc": "ALT+N+X",
     "difficulty": 5,
     "sequential": true
   },
   {
     "display": "after pressing ALT then V, open Normal view:",
     "mac_sc": "NULL",
-    "pc_sc": "N",
+    "pc_sc": "ALT+V+N",
     "difficulty": 5,
     "sequential": true
   },
   {
     "display": "after pressing ALT then V, open Slide Sorter view:",
     "mac_sc": "NULL",
-    "pc_sc": "E",
+    "pc_sc": "ALT+V+E",
     "difficulty": 5,
     "sequential": true
   },
   {
     "display": "after pressing ALT then V, toggle the ruler:",
     "mac_sc": "NULL",
-    "pc_sc": "R",
+    "pc_sc": "ALT+V+R",
     "difficulty": 5,
     "sequential": true
   },
   {
     "display": "after pressing ALT then V, toggle guides:",
     "mac_sc": "NULL",
-    "pc_sc": "G",
+    "pc_sc": "ALT+V+G",
     "difficulty": 5,
     "sequential": true
   },
   {
     "display": "after pressing ALT then W, toggle gridlines:",
     "mac_sc": "NULL",
-    "pc_sc": "L",
+    "pc_sc": "ALT+W+L",
     "difficulty": 5,
     "sequential": true
   },
@@ -252,7 +252,7 @@
   },
   {
     "display": "start presentation in Presenter View",
-    "mac_sc": "NULL",
+    "mac_sc": "OPT+RETURN",
     "pc_sc": "ALT+F5",
     "difficulty": 4
   },
@@ -418,7 +418,6 @@
     "pc_sc": "CTRL+J",
     "difficulty": 2
   },
-  
   {
     "display": "bold",
     "mac_sc": "CMD+B",
@@ -460,5 +459,174 @@
     "mac_sc": "CMD+SHIFT+PLUS",
     "pc_sc": "CTRL+SHIFT+PLUS",
     "difficulty": 4
+  },
+  {
+    "display": "redo",
+    "mac_sc": "CMD+Y",
+    "pc_sc": "CTRL+Y",
+    "difficulty": 1
+  },
+  {
+    "display": "insert hyperlink",
+    "mac_sc": "CMD+K",
+    "pc_sc": "CTRL+K",
+    "difficulty": 2
+  },
+  {
+    "display": "insert comment",
+    "mac_sc": "CMD+SHIFT+M",
+    "pc_sc": "CTRL+ALT+M",
+    "difficulty": 3
+  },
+  {
+    "display": "open Font dialog",
+    "mac_sc": "NULL",
+    "pc_sc": "CTRL+T|CTRL+SHIFT+F",
+    "difficulty": 3
+  },
+  {
+    "display": "copy formatting only",
+    "mac_sc": "CMD+SHIFT+C",
+    "pc_sc": "CTRL+SHIFT+C",
+    "difficulty": 3
+  },
+  {
+    "display": "paste formatting only",
+    "mac_sc": "CMD+SHIFT+V",
+    "pc_sc": "CTRL+SHIFT+V",
+    "difficulty": 3
+  },
+  {
+    "display": "copy animation",
+    "mac_sc": "CMD+OPT+SHIFT+C",
+    "pc_sc": "ALT+SHIFT+C",
+    "difficulty": 4
+  },
+  {
+    "display": "paste animation",
+    "mac_sc": "CMD+OPT+SHIFT+V",
+    "pc_sc": "ALT+SHIFT+V",
+    "difficulty": 4
+  },
+  {
+    "display": "remove manual character formatting",
+    "mac_sc": "NULL",
+    "pc_sc": "CTRL+SPACE",
+    "difficulty": 4
+  },
+  {
+    "display": "change text case",
+    "mac_sc": "NULL",
+    "pc_sc": "SHIFT+F3",
+    "difficulty": 4
+  },
+  {
+    "display": "zoom in",
+    "mac_sc": "NULL",
+    "pc_sc": "CTRL+PLUS",
+    "difficulty": 2
+  },
+  {
+    "display": "zoom out",
+    "mac_sc": "NULL",
+    "pc_sc": "CTRL+MINUS",
+    "difficulty": 2
+  },
+  {
+    "display": "open Selection pane",
+    "mac_sc": "NULL",
+    "pc_sc": "ALT+F10",
+    "difficulty": 4
+  },
+  {
+    "display": "rewrite selected text with Copilot",
+    "mac_sc": "NULL",
+    "pc_sc": "SHIFT+F8",
+    "difficulty": 4
+  },
+  {
+    "display": "toggle ribbon",
+    "mac_sc": "CMD+OPT+R",
+    "pc_sc": "CTRL+F1",
+    "difficulty": 4
+  },
+  {
+    "display": "open Help",
+    "mac_sc": "NULL",
+    "pc_sc": "F1",
+    "difficulty": 2
+  },
+  {
+    "display": "promote paragraph",
+    "mac_sc": "CMD+BRACKETLEFT",
+    "pc_sc": "ALT+SHIFT+ARROWLEFT",
+    "difficulty": 4
+  },
+  {
+    "display": "demote paragraph",
+    "mac_sc": "CMD+BRACKETRIGHT",
+    "pc_sc": "ALT+SHIFT+ARROWRIGHT",
+    "difficulty": 4
+  },
+  {
+    "display": "move selected paragraphs up",
+    "mac_sc": "NULL",
+    "pc_sc": "ALT+SHIFT+ARROWUP",
+    "difficulty": 4
+  },
+  {
+    "display": "move selected paragraphs down",
+    "mac_sc": "NULL",
+    "pc_sc": "ALT+SHIFT+ARROWDOWN",
+    "difficulty": 4
+  },
+  {
+    "display": "move selected slide to beginning",
+    "mac_sc": "NULL",
+    "pc_sc": "CTRL+SHIFT+ARROWUP",
+    "difficulty": 4
+  },
+  {
+    "display": "move selected slide to end",
+    "mac_sc": "NULL",
+    "pc_sc": "CTRL+SHIFT+ARROWDOWN",
+    "difficulty": 4
+  },
+  {
+    "display": "show or hide guides",
+    "mac_sc": "NULL",
+    "pc_sc": "ALT+F9",
+    "difficulty": 3
+  },
+  {
+    "display": "show or hide grid",
+    "mac_sc": "NULL",
+    "pc_sc": "SHIFT+F9",
+    "difficulty": 3
+  },
+  {
+    "display": "toggle between Outline and Thumbnail views",
+    "mac_sc": "CONTROL+SHIFT+TAB",
+    "pc_sc": "CTRL+SHIFT+TAB",
+    "difficulty": 4
+  },
+  {
+    "display": "rotate selected object clockwise",
+    "mac_sc": "NULL",
+    "pc_sc": "ALT+ARROWRIGHT",
+    "difficulty": 4
+  },
+  {
+    "display": "rotate selected object counterclockwise",
+    "mac_sc": "NULL",
+    "pc_sc": "ALT+ARROWLEFT",
+    "difficulty": 4
+  },
+  {
+    "display": "format slide background",
+    "mac_sc": "CMD+SHIFT+2",
+    "pc_sc": "NULL",
+    "difficulty": 4
   }
 ]
+

@@ -1,5 +1,125 @@
 [
   {
+    "display": "undo the previous action",
+    "mac_sc": "CMD+Z",
+    "pc_sc": "CTRL+Z",
+    "difficulty": 1
+  },
+  {
+    "display": "redo the previous action",
+    "mac_sc": "CMD+Y",
+    "pc_sc": "CTRL+Y",
+    "difficulty": 2
+  },
+  {
+    "display": "clear character formatting",
+    "mac_sc": "NULL",
+    "pc_sc": "CTRL+SPACE",
+    "difficulty": 4
+  },
+  {
+    "display": "set single line spacing",
+    "mac_sc": "CMD+1",
+    "pc_sc": "CTRL+1",
+    "difficulty": 3
+  },
+  {
+    "display": "set double line spacing",
+    "mac_sc": "CMD+2",
+    "pc_sc": "CTRL+2",
+    "difficulty": 3
+  },
+  {
+    "display": "set 1.5 line spacing",
+    "mac_sc": "CMD+5",
+    "pc_sc": "CTRL+5",
+    "difficulty": 4
+  },
+  {
+    "display": "after pressing CTRL+A, update all fields:",
+    "mac_sc": "NULL",
+    "pc_sc": "F9",
+    "difficulty": 5,
+    "sequential": true
+  },
+  {
+    "display": "after pressing ALT, open the File tab:",
+    "mac_sc": "NULL",
+    "pc_sc": "F",
+    "difficulty": 4,
+    "sequential": true
+  },
+  {
+    "display": "after pressing ALT, open the Home tab:",
+    "mac_sc": "NULL",
+    "pc_sc": "H",
+    "difficulty": 4,
+    "sequential": true
+  },
+  {
+    "display": "after pressing ALT, open the Insert tab:",
+    "mac_sc": "NULL",
+    "pc_sc": "N",
+    "difficulty": 4,
+    "sequential": true
+  },
+  {
+    "display": "after pressing ALT, open the Design tab:",
+    "mac_sc": "NULL",
+    "pc_sc": "G",
+    "difficulty": 4,
+    "sequential": true
+  },
+  {
+    "display": "after pressing ALT, open the Review tab:",
+    "mac_sc": "NULL",
+    "pc_sc": "R",
+    "difficulty": 4,
+    "sequential": true
+  },
+  {
+    "display": "after pressing ALT, open the View tab:",
+    "mac_sc": "NULL",
+    "pc_sc": "W",
+    "difficulty": 4,
+    "sequential": true
+  },
+  {
+    "display": "after pressing ALT, open Search:",
+    "mac_sc": "NULL",
+    "pc_sc": "Q",
+    "difficulty": 4,
+    "sequential": true
+  },
+  {
+    "display": "after pressing ALT then H, apply strikethrough:",
+    "mac_sc": "NULL",
+    "pc_sc": "4",
+    "difficulty": 5,
+    "sequential": true
+  },
+  {
+    "display": "after pressing ALT then H, choose text highlight colour:",
+    "mac_sc": "NULL",
+    "pc_sc": "I",
+    "difficulty": 5,
+    "sequential": true
+  },
+  {
+    "display": "after pressing ALT then H then F, choose font colour:",
+    "mac_sc": "NULL",
+    "pc_sc": "C",
+    "difficulty": 5,
+    "sequential": true
+  },
+  {
+    "display": "after pressing ALT then F, Save As:",
+    "mac_sc": "NULL",
+    "pc_sc": "A",
+    "difficulty": 5,
+    "sequential": true
+  },
+  {
 "display": "delete the character to the right of the cursor",
     "mac_sc": "DELETE|FN+BACKSPACE",
     "pc_sc": "DELETE|FN+BACKSPACE",

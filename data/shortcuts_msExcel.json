@@ -1,5 +1,188 @@
 [
   {
+    "display": "replace",
+    "mac_sc": "NULL",
+    "pc_sc": "CTRL+H",
+    "difficulty": 2
+  },
+  {
+    "display": "edit the active cell",
+    "mac_sc": "NULL",
+    "pc_sc": "F2",
+    "difficulty": 2
+  },
+  {
+    "display": "insert hyperlink",
+    "mac_sc": "CMD+K",
+    "pc_sc": "CTRL+K",
+    "difficulty": 2
+  },
+  {
+    "display": "open Quick Analysis",
+    "mac_sc": "NULL",
+    "pc_sc": "CTRL+Q",
+    "difficulty": 4
+  },
+  {
+    "display": "create a table",
+    "mac_sc": "NULL",
+    "pc_sc": "CTRL+T",
+    "difficulty": 6
+  },
+  {
+    "display": "convert a range into a table",
+    "mac_sc": "NULL",
+    "pc_sc": "CTRL+L",
+    "difficulty": 6
+  },
+  {
+    "display": "hide selected rows",
+    "mac_sc": "NULL",
+    "pc_sc": "CTRL+9",
+    "difficulty": 3
+  },
+  {
+    "display": "hide selected columns",
+    "mac_sc": "NULL",
+    "pc_sc": "CTRL+0",
+    "difficulty": 3
+  },
+  {
+    "display": "open the context menu",
+    "mac_sc": "NULL",
+    "pc_sc": "SHIFT+F10",
+    "difficulty": 3
+  },
+  {
+    "display": "insert AutoSum",
+    "mac_sc": "NULL",
+    "pc_sc": "ALT+EQUALS",
+    "difficulty": 3
+  },
+  {
+    "display": "insert a line break inside a cell",
+    "mac_sc": "NULL",
+    "pc_sc": "ALT+ENTER",
+    "difficulty": 3
+  },
+  {
+    "display": "copy the formula from the cell above",
+    "mac_sc": "NULL",
+    "pc_sc": "CTRL+QUOTE",
+    "difficulty": 4
+  },
+  {
+    "display": "copy the value from the cell above",
+    "mac_sc": "NULL",
+    "pc_sc": "CTRL+SHIFT+QUOTE",
+    "difficulty": 4
+  },
+  {
+    "display": "after pressing ALT, open the Home tab:",
+    "mac_sc": "NULL",
+    "pc_sc": "H",
+    "difficulty": 4,
+    "sequential": true
+  },
+  {
+    "display": "after pressing ALT, open the Insert tab:",
+    "mac_sc": "NULL",
+    "pc_sc": "N",
+    "difficulty": 4,
+    "sequential": true
+  },
+  {
+    "display": "after pressing ALT, open the Page Layout tab:",
+    "mac_sc": "NULL",
+    "pc_sc": "P",
+    "difficulty": 4,
+    "sequential": true
+  },
+  {
+    "display": "after pressing ALT, open the Data tab:",
+    "mac_sc": "NULL",
+    "pc_sc": "A",
+    "difficulty": 4,
+    "sequential": true
+  },
+  {
+    "display": "after pressing ALT, open the View tab:",
+    "mac_sc": "NULL",
+    "pc_sc": "W",
+    "difficulty": 4,
+    "sequential": true
+  },
+  {
+    "display": "after pressing ALT, open the Formulas tab:",
+    "mac_sc": "NULL",
+    "pc_sc": "M",
+    "difficulty": 4,
+    "sequential": true
+  },
+  {
+    "display": "after pressing ALT then H, choose Fill Colour:",
+    "mac_sc": "NULL",
+    "pc_sc": "H",
+    "difficulty": 4,
+    "sequential": true
+  },
+  {
+    "display": "after pressing ALT then H, add borders:",
+    "mac_sc": "NULL",
+    "pc_sc": "B",
+    "difficulty": 4,
+    "sequential": true
+  },
+  {
+    "display": "after pressing ALT then H, open Alignment:",
+    "mac_sc": "NULL",
+    "pc_sc": "A",
+    "difficulty": 4,
+    "sequential": true
+  },
+  {
+    "display": "after pressing ALT then H then A, align left:",
+    "mac_sc": "NULL",
+    "pc_sc": "L",
+    "difficulty": 4,
+    "sequential": true
+  },
+  {
+    "display": "after pressing ALT then H then A, centre align:",
+    "mac_sc": "NULL",
+    "pc_sc": "C",
+    "difficulty": 4,
+    "sequential": true
+  },
+  {
+    "display": "after pressing ALT then H then A, align right:",
+    "mac_sc": "NULL",
+    "pc_sc": "R",
+    "difficulty": 4,
+    "sequential": true
+  },
+  {
+    "display": "after pressing ALT then H, wrap text:",
+    "mac_sc": "NULL",
+    "pc_sc": "W",
+    "difficulty": 5,
+    "sequential": true
+  },
+  {
+    "display": "after pressing ALT then H, open Delete:",
+    "mac_sc": "NULL",
+    "pc_sc": "D",
+    "difficulty": 5,
+    "sequential": true
+  },
+  {
+    "display": "after pressing ALT then H then D, delete a column:",
+    "mac_sc": "NULL",
+    "pc_sc": "C",
+    "difficulty": 5,
+    "sequential": true
+  },
+  {
     "display": "create a new workbook",
     "mac_sc": "CMD+N",
     "pc_sc": "CTRL+N",

@@ -1,4 +1,100 @@
 [
+    {
+    "display": "Open project",
+    "mac_sc": "CMD+O",
+    "pc_sc": "CTRL+O",
+    "difficulty": 1
+  },
+  {
+    "display": "Select All",
+    "mac_sc": "CMD+A",
+    "pc_sc": "CTRL+A",
+    "difficulty": 2
+  },
+  {
+    "display": "Deselect All",
+    "mac_sc": "ESC",
+    "pc_sc": "ESC",
+    "difficulty": 2
+  },
+  {
+    "display": "Delete selection",
+    "mac_sc": "BACKSPACE",
+    "pc_sc": "DEL",
+    "difficulty": 2
+  },
+  {
+    "display": "Previous frame",
+    "mac_sc": "COMMA",
+    "pc_sc": "COMMA",
+    "difficulty": 2
+  },
+  {
+    "display": "Next frame",
+    "mac_sc": "PERIOD",
+    "pc_sc": "PERIOD",
+    "difficulty": 2
+  },
+  {
+    "display": "Go to Previous Drawing",
+    "mac_sc": "F",
+    "pc_sc": "F",
+    "difficulty": 3
+  },
+  {
+    "display": "Go to Next Drawing",
+    "mac_sc": "G",
+    "pc_sc": "G",
+    "difficulty": 3
+  },
+  {
+    "display": "Go to Previous Column",
+    "mac_sc": "H",
+    "pc_sc": "H",
+    "difficulty": 4
+  },
+  {
+    "display": "Go to Next Column",
+    "mac_sc": "J",
+    "pc_sc": "J",
+    "difficulty": 4
+  },
+  {
+    "display": "Increase Exposure",
+    "mac_sc": "PLUS",
+    "pc_sc": "PLUS",
+    "difficulty": 4
+  },
+  {
+    "display": "Decrease Exposure",
+    "mac_sc": "MINUS",
+    "pc_sc": "MINUS",
+    "difficulty": 4
+  },
+  {
+    "display": "Invert Selection",
+    "mac_sc": "CMD+SHIFT+I",
+    "pc_sc": "CTRL+SHIFT+I",
+    "difficulty": 4
+  },
+  {
+    "display": "Paste Special",
+    "mac_sc": "CMD+B",
+    "pc_sc": "CTRL+B",
+    "difficulty": 5
+  },
+  {
+    "display": "Advanced Save",
+    "mac_sc": "CMD+SHIFT+S",
+    "pc_sc": "CTRL+SHIFT+S",
+    "difficulty": 5
+  },
+  {
+    "display": "Auto Render",
+    "mac_sc": "CMD+OPT+R",
+    "pc_sc": "CTRL+ALT+R",
+    "difficulty": 5
+  },
   {
     "display": "Save project",
     "mac_sc": "CMD+S",

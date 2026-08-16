@@ -234,6 +234,18 @@
     "difficulty": 5
   },
   {
+  "display": "deselect all",
+  "mac_sc": "CMD+T",
+  "pc_sc": "CTRL+T",
+  "difficulty": 3
+},
+{
+  "display": "invert selection",
+  "mac_sc": "CMD+SHIFT+I",
+  "pc_sc": "CTRL+SHIFT+I",
+  "difficulty": 3
+},
+  {
     "display": "while using Rotated Rectangle tool, lock drawing plane for the first edge",
     "mac_sc": "CMD",
     "pc_sc": "ALT",
@@ -252,15 +264,9 @@
     "difficulty": 4
   },
   {
-    "display": "hold to Paint Bucket all matching faces in the model",
-    "mac_sc": "SHIFT",
-    "pc_sc": "CTRL+SHIFT",
-    "difficulty": 5
-  },
-  {
     "display": "hold to Paint Bucket all matching faces on the same object",
     "mac_sc": "OPT+SHIFT",
-    "pc_sc": "ALT",
+    "pc_sc": "CTRL+SHIFT",
     "difficulty": 5
   },
   {

@@ -55,7 +55,7 @@
   },
   {
     "display": "redo the last action",
-    "mac_sc": "CMD+Y",
+    "mac_sc": "CMD+SHIFT+Z",
     "pc_sc": "CTRL+Y",
     "difficulty": 2
   },
@@ -156,7 +156,7 @@
     "difficulty": 1
   },
   {
-    "display": "switch to the Pan tool",
+    "display": "select the Pan tool",
     "mac_sc": "H",
     "pc_sc": "H",
     "difficulty": 3
@@ -314,5 +314,47 @@
     "pc_sc": "ARROWDOWN",
     "difficulty": 3,
     "group": "line_axis_lock"
+  },
+    {
+    "display": "lock Move tool to current inference by holding:",
+    "mac_sc": "SHIFT",
+    "pc_sc": "SHIFT",
+    "difficulty": 3,
+    "group": "shift_lock"
+  },
+     {
+    "display": "lock Line tool to current inference by holding:",
+    "mac_sc": "SHIFT",
+    "pc_sc": "SHIFT",
+    "difficulty": 3,
+    "group": "shift_lock"
+  },
+     {
+    "display": "lock Rotate tool to current inference by holding:",
+    "mac_sc": "SHIFT",
+    "pc_sc": "SHIFT",
+    "difficulty": 3,
+    "group": "shift_lock"
+  },
+     {
+    "display": "lock Circle tool to current inference by holding:",
+    "mac_sc": "SHIFT",
+    "pc_sc": "SHIFT",
+    "difficulty": 3,
+    "group": "shift_lock"
+  },
+     {
+    "display": "lock Scale tool to current inference by holding:",
+    "mac_sc": "SHIFT",
+    "pc_sc": "SHIFT",
+    "difficulty": 3,
+    "group": "shift_lock"
+  },
+     {
+    "display": "lock Tape Measure tool to current inference by holding:",
+    "mac_sc": "SHIFT",
+    "pc_sc": "SHIFT",
+    "difficulty": 3,
+    "group": "shift_lock"
   }
 ]

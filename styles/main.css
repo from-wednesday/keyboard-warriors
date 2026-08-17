@@ -581,6 +581,13 @@ body:has(.leftPanel.showing-confirm) > *:not(#gameContainer):not(#kwToast) {
   transform: translateY(0);
   transition: transform 0.85s cubic-bezier(0.4, 0, 0.2, 1);
 }
+#credit .credit-link {
+  color: inherit;
+  text-decoration: underline;
+  text-decoration-style: dotted;
+  text-decoration-color: #c5cad2;
+  text-underline-offset: 2px;
+}
 /* Nudge credit and difficulty icon up into the keyboard shadow when face-down */
 #keyboardWrap.kb-at-face ~ #credit,
 #keyboardWrap.kb-at-face ~ #diffIconWrap {

@@ -33,6 +33,10 @@
       { "bad": "CTRL+SHIFT+N", "action": "open new incognito window" },
       { "bad": "CTRL+SHIFT+T", "action": "reopen last closed tab" },
       { "bad": "F11", "action": "toggle fullscreen mode", "sus": true },
+      { "bad": "CTRL+PAGEUP", "action": "previous tab", "sus": true },
+      { "bad": "CTRL+PAGEDOWN", "action": "next tab", "sus": true },
+      { "bad": "CTRL+SHIFT+TAB", "action": "previous tab" },
+      { "bad": "CTRL+TAB", "action": "next tab" },
       { "bad": "CTRL+L", "action": "focus location address bar", "sus": true }
     ],
     "Firefox": [

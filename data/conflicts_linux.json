@@ -29,6 +29,10 @@
       { "bad": "CTRL+L", "action": "focus address bar" },
       { "bad": "CTRL+SHIFT+N", "action": "new incognito window" },
       { "bad": "CTRL+SHIFT+T", "action": "reopen closed tab", "sus": true },
+      { "bad": "CTRL+PAGEUP", "action": "previous tab", "sus": true },
+      { "bad": "CTRL+PAGEDOWN", "action": "next tab", "sus": true },
+      { "bad": "CTRL+SHIFT+TAB", "action": "previous tab", "sus": true },
+      { "bad": "CTRL+TAB", "action": "next tab", "sus": true },
       { "bad": "F11", "action": "fullscreen", "sus": true },
       { "bad": "CTRL+Q", "action": "quit browser application completely", "sus": true }
     ],

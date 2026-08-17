@@ -9,7 +9,7 @@
 <title>Keyboard Warriors</title>
 <script>
   const DefaultTitle = 'Keyboard Warriors';
-  const VersionLabel   = '0041';
+  const VersionLabel   = '0043';
   const TitlePrefix  = document.title !== DefaultTitle ? document.title.trim() + '_' : '';
   const DBG_DEVICE   = TitlePrefix + VersionLabel;
 </script>
@@ -246,6 +246,10 @@ C49.3,35,49.3,33.1,48.1,31.9C48.1,31.9,48.1,31.9,48.1,31.9z"/>
 c6.1,0,11-4.9,11-11l0,0V14C67,7.9,62.1,3,56,3z M61,40c0,2.8-2.2,5-5,5H26.4c-1.2,0-2.4-0.5-3.1-1.5L12,29.5c-1.4-1.4-1.4-3.6,0-5
 l11.3-14C24.1,9.5,25.2,9,26.4,9H56c2.8,0,5,2.2,5,5V40z"/>
     </g>
+  </symbol>
+
+  <symbol id="IconDocumentation" viewBox="0 0 110 82">
+    <path fill="currentColor" d="M99.03,37.78h-2.7v-6.69c0-.55-.45-1-1-1h-5.17v-11.88c0-1.91-1.56-3.47-3.47-3.47h-45.29c-.45,0-.87-.2-1.15-.56l-5.17-6.58c-.66-.84-1.65-1.32-2.72-1.32H10.97c-1.91-.02-3.47,1.54-3.47,3.46v58.82c0,1.91.74,3.71,2.09,5.06,1.35,1.35,3,2.04,4.82,2.1h80.92c3.95,0,7.17-3.21,7.17-7.17v-27.31c0-1.91-1.56-3.47-3.47-3.47h0ZM14.48,73.72c-1.31-.05-2.54-.59-3.47-1.52-.93-.93-1.51-2.27-1.51-3.65V9.74c0-.81.66-1.47,1.47-1.47h21.39c.45.01.88.22,1.15.57l5.17,6.57c.66.85,1.65,1.34,2.73,1.34h45.29c.81,0,1.47.66,1.47,1.47v11.87h-21.63c-1.04,0-2-.58-2.49-1.5l-2.03-3.84c-.54-1.02-1.6-1.66-2.75-1.66h-22.1c-1.25,0-2.4.71-2.95,1.84l-1.74,3.56c-.48.98-1.47,1.6-2.56,1.6h-15.24c-.55,0-1,.45-1,1v37.17c0,.55.45,1,1,1s1-.45,1-1v-36.17h13.97c1.63,0,3.12-.9,3.88-2.34l1.98-3.75c.29-.56.87-.91,1.5-.91h22.14c.69,0,1.33.38,1.65.99l1.87,3.54c.8,1.52,2.38,2.47,4.09,2.47h27.57v5.69h-17.58c-1.11,0-2.13.59-2.68,1.55l-2.59,4.48c-.35.6-.99.97-1.68.97H23.31c-1.91,0-3.47,1.56-3.47,3.47v20.01c0,1.5-.63,2.97-1.72,4.02-1.01.98-2.31,1.48-3.64,1.44h0ZM100.5,68.56c0,2.85-2.32,5.17-5.17,5.17H19.51c1.48-1.43,2.33-3.43,2.33-5.47v-20.01c0-.81.66-1.47,1.47-1.47h46.99c1.07,0,2.06-.57,2.59-1.5l2.65-4.62c.31-.54.89-.87,1.51-.87h21.97c.81,0,1.47.66,1.47,1.47v27.31h0Z"/>
   </symbol>
   
 </svg>
@@ -508,6 +512,10 @@ start:  GYRO PERMISSION MODAL
             </g>
           </svg>
         </span>
+        <a class="sp-settings-nudge" href="#" onclick="event.preventDefault(); _openDocumentation();">
+          <span class="sp-nudge-text">Learn more.</span>
+          <svg class="sp-nudge-icon" viewBox="0 0 110 82" xmlns="http://www.w3.org/2000/svg"><use href="#IconDocumentation"/></svg>
+        </a>
       </div>
       <div class="sp-col sp-col-right">
         <div class="dm-toggle-row">
@@ -1131,7 +1139,7 @@ start:  GYRO PERMISSION MODAL
   </div>
 </div>
 
-<p id="credit" class="page-initially-hidden"><small><strong><em>Built for learners.</strong></em> This digital toy was created by Wednesday Dessauer &amp; is free to adapt under <strong>Polyform Non-Commercial</strong> 1.0.0</small></p>
+<p id="credit" class="page-initially-hidden"><small><strong><em>Built for learners.</strong></em> This digital toy was created by Wednesday Dessauer &amp; <span id="creditClause">is free to adapt under <a href="<a href="documentation/?to=swinburne&tab=1">" class="credit-link">Polyform Non-Commercial 1.0.0</a></span>.</small></p>
 
 <div id="diffIconWrap" class="page-initially-hidden">
  <svg id="diffIcon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 96.6 64" cursor="pointer">
@@ -10967,7 +10975,11 @@ function _BuildStandbyDefaultsForSkillset(SkillsetLabel, AllApps, CurrentShortLa
     .map(function(App) { return App.label; });
 }
 
-function _onAppsLoaded(AllAppsFromJson) {
+function _onAppsLoaded(EditionManifest) {
+  var AllAppsFromJson = EditionManifest.apps || EditionManifest; // tolerate a bare array too
+  if (EditionManifest.skillsets && EditionManifest.skillsets.length > 0) {
+    SKILLSET_DEFS = EditionManifest.skillsets;
+  }
   appsLongList = AllAppsFromJson;
 
   AllAppsFromJson.forEach(function(App) {
@@ -11050,22 +11062,67 @@ function _onAppsLoaded(AllAppsFromJson) {
 // Load OS conflict data at startup (before first game so pool filtering is ready).
 loadConflictsData();
 
-// Fetch the apps manifest on startup. Falls back to a minimal built-in list if the
+// ── EDITION RESOLUTION ────────────────────────────────────────────────────
+// 'to' is the only tenant-facing vocabulary: URL param, and the filename
+// suffix of the manifest it loads (to-public.json, to-swinburne.json, ...).
+// Internally we call the resolved value the "edition" throughout the JS —
+// this word never appears in the URL or on screen.
+function _resolveEditionId() {
+  var Requested = null;
+  try { Requested = new URLSearchParams(window.location.search).get('to'); } catch (UrlError) {}
+  return Requested || 'public';
+}
+var EditionId = _resolveEditionId();
+
+function _openDocumentation(tab) {
+  var url = 'https://from-wednesday.github.io/keyboard-warriors/documentation/?to=' + EditionId;
+  if (tab !== undefined) url += '&tab=' + tab;
+  window.open(url, '_blank', 'noopener');
+}
+function _applyEditionCredit(EditionManifest) {
+  var ClauseEl = document.getElementById('creditClause');
+  if (!ClauseEl) return;
+  var ClauseText = (EditionManifest && EditionManifest.creditClause)
+    || 'is free to adapt under Polyform Non-Commercial 1.0.0';
+  ClauseEl.innerHTML = '';
+  var LinkEl = document.createElement('a');
+  LinkEl.href = '#';
+  LinkEl.className = 'credit-link';
+  LinkEl.addEventListener('click', function(e) { e.preventDefault(); _openDocumentation(0); });
+  // Split "is free to adapt under Polyform Non-Commercial 1.0.0" so only the
+  // license/terms phrase itself is the link, matching the original styling.
+  var SplitIndex = ClauseText.indexOf(' under ');
+  if (SplitIndex !== -1) {
+    ClauseEl.appendChild(document.createTextNode(ClauseText.slice(0, SplitIndex + 7)));
+    LinkEl.textContent = ClauseText.slice(SplitIndex + 7);
+    ClauseEl.appendChild(LinkEl);
+  } else {
+    LinkEl.textContent = ClauseText;
+    ClauseEl.appendChild(LinkEl);
+  }
+}
+
+// Fetch the edition manifest on startup. Falls back to a minimal built-in list if the
 // file cannot be reached (e.g. running the HTML file locally without a server).
 (function() {
-  fetch('/keyboard-warriors/data/keyboard-warriors-apps.json')
+  fetch('/keyboard-warriors/data/to-' + EditionId + '.json')
     .then(function(r) {
       if (!r.ok) throw new Error('HTTP ' + r.status);
       return r.json();
     })
     .then(function(data) {
+      _applyEditionCredit(data);
       _onAppsLoaded(data);
     })
     .catch(function(err) {
-      console.warn('[Apps] Could not load keyboard-warriors-apps.json:', err, '— using built-in fallback.');
-      _onAppsLoaded([
-        { label: 'Photoshop (Ps)', path: '/keyboard-warriors/data/shortcuts_photoshop.json' },
-      ]);
+      console.warn('[Edition] Could not load to-' + EditionId + '.json:', err, '— using built-in fallback.');
+      _applyEditionCredit(null);
+      _onAppsLoaded({
+        apps: [
+          { label: 'Photoshop (Ps)', path: '/keyboard-warriors/data/shortcuts_photoshop.json' },
+        ],
+        skillsets: null,
+      });
     });
 })();
 // Codes that only exist on the extended keyboard (not on the graphical layout)

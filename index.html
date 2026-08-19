@@ -6,10 +6,10 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Keyboard Warriors</title>
+<title>beta</title>
 <script>
   const DefaultTitle = 'Keyboard Warriors';
-  const VersionLabel   = '0043';
+  const VersionLabel   = '0044';
   const TitlePrefix  = document.title !== DefaultTitle ? document.title.trim() + '_' : '';
   const DBG_DEVICE   = TitlePrefix + VersionLabel;
 </script>
@@ -9589,16 +9589,16 @@ function _showWelcomeScreen() {
   titleEl.textContent = 'Welcome to Keyboard Warriors';
   var tagline = document.getElementById('welcomeTagline');
   if (tagline) tagline.style.display = 'block';
-  // Default to Fundamentals on first visit
+  // Default to Ubiquitous on first visit
   _diffFirst = true;
-  setDiffState(-1);
-  _updateDiffBtnStyles('fundamentals');
-  _updateDiffSubtitle('fundamentals', null);
+  setDiffState(-1.5);
+  _updateDiffBtnStyles('ubiquitous');
+  _updateDiffSubtitle('ubiquitous', null);
   openSettings('panelLandingWelcome');
   // Hide caret until user makes a selection
   var wCaret = document.getElementById('welcomeDifficultyCaretEl');
   if (wCaret) wCaret.style.visibility = 'hidden';
-  requestAnimationFrame(function() { _placeDifficultyCaretInstant('fundamentals'); });
+  requestAnimationFrame(function() { _placeDifficultyCaretInstant('ubiquitous'); });
 }
 
 // Shared handler for both the welcome panel and the difficulty settings panel
@@ -10716,12 +10716,12 @@ function _returningStartOver() {
       hasTrophy = false;
       questionTimer = null;
       playerLives   = null;
-      dismissedConflicts.clear();
-      // Clear the stored preference before resolving so we always land on
-      // the hardwired default (Graphic Design) for a clean start.
       try { localStorage.removeItem('kw_preferred_skillset'); } catch(e) {}
       currentSkillset = 'Graphic Design';
-      _applySkillset(currentSkillset);
+      currentDifficulty = 'ubiquitous';
+      _diffFirst = true;
+      setDiffState(-1.5);
+      syncDiffNeedle();
       updateBestDisplay();
       _syncSliderToValue('timer', null);
       _syncSliderToValue('lives', null);
@@ -10758,7 +10758,7 @@ function _returningStartOver() {
       _closeSkillsetPill();
       // Start pressed without choosing a difficulty
   if (!_welcomeIsReturning) {
-    currentDifficulty = 'fundamentals';
+    currentDifficulty = 'ubiquitous';
     try { localStorage.setItem('kw_difficulty', currentDifficulty); } catch(e) {}
   }
   var panelInner = document.getElementById('settingsPanelInner');
@@ -11135,7 +11135,7 @@ function requiresExtKey(shortcut) {
 
 // Current difficulty mode: 'fundamentals' | 'normal' | 'hardcore'
 // Default: load from localStorage, fall back to 'normal'
-var currentDifficulty = 'fundamentals';
+var currentDifficulty = 'ubiquitous';
 (function() {
   try {
     var saved = localStorage.getItem('kw_difficulty');
@@ -12291,35 +12291,48 @@ lastCompletedReport = finalizeRunData(completedRun, questionPool, 0); EndGamePag
     // Step 2: once panel is visible, scroll settings into view, then animate pill
     scrollPanelIntoViewIfNeeded('settingsPanelInner', panelVisible);
     var pillDone = panelVisible;
-    if (previousDifficulty === 'fundamentals') {
+
+    // Bump the player up exactly one tier from wherever they currently are,
+    // rather than jumping straight to Normal. This uses the full six-tier
+    // scale (including the two coach-suggested "plus" states that sit
+    // between the three visible pill buttons), matching the same ramp
+    // order used by the coach's own difficulty suggestions elsewhere.
+    var TrophyBumpRampOrder = ['ubiquitous', 'fundamentals', 'fundamentals-plus', 'normal', 'normal-plus', 'hardcore'];
+    var TrophyBumpStateMap  = { ubiquitous: -1.5, fundamentals: -1, 'fundamentals-plus': -0.5, normal: 0, 'normal-plus': 0.5, hardcore: 1 };
+    // "-plus" states have no pill button of their own — visually they belong
+    // to the nearest of the three real buttons, same mapping diffBtnClick uses.
+    var TrophyBumpVisualSegment = { 'fundamentals-plus': 'fundamentals', 'normal-plus': 'normal' };
+    var CurrentTierIndex = TrophyBumpRampOrder.indexOf(previousDifficulty);
+    if (CurrentTierIndex === -1) CurrentTierIndex = TrophyBumpRampOrder.indexOf('fundamentals');
+    var BumpedDifficultyMode = TrophyBumpRampOrder[Math.min(CurrentTierIndex + 1, TrophyBumpRampOrder.length - 1)];
+    var BumpedVisualSegment  = TrophyBumpVisualSegment[BumpedDifficultyMode] || BumpedDifficultyMode;
+
+    setTimeout(function() {
+      currentDifficulty = BumpedDifficultyMode;
+      try { localStorage.setItem('kw_difficulty', BumpedDifficultyMode); } catch(e) {}
+      syncDiffNeedle();
+      var pillBtns = document.querySelectorAll('#difficultyPill .diff-btn');
+      pillBtns.forEach(function(b) { b.classList.add('diff-btn-transitioning'); });
+      _diffFirst = true;
+      setDiffState(TrophyBumpStateMap[BumpedDifficultyMode] !== undefined ? TrophyBumpStateMap[BumpedDifficultyMode] : 0);
+      _updateDiffBtnStyles(BumpedDifficultyMode);
+      _updateDiffSubtitle(BumpedDifficultyMode, null);
+      _moveDifficultyCaretToMode(BumpedDifficultyMode);
+      // Pop the newly active label
+      var bumpedBtn = document.querySelector('#difficultyPill .diff-btn[data-mode="' + BumpedVisualSegment + '"]');
+      if (bumpedBtn) _popDiffLabel(bumpedBtn);
+      // Hardcore itself unlocks a moment later in Step 3 below. If the bump
+      // landed here, force it to read as active now so it doesn't flash as
+      // locked for the brief gap before Step 3 catches up.
+      if (BumpedDifficultyMode === 'hardcore' && bumpedBtn) {
+        bumpedBtn.classList.remove('diff-btn-inactive');
+        bumpedBtn.classList.add('diff-btn-active');
+      }
       setTimeout(function() {
-        currentDifficulty = 'normal';
-        try { localStorage.setItem('kw_difficulty', 'normal'); } catch(e) {}
-        syncDiffNeedle();
-        var pillBtns = document.querySelectorAll('#difficultyPill .diff-btn');
-        pillBtns.forEach(function(b) { b.classList.add('diff-btn-transitioning'); });
-        _diffFirst = true;
-        setDiffState(0);
-        _updateDiffBtnStyles('normal');
-        _updateDiffSubtitle('normal', null);
-        _moveDifficultyCaretToMode('normal');
-        // Pop the newly active label
-        var normalBtn = document.querySelector('#difficultyPill .diff-btn[data-mode="normal"]');
-        if (normalBtn) _popDiffLabel(normalBtn);
-        setTimeout(function() {
-          pillBtns.forEach(function(b) { b.classList.remove('diff-btn-transitioning'); });
-        }, 700);
-      }, panelVisible);
-      pillDone = panelVisible + 700; // pill transition duration
-    } else {
-      // Already on Normal/Hardcore — still pop the active pill label to draw attention
-      currentDifficulty = 'normal';
-      try { localStorage.setItem('kw_difficulty', 'normal'); } catch(e) {}
-      setTimeout(function() {
-        var activeBtn = document.querySelector('#difficultyPill .diff-btn[data-mode="normal"]');
-        if (activeBtn) _popDiffLabel(activeBtn);
-      }, panelVisible);
-    }
+        pillBtns.forEach(function(b) { b.classList.remove('diff-btn-transitioning'); });
+      }, 700);
+    }, panelVisible);
+    pillDone = panelVisible + 700; // pill transition duration
 
     // Step 3: award trophy + unlock panel.
     // Sliders MUST start from ∞ (that was the only available state until now).

@@ -550,7 +550,7 @@ body:has(.leftPanel.showing-confirm) > *:not(#gameContainer):not(#kwToast) {
   width: 100%;
   padding: 8px 60px 4px;
   position: relative;
-  z-index: 501;
+  z-index: 1;
   box-sizing: border-box;
   min-height: 37px;
 }

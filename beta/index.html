@@ -12293,20 +12293,19 @@ lastCompletedReport = finalizeRunData(completedRun, questionPool, 0); EndGamePag
     var pillDone = panelVisible;
 
     // Bump the player up exactly one tier from wherever they currently are,
-    // rather than jumping straight to Normal. Coach-suggested "plus" states
-    // count as their base tier for this purpose (fundamentals-plus -> normal).
-    var TrophyBumpRampOrder = ['ubiquitous', 'fundamentals', 'normal', 'hardcore'];
-    var TrophyBumpBaseTier = {
-      ubiquitous:          'ubiquitous',
-      fundamentals:        'fundamentals',
-      'fundamentals-plus': 'fundamentals',
-      normal:              'normal',
-      'normal-plus':       'normal',
-      hardcore:            'hardcore',
-    };
-    var TrophyBumpStateMap = { ubiquitous: -1.5, fundamentals: -1, normal: 0, hardcore: 1 };
-    var CurrentBaseTierIndex = TrophyBumpRampOrder.indexOf(TrophyBumpBaseTier[previousDifficulty] || 'fundamentals');
-    var BumpedDifficultyMode = TrophyBumpRampOrder[Math.min(CurrentBaseTierIndex + 1, TrophyBumpRampOrder.length - 1)];
+    // rather than jumping straight to Normal. This uses the full six-tier
+    // scale (including the two coach-suggested "plus" states that sit
+    // between the three visible pill buttons), matching the same ramp
+    // order used by the coach's own difficulty suggestions elsewhere.
+    var TrophyBumpRampOrder = ['ubiquitous', 'fundamentals', 'fundamentals-plus', 'normal', 'normal-plus', 'hardcore'];
+    var TrophyBumpStateMap  = { ubiquitous: -1.5, fundamentals: -1, 'fundamentals-plus': -0.5, normal: 0, 'normal-plus': 0.5, hardcore: 1 };
+    // "-plus" states have no pill button of their own — visually they belong
+    // to the nearest of the three real buttons, same mapping diffBtnClick uses.
+    var TrophyBumpVisualSegment = { 'fundamentals-plus': 'fundamentals', 'normal-plus': 'normal' };
+    var CurrentTierIndex = TrophyBumpRampOrder.indexOf(previousDifficulty);
+    if (CurrentTierIndex === -1) CurrentTierIndex = TrophyBumpRampOrder.indexOf('fundamentals');
+    var BumpedDifficultyMode = TrophyBumpRampOrder[Math.min(CurrentTierIndex + 1, TrophyBumpRampOrder.length - 1)];
+    var BumpedVisualSegment  = TrophyBumpVisualSegment[BumpedDifficultyMode] || BumpedDifficultyMode;
 
     setTimeout(function() {
       currentDifficulty = BumpedDifficultyMode;
@@ -12320,7 +12319,7 @@ lastCompletedReport = finalizeRunData(completedRun, questionPool, 0); EndGamePag
       _updateDiffSubtitle(BumpedDifficultyMode, null);
       _moveDifficultyCaretToMode(BumpedDifficultyMode);
       // Pop the newly active label
-      var bumpedBtn = document.querySelector('#difficultyPill .diff-btn[data-mode="' + BumpedDifficultyMode + '"]');
+      var bumpedBtn = document.querySelector('#difficultyPill .diff-btn[data-mode="' + BumpedVisualSegment + '"]');
       if (bumpedBtn) _popDiffLabel(bumpedBtn);
       // Hardcore itself unlocks a moment later in Step 3 below. If the bump
       // landed here, force it to read as active now so it doesn't flash as

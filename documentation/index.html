@@ -779,7 +779,7 @@
     try{
       const item=tabEls[i];
       const doc=item.iframe.contentWindow.document;
-      const textColour=darken(resolveTabBg(manifest.tabs[i]),0.80);
+      const textColour=titleColour(resolveTabBg(manifest.tabs[i]));
       doc.documentElement.style.color=textColour;
       if(doc.body) doc.body.style.color=textColour;
     }catch(e){ }

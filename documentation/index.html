@@ -252,7 +252,38 @@
     // Use a fixed mid grey instead.
     return theme==='dark' ? '#9099a0' : darken(hex,0.80);
   }
-  let manifest=null;
+  // Accepts either a "#rrggbb" hex string or a browser-computed
+  // "rgb(r, g, b)" string and returns the three channel values.
+  function parseColourToRgb(colour){
+    if(colour.charAt(0)==='#'){
+      const n=colour.replace('#','');
+      return {
+        r:parseInt(n.substring(0,2),16),
+        g:parseInt(n.substring(2,4),16),
+        b:parseInt(n.substring(4,6),16)
+      };
+    }
+    const match=/rgba?\(\s*(\d+)\s*,\s*(\d+)\s*,\s*(\d+)/.exec(colour);
+    if(match) return {r:+match[1],g:+match[2],b:+match[3]};
+    return {r:0,g:0,b:0};
+  }
+  // Standard relative-luminance estimate (0 = black, 1 = white),
+  // weighted toward green since human eyes are most sensitive to it.
+  function relativeLuminance(colour){
+    const {r,g,b}=parseColourToRgb(colour);
+    return (0.2126*r + 0.7152*g + 0.0722*b)/255;
+  }
+  // Picks a readable text colour for whatever colour is actually
+  // painted behind it. Most tabs paint their own folder colour behind
+  // the text, and those stay light/mid-toned even in dark mode, so
+  // darkening them keeps working exactly as it always has. Only a
+  // hidden tab with no folder colour of its own (currently just the
+  // cover tab) ever falls through to the page's own dark background,
+  // which needs light text instead.
+  function readableTextColour(bgColour){
+    return relativeLuminance(bgColour) < 0.5 ? '#e2e5ea' : darken(bgColour,0.80);
+  }
+  let manifest=null;
   let activeIndex=0;
   let prevIndex=0;
   let pressedIndex=null;
@@ -779,7 +810,12 @@
     try{
       const item=tabEls[i];
       const doc=item.iframe.contentWindow.document;
-      const textColour=titleColour(resolveTabBg(manifest.tabs[i]));
+      const tab=manifest.tabs[i];
+      // Hidden tabs (currently just "cover") paint no folder shape of
+      // their own, so their real visible background is the page's own
+      // background rather than a manifest colour.
+      const actualBackground=tab.hidden ? resolvePageBg() : resolveTabBg(tab);
+      const textColour=readableTextColour(actualBackground);
       doc.documentElement.style.color=textColour;
       if(doc.body) doc.body.style.color=textColour;
     }catch(e){ }

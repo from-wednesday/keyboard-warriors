@@ -143,6 +143,9 @@ body {
   max-width: 640px;
   line-height: 1.7;
 }
+.page-header.no-rule::after {
+  display: none;
+}
 
 /* ── Section ─────────────────────────────────────────────────── */
 section { display: flex; flex-direction: column; gap: 16px; }

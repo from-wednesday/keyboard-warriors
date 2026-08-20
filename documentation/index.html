@@ -847,7 +847,7 @@
   stackTitle.style.pointerEvents='auto';
   stackTitle.addEventListener('click',()=>{
     if(!manifest || isLoadingPhase) return;
-    setActive(manifest.tabs.length-1);
+    setActive(findTabIndex(manifest.tabs,'cover',0));
   });
     function resolveEditionId(){
     var Requested=null;

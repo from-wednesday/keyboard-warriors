@@ -391,6 +391,12 @@
       const x=margin;
       const zIndex=i;
       if(i===activeIndex){
+        if(tab.hidden){
+          // The hidden "cover" tab has no visible flap, so it doesn't
+          // need the title-offset + flap space every other tab reserves.
+          // It fills the entire browser window instead, top to bottom.
+          return {tab,i,isOpen:true,x,y:0,width,height:BASELINE_H,frameHostH:BASELINE_H,zIndex,narrow};
+        }
         return {tab,i,isOpen:true,x,y:openTop,width,height:BASELINE_H,frameHostH:frameHostBottom-openTop,zIndex,narrow};
       }
       let y;
@@ -603,12 +609,13 @@
     return Math.min(Math.abs(i-source),8)*animNumber('cascadeStepMs',35);
   }
   function paneHeightFor(i,frameHostH,L){
+    const flapOffset=(manifest.tabs[i] && manifest.tabs[i].hidden) ? 0 : L.flapHeightPx;
     if(i===activeIndex && frameHostH){
-      const h=frameHostH-L.flapHeightPx;
+      const h=frameHostH-flapOffset;
       tabEls[i].lastPaneH=h;
       return h;
     }
-    return tabEls[i].lastPaneH || Math.max(0,currentViewportHeight()-L.flapHeightPx);
+    return tabEls[i].lastPaneH || Math.max(0,currentViewportHeight()-flapOffset);
   }
   function pressOffsetForTab(i){
     if(pressedIndex===null || pressedIndex===activeIndex) return 0;
@@ -668,10 +675,10 @@
       h2.style.left=flapX+'px';
       h2.style.width=L.flapWidthPx+'px';
       h2.style.right='auto';
-      frameHost.style.top=L.flapHeightPx+'px';
+      frameHost.style.top=(tab.hidden?0:L.flapHeightPx)+'px';
       frameHost.style.width='100%';
       frameHost.style.height=paneHeightFor(i,frameHostH,L)+'px';
-      frameHost.style.borderRadius=L.cornerRadiusPx+'px';
+      frameHost.style.borderRadius=tab.hidden?'0px':L.cornerRadiusPx+'px';
       frameHost.classList.toggle('is-visible',shouldShowPane(i));
       if(shouldShowPane(i)) loadFrame(i);
     });

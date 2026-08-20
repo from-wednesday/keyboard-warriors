@@ -40,9 +40,9 @@
      across the image) and --medal-size (percentage of image width)
      to reposition without touching the script. */
   .hero-medal {
-    --medal-left: 78%;
-    --medal-top: 50%;
-    --medal-size: 17%;
+    --medal-left: 90%;
+    --medal-top: 0%;
+    --medal-size: 19%;
     position: absolute;
     left: var(--medal-left);
     top: var(--medal-top);
@@ -108,14 +108,14 @@
 <div class="page">
 
   <!-- ══ HEADER ══════════════════════════════════════════════════ -->
-  <header class="page-header">
+<header class="page-header no-rule">
     <p class="eyebrow">Keyboard Warriors · Welcome</p>
-    <h1 class="h1-alt"><em>Quickly master your software so you can focus on the actual work.</em></h1>
+    <h1 class="h1-alt">Quickly master your software <em>so you can focus on the actual work.</em></h1>
   </header>
 
   <!-- ══ HERO IMAGE ══════════════════════════════════════════════ -->
   <section>
-    <div class="hero-media">
+    <div class="hero-media" style="position: relative; top: -10px;">
       <img src="/keyboard-warriors/images/keyboard-3d.png" alt="A 3D rendered keyboard, illustrating keyboard shortcut mastery.">
       <div class="hero-medal medal-gold" id="heroMedal" aria-hidden="true">
         <div class="hero-medal-face" id="heroMedalFace">
@@ -131,7 +131,10 @@
         </div>
       </div>
     </div>
-    <p class="cover-caption">Public app free for individuals. Enquire about an institution license built for your curriculum.</p>
+    <p style="text-align: center;">
+  <a id="playNowLink" class="return-link" href="https://from-wednesday.github.io/keyboard-warriors/" target="_blank" rel="noopener noreferrer" style="transform: translateY(-48px); display: inline-block; padding: 0.8em 2em; border: 1px solid currentColor; border-radius: 9999px; color: inherit; text-decoration: none; font-weight: 700; line-height: 1;">play now</a>
+</p>
+    <p class="cover-caption" style="transform: translateY(-24px);" >Public app free for individuals. <a href="../?tab=6" data-open-tab="6" style="font-weight: 600;">Enquire</a> about an institution license built for your curriculum.</p>
   </section>
 
 </div><!-- /.page -->
@@ -223,6 +226,40 @@
   medalEl.style.background = rimGradient(0);
   updateFaceGradient(0);
   updateEngraveOffsets(0);
+})();
+</script>
+
+<script>
+/* ══════════════════════════════════════
+   PLAY NOW LINK
+   This page loads inside an iframe with no
+   query string of its own, so the tenant
+   ("to") comes from the parent tab shell's
+   URL instead. Same climbing approach as
+   the return-link in advice_game.html.
+══════════════════════════════════════ */
+(function() {
+  var link = document.getElementById('playNowLink');
+  if (!link) return;
+
+  function getTenant() {
+    var win = window;
+    while (win) {
+      try {
+        var to = new URLSearchParams(win.location.search).get('to');
+        if (to) return to;
+        if (win === win.parent) break;
+        win = win.parent;
+      } catch (e) {
+        break; /* cross-origin boundary — stop climbing */
+      }
+    }
+    return '';
+  }
+
+  var tenant = getTenant();
+  var base = 'https://from-wednesday.github.io/keyboard-warriors/';
+  link.href = tenant ? base + '?to=' + encodeURIComponent(tenant) : base;
 })();
 </script>
 </body>

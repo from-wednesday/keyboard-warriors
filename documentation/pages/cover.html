@@ -17,6 +17,16 @@
      floating gold medal disc, unique to this page.
      ══════════════════════════════════════════════════════════════ */
 
+  /* This page's medal graphic deliberately pokes above the hero image
+     into the title area. The shared stylesheet hides overflow on
+     html/body everywhere (to stop the iframe ever growing its own
+     scrollbar); here that also clips the medal, so it's loosened back
+     to visible just on this page. Doesn't bring back scrolling: this
+     only affects painting outside the box, not scroll behaviour. */
+  html, body {
+    overflow: visible !important;
+  }
+
   .hero-media {
     position: relative;
   }

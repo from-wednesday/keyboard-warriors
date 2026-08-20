@@ -12,9 +12,13 @@
      Page-specific components for cover.html.
      Everything shared with the rest of the site (tokens, chrome,
      callouts, lists) lives in ../styles/documentation_design-system.css —
-     this block only covers the hero image and its caption line,
-     unique to this page.
+     this block only covers the hero image, its caption line, and the
+     floating gold medal disc, unique to this page.
      ══════════════════════════════════════════════════════════════ */
+
+  .hero-media {
+    position: relative;
+  }
 
   .hero-media img {
     display: block;
@@ -29,23 +33,159 @@
     max-width: 640px;
     margin: 0 auto;
   }
+
+  /* ── Gold medal disc ──────────────────────────────────────────
+     Floats above the keyboard image, positioned via the three
+     variables below. Adjust --medal-left/--medal-top (percentage
+     across the image) and --medal-size (percentage of image width)
+     to reposition without touching the script. */
+  .hero-medal {
+    --medal-left: 68%;
+    --medal-top: 68%;
+    --medal-size: 12%;
+    position: absolute;
+    left: var(--medal-left);
+    top: var(--medal-top);
+    width: var(--medal-size);
+    aspect-ratio: 1 / 1;
+    transform: translate(-50%, -50%);
+    border-radius: 50%;
+    z-index: 10;
+    pointer-events: none;
+  }
+
+  /* Gold rim — the conic-gradient background is overwritten live by
+     JS as the rim rotates with mouse position; this is just the
+     resting value shown before the first mousemove event. */
+  .hero-medal.medal-gold {
+    box-shadow:
+      4px 8px 20px rgba(0,0,0,0.28),
+      2px 3px  8px rgba(0,0,0,0.15);
+    background: conic-gradient(
+      from 225deg,
+      #b8730a 0deg, #b8730a 1deg,
+      #fff9d6 14deg, #fff9d6 17deg,
+      #e8c060 35deg, #c88810 70deg,
+      #7c4d04 108deg, #3d1e00 128deg, #3d1e00 132deg,
+      #6b3e03 155deg, #a06818 185deg, #c8860a 210deg,
+      #f0d070 222deg, #b8730a 225deg, #b8730a 360deg
+    );
+  }
+
+  /* Gold face — the inset disc. Its background is also overwritten
+     live by JS, via a separate injected <style> tag, so its rotation
+     can move independently of the rim above. */
+  .hero-medal.medal-gold::before {
+    content: '';
+    position: absolute;
+    inset: 3px;
+    border-radius: 50%;
+    box-shadow:
+      inset  1px  1px 1px rgba(255,255,255,0.55),
+      inset -1px -1px 1px rgba(0,0,0,0.55);
+    background: conic-gradient(
+      #c8860a 0deg, #fde68a 40deg, #f6c547 70deg, #b8730a 110deg,
+      #7c4d04 140deg, #e8b84b 175deg, #fef08a 200deg, #d4a017 230deg,
+      #8a5c08 265deg, #f0c040 295deg, #fde68a 325deg, #c8860a 360deg
+    );
+  }
 </style>
 </head>
 <body>
 <div class="page">
 
+  <!-- ══ HEADER ══════════════════════════════════════════════════ -->
+  <header class="page-header">
     <p class="eyebrow">Keyboard Warriors · Welcome</p>
     <h1 class="h1-alt"><em>Quickly master your software so you can focus on the actual work.</em></h1>
-
+  </header>
 
   <!-- ══ HERO IMAGE ══════════════════════════════════════════════ -->
   <section>
     <div class="hero-media">
       <img src="/keyboard-warriors/images/keyboard-3d.png" alt="A 3D rendered keyboard, illustrating keyboard shortcut mastery.">
+      <div class="hero-medal medal-gold" id="heroMedal" aria-hidden="true"></div>
     </div>
     <p class="cover-caption">Public app free for individuals. Enquire about an institution license built for your curriculum.</p>
   </section>
 
 </div><!-- /.page -->
+
+<script>
+/* ══════════════════════════════════════
+   HERO GOLD MEDAL — mouse-driven lighting
+   Mirrors the rim/face rotation system used by the game's medal
+   disc, scoped to just this page and just the gold variant.
+   No gyroscope or touch-permission code, by design.
+══════════════════════════════════════ */
+(function() {
+  var medalEl = document.getElementById('heroMedal');
+  if (!medalEl) return;
+
+  // Separate <style> tag so the face (::before) can rotate at a
+  // different angle from the rim, same trick the game uses.
+  var medalFaceStyleEl = document.createElement('style');
+  document.head.appendChild(medalFaceStyleEl);
+
+  function rimGradient(angle) {
+    return 'conic-gradient(from ' + (225 + angle) + 'deg,' +
+      '#b8730a 0deg,#b8730a 1deg,' +
+      '#fff9d6 14deg,#fff9d6 17deg,' +
+      '#e8c060 35deg,#c88810 70deg,' +
+      '#7c4d04 108deg,#3d1e00 128deg,#3d1e00 132deg,' +
+      '#6b3e03 155deg,#a06818 185deg,#c8860a 210deg,' +
+      '#f0d070 222deg,#b8730a 225deg,#b8730a 360deg)';
+  }
+
+  function faceGradient(angle) {
+    return 'conic-gradient(from ' + angle + 'deg,' +
+      '#c8860a 0deg,#fde68a 40deg,#f6c547 70deg,#b8730a 110deg,' +
+      '#7c4d04 140deg,#e8b84b 175deg,#fef08a 200deg,#d4a017 230deg,' +
+      '#8a5c08 265deg,#f0c040 295deg,#fde68a 325deg,#c8860a 360deg)';
+  }
+
+  function updateFaceGradient(angle) {
+    medalFaceStyleEl.textContent =
+      '.hero-medal.medal-gold::before { background: ' + faceGradient(angle) + ' !important; }';
+  }
+
+  // Spring physics: rimCurrent eases toward rimTarget each frame,
+  // giving the tilt a slight settle rather than snapping instantly.
+  var rimTarget = 0;
+  var rimCurrent = 0;
+  var rimVelocity = 0;
+  var rimRafId = null;
+  var RIM_STIFFNESS = 0.10;
+  var RIM_DAMPING = 0.72;
+
+  function rimTick() {
+    var force = (rimTarget - rimCurrent) * RIM_STIFFNESS;
+    rimVelocity = rimVelocity * RIM_DAMPING + force;
+    rimCurrent += rimVelocity;
+
+    var faceAngle = Math.round((rimTarget / 15) * 5);
+    medalEl.style.background = rimGradient(rimCurrent);
+    updateFaceGradient(faceAngle);
+
+    if (Math.abs(rimVelocity) > 0.01 || Math.abs(rimCurrent - rimTarget) > 0.01) {
+      rimRafId = requestAnimationFrame(rimTick);
+    } else {
+      rimCurrent = rimTarget;
+      rimRafId = null;
+    }
+  }
+
+  document.addEventListener('mousemove', function(e) {
+    var offset = (e.clientX / window.innerWidth) - 0.5; // -0.5 .. +0.5
+    rimTarget = offset * 30; // matches the game's ±15° swing
+    if (!rimRafId) rimRafId = requestAnimationFrame(rimTick);
+  });
+
+  // Paint the resting state immediately so the medal looks correct
+  // before the first mouse movement.
+  medalEl.style.background = rimGradient(0);
+  updateFaceGradient(0);
+})();
+</script>
 </body>
 </html>

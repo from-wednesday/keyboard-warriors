@@ -120,11 +120,11 @@
       <div class="hero-medal medal-gold" id="heroMedal" aria-hidden="true">
         <div class="hero-medal-face" id="heroMedalFace">
           <svg class="hero-medal-face-svg" viewBox="0 0 500 500">
-            <g id="heroMedalEngraveShadow" fill="#3d1e00" opacity="0.65">
+            <g id="heroMedalEngraveShadow" fill="#3d1e00" opacity="0.25">
               <use href="#logoEmblem"/>
             </g>
             <use href="#logoEmblem" fill="#7c4d04"/>
-            <g id="heroMedalEngraveHighlight" fill="#fff9d6" opacity="0.85">
+            <g id="heroMedalEngraveHighlight" fill="#ffe38c" opacity="0.75">
               <use href="#logoEmblem"/>
             </g>
           </svg>
@@ -178,7 +178,7 @@
   // maxSwing controls how deep the engraving reads — raise it for a
   // more pronounced carve, lower it for a subtler one.
   function updateEngraveOffsets(angle) {
-    var maxSwing = 6;
+    var maxSwing = 1;
     var dx = (angle / 15) * maxSwing;
     var dy = 4;
     if (shadowLayer)    shadowLayer.setAttribute('transform', 'translate(' + (-dx) + ',' + (-dy) + ')');

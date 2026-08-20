@@ -324,8 +324,8 @@
     shell.classList.toggle('is-narrow', titleRow);
     const baseMargin=32;
     const titleOffset=titleRow ? 56 : 18;
-    const headerCount=activeIndex;
-    const footerCount=n-1-activeIndex;
+    const headerCount=manifest.tabs.slice(0,activeIndex).filter(function(t){return !t.hidden;}).length;
+    const footerCount=manifest.tabs.slice(activeIndex+1).filter(function(t){return !t.hidden;}).length;
     const peekStepPx = effectivePeekStep(vh,n,narrow,L);
     const headerSpan = headerCount*peekStepPx;
     const openTop = titleOffset + headerSpan;
@@ -346,6 +346,13 @@
       const slot=(i+1)%slots;
       return edgeClearance+slot*L.flapStepPx;
     };
+    const visibleBeforeActive = manifest.tabs
+      .map((t,idx)=>idx)
+      .filter(idx=>idx<activeIndex && !manifest.tabs[idx].hidden);
+    const visibleAfterActive = manifest.tabs
+      .map((t,idx)=>idx)
+      .filter(idx=>idx>activeIndex && !manifest.tabs[idx].hidden);
+    const offscreenTopY = -(BASELINE_H+400);
     const layout=manifest.tabs.map((tab,i)=>{
       const stepsFromFront=(n-1)-i;
       const margin=fullWidthTabs ? 0 : baseMargin+stepsFromFront;
@@ -356,11 +363,13 @@
         return {tab,i,isOpen:true,x,y:openTop,width,height:BASELINE_H,frameHostH:frameHostBottom-openTop,zIndex,narrow};
       }
       let y;
-      if(i<activeIndex){
-        const k=activeIndex-i;
+      if(tab.hidden){
+        y=offscreenTopY;
+      }else if(i<activeIndex){
+        const k=visibleBeforeActive.length-visibleBeforeActive.indexOf(i);
         y=openTop-k*peekStepPx;
       }else{
-        const j=i-(activeIndex+1);
+        const j=visibleAfterActive.indexOf(i);
         y=openBottomSeam+j*peekStepPx;
       }
       return {tab,i,isOpen:false,x,y,width,height:BASELINE_H,zIndex,narrow};
@@ -399,12 +408,20 @@
       const slot=(i+1)%slots;
       return edgeClearance+slot*L.flapStepPx;
     };
+    const offscreenTopY = -(BASELINE_H+400);
+    let visibleLoadingOrder=0;
     const layout=manifest.tabs.map((tab,i)=>{
       const stepsFromFront=(n-1)-i;
       const margin=fullWidthTabs ? 0 : baseMargin+stepsFromFront;
       const width=vw-margin*2;
       const x=margin;
-      const y=titleOffset+i*peekStepPx;
+      let y;
+      if(tab.hidden){
+        y=offscreenTopY;
+      }else{
+        y=titleOffset+visibleLoadingOrder*peekStepPx;
+        visibleLoadingOrder++;
+      }
       const zIndex=i;
       return {tab,i,isOpen:false,x,y,width,height:BASELINE_H,zIndex,narrow};
     });

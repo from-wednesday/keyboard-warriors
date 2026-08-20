@@ -6,12 +6,18 @@
   },
   "tabs": [
     {
+      "objectId": "cover",
+      "label": "",
+      "url": "pages/cover.html",
+      "hidden": true
+    },
+    {
       "objectId": 1,
       "label": "LICENSE",
       "url": "pages/license-public.html",
       "colors": {
         "light": "#d9c99d",
-        "dark": "#74777c"
+        "dark": "#7d8086"
       }
     },
     {
@@ -20,7 +26,7 @@
       "url": "pages/advice_general.html",
       "colors": {
         "light": "#e4d5a8",
-        "dark": "#74777c"
+        "dark": "#7d8086"
       }
     },
     {

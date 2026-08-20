@@ -417,7 +417,8 @@
     const instant=opts.instant===true;
     const transitionMs=animNumber('transitionMs',560);
     stackTitle.textContent=manifest.title||'';
-    const refColour=titleColour(resolveTabBg(manifest.tabs[0]));
+    const FirstVisibleTabIndex=manifest.tabs.findIndex(t=>!t.hidden);
+    const refColour=titleColour(resolveTabBg(manifest.tabs[FirstVisibleTabIndex]));
     document.body.style.color=refColour;
     stackTitle.style.color=refColour;
     layout.forEach(({tab,i,x,y,width,height,zIndex})=>{
@@ -436,13 +437,23 @@
       const tabBg=resolveTabBg(tab);
       const pageBg=resolvePageBg();
       const textColour=darken(tabBg,0.80);
-      h2.style.color=textColour;
       path.setAttribute('d',d);
-      path.setAttribute('fill',tabBg);
-      path.setAttribute('stroke',pageBg);
-      path.setAttribute('stroke-width','1.6');
-      path.setAttribute('stroke-linejoin','round');
-      svg.style.filter=i===0?'drop-shadow(1px -1px 2px rgba(0,0,0,.055))':'drop-shadow(1px -2px 4px rgba(0,0,0,.10))';
+      if(tab.hidden){
+        path.setAttribute('fill','none');
+        path.setAttribute('stroke','none');
+        path.style.pointerEvents='none';
+        svg.style.filter='none';
+        h2.style.visibility='hidden';
+      }else{
+        h2.style.color=textColour;
+        path.setAttribute('fill',tabBg);
+        path.setAttribute('stroke',pageBg);
+        path.setAttribute('stroke-width','1.6');
+        path.setAttribute('stroke-linejoin','round');
+        path.style.pointerEvents='';
+        svg.style.filter=i===FirstVisibleTabIndex?'drop-shadow(1px -1px 2px rgba(0,0,0,.055))':'drop-shadow(1px -2px 4px rgba(0,0,0,.10))';
+        h2.style.visibility='visible';
+      }
       h2.style.left=flapX+'px';
       h2.style.width=L.flapWidthPx+'px';
       h2.style.right='auto';
@@ -567,6 +578,7 @@
     const pressMs=animNumber('pressMs',90);
     let maxDelay=0;
     stackTitle.textContent=manifest.title||'';
+    const FirstVisibleTabIndex=manifest.tabs.findIndex(t=>!t.hidden);
     layout.forEach(({tab,i,isOpen,x,y,width,height,frameHostH,zIndex})=>{
       const {el,svg,path,h2,frameHost}=tabEls[i];
       const pressDy=pressOffsetForTab(i);
@@ -588,13 +600,23 @@
       const textColour=darken(tabBg,0.80);
       document.body.style.color=titleColour(resolveTabBg(manifest.tabs[activeIndex]));
       stackTitle.style.color=document.body.style.color;
-      h2.style.color=textColour;
       path.setAttribute('d',d);
-      path.setAttribute('fill',tabBg);
-      path.setAttribute('stroke',pageBg);
-      path.setAttribute('stroke-width','1.6');
-      path.setAttribute('stroke-linejoin','round');
-      svg.style.filter=i===0?'drop-shadow(1px -1px 2px rgba(0,0,0,.055))':'drop-shadow(1px -2px 4px rgba(0,0,0,.10))';
+      if(tab.hidden){
+        path.setAttribute('fill','none');
+        path.setAttribute('stroke','none');
+        path.style.pointerEvents='none';
+        svg.style.filter='none';
+        h2.style.visibility='hidden';
+      }else{
+        h2.style.color=textColour;
+        path.setAttribute('fill',tabBg);
+        path.setAttribute('stroke',pageBg);
+        path.setAttribute('stroke-width','1.6');
+        path.setAttribute('stroke-linejoin','round');
+        path.style.pointerEvents='';
+        svg.style.filter=i===FirstVisibleTabIndex?'drop-shadow(1px -1px 2px rgba(0,0,0,.055))':'drop-shadow(1px -2px 4px rgba(0,0,0,.10))';
+        h2.style.visibility='visible';
+      }
       h2.style.left=flapX+'px';
       h2.style.width=L.flapWidthPx+'px';
       h2.style.right='auto';
@@ -799,6 +821,7 @@
     const L=manifest.layout;
     const sorted=[...lastLayout].sort((a,b)=>b.zIndex-a.zIndex);
     for(const t of sorted){
+      if(manifest.tabs[t.i] && manifest.tabs[t.i].hidden) continue;
       const lx=px-t.x, ly=py-t.y;
       if(lx<0||lx>t.width||ly<0) continue;
       if(ly<L.flapHeightPx){
@@ -836,10 +859,12 @@
   // on. Accepts either a tab's objectId or its label (case-insensitive).
   // Falls back to 1 (BOOTCAMP) if the param is absent, unmatched,
   // or the manifest doesn't have that many tabs.
-  function resolveInitialTabIndex(m){
-    var Requested=null;
-    try{ Requested=new URLSearchParams(window.location.search).get('tab'); }catch(e){}
-    return findTabIndex((m && m.tabs) || [], Requested, 1);
+  function resolveInitialTabIndex(m){
+    var Requested=null;
+    try{ Requested=new URLSearchParams(window.location.search).get('tab'); }catch(e){}
+    var DefaultLandingIndex=findTabIndex((m && m.tabs) || [], 2, 1);
+    return findTabIndex((m && m.tabs) || [], Requested, DefaultLandingIndex);
+  }
   }
   function loadManifest(FileName, IsFallbackAttempt){
     fetch(FileName).then(r=>{

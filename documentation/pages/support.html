@@ -290,12 +290,6 @@
     .card.is-active { transform: scale(1.06) rotate(0deg); }
     .spread { display: flex; flex-wrap: wrap; justify-content: center; }
 
-    /* The glow is centred on the desktop arc's midpoint. Mobile wraps
-       the cards into a plain flowing list instead, so that centring
-       no longer lines up with anything, switched off here rather than
-       repositioned. */
-    .spread::before { display: none; }
-
     /* On mobile .spread hugs its wrapped content (height:auto), so
        none of the desktop's ~70px of trailing dead space exists here.
        Carrying the desktop pull-up over would drive the paragraph up

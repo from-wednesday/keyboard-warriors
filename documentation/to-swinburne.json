@@ -17,7 +17,7 @@
       "url": "pages/license-swinburne.html",
       "colors": {
         "light": "#d9c99d",
-        "dark": "#7d8086"
+        "dark": "#b98f42"
       }
     },
     {
@@ -26,7 +26,7 @@
       "url": "pages/advice_general.html",
       "colors": {
         "light": "#e4d5a8",
-        "dark": "#7d8086"
+        "dark": "#c9a15a"
       }
     },
     {
@@ -35,7 +35,7 @@
       "url": "pages/advice_game.html",
       "colors": {
         "light": "#ede0b4",
-        "dark": "#659287"
+        "dark": "#d9b477"
       }
     },
     {
@@ -44,7 +44,7 @@
       "url": "pages/schema_defined.html",
       "colors": {
         "light": "#f6eec9",
-        "dark": "#88BDA4"
+        "dark": "#2d4a3e"
       }
     },
     {
@@ -53,7 +53,7 @@
       "url": "pages/define_the_keys.html",
       "colors": {
         "light": "#EEF8CD",
-        "dark": "#B1D3B9"
+        "dark": "#3c6152"
       }
     },
     {
@@ -62,23 +62,23 @@
       "url": "pages/support.html",
       "colors": {
         "light": "#BBF1D2",
-        "dark": "#E6F2DD"
+        "dark": "#6f9c86"
       }
     }
   ],
   "layout": {
-    "peekStepPx": 12,
+    "peekStepPx": 16,
     "staggerStepMs": 45,
     "flapWidthPx": 252,
     "flapStepPx": 220,
-    "flapHeightPx": 40,
+    "flapHeightPx": 38,
     "flapAngleDeg": 14,
     "cornerRadiusPx": 16
   },
   "responsive": {
     "useDynamicViewport": true,
     "useVisualViewport": true,
-    "minPeekStepPx": 16,
+    "minPeekStepPx": 22,
     "tabStackMaxViewportShare": 0.34,
     "compactAtViewportHeightPx": 720,
     "narrowMode": {
@@ -88,14 +88,14 @@
       "alternateFlaps": true,
       "firstFlapSide": "right"
     }
-  },
-  "animation": {
-    "easing": "cubic-bezier(.22,1,.36,1)",
-    "cascadeStepMs": 35,
-    "transitionMs": 560,
-    "anchorScrollMs": 480,
-    "pressMs": 90,
-    "pressOffsetPx": 4,
-    "parallaxPx": 18
-  }
+},
+"animation": {
+"easing": "cubic-bezier(.22,1,.36,1)",
+"cascadeStepMs": 35,
+"transitionMs": 560,
+"anchorScrollMs": 480,
+"pressMs": 90,
+"pressOffsetPx": 4,
+"parallaxPx": 19
+}
 }

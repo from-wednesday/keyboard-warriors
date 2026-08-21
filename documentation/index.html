@@ -490,7 +490,7 @@
       const d=folderPath(width,height,flapX,L.flapWidthPx,L.flapHeightPx,leanPx,L.cornerRadiusPx,L.cornerRadiusPx);
       const tabBg=resolveTabBg(tab);
       const pageBg=resolvePageBg();
-      const textColour=darken(tabBg,0.80);
+      const textColour=readableTextColour(tabBg);
       path.setAttribute('d',d);
       if(tab.hidden){
         path.setAttribute('fill','none');
@@ -652,7 +652,7 @@
       const d=folderPath(width,height,flapX,L.flapWidthPx,L.flapHeightPx,leanPx,L.cornerRadiusPx,L.cornerRadiusPx);
       const tabBg=resolveTabBg(tab);
       const pageBg=resolvePageBg();
-      const textColour=darken(tabBg,0.80);
+      const textColour=readableTextColour(tabBg);
       document.body.style.color=titleColour(resolveTabBg(manifest.tabs[activeIndex]));
       stackTitle.style.color=document.body.style.color;
       path.setAttribute('d',d);

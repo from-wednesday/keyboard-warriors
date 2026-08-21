@@ -137,6 +137,11 @@ body {
 .page-header h1.h1-alt {
   color: rgba(213, 137, 66, 0.9);
 }
+@media (prefers-color-scheme: dark) {
+  .page-header h1.h1-alt {
+    color: inherit;
+  }
+}
 .page-header p {
   font-size: 0.93rem;
   color: var(--ink-mid);
@@ -370,7 +375,9 @@ ol.plain-list li::before {
   --ink-mid: currentColor;
   --ink-soft: currentColor;
   --rule: rgba(0,0,0,.10);
+  --rule: color-mix(in srgb, currentColor 10%, transparent);
   --rule-strong: rgba(0,0,0,.14);
+  --rule-strong: color-mix(in srgb, currentColor 16%, transparent);
   --surface: rgba(255,255,255,.05);
   --surface-2: rgba(255,255,255,.08);
   --both-bg: rgba(255,255,255,.08);
@@ -433,7 +440,9 @@ section > h2,
 td,
 thead tr {
   border-color: rgba(0,0,0,.10);
+  border-color: color-mix(in srgb, currentColor 10%, transparent);
 }
+
 
 .table-wrap,
 .bp-col {

@@ -67,7 +67,7 @@
     }
   ],
   "layout": {
-    "peekStepPx": 14,
+    "peekStepPx": 16,
     "staggerStepMs": 45,
     "flapWidthPx": 252,
     "flapStepPx": 220,
@@ -78,7 +78,7 @@
   "responsive": {
     "useDynamicViewport": true,
     "useVisualViewport": true,
-    "minPeekStepPx": 20,
+    "minPeekStepPx": 22,
     "tabStackMaxViewportShare": 0.34,
     "compactAtViewportHeightPx": 720,
     "narrowMode": {

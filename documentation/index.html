@@ -375,7 +375,12 @@
       }
       const usableW=containerW-L.flapWidthPx-edgeClearance*2;
       const slots=Math.max(1,Math.floor(usableW/L.flapStepPx)+1);
-      const slot=(i+1)%slots;
+      // No "+1" here: every real tab's raw index is already one higher than
+      // its position among visible tabs, because the hidden cover tab sits
+      // first in the manifest. This only holds if the cover stays the sole
+      // hidden entry, at index 0. If a second hidden tab is ever added, this
+      // needs to become an explicit count of visible tabs before i instead.
+      const slot=i%slots;
       return edgeClearance+slot*L.flapStepPx;
     };
     const visibleBeforeActive = manifest.tabs
@@ -443,7 +448,12 @@
       }
       const usableW=containerW-L.flapWidthPx-edgeClearance*2;
       const slots=Math.max(1,Math.floor(usableW/L.flapStepPx)+1);
-      const slot=(i+1)%slots;
+      // No "+1" here: every real tab's raw index is already one higher than
+      // its position among visible tabs, because the hidden cover tab sits
+      // first in the manifest. This only holds if the cover stays the sole
+      // hidden entry, at index 0. If a second hidden tab is ever added, this
+      // needs to become an explicit count of visible tabs before i instead.
+      const slot=i%slots;
       return edgeClearance+slot*L.flapStepPx;
     };
     const offscreenTopY = -(BASELINE_H+400);

@@ -68,6 +68,25 @@
     height: 660px;
   }
 
+  /* Backdrop glow behind the card stack. Centred on the same point
+     the cards themselves centre on, fading from the light mode
+     background colour to fully transparent. In light mode this
+     matches the page exactly and is invisible. In dark mode it holds
+     a mint spotlight behind the cards regardless of the folder's own
+     colour, so the card system never needs its own dark variant. */
+  .spread::before {
+    content: "";
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 900px;
+    height: 900px;
+    transform: translate(-50%, -50%);
+    background: radial-gradient(circle, #BBF1D2 0%, rgba(187, 241, 210, 0) 70%);
+    pointer-events: none;
+    z-index: -1;
+  }
+
   .card {
     position: absolute;
     top: 50%;
@@ -289,6 +308,12 @@
     }
     .card.is-active { transform: scale(1.06) rotate(0deg); }
     .spread { display: flex; flex-wrap: wrap; justify-content: center; }
+
+    /* The glow is centred on the desktop arc's midpoint. Mobile wraps
+       the cards into a plain flowing list instead, so that centring
+       no longer lines up with anything, switched off here rather than
+       repositioned. */
+    .spread::before { display: none; }
 
     /* On mobile .spread hugs its wrapped content (height:auto), so
        none of the desktop's ~70px of trailing dead space exists here.

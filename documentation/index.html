@@ -101,7 +101,9 @@
     overflow:visible;
     pointer-events:none;
     opacity:.75;
-    transition:color var(--dur) var(--ease);
+    text-decoration-line:line-through;
+    text-decoration-color:transparent;
+    transition:color var(--dur) var(--ease), text-decoration-color var(--dur) var(--ease);
   }
   .frameHost{
     position:absolute;
@@ -476,6 +478,42 @@
     return {layout,flapCascadeX,narrow};
   }
 
+  // Renders one tab's fill, stroke and label colour. Ghosted tabs (loaded
+  // in the background but not yet styleReady) show only a flat currentColor
+  // outline against the page background with a struck-through label. Once
+  // styleReady flips true, the tab's real folder colour and drop shadow take
+  // over. Shared by paintLoading() and paint() so the skeleton row and the
+  // settled stack always agree on a given tab's appearance.
+  function renderTabAppearance(tab,i,FirstVisibleTabIndex){
+    const {svg,path,h2}=tabEls[i];
+    if(tab.hidden){
+      path.setAttribute('fill','none');
+      path.setAttribute('stroke','none');
+      path.style.pointerEvents='none';
+      svg.style.filter='none';
+      h2.style.visibility='hidden';
+      return;
+    }
+    h2.style.visibility='visible';
+    path.style.pointerEvents='';
+    path.setAttribute('stroke-width','1.6');
+    path.setAttribute('stroke-linejoin','round');
+    if(tabEls[i].styleReady){
+      const tabBg=resolveTabBg(tab);
+      h2.style.color=readableTextColour(tabBg);
+      h2.style.textDecorationColor='transparent';
+      path.setAttribute('fill',tabBg);
+      path.setAttribute('stroke',resolvePageBg());
+      svg.style.filter=i===FirstVisibleTabIndex?'drop-shadow(1px -1px 2px rgba(0,0,0,.055))':'drop-shadow(1px -2px 4px rgba(0,0,0,.10))';
+    }else{
+      h2.style.color='currentColor';
+      h2.style.textDecorationColor='currentColor';
+      path.setAttribute('fill',resolvePageBg());
+      path.setAttribute('stroke','currentColor');
+      svg.style.filter='none';
+    }
+  }
+
   function paintLoading(opts={}){
     const L=manifest.layout;
     const {layout,flapCascadeX}=computeLoadingLayout();
@@ -499,26 +537,8 @@
       const flapX=flapCascadeX(i,width);
       const leanPx=L.flapHeightPx*Math.tan(L.flapAngleDeg*Math.PI/180);
       const d=folderPath(width,height,flapX,L.flapWidthPx,L.flapHeightPx,leanPx,L.cornerRadiusPx,L.cornerRadiusPx);
-      const tabBg=resolveTabBg(tab);
-      const pageBg=resolvePageBg();
-      const textColour=readableTextColour(tabBg);
       path.setAttribute('d',d);
-      if(tab.hidden){
-        path.setAttribute('fill','none');
-        path.setAttribute('stroke','none');
-        path.style.pointerEvents='none';
-        svg.style.filter='none';
-        h2.style.visibility='hidden';
-      }else{
-        h2.style.color=textColour;
-        path.setAttribute('fill',tabBg);
-        path.setAttribute('stroke',pageBg);
-        path.setAttribute('stroke-width','1.6');
-        path.setAttribute('stroke-linejoin','round');
-        path.style.pointerEvents='';
-        svg.style.filter=i===FirstVisibleTabIndex?'drop-shadow(1px -1px 2px rgba(0,0,0,.055))':'drop-shadow(1px -2px 4px rgba(0,0,0,.10))';
-        h2.style.visibility='visible';
-      }
+      renderTabAppearance(tab,i,FirstVisibleTabIndex);
       h2.style.left=flapX+'px';
       h2.style.width=L.flapWidthPx+'px';
       h2.style.right='auto';
@@ -610,7 +630,7 @@
       frameHost.appendChild(iframe);
       el.appendChild(frameHost);
       tabLayer.appendChild(el);
-      return {el,svg,path,h2,frameHost,iframe,ro:null,loaded:false,lastPaneH:null};
+      return {el,svg,path,h2,frameHost,iframe,ro:null,loaded:false,styleReady:false,lastPaneH:null};
     });
   }
   function cascadeDelayFor(i,mode){
@@ -661,28 +681,10 @@
       const flapX=flapCascadeX(i,width);
       const leanPx=L.flapHeightPx*Math.tan(L.flapAngleDeg*Math.PI/180);
       const d=folderPath(width,height,flapX,L.flapWidthPx,L.flapHeightPx,leanPx,L.cornerRadiusPx,L.cornerRadiusPx);
-      const tabBg=resolveTabBg(tab);
-      const pageBg=resolvePageBg();
-      const textColour=readableTextColour(tabBg);
       document.body.style.color=titleColour(resolveTabBg(manifest.tabs[activeIndex]));
       stackTitle.style.color=document.body.style.color;
       path.setAttribute('d',d);
-      if(tab.hidden){
-        path.setAttribute('fill','none');
-        path.setAttribute('stroke','none');
-        path.style.pointerEvents='none';
-        svg.style.filter='none';
-        h2.style.visibility='hidden';
-      }else{
-        h2.style.color=textColour;
-        path.setAttribute('fill',tabBg);
-        path.setAttribute('stroke',pageBg);
-        path.setAttribute('stroke-width','1.6');
-        path.setAttribute('stroke-linejoin','round');
-        path.style.pointerEvents='';
-        svg.style.filter=i===FirstVisibleTabIndex?'drop-shadow(1px -1px 2px rgba(0,0,0,.055))':'drop-shadow(1px -2px 4px rgba(0,0,0,.10))';
-        h2.style.visibility='visible';
-      }
+      renderTabAppearance(tab,i,FirstVisibleTabIndex);
       h2.style.left=flapX+'px';
       h2.style.width=L.flapWidthPx+'px';
       h2.style.right='auto';
@@ -881,9 +883,16 @@
         item.ro.observe(item.iframe.contentWindow.document.body);
         item.ro.observe(item.iframe.contentWindow.document.documentElement);
       }catch(e){}
+      item.styleReady=true;
       framesLoadedCount++;
-      if(isLoadingPhase && framesLoadedCount>=manifest.tabs.length){
-        completeLoadingPhase();
+      if(isLoadingPhase){
+        if(i===activeIndex){
+          completeLoadingPhase();
+        }else{
+          paintLoading();
+        }
+      }else{
+        paint();
       }
     };
     item.iframe.src=tab.url;

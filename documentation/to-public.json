@@ -67,18 +67,18 @@
     }
   ],
   "layout": {
-    "peekStepPx": 12,
+    "peekStepPx": 14,
     "staggerStepMs": 45,
     "flapWidthPx": 252,
     "flapStepPx": 220,
-    "flapHeightPx": 40,
+    "flapHeightPx": 38,
     "flapAngleDeg": 14,
     "cornerRadiusPx": 16
   },
   "responsive": {
     "useDynamicViewport": true,
     "useVisualViewport": true,
-    "minPeekStepPx": 18,
+    "minPeekStepPx": 20,
     "tabStackMaxViewportShare": 0.34,
     "compactAtViewportHeightPx": 720,
     "narrowMode": {
@@ -96,6 +96,6 @@
 "anchorScrollMs": 480,
 "pressMs": 90,
 "pressOffsetPx": 4,
-"parallaxPx": 18
+"parallaxPx": 19
 }
 }

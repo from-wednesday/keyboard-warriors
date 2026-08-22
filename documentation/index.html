@@ -855,7 +855,15 @@
     try{
       const item=tabEls[i];
       const contentHeight=measureFrameContent(i);
-      item.iframe.style.height=contentHeight+'px';
+      // Sub-pixel jitter in the measured height, most often caused by
+      // 3D-transformed content, can retrigger the ResizeObserver watching
+      // this iframe in an endless loop. Skipping updates under a full pixel
+      // breaks that loop without affecting any real, visible resize.
+      const previousHeight=item.lastMeasuredHeight;
+      if(previousHeight===undefined || Math.abs(contentHeight-previousHeight)>=1){
+        item.iframe.style.height=contentHeight+'px';
+        item.lastMeasuredHeight=contentHeight;
+      }
       const hostHeight=item.frameHost.clientHeight;
       const needsScroll=contentHeight>hostHeight+1;
       item.frameHost.style.overflowY=needsScroll?'auto':'hidden';

@@ -885,16 +885,18 @@
       }catch(e){}
       item.styleReady=true;
       framesLoadedCount++;
-      if(isLoadingPhase){
-        if(i===activeIndex){
-          completeLoadingPhase();
-        }else{
-          paintLoading();
-        }
+      if(isLoadingPhase && i===activeIndex){
+        completeLoadingPhase();
       }else{
-        paint();
+        // Only this tab's colours need to change, its position doesn't move
+        // when it finishes loading, so this repaints just that tab instead
+        // of calling paint()/paintLoading(), which would recompute every
+        // tab's layout and folder shape just to update one tab's fill.
+        const FirstVisibleTabIndex=manifest.tabs.findIndex(t=>!t.hidden);
+        renderTabAppearance(tab,i,FirstVisibleTabIndex);
       }
     };
+
     item.iframe.src=tab.url;
   }
   function tabAtPoint(px,py){

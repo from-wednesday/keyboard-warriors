@@ -137,10 +137,8 @@ body {
 .page-header h1.h1-alt {
   color: rgba(213, 137, 66, 0.9);
 }
-@media (prefers-color-scheme: dark) {
-  .page-header h1.h1-alt {
-    color: inherit;
-  }
+html[data-theme="dark"] .page-header h1.h1-alt {
+  color: inherit;
 }
 .page-header p {
   font-size: 0.93rem;

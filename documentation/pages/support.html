@@ -81,7 +81,14 @@
     transition: transform .45s cubic-bezier(.22,1,.36,1);
     z-index: var(--z, 1);
 
-    filter: drop-shadow(0 10px 16px var(--card-shadow));
+    /* No filter here on purpose. filter: drop-shadow() on an element
+       that also sits above a preserve-3d subtree forces iOS Safari
+       onto a much slower software compositing path, and with seven
+       cards doing this permanently it stalls the main thread badly
+       enough to eat touch input, on this tab only, on iPad only.
+       The shadow moves to .card-back / .card-front below instead,
+       as an ordinary box-shadow, which paints cheaply and does not
+       force that fallback. */
   }
   .card.is-active {
     transform: translate(-50%, -50%) rotate(0deg) scale(1.18);
@@ -108,7 +115,13 @@
     transition: transform .55s cubic-bezier(.22,1,.36,1);
     /* No filter here — see the comment on .card above. This element
        must stay a "pure" 3D transform, untouched by anything that
-       would force the browser to flatten it. */
+       would force the browser to flatten it.
+
+       No permanent will-change here either: that was set on all
+       seven cards at once, keeping seven layers promoted the whole
+       time a visitor is on this tab. liftCardDuringTransition() in
+       the script below applies it to a single card only, and only
+       for the duration of its own flip. */
   }
   .card.is-active .card-inner { transform: rotateY(180deg); }
 
@@ -131,6 +144,7 @@
     color: var(--border-line);
     font: inherit;
     text-align: left;
+    box-shadow: 0 10px 16px var(--card-shadow);
   }
   .card-back:focus-visible { outline: 2px solid var(--border-line); outline-offset: 3px; }
 
@@ -176,6 +190,7 @@
     display: flex;
     flex-direction: column;
     cursor: pointer;
+    box-shadow: 0 10px 16px var(--card-shadow);
   }
   .card-front p {
     font-family: var(--sans);
@@ -272,7 +287,12 @@
      can never visually overlap a neighbour: paint order is still
      governed purely by each card's z-index. */
   @media (hover: hover) and (pointer: fine) {
-    .card:not(.is-active):hover .card-flip {
+    /* .no-touch is set by script near the end of the page, on the
+       first genuine touch event. iPadOS can report (hover: hover)
+       and (pointer: fine) from a trackpad or Pencil hover even on a
+       touch-primary device, so the media query alone is not a
+       reliable way to withhold this effect from iPad. */
+    html.no-touch .card:not(.is-active):hover .card-flip {
       transform: perspective(900px) rotateX(var(--tilt-rotate-x)) rotateY(var(--tilt-rotate-y));
     }
   }
@@ -301,6 +321,18 @@
     p.intro { margin-top: 8px; margin-bottom: 20px; }
   }
 </style>
+<script>
+  /* Runs before paint so there's no flash of the tilt effect being
+     briefly enabled. Touch capability, not hover/pointer media
+     features, is the reliable signal here: an iPad reports touch
+     capability whether or not a trackpad or Apple Pencil is also
+     present, whereas (hover: hover) and (pointer: fine) can still
+     match on that same iPad and wrongly enable the tilt effect. */
+  (function(){
+    var hasTouch = ('ontouchstart' in window) || (navigator.maxTouchPoints > 0);
+    if(!hasTouch) document.documentElement.classList.add('no-touch');
+  })();
+</script>
 </head>
 <body>
   <h1 style="color: #6FA98B;">to-wednesday</h1>
@@ -576,6 +608,27 @@
     var wasActive = card.classList.contains('is-active');
     closeAll();
     if (!wasActive) card.classList.add('is-active');
+    liftCardDuringTransition(card);
+  }
+
+  // Promotes just this card's .card-inner to its own layer for the
+  // duration of the flip, then lets the browser drop it again.
+  // Leaving will-change set on every card permanently (there are
+  // seven) is its own source of compositing cost, so this only ever
+  // applies it to the one card actually in motion, and only briefly.
+  function liftCardDuringTransition(card) {
+    var inner = card.querySelector('.card-inner');
+    if (!inner) return;
+    inner.style.willChange = 'transform';
+    var cleared = false;
+    function clear() {
+      if (cleared) return;
+      cleared = true;
+      inner.style.willChange = '';
+      inner.removeEventListener('transitionend', clear);
+    }
+    inner.addEventListener('transitionend', clear);
+    setTimeout(clear, 700); // safety net if transitionend doesn't fire
   }
 
   cards.forEach(function (card) {

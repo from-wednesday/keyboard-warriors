@@ -297,10 +297,17 @@
        ordinary gap instead. */
     p.intro { margin-top: 8px; margin-bottom: 20px; }
   }
+
+  .page-title { color: #6FA98B; }
+
+  html[data-theme="dark"] .page-title,
+  html[data-theme="dark"] p.intro {
+    color: #dce8e0;
+  }
 </style>
 </head>
 <body>
-  <h1 style="color: #6FA98B;">to-wednesday</h1>
+  <h1 class="page-title">to-wednesday</h1>
   <svg width="0" height="0" style="position:absolute" aria-hidden="true">
     <defs>
       <path id="cardFrameLine"

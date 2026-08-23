@@ -136,6 +136,20 @@
 .compare-col.dont h4::before { content: "\2716"; }
 .compare-col.do h4::before   { content: "\2714"; }
 
+/* Dark mode: the light pink/green cards keep their dark ink text
+   but shift to a more muted card colour so they don't glare against
+   the rest of the dark tab. */
+html[data-theme="dark"] .compare-col.dont {
+  background: #d9a8a3;
+  border-color: #b97a72;
+  color: #4a1611;
+}
+html[data-theme="dark"] .compare-col.do {
+  background: #a8d1b6;
+  border-color: #6fa885;
+  color: #123a20;
+}
+
 @media (max-width: 640px) {
   .compare-row { flex-direction: column; }
   .compare-col.dont { border-radius: 18px 18px 6px 6px; }

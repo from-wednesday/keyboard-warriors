@@ -75,12 +75,14 @@
     left: 50%;
     width: 172px;
     height: 252px;
+    border-radius: 11px;
     transform: translate(calc(-50% + var(--x)), calc(-50% + var(--y))) rotate(var(--r));
     transition: transform .45s cubic-bezier(.22,1,.36,1);
     z-index: var(--z, 1);
 
-    filter: drop-shadow(0 10px 16px var(--card-shadow));
+    box-shadow: 0 10px 16px var(--card-shadow);
   }
+
   .card.is-active {
     transform: translate(-50%, -50%) rotate(0deg) scale(1.18);
     z-index: 50;

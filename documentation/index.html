@@ -368,15 +368,23 @@
     const openBottomSeam = (vh - bottomMarginPx) - footerSpan;
     const frameHostBottom = openBottomSeam + L.flapHeightPx + 6;
     const BASELINE_H = vh;
+    // Slot count is worked out once per layout pass, using the narrowest
+    // (furthest-back) tab's width as the shared reference for every tab in
+    // the stack. Each tab is inset by a few extra pixels the further back
+    // it sits, so if every tab worked out its own slot count from its own
+    // width, a tab sitting exactly on a width boundary could disagree with
+    // its neighbours about how many columns exist, breaking the cascade.
+    const edgeClearance=L.cornerRadiusPx+8;
+    const backmostMargin=baseMargin+(n-1);
+    const referenceWidth=vw-backmostMargin*2;
+    const usableW=referenceWidth-L.flapWidthPx-edgeClearance*2;
+    const slots=Math.max(1,Math.floor(usableW/L.flapStepPx)+1);
     const flapCascadeX=(i,containerW)=>{
-      const edgeClearance=L.cornerRadiusPx+8;
       if(alternateFlaps){
         const evenRight = firstFlapSide !== 'left';
         const rightSide = (i%2===0) ? evenRight : !evenRight;
         return rightSide ? Math.max(edgeClearance, containerW-edgeClearance-L.flapWidthPx) : edgeClearance;
       }
-      const usableW=containerW-L.flapWidthPx-edgeClearance*2;
-      const slots=Math.max(1,Math.floor(usableW/L.flapStepPx)+1);
       // No "+1" here: every real tab's raw index is already one higher than
       // its position among visible tabs, because the hidden cover tab sits
       // first in the manifest. This only holds if the cover stays the sole
@@ -441,15 +449,23 @@
     const titleOffset=titleRow ? 56 : 18;
     const peekStepPx=effectivePeekStep(vh,n,narrow,L);
     const BASELINE_H=vh;
+    // Slot count is worked out once per layout pass, using the narrowest
+    // (furthest-back) tab's width as the shared reference for every tab in
+    // the stack. Each tab is inset by a few extra pixels the further back
+    // it sits, so if every tab worked out its own slot count from its own
+    // width, a tab sitting exactly on a width boundary could disagree with
+    // its neighbours about how many columns exist, breaking the cascade.
+    const edgeClearance=L.cornerRadiusPx+8;
+    const backmostMargin=baseMargin+(n-1);
+    const referenceWidth=vw-backmostMargin*2;
+    const usableW=referenceWidth-L.flapWidthPx-edgeClearance*2;
+    const slots=Math.max(1,Math.floor(usableW/L.flapStepPx)+1);
     const flapCascadeX=(i,containerW)=>{
-      const edgeClearance=L.cornerRadiusPx+8;
       if(alternateFlaps){
         const evenRight = firstFlapSide !== 'left';
         const rightSide = (i%2===0) ? evenRight : !evenRight;
         return rightSide ? Math.max(edgeClearance, containerW-edgeClearance-L.flapWidthPx) : edgeClearance;
       }
-      const usableW=containerW-L.flapWidthPx-edgeClearance*2;
-      const slots=Math.max(1,Math.floor(usableW/L.flapStepPx)+1);
       // No "+1" here: every real tab's raw index is already one higher than
       // its position among visible tabs, because the hidden cover tab sits
       // first in the manifest. This only holds if the cover stays the sole

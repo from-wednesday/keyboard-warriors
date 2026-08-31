@@ -399,7 +399,6 @@
     const visibleAfterActive = manifest.tabs
       .map((t,idx)=>idx)
       .filter(idx=>idx>activeIndex && !manifest.tabs[idx].hidden);
-    const offscreenTopY = -(BASELINE_H+400);
     const layout=manifest.tabs.map((tab,i)=>{
       const stepsFromFront=(n-1)-i;
       const margin=fullWidthTabs ? 0 : baseMargin+stepsFromFront;
@@ -417,7 +416,12 @@
       }
       let y;
       if(tab.hidden){
-        y=offscreenTopY;
+        // Cover always rests directly behind the front tab rather than
+        // sliding in from off-screen. It paints no visible folder shape
+        // and its content pane stays invisible until it is the active
+        // tab, so sitting still here causes no visible change; only the
+        // tabs stacked in front of it animate to reveal it.
+        y=0;
       }else if(i<activeIndex){
         const k=visibleBeforeActive.length-visibleBeforeActive.indexOf(i);
         y=openTop-k*peekStepPx;
@@ -474,7 +478,6 @@
       const slot=i%slots;
       return edgeClearance+slot*L.flapStepPx;
     };
-    const offscreenTopY = -(BASELINE_H+400);
     let visibleLoadingOrder=0;
     const layout=manifest.tabs.map((tab,i)=>{
       const stepsFromFront=(n-1)-i;
@@ -483,7 +486,10 @@
       const x=margin;
       let y;
       if(tab.hidden){
-        y=offscreenTopY;
+        // Cover always rests directly behind the front tab rather than
+        // sliding in from off-screen; see the matching comment in
+        // computeLayout().
+        y=0;
       }else{
         y=titleOffset+visibleLoadingOrder*peekStepPx;
         visibleLoadingOrder++;

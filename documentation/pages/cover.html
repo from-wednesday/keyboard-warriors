@@ -28,6 +28,21 @@
     overflow: visible !important;
   }
 
+  /* Vertically centres the page's content within the clear space
+     above the folded footer tabs. Height is set in pixels by the
+     script near the end of this file, driven by the parent tab
+     shell. Once content grows taller than that space, the auto
+     margins below collapse to zero on their own, pinning content
+     to the top so the tab shell's normal scrolling can take over. */
+  body {
+    display: flex;
+    flex-direction: column;
+  }
+  .page {
+    margin-top: auto;
+    margin-bottom: auto;
+  }
+
   .hero-media {
     position: relative;
   }
@@ -271,6 +286,36 @@
   var tenant = getTenant();
   var base = 'https://from-wednesday.github.io/keyboard-warriors/';
   link.href = tenant ? base + '?to=' + encodeURIComponent(tenant) : base;
+})();
+</script>
+
+<script>
+/* ══════════════════════════════════════
+   COVER CONTENT HEIGHT SYNC
+   Keeps this page's height matched to the clear space above the
+   folded footer tabs, so the hero content can sit vertically centred
+   there via the auto-margin rule on .page above. When content grows
+   taller than that space, the auto margins collapse to zero on their
+   own (standard flexbox behaviour) and the page starts at the top
+   instead, letting the tab shell's normal scrolling take over.
+
+   The parent tab shell pushes an updated height here whenever it
+   recalculates its own layout (see the matching call in paint() in
+   index.html). This script also pulls an initial value itself on
+   load, since the very first paint in the parent can happen before
+   this script has finished registering the function below.
+══════════════════════════════════════ */
+(function() {
+  window.KeyboardWarriorsCoverHeightSync = function(contentHeightPx) {
+    document.body.style.height = Math.max(0, contentHeightPx) + 'px';
+  };
+
+  try {
+    if (window.parent && window.parent !== window && window.parent.DocumentationTabController) {
+      var initialHeight = window.parent.DocumentationTabController.getCoverContentHeight();
+      window.KeyboardWarriorsCoverHeightSync(initialHeight);
+    }
+  } catch (e) {}
 })();
 </script>
 </body>

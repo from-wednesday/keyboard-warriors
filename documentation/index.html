@@ -500,6 +500,26 @@
     return {layout,flapCascadeX,narrow};
   }
 
+  // Height of the clear space above the folded footer tabs, the room
+  // the cover page actually has to work with once every other tab has
+  // folded down out of its way. Used to centre the cover page's own
+  // content vertically within that space; see KeyboardWarriorsCoverHeightSync
+  // in cover.html. Assumes the cover tab is the sole hidden tab and sits
+  // first in the manifest, the same assumption documented elsewhere in
+  // this file, so this can be calculated without knowing which tab is
+  // currently active.
+  function computeCoverContentHeight(){
+    const L=manifest.layout;
+    const n=manifest.tabs.length;
+    const vh=currentViewportHeight();
+    const narrow=isNarrowLayout(shell.clientWidth,L);
+    const peekStepPx=effectivePeekStep(vh,n,narrow,L);
+    const footerCount=manifest.tabs.filter(t=>!t.hidden).length;
+    const bottomMarginPx=(L.flapHeightPx-peekStepPx)+12;
+    const footerSpan=footerCount*peekStepPx;
+    return (vh-bottomMarginPx)-footerSpan;
+  }
+
   // Renders one tab's fill, stroke and label colour. Ghosted tabs (loaded
   // in the background but not yet styleReady) show only a flat currentColor
   // outline against the page background with a struck-through label. Once
@@ -718,6 +738,12 @@
       if(shouldShowPane(i)) loadFrame(i);
     });
     lastLayout=layout.map(({tab,i,x,y,width,zIndex})=>({i,x,y,width,zIndex,flapX:flapCascadeX(i,width)}));
+    if(tabEls[0] && tabEls[0].loaded){
+      try{
+        const syncCoverHeight=tabEls[0].iframe.contentWindow.KeyboardWarriorsCoverHeightSync;
+        if(typeof syncCoverHeight==='function') syncCoverHeight(computeCoverContentHeight());
+      }catch(e){}
+    }
     return maxDelay+transitionMs;
   }
   function primeParallaxStart(previousLayout){
@@ -1030,6 +1056,7 @@
   window.DocumentationTabController = {
     scrollActiveFrameTo: scrollActiveFrameTo,
     switchToTab: switchToTab,
+    getCoverContentHeight: computeCoverContentHeight,
     theme: theme
   };
 })();

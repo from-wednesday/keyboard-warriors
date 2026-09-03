@@ -1,0 +1,1604 @@
+[
+  {
+    "display": "switch to Vector Studio",
+    "mac_sc": "F1",
+    "pc_sc": "F2",
+    "difficulty": 2
+  },
+  {
+    "display": "switch to Pixel Studio",
+    "mac_sc": "F2",
+    "pc_sc": "F3",
+    "difficulty": 2
+  },
+  {
+    "display": "switch to Layout Studio",
+    "mac_sc": "F3",
+    "pc_sc": "F4",
+    "difficulty": 2
+  },
+  {
+    "display": "switch to Slice Studio",
+    "mac_sc": "NULL",
+    "pc_sc": "F5",
+    "difficulty": 3
+  },
+  {
+    "display": "switch to Canva AI Studio",
+    "mac_sc": "F4",
+    "pc_sc": "F6",
+    "difficulty": 3
+  },
+  {
+    "display": "switch to Retouching Studio",
+    "mac_sc": "NULL",
+    "pc_sc": "F7",
+    "difficulty": 3
+  },
+  {
+    "display": "switch to Color Grading Studio",
+    "mac_sc": "NULL",
+    "pc_sc": "F8",
+    "difficulty": 3
+  },
+  {
+    "display": "switch to Typography Studio",
+    "mac_sc": "NULL",
+    "pc_sc": "F9",
+    "difficulty": 3
+  },
+  {
+    "display": "switch to Develop Studio",
+    "mac_sc": "CMD+SHIFT+A",
+    "pc_sc": "CTRL+SHIFT+A",
+    "difficulty": 3
+  },
+  {
+    "display": "switch to Panorama Studio",
+    "mac_sc": "CMD+OPT+SHIFT+P",
+    "pc_sc": "CTRL+ALT+SHIFT+P",
+    "difficulty": 5
+  },
+  {
+    "display": "create a New Document",
+    "mac_sc": "CMD+N",
+    "pc_sc": "CTRL+N",
+    "difficulty": 0
+  },
+  {
+    "display": "create a New Document from Clipboard",
+    "mac_sc": "CMD+OPT+SHIFT+N",
+    "pc_sc": "CTRL+ALT+SHIFT+N",
+    "difficulty": 4
+  },
+  {
+    "display": "open or import a Document",
+    "mac_sc": "CMD+O",
+    "pc_sc": "CTRL+O",
+    "difficulty": 0
+  },
+  {
+    "display": "place a File",
+    "mac_sc": "CMD+SHIFT+M",
+    "pc_sc": "CTRL+SHIFT+M",
+    "difficulty": 3
+  },
+  {
+    "display": "close all Documents",
+    "mac_sc": "CMD+OPT+W",
+    "pc_sc": "CTRL+ALT+W",
+    "difficulty": 3
+  },
+  {
+    "display": "close the Document",
+    "mac_sc": "CMD+W",
+    "pc_sc": "CTRL+W",
+    "difficulty": 2
+  },
+  {
+    "display": "cycle to the next Document or View",
+    "mac_sc": "CONTROL+TAB",
+    "pc_sc": "CTRL+TAB",
+    "difficulty": 2
+  },
+  {
+    "display": "cycle to the previous Document or View",
+    "mac_sc": "CONTROL+SHIFT+TAB",
+    "pc_sc": "CTRL+SHIFT+TAB",
+    "difficulty": 3
+  },
+  {
+    "display": "save the Document",
+    "mac_sc": "CMD+S",
+    "pc_sc": "CTRL+S",
+    "difficulty": 0
+  },
+  {
+    "display": "save the Document as a new file",
+    "mac_sc": "CMD+SHIFT+S",
+    "pc_sc": "CTRL+SHIFT+S",
+    "difficulty": 1
+  },
+  {
+    "display": "export the Document",
+    "mac_sc": "CMD+OPT+SHIFT+W",
+    "pc_sc": "CTRL+ALT+SHIFT+W",
+    "difficulty": 4
+  },
+  {
+    "display": "print the Document",
+    "mac_sc": "CMD+P",
+    "pc_sc": "CTRL+P",
+    "difficulty": 0
+  },
+  {
+    "display": "open App Settings",
+    "mac_sc": "CMD+COMMA",
+    "pc_sc": "CTRL+COMMA",
+    "difficulty": 2
+  },
+  {
+    "display": "hide Affinity",
+    "mac_sc": "CMD+H",
+    "pc_sc": "NULL",
+    "difficulty": 2
+  },
+  {
+    "display": "hide other Apps",
+    "mac_sc": "CMD+OPT+H",
+    "pc_sc": "NULL",
+    "difficulty": 3
+  },
+  {
+    "display": "toggle Panels",
+    "mac_sc": "CMD+SHIFT+H",
+    "pc_sc": "CTRL+SHIFT+H",
+    "difficulty": 3
+  },
+  {
+    "display": "toggle the Toolbar",
+    "mac_sc": "CMD+OPT+T",
+    "pc_sc": "CTRL+ALT+T",
+    "difficulty": 3
+  },
+  {
+    "display": "toggle Full-screen Mode",
+    "mac_sc": "CONTROL+CMD+F",
+    "pc_sc": "NULL",
+    "difficulty": 3
+  },
+  {
+    "display": "toggle the UI",
+    "mac_sc": "TAB",
+    "pc_sc": "TAB",
+    "difficulty": 1
+  },
+  {
+    "display": "toggle Preview Mode",
+    "mac_sc": "CONTROL+W",
+    "pc_sc": "CTRL+SHIFT+W",
+    "difficulty": 3
+  },
+  {
+    "display": "toggle Pixel View Mode",
+    "mac_sc": "CMD+OPT+Y",
+    "pc_sc": "CTRL+ALT+Y",
+    "difficulty": 3
+  },
+  {
+    "display": "toggle Pixel Retina View Mode",
+    "mac_sc": "CMD+OPT+SHIFT+Y",
+    "pc_sc": "CTRL+ALT+SHIFT+Y",
+    "difficulty": 4
+  },
+  {
+    "display": "toggle the last-used Wireframe Mode",
+    "mac_sc": "CMD+Y",
+    "pc_sc": "CTRL+Y",
+    "difficulty": 2
+  },
+  {
+    "display": "toggle Clip to Canvas",
+    "mac_sc": "BACKSLASH",
+    "pc_sc": "BACKSLASH",
+    "difficulty": 2
+  },
+  {
+    "display": "toggle Split View",
+    "mac_sc": "COMMA",
+    "pc_sc": "COMMA",
+    "difficulty": 2
+  },
+  {
+    "display": "zoom in",
+    "mac_sc": "CMD+PLUS",
+    "pc_sc": "CTRL+EQUAL",
+    "difficulty": 1
+  },
+  {
+    "display": "zoom out",
+    "mac_sc": "CMD+MINUS",
+    "pc_sc": "CTRL+MINUS",
+    "difficulty": 1
+  },
+  {
+    "display": "zoom to Fit",
+    "mac_sc": "CMD+0",
+    "pc_sc": "CTRL+0",
+    "difficulty": 1
+  },
+  {
+    "display": "zoom to Width",
+    "mac_sc": "CMD+OPT+0",
+    "pc_sc": "ALT+SHIFT+0",
+    "difficulty": 3
+  },
+  {
+    "display": "zoom to Selection",
+    "mac_sc": "CMD+SHIFT+0",
+    "pc_sc": "CTRL+ALT+0",
+    "difficulty": 2
+  },
+  {
+    "display": "zoom to Document",
+    "mac_sc": "CMD+OPT+SHIFT+0",
+    "pc_sc": "CTRL+ALT+SHIFT+0",
+    "difficulty": 4
+  },
+  {
+    "display": "zoom to 100%",
+    "mac_sc": "CMD+1",
+    "pc_sc": "CTRL+1",
+    "difficulty": 2
+  },
+  {
+    "display": "zoom to 200%",
+    "mac_sc": "CMD+2",
+    "pc_sc": "CTRL+2",
+    "difficulty": 2
+  },
+  {
+    "display": "zoom to 400%",
+    "mac_sc": "CMD+3",
+    "pc_sc": "CTRL+3",
+    "difficulty": 4
+  },
+  {
+    "display": "zoom to 800%",
+    "mac_sc": "CMD+4",
+    "pc_sc": "CTRL+4",
+    "difficulty": 4
+  },
+  {
+    "display": "view at Actual Size",
+    "mac_sc": "CMD+8",
+    "pc_sc": "CTRL+8",
+    "difficulty": 3
+  },
+  {
+    "display": "view at Pixel Size",
+    "mac_sc": "CMD+9",
+    "pc_sc": "CTRL+9",
+    "difficulty": 3
+  },
+  {
+    "display": "reset Document View Rotation",
+    "mac_sc": "CONTROL+CMD+SHIFT+R",
+    "pc_sc": "CTRL+ALT+SHIFT+R",
+    "difficulty": 5
+  },
+  {
+    "display": "toggle Snapping",
+    "mac_sc": "SEMICOLON",
+    "pc_sc": "SEMICOLON",
+    "difficulty": 2
+  },
+  {
+    "display": "toggle Guides",
+    "mac_sc": "CMD+SEMICOLON",
+    "pc_sc": "CTRL+SEMICOLON",
+    "difficulty": 3
+  },
+  {
+    "display": "toggle the Grid",
+    "mac_sc": "CMD+QUOTE",
+    "pc_sc": "CTRL+QUOTE",
+    "difficulty": 2
+  },
+  {
+    "display": "cycle the Grid Plane",
+    "mac_sc": "QUOTE",
+    "pc_sc": "QUOTE",
+    "difficulty": 3
+  },
+  {
+    "display": "hold to zoom in with the mouse/trackpad",
+    "mac_sc": "CMD+SPACE",
+    "pc_sc": "CTRL+SPACE",
+    "difficulty": 2
+  },
+  {
+    "display": "hold to zoom in by drawing a Marquee",
+    "mac_sc": "OPT+SPACE",
+    "pc_sc": "ALT+SPACE",
+    "difficulty": 3
+  },
+  {
+    "display": "hold to zoom out with the mouse/trackpad",
+    "mac_sc": "OPT+SPACE",
+    "pc_sc": "ALT+SPACE",
+    "difficulty": 3
+  },
+  {
+    "display": "hold to activate quick Panning",
+    "mac_sc": "SPACE",
+    "pc_sc": "SPACE",
+    "difficulty": 2
+  },
+  {
+    "display": "hold to scroll-wheel left or right",
+    "mac_sc": "SHIFT",
+    "pc_sc": "SHIFT",
+    "difficulty": 3
+  },
+  {
+    "display": "toggle Rulers",
+    "mac_sc": "CMD+R",
+    "pc_sc": "CTRL+R",
+    "difficulty": 1
+  },
+  {
+    "display": "open Document Setup",
+    "mac_sc": "CMD+SHIFT+P",
+    "pc_sc": "CTRL+SHIFT+P",
+    "difficulty": 2
+  },
+  {
+    "display": "resize the Document",
+    "mac_sc": "CMD+OPT+I",
+    "pc_sc": "CTRL+ALT+I",
+    "difficulty": 3
+  },
+  {
+    "display": "resize the Canvas",
+    "mac_sc": "CMD+OPT+C",
+    "pc_sc": "CTRL+ALT+C",
+    "difficulty": 3
+  },
+  {
+    "display": "cut the Selection",
+    "mac_sc": "CMD+X",
+    "pc_sc": "CTRL+X",
+    "difficulty": 1
+  },
+  {
+    "display": "copy the Selection",
+    "mac_sc": "CMD+C",
+    "pc_sc": "CTRL+C",
+    "difficulty": 0
+  },
+  {
+    "display": "paste from the Clipboard",
+    "mac_sc": "CMD+V",
+    "pc_sc": "CTRL+V",
+    "difficulty": 1
+  },
+  {
+    "display": "copy the Merged Selection",
+    "mac_sc": "CMD+SHIFT+C",
+    "pc_sc": "CTRL+SHIFT+C",
+    "difficulty": 2
+  },
+  {
+    "display": "paste Style",
+    "mac_sc": "CMD+SHIFT+V",
+    "pc_sc": "CTRL+SHIFT+V",
+    "difficulty": 2
+  },
+  {
+    "display": "paste FX",
+    "mac_sc": "CONTROL+CMD+V",
+    "pc_sc": "ALT+SHIFT+V",
+    "difficulty": 3
+  },
+  {
+    "display": "paste Inside",
+    "mac_sc": "CMD+OPT+V",
+    "pc_sc": "CTRL+ALT+V",
+    "difficulty": 3
+  },
+  {
+    "display": "paste without Formatting",
+    "mac_sc": "CMD+OPT+SHIFT+V",
+    "pc_sc": "CTRL+ALT+SHIFT+V",
+    "difficulty": 4
+  },
+  {
+    "display": "redo the last Action",
+    "mac_sc": "CMD+SHIFT+Z",
+    "pc_sc": "CTRL+SHIFT+Z",
+    "difficulty": 1
+  },
+  {
+    "display": "select All",
+    "mac_sc": "CMD+A",
+    "pc_sc": "CTRL+A",
+    "difficulty": 0
+  },
+  {
+    "display": "deselect the Selection",
+    "mac_sc": "CMD+D",
+    "pc_sc": "CTRL+D",
+    "difficulty": 1
+  },
+  {
+    "display": "select all Layers",
+    "mac_sc": "CMD+OPT+A",
+    "pc_sc": "CTRL+ALT+A",
+    "difficulty": 3
+  },
+  {
+    "display": "select the next Layer",
+    "mac_sc": "OPT+BRACKETRIGHT",
+    "pc_sc": "CTRL+BRACKETRIGHT",
+    "difficulty": 3
+  },
+  {
+    "display": "select the previous Layer",
+    "mac_sc": "OPT+BRACKETLEFT",
+    "pc_sc": "CTRL+BRACKETLEFT",
+    "difficulty": 3
+  },
+  {
+    "display": "select the Parent Layer",
+    "mac_sc": "CMD+ARROWUP",
+    "pc_sc": "CTRL+ARROWUP",
+    "difficulty": 3
+  },
+  {
+    "display": "cycle the Selection Box",
+    "mac_sc": "PERIOD",
+    "pc_sc": "PERIOD",
+    "difficulty": 2
+  },
+  {
+    "display": "set the Selection Box",
+    "mac_sc": "CMD+PERIOD",
+    "pc_sc": "CTRL+PERIOD",
+    "difficulty": 3
+  },
+  {
+    "display": "cancel the current sizing, moving, or creating operation",
+    "mac_sc": "ESCAPE",
+    "pc_sc": "ESCAPE",
+    "difficulty": 1
+  },
+  {
+    "display": "nudge the Selection up",
+    "mac_sc": "ARROWUP",
+    "pc_sc": "ARROWUP",
+    "difficulty": 1
+  },
+  {
+    "display": "nudge the Selection down",
+    "mac_sc": "ARROWDOWN",
+    "pc_sc": "ARROWDOWN",
+    "difficulty": 1
+  },
+  {
+    "display": "nudge the Selection left",
+    "mac_sc": "ARROWLEFT",
+    "pc_sc": "ARROWLEFT",
+    "difficulty": 1
+  },
+  {
+    "display": "nudge the Selection right",
+    "mac_sc": "ARROWRIGHT",
+    "pc_sc": "ARROWRIGHT",
+    "difficulty": 1
+  },
+  {
+    "display": "nudge the Selection up by the modified distance",
+    "mac_sc": "SHIFT+ARROWUP",
+    "pc_sc": "SHIFT+ARROWUP",
+    "difficulty": 2
+  },
+  {
+    "display": "nudge the Selection down by the modified distance",
+    "mac_sc": "SHIFT+ARROWDOWN",
+    "pc_sc": "SHIFT+ARROWDOWN",
+    "difficulty": 2
+  },
+  {
+    "display": "nudge the Selection left by the modified distance",
+    "mac_sc": "SHIFT+ARROWLEFT",
+    "pc_sc": "SHIFT+ARROWLEFT",
+    "difficulty": 2
+  },
+  {
+    "display": "nudge the Selection right by the modified distance",
+    "mac_sc": "SHIFT+ARROWRIGHT",
+    "pc_sc": "SHIFT+ARROWRIGHT",
+    "difficulty": 2
+  },
+  {
+    "display": "group the Selection",
+    "mac_sc": "CMD+G",
+    "pc_sc": "CTRL+G",
+    "difficulty": 1
+  },
+  {
+    "display": "ungroup the Selection",
+    "mac_sc": "CMD+SHIFT+G",
+    "pc_sc": "CTRL+SHIFT+G",
+    "difficulty": 2
+  },
+  {
+    "display": "duplicate the Selection",
+    "mac_sc": "CMD+J",
+    "pc_sc": "CTRL+J",
+    "difficulty": 1
+  },
+  {
+    "display": "move the Selection to Front",
+    "mac_sc": "CMD+SHIFT+BRACKETRIGHT",
+    "pc_sc": "CTRL+SHIFT+BRACKETRIGHT",
+    "difficulty": 3
+  },
+  {
+    "display": "move the Selection forward one position",
+    "mac_sc": "CMD+BRACKETRIGHT",
+    "pc_sc": "CTRL+BRACKETRIGHT",
+    "difficulty": 3
+  },
+  {
+    "display": "send the Selection to Back",
+    "mac_sc": "CMD+SHIFT+BRACKETLEFT",
+    "pc_sc": "CTRL+SHIFT+BRACKETLEFT",
+    "difficulty": 3
+  },
+  {
+    "display": "move the Selection back one position",
+    "mac_sc": "CMD+BRACKETLEFT",
+    "pc_sc": "CTRL+BRACKETLEFT",
+    "difficulty": 3
+  },
+  {
+    "display": "move the Selection Inside",
+    "mac_sc": "CMD+OPT+G",
+    "pc_sc": "CTRL+ALT+G",
+    "difficulty": 4
+  },
+  {
+    "display": "move the Selection Outside",
+    "mac_sc": "CMD+OPT+SHIFT+G",
+    "pc_sc": "CTRL+ALT+SHIFT+G",
+    "difficulty": 5
+  },
+  {
+    "display": "show all hidden Objects",
+    "mac_sc": "CONTROL+CMD+H",
+    "pc_sc": "CTRL+ALT+SHIFT+H",
+    "difficulty": 4
+  },
+  {
+    "display": "unlock all Objects",
+    "mac_sc": "CONTROL+CMD+L",
+    "pc_sc": "CTRL+ALT+SHIFT+L",
+    "difficulty": 4
+  },
+  {
+    "display": "create a new Container Layer",
+    "mac_sc": "CMD+OPT+L",
+    "pc_sc": "CTRL+ALT+L",
+    "difficulty": 3
+  },
+  {
+    "display": "create a new Pixel Layer",
+    "mac_sc": "CMD+SHIFT+N",
+    "pc_sc": "CTRL+SHIFT+N",
+    "difficulty": 3
+  },
+  {
+    "display": "rename the Layer",
+    "mac_sc": "CMD+SHIFT+R",
+    "pc_sc": "CTRL+SHIFT+R",
+    "difficulty": 3
+  },
+  {
+    "display": "convert the Selection to Curves",
+    "mac_sc": "CMD+RETURN",
+    "pc_sc": "CTRL+RETURN",
+    "difficulty": 3
+  },
+  {
+    "display": "create a Clipping Mask",
+    "mac_sc": "SHIFT+C",
+    "pc_sc": "CTRL+C",
+    "difficulty": 3
+  },
+  {
+    "display": "merge Down",
+    "mac_sc": "CMD+E",
+    "pc_sc": "CTRL+E",
+    "difficulty": 3
+  },
+  {
+    "display": "merge Selected Layers",
+    "mac_sc": "CMD+SHIFT+E",
+    "pc_sc": "CTRL+SHIFT+E",
+    "difficulty": 3
+  },
+  {
+    "display": "merge Visible Layers",
+    "mac_sc": "CMD+OPT+SHIFT+E",
+    "pc_sc": "CTRL+ALT+SHIFT+E",
+    "difficulty": 4
+  },
+  {
+    "display": "switch between the Stroke and Fill colour selectors",
+    "mac_sc": "X",
+    "pc_sc": "X",
+    "difficulty": 2
+  },
+  {
+    "display": "swap the Stroke and Fill colours",
+    "mac_sc": "SHIFT+X",
+    "pc_sc": "SHIFT+X",
+    "difficulty": 3
+  },
+  {
+    "display": "reset the colour selectors to black and white",
+    "mac_sc": "D",
+    "pc_sc": "D",
+    "difficulty": 2
+  },
+  {
+    "display": "set No Fill",
+    "mac_sc": "SLASH",
+    "pc_sc": "SLASH",
+    "difficulty": 2
+  },
+  {
+    "display": "fill with the Foreground Colour",
+    "mac_sc": "OPT+BACKSPACE",
+    "pc_sc": "ALT+BACKSPACE",
+    "difficulty": 3
+  },
+  {
+    "display": "fill with the Background Colour",
+    "mac_sc": "CMD+BACKSPACE",
+    "pc_sc": "CTRL+BACKSPACE",
+    "difficulty": 3
+  },
+  {
+    "display": "select the next Blend Mode",
+    "mac_sc": "SHIFT+PLUS",
+    "pc_sc": "SHIFT+PLUS",
+    "difficulty": 6
+  },
+  {
+    "display": "select the previous Blend Mode",
+    "mac_sc": "SHIFT+MINUS",
+    "pc_sc": "SHIFT+MINUS",
+    "difficulty": 6
+  },
+    {
+    "display": "cycle Blend Modes",
+    "mac_sc": "SHIFT+MINUS|SHIFT+PLUS",
+    "pc_sc": "SHIFT+MINUS|SHIFT+PLUS",
+    "difficulty": 3
+  },
+  {
+    "display": "apply the Black and White Adjustment",
+    "mac_sc": "CMD+OPT+SHIFT+B",
+    "pc_sc": "CTRL+ALT+SHIFT+B",
+    "difficulty": 4
+  },
+  {
+    "display": "apply the Brightness and Contrast Adjustment",
+    "mac_sc": "CMD+B",
+    "pc_sc": "CTRL+B",
+    "difficulty": 3
+  },
+  {
+    "display": "apply the Curves Adjustment",
+    "mac_sc": "CMD+M",
+    "pc_sc": "CTRL+M",
+    "difficulty": 4
+  },
+  {
+    "display": "apply the HSL Adjustment",
+    "mac_sc": "CMD+U",
+    "pc_sc": "CTRL+U",
+    "difficulty": 3
+  },
+  {
+    "display": "apply the Invert Adjustment",
+    "mac_sc": "CMD+I",
+    "pc_sc": "CTRL+I",
+    "difficulty": 2
+  },
+  {
+    "display": "apply the Levels Adjustment",
+    "mac_sc": "CMD+L",
+    "pc_sc": "CTRL+L",
+    "difficulty": 2
+  },
+  {
+    "display": "apply the Live Liquify Filter",
+    "mac_sc": "CMD+SHIFT+X",
+    "pc_sc": "CTRL+SHIFT+X",
+    "difficulty": 4
+  },
+  {
+    "display": "decrease the Stroke Width",
+    "mac_sc": "BRACKETLEFT",
+    "pc_sc": "BRACKETLEFT",
+    "difficulty": 2
+  },
+  {
+    "display": "increase the Stroke Width",
+    "mac_sc": "BRACKETRIGHT",
+    "pc_sc": "BRACKETRIGHT",
+    "difficulty": 2
+  },
+  {
+    "display": "decrease the Stroke Width by an absolute value",
+    "mac_sc": "SHIFT+BRACKETLEFT",
+    "pc_sc": "SHIFT+BRACKETLEFT",
+    "difficulty": 3
+  },
+  {
+    "display": "increase the Stroke Width by an absolute value",
+    "mac_sc": "SHIFT+BRACKETRIGHT",
+    "pc_sc": "SHIFT+BRACKETRIGHT",
+    "difficulty": 3
+  },
+  {
+    "display": "open Fill",
+    "mac_sc": "SHIFT+F5",
+    "pc_sc": "SHIFT+F5",
+    "difficulty": 4
+  },
+  {
+    "display": "apply Inpainting",
+    "mac_sc": "OPT+SHIFT+BACKSPACE",
+    "pc_sc": "ALT+SHIFT+BACKSPACE",
+    "difficulty": 4
+  },
+  {
+    "display": "activate Add Mode while Shape Building",
+    "mac_sc": "PLUS",
+    "pc_sc": "PLUS|NUMPADADD",
+    "difficulty": 2
+  },
+  {
+    "display": "activate Delete Mode while Shape Building",
+    "mac_sc": "MINUS",
+    "pc_sc": "MINUS|NUMPADSUBTRACT",
+    "difficulty": 2
+  },
+  {
+    "display": "activate Create Mode while Shape Building",
+    "mac_sc": "NUMPADMULTIPLY",
+    "pc_sc": "NUMPADMULTIPLY",
+    "difficulty": 4
+  },
+  {
+    "display": "apply the Mesh Warp",
+    "mac_sc": "CMD+OPT+M",
+    "pc_sc": "CTRL+ALT+M",
+    "difficulty": 4
+  },
+  {
+    "display": "set the Blend Mode to Add",
+    "mac_sc": "OPT+SHIFT+W",
+    "pc_sc": "ALT+SHIFT+W",
+    "difficulty": 4
+  },
+  {
+    "display": "set the Blend Mode to Colour",
+    "mac_sc": "OPT+SHIFT+C",
+    "pc_sc": "ALT+SHIFT+C",
+    "difficulty": 4
+  },
+  {
+    "display": "set the Blend Mode to Colour Burn",
+    "mac_sc": "OPT+SHIFT+B",
+    "pc_sc": "ALT+SHIFT+B",
+    "difficulty": 4
+  },
+  {
+    "display": "set the Blend Mode to Colour Dodge",
+    "mac_sc": "OPT+SHIFT+D",
+    "pc_sc": "ALT+SHIFT+D",
+    "difficulty": 4
+  },
+  {
+    "display": "set the Blend Mode to Darken",
+    "mac_sc": "OPT+SHIFT+K",
+    "pc_sc": "ALT+SHIFT+K",
+    "difficulty": 5
+  },
+  {
+    "display": "set the Blend Mode to Difference",
+    "mac_sc": "OPT+SHIFT+E",
+    "pc_sc": "ALT+SHIFT+E",
+    "difficulty": 5
+  },
+  {
+    "display": "set the Blend Mode to Exclusion",
+    "mac_sc": "OPT+SHIFT+X",
+    "pc_sc": "ALT+SHIFT+X",
+    "difficulty": 5
+  },
+  {
+    "display": "set the Blend Mode to Hard Light",
+    "mac_sc": "OPT+SHIFT+H",
+    "pc_sc": "ALT+SHIFT+H",
+    "difficulty": 5
+  },
+  {
+    "display": "set the Blend Mode to Hard Mix",
+    "mac_sc": "OPT+SHIFT+L",
+    "pc_sc": "ALT+SHIFT+L",
+    "difficulty": 5
+  },
+  {
+    "display": "set the Blend Mode to Hue",
+    "mac_sc": "OPT+SHIFT+U",
+    "pc_sc": "ALT+SHIFT+U",
+    "difficulty": 5
+  },
+  {
+    "display": "set the Blend Mode to Lighten",
+    "mac_sc": "OPT+SHIFT+G",
+    "pc_sc": "ALT+SHIFT+G",
+    "difficulty": 5
+  },
+  {
+    "display": "set the Blend Mode to Linear Burn",
+    "mac_sc": "OPT+SHIFT+A",
+    "pc_sc": "ALT+SHIFT+A",
+    "difficulty": 5
+  },
+  {
+    "display": "set the Blend Mode to Linear Light",
+    "mac_sc": "OPT+SHIFT+J",
+    "pc_sc": "ALT+SHIFT+J",
+    "difficulty": 5
+  },
+  {
+    "display": "set the Blend Mode to Luminosity",
+    "mac_sc": "OPT+SHIFT+Y",
+    "pc_sc": "ALT+SHIFT+Y",
+    "difficulty": 5
+  },
+  {
+    "display": "set the Blend Mode to Multiply",
+    "mac_sc": "OPT+SHIFT+M",
+    "pc_sc": "ALT+SHIFT+M",
+    "difficulty": 4
+  },
+  {
+    "display": "set the Blend Mode to Normal",
+    "mac_sc": "OPT+SHIFT+N",
+    "pc_sc": "ALT+SHIFT+N",
+    "difficulty": 4
+  },
+  {
+    "display": "set the Blend Mode to Overlay",
+    "mac_sc": "OPT+SHIFT+O",
+    "pc_sc": "ALT+SHIFT+O",
+    "difficulty": 4
+  },
+  {
+    "display": "set the Blend Mode to Pigment",
+    "mac_sc": "OPT+SHIFT+P",
+    "pc_sc": "ALT+SHIFT+P",
+    "difficulty": 5
+  },
+  {
+    "display": "set the Blend Mode to Pin Light",
+    "mac_sc": "OPT+SHIFT+Z",
+    "pc_sc": "ALT+SHIFT+Z",
+    "difficulty": 5
+  },
+  {
+    "display": "set the Blend Mode to Saturation",
+    "mac_sc": "OPT+SHIFT+T",
+    "pc_sc": "ALT+SHIFT+T",
+    "difficulty": 5
+  },
+  {
+    "display": "set the Blend Mode to Screen",
+    "mac_sc": "OPT+SHIFT+S",
+    "pc_sc": "ALT+SHIFT+S",
+    "difficulty": 4
+  },
+  {
+    "display": "set the Blend Mode to Soft Light",
+    "mac_sc": "OPT+SHIFT+F",
+    "pc_sc": "ALT+SHIFT+F",
+    "difficulty": 5
+  },
+  {
+    "display": "set the Blend Mode to Vivid Light",
+    "mac_sc": "OPT+SHIFT+V",
+    "pc_sc": "ALT+SHIFT+V",
+    "difficulty": 5
+  },
+  {
+    "display": "switch to the Colour Picker Tool",
+    "mac_sc": "I",
+    "pc_sc": "I",
+    "difficulty": 2
+  },
+  {
+    "display": "switch to the Move Tool",
+    "mac_sc": "V",
+    "pc_sc": "V",
+    "difficulty": 2
+  },
+  {
+    "display": "switch to the Node Tool",
+    "mac_sc": "A",
+    "pc_sc": "A",
+    "difficulty": 2
+  },
+  {
+    "display": "switch to the Pen Tool",
+    "mac_sc": "P",
+    "pc_sc": "P",
+    "difficulty": 1
+  },
+  {
+    "display": "switch to the Shape tools Tool",
+    "mac_sc": "U",
+    "pc_sc": "U",
+    "difficulty": 2
+  },
+  {
+    "display": "switch to the Text tools Tool",
+    "mac_sc": "T",
+    "pc_sc": "T",
+    "difficulty": 1
+  },
+  {
+    "display": "switch to the View Tool",
+    "mac_sc": "H",
+    "pc_sc": "H",
+    "difficulty": 3
+  },
+  {
+    "display": "switch to the Zoom Tool",
+    "mac_sc": "Z",
+    "pc_sc": "Z",
+    "difficulty": 1
+  },
+  {
+    "display": "switch to the Vector Studio Contour Tool",
+    "mac_sc": "O",
+    "pc_sc": "O",
+    "difficulty": 3
+  },
+  {
+    "display": "switch to the Vector Studio Corner Tool",
+    "mac_sc": "C",
+    "pc_sc": "C",
+    "difficulty": 2
+  },
+  {
+    "display": "switch to the Vector Studio Fill Tool",
+    "mac_sc": "G",
+    "pc_sc": "G",
+    "difficulty": 3
+  },
+  {
+    "display": "switch to the Vector Studio Knife Tool",
+    "mac_sc": "K",
+    "pc_sc": "K",
+    "difficulty": 3
+  },
+  {
+    "display": "switch to the Vector Studio Path Brush Tool",
+    "mac_sc": "B",
+    "pc_sc": "B",
+    "difficulty": 3
+  },
+  {
+    "display": "switch to the Vector Studio Pencil Tool",
+    "mac_sc": "N",
+    "pc_sc": "N",
+    "difficulty": 3
+  },
+  {
+    "display": "switch to the Vector Studio Point Transform Tool",
+    "mac_sc": "F",
+    "pc_sc": "F",
+    "difficulty": 3
+  },
+  {
+    "display": "switch to the Vector Studio Shape Builder Tool",
+    "mac_sc": "S",
+    "pc_sc": "S",
+    "difficulty": 3
+  },
+  {
+    "display": "switch to the Vector Studio Stroke Width Tool",
+    "mac_sc": "W",
+    "pc_sc": "W",
+    "difficulty": 4
+  },
+  {
+    "display": "switch to the Vector Studio Transparency Tool",
+    "mac_sc": "Y",
+    "pc_sc": "Y",
+    "difficulty": 4
+  },
+  {
+    "display": "switch to the Vector Studio Vector Flood Fill Tool",
+    "mac_sc": "R",
+    "pc_sc": "R",
+    "difficulty": 4
+  },
+  {
+    "display": "switch to the Slice Tool",
+    "mac_sc": "S",
+    "pc_sc": "S",
+    "difficulty": 3
+  },
+  {
+    "display": "switch to the Slice Selection Tool",
+    "mac_sc": "L",
+    "pc_sc": "L",
+    "difficulty": 3
+  },
+  {
+    "display": "hold this key while drawing to edit the line or brush stroke",
+    "mac_sc": "CMD",
+    "pc_sc": "CTRL",
+    "difficulty": 3
+  },
+  {
+    "display": "hold this key while dragging a control handle to snap it to 45-degree intervals",
+    "mac_sc": "SHIFT",
+    "pc_sc": "SHIFT",
+    "difficulty": 2
+  },
+  {
+    "display": "hold this key while dragging a node handle to create a sharp corner",
+    "mac_sc": "OPT",
+    "pc_sc": "ALT",
+    "difficulty": 3
+  },
+  {
+    "display": "hold this key to reposition the last-drawn node while drawing",
+    "mac_sc": "SPACE",
+    "pc_sc": "SPACE",
+    "difficulty": 4
+  },
+  {
+    "display": "select the previous Node on a curve",
+    "mac_sc": "BRACKETLEFT",
+    "pc_sc": "BRACKETLEFT",
+    "difficulty": 2
+  },
+  {
+    "display": "select the next Node on a curve",
+    "mac_sc": "BRACKETRIGHT",
+    "pc_sc": "BRACKETRIGHT",
+    "difficulty": 2
+  },
+  {
+    "display": "delete a Node while retaining the curve geometry",
+    "mac_sc": "BACKSPACE",
+    "pc_sc": "BACKSPACE",
+    "difficulty": 2
+  },
+  {
+    "display": "delete a Node and reshape the curve to best fit",
+    "mac_sc": "OPT+BACKSPACE",
+    "pc_sc": "ALT+BACKSPACE",
+    "difficulty": 3
+  },
+  {
+    "display": "toggle the Brush Cursor between standard and crosshair",
+    "mac_sc": "CAPSLOCK",
+    "pc_sc": "CAPSLOCK",
+    "difficulty": 6
+  },
+  {
+    "display": "switch to the Pixel Studio Clone Brush Tool",
+    "mac_sc": "S",
+    "pc_sc": "S",
+    "difficulty": 4
+  },
+  {
+    "display": "switch to the Pixel Studio Colour Replacement Brush Tool",
+    "mac_sc": "R",
+    "pc_sc": "R",
+    "difficulty": 4
+  },
+  {
+    "display": "switch to the Pixel Studio Crop Tool",
+    "mac_sc": "C",
+    "pc_sc": "C",
+    "difficulty": 2
+  },
+  {
+    "display": "switch to the Pixel Studio Erase tools Tool",
+    "mac_sc": "E",
+    "pc_sc": "E",
+    "difficulty": 2
+  },
+  {
+    "display": "switch to the Pixel Studio Fill tools Tool",
+    "mac_sc": "G",
+    "pc_sc": "G",
+    "difficulty": 3
+  },
+  {
+    "display": "switch to the Pixel Studio Freehand Selection Tool",
+    "mac_sc": "L",
+    "pc_sc": "L",
+    "difficulty": 4
+  },
+  {
+    "display": "switch to the Pixel Studio Healing tools Tool",
+    "mac_sc": "J",
+    "pc_sc": "J",
+    "difficulty": 4
+  },
+  {
+    "display": "switch to the Pixel Studio Marquee Selection tools Tool",
+    "mac_sc": "M",
+    "pc_sc": "M",
+    "difficulty": 2
+  },
+  {
+    "display": "switch to the Pixel Studio Paint Brush Tool",
+    "mac_sc": "B",
+    "pc_sc": "B",
+    "difficulty": 2
+  },
+  {
+    "display": "switch to the Pixel Studio Pixel Tool",
+    "mac_sc": "Y",
+    "pc_sc": "Y",
+    "difficulty": 4
+  },
+  {
+    "display": "switch to the Pixel Studio Pixel Selection tools Tool",
+    "mac_sc": "W",
+    "pc_sc": "W",
+    "difficulty": 4
+  },
+  {
+    "display": "switch to the Pixel Studio Tonal Adjustment Brush tools Tool",
+    "mac_sc": "O",
+    "pc_sc": "O",
+    "difficulty": 4
+  },
+  {
+    "display": "invert the Pixel Selection",
+    "mac_sc": "CMD+SHIFT+I",
+    "pc_sc": "CTRL+SHIFT+I",
+    "difficulty": 2
+  },
+  {
+    "display": "feather the Pixel Selection",
+    "mac_sc": "SHIFT+F6",
+    "pc_sc": "SHIFT+F6",
+    "difficulty": 4
+  },
+  {
+    "display": "refine the edges of the Pixel Selection",
+    "mac_sc": "CMD+OPT+R",
+    "pc_sc": "CTRL+ALT+R",
+    "difficulty": 4
+  },
+  {
+    "display": "toggle Quick Mask",
+    "mac_sc": "Q",
+    "pc_sc": "Q",
+    "difficulty": 2
+  },
+  {
+    "display": "fade the last Pixel operation",
+    "mac_sc": "CMD+SHIFT+F",
+    "pc_sc": "CTRL+SHIFT+F",
+    "difficulty": 4
+  },
+  {
+    "display": "toggle between Frequency Separation Layers",
+    "mac_sc": "F",
+    "pc_sc": "NULL",
+    "difficulty": 3
+  },
+  {
+    "display": "edit the Live Projection",
+    "mac_sc": "CONTROL+CMD+P",
+    "pc_sc": "NULL",
+    "difficulty": 4
+  },
+  {
+    "display": "hold this key while dragging to temporarily use the Move Tool",
+    "mac_sc": "CMD",
+    "pc_sc": "CTRL",
+    "difficulty": 2
+  },
+  {
+    "display": "decrease the Brush Width",
+    "mac_sc": "BRACKETLEFT",
+    "pc_sc": "BRACKETLEFT",
+    "difficulty": 2
+  },
+  {
+    "display": "increase the Brush Width",
+    "mac_sc": "BRACKETRIGHT",
+    "pc_sc": "BRACKETRIGHT",
+    "difficulty": 2
+  },
+  {
+    "display": "decrease the Brush Hardness",
+    "mac_sc": "SHIFT+BRACKETLEFT",
+    "pc_sc": "SHIFT+BRACKETLEFT",
+    "difficulty": 3
+  },
+  {
+    "display": "increase the Brush Hardness",
+    "mac_sc": "SHIFT+BRACKETRIGHT",
+    "pc_sc": "SHIFT+BRACKETRIGHT",
+    "difficulty": 3
+  },
+  {
+    "display": "rotate the Brush Nozzle counter-clockwise",
+    "mac_sc": "ARROWLEFT",
+    "pc_sc": "ARROWLEFT",
+    "difficulty": 2
+  },
+  {
+    "display": "rotate the Brush Nozzle clockwise",
+    "mac_sc": "ARROWRIGHT",
+    "pc_sc": "ARROWRIGHT",
+    "difficulty": 2
+  },
+  {
+    "display": "create a Live Stack",
+    "mac_sc": "CMD+OPT+SHIFT+O",
+    "pc_sc": "CTRL+ALT+SHIFT+O",
+    "difficulty": 4
+  },
+  {
+    "display": "switch to the Picture Frame Tools",
+    "mac_sc": "K",
+    "pc_sc": "K",
+    "difficulty": 2
+  },
+  {
+    "display": "add a Page",
+    "mac_sc": "CMD+SHIFT+PAGEDOWN",
+    "pc_sc": "CTRL+SHIFT+PAGEDOWN",
+    "difficulty": 2
+  },
+  {
+    "display": "go to the previous Page",
+    "mac_sc": "CMD+PAGEUP",
+    "pc_sc": "CTRL+PAGEUP",
+    "difficulty": 2
+  },
+  {
+    "display": "go to the next Page",
+    "mac_sc": "CMD+PAGEDOWN",
+    "pc_sc": "CTRL+PAGEDOWN",
+    "difficulty": 2
+  },
+  {
+    "display": "convert the Selection to a Picture Frame",
+    "mac_sc": "SHIFT+P",
+    "pc_sc": "SHIFT+P",
+    "difficulty": 2
+  },
+  {
+    "display": "edit the Master Page detached",
+    "mac_sc": "CMD+SHIFT+D",
+    "pc_sc": "CTRL+SHIFT+D",
+    "difficulty": 3
+  },
+  {
+    "display": "open Spelling Options",
+    "mac_sc": "CMD+SHIFT+SEMICOLON",
+    "pc_sc": "CTRL+SHIFT+SEMICOLON",
+    "difficulty": 3
+  },
+  {
+    "display": "open the Find and Replace Panel",
+    "mac_sc": "CMD+F",
+    "pc_sc": "CTRL+F",
+    "difficulty": 1
+  },
+  {
+    "display": "move the text cursor left one character",
+    "mac_sc": "ARROWLEFT",
+    "pc_sc": "ARROWLEFT",
+    "difficulty": 1
+  },
+  {
+    "display": "move the text cursor right one character",
+    "mac_sc": "ARROWRIGHT",
+    "pc_sc": "ARROWRIGHT",
+    "difficulty": 1
+  },
+  {
+    "display": "move the text cursor to the start of the word",
+    "mac_sc": "CMD+ARROWLEFT",
+    "pc_sc": "CTRL+ARROWLEFT",
+    "difficulty": 2
+  },
+  {
+    "display": "move the text cursor to the end of the word",
+    "mac_sc": "CMD+ARROWRIGHT",
+    "pc_sc": "CTRL+ARROWRIGHT",
+    "difficulty": 2
+  },
+  {
+    "display": "move the text cursor to the start of the line",
+    "mac_sc": "HOME",
+    "pc_sc": "HOME",
+    "difficulty": 2
+  },
+  {
+    "display": "move the text cursor to the end of the line",
+    "mac_sc": "END",
+    "pc_sc": "END",
+    "difficulty": 2
+  },
+  {
+    "display": "move the text cursor to the start of the Story",
+    "mac_sc": "CMD+HOME",
+    "pc_sc": "CTRL+HOME",
+    "difficulty": 3
+  },
+  {
+    "display": "move the text cursor to the end of the Story",
+    "mac_sc": "CMD+END",
+    "pc_sc": "CTRL+END",
+    "difficulty": 3
+  },
+  {
+    "display": "delete the character to the left",
+    "mac_sc": "BACKSPACE",
+    "pc_sc": "BACKSPACE",
+    "difficulty": 1
+  },
+  {
+    "display": "delete the character to the right",
+    "mac_sc": "FN+BACKSPACE",
+    "pc_sc": "NULL",
+    "difficulty": 3
+  },
+  {
+    "display": "delete to the start of the word",
+    "mac_sc": "OPT+BACKSPACE",
+    "pc_sc": "CTRL+BACKSPACE",
+    "difficulty": 2
+  },
+  {
+    "display": "delete to the end of the word",
+    "mac_sc": "FN+OPT+BACKSPACE",
+    "pc_sc": "CTRL+DELETE",
+    "difficulty": 3
+  },
+  {
+    "display": "delete to the start of the line",
+    "mac_sc": "CMD+BACKSPACE",
+    "pc_sc": "NULL",
+    "difficulty": 3
+  },
+  {
+    "display": "apply Bold formatting",
+    "mac_sc": "CMD+B",
+    "pc_sc": "CTRL+B",
+    "difficulty": 1
+  },
+  {
+    "display": "increase the Font Size",
+    "mac_sc": "CMD+MORETHAN",
+    "pc_sc": "CTRL+MORETHAN",
+    "difficulty": 3
+  },
+  {
+    "display": "increase the Font Size precisely",
+    "mac_sc": "CMD+OPT+MORETHAN",
+    "pc_sc": "CTRL+ALT+MORETHAN",
+    "difficulty": 4
+  },
+  {
+    "display": "decrease the Font Size",
+    "mac_sc": "CMD+LESSTHAN",
+    "pc_sc": "CTRL+LESSTHAN",
+    "difficulty": 3
+  },
+  {
+    "display": "decrease the Font Size precisely",
+    "mac_sc": "CMD+OPT+LESSTHAN",
+    "pc_sc": "CTRL+ALT+LESSTHAN",
+    "difficulty": 4
+  },
+  {
+    "display": "apply Italic formatting",
+    "mac_sc": "CMD+I",
+    "pc_sc": "CTRL+I",
+    "difficulty": 1
+  },
+  {
+    "display": "decrease the List Level",
+    "mac_sc": "CONTROL+SHIFT+BRACKETLEFT",
+    "pc_sc": "ALT+SHIFT+BRACKETLEFT",
+    "difficulty": 3
+  },
+  {
+    "display": "increase the List Level",
+    "mac_sc": "CONTROL+SHIFT+BRACKETRIGHT",
+    "pc_sc": "ALT+SHIFT+BRACKETRIGHT",
+    "difficulty": 3
+  },
+  {
+    "display": "open the Character Panel",
+    "mac_sc": "CMD+T",
+    "pc_sc": "CTRL+T",
+    "difficulty": 2
+  },
+  {
+    "display": "apply Superscript",
+    "mac_sc": "CONTROL+CMD+PLUS",
+    "pc_sc": "CTRL+SHIFT+EQUAL",
+    "difficulty": 4
+  },
+  {
+    "display": "apply Subscript",
+    "mac_sc": "CONTROL+CMD+MINUS",
+    "pc_sc": "CTRL+ALT+MINUS",
+    "difficulty": 4
+  },
+  {
+    "display": "apply Underline formatting",
+    "mac_sc": "CMD+U",
+    "pc_sc": "CTRL+U",
+    "difficulty": 1
+  },
+  {
+    "display": "align the Paragraph Left",
+    "mac_sc": "CMD+OPT+L",
+    "pc_sc": "CTRL+ALT+L",
+    "difficulty": 2
+  },
+  {
+    "display": "align the Paragraph Centre",
+    "mac_sc": "CMD+OPT+C",
+    "pc_sc": "CTRL+ALT+C",
+    "difficulty": 2
+  },
+  {
+    "display": "align the Paragraph Right",
+    "mac_sc": "CMD+OPT+R",
+    "pc_sc": "CTRL+ALT+R",
+    "difficulty": 2
+  },
+  {
+    "display": "raise the Baseline",
+    "mac_sc": "OPT+SHIFT+ARROWUP",
+    "pc_sc": "ALT+SHIFT+ARROWUP",
+    "difficulty": 3
+  },
+  {
+    "display": "lower the Baseline",
+    "mac_sc": "OPT+SHIFT+ARROWDOWN",
+    "pc_sc": "ALT+SHIFT+ARROWDOWN",
+    "difficulty": 3
+  },
+  {
+    "display": "loosen Kerning or Tracking",
+    "mac_sc": "OPT+ARROWRIGHT",
+    "pc_sc": "ALT+ARROWRIGHT",
+    "difficulty": 2
+  },
+  {
+    "display": "loosen Kerning or Tracking more",
+    "mac_sc": "CMD+OPT+ARROWRIGHT",
+    "pc_sc": "ALT+SHIFT+ARROWRIGHT",
+    "difficulty": 3
+  },
+  {
+    "display": "tighten Kerning or Tracking",
+    "mac_sc": "OPT+ARROWLEFT",
+    "pc_sc": "ALT+ARROWLEFT",
+    "difficulty": 2
+  },
+  {
+    "display": "tighten Kerning or Tracking more",
+    "mac_sc": "CMD+OPT+ARROWLEFT",
+    "pc_sc": "ALT+SHIFT+ARROWLEFT",
+    "difficulty": 3
+  },
+  {
+    "display": "decrease Leading",
+    "mac_sc": "OPT+ARROWUP",
+    "pc_sc": "ALT+ARROWUP",
+    "difficulty": 2
+  },
+  {
+    "display": "increase Leading",
+    "mac_sc": "OPT+ARROWDOWN",
+    "pc_sc": "ALT+ARROWDOWN",
+    "difficulty": 2
+  },
+  {
+    "display": "insert an Em Dash",
+    "mac_sc": "OPT+MINUS",
+    "pc_sc": "ALT+MINUS",
+    "difficulty": 4
+  },
+  {
+    "display": "insert an En Dash",
+    "mac_sc": "OPT+SHIFT+MINUS",
+    "pc_sc": "ALT+SHIFT+MINUS",
+    "difficulty": 4
+  },
+  {
+    "display": "insert a Line Break",
+    "mac_sc": "SHIFT+RETURN",
+    "pc_sc": "SHIFT+RETURN",
+    "difficulty": 2
+  },
+  {
+    "display": "insert a Non-breaking Hyphen",
+    "mac_sc": "CMD+OPT+MINUS",
+    "pc_sc": "CTRL+ALT+SHIFT+MINUS",
+    "difficulty": 4
+  },
+  {
+    "display": "insert a Non-breaking Space",
+    "mac_sc": "OPT+SPACE",
+    "pc_sc": "ALT+SPACE",
+    "difficulty": 3
+  },
+  {
+    "display": "insert a Right Indent Tab",
+    "mac_sc": "SHIFT+TAB",
+    "pc_sc": "SHIFT+TAB",
+    "difficulty": 3
+  },
+  {
+    "display": "insert a Soft Hyphen",
+    "mac_sc": "CMD+SHIFT+MINUS",
+    "pc_sc": "CTRL+SHIFT+MINUS",
+    "difficulty": 4
+  },
+  {
+    "display": "toggle Unicode input",
+    "mac_sc": "CONTROL+U",
+    "pc_sc": "ALT+U",
+    "difficulty": 4
+  },
+  {
+    "display": "hold this key while scrolling to rotate the Document View about the cursor",
+    "mac_sc": "CMD",
+    "pc_sc": "ALT",
+    "difficulty": 3
+  },
+  {
+    "display": "hold these keys while scrolling to rotate the Document View about its centre",
+    "mac_sc": "CMD+SHIFT",
+    "pc_sc": "ALT+SHIFT",
+    "difficulty": 4
+  },
+  {
+    "display": "hold this key while rotating to increase the Document View rotation speed",
+    "mac_sc": "NULL",
+    "pc_sc": "CTRL",
+    "difficulty": 3
+  }
+]

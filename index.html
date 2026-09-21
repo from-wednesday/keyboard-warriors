@@ -1139,8 +1139,7 @@ start:  GYRO PERMISSION MODAL
   </div>
 </div>
 
-<p id="credit" class="page-initially-hidden"><small><strong><em>Built for learners.</strong></em> This digital toy was created by Wednesday Dessauer &amp; <span id="creditClause">is free to adapt under <a href="<a href="documentation/?to=swinburne&tab=1">" class="credit-link">Polyform Non-Commercial 1.0.0</a></span>.</small></p>
-
+<p id="credit" class="page-initially-hidden"><small><strong><em>Built for learners.</em></strong> This digital toy was created by Wednesday Dessauer &amp; <span id="creditClause">is free to adapt under <a href="#" class="credit-link">Polyform Non-Commercial 1.0.0</a></span>.</small></p>
 <div id="diffIconWrap" class="page-initially-hidden">
  <svg id="diffIcon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 96.6 64" cursor="pointer">
     <use href="#IconDifficultyDial"/>
@@ -11088,7 +11087,7 @@ function _applyEditionCredit(EditionManifest) {
   var LinkEl = document.createElement('a');
   LinkEl.href = '#';
   LinkEl.className = 'credit-link';
-  LinkEl.addEventListener('click', function(e) { e.preventDefault(); _openDocumentation(0); });
+  LinkEl.addEventListener('click', function(e) { e.preventDefault(); _openDocumentation(1); });
   // Split "is free to adapt under Polyform Non-Commercial 1.0.0" so only the
   // license/terms phrase itself is the link, matching the original styling.
   var SplitIndex = ClauseText.indexOf(' under ');
